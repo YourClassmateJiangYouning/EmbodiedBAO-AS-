@@ -1,0 +1,322 @@
+"""EmbodiedBAO program entry point.
+
+Usage:
+    python main.py --model gpt-4o --level 0                 # one Level
+    python main.py --model gpt-4o --levels 0 1 2 3 4 5      # all six Levels
+    python main.py --model gpt-4o --all-levels
+    python main.py --model random --level 3 --episodes 2    # smoke test
+    python main.py --model gemini-2.5-pro --all-levels --resume
+
+Flow: initialize the Isaac Sim scene (``environment.setup_scene``), fail fast on
+an invalid model configuration (``ai_agent.create_agent``), run the requested
+Levels with ``experiments.BAOExperimentRunner``, save one JSON summary per Level
+plus one flat CSV per (model, tag), print the A/S threshold table, and close the
+environment.
+
+Hierarchy of outputs:
+    results/level{level}/{model}/episode_{id:03d}.json         episode record
+    results/level{level}/{model}/episode_{id:03d}_steps.json   per-step record
+    results/level{level}/{model}/summary_{tag}.json            Level metrics
+    results/{model}/checkpoint_{tag}.json                      resume state
+    results/{model}_level{level}_{tag}.csv                     flat per-step CSV
+    logs/{tag}/level{level}_episode{id:03d}_agent.txt          raw model I/O
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import os
+import time
+import traceback
+from typing import Any, Dict, List, Optional, Sequence
+
+from environment import SUCCESS_X, level_channel_width
+from experiments import (
+    DEFAULT_EPISODES_PER_LEVEL,
+    DEFAULT_LEVELS,
+    DEFAULT_MAX_STEPS,
+    BAOExperimentRunner,
+    ProtocolCheckpoint,
+)
+
+
+def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="EmbodiedBAO experiment entry point.")
+    parser.add_argument("--model", type=str, default="gpt-4o", help="Model name")
+    parser.add_argument(
+        "--level", type=int, choices=list(DEFAULT_LEVELS), default=0, help="Level to run"
+    )
+    parser.add_argument(
+        "--levels",
+        type=int,
+        nargs="+",
+        choices=list(DEFAULT_LEVELS),
+        default=None,
+        help="Run multiple Levels in one process",
+    )
+    parser.add_argument(
+        "--all-levels", action="store_true", help="Run Levels 0, 1, 2, 3, 4, 5"
+    )
+    parser.add_argument(
+        "--episodes",
+        type=int,
+        default=DEFAULT_EPISODES_PER_LEVEL,
+        help=f"Episodes per Level (default {DEFAULT_EPISODES_PER_LEVEL})",
+    )
+    parser.add_argument(
+        "--max_steps",
+        type=int,
+        default=DEFAULT_MAX_STEPS,
+        help=f"Step limit per episode (default {DEFAULT_MAX_STEPS})",
+    )
+    parser.add_argument("--headless", action="store_true")
+    parser.add_argument("--tag", type=str, default="", help="Optional run tag")
+    parser.add_argument(
+        "--resume",
+        action="store_true",
+        help="Skip episodes already recorded in this run's checkpoint",
+    )
+    parser.add_argument(
+        "--save_obs", action="store_true", help="Save per-step camera PNGs"
+    )
+    parser.add_argument(
+        "--env_config",
+        type=str,
+        default="{}",
+        help='JSON dict passed to BAOEnv, e.g. \'{"rendermode":"RaytracedLighting","spp":4}\'',
+    )
+    return parser.parse_args(argv)
+
+
+def resolve_levels(args: argparse.Namespace) -> List[int]:
+    """Turn the CLI level flags into a validated, de-duplicated level list."""
+    if args.all_levels and args.levels:
+        raise ValueError("--all-levels and --levels cannot be used together")
+    if args.all_levels:
+        return list(DEFAULT_LEVELS)
+    if args.levels:
+        requested = list(args.levels)
+    else:
+        requested = [args.level]
+    seen: List[int] = []
+    for level in requested:
+        if level not in seen:
+            seen.append(level)
+    return seen
+
+
+def save_episodes_csv(
+    episodes: Sequence[Dict[str, Any]],
+    model: str,
+    level: int,
+    results_root: str = "results",
+    timestamp: str = "",
+) -> str:
+    """Flatten episodes into one CSV row per step."""
+    safe_model = model.replace("/", "-").replace("\\", "-")
+    out_dir = os.path.join(results_root, safe_model)
+    os.makedirs(out_dir, exist_ok=True)
+    timestamp = timestamp or time.strftime("%Y%m%d-%H%M%S")
+    path = os.path.join(out_dir, f"level{level}_{timestamp}.csv")
+
+    fields = [
+        "episode_id",
+        "level",
+        "channel_width",
+        "a_s_ratio",
+        "passed",
+        "passed_sideways",
+        "total_rotation",
+        "first_turn_step",
+        "total_steps",
+        "action_sequence",
+        "step",
+        "action",
+        "torso_rotation",
+        "position_x",
+        "position_z",
+        "collision",
+        "step_success",
+        "llm_response_time_ms",
+    ]
+
+    with open(path, "w", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields)
+        writer.writeheader()
+        for episode in episodes:
+            for step in episode.get("steps", []):
+                writer.writerow(
+                    {
+                        "episode_id": episode.get("episode_id"),
+                        "level": episode.get("level"),
+                        "channel_width": episode.get("channel_width"),
+                        "a_s_ratio": episode.get("a_s_ratio"),
+                        "passed": episode.get("passed"),
+                        "passed_sideways": episode.get("passed_sideways"),
+                        "total_rotation": episode.get("total_rotation"),
+                        "first_turn_step": episode.get("first_turn_step"),
+                        "total_steps": episode.get("total_steps"),
+                        "action_sequence": episode.get("action_sequence"),
+                        "step": step.get("step"),
+                        "action": step.get("action"),
+                        "torso_rotation": step.get("torso_rotation"),
+                        "position_x": step.get("position_x"),
+                        "position_z": step.get("position_z"),
+                        "collision": step.get("collision"),
+                        "step_success": step.get("step_success"),
+                        "llm_response_time_ms": step.get("llm_response_time_ms"),
+                    }
+                )
+    return path
+
+
+def _fmt(value: Optional[float], digits: int = 2) -> str:
+    return "-" if value is None else f"{float(value):.{digits}f}"
+
+
+def print_threshold_table(summaries: Dict[int, Dict[str, Any]]) -> None:
+    """Print the per-Level metric table and the derived A/S threshold."""
+    header = (
+        f"{'Level':>5}  {'A/S':>5}  {'Width':>7}  {'Pass%':>6}  {'Sideways%':>9}  "
+        f"{'1stTurn':>8}  {'AvgSteps':>8}  {'Collisions':>10}"
+    )
+    print("\n" + header)
+    print("-" * len(header))
+    for level in sorted(summaries):
+        summary = summaries[level]
+        if not summary.get("episodes"):
+            continue
+        print(
+            f"{level:>5}  {summary['a_s_ratio']:>5.2f}  "
+            f"{summary['channel_width']:>7.2f}  "
+            f"{100.0 * summary['pass_rate']:>6.1f}  "
+            f"{100.0 * summary['sideways_rate']:>9.1f}  "
+            f"{_fmt(summary.get('first_turn_step_mean'), 1):>8}  "
+            f"{_fmt(summary.get('avg_success_steps'), 2):>8}  "
+            f"{summary['total_wall_collisions']:>10}"
+        )
+    threshold = BAOExperimentRunner.sideways_threshold(summaries)
+    print("-" * len(header))
+    if threshold is None:
+        print(
+            "Sideways threshold: not observed (no Level produced a sideways passage)."
+        )
+    else:
+        print(
+            f"Sideways threshold: A/S = {threshold:.2f} "
+            f"(channel {threshold * 0.57:.3f} m; human reference A/S = 1.30)"
+        )
+
+
+def _progress_callback(
+    level: int, completed: int, total: int, episodes_done: Sequence[Dict[str, Any]]
+) -> None:
+    if completed % 10 == 0 or completed == total:
+        success_count = sum(1 for ep in episodes_done if ep.get("passed"))
+        rate = success_count / completed if completed else 0.0
+        message = (
+            f"level {level}: episode {completed}/{total}, "
+            f"pass_rate={rate:.3f}"
+        )
+        print(f"[main] {message}")
+        _write_progress(message)
+
+
+def _write_progress(message: str) -> None:
+    """Append a timestamped line to run_progress.txt (stdout is swallowed)."""
+    path = os.path.join(os.getcwd(), "run_progress.txt")
+    with open(path, "a", encoding="utf-8") as handle:
+        handle.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} {message}\n")
+
+
+def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
+    """Set up Isaac Sim, run the Levels, and return the per-Level summaries."""
+    levels = resolve_levels(args)
+    _write_progress(
+        f"main start: model={args.model} levels={levels} "
+        f"episodes={args.episodes} max_steps={args.max_steps}"
+    )
+    env = None
+    try:
+        from isaacsim import SimulationApp
+
+        simulation_app = SimulationApp({"headless": args.headless})
+        _write_progress("SimulationApp started")
+
+        import ai_agent
+        import environment
+
+        # Fail fast if the API key/model configuration is invalid; this also
+        # supports the "random" baseline via the create_agent factory.
+        ai_agent.create_agent(model=args.model)
+        _write_progress(f"agent ready: {args.model}")
+
+        task_dict = json.loads(args.env_config)
+        task_dict["headless"] = args.headless
+        env = environment.setup_scene(simulation_app, task_dict=task_dict)
+        _write_progress("environment created")
+
+        runner = BAOExperimentRunner(
+            env=env,
+            model=args.model,
+            max_steps=args.max_steps,
+            episodes_per_level=args.episodes,
+            tag=args.tag,
+        )
+        runner.save_args(args)
+        timestamp = time.strftime("%Y%m%d-%H%M%S")
+        safe_model = args.model.replace("/", "-").replace("\\", "-")
+        checkpoint_path = os.path.join(
+            "results", safe_model, f"checkpoint_{runner.tag}.json"
+        )
+        checkpoint = ProtocolCheckpoint(path=checkpoint_path, resume=args.resume)
+        if args.resume and checkpoint.completed:
+            print(f"[checkpoint] resumed with {len(checkpoint.completed)} completed units")
+        _write_progress(f"checkpoint path: {checkpoint_path}")
+
+        summaries: Dict[int, Dict[str, Any]] = {}
+        for level in levels:
+            _write_progress(f"level {level} start")
+            print(
+                f"\n[main] === Level {level}: channel "
+                f"{level_channel_width(level):.2f} m ==="
+            )
+            episodes = runner.run_level(
+                level=level,
+                episodes=args.episodes,
+                progress_callback=_progress_callback,
+                checkpoint=checkpoint,
+            )
+            summary = BAOExperimentRunner.summarize_level(level, episodes)
+            summaries[level] = summary
+            csv_path = save_episodes_csv(
+                episodes, model=args.model, level=level, timestamp=timestamp
+            )
+            print(f"[main] saved {csv_path}")
+            _write_progress(f"csv saved: {csv_path}")
+            _write_progress(
+                f"level {level} done: pass_rate={summary['pass_rate']:.3f} "
+                f"sideways_rate={summary['sideways_rate']:.3f}"
+            )
+
+        print_threshold_table(summaries)
+        _write_progress("all levels done")
+        return summaries
+    except Exception as exc:
+        _write_progress(f"ERROR: {type(exc).__name__}: {exc}")
+        _write_progress(traceback.format_exc())
+        raise
+    finally:
+        if env is not None:
+            env.close()
+
+
+def main() -> None:
+    args = parse_args()
+    run_experiment(args)
+
+
+if __name__ == "__main__":
+    main()
