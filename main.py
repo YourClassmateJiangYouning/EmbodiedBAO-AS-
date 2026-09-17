@@ -181,6 +181,19 @@ def save_episodes_csv(
     return path
 
 
+def _runner_class() -> Any:
+    """Return BAOExperimentRunner, importing experiments lazily.
+
+    `experiments` imports `environment`, which imports Isaac Sim at module
+    scope, so it must not be imported until SimulationApp is running.  Every
+    module-level helper that needs the runner goes through here instead of
+    referencing a name that only exists inside run_experiment.
+    """
+    from experiments import BAOExperimentRunner
+
+    return BAOExperimentRunner
+
+
 def _fmt(value: Optional[float], digits: int = 2) -> str:
     return "-" if value is None else f"{float(value):.{digits}f}"
 
@@ -206,7 +219,7 @@ def print_threshold_table(summaries: Dict[int, Dict[str, Any]]) -> None:
             f"{_fmt(summary.get('avg_success_steps'), 2):>8}  "
             f"{summary['total_wall_collisions']:>10}"
         )
-    threshold = BAOExperimentRunner.sideways_threshold(summaries)
+    threshold = _runner_class().sideways_threshold(summaries)
     print("-" * len(header))
     if threshold is None:
         print(

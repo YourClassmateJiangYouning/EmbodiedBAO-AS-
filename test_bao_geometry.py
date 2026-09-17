@@ -30,7 +30,7 @@ from __future__ import annotations
 import math
 import os
 import sys
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import numpy as np
 
@@ -706,6 +706,31 @@ def test_sideways_band() -> None:
     print("[ok] sideways yaw band is 45-135 degrees and mirror-symmetric")
 
 
+def test_no_unbound_names() -> None:
+    """Every module must pass the static unbound-name check.
+
+    Several real bugs in this project were 'a name is referenced but nothing
+    binds it', and they only surfaced on a real Isaac Sim install after a
+    ~150 s startup.  This runs tools/check_names.py so that class of bug is
+    caught in seconds instead.
+    """
+    import subprocess
+
+    root = os.path.dirname(os.path.abspath(__file__))
+    script = os.path.join(root, "tools", "check_names.py")
+    check(os.path.exists(script), "tools/check_names.py is missing")
+    result = subprocess.run(
+        [sys.executable, script], capture_output=True, text=True, cwd=root
+    )
+    check(
+        result.returncode == 0,
+        "tools/check_names.py found unbound names:\n"
+        + (result.stdout or "").strip()
+        + (result.stderr or "").strip(),
+    )
+    print("[ok] no unbound names in any module (static check)")
+
+
 def main() -> int:
     tests = [
         test_channel_ladder,
@@ -722,6 +747,7 @@ def main() -> int:
         test_prompt_is_uniform_and_leak_free,
         test_episode_defaults,
         test_sideways_band,
+        test_no_unbound_names,
     ]
     failures = 0
     for test in tests:
