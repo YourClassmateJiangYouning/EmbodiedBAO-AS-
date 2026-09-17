@@ -220,8 +220,17 @@ def print_threshold_table(summaries: Dict[int, Dict[str, Any]]) -> None:
 
 
 def _progress_callback(
-    level: int, completed: int, total: int, episodes_done: Sequence[Dict[str, Any]]
+    level: int,
+    completed: int,
+    total: int,
+    episode: Dict[str, Any],
+    episodes_done: Sequence[Dict[str, Any]],
 ) -> None:
+    """Progress reporter matching BAOExperimentRunner's callback signature.
+
+    It must accept all five arguments (level, completed, total, the episode
+    just finished, and the running list) even though it only uses some of them.
+    """
     if completed % 10 == 0 or completed == total:
         success_count = sum(1 for ep in episodes_done if ep.get("passed"))
         rate = success_count / completed if completed else 0.0

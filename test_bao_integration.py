@@ -772,6 +772,77 @@ def test_full_protocol_and_analysis() -> None:
     print("[ok] the full protocol runs and analysis reads the results back")
 
 
+def test_progress_callback_signature() -> None:
+    """main.py's progress callback must accept every argument the runner passes.
+
+    Regression guard: the runner calls
+    ``progress_callback(level, completed, total, episode_result, all_episodes)``
+    but an earlier version of main.py accepted only four of those, so a real run
+    died with `TypeError: _progress_callback() takes 4 positional arguments but
+    5 were given` on the very first episode -- after the expensive
+    SimulationApp startup, and after the first episode had already been saved.
+    """
+    import inspect
+
+    import main as main_module
+
+    params = [
+        p
+        for p in inspect.signature(main_module._progress_callback).parameters.values()
+        if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)
+    ]
+    check(
+        len(params) == 5,
+        f"_progress_callback accepts {len(params)} positional args, "
+        f"but the runner calls it with 5",
+    )
+
+    # Drive the real call site with a spy so future drift fails here instead of
+    # on the lab machine.
+    seen: List[Tuple[Any, ...]] = []
+
+    def spy(*args: Any, **kwargs: Any) -> None:
+        seen.append(args)
+
+    _install_scripted_agent("sideways")
+    original_callback = main_module._progress_callback
+    main_module._progress_callback = spy
+    try:
+        tmp = make_temp_dir()
+        try:
+            env = FakeBAOEnv()
+            runner = BAOExperimentRunner(
+                env=env,
+                model="scripted-sideways",
+                max_steps=DEFAULT_MAX_STEPS,
+                results_root=os.path.join(tmp, "results"),
+                logs_root=os.path.join(tmp, "logs"),
+            )
+            runner.run_all(
+                levels=[0, 1],
+                episodes_per_level=1,
+                progress_callback=main_module._progress_callback,
+            )
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+    finally:
+        main_module._progress_callback = original_callback
+        _restore_agent_adapter()
+
+    check(seen, "the progress callback was never invoked")
+    for args in seen:
+        check(
+            len(args) == 5,
+            f"runner invoked the callback with {len(args)} args, expected 5",
+        )
+        check(isinstance(args[0], int), f"arg0 should be the level, got {args[0]!r}")
+        check(isinstance(args[1], int), f"arg1 should be completed, got {args[1]!r}")
+        check(isinstance(args[2], int), f"arg2 should be total, got {args[2]!r}")
+        check(isinstance(args[3], dict), "arg3 should be the episode dict")
+        check(isinstance(args[4], list), "arg4 should be the episode list")
+    print("[ok] the progress callback accepts the runner's five arguments")
+
+
 def main() -> int:
     tests = [
         test_episode_record_contract,
@@ -783,6 +854,7 @@ def main() -> int:
         test_checkpoint_resume,
         test_invalid_action_is_recorded,
         test_full_protocol_and_analysis,
+        test_progress_callback_signature,
     ]
     failures = 0
     for test in tests:
