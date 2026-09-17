@@ -47,7 +47,22 @@ try:
     import carb
 
     _HAS_ISAAC_SIM = True
-except Exception:  # pragma: no cover - exercised only outside Isaac Sim
+except Exception as _isaac_import_error:  # pragma: no cover - only outside Isaac Sim
+    # Report the real failure.  `isaacsim.core` is importable ONLY after
+    # SimulationApp has started, so a bare `except: pass` here hides the one
+    # mistake that matters most: importing this module too early, which latches
+    # _HAS_ISAAC_SIM to False and makes the scene permanently unbuildable.
+    import sys as _sys
+    import traceback as _tb
+
+    print(
+        "[BAOEnv] Isaac Sim import failed "
+        f"({type(_isaac_import_error).__name__}: {_isaac_import_error}). "
+        "If SimulationApp is already running this is a bug; if not, this "
+        "module was imported too early.",
+        file=_sys.stderr,
+    )
+    _tb.print_exc()
     _HAS_ISAAC_SIM = False
 
 

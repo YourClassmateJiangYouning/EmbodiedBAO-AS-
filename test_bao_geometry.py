@@ -28,6 +28,7 @@ Run with a plain Python interpreter:
 from __future__ import annotations
 
 import math
+import os
 import sys
 from typing import List, Tuple
 
@@ -466,6 +467,67 @@ def test_rotation_blocked_inside_wall_slab() -> None:
 # ---------------------------------------------------------------------------
 
 
+def test_entry_point_does_not_import_isaac_sim() -> None:
+    """Importing main.py must not pull in environment/experiments.
+
+    Regression guard for a bug that only shows up on a real Isaac Sim install:
+    ``isaacsim.core`` is importable *only after* SimulationApp has started.  A
+    top-level ``from environment import ...`` in the entry point runs first,
+    raises ModuleNotFoundError, and latches ``environment._HAS_ISAAC_SIM`` to
+    False forever -- so the scene can never be built even though SimulationApp
+    started fine.  Run in a subprocess so this test's own imports do not
+    pollute the check.
+    """
+    import subprocess
+    import sys
+
+    code = (
+        "import sys, main;"
+        "bad=[m for m in ('environment','experiments') if m in sys.modules];"
+        "print('LEAKED='+','.join(bad));"
+        "print('LEVELS=%r' % (tuple(main.PROTOCOL_LEVELS),))"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", code],
+        capture_output=True,
+        text=True,
+        cwd=os.path.dirname(os.path.abspath(__file__)),
+    )
+    check(
+        result.returncode == 0,
+        f"importing main.py failed: {result.stderr.strip()[:400]}",
+    )
+    leaked_lines = [
+        line for line in result.stdout.splitlines() if line.startswith("LEAKED=")
+    ]
+    check(leaked_lines, f"unexpected subprocess output: {result.stdout!r}")
+    leaked = leaked_lines[0].split("=", 1)[1].strip()
+    check(
+        leaked == "",
+        f"importing main.py pulled in {leaked!r}; these must be imported lazily "
+        f"inside run_experiment, after SimulationApp starts",
+    )
+
+    # The duplicated literals in main.py must match the real modules.
+    from experiments import DEFAULT_EPISODES_PER_LEVEL, DEFAULT_LEVELS, DEFAULT_MAX_STEPS
+    import main
+
+    check(
+        tuple(main.PROTOCOL_LEVELS) == tuple(DEFAULT_LEVELS),
+        f"main.PROTOCOL_LEVELS {tuple(main.PROTOCOL_LEVELS)} != "
+        f"experiments.DEFAULT_LEVELS {tuple(DEFAULT_LEVELS)}",
+    )
+    check(
+        main.DEFAULT_EPISODES_PER_LEVEL == DEFAULT_EPISODES_PER_LEVEL,
+        "main.DEFAULT_EPISODES_PER_LEVEL drifted from experiments",
+    )
+    check(
+        main.DEFAULT_MAX_STEPS == DEFAULT_MAX_STEPS,
+        "main.DEFAULT_MAX_STEPS drifted from experiments",
+    )
+    print("[ok] importing main.py does not import Isaac Sim (no early latch bug)")
+
+
 def _turn_arc_yaws() -> List[float]:
     """Yaw samples visited by a full 0 -> 90 degree turn."""
     return [float(y) for y in range(0, 91, int(TURN_STEP_DEG))]
@@ -655,6 +717,7 @@ def main() -> int:
         test_frontal_route_only_where_feasible,
         test_rotation_blocked_inside_wall_slab,
         test_turn_clearance_boundary,
+        test_entry_point_does_not_import_isaac_sim,
         test_action_space,
         test_prompt_is_uniform_and_leak_free,
         test_episode_defaults,

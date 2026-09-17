@@ -32,27 +32,36 @@ import time
 import traceback
 from typing import Any, Dict, List, Optional, Sequence
 
-from environment import SUCCESS_X, level_channel_width
-from experiments import (
-    DEFAULT_EPISODES_PER_LEVEL,
-    DEFAULT_LEVELS,
-    DEFAULT_MAX_STEPS,
-    BAOExperimentRunner,
-    ProtocolCheckpoint,
-)
+# ---------------------------------------------------------------------------
+# Protocol constants -- intentionally duplicated here as plain literals.
+#
+# environment.py and experiments.py import Isaac Sim at module scope, and
+# `isaacsim.core` only becomes importable AFTER SimulationApp has started.  A
+# top-level `from environment import ...` in the entry point therefore runs
+# before Isaac Sim is ready, raises ModuleNotFoundError, and permanently
+# latches environment._HAS_ISAAC_SIM = False -- after which the scene can never
+# be built.  Keeping this module free of those imports (they happen lazily
+# inside run_experiment) is what avoids that trap.
+#
+# Keep in sync with environment.LEVEL_CHANNEL_WIDTHS and the experiments
+# DEFAULT_* constants; test_bao_geometry.py asserts the values.
+# ---------------------------------------------------------------------------
+PROTOCOL_LEVELS: Sequence[int] = (0, 1, 2, 3, 4, 5)
+DEFAULT_EPISODES_PER_LEVEL = 20
+DEFAULT_MAX_STEPS = 30
 
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="EmbodiedBAO experiment entry point.")
     parser.add_argument("--model", type=str, default="gpt-4o", help="Model name")
     parser.add_argument(
-        "--level", type=int, choices=list(DEFAULT_LEVELS), default=0, help="Level to run"
+        "--level", type=int, choices=list(PROTOCOL_LEVELS), default=0, help="Level to run"
     )
     parser.add_argument(
         "--levels",
         type=int,
         nargs="+",
-        choices=list(DEFAULT_LEVELS),
+        choices=list(PROTOCOL_LEVELS),
         default=None,
         help="Run multiple Levels in one process",
     )
@@ -95,7 +104,7 @@ def resolve_levels(args: argparse.Namespace) -> List[int]:
     if args.all_levels and args.levels:
         raise ValueError("--all-levels and --levels cannot be used together")
     if args.all_levels:
-        return list(DEFAULT_LEVELS)
+        return list(PROTOCOL_LEVELS)
     if args.levels:
         requested = list(args.levels)
     else:
@@ -247,6 +256,7 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
 
         import ai_agent
         import environment
+        from experiments import BAOExperimentRunner, ProtocolCheckpoint
 
         # Fail fast if the API key/model configuration is invalid; this also
         # supports the "random" baseline via the create_agent factory.
@@ -281,7 +291,7 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
             _write_progress(f"level {level} start")
             print(
                 f"\n[main] === Level {level}: channel "
-                f"{level_channel_width(level):.2f} m ==="
+                f"{environment.level_channel_width(level):.2f} m ==="
             )
             episodes = runner.run_level(
                 level=level,
