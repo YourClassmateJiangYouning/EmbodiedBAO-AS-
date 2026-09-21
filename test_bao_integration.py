@@ -843,6 +843,70 @@ def test_progress_callback_signature() -> None:
     print("[ok] the progress callback accepts the runner's five arguments")
 
 
+def test_cli_flags_reach_the_runner() -> None:
+    """Every CLI flag that should affect a run must actually be forwarded.
+
+    Regression guard: `--save_obs` was defined and parsed but never passed to
+    BAOExperimentRunner, so it silently produced no PNGs at all -- which cost a
+    real round trip on the lab machine when we needed to inspect what the head
+    camera actually saw.
+    """
+    import inspect
+
+    import main as main_module
+
+    source = inspect.getsource(main_module.run_experiment)
+    for forwarded in (
+        "save_obs=args.save_obs",
+        "max_steps=args.max_steps",
+        "episodes_per_level=args.episodes",
+        "tag=args.tag",
+        "model=args.model",
+    ):
+        check(
+            forwarded in source,
+            f"run_experiment does not forward {forwarded!r} to the runner",
+        )
+
+    # Every flag parse_args declares must be referenced somewhere in main.py;
+    # an unreferenced flag is a flag that does nothing.  Extract the flag
+    # strings from the source with AST so --some-flag maps to args.some_flag.
+    import ast
+    import textwrap
+
+    tree = ast.parse(textwrap.dedent(inspect.getsource(main_module.parse_args)))
+    declared: set = set()
+    for node in ast.walk(tree):
+        if (
+            isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr == "add_argument"
+            and node.args
+            and isinstance(node.args[0], ast.Constant)
+            and isinstance(node.args[0].value, str)
+        ):
+            flag = node.args[0].value.lstrip("-").replace("-", "_")
+            if flag != "help":
+                declared.add(flag)
+    check(declared, "could not extract any CLI flags from parse_args")
+    referenced = set()
+    for obj in vars(main_module).values():
+        if inspect.isfunction(obj) or inspect.isclass(obj):
+            try:
+                text = inspect.getsource(obj)
+            except (OSError, TypeError):
+                continue
+            for dest in declared:
+                if f"args.{dest}" in text:
+                    referenced.add(dest)
+    unused = sorted(declared - referenced)
+    check(
+        not unused,
+        f"CLI flags parsed but never used in main.py: {unused}",
+    )
+    print("[ok] every CLI flag reaches the runner (no dead options)")
+
+
 def main() -> int:
     tests = [
         test_episode_record_contract,
@@ -855,6 +919,7 @@ def main() -> int:
         test_invalid_action_is_recorded,
         test_full_protocol_and_analysis,
         test_progress_callback_signature,
+        test_cli_flags_reach_the_runner,
     ]
     failures = 0
     for test in tests:

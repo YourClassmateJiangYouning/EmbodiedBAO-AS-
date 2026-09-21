@@ -296,6 +296,7 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
             max_steps=args.max_steps,
             episodes_per_level=args.episodes,
             tag=args.tag,
+            save_obs=args.save_obs,
         )
         runner.save_args(args)
         timestamp = time.strftime("%Y%m%d-%H%M%S")
