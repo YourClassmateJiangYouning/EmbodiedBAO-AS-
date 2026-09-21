@@ -132,33 +132,34 @@ def frame_occupancy(start_x: float, pitch: float, focal: float, height: float,
 
 def report_occupancy(args: argparse.Namespace, channel: float, sensor: float) -> None:
     print()
-    print("Frame occupancy across start positions (horizontal scan):")
-    print(f"  {'start_x':>8} {'dist':>6} {'OPENING':>8} {'wall':>7} {'far wall':>9} {'steps':>6}")
-    seen = []
-    for start_x in (2.0, 1.5, 1.0, 0.5, 0.0, -0.5):
-        occ = frame_occupancy(
-            start_x, args.pitch, args.focal, args.height, channel, sensor
-        )
-        travel = (env.SUCCESS_X - start_x) + 0.10
-        steps = int(round(90.0 / env.TURN_STEP_DEG)) + int(
-            math.ceil(travel / env.MOVE_STEP)
-        )
-        distance = env.WALL_X - start_x
-        print(
-            f"  {start_x:>8.1f} {distance:>6.2f} "
-            f"{100 * occ.get('OPENING', 0.0):>7.0f}% "
-            f"{100 * occ.get('wall panel', 0.0):>6.0f}% "
-            f"{100 * occ.get('far wall', 0.0):>8.0f}% {steps:>6d}"
-        )
-        seen.append((start_x, occ, steps))
+    print("Frame occupancy (horizontal scan).  'opening+far' is the share of the")
+    print("frame showing the gap and what lies beyond it; the rest is wall, which")
+    print("is what lets the agent see WHERE the gap is.  Target: under half.")
     print()
-    print("A usable view needs the opening to be a MINORITY of the frame, so the")
-    print("wall edges are visible for contrast, and steps within the budget:")
-    print(f"  budget = {env.DEFAULT_MAX_STEPS if hasattr(env, 'DEFAULT_MAX_STEPS') else 30} steps")
-    for start_x, occ, steps in seen:
-        share = occ.get("OPENING", 0.0) + occ.get("far wall", 0.0)
-        ok = "OK " if (share < 0.7 and steps <= 30) else "no "
-        print(f"  {ok} start_x={start_x:>5.1f}  opening+far={100 * share:>3.0f}%  steps={steps}")
+    print(
+        f"  {'focal':>6} {'start_x':>8} {'dist':>6} "
+        f"{'open+far':>9} {'wall':>7} {'steps':>6}"
+    )
+    budget = 30
+    for focal in (args.focal, 12.0, 16.0):
+        for start_x in (1.5, 1.0, 0.5, 0.0):
+            occ = frame_occupancy(
+                start_x, args.pitch, focal, args.height, channel, sensor
+            )
+            travel = (env.SUCCESS_X - start_x) + 0.10
+            steps = int(round(90.0 / env.TURN_STEP_DEG)) + int(
+                math.ceil(travel / env.MOVE_STEP)
+            )
+            share = occ.get("OPENING", 0.0) + occ.get("far wall", 0.0)
+            flag = "OK " if (share < 0.5 and steps <= budget) else "   "
+            print(
+                f"  {flag}{focal:>4.1f} {start_x:>8.1f} {env.WALL_X - start_x:>6.2f} "
+                f"{100 * share:>8.0f}% {100 * occ.get('wall panel', 0.0):>6.0f}% "
+                f"{steps:>6d}"
+            )
+    print()
+    print("  OK = gap under half the frame and the route fits the budget")
+    print(f"  note: steps are computed with MOVE_STEP={env.MOVE_STEP} m")
 
 
 def main() -> int:
