@@ -460,6 +460,9 @@ class BAOEnv:
         self._articulation_error = ""
         self._robot_yaw = ROBOT_START_YAW_DEG
         self._robot_ground_offset = 0.0
+        # Filled in by _compute_robot_ground_offset from the loaded USD, so the
+        # real robot height can be reported instead of assumed.
+        self._robot_measured_height: Optional[float] = None
         self._channel_width = float(self.task_dict.get("channel_width", CHANNEL_WIDTH))
         self._camera_yaw_offset = 0.0
 
@@ -688,6 +691,7 @@ class BAOEnv:
 
             cache = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_])
             min_z = float("inf")
+            max_z = float("-inf")
             for prim in self.stage.Traverse():
                 path = str(prim.GetPath())
                 if not path.startswith(self.robot_prim_path):
@@ -701,10 +705,19 @@ class BAOEnv:
                 ):
                     continue
                 min_z = min(min_z, lo[2])
+                max_z = max(max_z, hi[2])
             if min_z == float("inf"):
                 return 0.0
             offset = float(-min_z)
-            print(f"[BAOEnv] robot ground offset = {offset:.4f} m")
+            if math.isfinite(max_z):
+                self._robot_measured_height = float(max_z - min_z)
+                print(
+                    f"[BAOEnv] robot ground offset = {offset:.4f} m; "
+                    f"measured height = {self._robot_measured_height:.3f} m "
+                    f"(authored ROBOT_HEAD_HEIGHT = {ROBOT_HEAD_HEIGHT:.3f} m)"
+                )
+            else:
+                print(f"[BAOEnv] robot ground offset = {offset:.4f} m")
             return offset
         except Exception as exc:
             print(f"[BAOEnv] ground offset detection failed, using 0.0: {exc}")

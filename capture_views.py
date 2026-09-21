@@ -46,6 +46,18 @@ def parse_args() -> argparse.Namespace:
         default="1280x720",
         help="viewport resolution for the external views, e.g. 1280x720",
     )
+    parser.add_argument(
+        "--eye_height",
+        type=float,
+        default=None,
+        help="Head camera height in metres (default: ROBOT_HEAD_HEIGHT)",
+    )
+    parser.add_argument(
+        "--eye_pitch",
+        type=float,
+        default=None,
+        help="Head camera downward pitch in degrees (default: EYE_PITCH_DEG)",
+    )
     return parser.parse_args()
 
 
@@ -64,6 +76,10 @@ def main() -> int:
 
         # --- build the scene ------------------------------------------------
         task_dict = {"headless": True, "camera_resolution": (args.width, args.height)}
+        if args.eye_height is not None:
+            task_dict["eye_camera_height"] = float(args.eye_height)
+        if args.eye_pitch is not None:
+            task_dict["eye_pitch_deg"] = float(args.eye_pitch)
         env = environment.BAOEnv(simulation_app, task_dict=task_dict)
         width = environment.level_channel_width(args.level)
         env.set_channel_width(width)

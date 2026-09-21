@@ -91,6 +91,26 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         "--save_obs", action="store_true", help="Save per-step camera PNGs"
     )
     parser.add_argument(
+        "--eye_height",
+        type=float,
+        default=None,
+        help=(
+            "Head camera height in metres (default: the H1 head height, "
+            "environment.ROBOT_HEAD_HEIGHT). Use this to place the eye "
+            "elsewhere on the body."
+        ),
+    )
+    parser.add_argument(
+        "--eye_pitch",
+        type=float,
+        default=None,
+        help=(
+            "Head camera downward pitch in degrees (default: "
+            "environment.EYE_PITCH_DEG). 0 looks perfectly level, which renders "
+            "a flat wall as a featureless grey plane."
+        ),
+    )
+    parser.add_argument(
         "--env_config",
         type=str,
         default="{}",
@@ -287,6 +307,12 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
 
         task_dict = json.loads(args.env_config)
         task_dict["headless"] = args.headless
+        # Convenience overrides so the camera can be tuned from the command line
+        # without editing environment.py.
+        if args.eye_height is not None:
+            task_dict["eye_camera_height"] = float(args.eye_height)
+        if args.eye_pitch is not None:
+            task_dict["eye_pitch_deg"] = float(args.eye_pitch)
         env = environment.setup_scene(simulation_app, task_dict=task_dict)
         _write_progress("environment created")
 
