@@ -106,6 +106,11 @@ TURN_STEP_DEG = 15.0
 CAMERA_TURN_STEP_DEG = 30.0
 TURN_TOLERANCE_DEG = 1e-6
 
+# Downward pitch of the head camera, in degrees.  The original build got this
+# implicitly by aiming at the target ball; now it is explicit.  See
+# BAOEnv._update_eye_camera.
+EYE_PITCH_DEG = 15.0
+
 # H1 kinematic constants (used for analytic collision checks).
 ROBOT_SHOULDER_WIDTH = 0.57
 ROBOT_TORSO_THICKNESS = 0.22
@@ -384,6 +389,26 @@ def _turn_path_is_clear(
     return None
 
 
+def _eye_look_direction(yaw_rad: float, pitch_deg: float, distance: float) -> np.ndarray:
+    """Offset from the eye camera to its look-at point.
+
+    Exposed as a pure function so the "the head camera must look downward"
+    invariant can be checked without Isaac Sim.  The original build only got
+    this pitch as a side effect of aiming at the target ball; making it
+    explicit is what stops a level, featureless view from silently returning.
+    """
+    look = _forward_vector(yaw_rad)
+    pitch = math.radians(float(pitch_deg))
+    return np.array(
+        [
+            look[0] * distance * math.cos(pitch),
+            -distance * math.sin(pitch),
+            look[2] * distance * math.cos(pitch),
+        ],
+        dtype=float,
+    )
+
+
 @dataclass
 class StepResult:
     """Result of one environment action."""
@@ -463,6 +488,46 @@ class BAOEnv:
                 np.array([SCENE_SIZE, GROUND_THICKNESS, SCENE_SIZE])
             ),
         )
+        self._create_ground_grid()
+
+    def _create_ground_grid(self, spacing: float = 0.5) -> None:
+        """Mark the floor with a faint grid.
+
+        The floor is otherwise a single flat grey slab, which makes every
+        camera view unreadable: there is no scale reference, no way to judge
+        distance, and nothing to contrast the transparent wall against.  Thin
+        dark strips every ``spacing`` metres give the scene a readable
+        reference frame without changing any of the task geometry.
+        """
+        half = SCENE_SIZE / 2.0
+        thickness = 0.012
+        height = 0.002
+        steps = int(round(SCENE_SIZE / spacing))
+
+        for i in range(steps + 1):
+            offset = -half + i * spacing
+            for axis, tag in ((0, "x"), (2, "z")):
+                if axis == 0:
+                    position = np.array([offset, height / 2.0, 0.0])
+                    scale = np.array([thickness, height, SCENE_SIZE])
+                else:
+                    position = np.array([0.0, height / 2.0, offset])
+                    scale = np.array([SCENE_SIZE, height, thickness])
+                path = f"/World/Grid_{tag}_{i}"
+                FixedCuboid(
+                    prim_path=path,
+                    name=f"grid_{tag}_{i}",
+                    position=_user_to_isaac_pos(position),
+                    size=1.0,
+                    scale=_user_to_isaac_scale(scale),
+                )
+                self._create_and_bind_material(
+                    path,
+                    f"/World/Looks/GridMaterial_{tag}_{i}",
+                    color=[0.30, 0.32, 0.35],
+                    metallic=0.0,
+                    roughness=0.6,
+                )
 
     def _create_wall(self) -> None:
         channel_half = self._channel_width / 2.0
@@ -1171,13 +1236,29 @@ class BAOEnv:
             )
 
     def _update_eye_camera(self) -> None:
-        """Point the robot eye camera along robot yaw plus camera offset."""
+        """Point the robot eye camera along robot yaw plus camera offset.
+
+        The original reach-the-ball build forced the look-at point to the
+        target ball's height (`target[1] = TARGET_POS[1]`), which pitched the
+        head camera downward.  Removing the ball removed that pitch, and a
+        camera sitting 0.5 m from a 2.0 m wall at head height, looking
+        perfectly level, sees nothing but a featureless grey plane -- the
+        opening and the wall are indistinguishable and no floor is visible, so
+        there is no visual frame of reference at all.
+
+        Reinstating an explicit downward pitch restores a readable view: floor,
+        wall and the channel region all appear in the same frame.
+        """
         if self.eye_camera is None:
             return
         eye = self._head_camera_position()
         look_yaw = self._robot_yaw + self._camera_yaw_offset
-        look_dir = _forward_vector(np.radians(look_yaw))
-        target = eye + np.array([look_dir[0], 0.0, look_dir[2]]) * 2.0
+        distance = float(self.task_dict.get("eye_look_distance", 2.0))
+        pitch_deg = float(self.task_dict.get("eye_pitch_deg", EYE_PITCH_DEG))
+        # Unit vector pitched down by `pitch_deg` in the vertical plane.
+        target = eye + _eye_look_direction(
+            np.radians(look_yaw), pitch_deg, distance
+        )
         eye_isaac = _user_to_isaac_pos(eye)
         target_isaac = _user_to_isaac_pos(target)
         try:
@@ -1195,10 +1276,16 @@ class BAOEnv:
             )
 
     def _head_camera_position(self) -> np.ndarray:
-        """Robot eye anchor: on the body, at head height."""
+        """Robot eye anchor: on the body, at the real H1 head camera height.
+
+        The reach-the-ball build used 1.9 m because the head had to see a ball
+        floating at 1.2 m across the room.  For a gap the robot is walking
+        through, the honest anchor is the H1 d435 module at ``ROBOT_HEAD_HEIGHT``
+        (1.55 m), which also keeps the channel inside the vertical field of view.
+        """
         root = self._root_position()
         forward = _forward_vector(np.radians(self._robot_yaw))
-        height = float(self.task_dict.get("camera_height", 1.9))
+        height = float(self.task_dict.get("eye_camera_height", ROBOT_HEAD_HEIGHT))
         offset = float(self.task_dict.get("eye_forward_offset", 0.0))
         return np.array([root[0], height, root[2]], dtype=float) + forward * offset
 

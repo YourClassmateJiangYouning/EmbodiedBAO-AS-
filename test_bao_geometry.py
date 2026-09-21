@@ -731,6 +731,95 @@ def test_no_unbound_names() -> None:
     print("[ok] no unbound names in any module (static check)")
 
 
+def test_eye_camera_pitches_downward() -> None:
+    """The head camera must look down, from the real head height.
+
+    Regression guard for a scene-readability bug found on the lab machine.  The
+    original reach-the-ball build pitched the eye camera down implicitly by
+    aiming at the ball (`target[1] = TARGET_POS[1]`).  Removing the ball
+    removed that pitch, and a camera 0.5 m from a 2.0 m wall at 1.9 m looking
+    perfectly level renders as a featureless grey plane -- the model reported
+    "a solid gray wall with no visible features or openings" and could never
+    find the channel.
+    """
+    import inspect
+
+    from environment import EYE_PITCH_DEG, ROBOT_HEAD_HEIGHT, _eye_look_direction
+
+    check(EYE_PITCH_DEG > 0.0, f"EYE_PITCH_DEG is {EYE_PITCH_DEG}, must be > 0")
+
+    for yaw_deg in (-90.0, -45.0, 0.0, 45.0, 90.0, 180.0):
+        for pitch in (0.0, EYE_PITCH_DEG, 30.0):
+            offset = _eye_look_direction(math.radians(yaw_deg), pitch, 2.0)
+            expected_y = -2.0 * math.sin(math.radians(pitch))
+            check(
+                abs(float(offset[1]) - expected_y) < 1e-9,
+                f"yaw {yaw_deg} pitch {pitch}: vertical offset {offset[1]} "
+                f"!= {expected_y}",
+            )
+            check(
+                offset[1] <= 1e-12,
+                f"yaw {yaw_deg} pitch {pitch}: camera looks upward",
+            )
+
+    # Straight ahead must stay horizontal and keep the full look distance.
+    level = _eye_look_direction(0.0, 0.0, 2.0)
+    check(abs(float(level[1])) < 1e-12, "pitch 0 must be exactly horizontal")
+    check(
+        abs(float(level[0]) - 2.0) < 1e-9,
+        f"pitch 0 yaw 0 should point along +x, got {level}",
+    )
+
+    # The anchor must be the real H1 head height, not the old ball-viewing 1.9.
+    check(
+        abs(ROBOT_HEAD_HEIGHT - 1.55) < 1e-9,
+        f"head height is {ROBOT_HEAD_HEIGHT}, expected 1.55",
+    )
+    check(
+        ROBOT_HEAD_HEIGHT < 1.9,
+        "head camera must sit below the old ball-viewing height of 1.9 m",
+    )
+
+    # The pitch must actually be wired into the update path.
+    source = inspect.getsource(
+        __import__("environment").BAOEnv._update_eye_camera
+    )
+    check(
+        "eye_pitch_deg" in source,
+        "_update_eye_camera does not read eye_pitch_deg",
+    )
+    print(
+        f"[ok] head camera pitches down {EYE_PITCH_DEG:.0f} deg from "
+        f"y={ROBOT_HEAD_HEIGHT} m"
+    )
+
+
+def test_ground_grid_exists() -> None:
+    """The floor must carry a reference grid.
+
+    Without it the floor is one flat grey slab and every camera angle is
+    unreadable: no scale, no distance cue, nothing for the transparent wall to
+    contrast against.
+    """
+    import inspect
+
+    from environment import BAOEnv
+
+    check(
+        hasattr(BAOEnv, "_create_ground_grid"),
+        "BAOEnv._create_ground_grid is missing",
+    )
+    check(
+        "FixedCuboid" in inspect.getsource(BAOEnv._create_ground_grid),
+        "the ground grid does not build any geometry",
+    )
+    check(
+        "_create_ground_grid" in inspect.getsource(BAOEnv._create_ground),
+        "_create_ground does not call the grid builder",
+    )
+    print("[ok] the ground carries a scale-reference grid")
+
+
 def main() -> int:
     tests = [
         test_channel_ladder,
@@ -747,6 +836,8 @@ def main() -> int:
         test_prompt_is_uniform_and_leak_free,
         test_episode_defaults,
         test_sideways_band,
+        test_eye_camera_pitches_downward,
+        test_ground_grid_exists,
         test_no_unbound_names,
     ]
     failures = 0

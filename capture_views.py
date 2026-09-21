@@ -105,10 +105,11 @@ def main() -> int:
                 f"std={arr.std():.1f}  unique_colors={len(np.unique(arr.reshape(-1, 3), axis=0))}"
             )
 
-        # 1. Floor plan: straight down over the room centre.
+        # 1. Floor plan: straight down over the room centre.  At 7 m with a
+        #    2.5 mm lens the whole 4 m room fits inside the frame.
         capture(
             "top",
-            to_isaac([2.0, 6.0, 0.0]),
+            to_isaac([2.0, 7.0, 0.0]),
             to_isaac([2.0, 0.0, 0.0]),
             up=(0.0, 1.0, 0.0),
         )
@@ -116,38 +117,42 @@ def main() -> int:
         # 2. Elevated three-quarter view from behind-right of the robot.
         capture(
             "iso",
-            to_isaac([0.6, 2.6, 1.8]),
-            to_isaac([2.4, 0.6, 0.0]),
+            to_isaac([0.3, 2.2, 1.8]),
+            to_isaac([2.2, 0.7, 0.2]),
         )
 
-        # 3. Straight on, wall face-on, from the robot's side.
+        # 3. Wall face-on from the robot's side, showing the opening.
         capture(
             "front",
-            to_isaac([0.4, 1.4, 0.0]),
+            to_isaac([0.2, 1.3, 0.0]),
             to_isaac([2.0, 1.0, 0.0]),
         )
 
-        # 4. From behind the wall looking back at the opening.
+        # 4. From behind the wall looking back through the opening.
         capture(
             "behind",
-            to_isaac([3.6, 1.4, 0.0]),
+            to_isaac([3.8, 1.3, 0.0]),
             to_isaac([2.0, 1.0, 0.0]),
         )
 
-        # 5. The robot's own eye camera (what the model is shown).
-        try:
-            eye_rgb = env.get_camera_image()
-            Image.fromarray(np.asarray(eye_rgb, dtype=np.uint8)).save(
-                os.path.join(args.outdir, "eye.png")
-            )
-            arr = np.asarray(eye_rgb, dtype=np.uint8)
-            print(
-                f"[views] eye.png  mean={arr.mean():.1f}  std={arr.std():.1f}  "
-                f"unique_colors={len(np.unique(arr.reshape(-1, 3), axis=0))}"
-            )
-        except Exception:
-            print("[views] eye camera capture failed:")
-            traceback.print_exc()
+        # 5. The robot's own eye camera (what the model is shown), captured at
+        #    the start pose and again after stepping toward the channel, since
+        #    the view changes a lot with distance to the wall.
+        for label, presses in (("eye_start", 0), ("eye_near", 8)):
+            if presses:
+                for _ in range(presses):
+                    env.execute_action("forward")
+            try:
+                eye_rgb = env.get_camera_image()
+                arr = np.asarray(eye_rgb, dtype=np.uint8)
+                Image.fromarray(arr).save(os.path.join(args.outdir, f"{label}.png"))
+                print(
+                    f"[views] {label}.png  mean={arr.mean():.1f}  std={arr.std():.1f}  "
+                    f"unique_colors={len(np.unique(arr.reshape(-1, 3), axis=0))}"
+                )
+            except Exception:
+                print(f"[views] {label} capture failed:")
+                traceback.print_exc()
 
         print(f"\n[views] wrote {len(os.listdir(args.outdir))} file(s) to {args.outdir}/")
         ok = True
