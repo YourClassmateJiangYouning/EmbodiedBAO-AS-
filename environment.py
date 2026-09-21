@@ -796,13 +796,31 @@ class BAOEnv:
         )
 
     def _create_lights(self) -> None:
-        """Add scene lights; without them the camera images are black."""
-        distant = UsdLux.DistantLight.Define(self.stage, "/World/DistantLight")
-        distant.GetIntensityAttr().Set(1000.0)
-        distant.AddRotateXYZOp().Set(Gf.Vec3d(-60.0, 0.0, 0.0))
+        """Light the room from inside it.
 
+        The room is enclosed (see :meth:`_create_room`), so lights placed
+        outside it no longer reach anything: with the inherited dome plus
+        distant light the external views rendered at mean=1.8 against 104
+        before the ceiling existed, i.e. almost black.  These are interior
+        lights instead, and one still points down the channel so the opening
+        keeps a visible highlight.
+        """
+        # A distant light is directional and originates outside the room, so it
+        # would be blocked by the ceiling; a sun aimed through the front wall is
+        # replaced here by interior area lights.
+        positions = [
+            ("/World/LightFront", np.array([1.0, 2.6, 0.0])),
+            ("/World/LightBack", np.array([3.0, 2.6, 0.0])),
+        ]
+        for path, position in positions:
+            light = UsdLux.SphereLight.Define(self.stage, path)
+            light.GetIntensityAttr().Set(60000.0)
+            light.GetRadiusAttr().Set(0.35)
+            light.AddTranslateOp().Set(Gf.Vec3d(*_user_to_isaac_pos(position)))
+
+        # Ambient fill so no surface is pure black.
         dome = UsdLux.DomeLight.Define(self.stage, "/World/DomeLight")
-        dome.GetIntensityAttr().Set(200.0)
+        dome.GetIntensityAttr().Set(300.0)
 
     def _load_robot(self) -> None:
         usd_path = self._resolve_robot_usd_path()

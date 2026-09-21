@@ -1007,6 +1007,52 @@ def test_default_start_is_usable() -> None:
     )
 
 
+def test_lights_are_inside_the_enclosed_room() -> None:
+    """Lights must sit inside the room, not outside its ceiling.
+
+    Regression guard: after the room was enclosed, the external views dropped
+    from mean=104 to mean=1.8 -- almost black -- because the inherited dome and
+    distant lights originate outside and the new ceiling blocked them.
+    """
+    import inspect
+
+    import environment as env
+
+    source = inspect.getsource(env.BAOEnv._create_lights)
+
+    # A DistantLight is directional and comes from outside, so it cannot light
+    # an enclosed room.
+    check(
+        "DistantLight" not in source,
+        "the scene still uses a DistantLight, which the room's ceiling blocks",
+    )
+    check(
+        "SphereLight" in source,
+        "the scene has no interior light; the enclosed room would be dark",
+    )
+
+    # Every interior light must be below the ceiling and inside the floor plan.
+    for position in ([1.0, 2.6, 0.0], [3.0, 2.6, 0.0]):
+        x, y, z = position
+        check(
+            y < env.ROOM_WALL_HEIGHT,
+            f"light at y={y} is above the ceiling (ROOM_WALL_HEIGHT="
+            f"{env.ROOM_WALL_HEIGHT})",
+        )
+        check(
+            0.0 < x < env.SCENE_SIZE,
+            f"light at x={x} is outside the room (0..{env.SCENE_SIZE})",
+        )
+        check(
+            abs(z) < env.SCENE_SIZE / 2.0,
+            f"light at z={z} is outside the room",
+        )
+    print(
+        f"[ok] interior lights sit below the {env.ROOM_WALL_HEIGHT:.1f} m ceiling "
+        f"and inside the room"
+    )
+
+
 def test_eye_camera_pitches_downward() -> None:
     """The head camera must look down, from the real head height.
 
@@ -1232,6 +1278,7 @@ def main() -> int:
         test_eye_camera_pitches_downward,
         test_scene_readability_constants,
         test_room_is_enclosed_and_coloured,
+        test_lights_are_inside_the_enclosed_room,
         test_default_start_is_usable,
         test_start_distance_reachable_in_budget,
         test_ground_grid_exists,
