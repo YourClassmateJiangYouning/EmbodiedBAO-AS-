@@ -897,17 +897,18 @@ def test_start_distance_reachable_in_budget() -> None:
 
 
 def test_primitive_sizing_is_in_metres() -> None:
-    """Every FixedCuboid must use the half-size unit cube.
+    """Boxes must be built with explicit metre extents, not FixedCuboid.
 
-    `FixedCuboid(size=1.0)` spans -1..+1, so `scale` meant twice the authored
-    size.  Measured on the lab machine:
+    `FixedCuboid`'s size/scale combination does not mean metres and is
+    inconsistent.  Measured on the lab machine with size=0.5:
 
-        FixedCuboid(size=1.0, scale=[2,3,4]) -> world dims 4.0 x 9.0 x 16.0
-        FixedCuboid(size=0.5, scale=[2,3,4]) -> world dims 2.0 x 4.5 x  8.0
+        authored 0.05 x 0.05 x 2.00 -> world 0.0013 x 2.00 x 0.0013
+        authored 0.02 x 2.00 x 1.55 -> world 0.0002 x 1.20 x 2.00
+        authored 0.02 x 3.00 x 4.00 -> world 0.0002 x 8.00 x 4.50
 
-    Consequence: the channel posts, authored 5 cm wide, rendered 2 mm wide and
-    4 m tall -- no vertical edge ever appeared where the opening was, so the
-    opening was invisible in every measurement taken.
+    Consequence: the channel posts, authored 5 cm wide, rendered about 1.3 mm
+    wide, so no vertical edge ever appeared where the opening was and the
+    opening read as invisible in every measurement taken.
     """
     import inspect
     import re
@@ -915,36 +916,53 @@ def test_primitive_sizing_is_in_metres() -> None:
     import environment as env
 
     check(
-        abs(env.UNIT_CUBE_HALF_SIZE - 0.5) < 1e-12,
-        f"UNIT_CUBE_HALF_SIZE is {env.UNIT_CUBE_HALF_SIZE}, must be 0.5 so that "
-        f"scale means metres",
+        hasattr(env.BAOEnv, "_add_box"),
+        "BAOEnv._add_box is missing; boxes must be built with explicit extents",
     )
-    # Ignore comments, which legitimately mention size=1.0 when explaining the
-    # bug, and only inspect real call sites.
     source = inspect.getsource(env)
-    code_lines = [
-        line.split("#", 1)[0]
-        for line in source.splitlines()
-        if not line.strip().startswith("#")
-    ]
-    code = "\n".join(code_lines)
-    leftovers = re.findall(r"size=1\.0\b", code)
-    check(
-        not leftovers,
-        f"{len(leftovers)} FixedCuboid call(s) still use size=1.0, which double "
-        f"the authored dimensions",
-    )
-    used = len(re.findall(r"size=UNIT_CUBE_HALF_SIZE", code))
-    check(used >= 6, f"only {used} call(s) use UNIT_CUBE_HALF_SIZE; expected 6")
+    # Ignore comments and docstrings, which legitimately mention FixedCuboid
+    # when explaining why it is not used, and inspect real code only.
+    import ast
 
-    # The post must be wide enough to be visible and oriented as a post.
+    tree = ast.parse(source)
+    for node in ast.walk(tree):
+        if isinstance(
+            node, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+        ):
+            body = node.body
+            if (
+                body
+                and isinstance(body[0], ast.Expr)
+                and isinstance(body[0].value, ast.Constant)
+                and isinstance(body[0].value.value, str)
+            ):
+                body.pop(0)
+    code = ast.unparse(tree)
     check(
-        env.CHANNEL_EDGE_THICKNESS > 0.02,
+        "FixedCuboid" not in code,
+        "environment.py still uses FixedCuboid, whose dimensions are not metres",
+    )
+    call_sites = len(re.findall(r"self\._add_box\(", code))
+    check(
+        call_sites >= 5,
+        f"only {call_sites} call(s) build boxes via _add_box; expected the "
+        f"ground, grid, wall panels, channel posts and room to use it",
+    )
+
+    # _add_box must set the extent explicitly, otherwise it is the same trap.
+    box_source = inspect.getsource(env.BAOEnv._add_box)
+    check(
+        "GetExtentAttr" in box_source,
+        "_add_box does not set the cube extent, so its size is still implicit",
+    )
+
+    check(
+        env.CHANNEL_EDGE_THICKNESS >= 0.03,
         f"channel post width {env.CHANNEL_EDGE_THICKNESS} m is too thin to see",
     )
     print(
-        f"[ok] primitives are sized in metres ({used} call sites); channel post "
-        f"is {env.CHANNEL_EDGE_THICKNESS * 100:.0f} cm wide and full wall height"
+        f"[ok] boxes are sized in metres ({call_sites} _add_box sites); channel "
+        f"post is {env.CHANNEL_EDGE_THICKNESS * 100:.0f} cm wide"
     )
 
 
@@ -1197,7 +1215,7 @@ def test_ground_grid_exists() -> None:
         "BAOEnv._create_ground_grid is missing",
     )
     check(
-        "FixedCuboid" in inspect.getsource(BAOEnv._create_ground_grid),
+        "_add_box" in inspect.getsource(BAOEnv._create_ground_grid),
         "the ground grid does not build any geometry",
     )
     check(

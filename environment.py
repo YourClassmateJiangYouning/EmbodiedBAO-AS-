@@ -37,7 +37,6 @@ import numpy as np
 
 try:
     from isaacsim.core.api import World
-    from isaacsim.core.api.objects import FixedCuboid
     from isaacsim.core.prims import XFormPrim
     from isaacsim.core.utils.stage import add_reference_to_stage
     from isaacsim.core.utils.viewports import set_camera_view
@@ -73,16 +72,17 @@ except Exception as _isaac_import_error:  # pragma: no cover - only outside Isaa
 SCENE_SIZE = 4.0
 GROUND_THICKNESS = 0.02
 
-# `FixedCuboid(size=1.0)` produces a cube spanning -1..+1, i.e. 2 m on a side,
-# so every scale was rendering at DOUBLE the authored size.  Measured on the lab
-# machine: FixedCuboid(size=1.0, scale=[2,3,4]) gave world dims 4.0 x 9.0 x
-# 16.0, while size=0.5 gave exactly 2.0 x 4.5 x 8.0.
+# `FixedCuboid`'s size/scale combination does NOT mean metres, and behaves
+# inconsistently.  Measured on the lab machine with size=0.5:
 #
-# The visible consequence was the channel posts: authored 5 cm wide and 1 cm
-# deep they rendered 2 mm wide and 4 m tall -- invisible and the wrong way
-# round, which is why no measurement ever found a vertical edge where the
-# opening should be.  size=0.5 makes `scale` mean metres.
-UNIT_CUBE_HALF_SIZE = 0.5
+#     authored 0.05 x 0.05 x 2.00 -> world 0.0013 x 2.00 x 0.0013
+#     authored 0.02 x 2.00 x 1.55 -> world 0.0002 x 1.20 x 2.00
+#     authored 0.02 x 3.00 x 4.00 -> world 0.0002 x 8.00 x 4.50
+#
+# The visible consequence was the channel posts: authored 5 cm wide they
+# rendered about 1.3 mm wide, so the opening never had a visible edge in any
+# capture.  Every box is now built by BAOEnv._add_box, which sets a USD Cube's
+# extent explicitly in metres, so world size == authored size by construction.
 
 # Room enclosure.  Without a far wall the space behind the channel is just the
 # floor plus empty background, so looking through the opening renders as one
@@ -544,15 +544,64 @@ class BAOEnv:
     # Scene construction
     # ------------------------------------------------------------------
 
+    def _add_box(
+        self,
+        name: str,
+        center: np.ndarray,
+        dims: np.ndarray,
+        material: Optional[Tuple[str, List[float]]] = None,
+    ) -> str:
+        """Add an axis-aligned box of EXACT metre dimensions.
+
+        ``FixedCuboid``'s ``size``/``scale`` combination proved not to mean
+        metres, and inconsistently so.  Measured on the lab machine with
+        ``size=0.5``:
+
+            authored 0.05 x 0.05 x 2.00 -> world 0.0013 x 2.00 x 0.0013
+            authored 0.02 x 2.00 x 1.55 -> world 0.0002 x 1.20 x 2.00
+            authored 0.02 x 3.00 x 4.00 -> world 0.0002 x 8.00 x 4.50
+
+        so the channel posts -- authored 5 cm wide -- rendered about 1.3 mm
+        wide, which is why the opening had no visible edge in any capture.
+
+        This builds a USD Cube whose extent is set explicitly in metres and
+        whose transform is applied with Xform ops, leaving no scaling
+        ambiguity: the world size is exactly ``dims``.
+        """
+        path = f"/World/{name}"
+        cube = UsdGeom.Cube.Define(self.stage, path)
+        half = np.asarray(dims, dtype=float) / 2.0
+        cube.GetSizeAttr().Set(2.0)
+        cube.GetExtentAttr().Set(
+            [
+                (-float(half[0]), -float(half[1]), -float(half[2])),
+                (float(half[0]), float(half[1]), float(half[2])),
+            ]
+        )
+        xform = UsdGeom.Xformable(cube.GetPrim())
+        xform.ClearXformOpOrder()
+        xform.AddTranslateOp().Set(
+            Gf.Vec3d(*_user_to_isaac_pos(np.asarray(center, dtype=float)))
+        )
+        xform.AddScaleOp().Set(
+            Gf.Vec3f(*_user_to_isaac_scale(np.asarray(dims, dtype=float)))
+        )
+        if material is not None:
+            mat_name, colour = material
+            self._create_and_bind_material(
+                path,
+                f"/World/Looks/{mat_name}",
+                color=list(colour),
+                metallic=0.0,
+                roughness=0.6,
+            )
+        return path
+
     def _create_ground(self) -> None:
-        FixedCuboid(
-            prim_path="/World/Ground",
-            name="ground",
-            position=_user_to_isaac_pos(np.array([2.0, -GROUND_THICKNESS / 2.0, 0.0])),
-            size=UNIT_CUBE_HALF_SIZE,
-            scale=_user_to_isaac_scale(
-                np.array([SCENE_SIZE, GROUND_THICKNESS, SCENE_SIZE])
-            ),
+        self._add_box(
+            "Ground",
+            np.array([SCENE_SIZE / 2.0, -GROUND_THICKNESS / 2.0, 0.0]),
+            np.array([SCENE_SIZE, GROUND_THICKNESS, SCENE_SIZE]),
         )
         self._create_ground_grid()
 
@@ -599,41 +648,20 @@ class BAOEnv:
                 [SCENE_SIZE, height, thickness],
             ),
         ]
-        for name, centre, scale in walls:
-            path = f"/World/{name}"
-            FixedCuboid(
-                prim_path=path,
-                name=name,
-                position=_user_to_isaac_pos(np.array(centre, dtype=float)),
-                size=UNIT_CUBE_HALF_SIZE,
-                scale=_user_to_isaac_scale(np.array(scale, dtype=float)),
-            )
-            self._create_and_bind_material(
-                path,
-                f"/World/Looks/{name}Material",
-                color=ROOM_WALL_COLOR,
-                metallic=0.0,
-                roughness=0.7,
+        for name, centre, dims in walls:
+            self._add_box(
+                name,
+                np.array(centre, dtype=float),
+                np.array(dims, dtype=float),
+                material=(f"{name}Material", ROOM_WALL_COLOR),
             )
 
         # Ceiling, so rays above the wall tops do not escape to the background.
-        FixedCuboid(
-            prim_path="/World/room_ceiling",
-            name="room_ceiling",
-            position=_user_to_isaac_pos(
-                np.array([half, height + thickness / 2.0, 0.0])
-            ),
-            size=UNIT_CUBE_HALF_SIZE,
-            scale=_user_to_isaac_scale(
-                np.array([SCENE_SIZE, thickness, SCENE_SIZE])
-            ),
-        )
-        self._create_and_bind_material(
-            "/World/room_ceiling",
-            "/World/Looks/room_ceilingMaterial",
-            color=ROOM_CEILING_COLOR,
-            metallic=0.0,
-            roughness=0.8,
+        self._add_box(
+            "room_ceiling",
+            np.array([half, height + thickness / 2.0, 0.0]),
+            np.array([SCENE_SIZE, thickness, SCENE_SIZE]),
+            material=("room_ceilingMaterial", ROOM_CEILING_COLOR),
         )
 
     def _create_ground_grid(self, spacing: float = 0.5) -> None:
@@ -655,24 +683,15 @@ class BAOEnv:
             for axis, tag in ((0, "x"), (2, "z")):
                 if axis == 0:
                     position = np.array([offset, height / 2.0, 0.0])
-                    scale = np.array([thickness, height, SCENE_SIZE])
+                    dims = np.array([thickness, height, SCENE_SIZE])
                 else:
                     position = np.array([0.0, height / 2.0, offset])
-                    scale = np.array([SCENE_SIZE, height, thickness])
-                path = f"/World/Grid_{tag}_{i}"
-                FixedCuboid(
-                    prim_path=path,
-                    name=f"grid_{tag}_{i}",
-                    position=_user_to_isaac_pos(position),
-                    size=UNIT_CUBE_HALF_SIZE,
-                    scale=_user_to_isaac_scale(scale),
-                )
-                self._create_and_bind_material(
-                    path,
-                    f"/World/Looks/GridMaterial_{tag}_{i}",
-                    color=[0.30, 0.32, 0.35],
-                    metallic=0.0,
-                    roughness=0.6,
+                    dims = np.array([SCENE_SIZE, height, thickness])
+                self._add_box(
+                    f"Grid_{tag}_{i}",
+                    position,
+                    dims,
+                    material=(f"GridMaterial_{tag}_{i}", [0.30, 0.32, 0.35]),
                 )
 
     def _create_wall(self) -> None:
@@ -680,50 +699,35 @@ class BAOEnv:
         panel_width = (SCENE_SIZE - self._channel_width) / 2.0
         z_center = panel_width / 2.0 + channel_half
         for i, sign in enumerate((-1.0, 1.0)):
-            FixedCuboid(
-                prim_path=f"/World/WallPanel_{i}",
-                name=f"wall_panel_{i}",
-                position=_user_to_isaac_pos(
-                    np.array([WALL_X, WALL_HEIGHT / 2.0, sign * z_center])
-                ),
-                size=UNIT_CUBE_HALF_SIZE,
-                scale=_user_to_isaac_scale(
-                    np.array([WALL_THICKNESS, WALL_HEIGHT, panel_width])
-                ),
+            path = self._add_box(
+                f"WallPanel_{i}",
+                np.array([WALL_X, WALL_HEIGHT / 2.0, sign * z_center]),
+                np.array([WALL_THICKNESS, WALL_HEIGHT, panel_width]),
             )
             UsdGeom.Gprim(
-                self.stage.GetPrimAtPath(f"/World/WallPanel_{i}")
+                self.stage.GetPrimAtPath(path)
             ).CreateDoubleSidedAttr(True)
             self._create_and_bind_glass_material(
-                f"/World/WallPanel_{i}", f"/World/Looks/GlassMaterial_{i}"
+                path, f"/World/Looks/GlassMaterial_{i}"
             )
 
         # Dark posts mark the channel edges.  These are what make the opening
-        # visually readable: the panels are translucent and the room behind
-        # them is the same grey as the wall, so without a hard visual boundary
-        # the model reports "a solid grey wall with no visible openings" even
-        # when it is standing right in front of the gap.  The posts were 1 cm
-        # and light grey, which rendered a few pixels wide at the old fisheye
-        # focal length and was invisible in practice.
+        # visually readable: the panels are translucent, so without a hard
+        # visual boundary the opening is hard to distinguish.  Measured cause of
+        # their previous invisibility: FixedCuboid was ignoring the authored
+        # thickness, rendering them about 1.3 mm wide.
         for sign in (-1.0, 1.0):
             edge_id = 0 if sign < 0 else 1
-            FixedCuboid(
-                prim_path=f"/World/ChannelEdge_{edge_id}",
-                name=f"channel_edge_{edge_id}",
-                position=_user_to_isaac_pos(
-                    np.array([WALL_X, WALL_HEIGHT / 2.0, sign * channel_half])
+            self._add_box(
+                f"ChannelEdge_{edge_id}",
+                np.array([WALL_X, WALL_HEIGHT / 2.0, sign * channel_half]),
+                np.array(
+                    [WALL_THICKNESS * 2.5, CHANNEL_EDGE_THICKNESS, WALL_HEIGHT]
                 ),
-                size=UNIT_CUBE_HALF_SIZE,
-                scale=_user_to_isaac_scale(
-                    np.array([WALL_THICKNESS * 2.5, CHANNEL_EDGE_THICKNESS, WALL_HEIGHT])
+                material=(
+                    f"ChannelEdgeMaterial_{edge_id}",
+                    CHANNEL_EDGE_COLOR,
                 ),
-            )
-            self._create_and_bind_material(
-                f"/World/ChannelEdge_{edge_id}",
-                f"/World/Looks/ChannelEdgeMaterial_{edge_id}",
-                color=CHANNEL_EDGE_COLOR,
-                metallic=0.0,
-                roughness=0.5,
             )
 
     def _remove_wall(self) -> None:
