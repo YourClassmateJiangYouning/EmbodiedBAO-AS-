@@ -111,6 +111,11 @@ TURN_TOLERANCE_DEG = 1e-6
 # BAOEnv._update_eye_camera.
 EYE_PITCH_DEG = 15.0
 
+# Eye camera height in metres.  The measured H1 is 1.806 m tall, and a person's
+# eyes sit at roughly 93% of their height, so 1.68 m is the human-like anchor.
+# The old 1.9 m existed only to see a ball floating at 1.2 m.
+EYE_CAMERA_HEIGHT = 1.68
+
 # H1 kinematic constants (used for analytic collision checks).
 ROBOT_SHOULDER_WIDTH = 0.57
 ROBOT_TORSO_THICKNESS = 0.22
@@ -1297,13 +1302,14 @@ class BAOEnv:
         """Robot eye anchor: on the body, at the real H1 head camera height.
 
         The reach-the-ball build used 1.9 m because the head had to see a ball
-        floating at 1.2 m across the room.  For a gap the robot is walking
-        through, the honest anchor is the H1 d435 module at ``ROBOT_HEAD_HEIGHT``
-        (1.55 m), which also keeps the channel inside the vertical field of view.
+        floating at 1.2 m across the room.  The measured H1 is 1.806 m tall, so
+        the honest anchor for a human-like eye is 1.68 m -- about 93% of the
+        robot's height, which is where a person's eyes sit.  ``eye_camera_height``
+        overrides it.
         """
         root = self._root_position()
         forward = _forward_vector(np.radians(self._robot_yaw))
-        height = float(self.task_dict.get("eye_camera_height", ROBOT_HEAD_HEIGHT))
+        height = float(self.task_dict.get("eye_camera_height", EYE_CAMERA_HEIGHT))
         offset = float(self.task_dict.get("eye_forward_offset", 0.0))
         return np.array([root[0], height, root[2]], dtype=float) + forward * offset
 

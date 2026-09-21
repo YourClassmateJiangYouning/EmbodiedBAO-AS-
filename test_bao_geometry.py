@@ -871,18 +871,20 @@ def test_camera_look_at_orientation() -> None:
             f"eye {eye} target {target}: camera up flipped (up={up})",
         )
 
-    # A straight-down view (the floor plan) needs a horizontal up reference:
-    # +Z as "up" would be parallel to the view direction and is degenerate.
-    top_quat = look_at_quaternion([2.0, 7.0, 0.0], [2.0, 0.0, 0.0], up=(0.0, 0.0, -1.0))
+    # A straight-down view (the floor plan) needs an up reference perpendicular
+    # to the view direction.  NOTE the frame: capture_views converts user
+    # coordinates (y up) to Isaac coordinates (z up) by swapping y and z, so
+    # "looking down" arrives here as -Z and the up hint must be world +Y.
+    top_quat = look_at_quaternion([2.0, 0.0, 7.0], [2.0, 0.0, 0.0], up=(0.0, 1.0, 0.0))
     forward = rotate(top_quat, [1.0, 0.0, 0.0])
     check(
-        float(forward[1]) < -0.999,
-        f"floor-plan camera should look straight down, got forward={forward}",
+        float(forward[2]) < -0.999,
+        f"floor-plan camera should look straight down -Z, got forward={forward}",
     )
     # And the degenerate configuration must be rejected rather than silently
     # producing a garbage orientation.
     try:
-        look_at_quaternion([0.0, 7.0, 0.0], [0.0, 0.0, 0.0], up=(0.0, 1.0, 0.0))
+        look_at_quaternion([2.0, 0.0, 7.0], [2.0, 0.0, 0.0], up=(0.0, 0.0, -1.0))
         check(False, "a degenerate up vector should raise, not return a quaternion")
     except ValueError:
         pass

@@ -240,14 +240,16 @@ def main() -> int:
                 f"unique_colors={len(np.unique(arr.reshape(-1, 3), axis=0))}"
             )
 
-        # 1. Floor plan: straight down over the room centre.  Looking down -Y
-        #    means the usual +Z "up" hint is parallel to the view direction and
-        #    is degenerate, so the up reference has to be horizontal.
+        # 1. Floor plan: straight down over the room centre.  NOTE the frame:
+        #    to_isaac() swaps y and z, so "looking down" is -Z in the frame this
+        #    function receives.  The up hint must therefore be a world axis
+        #    perpendicular to -Z, i.e. world +Y.  (Passing (0,0,-1) here is
+        #    parallel to the view direction and raises.)
         capture(
             "top",
             [2.0, 7.0, 0.0],
             [2.0, 0.0, 0.0],
-            up=(0.0, 0.0, -1.0),
+            up=(0.0, 1.0, 0.0),
         )
 
         # 2. Elevated three-quarter view from behind-right of the robot.
