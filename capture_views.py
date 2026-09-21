@@ -101,6 +101,18 @@ def parse_args() -> argparse.Namespace:
         help="Capture only the robot eye view, skipping the external cameras.",
     )
     parser.add_argument(
+        "--scan_pitch",
+        type=str,
+        default="",
+        help=(
+            "Comma-separated pitch angles to sweep in one run, e.g. '0,10,20,30,45'. "
+            "For each angle it reports the strength of vertical edges (the "
+            "channel posts) and horizontal edges (the floor grid), which "
+            "distinguishes 'looking at a featureless wall' from 'looking at the "
+            "floor'."
+        ),
+    )
+    parser.add_argument(
         "--start_x",
         type=float,
         default=None,
@@ -196,6 +208,21 @@ def _matrix_to_quaternion(matrix: np.ndarray) -> np.ndarray:
         z = 0.25 * s
     quat = np.array([w, x, y, z], dtype=float)
     return quat / float(np.linalg.norm(quat))
+
+
+def edge_profile(arr: np.ndarray) -> tuple:
+    """(vertical, horizontal) edge energies of a grey image, normalised.
+
+    A vertical edge (a channel post) shows up as a large column-to-column
+    difference; a horizontal edge (a floor grid line) as a large row-to-row
+    difference.  Separating them says which kind of surface fills the view.
+    """
+    grey = np.asarray(arr, dtype=float).mean(axis=2)
+    if grey.ndim != 2 or grey.shape[0] < 4 or grey.shape[1] < 4:
+        return 0.0, 0.0
+    vertical = float(np.abs(np.diff(grey, axis=1)).mean())
+    horizontal = float(np.abs(np.diff(grey, axis=0)).mean())
+    return vertical, horizontal
 
 
 def main() -> int:
@@ -352,7 +379,37 @@ def main() -> int:
             # 4. From behind the wall looking back through the opening.
             capture("behind", [3.8, 1.3, 0.0], [2.0, 1.0, 0.0])
 
-        # 5. The robot's own eye camera at the start pose, then after stepping
+        # 5. Optional pitch sweep: find the pitch at which the channel becomes
+        #    visible, by separating vertical edges (the posts) from horizontal
+        #    ones (the floor grid).
+        if args.scan_pitch.strip():
+            angles = []
+            for token in args.scan_pitch.split(","):
+                token = token.strip()
+                if token:
+                    angles.append(float(token))
+            say(f"[views] pitch scan: {angles}")
+            for pitch in angles:
+                env.task_dict["eye_pitch_deg"] = float(pitch)
+                env._update_eye_camera()
+                for _ in range(20):
+                    simulation_app.update()
+                arr = np.asarray(env.get_camera_image(), dtype=np.uint8)
+                vert, horiz = edge_profile(arr)
+                Image.fromarray(arr).save(
+                    os.path.join(args.outdir, f"scan_pitch{int(pitch):03d}.png")
+                )
+                say(
+                    f"[views] pitch {pitch:6.1f}  mean={arr.mean():6.1f} "
+                    f"std={arr.std():6.1f} "
+                    f"unique={len(np.unique(arr.reshape(-1, 3), axis=0)):5d} "
+                    f"vert_edge={vert:5.2f}  horiz_edge={horiz:5.2f}"
+                )
+            # Restore the configured pitch for any later capture.
+            env.task_dict["eye_pitch_deg"] = pitch_now
+            env._update_eye_camera()
+
+        # 6. The robot's own eye camera at the start pose, then after stepping
         #    toward the channel -- the view changes a lot with distance.
         for label, presses in (("eye_start", 0), ("eye_near", 8)):
             if presses:
