@@ -896,6 +896,117 @@ def test_start_distance_reachable_in_budget() -> None:
     )
 
 
+def test_room_is_enclosed_and_coloured() -> None:
+    """The space behind the channel must contain something to look at.
+
+    Measured motivation: with only the obstacle wall and the floor, every ray
+    through the opening returned the same value (unique_colors = 2 at pitch 0
+    and 15 from 0.5 m), so the eye view was unreadable wherever the camera was
+    aimed and the model reported "a solid grey wall with no visible openings"
+    while facing the gap.
+    """
+    import inspect
+
+    import environment as env
+
+    check(
+        hasattr(env.BAOEnv, "_create_room"),
+        "BAOEnv._create_room is missing",
+    )
+    source = inspect.getsource(env.BAOEnv._create_room)
+    for name in ("room_far", "room_near", "room_side_left", "room_side_right"):
+        check(name in source, f"the room is missing its {name} wall")
+    check("room_ceiling" in source, "the room has no ceiling")
+
+    # The far wall must actually sit beyond the obstacle wall and beyond the
+    # success plane, or it would block the robot.
+    check(
+        env.SCENE_SIZE > env.WALL_X,
+        f"the far wall at x={env.SCENE_SIZE} must be past the obstacle at "
+        f"x={env.WALL_X}",
+    )
+    check(
+        env.SCENE_SIZE > env.SUCCESS_X,
+        f"the far wall at x={env.SCENE_SIZE} must be past the success plane at "
+        f"x={env.SUCCESS_X}",
+    )
+
+    # The walls must be coloured, and green in particular: a grey room is what
+    # made the opening invisible in the first place.
+    colour = env.ROOM_WALL_COLOR
+    check(
+        len(colour) == 3 and all(0.0 <= c <= 1.0 for c in colour),
+        f"ROOM_WALL_COLOR {colour} is not a valid RGB triple",
+    )
+    check(
+        colour[1] > colour[0] and colour[1] > colour[2],
+        f"ROOM_WALL_COLOR {colour} is not green-dominant; a neutral grey room "
+        f"renders the opening and the wall identically",
+    )
+    # And it must be far enough from the floor's grey to be distinguishable.
+    check(
+        abs(sum(colour) / 3.0 - 0.5) > 0.15,
+        f"ROOM_WALL_COLOR {colour} is too close to mid-grey to contrast",
+    )
+
+    # Walls must be taller than the robot, or the robot could see over them.
+    check(
+        env.ROOM_WALL_HEIGHT > 1.806,
+        f"ROOM_WALL_HEIGHT {env.ROOM_WALL_HEIGHT} is not above the measured "
+        f"1.806 m robot",
+    )
+    print(
+        f"[ok] the room is enclosed and green (colour {colour}, "
+        f"height {env.ROOM_WALL_HEIGHT:.1f} m, far wall at x={env.SCENE_SIZE:.1f})"
+    )
+
+
+def test_default_start_is_usable() -> None:
+    """The shipped defaults must be reachable and frame the opening.
+
+    From 1.5 m the 2.0 m gap subtends about 77 degrees and fills the whole
+    105-degree eye view, leaving no wall in frame; from 0.5 m it is about 39
+    degrees.  The start distance and step size have to move together or the
+    robot cannot reach x > 2.5 inside the budget.
+    """
+    import environment as env
+
+    start_x = float(env.ROBOT_START_POS[0])
+    move_step = float(env.MOVE_STEP)
+    turns = int(round(90.0 / env.TURN_STEP_DEG))
+    travel = (SUCCESS_X - start_x) + 0.10
+    needed = turns + int(math.ceil(travel / move_step))
+    check(
+        needed <= DEFAULT_MAX_STEPS,
+        f"the shipped defaults need {needed} steps but the budget is "
+        f"{DEFAULT_MAX_STEPS}",
+    )
+
+    # The gap must not swallow the whole frame.
+    fov_deg = 2.0 * math.degrees(
+        math.atan((20.955 / 2.0) / env.ROBOT_CAMERA_FOCAL)
+    )
+    distance = env.WALL_X - start_x
+    gap_deg = 2.0 * math.degrees(math.atan((env.ROBOT_START_POS[1] + env.WALL_HEIGHT) / 2.0))
+    # Vertical angle subtended by the gap: from the floor to the top of the wall.
+    low = math.degrees(math.atan(-env.EYE_CAMERA_HEIGHT / distance))
+    high = math.degrees(
+        math.atan((env.WALL_HEIGHT - env.EYE_CAMERA_HEIGHT) / distance)
+    )
+    gap_deg = high - low
+    check(
+        gap_deg < fov_deg,
+        f"the gap subtends {gap_deg:.0f} deg but the eye view is only "
+        f"{fov_deg:.0f} deg, so the frame is entirely opening with no wall to "
+        f"contrast against",
+    )
+    print(
+        f"[ok] defaults usable: start_x={start_x} step={move_step} needs "
+        f"{needed}/{DEFAULT_MAX_STEPS} steps; gap subtends {gap_deg:.0f} deg "
+        f"of a {fov_deg:.0f} deg view"
+    )
+
+
 def test_eye_camera_pitches_downward() -> None:
     """The head camera must look down, from the real head height.
 
@@ -1120,6 +1231,8 @@ def main() -> int:
         test_sideways_band,
         test_eye_camera_pitches_downward,
         test_scene_readability_constants,
+        test_room_is_enclosed_and_coloured,
+        test_default_start_is_usable,
         test_start_distance_reachable_in_budget,
         test_ground_grid_exists,
         test_camera_look_at_orientation,

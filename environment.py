@@ -73,6 +73,17 @@ except Exception as _isaac_import_error:  # pragma: no cover - only outside Isaa
 SCENE_SIZE = 4.0
 GROUND_THICKNESS = 0.02
 
+# Room enclosure.  Without a far wall the space behind the channel is just the
+# floor plus empty background, so looking through the opening renders as one
+# uniform grey -- measured: unique_colors = 2 at pitch 0 and 15 from 0.5 m away,
+# and 19 at 0.5 m with the robot hidden.  The model then reports "a solid grey
+# wall with no visible openings" while standing in front of the gap.  Closing
+# the room and colouring the walls gives the opening something to reveal.
+ROOM_WALL_HEIGHT = 3.0
+ROOM_WALL_THICKNESS = 0.02
+ROOM_WALL_COLOR = [0.13, 0.42, 0.20]  # green
+ROOM_CEILING_COLOR = [0.55, 0.57, 0.60]
+
 WALL_X = 2.0
 WALL_HEIGHT = 2.0
 WALL_THICKNESS = 0.02
@@ -80,7 +91,13 @@ CHANNEL_WIDTH = 0.90  # Level 0 default; every Level overrides this
 CHANNEL_HALF_WIDTH = CHANNEL_WIDTH / 2.0
 PANEL_WIDTH = (SCENE_SIZE - CHANNEL_WIDTH) / 2.0
 
-ROBOT_START_POS = np.array([1.5, 0.0, 0.0], dtype=float)
+# Start 0.5 m from the obstacle wall rather than 1.5 m.  Measured reason: from
+# 1.5 m the 2.0 m gap subtends about 77 degrees, which fills the whole
+# 105-degree eye view with the space behind it, leaving no wall in frame to
+# contrast against.  From 0.5 m it is about 39 degrees, so the frame contains
+# wall, opening and the far wall together.  MOVE_STEP rises to 0.10 m to keep
+# the 2.0 m of required travel inside the 30-step budget.
+ROBOT_START_POS = np.array([0.5, 0.0, 0.0], dtype=float)
 ROBOT_START_YAW_DEG = 0.0
 # Success: the whole body has reached the far side of the wall.
 SUCCESS_X = 2.5
@@ -100,7 +117,7 @@ LEVEL_CHANNEL_WIDTHS: Dict[int, float] = {
     5: 0.45,
 }
 
-MOVE_STEP = 0.05  # 5 cm
+MOVE_STEP = 0.10  # 10 cm; paired with ROBOT_START_POS, see the note there
 TURN_STEP_DEG = 15.0
 CAMERA_TURN_STEP_DEG = 30.0
 TURN_TOLERANCE_DEG = 1e-6
@@ -501,6 +518,7 @@ class BAOEnv:
         self._camera_yaw_offset = 0.0
 
         self._create_ground()
+        self._create_room()
         self._create_wall()
         if self.task_dict.get("hide_wall", False):
             self._remove_wall()
@@ -526,6 +544,86 @@ class BAOEnv:
             ),
         )
         self._create_ground_grid()
+
+    def _create_room(self) -> None:
+        """Close the room: four green walls plus a ceiling.
+
+        Measured motivation: with only the obstacle wall and the floor, the
+        space behind the channel was floor plus empty background, so every ray
+        through the opening returned the same value -- unique_colors = 2 from
+        0.5 m at pitch 0 and 15.  The eye view was therefore unreadable no
+        matter where the camera was aimed.  A closed, coloured room means the
+        opening reveals something distinct.
+
+        The obstacle wall at ``WALL_X`` is built separately by :meth:`_create_wall`;
+        this only adds the enclosure around the 4x4 m floor.
+        """
+        half = SCENE_SIZE / 2.0
+        height = ROOM_WALL_HEIGHT
+        thickness = ROOM_WALL_THICKNESS
+
+        # (name, centre, scale) in user coordinates.
+        walls = [
+            # Far wall, the one visible through the channel.
+            (
+                "room_far",
+                [SCENE_SIZE + thickness / 2.0, height / 2.0, 0.0],
+                [thickness, height, SCENE_SIZE + 2.0 * thickness],
+            ),
+            # Near wall, behind the robot.
+            (
+                "room_near",
+                [-thickness / 2.0, height / 2.0, 0.0],
+                [thickness, height, SCENE_SIZE + 2.0 * thickness],
+            ),
+            # Side walls.
+            (
+                "room_side_left",
+                [half, height / 2.0, -half - thickness / 2.0],
+                [SCENE_SIZE, height, thickness],
+            ),
+            (
+                "room_side_right",
+                [half, height / 2.0, half + thickness / 2.0],
+                [SCENE_SIZE, height, thickness],
+            ),
+        ]
+        for name, centre, scale in walls:
+            path = f"/World/{name}"
+            FixedCuboid(
+                prim_path=path,
+                name=name,
+                position=_user_to_isaac_pos(np.array(centre, dtype=float)),
+                size=1.0,
+                scale=_user_to_isaac_scale(np.array(scale, dtype=float)),
+            )
+            self._create_and_bind_material(
+                path,
+                f"/World/Looks/{name}Material",
+                color=ROOM_WALL_COLOR,
+                metallic=0.0,
+                roughness=0.7,
+            )
+
+        # Ceiling, so rays above the wall tops do not escape to the background.
+        FixedCuboid(
+            prim_path="/World/room_ceiling",
+            name="room_ceiling",
+            position=_user_to_isaac_pos(
+                np.array([half, height + thickness / 2.0, 0.0])
+            ),
+            size=1.0,
+            scale=_user_to_isaac_scale(
+                np.array([SCENE_SIZE, thickness, SCENE_SIZE])
+            ),
+        )
+        self._create_and_bind_material(
+            "/World/room_ceiling",
+            "/World/Looks/room_ceilingMaterial",
+            color=ROOM_CEILING_COLOR,
+            metallic=0.0,
+            roughness=0.8,
+        )
 
     def _create_ground_grid(self, spacing: float = 0.5) -> None:
         """Mark the floor with a faint grid.
