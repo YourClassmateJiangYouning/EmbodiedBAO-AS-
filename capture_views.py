@@ -88,6 +88,19 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--hide_robot",
+        action="store_true",
+        help=(
+            "Hide the robot prim. Comparing the eye view with and without the "
+            "robot distinguishes self-occlusion from an unreadable scene."
+        ),
+    )
+    parser.add_argument(
+        "--only_eye",
+        action="store_true",
+        help="Capture only the robot eye view, skipping the external cameras.",
+    )
+    parser.add_argument(
         "--start_x",
         type=float,
         default=None,
@@ -226,6 +239,8 @@ def main() -> int:
             task_dict["move_step"] = float(args.move_step)
         if args.eye_forward_offset is not None:
             task_dict["eye_forward_offset"] = float(args.eye_forward_offset)
+        if args.hide_robot:
+            task_dict["hide_robot"] = True
         try:
             extra = json.loads(args.env_config)
         except ValueError as exc:
@@ -300,27 +315,42 @@ def main() -> int:
                 f"mean={arr.mean():.1f} std={arr.std():.1f} "
                 f"unique_colors={len(np.unique(arr.reshape(-1, 3), axis=0))}"
             )
+            # Per-band profile: shows WHERE structure is, so an unreadable frame
+            # can be attributed to a specific part of the view.
+            if name.startswith("eye"):
+                h = arr.shape[0]
+                bands = 8
+                parts = []
+                for b in range(bands):
+                    lo = b * h // bands
+                    hi = (b + 1) * h // bands
+                    band = arr[lo:hi]
+                    parts.append(
+                        f"{b}:{band.std():5.1f}/{len(np.unique(band.reshape(-1,3),axis=0)):5d}"
+                    )
+                say(f"[views] {name} bands (top->bottom) std/colors: " + "  ".join(parts))
 
         # 1. Floor plan: straight down over the room centre.  NOTE the frame:
         #    to_isaac() swaps y and z, so "looking down" is -Z in the frame this
         #    function receives.  The up hint must therefore be a world axis
         #    perpendicular to -Z, i.e. world +Y.  (Passing (0,0,-1) here is
         #    parallel to the view direction and raises.)
-        capture(
-            "top",
-            [2.0, 7.0, 0.0],
-            [2.0, 0.0, 0.0],
-            up=(0.0, 1.0, 0.0),
-        )
+        if not args.only_eye:
+            capture(
+                "top",
+                [2.0, 7.0, 0.0],
+                [2.0, 0.0, 0.0],
+                up=(0.0, 1.0, 0.0),
+            )
 
-        # 2. Elevated three-quarter view from behind-right of the robot.
-        capture("iso", [0.3, 2.2, 1.8], [2.2, 0.7, 0.2])
+            # 2. Elevated three-quarter view from behind-right of the robot.
+            capture("iso", [0.3, 2.2, 1.8], [2.2, 0.7, 0.2])
 
-        # 3. Wall face-on from the robot's side, showing the opening.
-        capture("front", [0.2, 1.3, 0.0], [2.0, 1.0, 0.0])
+            # 3. Wall face-on from the robot's side, showing the opening.
+            capture("front", [0.2, 1.3, 0.0], [2.0, 1.0, 0.0])
 
-        # 4. From behind the wall looking back through the opening.
-        capture("behind", [3.8, 1.3, 0.0], [2.0, 1.0, 0.0])
+            # 4. From behind the wall looking back through the opening.
+            capture("behind", [3.8, 1.3, 0.0], [2.0, 1.0, 0.0])
 
         # 5. The robot's own eye camera at the start pose, then after stepping
         #    toward the channel -- the view changes a lot with distance.
