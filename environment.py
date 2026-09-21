@@ -73,6 +73,17 @@ except Exception as _isaac_import_error:  # pragma: no cover - only outside Isaa
 SCENE_SIZE = 4.0
 GROUND_THICKNESS = 0.02
 
+# `FixedCuboid(size=1.0)` produces a cube spanning -1..+1, i.e. 2 m on a side,
+# so every scale was rendering at DOUBLE the authored size.  Measured on the lab
+# machine: FixedCuboid(size=1.0, scale=[2,3,4]) gave world dims 4.0 x 9.0 x
+# 16.0, while size=0.5 gave exactly 2.0 x 4.5 x 8.0.
+#
+# The visible consequence was the channel posts: authored 5 cm wide and 1 cm
+# deep they rendered 2 mm wide and 4 m tall -- invisible and the wrong way
+# round, which is why no measurement ever found a vertical edge where the
+# opening should be.  size=0.5 makes `scale` mean metres.
+UNIT_CUBE_HALF_SIZE = 0.5
+
 # Room enclosure.  Without a far wall the space behind the channel is just the
 # floor plus empty background, so looking through the opening renders as one
 # uniform grey -- measured: unique_colors = 2 at pitch 0 and 15 from 0.5 m away,
@@ -538,7 +549,7 @@ class BAOEnv:
             prim_path="/World/Ground",
             name="ground",
             position=_user_to_isaac_pos(np.array([2.0, -GROUND_THICKNESS / 2.0, 0.0])),
-            size=1.0,
+            size=UNIT_CUBE_HALF_SIZE,
             scale=_user_to_isaac_scale(
                 np.array([SCENE_SIZE, GROUND_THICKNESS, SCENE_SIZE])
             ),
@@ -594,7 +605,7 @@ class BAOEnv:
                 prim_path=path,
                 name=name,
                 position=_user_to_isaac_pos(np.array(centre, dtype=float)),
-                size=1.0,
+                size=UNIT_CUBE_HALF_SIZE,
                 scale=_user_to_isaac_scale(np.array(scale, dtype=float)),
             )
             self._create_and_bind_material(
@@ -612,7 +623,7 @@ class BAOEnv:
             position=_user_to_isaac_pos(
                 np.array([half, height + thickness / 2.0, 0.0])
             ),
-            size=1.0,
+            size=UNIT_CUBE_HALF_SIZE,
             scale=_user_to_isaac_scale(
                 np.array([SCENE_SIZE, thickness, SCENE_SIZE])
             ),
@@ -653,7 +664,7 @@ class BAOEnv:
                     prim_path=path,
                     name=f"grid_{tag}_{i}",
                     position=_user_to_isaac_pos(position),
-                    size=1.0,
+                    size=UNIT_CUBE_HALF_SIZE,
                     scale=_user_to_isaac_scale(scale),
                 )
                 self._create_and_bind_material(
@@ -675,7 +686,7 @@ class BAOEnv:
                 position=_user_to_isaac_pos(
                     np.array([WALL_X, WALL_HEIGHT / 2.0, sign * z_center])
                 ),
-                size=1.0,
+                size=UNIT_CUBE_HALF_SIZE,
                 scale=_user_to_isaac_scale(
                     np.array([WALL_THICKNESS, WALL_HEIGHT, panel_width])
                 ),
@@ -702,7 +713,7 @@ class BAOEnv:
                 position=_user_to_isaac_pos(
                     np.array([WALL_X, WALL_HEIGHT / 2.0, sign * channel_half])
                 ),
-                size=1.0,
+                size=UNIT_CUBE_HALF_SIZE,
                 scale=_user_to_isaac_scale(
                     np.array([WALL_THICKNESS * 2.5, CHANNEL_EDGE_THICKNESS, WALL_HEIGHT])
                 ),

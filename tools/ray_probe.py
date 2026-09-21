@@ -72,6 +72,95 @@ def ray_hit(origin: np.ndarray, direction: np.ndarray, channel_width: float) -> 
     return f"{what} at {best_t:.2f} m"
 
 
+def classify(origin: np.ndarray, direction: np.ndarray, channel_width: float) -> str:
+    """Which surface does this ray hit first, in the horizontal plane?"""
+    if abs(direction[0]) < 1e-12:
+        return "behind"
+    best_t = math.inf
+    what = "nothing"
+
+    # Obstacle wall plane at x = WALL_X.
+    t = (env.WALL_X - origin[0]) / direction[0]
+    if t > 1e-6:
+        p = origin + direction * t
+        if 0.0 <= p[1] <= env.WALL_HEIGHT:
+            if abs(p[2]) < channel_width / 2.0:
+                best_t, what = t, "OPENING"
+            else:
+                best_t, what = t, "wall panel"
+
+    # Far room wall at x = SCENE_SIZE (only reachable through the opening).
+    t = (env.SCENE_SIZE - origin[0]) / direction[0]
+    if 1e-6 < t < best_t:
+        best_t, what = t, "far wall"
+
+    # Side walls at z = +-SCENE_SIZE/2.
+    for sign in (-1.0, 1.0):
+        if abs(direction[2]) > 1e-12:
+            t = (sign * env.SCENE_SIZE / 2.0 - origin[2]) / direction[2]
+            if 1e-6 < t < best_t:
+                best_t, what = t, "side wall"
+    return what
+
+
+def frame_occupancy(start_x: float, pitch: float, focal: float, height: float,
+                    channel: float, sensor: float) -> dict:
+    """Horizontal scan: how much of the frame width each surface occupies."""
+    fov = 2.0 * math.degrees(math.atan((sensor / 2.0) / focal))
+    eye = np.array([start_x, height, 0.0], dtype=float)
+    counts: dict = {}
+    samples = 400
+    for i in range(samples):
+        # -1 .. +1 across the frame; z is to the camera's right.
+        u = -1.0 + 2.0 * (i + 0.5) / samples
+        yaw = math.radians(u * fov / 2.0)
+        # Ray in the horizontal plane.  Pitch only affects where on the wall it
+        # lands vertically, which matters for the wall/opening test, so cast the
+        # ray with the configured pitch.
+        elevation = math.radians(-pitch)
+        d = np.array(
+            [
+                math.cos(elevation) * math.cos(yaw),
+                math.sin(elevation),
+                math.cos(elevation) * math.sin(yaw),
+            ]
+        )
+        what = classify(eye, d, channel)
+        counts[what] = counts.get(what, 0) + 1
+    return {k: v / samples for k, v in counts.items()}
+
+
+def report_occupancy(args: argparse.Namespace, channel: float, sensor: float) -> None:
+    print()
+    print("Frame occupancy across start positions (horizontal scan):")
+    print(f"  {'start_x':>8} {'dist':>6} {'OPENING':>8} {'wall':>7} {'far wall':>9} {'steps':>6}")
+    seen = []
+    for start_x in (2.0, 1.5, 1.0, 0.5, 0.0, -0.5):
+        occ = frame_occupancy(
+            start_x, args.pitch, args.focal, args.height, channel, sensor
+        )
+        travel = (env.SUCCESS_X - start_x) + 0.10
+        steps = int(round(90.0 / env.TURN_STEP_DEG)) + int(
+            math.ceil(travel / env.MOVE_STEP)
+        )
+        distance = env.WALL_X - start_x
+        print(
+            f"  {start_x:>8.1f} {distance:>6.2f} "
+            f"{100 * occ.get('OPENING', 0.0):>7.0f}% "
+            f"{100 * occ.get('wall panel', 0.0):>6.0f}% "
+            f"{100 * occ.get('far wall', 0.0):>8.0f}% {steps:>6d}"
+        )
+        seen.append((start_x, occ, steps))
+    print()
+    print("A usable view needs the opening to be a MINORITY of the frame, so the")
+    print("wall edges are visible for contrast, and steps within the budget:")
+    print(f"  budget = {env.DEFAULT_MAX_STEPS if hasattr(env, 'DEFAULT_MAX_STEPS') else 30} steps")
+    for start_x, occ, steps in seen:
+        share = occ.get("OPENING", 0.0) + occ.get("far wall", 0.0)
+        ok = "OK " if (share < 0.7 and steps <= 30) else "no "
+        print(f"  {ok} start_x={start_x:>5.1f}  opening+far={100 * share:>3.0f}%  steps={steps}")
+
+
 def main() -> int:
     args = parse_args()
     channel = env.LEVEL_CHANNEL_WIDTHS[0]
@@ -108,6 +197,8 @@ def main() -> int:
     print(f"  visible height there = {2.0 * dist * math.tan(half):.2f} m")
     print(f"  visible width  there = {2.0 * dist * math.tan(half):.2f} m")
     print(f"  wall is {env.WALL_HEIGHT:.2f} m tall, spans |z| <= {env.SCENE_SIZE / 2:.1f}")
+
+    report_occupancy(args, channel, sensor)
     return 0
 
 

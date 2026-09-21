@@ -896,6 +896,58 @@ def test_start_distance_reachable_in_budget() -> None:
     )
 
 
+def test_primitive_sizing_is_in_metres() -> None:
+    """Every FixedCuboid must use the half-size unit cube.
+
+    `FixedCuboid(size=1.0)` spans -1..+1, so `scale` meant twice the authored
+    size.  Measured on the lab machine:
+
+        FixedCuboid(size=1.0, scale=[2,3,4]) -> world dims 4.0 x 9.0 x 16.0
+        FixedCuboid(size=0.5, scale=[2,3,4]) -> world dims 2.0 x 4.5 x  8.0
+
+    Consequence: the channel posts, authored 5 cm wide, rendered 2 mm wide and
+    4 m tall -- no vertical edge ever appeared where the opening was, so the
+    opening was invisible in every measurement taken.
+    """
+    import inspect
+    import re
+
+    import environment as env
+
+    check(
+        abs(env.UNIT_CUBE_HALF_SIZE - 0.5) < 1e-12,
+        f"UNIT_CUBE_HALF_SIZE is {env.UNIT_CUBE_HALF_SIZE}, must be 0.5 so that "
+        f"scale means metres",
+    )
+    # Ignore comments, which legitimately mention size=1.0 when explaining the
+    # bug, and only inspect real call sites.
+    source = inspect.getsource(env)
+    code_lines = [
+        line.split("#", 1)[0]
+        for line in source.splitlines()
+        if not line.strip().startswith("#")
+    ]
+    code = "\n".join(code_lines)
+    leftovers = re.findall(r"size=1\.0\b", code)
+    check(
+        not leftovers,
+        f"{len(leftovers)} FixedCuboid call(s) still use size=1.0, which double "
+        f"the authored dimensions",
+    )
+    used = len(re.findall(r"size=UNIT_CUBE_HALF_SIZE", code))
+    check(used >= 6, f"only {used} call(s) use UNIT_CUBE_HALF_SIZE; expected 6")
+
+    # The post must be wide enough to be visible and oriented as a post.
+    check(
+        env.CHANNEL_EDGE_THICKNESS > 0.02,
+        f"channel post width {env.CHANNEL_EDGE_THICKNESS} m is too thin to see",
+    )
+    print(
+        f"[ok] primitives are sized in metres ({used} call sites); channel post "
+        f"is {env.CHANNEL_EDGE_THICKNESS * 100:.0f} cm wide and full wall height"
+    )
+
+
 def test_room_is_enclosed_and_coloured() -> None:
     """The space behind the channel must contain something to look at.
 
@@ -1278,6 +1330,7 @@ def main() -> int:
         test_eye_camera_pitches_downward,
         test_scene_readability_constants,
         test_room_is_enclosed_and_coloured,
+        test_primitive_sizing_is_in_metres,
         test_lights_are_inside_the_enclosed_room,
         test_default_start_is_usable,
         test_start_distance_reachable_in_budget,
