@@ -34,6 +34,7 @@ eye_start.png, eye_near.png, and measurements.txt with the numeric summary.
 from __future__ import annotations
 
 import argparse
+import json
 import math
 import os
 import traceback
@@ -64,6 +65,23 @@ def parse_args() -> argparse.Namespace:
         type=float,
         default=None,
         help="Head camera downward pitch in degrees (default: EYE_PITCH_DEG)",
+    )
+    parser.add_argument(
+        "--focal",
+        type=float,
+        default=None,
+        help=(
+            "Robot eye camera focal length in mm. The inherited default of 1.5 "
+            "is roughly a 170-degree fisheye, which renders the channel edges a "
+            "few pixels wide; 8.0 is about 44 degrees and much closer to a "
+            "person's view."
+        ),
+    )
+    parser.add_argument(
+        "--env_config",
+        type=str,
+        default="{}",
+        help='JSON dict merged into the env task dict, e.g. \'{"robot_camera_focal": 8.0}\'',
     )
     return parser.parse_args()
 
@@ -172,6 +190,15 @@ def main() -> int:
             task_dict["eye_camera_height"] = float(args.eye_height)
         if args.eye_pitch is not None:
             task_dict["eye_pitch_deg"] = float(args.eye_pitch)
+        if args.focal is not None:
+            task_dict["robot_camera_focal"] = float(args.focal)
+        try:
+            extra = json.loads(args.env_config)
+        except ValueError as exc:
+            say(f"[views] --env_config is not valid JSON: {exc}")
+            extra = {}
+        if isinstance(extra, dict):
+            task_dict.update(extra)
 
         env = environment.BAOEnv(simulation_app, task_dict=task_dict)
         width = environment.level_channel_width(args.level)

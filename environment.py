@@ -116,6 +116,25 @@ EYE_PITCH_DEG = 15.0
 # The old 1.9 m existed only to see a ball floating at 1.2 m.
 EYE_CAMERA_HEIGHT = 1.68
 
+# Width (metres) and colour of the dark posts framing the channel.  These give
+# the opening a hard visual boundary; see BAOEnv._create_wall.
+CHANNEL_EDGE_THICKNESS = 0.05
+CHANNEL_EDGE_COLOR = [0.10, 0.11, 0.13]
+
+# Focal length of the robot eye camera, in mm.  The inherited 1.5 mm is about a
+# 170-degree fisheye on a 36 mm sensor: at the 0.5 m the robot starts from, the
+# whole 4 m wall collapses into the middle of the frame and the 5 cm channel
+# posts render a couple of pixels wide.  8.0 mm is about 44 degrees, close to a
+# person's view, and keeps the opening legible.
+ROBOT_CAMERA_FOCAL = 8.0
+
+# Wall panel opacity.  At 0.45 the wall was so close to the colour of the empty
+# room behind it that "looking at the wall" and "looking through the opening"
+# rendered almost identically in grey, leaving the model nothing to distinguish
+# the gap by.  0.65 keeps the overlap visible through the panel while making the
+# wall itself clearly a surface rather than a window.
+WALL_OPACITY = 0.65
+
 # H1 kinematic constants (used for analytic collision checks).
 ROBOT_SHOULDER_WIDTH = 0.57
 ROBOT_TORSO_THICKNESS = 0.22
@@ -560,8 +579,13 @@ class BAOEnv:
                 f"/World/WallPanel_{i}", f"/World/Looks/GlassMaterial_{i}"
             )
 
-        # Thin light-grey strips mark the channel edges so the opening stays
-        # visually readable even though the panels themselves are transparent.
+        # Dark posts mark the channel edges.  These are what make the opening
+        # visually readable: the panels are translucent and the room behind
+        # them is the same grey as the wall, so without a hard visual boundary
+        # the model reports "a solid grey wall with no visible openings" even
+        # when it is standing right in front of the gap.  The posts were 1 cm
+        # and light grey, which rendered a few pixels wide at the old fisheye
+        # focal length and was invisible in practice.
         for sign in (-1.0, 1.0):
             edge_id = 0 if sign < 0 else 1
             FixedCuboid(
@@ -571,14 +595,16 @@ class BAOEnv:
                     np.array([WALL_X, WALL_HEIGHT / 2.0, sign * channel_half])
                 ),
                 size=1.0,
-                scale=_user_to_isaac_scale(np.array([0.01, 0.01, WALL_HEIGHT])),
+                scale=_user_to_isaac_scale(
+                    np.array([WALL_THICKNESS * 2.5, CHANNEL_EDGE_THICKNESS, WALL_HEIGHT])
+                ),
             )
             self._create_and_bind_material(
                 f"/World/ChannelEdge_{edge_id}",
                 f"/World/Looks/ChannelEdgeMaterial_{edge_id}",
-                color=[0.75, 0.78, 0.82],
+                color=CHANNEL_EDGE_COLOR,
                 metallic=0.0,
-                roughness=0.4,
+                roughness=0.5,
             )
 
     def _remove_wall(self) -> None:
@@ -656,7 +682,7 @@ class BAOEnv:
             float(
                 self.task_dict.get(
                     "robot_camera_focal",
-                    self.task_dict.get("camera_focal", 1.5),
+                    self.task_dict.get("camera_focal", ROBOT_CAMERA_FOCAL),
                 )
             )
         )
@@ -957,7 +983,7 @@ class BAOEnv:
                 color=[0.42, 0.60, 0.72],
                 metallic=0.0,
                 roughness=0.12,
-                opacity=0.45,
+                opacity=WALL_OPACITY,
             )
             return
         prim = self.stage.GetPrimAtPath(prim_path)

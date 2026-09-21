@@ -731,6 +731,80 @@ def test_no_unbound_names() -> None:
     print("[ok] no unbound names in any module (static check)")
 
 
+def test_scene_readability_constants() -> None:
+    """The channel must be visually distinguishable from the wall.
+
+    Regression guard for the core failure seen on the lab machine: the model
+    reported "a solid gray wall with no visible features or openings" while
+    standing in front of the gap.  Three scene properties control that, and all
+    three had values that made the opening invisible.
+    """
+    import environment as env
+
+    # 1. The eye camera must not be a fisheye.  Isaac Sim's Camera defaults to a
+    #    20.955 mm sensor (1/2.9", matching the H1's RealSense form factor), so
+    #    the inherited 1.5 mm focal length is about 164 degrees -- which
+    #    collapsed the 4 m wall into the middle of the frame and rendered the
+    #    channel posts a couple of pixels wide.
+    sensor_width = 20.955
+    focal = env.ROBOT_CAMERA_FOCAL
+    check(focal > 0.0, f"ROBOT_CAMERA_FOCAL is {focal}")
+    fov_deg = 2.0 * math.degrees(math.atan((sensor_width / 2.0) / focal))
+    check(
+        fov_deg < 120.0,
+        f"eye camera field of view is {fov_deg:.0f} deg, which is fisheye-like; "
+        f"the channel will be too small to see (focal {focal} mm)",
+    )
+    check(
+        fov_deg > 60.0,
+        f"eye camera field of view is only {fov_deg:.0f} deg; too narrow to see "
+        f"the opening while walking through it",
+    )
+
+    # 2. The channel posts must be wide enough to be more than a few pixels at
+    #    the distance the robot starts from.
+    edge = env.CHANNEL_EDGE_THICKNESS
+    check(
+        edge >= 0.03,
+        f"channel edge thickness is {edge} m; at the old 1 cm the posts were "
+        f"invisible",
+    )
+    # Angular size of the post from the robot's start distance.
+    start_distance = abs(env.WALL_X - env.ROBOT_START_POS[0])
+    angular = 2.0 * math.degrees(math.atan((edge / 2.0) / start_distance))
+    pixels = angular / fov_deg * 1024.0
+    check(
+        pixels >= 8.0,
+        f"the channel post subtends only {pixels:.1f} px at the start pose; it "
+        f"needs to be clearly visible",
+    )
+
+    # 3. The wall must read as a surface, not as a window onto an identical
+    #    grey room.
+    opacity = env.WALL_OPACITY
+    check(
+        0.0 < opacity < 1.0,
+        f"WALL_OPACITY must be translucent but non-trivial, got {opacity}",
+    )
+    check(
+        opacity >= 0.6,
+        f"WALL_OPACITY is {opacity}; at the inherited 0.45 the wall and the "
+        f"room behind it rendered almost identically in grey",
+    )
+
+    # The edge colour must actually contrast with the wall's own colour.
+    edge_luma = sum(env.CHANNEL_EDGE_COLOR) / 3.0
+    check(
+        edge_luma < 0.35,
+        f"channel edge colour {env.CHANNEL_EDGE_COLOR} is too light to contrast "
+        f"with the wall",
+    )
+    print(
+        f"[ok] scene readability: eye FOV {fov_deg:.0f} deg, posts "
+        f"{pixels:.0f} px wide at start, wall opacity {opacity}"
+    )
+
+
 def test_eye_camera_pitches_downward() -> None:
     """The head camera must look down, from the real head height.
 
@@ -744,7 +818,7 @@ def test_eye_camera_pitches_downward() -> None:
     """
     import inspect
 
-    from environment import EYE_PITCH_DEG, ROBOT_HEAD_HEIGHT, _eye_look_direction
+    from environment import EYE_PITCH_DEG, _eye_look_direction
 
     check(EYE_PITCH_DEG > 0.0, f"EYE_PITCH_DEG is {EYE_PITCH_DEG}, must be > 0")
 
@@ -770,14 +844,27 @@ def test_eye_camera_pitches_downward() -> None:
         f"pitch 0 yaw 0 should point along +x, got {level}",
     )
 
-    # The anchor must be the real H1 head height, not the old ball-viewing 1.9.
+    # The anchor must be the human-like eye height, not the old ball-viewing
+    # 1.9 m.  The measured H1 is 1.806 m tall, so the eye sits at ~93% of it.
+    from environment import EYE_CAMERA_HEIGHT, ROBOT_HEAD_HEIGHT as _HEAD
+
     check(
-        abs(ROBOT_HEAD_HEIGHT - 1.55) < 1e-9,
-        f"head height is {ROBOT_HEAD_HEIGHT}, expected 1.55",
+        abs(_HEAD - 1.55) < 1e-9,
+        f"authored ROBOT_HEAD_HEIGHT is {_HEAD}, expected the original 1.55",
     )
     check(
-        ROBOT_HEAD_HEIGHT < 1.9,
-        "head camera must sit below the old ball-viewing height of 1.9 m",
+        EYE_CAMERA_HEIGHT > _HEAD,
+        "the eye camera should sit at the human-like height, above the authored "
+        "head constant",
+    )
+    check(
+        EYE_CAMERA_HEIGHT < 1.9,
+        "the eye camera must sit below the old ball-viewing height of 1.9 m",
+    )
+    check(
+        1.60 <= EYE_CAMERA_HEIGHT <= 1.75,
+        f"EYE_CAMERA_HEIGHT is {EYE_CAMERA_HEIGHT}; expected roughly 93% of the "
+        f"measured 1.806 m robot height",
     )
 
     # The pitch must actually be wired into the update path.
@@ -790,7 +877,7 @@ def test_eye_camera_pitches_downward() -> None:
     )
     print(
         f"[ok] head camera pitches down {EYE_PITCH_DEG:.0f} deg from "
-        f"y={ROBOT_HEAD_HEIGHT} m"
+        f"y={EYE_CAMERA_HEIGHT} m"
     )
 
 
@@ -941,6 +1028,7 @@ def main() -> int:
         test_episode_defaults,
         test_sideways_band,
         test_eye_camera_pitches_downward,
+        test_scene_readability_constants,
         test_ground_grid_exists,
         test_camera_look_at_orientation,
         test_no_viewport_camera_in_diagnostics,
