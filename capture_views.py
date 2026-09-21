@@ -78,6 +78,16 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--eye_forward_offset",
+        type=float,
+        default=None,
+        help=(
+            "Push the eye camera this far forward along the facing direction, "
+            "in metres. Useful for testing whether the robot's own body geometry "
+            "occludes the head camera."
+        ),
+    )
+    parser.add_argument(
         "--start_x",
         type=float,
         default=None,
@@ -214,6 +224,8 @@ def main() -> int:
             task_dict["start_x"] = float(args.start_x)
         if args.move_step is not None:
             task_dict["move_step"] = float(args.move_step)
+        if args.eye_forward_offset is not None:
+            task_dict["eye_forward_offset"] = float(args.eye_forward_offset)
         try:
             extra = json.loads(args.env_config)
         except ValueError as exc:
