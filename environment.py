@@ -148,12 +148,21 @@ EYE_CAMERA_HEIGHT = 1.68
 CHANNEL_EDGE_THICKNESS = 0.05
 CHANNEL_EDGE_COLOR = [0.10, 0.11, 0.13]
 
-# Focal length of the robot eye camera, in mm.  The inherited 1.5 mm is about a
-# 170-degree fisheye on a 36 mm sensor: at the 0.5 m the robot starts from, the
-# whole 4 m wall collapses into the middle of the frame and the 5 cm channel
-# posts render a couple of pixels wide.  8.0 mm is about 44 degrees, close to a
-# person's view, and keeps the opening legible.
-ROBOT_CAMERA_FOCAL = 8.0
+# Focal length of the robot eye camera, in mm, on a 20.955 mm wide sensor.
+#
+#   field of view = 2 * atan(20.955 / (2 * focal))
+#   13.36 mm -> 76 deg, roughly a person's binocular-and-then-some view
+#    8.00 mm -> 105 deg
+#    1.50 mm -> 164 deg (the inherited value: a fisheye)
+#
+# Two separate mistakes lived here.  First the field of view was computed with
+# a 36 mm sensor instead of the 20.955 mm one Isaac Sim actually uses, so 8.0 mm
+# was believed to be 105 degrees when it is 105 only at 8.0 * (36/20.955).
+# Second, and worse, Camera.set_focal_length() is read back correctly but does
+# not reach the renderer: with it set to 8.0 the measured field of view was
+# still 174 degrees over a 1.68 m drop onto a 0.5 m floor grid.  The focal
+# length is now written to the USD attribute as well; see _apply_focal_length.
+ROBOT_CAMERA_FOCAL = 13.36
 
 # Wall panel opacity.  At 0.45 the wall was so close to the colour of the empty
 # room behind it that "looking at the wall" and "looking through the opening"
@@ -773,6 +782,33 @@ class BAOEnv:
     def get_a_s_ratio(self) -> float:
         return a_s_ratio(self._channel_width)
 
+    def _apply_focal_length(self, camera: Any, path: str, focal_mm: float) -> None:
+        """Set a camera's focal length through USD, not the sensor wrapper.
+
+        Measured on the lab machine: after ``Camera.set_focal_length(8.0)`` the
+        getter read back 8.0, yet the rendered field of view measured 174
+        degrees -- still the inherited fisheye.  The wrapper therefore accepts
+        the value without the renderer honouring it, which is why raising the
+        focal length from 1.5 to 8.0 across four runs changed nothing.
+
+        The authoritative attributes are ``focalLength`` and ``horizontalAperture``
+        on the camera prim, in mm and tenths of a mm-of-sensor respectively.
+        Setting ``focalLength`` alone (with the aperture left at its default of
+        the whole sensor width) gives a predictable field of view:
+        ``2 * atan(horizontalAperture / (2 * focalLength))``.
+        """
+        try:
+            camera.set_focal_length(float(focal_mm))
+        except Exception:
+            pass
+        try:
+            cam = UsdGeom.Camera(self.stage.GetPrimAtPath(path))
+            if not cam:
+                return
+            cam.GetFocalLengthAttr().Set(float(focal_mm))
+        except Exception as exc:
+            print(f"[BAOEnv] could not set USD focalLength on {path}: {exc}")
+
     def _create_camera(self) -> None:
         resolution = tuple(
             int(v) for v in self.task_dict.get("camera_resolution", (1024, 1024))
@@ -785,13 +821,15 @@ class BAOEnv:
             frequency=20,
             resolution=resolution,
         )
-        self.camera.set_focal_length(
+        self._apply_focal_length(
+            self.camera,
+            "/World/Camera",
             float(
                 self.task_dict.get(
                     "third_camera_focal",
                     self.task_dict.get("camera_focal", 2.5),
                 )
-            )
+            ),
         )
 
     def _create_eye_camera(self) -> None:
@@ -807,13 +845,15 @@ class BAOEnv:
             frequency=20,
             resolution=resolution,
         )
-        self.eye_camera.set_focal_length(
+        self._apply_focal_length(
+            self.eye_camera,
+            "/World/RobotEyeCamera",
             float(
                 self.task_dict.get(
                     "robot_camera_focal",
                     self.task_dict.get("camera_focal", ROBOT_CAMERA_FOCAL),
                 )
-            )
+            ),
         )
 
     def _create_lights(self) -> None:

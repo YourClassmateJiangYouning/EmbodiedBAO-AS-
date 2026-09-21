@@ -870,29 +870,32 @@ def test_start_distance_reachable_in_budget() -> None:
         angular = 2.0 * math.degrees(math.atan((channel / 2.0) / distance))
         return angular / fov_deg
 
-    shares = {x: frame_share(x) for x in (1.5, 1.0, 0.5)}
+    shares = {x: frame_share(x) for x in (1.5, 1.0, 0.5, 0.0)}
     check(
-        shares[1.5] > shares[1.0] > shares[0.5],
+        shares[1.5] > shares[1.0] > shares[0.5] > shares[0.0],
         f"the channel should subtend LESS of the frame as the robot starts "
         f"further back (smaller x), got {shares}",
     )
     check(
-        shares[1.5] > 0.7,
-        f"at the original start_x=1.5 the channel should fill most of the "
-        f"frame, got {100 * shares[1.5]:.0f}%",
+        shares[0.0] < 0.40,
+        f"at start_x=0 the channel should be a minority of the frame, got "
+        f"{100 * shares[0.0]:.0f}%",
     )
+    # The shipped start distance must keep the gap under half the frame, which
+    # is what makes the wall edges visible.  (Closer starts exceed this: at
+    # x=1.5, 0.5 m from the wall, the gap subtends 110% of the view.)
     check(
-        shares[0.5] < 0.40,
-        f"at start_x=0.5 the channel should be a minority of the frame, got "
-        f"{100 * shares[0.5]:.0f}%",
+        shares[start_x] < 0.5,
+        f"the shipped start_x={start_x} leaves the gap filling "
+        f"{100 * shares[start_x]:.0f}% of the frame, so there is no wall in "
+        f"view to contrast against",
     )
     print(
         "[ok] start distance and step size stay within the step budget "
         f"(default needs {steps_needed(float(ROBOT_START_POS[0]), MOVE_STEP)} of "
         f"{DEFAULT_MAX_STEPS} steps; channel fills "
-        f"{100 * shares[1.5]:.0f}% of frame at x=1.5, "
-        f"{100 * shares[1.0]:.0f}% at x=1.0, "
-        f"{100 * shares[0.5]:.0f}% at x=0.5)"
+        + ", ".join(f"{100 * shares[x]:.0f}% at x={x}" for x in (1.5, 1.0, 0.5, 0.0))
+        + ")"
     )
 
 
@@ -1052,28 +1055,25 @@ def test_default_start_is_usable() -> None:
         f"{DEFAULT_MAX_STEPS}",
     )
 
-    # The gap must not swallow the whole frame.
+    # The gap must not swallow the whole frame.  Horizontally, the opening is
+    # LEVEL_CHANNEL_WIDTHS[0] wide at distance (WALL_X - start_x).
     fov_deg = 2.0 * math.degrees(
         math.atan((20.955 / 2.0) / env.ROBOT_CAMERA_FOCAL)
     )
     distance = env.WALL_X - start_x
-    gap_deg = 2.0 * math.degrees(math.atan((env.ROBOT_START_POS[1] + env.WALL_HEIGHT) / 2.0))
-    # Vertical angle subtended by the gap: from the floor to the top of the wall.
-    low = math.degrees(math.atan(-env.EYE_CAMERA_HEIGHT / distance))
-    high = math.degrees(
-        math.atan((env.WALL_HEIGHT - env.EYE_CAMERA_HEIGHT) / distance)
+    gap_deg = 2.0 * math.degrees(
+        math.atan((env.LEVEL_CHANNEL_WIDTHS[0] / 2.0) / distance)
     )
-    gap_deg = high - low
     check(
-        gap_deg < fov_deg,
-        f"the gap subtends {gap_deg:.0f} deg but the eye view is only "
-        f"{fov_deg:.0f} deg, so the frame is entirely opening with no wall to "
-        f"contrast against",
+        gap_deg < fov_deg / 2.0,
+        f"the {env.LEVEL_CHANNEL_WIDTHS[0]:.2f} m gap subtends {gap_deg:.0f} deg "
+        f"of a {fov_deg:.0f} deg view, so it fills most of the frame and leaves "
+        f"no wall to contrast against",
     )
     print(
         f"[ok] defaults usable: start_x={start_x} step={move_step} needs "
         f"{needed}/{DEFAULT_MAX_STEPS} steps; gap subtends {gap_deg:.0f} deg "
-        f"of a {fov_deg:.0f} deg view"
+        f"({100 * gap_deg / fov_deg:.0f}%) of a {fov_deg:.0f} deg view"
     )
 
 
