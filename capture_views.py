@@ -85,24 +85,38 @@ def main() -> int:
         env.set_channel_width(width)
         env.reset_scene()
 
-        robot = env._root_position()
+        try:
+            robot = env._root_position()
+        except Exception:
+            robot = [float("nan")] * 3
         measured = getattr(env, "_robot_measured_height", None)
+        pitch_now = float(
+            env.task_dict.get("eye_pitch_deg", environment.EYE_PITCH_DEG)
+        )
+        try:
+            eye_height_now = float(env._head_camera_position()[1])
+        except Exception:
+            eye_height_now = float("nan")
+
         print(f"[views] level {args.level}: channel {width:.2f} m")
-        print(f"[views] robot root at x={robot[0]:.2f} y={robot[1]:.2f} z={robot[2]:.2f}")
-        print(f"[views] wall at x={environment.WALL_X}, height {environment.WALL_HEIGHT:.2f} m")
         print(
-            f"[views] robot height = "
-            f"{'n/a' if measured is None else f'{measured:.3f} m'}"
+            f"[views] robot root x={robot[0]:.2f} y={robot[1]:.2f} z={robot[2]:.2f}"
         )
         print(
-            f"[views] eye camera: height={env._head_camera_position()[1]:.3f} m, "
-            f"pitch={float(env.task_dict.get('eye_pitch_deg', environment.EYE_PITCH_DEG)):.1f} deg"
+            f"[views] wall at x={environment.WALL_X}, "
+            f"height {environment.WALL_HEIGHT:.2f} m"
         )
+        if measured is None:
+            print("[views] robot height = n/a (measurement failed)")
+        else:
+            print(f"[views] robot height = {measured:.3f} m")
+            print(
+                f"[views] wall/robot height ratio = "
+                f"{environment.WALL_HEIGHT / measured:.2f}"
+            )
         print(
-            f"[views] wall/robot height ratio = "
-            f"{environment.WALL_HEIGHT / measured:.2f}"
-            if measured
-            else "[views] wall/robot height ratio = n/a"
+            f"[views] eye camera: height={eye_height_now:.3f} m, "
+            f"pitch={pitch_now:.1f} deg"
         )
 
         os.makedirs(args.outdir, exist_ok=True)
