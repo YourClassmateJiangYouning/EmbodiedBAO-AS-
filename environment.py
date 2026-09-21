@@ -712,15 +712,20 @@ class BAOEnv:
             if math.isfinite(max_z):
                 self._robot_measured_height = float(max_z - min_z)
                 print(
-                    f"[BAOEnv] robot ground offset = {offset:.4f} m; "
-                    f"measured height = {self._robot_measured_height:.3f} m "
-                    f"(authored ROBOT_HEAD_HEIGHT = {ROBOT_HEAD_HEIGHT:.3f} m)"
+                    f"[BAOEnv] ROBOT HEIGHT (measured) = "
+                    f"{self._robot_measured_height:.3f} m | "
+                    f"ground offset = {offset:.4f} m | "
+                    f"authored ROBOT_HEAD_HEIGHT = {ROBOT_HEAD_HEIGHT:.3f} m | "
+                    f"wall height = {WALL_HEIGHT:.2f} m"
                 )
             else:
                 print(f"[BAOEnv] robot ground offset = {offset:.4f} m")
             return offset
         except Exception as exc:
-            print(f"[BAOEnv] ground offset detection failed, using 0.0: {exc}")
+            import traceback as _tb
+
+            print(f"[BAOEnv] robot height measurement FAILED: {exc}")
+            _tb.print_exc()
             return 0.0
 
     def _resolve_robot_usd_path(self) -> str:
@@ -1309,6 +1314,11 @@ class BAOEnv:
     def reset_scene(self) -> np.ndarray:
         """Reset the robot to the start pose and return the first RGB frame."""
         self.world.reset()
+        # The authored USD bounds are only meaningful once the physics/app has
+        # settled, and world.reset() re-applies the reference pose.  Re-measure
+        # here so the reported height is the real one rather than whatever the
+        # half-initialised stage showed at construction time.
+        self._robot_ground_offset = self._compute_robot_ground_offset()
         if self.task_dict.get("hide_robot", False):
             for sub_prim in self.stage.Traverse():
                 if str(sub_prim.GetPath()).startswith(self.robot_prim_path):

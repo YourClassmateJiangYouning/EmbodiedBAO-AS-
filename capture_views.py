@@ -86,9 +86,24 @@ def main() -> int:
         env.reset_scene()
 
         robot = env._root_position()
+        measured = getattr(env, "_robot_measured_height", None)
         print(f"[views] level {args.level}: channel {width:.2f} m")
         print(f"[views] robot root at x={robot[0]:.2f} y={robot[1]:.2f} z={robot[2]:.2f}")
-        print(f"[views] wall at x={environment.WALL_X}")
+        print(f"[views] wall at x={environment.WALL_X}, height {environment.WALL_HEIGHT:.2f} m")
+        print(
+            f"[views] robot height = "
+            f"{'n/a' if measured is None else f'{measured:.3f} m'}"
+        )
+        print(
+            f"[views] eye camera: height={env._head_camera_position()[1]:.3f} m, "
+            f"pitch={float(env.task_dict.get('eye_pitch_deg', environment.EYE_PITCH_DEG)):.1f} deg"
+        )
+        print(
+            f"[views] wall/robot height ratio = "
+            f"{environment.WALL_HEIGHT / measured:.2f}"
+            if measured
+            else "[views] wall/robot height ratio = n/a"
+        )
 
         os.makedirs(args.outdir, exist_ok=True)
 
