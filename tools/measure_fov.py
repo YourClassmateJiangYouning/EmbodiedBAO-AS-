@@ -1,14 +1,17 @@
-"""Measure the eye camera's ACTUAL field of view from the rendered image.
+"""Measure the eye camera's field of view robustly, and read its intrinsics.
 
-The analytic frustum calculation and the render disagree badly: at start_x=0.5
-the ray probe says 32% of the frame should show the gap and 68% should show
-wall, while the captured image is 100% green (the far wall through the gap).
-Either the field of view is much narrower than computed, or the geometry is not
-where the maths thinks.
+The previous attempt picked dark columns with a loose threshold and reported a
+median spacing of 8 px, which is equally consistent with the floor grid at a
+174-degree view and with ordinary render noise.  Because the conclusion hinged
+on it, this version does not threshold at all:
 
-This settles it without inference by looking straight down at the floor grid,
-whose lines are at known world positions.  The grid spacing is 0.5 m, so the
-pixel spacing between lines gives metres-per-pixel, and hence the field of view.
+  * it reads the camera's own projection matrix, which is authoritative;
+  * it autocorrelates the image along rows and columns, so the grid period is
+    found from the whole signal rather than from picked peaks;
+  * it verifies `set_focal_length` by asking the camera to report its field of
+    view before and after being given a new focal length.
+
+Any one of these alone can be wrong; together they have to agree.
 
     /home/ybh/isaacsim/python.sh tools/measure_fov.py
 """
@@ -24,6 +27,40 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
+def grid_period(profile: np.ndarray) -> float:
+    """Dominant spatial period of a 1-D profile, by autocorrelation."""
+    x = np.asarray(profile, dtype=float)
+    x = x - x.mean()
+    if x.size < 8 or float(np.dot(x, x)) < 1e-9:
+        return float("nan")
+    ac = np.correlate(x, x, mode="full")[x.size - 1 :]
+    ac = ac / ac[0]
+    # First strong local maximum after the initial descent.
+    best_lag, best_val = -1, -1.0
+    for lag in range(3, min(len(ac) - 1, 400)):
+        if ac[lag] > ac[lag - 1] and ac[lag] >= ac[lag + 1] and ac[lag] > best_val:
+            best_val, best_lag = float(ac[lag]), lag
+            break
+    return float(best_lag) if best_lag > 0 else float("nan")
+
+
+def camera_fov(cam) -> float:
+    """Field of view from the camera's own intrinsics, if it exposes them."""
+    for name in ("get_intrinsics_matrix", "get_intrinsic_matrix"):
+        fn = getattr(cam, name, None)
+        if not callable(fn):
+            continue
+        try:
+            k = np.asarray(fn(), dtype=float)
+            fx = float(k[0, 0])
+            w, _ = cam.get_resolution()
+            if fx > 0:
+                return 2.0 * math.degrees(math.atan((w / 2.0) / fx))
+        except Exception as exc:
+            print("  %s failed: %s" % (name, exc), flush=True)
+    return float("nan")
+
+
 def main() -> int:
     from isaacsim import SimulationApp
 
@@ -31,94 +68,68 @@ def main() -> int:
 
     import environment as env
 
-    # Straight down from a known height, so the floor grid is in view.
     height = 1.68
-    task = {"headless": True, "eye_pitch_deg": 89.0, "start_x": 2.0}
-    e = env.BAOEnv(app, task_dict=task)
+    e = env.BAOEnv(
+        app, task_dict={"headless": True, "eye_pitch_deg": 89.0, "start_x": 2.0}
+    )
     e.reset_scene()
     e._update_eye_camera()
     for _ in range(60):
         app.update()
 
-    print("CAMERA eye pos =", np.round(e._head_camera_position(), 3), flush=True)
-    print("FOCAL get_focal_length() =", e.eye_camera.get_focal_length(), flush=True)
-    print("RES =", e.eye_camera.get_resolution(), flush=True)
+    print("=" * 68, flush=True)
+    print("1. What the camera reports about itself", flush=True)
+    print("   get_focal_length() =", e.eye_camera.get_focal_length(), flush=True)
+    print("   USD focalLength    =", end=" ", flush=True)
+    try:
+        from pxr import UsdGeom
 
+        cam = UsdGeom.Camera(e.stage.GetPrimAtPath("/World/RobotEyeCamera"))
+        print(cam.GetFocalLengthAttr().Get(), flush=True)
+        print("   USD hAperture      =", cam.GetHorizontalApertureAttr().Get(), flush=True)
+        print("   USD clippingRange  =", cam.GetClippingRangeAttr().Get(), flush=True)
+    except Exception as exc:
+        print("failed:", exc, flush=True)
+    print("   intrinsics FOV     = %.1f deg" % camera_fov(e.eye_camera), flush=True)
+
+    print("=" * 68, flush=True)
+    print("2. Grid period by autocorrelation (straight down, 0.5 m grid)", flush=True)
     rgb = np.asarray(e.get_camera_image(), dtype=np.uint8)
-    grey = rgb.mean(axis=2)
-    print("IMG mean=%.1f std=%.1f" % (grey.mean(), grey.std()), flush=True)
-
-    # The grid lines are dark on a lighter floor; find dark columns/rows.
-    col = grey.mean(axis=0)
-    row = grey.mean(axis=1)
-    print("col profile min/max = %.1f / %.1f" % (col.min(), col.max()), flush=True)
-
-    def dark_positions(profile: np.ndarray, span: float) -> list:
-        """Indices of local minima that are clearly darker than the median."""
-        med = float(np.median(profile))
-        thresh = med - 0.05 * (med - float(profile.min()) + 1e-6) * 3.0
-        idx = []
-        for i in range(2, len(profile) - 2):
-            window = profile[i - 2 : i + 3]
-            if profile[i] == window.min() and profile[i] < thresh:
-                if not idx or i - idx[-1] > 5:
-                    idx.append(i)
-        return idx
-
-    dark_cols = dark_positions(col, 1024)
-    dark_rows = dark_positions(row, 1024)
-    print("dark columns:", dark_cols[:12], flush=True)
-    print("dark rows   :", dark_rows[:12], flush=True)
-
-    spacing_m = 0.5  # the grid step authored in _create_ground_grid
-
-    def fov_from(idx: list, label: str) -> None:
-        if len(idx) < 2:
-            print(f"{label}: not enough lines detected to measure", flush=True)
-            return
-        gaps = np.diff(idx).astype(float)
-        # Use the median gap: it is the most robust to a missed or extra line.
-        gap_px = float(np.median(gaps))
-        if gap_px <= 0:
-            print(f"{label}: degenerate gap", flush=True)
-            return
-        m_per_px = spacing_m / gap_px
+    grey = rgb.astype(float).mean(axis=2)
+    print("   image mean=%.1f std=%.1f" % (grey.mean(), grey.std()), flush=True)
+    col_period = grid_period(grey.mean(axis=0))
+    row_period = grid_period(grey.mean(axis=1))
+    print("   column period = %.1f px ; row period = %.1f px" % (col_period, row_period), flush=True)
+    spacing_m = 0.5
+    for label, period in (("horizontal", col_period), ("vertical", row_period)):
+        if not math.isfinite(period) or period <= 1:
+            print("   %s: no period found" % label, flush=True)
+            continue
+        m_per_px = spacing_m / period
         frame_m = m_per_px * 1024.0
-        # The camera looks straight down from `height`, so the frame half-width
-        # in metres is half of frame_m and the half-angle follows.
-        half_angle = math.degrees(math.atan((frame_m / 2.0) / height))
+        fov = 2.0 * math.degrees(math.atan((frame_m / 2.0) / height))
         print(
-            f"{label}: median gap {gap_px:.1f} px per {spacing_m} m -> "
-            f"{m_per_px * 1000:.2f} mm/px -> frame is {frame_m:.2f} m tall -> "
-            f"MEASURED FOV = {2 * half_angle:.1f} deg",
+            "   %s: %.1f px per %.1f m -> frame %.2f m across at %.2f m drop "
+            "-> FOV %.1f deg" % (label, period, spacing_m, frame_m, height, fov),
             flush=True,
         )
 
-    fov_from(dark_cols, "horizontal")
-    fov_from(dark_rows, "vertical")
-
-    # Also measure the gap directly: how many pixels wide is the 0.90 m channel
-    # when viewed from the front at a known distance?
-    print(flush=True)
-    print("Now the same camera looking horizontally at the gap:", flush=True)
-    app2 = None
-    e.eye_camera.set_world_pose(
-        position=env._user_to_isaac_pos(np.array([1.0, 1.68, 0.0])).tolist(),
-        orientation=[0.9914, 0.0, 0.1305, 0.0],
-        camera_axes="world",
-    )
-    for _ in range(40):
+    print("=" * 68, flush=True)
+    print("3. Does changing the focal length change anything?", flush=True)
+    before = camera_fov(e.eye_camera)
+    e.eye_camera.set_focal_length(30.0)
+    for _ in range(30):
         app.update()
-    rgb = np.asarray(e.get_camera_image(), dtype=np.uint8)
-    green = (rgb[:, :, 1].astype(int) - rgb[:, :, 0].astype(int)) > 20
-    frac_green = float(green.mean())
+    after = camera_fov(e.eye_camera)
+    print("   intrinsics FOV before=%.1f  after setting 30 mm=%.1f" % (before, after), flush=True)
+    rgb2 = np.asarray(e.get_camera_image(), dtype=np.uint8)
     print(
-        "at 1.0 m from the wall, green (far wall through the gap) occupies "
-        f"{100 * frac_green:.1f}% of the frame",
-        flush=True,
-    )
-    print(
-        "  analytic prediction at 1.0 m with a 105 deg view: 46%",
+        "   image changed: mean %.1f -> %.1f  (identical pixels: %s)"
+        % (
+            grey.mean(),
+            rgb2.astype(float).mean(),
+            bool(np.array_equal(rgb, rgb2)),
+        ),
         flush=True,
     )
     app.close()
