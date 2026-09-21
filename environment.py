@@ -82,7 +82,6 @@ PANEL_WIDTH = (SCENE_SIZE - CHANNEL_WIDTH) / 2.0
 
 ROBOT_START_POS = np.array([1.5, 0.0, 0.0], dtype=float)
 ROBOT_START_YAW_DEG = 0.0
-
 # Success: the whole body has reached the far side of the wall.
 SUCCESS_X = 2.5
 
@@ -487,6 +486,17 @@ class BAOEnv:
         # Filled in by _compute_robot_ground_offset from the loaded USD, so the
         # real robot height can be reported instead of assumed.
         self._robot_measured_height: Optional[float] = None
+        # Start pose and translation step are configurable: standing further
+        # back makes the channel readable, but costs travel, so the two have to
+        # move together.  See ROBOT_START_POS / MOVE_STEP and the --start_x /
+        # --move_step CLI flags.
+        start_x = float(self.task_dict.get("start_x", ROBOT_START_POS[0]))
+        self._start_pos = np.array(
+            [start_x, ROBOT_START_POS[1], ROBOT_START_POS[2]], dtype=float
+        )
+        self._move_step = float(self.task_dict.get("move_step", MOVE_STEP))
+        if self._move_step <= 0.0:
+            raise ValueError(f"move_step must be positive, got {self._move_step}")
         self._channel_width = float(self.task_dict.get("channel_width", CHANNEL_WIDTH))
         self._camera_yaw_offset = 0.0
 
@@ -651,7 +661,7 @@ class BAOEnv:
         self.camera = Camera(
             prim_path="/World/Camera",
             translation=_user_to_isaac_pos(
-                np.array([ROBOT_START_POS[0], ROBOT_HEAD_HEIGHT, ROBOT_START_POS[2]])
+                np.array([self._start_pos[0], ROBOT_HEAD_HEIGHT, self._start_pos[2]])
             ),
             frequency=20,
             resolution=resolution,
@@ -673,7 +683,7 @@ class BAOEnv:
         self.eye_camera = Camera(
             prim_path="/World/RobotEyeCamera",
             translation=_user_to_isaac_pos(
-                np.array([ROBOT_START_POS[0], ROBOT_HEAD_HEIGHT, ROBOT_START_POS[2]])
+                np.array([self._start_pos[0], ROBOT_HEAD_HEIGHT, self._start_pos[2]])
             ),
             frequency=20,
             resolution=resolution,
@@ -704,7 +714,7 @@ class BAOEnv:
             self._disable_robot_physics()
         self.robot_root = XFormPrim(prim_paths_expr=self.robot_prim_path)
         self._robot_ground_offset = self._compute_robot_ground_offset()
-        self._set_robot_pose(ROBOT_START_POS, ROBOT_START_YAW_DEG)
+        self._set_robot_pose(self._start_pos, ROBOT_START_YAW_DEG)
         if self.task_dict.get("hide_robot", False):
             for sub_prim in self.stage.Traverse():
                 if str(sub_prim.GetPath()).startswith(self.robot_prim_path):
@@ -1056,11 +1066,11 @@ class BAOEnv:
 
     def _root_position(self) -> np.ndarray:
         if self.robot_root is None:
-            return ROBOT_START_POS.copy()
+            return self._start_pos.copy()
         try:
             pos = self.robot_root.get_world_poses()[0][0]
         except Exception:
-            return ROBOT_START_POS.copy()
+            return self._start_pos.copy()
         user_pos = _isaac_to_user_pos(np.asarray(pos, dtype=float))
         # The USD root is raised by the ground offset when written, so strip it
         # back out here to keep x/y/z in ground-relative user coordinates.
@@ -1362,7 +1372,7 @@ class BAOEnv:
         if self.eye_camera is not None:
             self.eye_camera.initialize()
         self._init_robot_controller()
-        self._set_robot_pose(ROBOT_START_POS, ROBOT_START_YAW_DEG)
+        self._set_robot_pose(self._start_pos, ROBOT_START_YAW_DEG)
         self._camera_yaw_offset = 0.0
         if self._articulation is not None:
             try:
@@ -1507,13 +1517,13 @@ class BAOEnv:
             # Egocentric translations: forward/backward follow the robot's
             # facing direction; left/right are relative to the robot.
             if action == "forward":
-                delta = _forward_vector(yaw) * MOVE_STEP
+                delta = _forward_vector(yaw) * self._move_step
             elif action == "backward":
-                delta = _forward_vector(yaw) * -MOVE_STEP
+                delta = _forward_vector(yaw) * -self._move_step
             elif action == "right":
-                delta = _right_vector(yaw) * MOVE_STEP
+                delta = _right_vector(yaw) * self._move_step
             else:
-                delta = _right_vector(yaw) * -MOVE_STEP
+                delta = _right_vector(yaw) * -self._move_step
             target = root + delta
             collision = _check_wall_collision(
                 target, yaw, channel_width=self._channel_width

@@ -805,6 +805,97 @@ def test_scene_readability_constants() -> None:
     )
 
 
+def test_start_distance_reachable_in_budget() -> None:
+    """Start distance and step size must fit the episode budget together.
+
+    Standing further back makes the channel readable, but the robot still has to
+    travel to x > 2.5 within DEFAULT_MAX_STEPS.  Raising the start distance
+    without raising the step size makes the task physically impossible, which
+    would look like a model failure in the results.
+    """
+    from environment import MOVE_STEP, ROBOT_START_POS, TURN_STEP_DEG
+
+    def steps_needed(start_x: float, move_step: float) -> int:
+        """Steps for: turn 90 deg, sidle to x > 2.5, i.e. the intended route.
+
+        The robot advances along +x, so standing *further back* means a
+        *smaller* start_x.  It has already passed x=2.5 if start_x >= 2.5.
+        """
+        turns = int(round(90.0 / TURN_STEP_DEG))
+        if start_x >= SUCCESS_X:
+            return 0
+        travel = (SUCCESS_X - start_x) + 0.10  # 10 cm of margin past the plane
+        moves = int(math.ceil(travel / move_step))
+        return turns + moves
+
+    scenarios = [
+        # (label, start_x, move_step, must_fit)
+        ("current default", float(ROBOT_START_POS[0]), MOVE_STEP, True),
+        ("1.0 m back, default step", 1.0, 0.05, False),
+        ("1.0 m back, 0.10 m step", 1.0, 0.10, True),
+        ("1.5 m back, default step", 0.5, 0.05, False),
+        ("1.5 m back, 0.10 m step", 0.5, 0.10, True),
+    ]
+    for label, start_x, move_step, must_fit in scenarios:
+        needed = steps_needed(start_x, move_step)
+        if must_fit:
+            check(
+                needed <= DEFAULT_MAX_STEPS,
+                f"{label}: start_x={start_x} step={move_step} needs {needed} "
+                f"steps but the budget is {DEFAULT_MAX_STEPS}; the task would be "
+                f"impossible",
+            )
+        else:
+            check(
+                needed > DEFAULT_MAX_STEPS,
+                f"{label}: expected this combination to be infeasible, but it "
+                f"needs only {needed} steps",
+            )
+
+    # The angular size of the channel is what standing back actually buys.
+    #
+    # Note the direction: moving back makes the channel SUBTEND LESS of the
+    # frame.  At the original start_x=1.5 the robot is 0.5 m from the wall and
+    # the 0.90 m channel covers ~80% of a 105-degree frame -- the wall fills the
+    # view with no context around it, which is why the scene read as "a solid
+    # grey wall".  A few steps back frames the opening the way a person sees a
+    # doorway, at the cost of travel.
+    sensor_width = 20.955
+    fov_deg = 2.0 * math.degrees(
+        math.atan((sensor_width / 2.0) / __import__("environment").ROBOT_CAMERA_FOCAL)
+    )
+
+    def frame_share(start_x: float, channel: float = 0.90) -> float:
+        distance = max(WALL_X - start_x, 1e-6)
+        angular = 2.0 * math.degrees(math.atan((channel / 2.0) / distance))
+        return angular / fov_deg
+
+    shares = {x: frame_share(x) for x in (1.5, 1.0, 0.5)}
+    check(
+        shares[1.5] > shares[1.0] > shares[0.5],
+        f"the channel should subtend LESS of the frame as the robot starts "
+        f"further back (smaller x), got {shares}",
+    )
+    check(
+        shares[1.5] > 0.7,
+        f"at the original start_x=1.5 the channel should fill most of the "
+        f"frame, got {100 * shares[1.5]:.0f}%",
+    )
+    check(
+        shares[0.5] < 0.40,
+        f"at start_x=0.5 the channel should be a minority of the frame, got "
+        f"{100 * shares[0.5]:.0f}%",
+    )
+    print(
+        "[ok] start distance and step size stay within the step budget "
+        f"(default needs {steps_needed(float(ROBOT_START_POS[0]), MOVE_STEP)} of "
+        f"{DEFAULT_MAX_STEPS} steps; channel fills "
+        f"{100 * shares[1.5]:.0f}% of frame at x=1.5, "
+        f"{100 * shares[1.0]:.0f}% at x=1.0, "
+        f"{100 * shares[0.5]:.0f}% at x=0.5)"
+    )
+
+
 def test_eye_camera_pitches_downward() -> None:
     """The head camera must look down, from the real head height.
 
@@ -1029,6 +1120,7 @@ def main() -> int:
         test_sideways_band,
         test_eye_camera_pitches_downward,
         test_scene_readability_constants,
+        test_start_distance_reachable_in_budget,
         test_ground_grid_exists,
         test_camera_look_at_orientation,
         test_no_viewport_camera_in_diagnostics,

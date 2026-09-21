@@ -78,6 +78,24 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--start_x",
+        type=float,
+        default=None,
+        help=(
+            "Robot start x in metres (default: ROBOT_START_POS[0]). Standing "
+            "further back makes the channel readable, at the cost of travel."
+        ),
+    )
+    parser.add_argument(
+        "--move_step",
+        type=float,
+        default=None,
+        help=(
+            "Translation per action in metres (default: MOVE_STEP). Must rise "
+            "with --start_x or the robot cannot reach the far side in 30 steps."
+        ),
+    )
+    parser.add_argument(
         "--env_config",
         type=str,
         default="{}",
@@ -192,6 +210,10 @@ def main() -> int:
             task_dict["eye_pitch_deg"] = float(args.eye_pitch)
         if args.focal is not None:
             task_dict["robot_camera_focal"] = float(args.focal)
+        if args.start_x is not None:
+            task_dict["start_x"] = float(args.start_x)
+        if args.move_step is not None:
+            task_dict["move_step"] = float(args.move_step)
         try:
             extra = json.loads(args.env_config)
         except ValueError as exc:

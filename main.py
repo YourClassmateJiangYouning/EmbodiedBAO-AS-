@@ -111,6 +111,24 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--start_x",
+        type=float,
+        default=None,
+        help=(
+            "Robot start x in metres (default: 1.5). Standing further back "
+            "makes the channel readable at the cost of travel."
+        ),
+    )
+    parser.add_argument(
+        "--move_step",
+        type=float,
+        default=None,
+        help=(
+            "Translation per action in metres (default: 0.05). Must rise with "
+            "--start_x or the robot cannot reach the far side in 30 steps."
+        ),
+    )
+    parser.add_argument(
         "--env_config",
         type=str,
         default="{}",
@@ -313,6 +331,10 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
             task_dict["eye_camera_height"] = float(args.eye_height)
         if args.eye_pitch is not None:
             task_dict["eye_pitch_deg"] = float(args.eye_pitch)
+        if args.start_x is not None:
+            task_dict["start_x"] = float(args.start_x)
+        if args.move_step is not None:
+            task_dict["move_step"] = float(args.move_step)
         env = environment.setup_scene(simulation_app, task_dict=task_dict)
         _write_progress("environment created")
 
