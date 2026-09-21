@@ -570,12 +570,18 @@ class BAOEnv:
         """
         path = f"/World/{name}"
         cube = UsdGeom.Cube.Define(self.stage, path)
-        half = np.asarray(dims, dtype=float) / 2.0
+        # A USD Cube spans -1..+1, so the ONLY thing that sets its world size is
+        # the scale op.  `size` must stay 2.0 (its default) and the extent must
+        # describe the scaled result, otherwise the reported bounds lie.
+        # Measured confusion this replaces: FixedCuboid(size=1.0, scale=[2,3,4])
+        # gave 4x9x16, and FixedCuboid(size=0.5, ...) gave wildly different
+        # factors per axis.  Here the world size is exactly `dims`, by
+        # construction: local +-1 times scale dims/2 gives +-dims/2.
         cube.GetSizeAttr().Set(2.0)
         cube.GetExtentAttr().Set(
             [
-                (-float(half[0]), -float(half[1]), -float(half[2])),
-                (float(half[0]), float(half[1]), float(half[2])),
+                (-float(dims[0]) / 2.0, -float(dims[1]) / 2.0, -float(dims[2]) / 2.0),
+                (float(dims[0]) / 2.0, float(dims[1]) / 2.0, float(dims[2]) / 2.0),
             ]
         )
         xform = UsdGeom.Xformable(cube.GetPrim())
@@ -584,7 +590,7 @@ class BAOEnv:
             Gf.Vec3d(*_user_to_isaac_pos(np.asarray(center, dtype=float)))
         )
         xform.AddScaleOp().Set(
-            Gf.Vec3f(*_user_to_isaac_scale(np.asarray(dims, dtype=float)))
+            Gf.Vec3f(*_user_to_isaac_scale(np.asarray(dims, dtype=float) / 2.0))
         )
         if material is not None:
             mat_name, colour = material
@@ -821,21 +827,23 @@ class BAOEnv:
         keeps a visible highlight.
         """
         # A distant light is directional and originates outside the room, so it
-        # would be blocked by the ceiling; a sun aimed through the front wall is
-        # replaced here by interior area lights.
+        # would be blocked by the ceiling; interior lights are used instead.
+        # Intensity matters: at 60000 the eye view measured mean=229.5 with only
+        # 226 unique colours, i.e. blown out to near-white.  These values target
+        # a mid-grey exposure.
         positions = [
             ("/World/LightFront", np.array([1.0, 2.6, 0.0])),
             ("/World/LightBack", np.array([3.0, 2.6, 0.0])),
         ]
         for path, position in positions:
             light = UsdLux.SphereLight.Define(self.stage, path)
-            light.GetIntensityAttr().Set(60000.0)
+            light.GetIntensityAttr().Set(9000.0)
             light.GetRadiusAttr().Set(0.35)
             light.AddTranslateOp().Set(Gf.Vec3d(*_user_to_isaac_pos(position)))
 
         # Ambient fill so no surface is pure black.
         dome = UsdLux.DomeLight.Define(self.stage, "/World/DomeLight")
-        dome.GetIntensityAttr().Set(300.0)
+        dome.GetIntensityAttr().Set(120.0)
 
     def _load_robot(self) -> None:
         usd_path = self._resolve_robot_usd_path()
