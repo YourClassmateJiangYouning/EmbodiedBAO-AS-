@@ -67,6 +67,22 @@ def main() -> int:
 
     simulation_app = SimulationApp({"headless": True, "width": 1280, "height": 720})
 
+    # Python block-buffers stdout when it is a pipe, so every print below would
+    # be lost when the process exits if it were piped through tee.  Flush on
+    # write and record the measurements to a file as well.
+    os.makedirs(args.outdir, exist_ok=True)
+    measurements_path = os.path.join(args.outdir, "measurements.txt")
+    with open(measurements_path, "w") as handle:
+        handle.write("")
+
+    def say(message: str) -> None:
+        print(message, flush=True)
+        try:
+            with open(measurements_path, "a") as handle:
+                handle.write(message + "\n")
+        except OSError:
+            pass
+
     ok = False
     try:
         from isaacsim.core.utils.viewports import set_camera_view
@@ -98,28 +114,26 @@ def main() -> int:
         except Exception:
             eye_height_now = float("nan")
 
-        print(f"[views] level {args.level}: channel {width:.2f} m")
-        print(
+        say(f"[views] level {args.level}: channel {width:.2f} m")
+        say(
             f"[views] robot root x={robot[0]:.2f} y={robot[1]:.2f} z={robot[2]:.2f}"
         )
-        print(
+        say(
             f"[views] wall at x={environment.WALL_X}, "
             f"height {environment.WALL_HEIGHT:.2f} m"
         )
         if measured is None:
-            print("[views] robot height = n/a (measurement failed)")
+            say("[views] robot height = n/a (measurement failed)")
         else:
-            print(f"[views] robot height = {measured:.3f} m")
-            print(
+            say(f"[views] robot height = {measured:.3f} m")
+            say(
                 f"[views] wall/robot height ratio = "
                 f"{environment.WALL_HEIGHT / measured:.2f}"
             )
-        print(
+        say(
             f"[views] eye camera: height={eye_height_now:.3f} m, "
             f"pitch={pitch_now:.1f} deg"
         )
-
-        os.makedirs(args.outdir, exist_ok=True)
 
         def to_isaac(p):
             return environment._user_to_isaac_pos(np.asarray(p, dtype=float)).tolist()
