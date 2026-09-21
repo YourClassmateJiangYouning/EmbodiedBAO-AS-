@@ -820,6 +820,108 @@ def test_ground_grid_exists() -> None:
     print("[ok] the ground carries a scale-reference grid")
 
 
+def test_camera_look_at_orientation() -> None:
+    """look_at_quaternion must actually point the camera at the target.
+
+    Regression guard for a diagnostic bug: capture_views.py used
+    set_camera_view() to move the *viewport* camera and then read
+    env.camera.get_rgb(), which reads the /World/Camera *sensor*.  The sensor
+    never moved, so all six "different viewpoints" produced byte-identical
+    images.  The fix moves the sensor itself, which needs a real orientation
+    computed from eye and target.
+    """
+    from capture_views import look_at_quaternion
+
+    def rotate(quat, vec):
+        w, x, y, z = (float(v) for v in quat)
+        # q * v * q^-1, expanded.
+        u = np.array([x, y, z], dtype=float)
+        v = np.asarray(vec, dtype=float)
+        return (
+            2.0 * float(np.dot(u, v)) * u
+            + (w * w - float(np.dot(u, u))) * v
+            + 2.0 * w * np.cross(u, v)
+        )
+
+    cases = [
+        ([1.5, 1.55, 0.0], [2.0, 1.0, 0.0]),
+        ([2.0, 7.0, 0.0], [2.0, 0.0, 0.0]),
+        ([0.3, 2.2, 1.8], [2.2, 0.7, 0.2]),
+        ([3.8, 1.3, 0.0], [2.0, 1.0, 0.0]),
+    ]
+    for eye, target in cases:
+        quat = look_at_quaternion(eye, target)
+        check(
+            abs(float(np.linalg.norm(quat)) - 1.0) < 1e-9,
+            f"eye {eye} target {target}: quaternion is not unit length",
+        )
+        # The camera's local +X is its forward axis in the "world" convention.
+        forward = rotate(quat, [1.0, 0.0, 0.0])
+        expected = np.asarray(target, dtype=float) - np.asarray(eye, dtype=float)
+        expected = expected / float(np.linalg.norm(expected))
+        check(
+            float(np.dot(forward, expected)) > 1.0 - 1e-9,
+            f"eye {eye} target {target}: forward {forward} does not match "
+            f"{expected}",
+        )
+        # Up must stay roughly upward (never inverted or sideways-degenerate).
+        up = rotate(quat, [0.0, 0.0, 1.0])
+        check(
+            float(up[2]) > 0.0,
+            f"eye {eye} target {target}: camera up flipped (up={up})",
+        )
+
+    # A straight-down view (the floor plan) needs a horizontal up reference:
+    # +Z as "up" would be parallel to the view direction and is degenerate.
+    top_quat = look_at_quaternion([2.0, 7.0, 0.0], [2.0, 0.0, 0.0], up=(0.0, 0.0, -1.0))
+    forward = rotate(top_quat, [1.0, 0.0, 0.0])
+    check(
+        float(forward[1]) < -0.999,
+        f"floor-plan camera should look straight down, got forward={forward}",
+    )
+    # And the degenerate configuration must be rejected rather than silently
+    # producing a garbage orientation.
+    try:
+        look_at_quaternion([0.0, 7.0, 0.0], [0.0, 0.0, 0.0], up=(0.0, 1.0, 0.0))
+        check(False, "a degenerate up vector should raise, not return a quaternion")
+    except ValueError:
+        pass
+    print("[ok] look-at orientation actually aims the camera at its target")
+
+
+def test_no_viewport_camera_in_diagnostics() -> None:
+    """capture_views must move the sensor it reads, not the viewport."""
+    import ast
+    import inspect
+
+    import capture_views
+
+    tree = ast.parse(inspect.getsource(capture_views))
+
+    # Only look at real code, never at the docstring that explains the bug.
+    called = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Call):
+            func = node.func
+            name = getattr(func, "attr", None) or getattr(func, "id", None)
+            if name:
+                called.add(name)
+        if isinstance(node, ast.ImportFrom) and node.module:
+            for alias in node.names:
+                called.add(alias.name)
+
+    check(
+        "set_camera_view" not in called,
+        "capture_views calls set_camera_view (viewport), which does not move "
+        "the sensor get_rgb() reads -- this silently produced identical images",
+    )
+    check(
+        "set_world_pose" in called,
+        "capture_views never calls Camera.set_world_pose to move the sensor",
+    )
+    print("[ok] capture_views moves the sensor it reads (no viewport confusion)")
+
+
 def main() -> int:
     tests = [
         test_channel_ladder,
@@ -838,6 +940,8 @@ def main() -> int:
         test_sideways_band,
         test_eye_camera_pitches_downward,
         test_ground_grid_exists,
+        test_camera_look_at_orientation,
+        test_no_viewport_camera_in_diagnostics,
         test_no_unbound_names,
     ]
     failures = 0
