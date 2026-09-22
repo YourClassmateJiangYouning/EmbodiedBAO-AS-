@@ -92,8 +92,21 @@ GROUND_THICKNESS = 0.02
 # the room and colouring the walls gives the opening something to reveal.
 ROOM_WALL_HEIGHT = 3.0
 ROOM_WALL_THICKNESS = 0.02
-ROOM_WALL_COLOR = [0.13, 0.42, 0.20]  # green
-ROOM_CEILING_COLOR = [0.55, 0.57, 0.60]
+# Side and near walls: light grey.
+ROOM_SIDE_WALL_COLOR = [0.72, 0.73, 0.75]
+# The far wall -- seen THROUGH the channel -- is green, so the destination
+# reads as a distinct, reachable place.
+ROOM_FAR_WALL_COLOR = [0.13, 0.42, 0.20]
+# The obstacle wall is opaque blue.  It used to be translucent glass, which at
+# close range made "aimed at the opening" and "aimed at a panel" render almost
+# identically: a recorded gemini-2.5-pro run sitting at x=2.30, centred on the
+# channel and facing it, reported "I am now facing a solid wall. I cannot see
+# the opening I need to pass through," then scanned left and right and never
+# advanced.  A saturated opaque surface makes the channel a plain blue-on-blue
+# silhouette, which is a far stronger cue than a transparent panel.
+WALL_COLOR = [0.13, 0.28, 0.72]
+WALL_OPACITY = 1.0
+ROOM_CEILING_COLOR = [0.92, 0.93, 0.95]
 
 WALL_X = 3.0
 WALL_HEIGHT = 2.0
@@ -130,7 +143,7 @@ LEVEL_CHANNEL_WIDTHS: Dict[int, float] = {
     5: 0.45,
 }
 
-MOVE_STEP = 0.15  # 15 cm; paired with WALL_X and ROBOT_START_POS, see above
+MOVE_STEP = 0.20  # 20 cm; the walk is 3.0 m, so 15 moves plus 6 turns fits 30
 TURN_STEP_DEG = 15.0
 CAMERA_TURN_STEP_DEG = 30.0
 TURN_TOLERANCE_DEG = 1e-6
@@ -165,13 +178,6 @@ CHANNEL_EDGE_COLOR = [0.10, 0.11, 0.13]
 # still 174 degrees over a 1.68 m drop onto a 0.5 m floor grid.  The focal
 # length is now written to the USD attribute as well; see _apply_focal_length.
 ROBOT_CAMERA_FOCAL = 13.36
-
-# Wall panel opacity.  At 0.45 the wall was so close to the colour of the empty
-# room behind it that "looking at the wall" and "looking through the opening"
-# rendered almost identically in grey, leaving the model nothing to distinguish
-# the gap by.  0.65 keeps the overlap visible through the panel while making the
-# wall itself clearly a surface rather than a window.
-WALL_OPACITY = 0.65
 
 # H1 kinematic constants (used for analytic collision checks).
 ROBOT_SHOULDER_WIDTH = 0.57
@@ -639,38 +645,44 @@ class BAOEnv:
         height = ROOM_WALL_HEIGHT
         thickness = ROOM_WALL_THICKNESS
 
-        # (name, centre, scale) in user coordinates.
+        # (name, centre, dims, colour) in user coordinates.
         walls = [
-            # Far wall, the one visible through the channel.
+            # Far wall: the surface visible THROUGH the channel.  Deliberately a
+            # different colour from the others, so "aimed at the opening" and
+            # "aimed at a panel" do not look the same up close.
             (
                 "room_far",
                 [SCENE_SIZE + thickness / 2.0, height / 2.0, 0.0],
                 [thickness, height, SCENE_SIZE + 2.0 * thickness],
+                ROOM_FAR_WALL_COLOR,
             ),
             # Near wall, behind the robot.
             (
                 "room_near",
                 [-thickness / 2.0, height / 2.0, 0.0],
                 [thickness, height, SCENE_SIZE + 2.0 * thickness],
+                ROOM_SIDE_WALL_COLOR,
             ),
             # Side walls.
             (
                 "room_side_left",
                 [half, height / 2.0, -half - thickness / 2.0],
                 [SCENE_SIZE, height, thickness],
+                ROOM_SIDE_WALL_COLOR,
             ),
             (
                 "room_side_right",
                 [half, height / 2.0, half + thickness / 2.0],
                 [SCENE_SIZE, height, thickness],
+                ROOM_SIDE_WALL_COLOR,
             ),
         ]
-        for name, centre, dims in walls:
+        for name, centre, dims, colour in walls:
             self._add_box(
                 name,
                 np.array(centre, dtype=float),
                 np.array(dims, dtype=float),
-                material=(f"{name}Material", ROOM_WALL_COLOR),
+                material=(f"{name}Material", colour),
             )
 
         # Ceiling, so rays above the wall tops do not escape to the background.
@@ -712,27 +724,25 @@ class BAOEnv:
                 )
 
     def _create_wall(self) -> None:
+        """The obstacle wall: opaque blue panels with a channel between them.
+
+        The panels are solid, not glass.  A translucent wall left the opening
+        hard to distinguish at close range (see WALL_COLOR), whereas a saturated
+        opaque surface turns the channel into a clean silhouette.
+        """
         channel_half = self._channel_width / 2.0
         panel_width = (SCENE_SIZE - self._channel_width) / 2.0
         z_center = panel_width / 2.0 + channel_half
         for i, sign in enumerate((-1.0, 1.0)):
-            path = self._add_box(
+            self._add_box(
                 f"WallPanel_{i}",
                 np.array([WALL_X, WALL_HEIGHT / 2.0, sign * z_center]),
                 np.array([WALL_THICKNESS, WALL_HEIGHT, panel_width]),
-            )
-            UsdGeom.Gprim(
-                self.stage.GetPrimAtPath(path)
-            ).CreateDoubleSidedAttr(True)
-            self._create_and_bind_glass_material(
-                path, f"/World/Looks/GlassMaterial_{i}"
+                material=(f"WallPanelMaterial_{i}", WALL_COLOR),
             )
 
-        # Dark posts mark the channel edges.  These are what make the opening
-        # visually readable: the panels are translucent, so without a hard
-        # visual boundary the opening is hard to distinguish.  Measured cause of
-        # their previous invisibility: FixedCuboid was ignoring the authored
-        # thickness, rendering them about 1.3 mm wide.
+        # Thin dark posts mark the channel edges, so the opening's boundary is
+        # unambiguous rather than a colour boundary alone.
         for sign in (-1.0, 1.0):
             edge_id = 0 if sign < 0 else 1
             self._add_box(
@@ -1165,15 +1175,18 @@ class BAOEnv:
     # ------------------------------------------------------------------
 
     def _create_and_bind_glass_material(self, prim_path: str, mat_path: str) -> None:
-        # OmniGlass.mdl is not reliably available in every Isaac Sim build;
-        # default to a translucent PreviewSurface so the wall is always see-through.
+        """Kept for the optional OmniGlass path; the obstacle wall is opaque now.
+
+        See WALL_COLOR: the panels are solid blue, so this is only used when a
+        caller explicitly asks for a translucent wall.
+        """
         if not self.task_dict.get("use_omni_glass", False):
             self._create_and_bind_material(
                 prim_path,
                 mat_path,
-                color=[0.42, 0.60, 0.72],
+                color=WALL_COLOR,
                 metallic=0.0,
-                roughness=0.12,
+                roughness=0.5,
                 opacity=WALL_OPACITY,
             )
             return

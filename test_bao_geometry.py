@@ -779,17 +779,19 @@ def test_scene_readability_constants() -> None:
         f"needs to be clearly visible",
     )
 
-    # 3. The wall must read as a surface, not as a window onto an identical
-    #    grey room.
+    # 3. The wall must read as a solid surface, not as a window onto a
+    #    similarly coloured room.  It is opaque blue by design: a translucent
+    #    panel made the channel hard to read at close range.
     opacity = env.WALL_OPACITY
     check(
-        0.0 < opacity < 1.0,
-        f"WALL_OPACITY must be translucent but non-trivial, got {opacity}",
+        opacity >= 0.99,
+        f"WALL_OPACITY is {opacity}; the obstacle wall must be opaque so the "
+        f"channel reads as a clean silhouette",
     )
+    wall = env.WALL_COLOR
     check(
-        opacity >= 0.6,
-        f"WALL_OPACITY is {opacity}; at the inherited 0.45 the wall and the "
-        f"room behind it rendered almost identically in grey",
+        wall[2] > wall[0] and wall[2] > wall[1],
+        f"WALL_COLOR {wall} is not blue-dominant",
     )
 
     # The edge colour must actually contrast with the wall's own colour.
@@ -1079,33 +1081,63 @@ def test_room_is_enclosed_and_coloured() -> None:
         f"x={env.SUCCESS_X}",
     )
 
-    # The walls must be coloured, and green in particular: a grey room is what
-    # made the opening invisible in the first place.
-    colour = env.ROOM_WALL_COLOR
-    check(
-        len(colour) == 3 and all(0.0 <= c <= 1.0 for c in colour),
-        f"ROOM_WALL_COLOR {colour} is not a valid RGB triple",
-    )
-    check(
-        colour[1] > colour[0] and colour[1] > colour[2],
-        f"ROOM_WALL_COLOR {colour} is not green-dominant; a neutral grey room "
-        f"renders the opening and the wall identically",
-    )
-    # And it must be far enough from the floor's grey to be distinguishable.
-    check(
-        abs(sum(colour) / 3.0 - 0.5) > 0.15,
-        f"ROOM_WALL_COLOR {colour} is too close to mid-grey to contrast",
-    )
-
     # Walls must be taller than the robot, or the robot could see over them.
     check(
         env.ROOM_WALL_HEIGHT > 1.806,
         f"ROOM_WALL_HEIGHT {env.ROOM_WALL_HEIGHT} is not above the measured "
         f"1.806 m robot",
     )
+
+    # Every surface the agent can see must be a distinct colour, or "aimed at
+    # the opening" and "aimed at a panel" look the same.  A recorded
+    # gemini-2.5-pro run, sitting at x=2.30 centred on the channel and facing
+    # it, reported "I am now facing a solid wall. I cannot see the opening I
+    # need to pass through," then scanned left and right and never advanced.
+    side = env.ROOM_SIDE_WALL_COLOR
+    far = env.ROOM_FAR_WALL_COLOR
+    wall = env.WALL_COLOR
+    for name, colour in (
+        ("ROOM_SIDE_WALL_COLOR", side),
+        ("ROOM_FAR_WALL_COLOR", far),
+        ("WALL_COLOR", wall),
+        ("ROOM_CEILING_COLOR", env.ROOM_CEILING_COLOR),
+    ):
+        check(
+            len(colour) == 3 and all(0.0 <= float(c) <= 1.0 for c in colour),
+            f"{name} {colour} is not a valid RGB triple",
+        )
+
+    def separation(a, b) -> float:
+        return sum(abs(float(x) - float(y)) for x, y in zip(a, b)) / 3.0
+
+    pairs = [
+        ("obstacle wall vs far wall", wall, far),
+        ("obstacle wall vs side walls", wall, side),
+        ("far wall vs side walls", far, side),
+        ("ceiling vs obstacle wall", env.ROOM_CEILING_COLOR, wall),
+    ]
+    for label, a, b in pairs:
+        check(
+            separation(a, b) > 0.10,
+            f"{label} differ by only {separation(a, b):.2f} per channel "
+            f"({a} vs {b}); the agent could not tell them apart",
+        )
+
+    # The obstacle wall must be opaque: a translucent panel made the channel
+    # hard to read at close range.
+    check(
+        env.WALL_OPACITY >= 0.99,
+        f"WALL_OPACITY is {env.WALL_OPACITY}; the obstacle wall must be opaque "
+        f"so the channel reads as a clean silhouette",
+    )
+    # And saturated blue, which is what makes the gap stand out.
+    check(
+        wall[2] > wall[0] and wall[2] > wall[1],
+        f"WALL_COLOR {wall} is not blue-dominant",
+    )
     print(
-        f"[ok] the room is enclosed and green (colour {colour}, "
-        f"height {env.ROOM_WALL_HEIGHT:.1f} m, far wall at x={env.SCENE_SIZE:.1f})"
+        f"[ok] room surfaces are distinct: wall {wall}, far {far}, "
+        f"side {side}, ceiling {env.ROOM_CEILING_COLOR}"
     )
 
 
