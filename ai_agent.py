@@ -381,7 +381,14 @@ class AgentAPI:
         history: Optional[List[Dict[str, str]]] = None,
         options: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """Return {"action", "confidence", "reasoning"} for the current view."""
+        """Return {"action", "confidence", "reasoning"} for the current view.
+
+        ``history``/``state``/``options`` exist so the documented call signature
+        stays stable for callers that pass them, but this client does **not**
+        inject them: the within-episode memory is already rendered into
+        ``prompt`` by ``protocol.build_prompt``, and adding it twice would
+        duplicate the block.  Pass the history to the prompt builder, not here.
+        """
         messages = self._build_messages(image, prompt)
         repair_hint = (
             "Your previous output was not valid. Respond with exactly one JSON object: "

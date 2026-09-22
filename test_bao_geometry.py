@@ -19,6 +19,9 @@ here with plain Python:
 5. **Action space and prompt** -- ``reach``/``retreat`` are gone, the camera
    actions keep the legacy 30 degree step, and the prompt is byte-identical
    across Levels and free of geometry leaks.
+6. **Within-episode memory** -- the agent's whole action history, with its own
+   reasoning, is rendered into the prompt for the entire episode, and the block
+   is empty at the start of a fresh episode.
 
 Run with a plain Python interpreter:
 
@@ -58,7 +61,12 @@ from experiments import (
     DEFAULT_MAX_STEPS,
     _is_sideways_yaw,
 )
-from protocol import ACTION_OPTIONS_STRING, TASK_INSTRUCTION, build_prompt
+from protocol import (
+    ACTION_OPTIONS_STRING,
+    HISTORY_LIMIT,
+    TASK_INSTRUCTION,
+    build_prompt,
+)
 
 # A/S ratios from the task brief, rounded to two decimals.
 EXPECTED_A_S = {0: 1.58, 1: 1.40, 2: 1.30, 3: 1.19, 4: 1.00, 5: 0.79}
@@ -643,6 +651,55 @@ def test_action_space() -> None:
     print("[ok] action space is the 6 locomotion actions plus 2 camera actions")
 
 
+def test_action_descriptions_match_the_real_step() -> None:
+    """The prompt's stated step length must equal the realised step length.
+
+    Regression guard: the descriptions were hard-coded as "move forward 5cm"
+    while MOVE_STEP had risen to 0.20 m, so the agent was told it moved 5 cm when
+    it moved 20.  That is a four-fold error in the very quantity this benchmark
+    asks the agent to reason about, and it invalidates any distance judgement the
+    agent makes -- so it is asserted here rather than left to review.
+    """
+    import re
+
+    import environment as env
+    from protocol import ACTION_DESCRIPTIONS
+
+    stated_cm = env.MOVE_STEP * 100.0
+    for action in ("forward", "backward", "left", "right"):
+        text = ACTION_DESCRIPTIONS[action]
+        found = re.search(r"(\d+(?:\.\d+)?)\s*cm", text)
+        check(
+            found is not None,
+            f"{action} description {text!r} does not state a distance in cm",
+        )
+        value = float(found.group(1))
+        check(
+            abs(value - stated_cm) < 1e-9,
+            f"{action} says {value}cm but MOVE_STEP is {env.MOVE_STEP} m "
+            f"({stated_cm}cm); the agent would misjudge its own travel",
+        )
+
+    # And it must actually appear in the prompt the agent receives.
+    from protocol import ACTION_OPTIONS_STRING, build_prompt
+
+    prompt = build_prompt(state={"position": [0.5, 0.0, 0.0],
+                                 "torso_rotation": 0.0}, max_steps=30)
+    check(
+        f"move forward {stated_cm:g}cm" in prompt
+        or f"move forward {int(stated_cm)}cm" in prompt,
+        f"the prompt does not state the real step length ({stated_cm:g}cm)",
+    )
+    check(
+        "5cm" not in prompt or abs(stated_cm - 5.0) < 1e-9,
+        "the prompt still advertises a 5cm step while MOVE_STEP differs",
+    )
+    print(
+        f"[ok] action descriptions match MOVE_STEP "
+        f"({stated_cm:g}cm, stated and realised)"
+    )
+
+
 def test_prompt_is_uniform_and_leak_free() -> None:
     """The prompt must be identical everywhere and reveal no geometry."""
     base_state = {
@@ -682,6 +739,93 @@ def test_prompt_is_uniform_and_leak_free() -> None:
         "the unified task instruction is missing from the prompt",
     )
     print("[ok] prompt is uniform, deterministic, and leak-free")
+
+
+def test_history_is_full_episode_memory() -> None:
+    """The agent must remember every step of the episode, not a sliding window.
+
+    Regression guard: the history block used to be clipped to the last six
+    steps, so from step seven onward the agent could no longer see what it had
+    tried at the start of the episode.  The benchmark asks for a route composed
+    over up to 30 steps, and an agent that forgets the first ten cannot show
+    either anticipation or persistence.
+    """
+    history = [
+        {
+            "step": index,
+            "action": "forward" if index % 2 == 0 else "turn_left",
+            "feedback": (
+                "executed"
+                if index % 3
+                else "blocked by transparent wall (left)"
+            ),
+            "reasoning": f"plan {index}",
+        }
+        for index in range(DEFAULT_MAX_STEPS - 1)
+    ]
+    prompt = build_prompt(
+        state={"position": [1.5, 0.0, 0.0], "torso_rotation": 0.0},
+        history=history,
+        max_steps=DEFAULT_MAX_STEPS,
+    )
+
+    check(
+        HISTORY_LIMIT is None,
+        f"HISTORY_LIMIT={HISTORY_LIMIT} would drop the start of the episode",
+    )
+    for index in range(len(history)):
+        check(
+            f"- step {index}:" in prompt,
+            f"the record of step {index} is missing from the prompt",
+        )
+    check("plan 0" in prompt, "the first step's reasoning was dropped")
+    check(
+        f"plan {len(history) - 1}" in prompt,
+        "the most recent step's reasoning is missing",
+    )
+
+    # Oldest first: the last line must be the step the agent just took.
+    check(
+        prompt.index("- step 0:") < prompt.index(f"- step {len(history) - 1}:"),
+        "history is not rendered oldest-first",
+    )
+
+    # Action and feedback are the scored record and must never be clipped.
+    blocked = sum(
+        1 for item in history if item["feedback"].startswith("blocked")
+    )
+    check(
+        prompt.count("blocked by transparent wall (left)") == blocked,
+        "a blocked-feedback line was lost from the history",
+    )
+
+    # Only reasoning is clipped, and clipping must not swallow the action line.
+    clipped = build_prompt(
+        state={},
+        history=[
+            {
+                "step": 0,
+                "action": "forward",
+                "feedback": "executed",
+                "reasoning": "x" * 5000,
+            }
+        ],
+        max_steps=DEFAULT_MAX_STEPS,
+    )
+    check("\u2026" in clipped, "an over-long reasoning was not clipped")
+    check(len(clipped) < 4000, "an over-long reasoning blew up the prompt")
+    check(
+        "- step 0: forward -> executed" in clipped,
+        "clipping the reasoning damaged the action/feedback line",
+    )
+
+    # A fresh episode has taken no steps, so it must show no history block at
+    # all -- no cross-episode leakage, no empty scaffolding.
+    check(
+        "Action history" not in build_prompt(state={}, history=[], max_steps=30),
+        "an empty history should render no history block",
+    )
+    print("[ok] the agent carries its whole within-episode action history")
 
 
 def test_episode_defaults() -> None:
@@ -1603,7 +1747,9 @@ def main() -> int:
         test_turn_clearance_boundary,
         test_entry_point_does_not_import_isaac_sim,
         test_action_space,
+        test_action_descriptions_match_the_real_step,
         test_prompt_is_uniform_and_leak_free,
+        test_history_is_full_episode_memory,
         test_episode_defaults,
         test_sideways_band,
         test_eye_camera_pitches_downward,

@@ -23,17 +23,33 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Sequence
 
-from environment import ACTIONS
+from environment import ACTIONS, MOVE_STEP
 
 # ---------------------------------------------------------------------------
 # Action space
 # ---------------------------------------------------------------------------
 
+# The descriptions must be DERIVED from the real constants.  They were once
+# hard-coded as "move forward 5cm" while MOVE_STEP had risen to 0.20 m, so the
+# prompt told the agent it moved 5 cm when it moved 20 -- a four-fold error in
+# exactly the quantity this benchmark asks the agent to reason about.
+_STEP_CM = MOVE_STEP * 100.0
+
+
+def _format_step(centimetres: float) -> str:
+    """Render a step length without a trailing .0 (5 not 5.0, but 7.5 stays)."""
+    if abs(centimetres - round(centimetres)) < 1e-9:
+        return str(int(round(centimetres)))
+    return f"{centimetres:g}"
+
+
+_STEP_TEXT = _format_step(_STEP_CM)
+
 ACTION_DESCRIPTIONS: Dict[str, str] = {
-    "forward": "move forward 5cm",
-    "backward": "move backward 5cm",
-    "left": "move left 5cm",
-    "right": "move right 5cm",
+    "forward": f"move forward {_STEP_TEXT}cm",
+    "backward": f"move backward {_STEP_TEXT}cm",
+    "left": f"move left {_STEP_TEXT}cm",
+    "right": f"move right {_STEP_TEXT}cm",
     "turn_left": "rotate body 15 degrees counterclockwise",
     "turn_right": "rotate body 15 degrees clockwise",
     "look_left": "rotate head camera 30 degrees to the left",
@@ -80,18 +96,44 @@ SYSTEM_PROMPT = (
     "environment. Always respond with a single JSON object."
 )
 
-HISTORY_LIMIT = 6
+# The agent must remember what it has already done *for the whole episode*, so
+# that step 30 is chosen with steps 0-29 in view rather than only the last few.
+# ``None`` means "never truncate"; ``max_steps`` already bounds the block, so
+# there is nothing to gain from a second, smaller cap.  Set an int to restore a
+# sliding window (that would be a different experiment: it measures behaviour
+# without episodic memory).
+HISTORY_LIMIT: Optional[int] = None
+
+# Model reasoning is carried into the history so the agent can see *why* it did
+# each thing, not just what it did.  Only this field is clipped: the action and
+# the environment feedback are always rendered in full, because they are the
+# record the benchmark actually scores.
+HISTORY_REASONING_CHARS = 240
+
+
+def _clip(text: str, limit: int = HISTORY_REASONING_CHARS) -> str:
+    """Collapse whitespace and clip to ``limit`` characters with an ellipsis."""
+    collapsed = " ".join(str(text).split())
+    if limit <= 0 or len(collapsed) <= limit:
+        return collapsed
+    return collapsed[: max(0, limit - 1)].rstrip() + "\u2026"
 
 
 def build_prompt(
     state: Optional[Dict[str, Any]] = None,
-    history: Optional[Sequence[Dict[str, str]]] = None,
+    history: Optional[Sequence[Dict[str, Any]]] = None,
     max_steps: int = 30,
 ) -> str:
     """Build the per-step prompt.
 
     ``level`` is intentionally *not* a parameter: the prompt is identical for
     every Level, so there is no way for a caller to leak the channel geometry.
+
+    ``history`` is the agent's own within-episode memory: one entry per step
+    already taken, each carrying the action, the environment's feedback and the
+    agent's own reasoning.  It is rendered oldest-first so the last line is the
+    step the agent just took, and it is never truncated unless ``HISTORY_LIMIT``
+    is set.
     """
     parts: List[str] = [TASK_INSTRUCTION]
 
@@ -119,9 +161,24 @@ def build_prompt(
     parts.append("\n".join(lines))
 
     if history:
-        lines = ["Action history (most recent first):"]
-        for item in list(history)[-HISTORY_LIMIT:][::-1]:
-            lines.append(f"- {item.get('action')} -> {item.get('feedback')}")
+        entries = list(history)
+        if HISTORY_LIMIT is not None:
+            entries = entries[-HISTORY_LIMIT:]
+        lines = [
+            "Action history for this episode "
+            f"({len(entries)} step(s) already taken, oldest first). "
+            "This is your own record of this episode: use it to notice what you "
+            "have already tried and whether it worked."
+        ]
+        for index, item in enumerate(entries):
+            label = item.get("step")
+            if label is None:
+                label = index
+            line = f"- step {label}: {item.get('action')} -> {item.get('feedback')}"
+            reasoning = _clip(item.get("reasoning") or "")
+            if reasoning:
+                line += f" | your reasoning: {reasoning}"
+            lines.append(line)
         parts.append("\n".join(lines))
 
     parts.append(RESPONSE_FORMAT_INSTRUCTION)

@@ -191,8 +191,8 @@ class AgentAdapter:
 
     def query(
         self, prompt: str, image: np.ndarray, state: Dict[str, Any]
-    ) -> Tuple[Optional[str], str, float]:
-        """Call the model and return (action_name, raw_response, latency_ms)."""
+    ) -> Tuple[Optional[str], str, str, float]:
+        """Call the model and return (action_name, raw_response, reasoning, latency_ms)."""
         t0 = time.perf_counter()
         if self._callable is not None:
             try:
@@ -225,32 +225,55 @@ class AgentAdapter:
                 options=ACTION_OPTIONS_STRING,
             )
         latency_ms = (time.perf_counter() - t0) * 1000.0
-        action_name, raw_text = self._normalize(raw)
+        action_name, raw_text, reasoning = self._normalize(raw)
         self._append_log(prompt, raw_text)
-        return action_name, raw_text, latency_ms
+        return action_name, raw_text, reasoning, latency_ms
 
-    def record(self, action_name: str, feedback: str) -> None:
-        self.history.append({"action": action_name, "feedback": feedback})
+    def record(
+        self,
+        action_name: str,
+        feedback: str,
+        reasoning: str = "",
+        step: Optional[int] = None,
+    ) -> None:
+        """Append one completed step to the agent's within-episode memory.
 
-    def _normalize(self, raw: Any) -> Tuple[Optional[str], str]:
+        ``self.history`` is the single source of truth for that memory: the same
+        list is rendered into the next prompt by ``protocol.build_prompt`` and
+        handed to the model client as ``history=``, so the two can never drift.
+        """
+        entry: Dict[str, Any] = {"action": action_name, "feedback": feedback}
+        if reasoning:
+            entry["reasoning"] = reasoning
+        if step is not None:
+            entry["step"] = int(step)
+        self.history.append(entry)
+
+    def _normalize(self, raw: Any) -> Tuple[Optional[str], str, str]:
+        """Return ``(action_name, raw_text, reasoning)`` for a model reply."""
         if isinstance(raw, str):
-            return parse_action_text(raw), raw
+            return parse_action_text(raw), raw, ""
         if raw is None:
-            return None, ""
+            return None, "", ""
         if isinstance(raw, dict):
             name = raw.get("action")
             if name not in ACTIONS:
                 name = None
-            return name, json.dumps(raw, ensure_ascii=False)
+            return (
+                name,
+                json.dumps(raw, ensure_ascii=False),
+                str(raw.get("reasoning") or ""),
+            )
         raw_text = str(getattr(raw, "text", "") or raw)
+        reasoning = str(getattr(raw, "reasoning", "") or "")
         if hasattr(raw, "action_choice"):
             index = int(getattr(raw, "action_choice"))
             name = ACTIONS[index - 1] if 1 <= index <= len(ACTIONS) else None
-            return name, raw_text
+            return name, raw_text, reasoning
         name = getattr(raw, "action", None) or getattr(raw, "name", None)
         if name is None:
             name = str(raw).strip().lower()
-        return (name if name in ACTIONS else None), raw_text
+        return (name if name in ACTIONS else None), raw_text, reasoning
 
     def _append_log(self, prompt: str, raw_text: str) -> None:
         if not self.log_file:
@@ -418,7 +441,10 @@ class BAOExperimentRunner:
             self.log_dir, f"level{level}_episode{episode_id:03d}_agent.txt"
         )
         agent = AgentAdapter(model=self.model, log_file=agent_log)
-        history: List[Dict[str, str]] = []
+        # The adapter owns the within-episode memory.  Binding the local name to
+        # its list (rather than to a second, parallel list) is what makes the
+        # prompt block and the ``history=`` argument provably the same object.
+        history: List[Dict[str, Any]] = agent.history
 
         self.env.reset_scene()
         steps: List[Dict[str, Any]] = []
@@ -440,7 +466,7 @@ class BAOExperimentRunner:
             rgb = self.env.get_camera_image()
             state = self.env.get_robot_state()
             prompt = build_prompt(state=state, history=history, max_steps=self.max_steps)
-            action_name, _raw, latency_ms = agent.query(prompt, rgb, state)
+            action_name, _raw, reasoning, latency_ms = agent.query(prompt, rgb, state)
             total_llm_time_ms += latency_ms
 
             if action_name is None:
@@ -490,7 +516,7 @@ class BAOExperimentRunner:
                 }
             )
             action_sequence.append(action_taken)
-            history.append({"action": action_taken, "feedback": feedback})
+            agent.record(action_taken, feedback, reasoning, step=step)
 
             if self.save_obs:
                 self._save_observation(level, episode_id, step, action_taken, rgb)

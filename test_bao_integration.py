@@ -14,7 +14,8 @@ What it verifies:
 * a scripted "turn then slide" policy passes every Level and is scored as a
   sideways passage,
 * the exported CSV carries the required columns,
-* ``analysis.py`` recovers the right sideways threshold from saved results.
+* ``analysis.py`` recovers the right sideways threshold from saved results,
+* the within-episode action history reaches every model call in full.
 
 Run with a plain Python interpreter:
 
@@ -641,8 +642,10 @@ def test_invalid_action_is_recorded() -> None:
             self.log_file = None
             self.history = []
 
-        def query(self, prompt: str, image: Any, state: Any) -> Tuple[None, str, float]:
-            return None, "not json at all", 1.0
+        def query(
+            self, prompt: str, image: Any, state: Any
+        ) -> Tuple[None, str, str, float]:
+            return None, "not json at all", "", 1.0
 
     original = experiments.AgentAdapter
     experiments.AgentAdapter = _BadAdapter
@@ -677,6 +680,101 @@ def test_invalid_action_is_recorded() -> None:
     finally:
         experiments.AgentAdapter = original
     print("[ok] invalid model responses are recorded without crashing")
+
+
+def test_episode_memory_reaches_the_model() -> None:
+    """The agent must see its own past steps, in order, for the whole episode.
+
+    Two channels can carry that memory to a model client -- the rendered prompt
+    block and the ``history=`` argument -- and the runner must hand both the
+    same, growing record: the action it took, the environment's feedback, and
+    its own reasoning.  A six-step sliding window used to break this from step
+    seven onward.
+    """
+    import experiments
+
+    seen: List[Dict[str, Any]] = []
+
+    class _ProbeAdapter(experiments.AgentAdapter):  # type: ignore[misc]
+        def __init__(self, model: str, log_file: Optional[str] = None) -> None:
+            self.model = model
+            self.log_file = None
+            self.history = []
+            self._callable = None
+            self._agent = ScriptedAgent("frontal")
+
+        def query(self, prompt: str, image: Any, state: Any) -> Any:
+            seen.append({"prompt": prompt, "history": list(self.history)})
+            return super().query(prompt, image, state)
+
+    original = experiments.AgentAdapter
+    experiments.AgentAdapter = _ProbeAdapter
+    try:
+        tmp = make_temp_dir()
+        try:
+            env = FakeBAOEnv()
+            runner = BAOExperimentRunner(
+                env=env,
+                model="scripted-memory",
+                max_steps=DEFAULT_MAX_STEPS,
+                results_root=os.path.join(tmp, "results"),
+                logs_root=os.path.join(tmp, "logs"),
+            )
+            episodes = runner.run_level(level=0, episodes=1)
+            episode = episodes[0]
+            actions = [step["action"] for step in episode["steps"]]
+
+            check(len(seen) == len(actions), "the probe missed a model call")
+            check(
+                len(actions) > 6,
+                f"the episode is only {len(actions)} steps: it cannot expose a "
+                "six-step window",
+            )
+
+            # Step 0 is a fresh episode: no memory, no cross-episode leakage.
+            check(
+                seen[0]["history"] == [],
+                f"the first call already saw history {seen[0]['history']}",
+            )
+            check(
+                "Action history" not in seen[0]["prompt"],
+                "the first prompt advertises an empty history block",
+            )
+
+            for index, observation in enumerate(seen):
+                check(
+                    len(observation["history"]) == index,
+                    f"call {index} saw {len(observation['history'])} past steps",
+                )
+                check(
+                    [entry["action"] for entry in observation["history"]]
+                    == actions[:index],
+                    f"call {index} saw the wrong action sequence",
+                )
+                check(
+                    [entry["step"] for entry in observation["history"]]
+                    == list(range(index)),
+                    f"call {index} saw wrongly numbered steps",
+                )
+                # The model's own reasoning must travel with the action.
+                check(
+                    all(
+                        entry["reasoning"] == "frontal"
+                        for entry in observation["history"]
+                    ),
+                    f"call {index} lost the agent's own reasoning",
+                )
+                # ... and the rendered prompt must agree with the argument.
+                for position, action in enumerate(actions[:index]):
+                    check(
+                        f"- step {position}: {action} ->" in observation["prompt"],
+                        f"call {index} prompt omits step {position} ({action})",
+                    )
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+    finally:
+        experiments.AgentAdapter = original
+    print("[ok] the whole within-episode memory reaches the model")
 
 
 def test_full_protocol_and_analysis() -> None:
@@ -917,6 +1015,7 @@ def main() -> int:
         test_analysis_recovers_threshold,
         test_checkpoint_resume,
         test_invalid_action_is_recorded,
+        test_episode_memory_reaches_the_model,
         test_full_protocol_and_analysis,
         test_progress_callback_signature,
         test_cli_flags_reach_the_runner,
