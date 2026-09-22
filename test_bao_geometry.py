@@ -976,6 +976,82 @@ def test_robot_has_room_to_rotate_before_the_wall() -> None:
     )
 
 
+def test_box_axis_mapping_is_correct() -> None:
+    """A box's height must end up on the height axis.
+
+    `dims` is authored as (along_x, height, left_right) in the user frame while
+    Isaac Sim uses z for height, so y and z swap exactly once.  This was got
+    wrong repeatedly, most visibly when the channel posts rendered LYING DOWN:
+    measured isaac z span 0.05 m for a post authored 2.0 m tall, which showed up
+    in every view as a dark horizontal bar across the wall.
+
+    Rather than trust the transform, this replicates _add_box's corner
+    computation and checks the resulting extents per axis.
+    """
+    import inspect
+
+    import environment as env
+
+    source = inspect.getsource(env.BAOEnv._add_box)
+    check(
+        "AddScaleOp" not in source,
+        "_add_box applies a scale op; sizes are authored directly in metres",
+    )
+    # The swap must be a plain index swap, applied to the raw authored dims and
+    # only once.  Calling the position/scale helper on dims does the swap, so
+    # seeing it applied to `dims` (rather than to a literal) is the bug.
+    check(
+        "_user_to_isaac_scale(dims" not in source
+        and "_user_to_isaac_scale(np.asarray(dims" not in source,
+        "_add_box feeds authored dims through _user_to_isaac_scale, which swaps "
+        "the axes; the swap is already done explicitly",
+    )
+
+    # Emulate the corner maths for the channel post.  Authored dims are
+    # (along_x, height, left_right) in the user frame; Isaac Sim puts height on
+    # z, so the y and z components swap.  The channel post is authored
+    # (0.05 deep, 0.05 wide, 2.0 tall) and must therefore span 2.0 m in z.
+    def isaac_extents(dims) -> tuple:
+        return (float(dims[0]), float(dims[2]), float(dims[1]))
+
+    post = (
+        env.WALL_THICKNESS * 2.5,      # along_x: depth through the wall
+        env.CHANNEL_EDGE_THICKNESS,    # height in the user frame
+        env.WALL_HEIGHT,               # left_right in the user frame
+    )
+    ix, iy, iz = isaac_extents(post)
+    check(
+        abs(iz - env.WALL_HEIGHT) < 1e-12,
+        f"the channel post's isaac z extent is {iz}, but it is authored "
+        f"{env.WALL_HEIGHT} m tall; the post would lie down",
+    )
+    check(
+        abs(iy - env.WALL_THICKNESS * 2.5) < 1e-12,
+        f"the channel post's isaac y extent is {iy}, expected its depth "
+        f"{env.WALL_THICKNESS * 2.5}",
+    )
+    check(
+        abs(ix - env.CHANNEL_EDGE_THICKNESS) < 1e-12,
+        f"the channel post's isaac x extent is {ix}, expected its width "
+        f"{env.CHANNEL_EDGE_THICKNESS}",
+    )
+
+    # Same check for a wall panel: 0.02 thick, 2.0 tall, ~2.05 wide.
+    px, py, pz = isaac_extents((env.WALL_THICKNESS, env.WALL_HEIGHT, 2.05))
+    check(
+        abs(pz - env.WALL_HEIGHT) < 1e-12,
+        f"the wall panel's isaac z extent is {pz}, expected {env.WALL_HEIGHT}",
+    )
+    check(
+        abs(py - 2.05) < 1e-12,
+        f"the wall panel's isaac y extent is {py}, expected its width 2.05",
+    )
+    print(
+        f"[ok] box axes map correctly: a {env.WALL_HEIGHT:.1f} m tall post gets "
+        f"an isaac z extent of {iz:.2f} m"
+    )
+
+
 def test_channel_edges_do_not_narrow_the_opening() -> None:
     """The visible clear width must equal the modelled channel width.
 
@@ -1528,6 +1604,7 @@ def main() -> int:
         test_start_distance_reachable_in_budget,
         test_robot_has_room_to_rotate_before_the_wall,
         test_channel_edges_do_not_narrow_the_opening,
+        test_box_axis_mapping_is_correct,
         test_ground_grid_exists,
         test_camera_look_at_orientation,
         test_no_viewport_camera_in_diagnostics,

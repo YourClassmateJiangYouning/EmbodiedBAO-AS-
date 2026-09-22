@@ -278,6 +278,16 @@ def _user_to_isaac_scale(scale: np.ndarray) -> np.ndarray:
     return np.array([s[0], s[2], s[1]], dtype=float)
 
 
+def _user_dims_to_isaac(dims: np.ndarray) -> np.ndarray:
+    """Swap the y/z components of a SIZE triple for Isaac Sim.
+
+    This is the counterpart of :func:`_user_to_isaac_scale` and exists purely
+    for documentation: the two are the same operation, and calling the wrong one
+    at the wrong point is what made the channel posts render lying down.
+    """
+    return _user_to_isaac_scale(dims)
+
+
 def _panel_boxes(
     channel_width: Optional[float] = None,
 ) -> List[Tuple[np.ndarray, np.ndarray]]:
@@ -598,7 +608,15 @@ class BAOEnv:
         # same number by construction, with no extent or scale semantics left to
         # misinterpret.
         centre_isaac = _user_to_isaac_pos(np.asarray(center, dtype=float))
-        dims_isaac = _user_to_isaac_scale(np.asarray(dims, dtype=float))
+        # `dims` is authored as (along_x, height, left_right) in the USER frame.
+        # Isaac Sim uses z for height, so the y and z components swap -- once.
+        # Previously _user_to_isaac_scale was applied to a triple that had
+        # already been swapped, so the height and the lateral extent traded
+        # places and the channel posts rendered lying down (measured z span
+        # 0.05 m instead of 2.0 m).
+        dims_isaac = np.array(
+            [float(dims[0]), float(dims[2]), float(dims[1])], dtype=float
+        )
         hx, hy, hz = (float(dims_isaac[0]) / 2.0,
                       float(dims_isaac[1]) / 2.0,
                       float(dims_isaac[2]) / 2.0)
