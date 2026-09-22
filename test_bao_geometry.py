@@ -1009,15 +1009,17 @@ def test_box_axis_mapping_is_correct() -> None:
 
     # Emulate the corner maths for the channel post.  Authored dims are
     # (along_x, height, left_right) in the user frame; Isaac Sim puts height on
-    # z, so the y and z components swap.  The channel post is authored
-    # (0.05 deep, 0.05 wide, 2.0 tall) and must therefore span 2.0 m in z.
+    # z, so the y and z components swap.  The post is a TALL SLIM bar: 0.05 m
+    # through the wall, 2.0 m tall, 0.05 m wide, so its isaac z span must be
+    # the wall height.  Authoring 2.0 m in the left_right slot instead produced
+    # a horizontal bar, which rendered as a dark line across the wall.
     def isaac_extents(dims) -> tuple:
         return (float(dims[0]), float(dims[2]), float(dims[1]))
 
     post = (
         env.WALL_THICKNESS * 2.5,      # along_x: depth through the wall
-        env.CHANNEL_EDGE_THICKNESS,    # height in the user frame
-        env.WALL_HEIGHT,               # left_right in the user frame
+        env.WALL_HEIGHT,               # height
+        env.CHANNEL_EDGE_THICKNESS,    # left_right: the post's width
     )
     ix, iy, iz = isaac_extents(post)
     check(
@@ -1026,14 +1028,23 @@ def test_box_axis_mapping_is_correct() -> None:
         f"{env.WALL_HEIGHT} m tall; the post would lie down",
     )
     check(
-        abs(iy - env.WALL_THICKNESS * 2.5) < 1e-12,
-        f"the channel post's isaac y extent is {iy}, expected its depth "
-        f"{env.WALL_THICKNESS * 2.5}",
+        abs(iy - env.CHANNEL_EDGE_THICKNESS) < 1e-12,
+        f"the channel post's isaac y extent is {iy}, expected its width "
+        f"{env.CHANNEL_EDGE_THICKNESS}",
     )
     check(
-        abs(ix - env.CHANNEL_EDGE_THICKNESS) < 1e-12,
-        f"the channel post's isaac x extent is {ix}, expected its width "
-        f"{env.CHANNEL_EDGE_THICKNESS}",
+        abs(ix - env.WALL_THICKNESS * 2.5) < 1e-12,
+        f"the channel post's isaac x extent is {ix}, expected its depth "
+        f"{env.WALL_THICKNESS * 2.5}",
+    )
+
+    # The authored call site must actually pass the tall shape: catch a
+    # regression where WALL_HEIGHT goes back into the left_right slot.
+    wall_source = inspect.getsource(env.BAOEnv._create_wall)
+    check(
+        "WALL_HEIGHT, CHANNEL_EDGE_THICKNESS" in wall_source,
+        "the channel post is not authored as (depth, WALL_HEIGHT, width); it "
+        "would render as a horizontal bar rather than a vertical post",
     )
 
     # Same check for a wall panel: 0.02 thick, 2.0 tall, ~2.05 wide.

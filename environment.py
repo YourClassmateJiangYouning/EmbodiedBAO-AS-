@@ -801,11 +801,16 @@ class BAOEnv:
         post_centre_offset = channel_half + CHANNEL_EDGE_THICKNESS / 2.0
         for sign in (-1.0, 1.0):
             edge_id = 0 if sign < 0 else 1
+            # dims are (along_x, height, left_right): the post must be a TALL
+            # SLIM bar, so the height slot gets WALL_HEIGHT.  Authoring it with
+            # WALL_HEIGHT in the left_right slot made it a horizontal bar 2 m
+            # long and 5 cm tall, which is what rendered as the dark line across
+            # the wall in every view.
             self._add_box(
                 f"ChannelEdge_{edge_id}",
                 np.array([WALL_X, WALL_HEIGHT / 2.0, sign * post_centre_offset]),
                 np.array(
-                    [WALL_THICKNESS * 2.5, CHANNEL_EDGE_THICKNESS, WALL_HEIGHT]
+                    [WALL_THICKNESS * 2.5, WALL_HEIGHT, CHANNEL_EDGE_THICKNESS]
                 ),
                 material=(
                     f"ChannelEdgeMaterial_{edge_id}",
