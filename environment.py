@@ -69,7 +69,7 @@ except Exception as _isaac_import_error:  # pragma: no cover - only outside Isaa
 # Scene constants (metres / degrees)
 # ---------------------------------------------------------------------------
 
-SCENE_SIZE = 4.0
+SCENE_SIZE = 5.0
 GROUND_THICKNESS = 0.02
 
 # `FixedCuboid`'s size/scale combination does NOT mean metres, and behaves
@@ -95,23 +95,25 @@ ROOM_WALL_THICKNESS = 0.02
 ROOM_WALL_COLOR = [0.13, 0.42, 0.20]  # green
 ROOM_CEILING_COLOR = [0.55, 0.57, 0.60]
 
-WALL_X = 2.0
+WALL_X = 3.0
 WALL_HEIGHT = 2.0
 WALL_THICKNESS = 0.02
 CHANNEL_WIDTH = 0.90  # Level 0 default; every Level overrides this
 CHANNEL_HALF_WIDTH = CHANNEL_WIDTH / 2.0
 PANEL_WIDTH = (SCENE_SIZE - CHANNEL_WIDTH) / 2.0
 
-# Start 0.5 m from the obstacle wall rather than 1.5 m.  Measured reason: from
-# 1.5 m the 2.0 m gap subtends about 77 degrees, which fills the whole
-# 105-degree eye view with the space behind it, leaving no wall in frame to
-# contrast against.  From 0.5 m it is about 39 degrees, so the frame contains
-# wall, opening and the far wall together.  MOVE_STEP rises to 0.10 m to keep
-# the 2.0 m of required travel inside the 30-step budget.
+# Start 2.5 m from the obstacle wall.  Measured reason for moving the wall back
+# from x=2.0: the turn gate samples the robot's CURRENT pose, and the wall slab
+# spans WALL_X +- (thickness/2 + MOVE_STEP).  With the wall at x=2.0 the robot
+# could not rotate at all past x=1.60, so from x=0.5 it had only ~1.1 m of
+# manoeuvring room and a 1.5 m walk to the wall.  A recorded qwen-vl-max run
+# went 0.5 -> 1.6, then wedged: x froze for eight steps while turn_left and
+# turn_right alternated and were both blocked.  At x=3.0 the same start leaves
+# 2.3 m of free space, which fits the turn and the walk inside 30 steps.
 ROBOT_START_POS = np.array([0.5, 0.0, 0.0], dtype=float)
 ROBOT_START_YAW_DEG = 0.0
 # Success: the whole body has reached the far side of the wall.
-SUCCESS_X = 2.5
+SUCCESS_X = 3.5
 
 # ---------------------------------------------------------------------------
 # A/S threshold ladder (Warren & Whang 1987 human threshold is A/S = 1.30)
@@ -128,7 +130,7 @@ LEVEL_CHANNEL_WIDTHS: Dict[int, float] = {
     5: 0.45,
 }
 
-MOVE_STEP = 0.10  # 10 cm; paired with ROBOT_START_POS, see the note there
+MOVE_STEP = 0.15  # 15 cm; paired with WALL_X and ROBOT_START_POS, see above
 TURN_STEP_DEG = 15.0
 CAMERA_TURN_STEP_DEG = 30.0
 TURN_TOLERANCE_DEG = 1e-6

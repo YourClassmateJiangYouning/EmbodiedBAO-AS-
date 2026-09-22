@@ -693,7 +693,7 @@ def test_episode_defaults() -> None:
         DEFAULT_MAX_STEPS == 30,
         f"max steps is {DEFAULT_MAX_STEPS}, expected 30",
     )
-    check(SUCCESS_X == 2.5, f"success threshold is {SUCCESS_X}, expected 2.5")
+    check(SUCCESS_X == 3.5, f"success threshold is {SUCCESS_X}, expected 3.5")
     print("[ok] protocol defaults are 20 episodes x 30 steps, success at x > 2.5")
 
 
@@ -816,10 +816,10 @@ def test_start_distance_reachable_in_budget() -> None:
     from environment import MOVE_STEP, ROBOT_START_POS, TURN_STEP_DEG
 
     def steps_needed(start_x: float, move_step: float) -> int:
-        """Steps for: turn 90 deg, sidle to x > 2.5, i.e. the intended route.
+        """Steps for: turn 90 deg, sidle past SUCCESS_X, i.e. the intended route.
 
         The robot advances along +x, so standing *further back* means a
-        *smaller* start_x.  It has already passed x=2.5 if start_x >= 2.5.
+        *smaller* start_x.  It has already passed the plane if start_x >= it.
         """
         turns = int(round(90.0 / TURN_STEP_DEG))
         if start_x >= SUCCESS_X:
@@ -828,13 +828,13 @@ def test_start_distance_reachable_in_budget() -> None:
         moves = int(math.ceil(travel / move_step))
         return turns + moves
 
+    # With the wall at x=3.0 and SUCCESS_X at 3.5, the walk is 3.0 m, so the step
+    # size has to be around 0.15 m for the route to fit 30 steps.
     scenarios = [
         # (label, start_x, move_step, must_fit)
         ("current default", float(ROBOT_START_POS[0]), MOVE_STEP, True),
-        ("1.0 m back, default step", 1.0, 0.05, False),
-        ("1.0 m back, 0.10 m step", 1.0, 0.10, True),
-        ("1.5 m back, default step", 0.5, 0.05, False),
-        ("1.5 m back, 0.10 m step", 0.5, 0.10, True),
+        ("default start, too-small step", float(ROBOT_START_POS[0]), 0.10, False),
+        ("default start, generous step", float(ROBOT_START_POS[0]), 0.20, True),
     ]
     for label, start_x, move_step, must_fit in scenarios:
         needed = steps_needed(start_x, move_step)
@@ -896,6 +896,81 @@ def test_start_distance_reachable_in_budget() -> None:
         f"{DEFAULT_MAX_STEPS} steps; channel fills "
         + ", ".join(f"{100 * shares[x]:.0f}% at x={x}" for x in (1.5, 1.0, 0.5, 0.0))
         + ")"
+    )
+
+
+def test_robot_has_room_to_rotate_before_the_wall() -> None:
+    """The start pose must leave a turn's worth of clearance in front of the wall.
+
+    This is the constraint that a recorded qwen-vl-max episode actually failed
+    on.  The turn gate samples the robot's current pose, and the wall slab spans
+    WALL_X +- (WALL_THICKNESS/2 + MOVE_STEP), so past x = WALL_X - MOVE_STEP -
+    WALL_THICKNESS/2 no rotation is legal at all.  With the wall at x=2.0 the
+    robot could not turn beyond x=1.60; it walked 0.5 -> 1.6, then spent eight
+    steps alternating turn_left and turn_right while both were blocked, and
+    never reached the far side.
+
+    The free run must be long enough for the robot to walk up to the channel and
+    still be able to rotate into it.
+    """
+    from environment import MOVE_STEP, ROBOT_START_POS, WALL_X, _turn_path_is_clear
+
+    start_x = float(ROBOT_START_POS[0])
+
+    def first_x_where_rotation_fails(level: int) -> float:
+        """Lowest x at which a single 15 degree turn is rejected, by search."""
+        width = LEVEL_CHANNEL_WIDTHS[level]
+        step = 0.01
+        x = start_x
+        while x < WALL_X + 0.1:
+            if (
+                _turn_path_is_clear(
+                    np.array([x, 0.0, 0.0]), 0.0, TURN_STEP_DEG, width
+                )
+                is not None
+            ):
+                return float(x)
+            x += step
+        return float("nan")
+
+    # Use the narrowest channel: it is the first to lose the ability to rotate.
+    limit = first_x_where_rotation_fails(5)
+    free_run = limit - start_x
+    check(
+        math.isfinite(limit),
+        "no rotation limit found for level 5 within the room",
+    )
+    check(
+        free_run > 1.0,
+        f"only {free_run:.2f} m of manoeuvring room before rotation becomes "
+        f"impossible (first blocked x={limit:.2f}); a recorded qwen-vl-max "
+        f"episode wedged in exactly this way and never recovered",
+    )
+    check(
+        limit <= WALL_X,
+        f"rotation is still possible at x={limit:.2f}, past the wall at "
+        f"x={WALL_X}",
+    )
+
+    # The limit must be real: the step before it is allowed, the step at it is not.
+    width5 = LEVEL_CHANNEL_WIDTHS[5]
+    check(
+        _turn_path_is_clear(
+            np.array([limit - 0.02, 0.0, 0.0]), 0.0, TURN_STEP_DEG, width5
+        )
+        is None,
+        f"turning at x={limit - 0.02:.2f} should still be allowed",
+    )
+    check(
+        _turn_path_is_clear(
+            np.array([limit, 0.0, 0.0]), 0.0, TURN_STEP_DEG, width5
+        )
+        is not None,
+        f"turning at x={limit:.2f} should be blocked",
+    )
+    print(
+        f"[ok] {free_run:.2f} m of free run before rotation is blocked "
+        f"(first blocked x={limit:.2f}, wall at x={WALL_X}, start at x={start_x})"
     )
 
 
@@ -1352,6 +1427,7 @@ def main() -> int:
         test_lights_are_inside_the_enclosed_room,
         test_default_start_is_usable,
         test_start_distance_reachable_in_budget,
+        test_robot_has_room_to_rotate_before_the_wall,
         test_ground_grid_exists,
         test_camera_look_at_orientation,
         test_no_viewport_camera_in_diagnostics,

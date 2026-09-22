@@ -129,6 +129,26 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--image_size",
+        type=int,
+        default=None,
+        help=(
+            "Downscale the camera frame to this square size before sending it "
+            "to the model (default: the camera resolution, e.g. 1024). Smaller "
+            "images are much cheaper per call; measured latency was ~31 s/step "
+            "at 1024."
+        ),
+    )
+    parser.add_argument(
+        "--llm_timeout",
+        type=float,
+        default=None,
+        help=(
+            "Per-request timeout in seconds, overriding BAO_LLM_TIMEOUT "
+            "(default 60). A recorded run lost 9 of 30 steps to timeouts."
+        ),
+    )
+    parser.add_argument(
         "--env_config",
         type=str,
         default="{}",
@@ -307,6 +327,10 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
         f"main start: model={args.model} levels={levels} "
         f"episodes={args.episodes} max_steps={args.max_steps}"
     )
+    if args.image_size is not None:
+        os.environ["BAO_IMAGE_SIZE"] = str(int(args.image_size))
+    if args.llm_timeout is not None:
+        os.environ["BAO_LLM_TIMEOUT"] = str(float(args.llm_timeout))
     env = None
     try:
         from isaacsim import SimulationApp

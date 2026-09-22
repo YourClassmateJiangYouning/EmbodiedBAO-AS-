@@ -98,7 +98,13 @@ def normalize_model_name(model_name: str) -> str:
 
 
 def encode_image(image: Any) -> str:
-    """Encode a numpy RGB image (or image path) as a base64 JPEG data URL."""
+    """Encode a numpy RGB image (or image path) as a base64 JPEG data URL.
+
+    Honours ``BAO_IMAGE_SIZE``: when set, the frame is downscaled to that square
+    size before encoding.  A recorded 1024x1024 run averaged 31 s per model call
+    and lost 9 of its 30 steps to timeouts, so being able to shrink the payload
+    without a code change matters for throughput.
+    """
     if isinstance(image, str):
         with open(image, "rb") as handle:
             data = base64.b64encode(handle.read()).decode("utf-8")
@@ -110,6 +116,16 @@ def encode_image(image: Any) -> str:
         image = Image.fromarray(image).convert("RGB")
     else:
         image = Image.fromarray(image)
+
+    target = os.environ.get("BAO_IMAGE_SIZE", "").strip()
+    if target:
+        try:
+            side = max(64, int(float(target)))
+            if image.size != (side, side):
+                image = image.resize((side, side), Image.LANCZOS)
+        except ValueError:
+            pass
+
     buffer = io.BytesIO()
     image.save(buffer, format="JPEG", quality=95)
     data = base64.b64encode(buffer.getvalue()).decode("utf-8")
@@ -318,7 +334,9 @@ class AgentAPI:
             self.base_url = BOYUE_DEFAULT_BASE_URL
         else:
             self.base_url = OPENAI_DEFAULT_BASE_URL
-        self.timeout = timeout or float(os.environ.get("BAO_LLM_TIMEOUT", "60"))
+        # 90 s rather than 60: a recorded run lost 9 of 30 steps to timeouts at
+        # the old default, each costing a full retry cycle.
+        self.timeout = timeout or float(os.environ.get("BAO_LLM_TIMEOUT", "90"))
         self.temperature = temperature
         retry_env = os.environ.get("BAO_MAX_RETRIES", "1")
         self.max_retries = (
