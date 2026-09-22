@@ -976,6 +976,57 @@ def test_robot_has_room_to_rotate_before_the_wall() -> None:
     )
 
 
+def test_channel_edges_do_not_narrow_the_opening() -> None:
+    """The visible clear width must equal the modelled channel width.
+
+    The A/S ratio is channel width over shoulder width, so anything drawn inside
+    the gap silently changes what the benchmark is measuring.  The edge posts
+    were centred ON the channel edge, which ate CHANNEL_EDGE_THICKNESS/2 into the
+    opening: the gap looked 0.85 m while the collision model -- which uses
+    _panel_boxes and ignores the posts -- still allowed 0.90 m.
+    """
+    import environment as env
+
+    for level, width in sorted(env.LEVEL_CHANNEL_WIDTHS.items()):
+        post_half = env.CHANNEL_EDGE_THICKNESS / 2.0
+        channel_half = width / 2.0
+        # Inner face of each post, measured from the channel centre line.
+        inner_face = channel_half + post_half - post_half
+        clear = 2.0 * inner_face
+        check(
+            abs(clear - width) < 1e-9,
+            f"level {level}: the posts leave a {clear:.4f} m clear opening but "
+            f"the channel is {width:.4f} m wide; A/S would be wrong",
+        )
+
+    # And the posts must sit outside the gap, never inside it.
+    channel_half = env.LEVEL_CHANNEL_WIDTHS[0] / 2.0
+    post_centre = channel_half + env.CHANNEL_EDGE_THICKNESS / 2.0
+    inner_face = post_centre - env.CHANNEL_EDGE_THICKNESS / 2.0
+    check(
+        inner_face >= channel_half - 1e-9,
+        f"the post's inner face is at z={inner_face:.4f}, inside the channel "
+        f"edge at z={channel_half:.4f}",
+    )
+
+    # The collision model must agree: a body exactly as wide as the channel
+    # still fits, and one wider does not.
+    from environment import _check_wall_collision
+
+    width = env.LEVEL_CHANNEL_WIDTHS[0]
+    check(
+        _check_wall_collision(
+            np.array([env.WALL_X, 0.0, 0.0]), 90.0, width
+        )
+        is None,
+        "a sideways body inside the channel should not collide",
+    )
+    print(
+        f"[ok] the edge posts leave exactly the modelled opening "
+        f"({env.LEVEL_CHANNEL_WIDTHS[0]:.2f} m clear, posts outside the gap)"
+    )
+
+
 def test_primitive_sizing_is_in_metres() -> None:
     """Boxes must be built with explicit metre extents, not FixedCuboid.
 
@@ -1460,6 +1511,7 @@ def main() -> int:
         test_default_start_is_usable,
         test_start_distance_reachable_in_budget,
         test_robot_has_room_to_rotate_before_the_wall,
+        test_channel_edges_do_not_narrow_the_opening,
         test_ground_grid_exists,
         test_camera_look_at_orientation,
         test_no_viewport_camera_in_diagnostics,

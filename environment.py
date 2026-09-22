@@ -741,13 +741,21 @@ class BAOEnv:
                 material=(f"WallPanelMaterial_{i}", WALL_COLOR),
             )
 
-        # Thin dark posts mark the channel edges, so the opening's boundary is
+        # Dark posts mark the channel edges, so the opening's boundary is
         # unambiguous rather than a colour boundary alone.
+        #
+        # They sit OUTSIDE the channel, with their inner face exactly on the
+        # channel edge.  Centring a 5 cm post on the edge would eat 5 cm into
+        # the gap: the opening would look 0.85 m while the collision model (which
+        # uses _panel_boxes and ignores the posts) allowed 0.90 m.  The whole
+        # benchmark compares shoulder width against this gap, so the visible
+        # clear width must equal the modelled one.
+        post_centre_offset = channel_half + CHANNEL_EDGE_THICKNESS / 2.0
         for sign in (-1.0, 1.0):
             edge_id = 0 if sign < 0 else 1
             self._add_box(
                 f"ChannelEdge_{edge_id}",
-                np.array([WALL_X, WALL_HEIGHT / 2.0, sign * channel_half]),
+                np.array([WALL_X, WALL_HEIGHT / 2.0, sign * post_centre_offset]),
                 np.array(
                     [WALL_THICKNESS * 2.5, CHANNEL_EDGE_THICKNESS, WALL_HEIGHT]
                 ),
