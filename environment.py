@@ -586,29 +586,59 @@ class BAOEnv:
         ambiguity: the world size is exactly ``dims``.
         """
         path = f"/World/{name}"
-        cube = UsdGeom.Cube.Define(self.stage, path)
-        # A USD Cube spans -1..+1, so the ONLY thing that sets its world size is
-        # the scale op.  `size` must stay 2.0 (its default) and the extent must
-        # describe the scaled result, otherwise the reported bounds lie.
-        # Measured confusion this replaces: FixedCuboid(size=1.0, scale=[2,3,4])
-        # gave 4x9x16, and FixedCuboid(size=0.5, ...) gave wildly different
-        # factors per axis.  Here the world size is exactly `dims`, by
-        # construction: local +-1 times scale dims/2 gives +-dims/2.
-        cube.GetSizeAttr().Set(2.0)
-        cube.GetExtentAttr().Set(
+        # A USD Cube's geometry is fixed at +-1 and only the scale op sizes it,
+        # while `extent` is a declaration about the LOCAL bounds, not a way to
+        # set size.  Writing a world-sized extent alongside a scale op made the
+        # two disagree: the reported bounds and the rendered geometry stopped
+        # matching, which is how the channel posts ended up rendering as a 5 cm
+        # lump near z=1.0 rather than a 2 m vertical post.
+        #
+        # This builds an explicit mesh instead: eight corners authored directly
+        # in metres, so local geometry, world size and reported bounds are the
+        # same number by construction, with no extent or scale semantics left to
+        # misinterpret.
+        centre_isaac = _user_to_isaac_pos(np.asarray(center, dtype=float))
+        dims_isaac = _user_to_isaac_scale(np.asarray(dims, dtype=float))
+        hx, hy, hz = (float(dims_isaac[0]) / 2.0,
+                      float(dims_isaac[1]) / 2.0,
+                      float(dims_isaac[2]) / 2.0)
+        cx, cy, cz = (float(centre_isaac[0]),
+                      float(centre_isaac[1]),
+                      float(centre_isaac[2]))
+        corners = [
+            (cx - hx, cy - hy, cz - hz),
+            (cx + hx, cy - hy, cz - hz),
+            (cx + hx, cy + hy, cz - hz),
+            (cx - hx, cy + hy, cz - hz),
+            (cx - hx, cy - hy, cz + hz),
+            (cx + hx, cy - hy, cz + hz),
+            (cx + hx, cy + hy, cz + hz),
+            (cx - hx, cy + hy, cz + hz),
+        ]
+        faces = [
+            (0, 1, 2, 3),  # -z
+            (4, 7, 6, 5),  # +z
+            (0, 4, 5, 1),  # -y
+            (3, 2, 6, 7),  # +y
+            (0, 3, 7, 4),  # -x
+            (1, 5, 6, 2),  # +x
+        ]
+        mesh = UsdGeom.Mesh.Define(self.stage, path)
+        mesh.CreatePointsAttr([Gf.Vec3f(*c) for c in corners])
+        mesh.CreateFaceVertexCountsAttr([4] * len(faces))
+        mesh.CreateFaceVertexIndicesAttr([i for f in faces for i in f])
+        mesh.CreateExtentAttr(
             [
-                (-float(dims[0]) / 2.0, -float(dims[1]) / 2.0, -float(dims[2]) / 2.0),
-                (float(dims[0]) / 2.0, float(dims[1]) / 2.0, float(dims[2]) / 2.0),
+                Gf.Vec3f(cx - hx, cy - hy, cz - hz),
+                Gf.Vec3f(cx + hx, cy + hy, cz + hz),
             ]
         )
-        xform = UsdGeom.Xformable(cube.GetPrim())
+        mesh.CreateSubdivisionSchemeAttr().Set(UsdGeom.Tokens.none)
+        mesh.CreateDoubleSidedAttr(True)
+
+        xform = UsdGeom.Xformable(mesh.GetPrim())
         xform.ClearXformOpOrder()
-        xform.AddTranslateOp().Set(
-            Gf.Vec3d(*_user_to_isaac_pos(np.asarray(center, dtype=float)))
-        )
-        xform.AddScaleOp().Set(
-            Gf.Vec3f(*_user_to_isaac_scale(np.asarray(dims, dtype=float) / 2.0))
-        )
+
         if material is not None:
             mat_name, colour = material
             self._create_and_bind_material(

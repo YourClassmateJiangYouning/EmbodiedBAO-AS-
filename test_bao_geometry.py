@@ -1080,11 +1080,27 @@ def test_primitive_sizing_is_in_metres() -> None:
         f"ground, grid, wall panels, channel posts and room to use it",
     )
 
-    # _add_box must set the extent explicitly, otherwise it is the same trap.
+    # _add_box must author explicit geometry, not rely on Cube sizing or a scale
+    # op.  A USD Cube is fixed at +-1 and only the scale op sizes it, while
+    # `extent` declares LOCAL bounds -- writing a world-sized extent next to a
+    # scale op made the reported bounds and the rendered geometry disagree,
+    # which is how the channel posts rendered as a 5 cm lump near z=1.0 instead
+    # of a 2 m vertical post.
     box_source = inspect.getsource(env.BAOEnv._add_box)
     check(
-        "GetExtentAttr" in box_source,
-        "_add_box does not set the cube extent, so its size is still implicit",
+        "UsdGeom.Mesh" in box_source,
+        "_add_box does not build an explicit mesh; cube sizing reintroduces the "
+        "extent/scale ambiguity",
+    )
+    check(
+        "CreatePointsAttr" in box_source and "CreateFaceVertexIndicesAttr" in box_source,
+        "_add_box does not author mesh points and faces, so its geometry is "
+        "still implicit",
+    )
+    check(
+        "AddScaleOp" not in box_source,
+        "_add_box still applies a scale op, which double-counts against an "
+        "explicit extent",
     )
 
     check(
