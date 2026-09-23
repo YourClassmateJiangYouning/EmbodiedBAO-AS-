@@ -1,4 +1,4 @@
-"""A ten-turn arithmetic memory test for an MLLM.
+"""A ten-turn arithmetic memory test for an MLLM -- standalone, no Isaac Sim.
 
 Purpose
 -------
@@ -16,18 +16,28 @@ Design
 * Turn 0 asks the MODEL to choose the starting integer in [100, 999].
 * Ten turns then apply x3, +17, -8, /2, x2, +113, -40, /3, x7, -19.
   All integer arithmetic, so every turn has one unambiguous right answer.
+* Multiplication and division make a vaguely-remembered value diverge, while the
+  additions and subtractions make a re-randomised value still look plausible --
+  together they separate "tracked the value" from "produced a believable number".
 * The conversation is sent as a real multi-turn message list: prior user prompts
   and the model's own prior replies as assistant turns.  This exercises actual
   conversational context, which is what "does it remember" means for an API.
-* At each turn the check compares the model's number against the value implied by
-  ITS OWN previous reply, so the test measures self-consistency rather than
-  agreement with an ideal chain it has already left.
+* After a wrong turn the chain continues from the model's own answer, so later
+  turns measure self-consistency rather than re-joining an ideal chain.
+
+This script talks HTTP directly and imports nothing from the project, so it runs
+anywhere with Python 3.8+ and network access -- no Isaac Sim, no numpy.
 
 Usage
 -----
+    export BOYUE_API_KEY='...'                 # or TAOTOKEN_API_KEY / OPENAI_API_KEY
     python tools/memory_test.py --model gemini-2.5-pro
     python tools/memory_test.py --model qwen-vl-max --trials 3
-    python tools/memory_test.py --model gemini-2.5-pro --max-turns 10 --out report.json
+    python tools/memory_test.py --model gemini-2.5-pro --list-models
+
+On Windows PowerShell:
+    $env:BOYUE_API_KEY='...'
+    python tools\\memory_test.py --model gemini-2.5-pro
 """
 
 from __future__ import annotations
@@ -37,18 +47,17 @@ import json
 import os
 import re
 import sys
-from typing import Any, Dict, List, Optional
+import time
+import urllib.error
+import urllib.request
+from typing import Any, Dict, List, Optional, Tuple
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+DEFAULT_BASE_URL = "http://35.220.164.252:3888/v1"
 
 # ---------------------------------------------------------------------------
 # The operation chain
 # ---------------------------------------------------------------------------
-# Mixed operations on purpose.  Multiplication and division make a "roughly
-# right" recollection diverge, while addition and subtraction make a
-# re-randomised value look plausible at a glance -- together they separate
-# "tracked the value" from "produced a believable number".
-OPERATIONS = [
+OPERATIONS: List[Tuple[str, Any, str]] = [
     ("x3", lambda v: v * 3, "multiply by 3"),
     ("+17", lambda v: v + 17, "add 17"),
     ("-8", lambda v: v - 8, "subtract 8"),
@@ -80,16 +89,96 @@ def extract_int(text: str) -> Optional[int]:
     return int(numbers[-1])
 
 
-def run_trial(agent, trial_index: int, max_turns: int, verbose: bool) -> Dict[str, Any]:
-    """Run one chained trial. Returns a structured record."""
+class ChatClient:
+    """Minimal OpenAI-compatible chat client using only the standard library."""
+
+    def __init__(self, model: str, base_url: str, api_key: str, timeout: float) -> None:
+        self.model = model
+        self.base_url = base_url.rstrip("/")
+        self.api_key = api_key
+        self.timeout = timeout
+
+    def _post(self, path: str, payload: Optional[Dict[str, Any]] = None) -> Any:
+        url = f"{self.base_url}{path}"
+        data = None if payload is None else json.dumps(payload).encode("utf-8")
+        request = urllib.request.Request(url, data=data)
+        request.add_header("Authorization", f"Bearer {self.api_key}")
+        request.add_header("Content-Type", "application/json")
+        with urllib.request.urlopen(request, timeout=self.timeout) as response:
+            return json.loads(response.read().decode("utf-8"))
+
+    def list_models(self) -> List[str]:
+        try:
+            body = self._post("/models")
+        except Exception as exc:
+            raise RuntimeError(f"could not list models: {exc}") from exc
+        entries = body.get("data") or []
+        return sorted(str(e.get("id")) for e in entries if e.get("id"))
+
+    def ask(self, messages: List[Dict[str, str]], max_retries: int = 1) -> str:
+        payload = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": 0.0,
+        }
+        last_error: Optional[Exception] = None
+        for attempt in range(max_retries + 1):
+            try:
+                body = self._post("/chat/completions", payload)
+                choices = body.get("choices") or []
+                if choices:
+                    return (choices[0].get("message") or {}).get("content") or ""
+                return ""
+            except Exception as exc:  # noqa: BLE001 - report and retry
+                last_error = exc
+                if attempt < max_retries:
+                    time.sleep(2.0)
+        raise RuntimeError(f"request failed after {max_retries + 1} attempt(s): {last_error}")
+
+
+def resolve_config(args: argparse.Namespace) -> Tuple[str, str]:
+    api_key = (
+        args.api_key
+        or os.environ.get("BOYUE_API_KEY")
+        or os.environ.get("TAOTOKEN_API_KEY")
+        or os.environ.get("OPENAI_API_KEY")
+    )
+    if not api_key:
+        raise SystemExit(
+            "No API key. Set BOYUE_API_KEY (or TAOTOKEN_API_KEY / OPENAI_API_KEY), "
+            "or pass --api-key."
+        )
+    if not api_key.isascii():
+        raise SystemExit(
+            "The API key contains non-ASCII characters -- it looks like a "
+            "placeholder such as a Chinese 'your-key-here' string."
+        )
+    base_url = (
+        args.base_url
+        or os.environ.get("BOYUE_BASE_URL")
+        or os.environ.get("TAOTOKEN_BASE_URL")
+        or os.environ.get("OPENAI_BASE_URL")
+        or DEFAULT_BASE_URL
+    )
+    return api_key, base_url
+
+
+def run_trial(
+    client: ChatClient, trial_index: int, max_turns: int, verbose: bool
+) -> Dict[str, Any]:
     messages: List[Dict[str, str]] = []
     turns: List[Dict[str, Any]] = []
 
     def ask(prompt: str) -> str:
         messages.append({"role": "user", "content": prompt})
-        reply = agent._request(messages)
-        messages.append({"role": "assistant", "content": reply or ""})
-        return reply or ""
+        started = time.time()
+        reply = client.ask(messages)
+        latency = time.time() - started
+        messages.append({"role": "assistant", "content": reply})
+        turns_latency.append(latency)
+        return reply
+
+    turns_latency: List[float] = []
 
     # ---- Turn 0: the model picks the starting value itself -----------------
     first_prompt = (
@@ -102,16 +191,16 @@ def run_trial(agent, trial_index: int, max_turns: int, verbose: bool) -> Dict[st
         {
             "turn": 0,
             "operation": "pick",
-            "description": "pick a random integer in [100, 999]",
             "prompt": first_prompt,
             "reply": reply,
             "expected": None,
             "got": start_value,
             "correct": start_value is not None,
+            "latency_s": round(turns_latency[-1], 2),
         }
     )
     if verbose:
-        print(f"    turn  0 pick  -> {start_value}")
+        print(f"    turn  0 pick   -> {start_value}   [{turns_latency[-1]:.1f}s]")
 
     if start_value is None:
         return {
@@ -128,9 +217,7 @@ def run_trial(agent, trial_index: int, max_turns: int, verbose: bool) -> Dict[st
     correct_turns = 0
     first_failure: Optional[int] = None
 
-    for index, (label, fn, description) in enumerate(
-        OPERATIONS[:max_turns], start=1
-    ):
+    for index, (label, fn, description) in enumerate(OPERATIONS[:max_turns], start=1):
         expected = fn(running)
         prompt = (
             f"Now {description} the number from your previous answer. "
@@ -147,8 +234,8 @@ def run_trial(agent, trial_index: int, max_turns: int, verbose: bool) -> Dict[st
             if first_failure is None:
                 first_failure = index
             # Continue from the model's own answer when it gave one, so the
-            # chain measures whether it stays self-consistent after a slip
-            # rather than whether it can rejoin an abandoned ideal chain.
+            # chain measures self-consistency after a slip rather than whether
+            # it can rejoin a chain it has already left.
             if got is not None:
                 running = got
 
@@ -156,19 +243,20 @@ def run_trial(agent, trial_index: int, max_turns: int, verbose: bool) -> Dict[st
             {
                 "turn": index,
                 "operation": label,
-                "description": description,
                 "prompt": prompt,
                 "reply": reply,
                 "expected": expected,
                 "got": got,
                 "correct": correct,
+                "latency_s": round(turns_latency[-1], 2),
             }
         )
         if verbose:
             mark = "ok " if correct else "BAD"
             print(
                 f"    turn {index:>2} {label:<4} {mark} "
-                f"expected {expected:>12}  got {str(got):>12}"
+                f"expected {expected:>12}  got {str(got):>12}   "
+                f"[{turns_latency[-1]:.1f}s]"
             )
 
     return {
@@ -183,24 +271,39 @@ def run_trial(agent, trial_index: int, max_turns: int, verbose: bool) -> Dict[st
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Ten-turn arithmetic memory test for an MLLM."
+        description="Ten-turn arithmetic memory test for an MLLM (standalone)."
     )
-    parser.add_argument("--model", required=True)
-    parser.add_argument("--trials", type=int, default=1, help="how many chains")
+    parser.add_argument("--model", help="model name, e.g. gemini-2.5-pro")
+    parser.add_argument("--trials", type=int, default=1)
     parser.add_argument("--max-turns", type=int, default=10)
+    parser.add_argument("--api-key", default=None)
+    parser.add_argument("--base-url", default=None)
+    parser.add_argument("--timeout", type=float, default=None)
     parser.add_argument("--out", default=None)
     parser.add_argument("--quiet", action="store_true")
+    parser.add_argument(
+        "--list-models",
+        action="store_true",
+        help="print the endpoint's model ids and exit (checks the key works)",
+    )
     args = parser.parse_args()
 
-    import ai_agent
+    api_key, base_url = resolve_config(args)
+    timeout = args.timeout or float(os.environ.get("BAO_LLM_TIMEOUT", "90"))
+    model = args.model or "gemini-2.5-pro"
+    client = ChatClient(model, base_url, api_key, timeout)
 
-    agent = ai_agent.AgentAPI(model_name=args.model, temperature=0.0)
+    if args.list_models:
+        print(f"endpoint {base_url}")
+        for name in client.list_models():
+            print(f"  {name}")
+        return 0
+
     verbose = not args.quiet
     total_turns = min(args.max_turns, len(OPERATIONS))
 
     print("=" * 74)
-    print(f"memory test  model={agent.model_name}  trials={args.trials}  "
-          f"turns={total_turns}")
+    print(f"memory test  model={model}  trials={args.trials}  turns={total_turns}")
     print("turn 0 the model picks a number; every later turn operates on its own")
     print("previous answer, so a forgotten value cannot be recovered from.")
     print("=" * 74)
@@ -208,12 +311,13 @@ def main() -> int:
     records: List[Dict[str, Any]] = []
     for trial in range(args.trials):
         print(f"\n--- trial {trial + 1}/{args.trials} ---")
-        record = run_trial(agent, trial, total_turns, verbose)
+        record = run_trial(client, trial, total_turns, verbose)
         records.append(record)
-        if record["first_failure"] is None:
-            verdict = "perfect"
-        else:
-            verdict = f"first failure at turn {record['first_failure']}"
+        verdict = (
+            "perfect"
+            if record["first_failure"] is None
+            else f"first failure at turn {record['first_failure']}"
+        )
         print(f"  -> {record['correct_turns']}/{total_turns} correct, {verdict}")
 
     perfect = sum(1 for r in records if r["ok"])
@@ -231,7 +335,8 @@ def main() -> int:
     print("failing only later means drift, or the model re-picked a number.")
 
     report = {
-        "model": agent.model_name,
+        "model": model,
+        "base_url": base_url,
         "trials": len(records),
         "turns_per_trial": total_turns,
         "perfect_trials": perfect,
@@ -239,9 +344,8 @@ def main() -> int:
         "turns_total": grand_total,
         "records": records,
     }
-    out_path = args.out or os.path.join(
-        "analysis", f"memory_test_{agent.model_name.replace('/', '_')}.json"
-    )
+    safe = re.sub(r"[^A-Za-z0-9._-]", "_", model)
+    out_path = args.out or os.path.join("analysis", f"memory_test_{safe}.json")
     parent = os.path.dirname(out_path)
     if parent:
         os.makedirs(parent, exist_ok=True)
