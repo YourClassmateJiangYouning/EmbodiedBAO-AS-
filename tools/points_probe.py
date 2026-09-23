@@ -51,7 +51,7 @@ def main() -> int:
 
     out("expected (user frame, authored):")
     out("  ChannelEdge  x=%.3f  height=%.3f  left_right=%.3f" % (
-        env.WALL_THICKNESS * 2.5, env.CHANNEL_EDGE_THICKNESS, env.WALL_HEIGHT))
+        env.WALL_THICKNESS * 2.5, env.WALL_HEIGHT, env.CHANNEL_EDGE_THICKNESS))
     out("  WallPanel    x=%.3f  height=%.3f  left_right=%.3f" % (
         env.WALL_THICKNESS, env.WALL_HEIGHT, 2.05))
     out("")

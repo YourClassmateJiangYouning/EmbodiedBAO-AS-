@@ -64,12 +64,12 @@ def main() -> int:
 
     # World points in USER coordinates, converted to the Isaac frame the pose is in.
     targets = {
-        "post_left(z=-0.45)": [2.0, 1.0, -0.45],
-        "post_right(z=+0.45)": [2.0, 1.0, 0.45],
-        "gap_centre": [2.0, 1.0, 0.0],
-        "far_wall_centre": [4.0, 1.5, 0.0],
-        "floor_under_camera": [0.5, 0.0, 0.0],
-        "wall_panel_left": [2.0, 1.0, -1.5],
+        "post_left": [env.WALL_X, 1.0, -env.CHANNEL_WIDTH / 2.0],
+        "post_right": [env.WALL_X, 1.0, env.CHANNEL_WIDTH / 2.0],
+        "gap_centre": [env.WALL_X, 1.0, 0.0],
+        "far_wall_centre": [env.SCENE_SIZE, 1.5, 0.0],
+        "floor_under_camera": [env.ROBOT_START_POS[0], 0.0, 0.0],
+        "wall_panel_left": [env.WALL_X, 1.0, -1.5],
     }
 
     for name, user_pt in targets.items():

@@ -14,7 +14,7 @@ here with plain Python:
    shoulders are narrower than the opening.
 4. **Sideways route** -- the route the model is expected to find
    (rotate 90 degrees in free space, then translate along the torso axis)
-   actually reaches x > 2.5 m at every Level, and the robot's body box clears
+   actually reaches x > 3.5 m at every Level, and the robot's body box clears
    the wall panels while doing it.
 5. **Action space and prompt** -- ``reach``/``retreat`` are gone, the camera
    actions keep the legacy 30 degree step, and the prompt is byte-identical
@@ -49,8 +49,10 @@ from environment import (
     TURN_STEP_DEG,
     WALL_THICKNESS,
     WALL_X,
+    _check_room_boundary,
     _check_wall_collision,
     _panel_boxes,
+    _translation_path_is_clear,
     _robot_body_aabb,
     _rotate_xz,
     a_s_ratio,
@@ -322,7 +324,7 @@ def simulate_sideways_route(channel_width: float) -> Tuple[List[np.ndarray], boo
     Mirrors the route the model is expected to discover with the egocentric
     action set: ``turn_left`` x6 (so the right-hand side faces the channel),
     then alternate between pushing toward the wall and sliding sideways until
-    the body centre is past x > 2.5 m.  Returns the (x, z) trace and whether
+    the body centre is past x > 3.5 m.  Returns the (x, z) trace and whether
     the body ever clipped a panel.
     """
     position = ROBOT_START.copy()
@@ -389,7 +391,7 @@ def test_sideways_route_reaches_goal() -> None:
             f"level {level}: sideways route wandered to |z|={max_abs_z:.3f}, "
             f"outside the {width:.2f} m channel",
         )
-    print("[ok] the sideways route reaches x > 2.5 m at every Level")
+    print("[ok] the sideways route reaches x > 3.5 m at every Level")
 
 
 def test_frontal_route_only_where_feasible() -> None:
@@ -955,7 +957,7 @@ def test_start_distance_reachable_in_budget() -> None:
     """Start distance and step size must fit the episode budget together.
 
     Standing further back makes the channel readable, but the robot still has to
-    travel to x > 2.5 within DEFAULT_MAX_STEPS.  Raising the start distance
+    travel to x > 3.5 within DEFAULT_MAX_STEPS.  Raising the start distance
     without raising the step size makes the task physically impossible, which
     would look like a model failure in the results.
     """
@@ -1240,14 +1242,13 @@ def test_channel_edges_do_not_narrow_the_opening() -> None:
         f"edge at z={channel_half:.4f}",
     )
 
-    # The collision model must agree: a body exactly as wide as the channel
-    # still fits, and one wider does not.
+    # The collision model must agree at a genuine 90-degree sideways pose.
     from environment import _check_wall_collision
 
     width = env.LEVEL_CHANNEL_WIDTHS[0]
     check(
         _check_wall_collision(
-            np.array([env.WALL_X, 0.0, 0.0]), 90.0, width
+            np.array([env.WALL_X, 0.0, 0.0]), math.radians(90.0), width
         )
         is None,
         "a sideways body inside the channel should not collide",
@@ -1445,7 +1446,7 @@ def test_default_start_is_usable() -> None:
     From 1.5 m the 2.0 m gap subtends about 77 degrees and fills the whole
     105-degree eye view, leaving no wall in frame; from 0.5 m it is about 39
     degrees.  The start distance and step size have to move together or the
-    robot cannot reach x > 2.5 inside the budget.
+    robot cannot reach x > 3.5 inside the budget.
     """
     import environment as env
 
@@ -1701,6 +1702,27 @@ def test_camera_look_at_orientation() -> None:
     print("[ok] look-at orientation actually aims the camera at its target")
 
 
+def test_room_boundary_and_swept_translation() -> None:
+    """The agent cannot leave the room or teleport through a narrow wall."""
+    yaw = 0.0
+    check(
+        _check_room_boundary(np.array([1.0, 0.0, 2.8]), yaw) is not None,
+        "a body beyond the side wall was accepted",
+    )
+    check(
+        _check_room_boundary(np.array([1.0, 0.0, 0.0]), yaw) is None,
+        "a centred in-room body was rejected",
+    )
+    collision = _translation_path_is_clear(
+        np.array([2.5, 0.0, 1.0]),
+        np.array([3.5, 0.0, 1.0]),
+        yaw,
+        channel_width=LEVEL_CHANNEL_WIDTHS[5],
+    )
+    check(collision is not None, "a large translation teleported through a wall panel")
+    print("[ok] room boundaries and swept translations prevent bypasses")
+
+
 def test_no_viewport_camera_in_diagnostics() -> None:
     """capture_views must move the sensor it reads, not the viewport."""
     import ast
@@ -1764,6 +1786,7 @@ def main() -> int:
         test_box_axis_mapping_is_correct,
         test_ground_grid_exists,
         test_camera_look_at_orientation,
+        test_room_boundary_and_swept_translation,
         test_no_viewport_camera_in_diagnostics,
         test_no_unbound_names,
     ]

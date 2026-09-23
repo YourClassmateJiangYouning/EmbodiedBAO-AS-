@@ -229,7 +229,7 @@ class ScriptedAgent:
             #
             # The agent never needs to rotate back: the channel is an opening
             # through the wall, so once the body is past it the straight slide
-            # continues to x > 2.5.  Rotating back mid-channel is what the gate
+            # continues to x > 3.5.  Rotating back mid-channel is what the gate
             # correctly forbids, because the shoulders would sweep the panel.
             if self.phase == 0:
                 if yaw >= 90.0 - 1e-6:

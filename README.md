@@ -179,7 +179,7 @@ Common invocations:
 # a single Level, two episodes
 python main.py --model gemini-2.5-pro --level 0 --episodes 2
 
-# offline smoke test, no API key required
+# smoke test (no API key required, but Isaac Sim is still required)
 python main.py --model random --level 0 --episodes 2
 
 # resume a run whose tag is already recorded
@@ -216,8 +216,8 @@ Outputs `analysis/threshold_table.{md,csv}`, one JSON report per model, and a
 Everything that can be decided without a renderer runs on plain Python:
 
 ```bash
-python test_bao_geometry.py     # 30 checks: ladder, collision gate, routes, colours, prompt
-python test_bao_integration.py  # 11 checks: full protocol against a mock environment
+python test_bao_geometry.py     # offline checks: ladder, collision gate, routes, colours, prompt
+python test_bao_integration.py  # 12 checks: full protocol against a mock environment
 ```
 
 The geometry suite re-derives the collision model independently and pins the

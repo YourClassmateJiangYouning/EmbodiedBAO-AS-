@@ -146,7 +146,7 @@ def build_prompt(
     state = state or {}
     lines = ["Current state:"]
     position = state.get("position")
-    if position is not None and len(position) >= 3:
+    if isinstance(position, (list, tuple)) and len(position) >= 3:
         lines.append(
             f"- position (x, y, z): "
             f"[{float(position[0]):.3f}, {float(position[1]):.3f}, "
@@ -154,7 +154,9 @@ def build_prompt(
         )
     yaw = state.get("torso_rotation")
     if yaw is None:
-        yaw = state.get("orientation", {}).get("yaw")
+        orientation = state.get("orientation")
+        if isinstance(orientation, dict):
+            yaw = orientation.get("yaw")
     if yaw is not None:
         lines.append(f"- torso rotation (degrees): {float(yaw):.1f}")
     lines.append(f"- step limit for this episode: {int(max_steps)}")

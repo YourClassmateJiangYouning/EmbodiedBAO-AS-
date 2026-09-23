@@ -14,7 +14,7 @@ benchmark: it is set per Level so that the channel-to-shoulder ratio (A/S)
 sweeps past the human threshold of 1.30 (Warren & Whang, 1987).
 
 The task is a pure gap-traversal problem: the robot must get its whole body to
-the far side of the wall (x > 2.5 m).  There is no reachable target object; the
+the far side of the wall (x > 3.5 m).  There is no reachable target object; the
 only question is whether the agent rotates its body before the channel becomes
 too narrow for a frontal passage.
 
@@ -440,6 +440,61 @@ def _check_wall_collision(
     return None
 
 
+def _check_room_boundary(
+    root_pos: np.ndarray, yaw_rad: float
+) -> Optional[Dict[str, Any]]:
+    """Reject poses whose body footprint leaves the enclosed room."""
+    root = np.asarray(root_pos, dtype=float)
+    if root.shape[0] < 3 or not np.all(np.isfinite(root[:3])):
+        return {"part": "body", "boundary": "invalid_pose", "point": root.tolist()}
+    c, s = abs(float(np.cos(yaw_rad))), abs(float(np.sin(yaw_rad)))
+    half_x = (ROBOT_TORSO_THICKNESS / 2.0 + BODY_CLEARANCE) * c + (
+        ROBOT_SHOULDER_WIDTH / 2.0 + BODY_CLEARANCE
+    ) * s
+    half_z = (ROBOT_TORSO_THICKNESS / 2.0 + BODY_CLEARANCE) * s + (
+        ROBOT_SHOULDER_WIDTH / 2.0 + BODY_CLEARANCE
+    ) * c
+    limits = (
+        (root[0] - half_x, 0.0, "near"),
+        (SCENE_SIZE - (root[0] + half_x), 0.0, "far"),
+        (root[2] - half_z, -SCENE_SIZE / 2.0, "left"),
+        (SCENE_SIZE / 2.0 - (root[2] + half_z), 0.0, "right"),
+    )
+    for value, minimum, name in limits:
+        if value < minimum:
+            return {"part": "body", "boundary": name, "point": root.tolist()}
+    return None
+
+
+def _check_scene_collision(
+    root_pos: np.ndarray, yaw_rad: float, channel_width: Optional[float] = None
+) -> Optional[Dict[str, Any]]:
+    """Check both the obstacle panels and the enclosing room boundary."""
+    return _check_wall_collision(root_pos, yaw_rad, channel_width) or _check_room_boundary(
+        root_pos, yaw_rad
+    )
+
+
+def _translation_path_is_clear(
+    start: np.ndarray,
+    target: np.ndarray,
+    yaw_rad: float,
+    channel_width: Optional[float] = None,
+) -> Optional[Dict[str, Any]]:
+    """Sample a translation densely enough that it cannot teleport through a wall."""
+    start = np.asarray(start, dtype=float)
+    target = np.asarray(target, dtype=float)
+    distance = float(np.linalg.norm(target - start))
+    spacing = max(0.005, WALL_THICKNESS / 2.0)
+    count = max(1, int(math.ceil(distance / spacing)))
+    for index in range(1, count + 1):
+        sample = start + (target - start) * (index / count)
+        collision = _check_scene_collision(sample, yaw_rad, channel_width)
+        if collision is not None:
+            return collision
+    return None
+
+
 def _turn_path_is_clear(
     root_pos: np.ndarray,
     from_yaw_deg: float,
@@ -459,7 +514,7 @@ def _turn_path_is_clear(
     count = max(1, int(round(abs(to_yaw_deg - from_yaw_deg) / TURN_STEP_DEG)))
     for i in range(0, count + 1):
         sample = from_yaw_deg + step * i
-        collision = _check_wall_collision(
+        collision = _check_scene_collision(
             root_pos, np.radians(sample), channel_width=channel_width
         )
         if collision is not None:
@@ -550,8 +605,10 @@ class BAOEnv:
             [start_x, ROBOT_START_POS[1], ROBOT_START_POS[2]], dtype=float
         )
         self._move_step = float(self.task_dict.get("move_step", MOVE_STEP))
-        if self._move_step <= 0.0:
-            raise ValueError(f"move_step must be positive, got {self._move_step}")
+        if not math.isfinite(self._move_step) or not (0.0 < self._move_step <= SCENE_SIZE):
+            raise ValueError(
+                f"move_step must be finite and in (0, {SCENE_SIZE}], got {self._move_step}"
+            )
         self._channel_width = float(self.task_dict.get("channel_width", CHANNEL_WIDTH))
         self._camera_yaw_offset = 0.0
 
@@ -962,7 +1019,10 @@ class BAOEnv:
         usd_path = self._resolve_robot_usd_path()
         add_reference_to_stage(usd_path=usd_path, prim_path=self.robot_prim_path)
         self.robot_usd_path = usd_path
-        if not self.task_dict.get("robot_physics", True):
+        # The benchmark is explicitly kinematic: poses are set directly and
+        # collision legality is decided analytically.  Dynamic physics is opt-in
+        # because the authored visual floor has no collider.
+        if not self.task_dict.get("robot_physics", False):
             self._disable_robot_physics()
         self.robot_root = XFormPrim(prim_paths_expr=self.robot_prim_path)
         self._robot_ground_offset = self._compute_robot_ground_offset()
@@ -1333,7 +1393,7 @@ class BAOEnv:
         return user_pos
 
     def _init_robot_controller(self) -> bool:
-        if not self.task_dict.get("robot_physics", True):
+        if not self.task_dict.get("robot_physics", False):
             self._articulation_ok = False
             return False
         try:
@@ -1715,7 +1775,7 @@ class BAOEnv:
         return list(info["point"]) if info else None
 
     def check_success(self) -> bool:
-        """Success condition: the whole body is past the wall (x > 2.5 m)."""
+        """Success condition: the whole body is past the wall (x > 3.5 m)."""
         return bool(self._root_position()[0] > SUCCESS_X)
 
     def _get_wall_collision_info(self) -> Optional[Dict[str, Any]]:
@@ -1780,8 +1840,8 @@ class BAOEnv:
             else:
                 delta = _right_vector(yaw) * -self._move_step
             target = root + delta
-            collision = _check_wall_collision(
-                target, yaw, channel_width=self._channel_width
+            collision = _translation_path_is_clear(
+                root, target, yaw, channel_width=self._channel_width
             )
             if collision is not None:
                 return (

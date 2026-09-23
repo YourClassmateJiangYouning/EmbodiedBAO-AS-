@@ -15,8 +15,8 @@ dimensions, or whether a turn is needed.
     Level 4  0.57 m channel  A/S 1.00   frontal passage impossible
     Level 5  0.45 m channel  A/S 0.79   sideways passage required
 
-Every Level runs ``20`` independent episodes of at most ``30`` steps.  An
-episode ends only on success (body centre past ``x > 2.5`` m) or step
+Every Level runs ``10`` independent episodes of at most ``30`` steps.  An
+episode ends only on success (body centre past ``x > 3.5`` m) or step
 exhaustion; wall collisions are recorded but never terminate the episode.
 
 Each step follows the canonical loop:
@@ -152,16 +152,16 @@ def _is_sideways_yaw(yaw_deg: float) -> bool:
 def analytic_pass_check(channel_width: float, yaw_deg: float) -> bool:
     """Can the body box pass a channel of ``channel_width`` at ``yaw_deg``?
 
-    The projected width of the torso box is
-    ``thickness * |cos yaw| + shoulder * |sin yaw|``, which is the quantity the
+    The projected lateral width of the torso box is
+    ``shoulder * |cos yaw| + thickness * |sin yaw|``, which is the quantity the
     analytic collision gate effectively compares against the channel width.
     """
     from environment import ROBOT_SHOULDER_WIDTH, ROBOT_TORSO_THICKNESS
 
     rad = float(np.radians(yaw_deg))
-    needed = ROBOT_TORSO_THICKNESS * abs(
+    needed = ROBOT_SHOULDER_WIDTH * abs(
         float(np.cos(rad))
-    ) + ROBOT_SHOULDER_WIDTH * abs(float(np.sin(rad)))
+    ) + ROBOT_TORSO_THICKNESS * abs(float(np.sin(rad)))
     return bool(needed <= float(channel_width) + 1e-9)
 
 
@@ -720,7 +720,7 @@ def parse_args() -> argparse.Namespace:
         "--episodes",
         type=int,
         default=DEFAULT_EPISODES_PER_LEVEL,
-        help="Episodes per level (default 20)",
+        help=f"Episodes per level (default {DEFAULT_EPISODES_PER_LEVEL})",
     )
     parser.add_argument("--max_steps", type=int, default=DEFAULT_MAX_STEPS)
     parser.add_argument("--seed", type=int, default=0)

@@ -51,6 +51,20 @@ DEFAULT_EPISODES_PER_LEVEL = 10
 DEFAULT_MAX_STEPS = 30
 
 
+def _positive_int(value: str) -> int:
+    parsed = int(value)
+    if parsed <= 0:
+        raise argparse.ArgumentTypeError("must be a positive integer")
+    return parsed
+
+
+def _positive_float(value: str) -> float:
+    parsed = float(value)
+    if not (parsed > 0.0) or parsed == float("inf"):
+        raise argparse.ArgumentTypeError("must be a positive finite number")
+    return parsed
+
+
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="EmbodiedBAO experiment entry point.")
     parser.add_argument("--model", type=str, default="gpt-4o", help="Model name")
@@ -70,13 +84,13 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--episodes",
-        type=int,
+        type=_positive_int,
         default=DEFAULT_EPISODES_PER_LEVEL,
         help=f"Episodes per Level (default {DEFAULT_EPISODES_PER_LEVEL})",
     )
     parser.add_argument(
         "--max_steps",
-        type=int,
+        type=_positive_int,
         default=DEFAULT_MAX_STEPS,
         help=f"Step limit per episode (default {DEFAULT_MAX_STEPS})",
     )
@@ -115,7 +129,7 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         type=float,
         default=None,
         help=(
-            "Robot start x in metres (default: 1.5). Standing further back "
+            "Robot start x in metres (default: 0.5). Standing further back "
             "makes the channel readable at the cost of travel."
         ),
     )
@@ -124,13 +138,13 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         type=float,
         default=None,
         help=(
-            "Translation per action in metres (default: 0.05). Must rise with "
+            "Translation per action in metres (default: 0.20). Must rise with "
             "--start_x or the robot cannot reach the far side in 30 steps."
         ),
     )
     parser.add_argument(
         "--image_size",
-        type=int,
+        type=_positive_int,
         default=None,
         help=(
             "Downscale the camera frame to this square size before sending it "
@@ -141,11 +155,11 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--llm_timeout",
-        type=float,
+        type=_positive_float,
         default=None,
         help=(
             "Per-request timeout in seconds, overriding BAO_LLM_TIMEOUT "
-            "(default 60). A recorded run lost 9 of 30 steps to timeouts."
+            "(default 90). A recorded run lost 9 of 30 steps to timeouts."
         ),
     )
     parser.add_argument(
@@ -332,6 +346,7 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
     if args.llm_timeout is not None:
         os.environ["BAO_LLM_TIMEOUT"] = str(float(args.llm_timeout))
     env = None
+    simulation_app = None
     try:
         from isaacsim import SimulationApp
 
@@ -416,6 +431,8 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
     finally:
         if env is not None:
             env.close()
+        elif simulation_app is not None:
+            simulation_app.close()
 
 
 def main() -> None:

@@ -6,7 +6,7 @@ how its behaviour changes as the channel narrows.
 
 Headline metrics (per Level, and per model overall):
 
-* **Pass rate**       -- fraction of episodes that got the body past x > 2.5 m.
+* **Pass rate**       -- fraction of episodes that got the body past x > 3.5 m.
 * **Sideways rate**   -- fraction of episodes that passed while the torso was
   rotated into the sideways band (45-135 degrees).
 * **Sideways threshold** -- the widest A/S ratio (largest channel) at which the

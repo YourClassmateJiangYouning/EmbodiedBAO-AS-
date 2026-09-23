@@ -15,9 +15,6 @@ from __future__ import annotations
 import argparse
 import os
 
-from huggingface_hub import hf_hub_download
-
-
 DEFAULT_REPO = "YourClassmateJiangYouning/EmbodiedBAOAssets"
 
 
@@ -36,6 +33,11 @@ def main() -> int:
     )
     parser.add_argument("--force", action="store_true", help="Redownload even if present")
     args = parser.parse_args()
+
+    try:
+        from huggingface_hub import hf_hub_download
+    except ImportError:
+        parser.error("huggingface-hub is required; install requirements.txt")
 
     target = target_path()
     if os.path.exists(target) and not args.force:

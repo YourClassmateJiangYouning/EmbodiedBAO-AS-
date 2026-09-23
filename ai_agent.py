@@ -24,6 +24,8 @@ from __future__ import annotations
 import base64
 import io
 import json
+import math
+import mimetypes
 import os
 import random
 import re
@@ -108,7 +110,10 @@ def encode_image(image: Any) -> str:
     if isinstance(image, str):
         with open(image, "rb") as handle:
             data = base64.b64encode(handle.read()).decode("utf-8")
-        return f"data:image/jpeg;base64,{data}"
+        mime_type = mimetypes.guess_type(image)[0] or "application/octet-stream"
+        if not mime_type.startswith("image/"):
+            raise ValueError(f"image path has an unsupported media type: {image}")
+        return f"data:{mime_type};base64,{data}"
     from PIL import Image
 
     image = np.asarray(image)
@@ -141,31 +146,26 @@ def parse_action_json(text: Any) -> Optional[Dict[str, Any]]:
     start = cleaned.find("{")
     if start == -1:
         return None
-    depth = 0
-    end = -1
-    for i in range(start, len(cleaned)):
-        if cleaned[i] == "{":
-            depth += 1
-        elif cleaned[i] == "}":
-            depth -= 1
-            if depth == 0:
-                end = i + 1
-                break
-    if end == -1:
-        return None
     try:
-        data = json.loads(cleaned[start:end])
-    except json.JSONDecodeError:
+        data, _end = json.JSONDecoder(
+            parse_constant=lambda value: (_ for _ in ()).throw(
+                ValueError(f"non-finite JSON number: {value}")
+            )
+        ).raw_decode(cleaned[start:])
+    except (json.JSONDecodeError, ValueError):
         return None
     if not isinstance(data, dict):
         return None
     action = data.get("action")
-    if action not in ACTIONS:
+    if not isinstance(action, str) or action not in ACTIONS:
         return None
     try:
         confidence = float(data.get("confidence", 0.0))
     except (TypeError, ValueError):
         confidence = 0.0
+    if not math.isfinite(confidence):
+        confidence = 0.0
+    confidence = min(1.0, max(0.0, confidence))
     scene = data.get("scene_description", "")
     reasoning = data.get("reasoning", "")
     return {
@@ -336,12 +336,20 @@ class AgentAPI:
             self.base_url = OPENAI_DEFAULT_BASE_URL
         # 90 s rather than 60: a recorded run lost 9 of 30 steps to timeouts at
         # the old default, each costing a full retry cycle.
-        self.timeout = timeout or float(os.environ.get("BAO_LLM_TIMEOUT", "90"))
+        self.timeout = (
+            float(timeout)
+            if timeout is not None
+            else float(os.environ.get("BAO_LLM_TIMEOUT", "90"))
+        )
+        if not math.isfinite(self.timeout) or self.timeout <= 0.0:
+            raise ValueError(f"timeout must be a positive finite number, got {self.timeout}")
         self.temperature = temperature
         retry_env = os.environ.get("BAO_MAX_RETRIES", "1")
         self.max_retries = (
             int(max_retries) if max_retries is not None else int(retry_env)
         )
+        if self.max_retries < 0:
+            raise ValueError(f"max_retries must be >= 0, got {self.max_retries}")
         self.use_json_mode = bool(use_json_mode)
         self._json_mode_enabled = self.use_json_mode
         self.log_file = log_file
