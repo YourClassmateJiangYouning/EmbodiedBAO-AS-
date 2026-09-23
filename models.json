@@ -1,0 +1,122 @@
+{
+  "_comment": "Final model roster for the EmbodiedBAO A/S threshold experiment. Every entry was verified against the gateway with a text+image request carrying a solid red 64x64 PNG; 'ok' means the model both accepted the image and named its colour. Latency is a single-probe measurement, not an average.",
+  "endpoint": "http://35.220.164.252:3888/v1",
+  "image_size": 512,
+  "episodes_per_level": 10,
+  "max_steps": 30,
+  "levels": [0, 1, 2, 3, 4, 5],
+  "models": [
+    {
+      "runner": "gemini-2.5-pro",
+      "label": "Gemini 2.5 Pro",
+      "group": "reference",
+      "origin": "US",
+      "probe_latency_s": 4.7,
+      "verified": "ok"
+    },
+    {
+      "runner": "gemini-2.5-flash",
+      "label": "Gemini 2.5 Flash",
+      "group": "reference",
+      "origin": "US",
+      "probe_latency_s": 3.0,
+      "verified": "ok"
+    },
+    {
+      "runner": "gpt-4.1",
+      "label": "GPT-4.1",
+      "group": "reference",
+      "origin": "US",
+      "probe_latency_s": 18.5,
+      "verified": "ok"
+    },
+    {
+      "runner": "gpt-4o",
+      "label": "GPT-4o",
+      "group": "reference",
+      "origin": "US",
+      "probe_latency_s": 2.8,
+      "verified": "ok"
+    },
+    {
+      "runner": "gpt-4o-mini",
+      "label": "GPT-4o mini",
+      "group": "reference",
+      "origin": "US",
+      "probe_latency_s": 1.4,
+      "verified": "ok"
+    },
+    {
+      "runner": "claude-sonnet-4-5-20250929",
+      "label": "Claude Sonnet 4.5",
+      "group": "reference",
+      "origin": "US",
+      "probe_latency_s": 2.6,
+      "verified": "ok"
+    },
+    {
+      "runner": "qwen-vl-max",
+      "label": "Qwen-VL-Max",
+      "group": "qwen",
+      "origin": "CN",
+      "probe_latency_s": 9.2,
+      "verified": "ok"
+    },
+    {
+      "runner": "qwen3-vl-235b-a22b-instruct",
+      "label": "Qwen3-VL 235B A22B",
+      "group": "qwen",
+      "origin": "CN",
+      "probe_latency_s": 1.0,
+      "verified": "ok"
+    },
+    {
+      "runner": "qwen3-vl-32b-instruct",
+      "label": "Qwen3-VL 32B",
+      "group": "qwen",
+      "origin": "CN",
+      "probe_latency_s": 1.1,
+      "verified": "ok"
+    },
+    {
+      "runner": "deepseek-v4.1-flash",
+      "label": "DeepSeek V4.1 Flash",
+      "group": "deepseek",
+      "origin": "CN",
+      "probe_latency_s": 3.5,
+      "verified": "ok",
+      "note": "The only DeepSeek on this gateway that can actually see. deepseek-v4-pro answered 'Unknown.' and deepseek-v4-flash answered 'Orange' to a solid red image."
+    },
+    {
+      "runner": "glm-4.6v",
+      "label": "GLM-4.6V",
+      "group": "glm",
+      "origin": "CN",
+      "probe_latency_s": 2.2,
+      "verified": "ok",
+      "note": "Chosen over glm-4.5v (newer, 2.2s vs 4.7s, both 6/6 on a stability retest). glm-5v-turbo was excluded: 5/6 with a timeout at 24.5s average."
+    }
+  ],
+  "excluded": [
+    {"model": "qwen2.5-vl-72b-instruct", "reason": "HTTP 500"},
+    {"model": "z-ai/glm-4.5v", "reason": "HTTP 500"},
+    {"model": "z-ai/glm-4.6", "reason": "HTTP 500"},
+    {"model": "glm-4.6", "reason": "HTTP 400 - text only"},
+    {"model": "glm-5.3", "reason": "HTTP 400 - text only"},
+    {"model": "glm-5.3-flash", "reason": "empty response"},
+    {"model": "MiniMax-M3", "reason": "NO-VISION - answered 'Coral' to a solid red image"},
+    {"model": "deepseek-v4-pro", "reason": "NO-VISION - answered 'Unknown.'"},
+    {"model": "deepseek-v4-flash", "reason": "NO-VISION - answered 'Orange'"},
+    {"model": "deepseek-v4-pro-0813", "reason": "NO-VISION - answered 'Unknown.'"},
+    {"model": "bailian/deepseek-v4-pro", "reason": "NO-VISION - answered 'Missing.'"},
+    {"model": "bailian/deepseek-v4-flash", "reason": "NO-VISION - answered 'None'"},
+    {"model": "vanchin/deepseek-v4-pro", "reason": "NO-VISION - refused, 'I can't see any image'"},
+    {"model": "opengvlab/internvl3-14b", "reason": "HTTP 500"},
+    {"model": "qvq-72b-preview", "reason": "HTTP 500"},
+    {"model": "mimo-v2-omni", "reason": "HTTP 400"},
+    {"model": "stepfun-ai/Step-3.5-Flash", "reason": "HTTP 400"},
+    {"model": "llama-3.2-11b-vision-instruct", "reason": "HTTP 500"},
+    {"model": "mistralai/pixtral-large-2411", "reason": "HTTP 500"},
+    {"model": "glm-5v-turbo", "reason": "5/6 stable, 24.5s average - too slow"}
+  ]
+}
