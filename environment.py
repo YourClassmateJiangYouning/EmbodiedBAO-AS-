@@ -125,7 +125,18 @@ PANEL_WIDTH = (SCENE_SIZE - CHANNEL_WIDTH) / 2.0
 # 2.3 m of free space, which fits the turn and the walk inside 30 steps.
 ROBOT_START_POS = np.array([0.5, 0.0, 0.0], dtype=float)
 ROBOT_START_YAW_DEG = 0.0
-# Success: the whole body has reached the far side of the wall.
+# Success: the body centre reaches past the wall plane, at x > 3.5.
+#
+# This plane is deliberately OUT OF REACH for a forward-only walk.  With the wall
+# at x=3.0 the slab spans 2.99..3.01 and the body's half-extent facing forward is
+# 0.11, so walking straight ahead stalls at 2.88 (2.69 on 0.20 m steps).  Reaching
+# 3.5 requires rotating so the body's long axis carries the centre further along
+# x.  That is the whole point of the benchmark: the agent must turn, and the
+# question is whether it turns EARLY ENOUGH to fit through the opening.
+#
+# Do not "fix" this by lowering the plane.  A six-Level sweep already confirmed
+# the geometry behaves as intended: every Level stalled short of 3.5, and the one
+# Level that passed (3, channel 0.68 m) did so by turning.
 SUCCESS_X = 3.5
 
 # ---------------------------------------------------------------------------
