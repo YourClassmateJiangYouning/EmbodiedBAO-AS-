@@ -344,7 +344,11 @@ class AgentAPI:
         if not math.isfinite(self.timeout) or self.timeout <= 0.0:
             raise ValueError(f"timeout must be a positive finite number, got {self.timeout}")
         self.temperature = temperature
-        retry_env = os.environ.get("BAO_MAX_RETRIES", "1")
+        # 3 rather than 1: the gateway intermittently returns 502 and has been
+        # measured swinging between 1.8 s and 55.8 s for identical requests, so a
+        # single retry leaves too many steps recorded as 'invalid'.  That count is
+        # not a property of the model, and it pollutes the action statistics.
+        retry_env = os.environ.get("BAO_MAX_RETRIES", "3")
         self.max_retries = (
             int(max_retries) if max_retries is not None else int(retry_env)
         )

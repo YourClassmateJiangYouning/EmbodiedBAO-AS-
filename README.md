@@ -74,8 +74,8 @@ Eight discrete actions:
 
 | Action | Effect |
 | :--- | :--- |
-| `forward` / `backward` | move **0.20 m** along the torso's facing direction |
-| `left` / `right` | move **0.20 m** along the torso's own left / right |
+| `forward` / `backward` | move **0.28 m** along the torso's facing direction |
+| `left` / `right` | move **0.28 m** along the torso's own left / right |
 | `turn_left` / `turn_right` | rotate the torso (and its head camera) **15°** |
 | `look_left` / `look_right` | rotate the head camera **30°**, body unchanged |
 
@@ -83,8 +83,10 @@ Movement is **egocentric**: after turning sideways, `forward` walks along the ne
 facing direction. Reaching the goal therefore requires composing rotation and
 translation, which is what the benchmark is measuring.
 
-The translation step is 0.20 m because the walk is 3.0 m: 15 moves plus a 90°
-turn (6 moves) fits the 30-step budget with 9 spare.
+The translation step is 0.28 m so the intended route — six 15° turns plus the walk
+to the far side — takes 18 of the 30 steps, leaving 12 for correction. At 0.20 m
+the same route took 22 steps, which left almost no room to recover from one wrong
+move.
 
 ## Protocol
 

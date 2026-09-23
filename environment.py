@@ -154,7 +154,7 @@ LEVEL_CHANNEL_WIDTHS: Dict[int, float] = {
     5: 0.45,
 }
 
-MOVE_STEP = 0.20  # 20 cm; the walk is 3.0 m, so 15 moves plus 6 turns fits 30
+MOVE_STEP = 0.28  # 28 cm; 12 moves + 6 turns = 18 steps, inside the 30 budget
 TURN_STEP_DEG = 15.0
 CAMERA_TURN_STEP_DEG = 30.0
 TURN_TOLERANCE_DEG = 1e-6
