@@ -830,15 +830,15 @@ def test_history_is_full_episode_memory() -> None:
 
 def test_episode_defaults() -> None:
     check(
-        DEFAULT_EPISODES_PER_LEVEL == 20,
-        f"episodes per level is {DEFAULT_EPISODES_PER_LEVEL}, expected 20",
+        DEFAULT_EPISODES_PER_LEVEL == 10,
+        f"episodes per level is {DEFAULT_EPISODES_PER_LEVEL}, expected 10",
     )
     check(
         DEFAULT_MAX_STEPS == 30,
         f"max steps is {DEFAULT_MAX_STEPS}, expected 30",
     )
     check(SUCCESS_X == 3.5, f"success threshold is {SUCCESS_X}, expected 3.5")
-    print("[ok] protocol defaults are 20 episodes x 30 steps, success at x > 2.5")
+    print("[ok] protocol defaults are 10 episodes x 30 steps, success at x > 3.5")
 
 
 def test_sideways_band() -> None:

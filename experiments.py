@@ -61,7 +61,7 @@ from environment import (
 from protocol import ACTION_OPTIONS_STRING, build_prompt
 
 DEFAULT_LEVELS: Tuple[int, ...] = (0, 1, 2, 3, 4, 5)
-DEFAULT_EPISODES_PER_LEVEL = 20
+DEFAULT_EPISODES_PER_LEVEL = 10
 DEFAULT_MAX_STEPS = 30
 
 

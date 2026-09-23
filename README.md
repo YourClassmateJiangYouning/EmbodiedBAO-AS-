@@ -88,7 +88,7 @@ turn (6 moves) fits the 30-step budget with 9 spare.
 
 ## Protocol
 
-* 6 Levels × **20 episodes** = **120 scored episodes** per model.
+* 6 Levels × **10 episodes** = **60 scored episodes** per model.
 * Each episode: at most **30 steps**. Episodes end on success or exhaustion.
 * Wall collisions are **recorded but never terminate** an episode.
 * Every episode starts fresh from the same pose; Levels are independent.
@@ -304,11 +304,15 @@ a 2 m horizontal bar instead of a vertical post.
   run stopped at the same `x` and the same final yaw, so it is reproducible.
   Whether that is the phenomenon under study or an artefact of the observation is
   unresolved; the frames saved with `--save_obs` are what will settle it.
-* **API latency.** `--image_size 512` measured 5.7–8 s per step; a later run at
-  the same setting measured a median of 31.9 s with a maximum of 82.1 s, while a
-  text-only call to the same model took 6.0 s. 120 episodes × 30 steps at 32 s is
-  about 32 hours per model, so the choice of model matters more than any other
-  parameter.
+* **API latency.** Measured per-step latency at the same settings has varied by
+  more than 5× between runs: `qwen-vl-max` at 512 px averaged 5.7–8.0 s, while
+  `gemini-2.5-pro` at the same 512 px averaged a median of 31.9 s over 60 steps
+  (max 82.1 s) — yet a text-only call to that same model returned in 6.0 s, and
+  an earlier `gemini-2.5-pro` run at 512 px completed 50 steps in about 10
+  minutes. The cost is therefore dominated by the model and by API load rather
+  than by the image, and **this has not been isolated by a controlled A/B test**:
+  doing so (same model and prompt at 512 vs 1024) is the measurement that would
+  settle whether the resolution can be raised without cost.
 
 ## Out of scope (future work)
 

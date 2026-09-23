@@ -47,7 +47,7 @@ from typing import Any, Dict, List, Optional, Sequence
 # DEFAULT_* constants; test_bao_geometry.py asserts the values.
 # ---------------------------------------------------------------------------
 PROTOCOL_LEVELS: Sequence[int] = (0, 1, 2, 3, 4, 5)
-DEFAULT_EPISODES_PER_LEVEL = 20
+DEFAULT_EPISODES_PER_LEVEL = 10
 DEFAULT_MAX_STEPS = 30
 
 
