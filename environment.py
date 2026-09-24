@@ -1024,33 +1024,34 @@ class BAOEnv:
         #     falloff is harsh, while 1.0 m spreads the same power over an area,
         #     which both softens shadows and cuts the render noise that made the
         #     frames look grainy;
-        #   * intensity tuned by measurement.  The knob is NOT intuitive once the
-        #     radius moves: 1.0 m emits about (1.0/0.35)^2 = 8x the power of the
-        #     old 0.35 m emitters, so 20000 blew the frame out and 12000 still
-        #     measured mean=235 with a faded-looking image.
+        #   * intensity tuned by sweeping and measuring, because the response is
+        #     NON-linear and linear extrapolation from a single point overshoots.
+        #     Twelve thousand was still washed out at mean 220, and scaling
+        #     linearly from there suggested ~7000, which measured 220 again.
         #
-        # Measured exposure history for this 16 m room, all eight 1.0 m emitters:
-        #   20000 -> fully white
-        #   12000 -> eye_start mean=235.0  std=15.6  unique=30350  (too bright,
-        #            colours washed out)
-        #    7000 -> this setting, targeting eye_start mean ~140
+        # Measured sweep, 800x800, eight 1.0 m emitters, this 16 m room:
+        #     light   dome   eye_start mean   std    unique
+        #      500      0        70.2        31.5    22910   (too dark)
+        #     1500      0       136.7        40.2    33590
+        #     1500    100       137.3        39.9    33551   <- chosen
+        #     3000    100       179.8        34.9    30589
+        #     7000      -       220.0        22.7    48090   (washed out)
+        #    12000      -       235.0        15.6    30350   (washed out)
         #
-        # Earlier 5 m room, four 0.35 m emitters, for reference only -- the
-        # geometry differs so the numbers are not comparable:
-        #   60000 -> mean 229.5 (blown out)
-        #    9000 -> mean  87.5 (too dark)
+        # The exponent is roughly 0.8, not 1, which is why 7000 did not help.
         #
-        # Target is eye_start mean roughly 130-160 with std above about 30; a
-        # high mean with a LOW std is the signature of a washed-out frame, which
-        # is what 12000 produced (std 15.6).
+        # The dome light is NOT the lever it looks like: at light=1500, dome=100
+        # and dome=0 differ by 0.6 in the mean, because the dome mostly lights the
+        # ceiling and the distance ahead rather than the view down the corridor.
         #
-        # A smaller radius with a larger intensity is specifically NOT wanted: it
-        # brightens near the fixtures and leaves the mid-corridor dim, and it
-        # increases noise rather than reducing it.
+        # Acceptance test: eye_start mean roughly 130-160 AND std above about 30.
+        # A high mean with a LOW std is the signature of a washed-out frame -- at
+        # mean 235 the std was 15.6 and the blue and green had faded to pale
+        # tints, which is what prompted this sweep.
         #
         # Overridable so exposure can be tuned by rendering rather than by
         # editing this file: capture_views.py --light_intensity / --light_radius.
-        intensity = float(self.task_dict.get("light_intensity", 7000.0))
+        intensity = float(self.task_dict.get("light_intensity", 1500.0))
         radius = float(self.task_dict.get("light_radius", 1.0))
         dome_intensity = float(self.task_dict.get("dome_intensity", 300.0))
 
