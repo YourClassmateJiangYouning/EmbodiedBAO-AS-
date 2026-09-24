@@ -811,7 +811,7 @@ class BAOEnv:
         )
 
     def _create_goal_marker(self) -> None:
-        """Mark the goal with a pair of bands on the side walls.
+        """A finish-line ribbon spanning the corridor at the goal.
 
         Purely decorative: added by :meth:`_create_scene` but deliberately NOT
         part of :func:`_panel_boxes`, so no collision check sees it and it cannot
@@ -833,26 +833,32 @@ class BAOEnv:
         a different model produced the same description, so it is a property of
         the scene rather than of one agent.
 
-        Wall bands rather than a free-standing post, for two reasons: a post in
-        the middle of the corridor would have to be dodged or could read as an
-        obstacle, and it looks wrong in an otherwise empty passage.  A mirrored
-        pair of bands frames the goal line, gives the agent a symmetric reference
-        to judge its own lateral position against, and occupies no floor space.
+        Shape: a single ribbon strung across the corridor at the goal line, like
+        a finish banner.  It runs past both side walls so it reads as strung
+        across the passage rather than fitted inside it, and it is thin in x
+        (0.05 m) so it looks like hanging material rather than a wall.
+
+        Height placement is the part that has to be right, and the arithmetic is
+        recorded because a first attempt got it wrong.  The eye sits at 1.68 m and
+        the opening the agent must aim at tops out at 2.0 m, so a ribbon starting
+        at 1.75 m crossed the upper part of the opening and sat below the H1's
+        measured 1.81 m head height.  The ribbon therefore starts at 2.15 m,
+        clear of both, while still well inside the frame: at x=11, which is
+        10.5 m ahead, the frame's top edge is 3.1 m or higher for any plausible
+        vertical field of view, so the ribbon is comfortably in view.
         """
         if not self.task_dict.get("goal_marker", True):
             return
-        band_width = float(self.task_dict.get("goal_marker_width", 0.30))
-        span = float(self.task_dict.get("goal_marker_span", 0.02))
-        height = float(self.task_dict.get("goal_marker_height", ROOM_WALL_HEIGHT))
-        for index, sign in enumerate((-1.0, 1.0)):
-            # Flush against the inside face of each side wall.
-            z = sign * (ROOM_WIDTH_Z / 2.0 - span / 2.0)
-            self._add_box(
-                f"GoalMarker_{index}",
-                np.array([SUCCESS_X, height / 2.0, z]),
-                np.array([band_width, height, span]),
-                material=(f"GoalMarkerMaterial_{index}", GOAL_MARKER_COLOR),
-            )
+        depth = float(self.task_dict.get("goal_marker_span", 0.05))
+        height = float(self.task_dict.get("goal_marker_height", 0.80))
+        base = float(self.task_dict.get("goal_marker_base", 2.15))
+        span = float(self.task_dict.get("goal_marker_width", ROOM_WIDTH_Z + 0.30))
+        self._add_box(
+            "GoalRibbon",
+            np.array([SUCCESS_X, base + height / 2.0, 0.0]),
+            np.array([depth, height, span]),
+            material=("GoalRibbonMaterial", GOAL_MARKER_COLOR),
+        )
 
     def _create_ground_grid(self, spacing: float = 0.5) -> None:
         """Mark the floor with a faint grid.
