@@ -36,8 +36,10 @@ MODULES = [
     "experiments.py",
     "ai_agent.py",
     "analysis.py",
+    "persistence.py",
     "test_bao_geometry.py",
     "test_bao_integration.py",
+    "test_bao_persistence.py",
 ]
 
 # Interpreter-provided module globals.

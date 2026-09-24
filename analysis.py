@@ -33,11 +33,14 @@ from __future__ import annotations
 import argparse
 import csv
 import glob
+import io
 import json
 import os
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
+
+from persistence import atomic_write_json, atomic_write_text
 
 HUMAN_THRESHOLD = 1.30
 
@@ -78,31 +81,73 @@ def load_episodes(
 
     episodes: List[Dict[str, Any]] = []
     for path in paths:
-        with open(path, "r", encoding="utf-8") as handle:
-            episode = json.load(handle)
+        try:
+            with open(path, "r", encoding="utf-8") as handle:
+                episode = json.load(handle)
+        except (OSError, json.JSONDecodeError) as exc:
+            # One damaged record must not take the whole analysis down: warn,
+            # name the file, and carry on with the records that do parse.
+            print(f"[analysis] WARNING: skipping unreadable {path} ({exc})")
+            continue
         if not episode.get("steps"):
             sidecar = path[: -len(".json")] + "_steps.json"
             if os.path.exists(sidecar):
-                with open(sidecar, "r", encoding="utf-8") as handle:
-                    episode["steps"] = json.load(handle)
+                try:
+                    with open(sidecar, "r", encoding="utf-8") as handle:
+                        episode["steps"] = json.load(handle)
+                except (OSError, json.JSONDecodeError) as exc:
+                    print(f"[analysis] WARNING: skipping unreadable {sidecar} ({exc})")
         episodes.append(episode)
     episodes.sort(key=lambda ep: int(ep.get("episode_id", 0)))
     return episodes
 
 
+def _holds_episode_records(directory: str) -> bool:
+    """True when ``directory`` directly contains at least one episode record.
+
+    ``episode_*_steps.json`` sidecars live next to the records, and
+    ``episode_*.json`` matches them too, so they are filtered out: a directory
+    holding only sidecars has nothing to analyse.
+    """
+    for path in glob.glob(os.path.join(directory, "episode_*.json")):
+        if not path.endswith("_steps.json"):
+            return True
+    return False
+
+
 def discover_models(results_root: str) -> List[str]:
-    """List models that have episode results under any Level."""
+    """List models that have episode results under any Level.
+
+    Three layouts are recognised, because all three exist in the wild:
+
+    * ``level{n}/{model}/{tag}/episode_*.json`` -- what ``main.py`` writes for
+      every tagged run, and therefore every run ``run_all_models.sh`` makes;
+    * ``level{n}/{model}/episode_*.json`` -- untagged runs from before the tag
+      became a directory component;
+    * ``level{n}/{model}/round*/episode_*.json`` -- older still.
+
+    The tagged form was missing here, which made a finished sweep invisible:
+    ``python analysis.py`` printed "No episode results found" and exited 1
+    while every episode sat on disk under its run tag.
+    """
     models: set[str] = set()
     for level_dir in glob.glob(os.path.join(results_root, "level*")):
         if not os.path.isdir(level_dir):
             continue
         for name in sorted(os.listdir(level_dir)):
-            if not os.path.isdir(os.path.join(level_dir, name)):
+            model_dir = os.path.join(level_dir, name)
+            if not os.path.isdir(model_dir):
                 continue
-            if glob.glob(os.path.join(level_dir, name, "episode_*.json")) or glob.glob(
-                os.path.join(level_dir, name, "round*", "episode_*.json")
+            if _holds_episode_records(model_dir) or glob.glob(
+                os.path.join(model_dir, "round*", "episode_*.json")
             ):
                 models.add(name)
+                continue
+            # Tagged layout: one directory per run tag, named by the tag.
+            for tag_dir in sorted(glob.glob(os.path.join(model_dir, "*"))):
+                if os.path.isdir(tag_dir) and _holds_episode_records(tag_dir):
+                    models.add(name)
+                    break
     return sorted(models)
 
 
@@ -492,11 +537,25 @@ def plot_thresholds(
 # ---------------------------------------------------------------------------
 
 
+def _project_root() -> str:
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+def _default_results_root() -> str:
+    return os.path.join(_project_root(), "results")
+
+
+def _default_out_dir() -> str:
+    return os.path.join(_project_root(), "analysis")
+
+
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Analyze the EmbodiedBAO A/S threshold results."
     )
-    parser.add_argument("--results_root", type=str, default="results")
+    # Defaults are anchored to the repository so `python analysis.py` reports
+    # on the run that was just produced, wherever it is invoked from.
+    parser.add_argument("--results_root", type=str, default=_default_results_root())
     parser.add_argument(
         "--levels", type=int, nargs="+", default=[0, 1, 2, 3, 4, 5]
     )
@@ -507,7 +566,7 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         "--tag", type=str, default=None,
         help="Analyze one run tag; default: latest tagged run (or legacy files)",
     )
-    parser.add_argument("--out_dir", type=str, default="analysis")
+    parser.add_argument("--out_dir", type=str, default=_default_out_dir())
     parser.add_argument("--no_plot", action="store_true", help="Skip matplotlib plots")
     return parser.parse_args(argv)
 
@@ -534,26 +593,24 @@ def main(argv: Optional[List[str]] = None) -> int:
             args.out_dir,
             f"threshold_{report['model'].replace('/', '-')}.json",
         )
-        with open(path, "w", encoding="utf-8") as handle:
-            json.dump(report, handle, indent=2, ensure_ascii=False)
+        # Atomic: a report that is half-written is worse than a stale one, and
+        # these files are what the paper's tables are generated from.
+        atomic_write_json(path, report)
 
     markdown = format_markdown_table(reports, args.levels)
     for name in ("threshold_table.md", "threshold_table.txt"):
-        with open(os.path.join(args.out_dir, name), "w", encoding="utf-8") as handle:
-            handle.write(markdown + "\n")
+        atomic_write_text(os.path.join(args.out_dir, name), markdown + "\n")
 
     rows = table_rows(reports, args.levels)
     if rows:
         fieldnames = sorted({key for row in rows for key in row})
-        with open(
-            os.path.join(args.out_dir, "threshold_table.csv"),
-            "w",
-            newline="",
-            encoding="utf-8",
-        ) as handle:
-            writer = csv.DictWriter(handle, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(rows)
+        buffer = io.StringIO()
+        writer = csv.DictWriter(buffer, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
+        atomic_write_text(
+            os.path.join(args.out_dir, "threshold_table.csv"), buffer.getvalue()
+        )
 
     if not args.no_plot:
         try:

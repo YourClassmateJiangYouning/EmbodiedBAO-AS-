@@ -40,6 +40,7 @@ Expected ``ai_agent`` interface (one of):
 from __future__ import annotations
 
 import argparse
+import glob
 import json
 import os
 import re
@@ -49,6 +50,12 @@ from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 
+from persistence import (
+    atomic_write_json,
+    backup_corrupt_file,
+    load_json_file,
+    sanitize_tag,
+)
 from environment import (
     ACTIONS,
     SIDEWAYS_YAW_MAX_DEG,
@@ -67,29 +74,96 @@ DEFAULT_MAX_STEPS = 30
 
 
 class ProtocolCheckpoint:
-    """Persistent completion state for pause/resume across experiment runs."""
+    """Persistent completion state for pause/resume across experiment runs.
+
+    The checkpoint is what stops a resumed sweep from re-running (and thereby
+    overwriting) episodes that a previous invocation already paid for, so it is
+    both written atomically and rebuilt from the episode records whenever the
+    stored file cannot be read.
+    """
 
     def __init__(self, path: str, resume: bool = False) -> None:
         self.path = path
         self.completed: set[str] = set()
+        self.recovered_from: Optional[str] = None
         if resume and os.path.exists(path):
             try:
-                with open(path, "r", encoding="utf-8") as handle:
-                    data = json.load(handle)
+                data = load_json_file(path)
                 self.completed = set(str(item) for item in data.get("completed", []))
-            except Exception:
-                self.completed = set()
+            except Exception as exc:
+                # Never silently forget collected data.  Resetting to an empty
+                # set here used to make the run restart and overwrite episodes
+                # that were still intact on disk; recover them instead.
+                self.completed = self._recover(exc)
+
+    def _recover(self, exc: Exception) -> set:
+        """Quarantine an unreadable checkpoint and rebuild its state."""
+        backup = backup_corrupt_file(self.path)
+        self.recovered_from = backup
+        print(
+            f"[checkpoint] WARNING: cannot read {self.path} "
+            f"({type(exc).__name__}: {exc})"
+        )
+        if backup:
+            print(f"[checkpoint] damaged checkpoint kept as {backup}")
+        rebuilt = self._rebuild_from_episodes()
+        if rebuilt:
+            print(
+                f"[checkpoint] rebuilt {len(rebuilt)} completed unit(s) from the "
+                "episode records already on disk"
+            )
+        else:
+            print(
+                "[checkpoint] no completed episode could be recovered from disk; "
+                "every episode of this tag will be re-run"
+            )
+        return rebuilt
+
+    def _rebuild_from_episodes(self) -> set:
+        """Reconstruct completion state from ``results/level*/{model}/{tag}/``.
+
+        The checkpoint lives at ``<results>/{model}/checkpoint_{tag}.json``, so
+        the model, the tag and the results root can all be derived from its own
+        path.  Only episode files that parse as valid JSON count as complete:
+        the point is to re-run what is damaged, not to trust it.
+        """
+        completed: set = set()
+        try:
+            checkpoint = os.path.abspath(self.path)
+            model_dir = os.path.dirname(checkpoint)
+            results_root = os.path.dirname(model_dir)
+            base = os.path.basename(checkpoint)
+            if not (base.startswith("checkpoint_") and base.endswith(".json")):
+                return completed
+            tag = base[len("checkpoint_") : -len(".json")]
+            model = os.path.basename(model_dir)
+            pattern = os.path.join(results_root, "level*", model, tag, "episode_*.json")
+            for path in sorted(glob.glob(pattern)):
+                name = os.path.basename(path)
+                match = re.match(r"episode_(\d+)\.json$", name)
+                if not match:
+                    continue
+                try:
+                    load_json_file(path)
+                except Exception:
+                    continue
+                level_dir = os.path.basename(
+                    os.path.dirname(os.path.dirname(os.path.dirname(path)))
+                )
+                if not level_dir.startswith("level"):
+                    continue
+                completed.add(f"{level_dir}/episode{int(match.group(1)):03d}")
+        except Exception:
+            return completed
+        return completed
 
     def is_done(self, key: str) -> bool:
         return key in self.completed
 
     def mark(self, key: str) -> None:
         self.completed.add(key)
-        directory = os.path.dirname(self.path)
-        if directory:
-            os.makedirs(directory, exist_ok=True)
-        with open(self.path, "w", encoding="utf-8") as handle:
-            json.dump({"completed": sorted(self.completed)}, handle, indent=2)
+        atomic_write_json(self.path, {"completed": sorted(self.completed)})
+
 
 
 # ---------------------------------------------------------------------------
@@ -325,13 +399,19 @@ class BAOExperimentRunner:
         logs_root: str = "logs",
     ) -> None:
         self.env = env
-        self.model = model.replace("/", "-")
+        self.model = model.replace("/", "-").replace("\\", "-")
         self.max_steps = int(max_steps)
         self.episodes_per_level = int(episodes_per_level)
         self.save_obs = bool(save_obs)
         self.seed = int(seed)
         self.rng = np.random.default_rng(self.seed)
-        self.tag = tag or time.strftime("%Y%m%d-%H%M%S")
+        # The tag becomes a directory component in three places, so it is
+        # sanitised once, here, and every consumer sees the same value.
+        self.tag = (
+            sanitize_tag(tag)
+            if str(tag or "").strip()
+            else time.strftime("%Y%m%d-%H%M%S")
+        )
         self.results_root = results_root
         self.logs_root = logs_root
         self.log_dir = os.path.join(logs_root, self.tag)
@@ -339,6 +419,22 @@ class BAOExperimentRunner:
         os.makedirs(self.log_dir, exist_ok=True)
         if self.save_obs:
             os.makedirs(self.obs_dir, exist_ok=True)
+        # Absolute paths in the log: the most common "where did my results go"
+        # failure is running the entry point from a different working
+        # directory than the one the operator is looking at.
+        print(
+            f"[runner] model={self.model} tag={self.tag}\n"
+            f"[runner] results -> {os.path.abspath(self.results_root)}\n"
+            f"[runner] logs    -> {os.path.abspath(self.log_dir)}"
+        )
+        if self.save_obs:
+            expected = self.episodes_per_level * 6 * self.max_steps
+            print(
+                f"[runner] --save_obs is on: up to {expected} PNGs can be written "
+                f"for a full 6-Level run at {self.episodes_per_level} episodes "
+                f"x {self.max_steps} steps"
+            )
+
 
     # ------------------------------------------------------------------
     # Public entry points
@@ -394,11 +490,18 @@ class BAOExperimentRunner:
         for episode_id in range(episodes):
             unit_key = f"level{level}/episode{episode_id:03d}"
             if checkpoint is not None and checkpoint.is_done(unit_key):
-                print(f"[checkpoint] skip {unit_key} (already completed)")
                 saved = self._load_episode(level, episode_id)
                 if saved is not None:
+                    print(f"[checkpoint] skip {unit_key} (already completed)")
                     all_episodes.append(saved)
-                continue
+                    continue
+                # Marked complete but the record is gone or damaged: re-running
+                # costs one episode, skipping it would silently shrink the
+                # sample that the paper's statistics are computed from.
+                print(
+                    f"[checkpoint] {unit_key} is marked complete but its episode "
+                    "record is missing or unreadable; running it again"
+                )
 
             episode = self._run_episode(
                 level=level,
@@ -409,6 +512,9 @@ class BAOExperimentRunner:
             all_episodes.append(episode)
             self._save_episode(episode)
             if checkpoint is not None:
+                # Order matters: the episode record is on disk before the
+                # checkpoint claims it is done, so a crash in between costs a
+                # re-run rather than losing the episode.
                 checkpoint.mark(unit_key)
 
             print(
@@ -422,6 +528,9 @@ class BAOExperimentRunner:
                 progress_callback(
                     level, episode_id + 1, episodes, episode, all_episodes
                 )
+            # Refresh the Level summary after every episode as well, so an
+            # interrupted Level still has a summary that matches its episodes.
+            self._save_summary(level, all_episodes)
 
         if all_episodes:
             self._save_summary(level, all_episodes)
@@ -441,7 +550,18 @@ class BAOExperimentRunner:
         agent_log = os.path.join(
             self.log_dir, f"level{level}_episode{episode_id:03d}_agent.txt"
         )
+        # Logs are appended to across a resume, so stamp where this attempt
+        # starts: otherwise a re-run of the same episode looks like one
+        # impossibly long model conversation.
+        with open(agent_log, "a", encoding="utf-8") as handle:
+            handle.write(
+                f"{'=' * 60}\n"
+                f"episode start {time.strftime('%Y-%m-%d %H:%M:%S')} "
+                f"model={self.model} tag={self.tag} level={level} "
+                f"episode={episode_id:03d}\n"
+            )
         agent = AgentAdapter(model=self.model, log_file=agent_log)
+
         # The adapter owns the within-episode memory.  Binding the local name to
         # its list (rather than to a second, parallel list) is what makes the
         # prompt block and the ``history=`` argument provably the same object.
@@ -600,49 +720,89 @@ class BAOExperimentRunner:
         return os.path.join(self._result_dir(level), f"episode_{episode_id:03d}.json")
 
     def _load_episode(self, level: int, episode_id: int) -> Optional[Dict[str, Any]]:
+        """Read one episode record, quarantining it instead of crashing on it.
+
+        A truncated JSON file (an interrupted write, a full disk, an editor
+        saving over it) used to raise straight out of ``--resume`` before the
+        run could do anything about it.
+        """
         path = self._episode_path(level, episode_id)
         if not os.path.exists(path):
             return None
-        with open(path, "r", encoding="utf-8") as handle:
-            return json.load(handle)
+        try:
+            return load_json_file(path)
+        except Exception as exc:
+            backup = backup_corrupt_file(path)
+            print(
+                f"[results] WARNING: {path} is unreadable "
+                f"({type(exc).__name__}: {exc}); this episode will be re-run"
+            )
+            if backup:
+                print(f"[results] damaged record kept as {backup}")
+            return None
 
     def _save_episode(self, episode: Dict[str, Any]) -> None:
-        """Write the episode JSON plus a separate per-step sidecar."""
+        """Write the episode JSON plus a separate per-step sidecar.
+
+        Both files are written atomically: a half-written episode record is
+        unreadable by ``json.load``, so an interrupted write would invalidate
+        the very data the sweep exists to collect.
+        """
         path = self._episode_path(episode["level"], episode["episode_id"])
-        with open(path, "w", encoding="utf-8") as handle:
-            json.dump(episode, handle, indent=2, ensure_ascii=False)
+        atomic_write_json(path, episode)
 
         steps_path = os.path.join(
             self._result_dir(episode["level"]),
             f"episode_{episode['episode_id']:03d}_steps.json",
         )
-        with open(steps_path, "w", encoding="utf-8") as handle:
-            json.dump(episode.get("steps", []), handle, indent=2, ensure_ascii=False)
+        atomic_write_json(steps_path, episode.get("steps", []))
 
     def _save_summary(self, level: int, episodes: List[Dict[str, Any]]) -> None:
         path = os.path.join(self._result_dir(level), f"summary_{self.tag}.json")
-        with open(path, "w", encoding="utf-8") as handle:
-            json.dump(
-                self.summarize_level(level, episodes),
-                handle,
-                indent=2,
-                ensure_ascii=False,
-            )
+        atomic_write_json(path, self.summarize_level(level, episodes))
 
     def _save_observation(
         self, level: int, episode_id: int, step: int, action: str, rgb: Any
     ) -> None:
+        """Save one camera frame; never let a PNG failure end an episode.
+
+        Observations are a diagnostic extra.  Losing a frame is acceptable,
+        aborting a scored episode (or the whole sweep) over one is not.
+        """
         from PIL import Image
 
         path = os.path.join(
             self.obs_dir, f"level{level}_ep{episode_id:03d}_step{step:02d}_{action}.png"
         )
-        Image.fromarray(rgb).save(path)
+        try:
+            import numpy as _np
+
+            array = _np.asarray(rgb)
+            if array.ndim == 3 and array.shape[2] == 4:
+                array = array[:, :, :3]
+            if array.dtype != _np.uint8:
+                array = _np.clip(array, 0, 255).astype(_np.uint8)
+            Image.fromarray(array).save(path)
+        except Exception as exc:  # pragma: no cover - depends on the renderer
+            print(
+                f"[results] WARNING: could not save observation {path} "
+                f"({type(exc).__name__}: {exc})"
+            )
 
     def save_args(self, args: Any) -> None:
+        """Record the effective configuration next to the run's logs."""
         path = os.path.join(self.log_dir, "args.json")
-        with open(path, "w", encoding="utf-8") as handle:
-            json.dump(vars(args), handle, indent=2, ensure_ascii=False)
+        payload: Dict[str, Any] = dict(vars(args))
+        # The resolved values, not just the flags: --tag may have been empty
+        # and --resume/--save_obs are meaningless without the resulting paths.
+        payload["resolved_tag"] = self.tag
+        payload["resolved_results_root"] = os.path.abspath(self.results_root)
+        payload["resolved_logs_root"] = os.path.abspath(self.logs_root)
+        payload["resolved_obs_dir"] = (
+            os.path.abspath(self.obs_dir) if self.save_obs else None
+        )
+        atomic_write_json(path, payload)
+
 
     # ------------------------------------------------------------------
     # Metrics

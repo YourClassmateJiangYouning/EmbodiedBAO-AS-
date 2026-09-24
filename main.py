@@ -13,24 +13,170 @@ Levels with ``experiments.BAOExperimentRunner``, save one JSON summary per Level
 plus one flat CSV per (model, tag), print the A/S threshold table, and close the
 environment.
 
-Hierarchy of outputs:
+Hierarchy of outputs (all under ``output_root()``: the repository, or
+``BAO_OUTPUT_ROOT`` when that is set):
     results/level{level}/{model}/{tag}/episode_{id:03d}.json       episode record
     results/level{level}/{model}/{tag}/episode_{id:03d}_steps.json per-step record
     results/level{level}/{model}/{tag}/summary_{tag}.json          Level metrics
     results/{model}/checkpoint_{tag}.json                      resume state
-    results/{model}_level{level}_{tag}.csv                     flat per-step CSV
+    results/{model}/level{level}_{tag}_{timestamp}.csv         flat per-step CSV
     logs/{tag}/level{level}_episode{id:03d}_agent.txt          raw model I/O
+    logs/{tag}/args.json                                       effective settings
+    run_progress.txt                                           greppable timeline
+
+Every JSON/CSV artefact is written atomically (see ``persistence.py``), so an
+interrupted run can never leave a truncated record behind, and the flat CSV is
+refreshed after every episode so an interrupted Level is still exported.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import io
 import json
 import os
 import time
 import traceback
+import urllib.error
+import urllib.request
 from typing import Any, Dict, List, Optional, Sequence
+
+import persistence
+
+# ---------------------------------------------------------------------------
+# Output layout
+#
+# Results, logs and the progress file are anchored to the *repository*, not to
+# the process working directory.  `python /path/to/main.py` executed from
+# somewhere else used to scatter results/ and run_progress.txt into whatever
+# directory the operator happened to be in, which on a machine you do not
+# control looks exactly like a run that saved nothing.  Set BAO_OUTPUT_ROOT to
+# send every artefact somewhere else (e.g. a large scratch disk).
+# ---------------------------------------------------------------------------
+RESULTS_DIRNAME = "results"
+LOGS_DIRNAME = "logs"
+
+
+def project_root() -> str:
+    """Directory that holds this file (the repository root)."""
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+def output_root() -> str:
+    """Root under which results/, logs/ and run_progress.txt are written."""
+    override = os.environ.get("BAO_OUTPUT_ROOT", "").strip()
+    if override:
+        return os.path.abspath(os.path.expanduser(override))
+    return project_root()
+
+
+def results_dir() -> str:
+    return os.path.join(output_root(), RESULTS_DIRNAME)
+
+
+def logs_dir() -> str:
+    return os.path.join(output_root(), LOGS_DIRNAME)
+
+
+def progress_path() -> str:
+    return os.path.join(output_root(), "run_progress.txt")
+
+
+# ---------------------------------------------------------------------------
+# Pre-flight
+#
+# Deliberately duplicated from ai_agent.py (which cannot be imported here: it
+# pulls in environment.py, and importing environment before SimulationApp has
+# started latches _HAS_ISAAC_SIM = False for the whole process -- see the note
+# above PROTOCOL_LEVELS).
+#
+# The point is to catch a model/credential problem in seconds rather than
+# after the ~150 s Isaac Sim startup.  A recorded incident on this gateway is
+# worth naming: an exhausted account balance is returned as HTTP 403 with
+# ``pre_consume_token_quota_failed``, the tooling classifies that as an AUTH
+# failure, and the UI reports it as an invalid API key.  The key was fine.
+# ---------------------------------------------------------------------------
+API_KEY_ENV_VARS = ("BOYUE_API_KEY", "TAOTOKEN_API_KEY", "OPENAI_API_KEY")
+BASE_URL_ENV_VARS = ("BOYUE_BASE_URL", "TAOTOKEN_BASE_URL", "OPENAI_BASE_URL")
+BOYUE_DEFAULT_BASE_URL = "http://35.220.164.252:3888/v1"
+OPENAI_DEFAULT_BASE_URL = "https://api.openai.com/v1"
+
+
+def _configured_api_key() -> str:
+    for name in API_KEY_ENV_VARS:
+        value = (os.environ.get(name) or "").strip()
+        if value:
+            return value
+    return ""
+
+
+def _configured_base_url() -> str:
+    for name in BASE_URL_ENV_VARS:
+        value = (os.environ.get(name) or "").strip()
+        if value:
+            return value.rstrip("/")
+    if (os.environ.get("BOYUE_API_KEY") or "").strip():
+        return BOYUE_DEFAULT_BASE_URL
+    return OPENAI_DEFAULT_BASE_URL
+
+
+def preflight_model(model: str, timeout: float = 10.0) -> str:
+    """Check the credential before Isaac Sim starts; return a status line.
+
+    Raises ``ValueError`` when the run cannot possibly succeed (no key at all).
+    Anything the gateway says about a key that *is* present is reported but
+    never fatal: an aggregator's 401/403 may be a quota problem rather than a
+    bad key, and second-guessing it here would block a run that would work.
+    """
+    if str(model).strip().lower() == "random":
+        return "model=random baseline: no API key needed"
+
+    key = _configured_api_key()
+    if not key:
+        raise ValueError(
+            "no API key in the environment. Export one of "
+            f"{' / '.join(API_KEY_ENV_VARS)} before starting the run "
+            "(the checkpoint and results are unaffected; nothing has started yet)."
+        )
+    if not key.isascii():
+        raise ValueError(
+            "the configured API key contains non-ASCII characters; it was "
+            "probably pasted from a document with smart quotes or a placeholder."
+        )
+
+    base_url = _configured_base_url()
+    request = urllib.request.Request(
+        base_url + "/models", headers={"Authorization": f"Bearer {key}"}
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            status = int(getattr(response, "status", 200) or 200)
+    except urllib.error.HTTPError as exc:
+        body = ""
+        try:
+            body = exc.read().decode("utf-8", errors="replace")[:300]
+        except Exception:
+            pass
+        if exc.code == 401:
+            return (
+                f"WARNING: the gateway rejected the key (HTTP 401 from {base_url}). "
+                "This is a credential problem, not a quota problem. body=" + body
+            )
+        if exc.code == 403:
+            return (
+                f"WARNING: {base_url} answered HTTP 403. An aggregator reports an "
+                "exhausted balance this way (code pre_consume_token_quota_failed), "
+                "and some tools then display it as an invalid API key -- check the "
+                "account balance before re-issuing the key. body=" + body
+            )
+        return f"WARNING: {base_url} answered HTTP {exc.code}; continuing. body={body}"
+    except Exception as exc:  # network problems must not block a local run
+        return (
+            f"WARNING: could not reach {base_url} ({type(exc).__name__}: {exc}); "
+            "continuing -- the first model call will report the real error"
+        )
+    return f"endpoint reachable (HTTP {status}), key accepted: {base_url}"
 
 # ---------------------------------------------------------------------------
 # Protocol constants -- intentionally duplicated here as plain literals.
@@ -205,11 +351,13 @@ def save_episodes_csv(
     tell which CSV belonged to which tag.  Across an 11-model sweep that makes
     the flat tables unusable.
     """
-    safe_model = model.replace("/", "-").replace("\\", "-")
+    safe_model = persistence.sanitize_tag(
+        model.replace("/", "-").replace("\\", "-"), "model"
+    )
     out_dir = os.path.join(results_root, safe_model)
     os.makedirs(out_dir, exist_ok=True)
     timestamp = timestamp or time.strftime("%Y%m%d-%H%M%S")
-    safe_tag = str(tag).replace("/", "-").replace("\\", "-") or "untagged"
+    safe_tag = persistence.sanitize_tag(tag, "untagged")
     path = os.path.join(out_dir, f"level{level}_{safe_tag}_{timestamp}.csv")
 
     fields = [
@@ -233,33 +381,36 @@ def save_episodes_csv(
         "llm_response_time_ms",
     ]
 
-    with open(path, "w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fields)
-        writer.writeheader()
-        for episode in episodes:
-            for step in episode.get("steps", []):
-                writer.writerow(
-                    {
-                        "episode_id": episode.get("episode_id"),
-                        "level": episode.get("level"),
-                        "channel_width": episode.get("channel_width"),
-                        "a_s_ratio": episode.get("a_s_ratio"),
-                        "passed": episode.get("passed"),
-                        "passed_sideways": episode.get("passed_sideways"),
-                        "total_rotation": episode.get("total_rotation"),
-                        "first_turn_step": episode.get("first_turn_step"),
-                        "total_steps": episode.get("total_steps"),
-                        "action_sequence": episode.get("action_sequence"),
-                        "step": step.get("step"),
-                        "action": step.get("action"),
-                        "torso_rotation": step.get("torso_rotation"),
-                        "position_x": step.get("position_x"),
-                        "position_z": step.get("position_z"),
-                        "collision": step.get("collision"),
-                        "step_success": step.get("step_success"),
-                        "llm_response_time_ms": step.get("llm_response_time_ms"),
-                    }
-                )
+    buffer = io.StringIO()
+    writer = csv.DictWriter(buffer, fieldnames=fields)
+    writer.writeheader()
+    for episode in episodes:
+        for step in episode.get("steps", []):
+            writer.writerow(
+                {
+                    "episode_id": episode.get("episode_id"),
+                    "level": episode.get("level"),
+                    "channel_width": episode.get("channel_width"),
+                    "a_s_ratio": episode.get("a_s_ratio"),
+                    "passed": episode.get("passed"),
+                    "passed_sideways": episode.get("passed_sideways"),
+                    "total_rotation": episode.get("total_rotation"),
+                    "first_turn_step": episode.get("first_turn_step"),
+                    "total_steps": episode.get("total_steps"),
+                    "action_sequence": episode.get("action_sequence"),
+                    "step": step.get("step"),
+                    "action": step.get("action"),
+                    "torso_rotation": step.get("torso_rotation"),
+                    "position_x": step.get("position_x"),
+                    "position_z": step.get("position_z"),
+                    "collision": step.get("collision"),
+                    "step_success": step.get("step_success"),
+                    "llm_response_time_ms": step.get("llm_response_time_ms"),
+                }
+            )
+    # Atomic: this file is rewritten after every episode, and an interrupted
+    # rewrite would otherwise destroy the accumulated table for the Level.
+    persistence.atomic_write_text(path, buffer.getvalue())
     return path
 
 
@@ -348,18 +499,34 @@ def _progress_callback(
 
 
 def _write_progress(message: str) -> None:
-    """Append a timestamped line to run_progress.txt (stdout is swallowed)."""
-    path = os.path.join(os.getcwd(), "run_progress.txt")
-    with open(path, "a", encoding="utf-8") as handle:
-        handle.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} {message}\n")
+    """Append a timestamped line to run_progress.txt (stdout is swallowed).
+
+    The path is anchored to the output root rather than the working directory,
+    and a failure to write it never aborts an experiment: the progress file is
+    a convenience, the episode records are the data.
+    """
+    path = progress_path()
+    try:
+        directory = os.path.dirname(path)
+        if directory:
+            os.makedirs(directory, exist_ok=True)
+        with open(path, "a", encoding="utf-8") as handle:
+            handle.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} {message}\n")
+            handle.flush()
+    except OSError as exc:
+        print(f"[main] WARNING: could not append to {path}: {exc}", flush=True)
 
 
 def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
     """Set up Isaac Sim, run the Levels, and return the per-Level summaries."""
     levels = resolve_levels(args)
+    run_results_root = results_dir()
+    run_logs_root = logs_dir()
+    print(f"[main] output root: {output_root()}")
     _write_progress(
         f"main start: model={args.model} levels={levels} "
-        f"episodes={args.episodes} max_steps={args.max_steps}"
+        f"episodes={args.episodes} max_steps={args.max_steps} "
+        f"output_root={output_root()}"
     )
     if args.image_size is not None:
         os.environ["BAO_IMAGE_SIZE"] = str(int(args.image_size))
@@ -368,6 +535,12 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
     env = None
     simulation_app = None
     try:
+        # Credential check first: it costs a second, while the Isaac Sim startup
+        # below costs minutes.
+        preflight_message = preflight_model(args.model)
+        print(f"[main] preflight: {preflight_message}")
+        _write_progress(f"preflight: {preflight_message}")
+
         from isaacsim import SimulationApp
 
         simulation_app = SimulationApp({"headless": args.headless})
@@ -404,17 +577,54 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
             episodes_per_level=args.episodes,
             tag=args.tag,
             save_obs=args.save_obs,
+            results_root=run_results_root,
+            logs_root=run_logs_root,
         )
         runner.save_args(args)
         timestamp = time.strftime("%Y%m%d-%H%M%S")
-        safe_model = args.model.replace("/", "-").replace("\\", "-")
+        safe_model = persistence.sanitize_tag(
+            args.model.replace("/", "-").replace("\\", "-"), "model"
+        )
         checkpoint_path = os.path.join(
-            "results", safe_model, f"checkpoint_{runner.tag}.json"
+            run_results_root, safe_model, f"checkpoint_{runner.tag}.json"
         )
         checkpoint = ProtocolCheckpoint(path=checkpoint_path, resume=args.resume)
         if args.resume and checkpoint.completed:
             print(f"[checkpoint] resumed with {len(checkpoint.completed)} completed units")
-        _write_progress(f"checkpoint path: {checkpoint_path}")
+        _write_progress(f"checkpoint path: {os.path.abspath(checkpoint_path)}")
+
+        def _export_csv(level: int, episodes_done: Sequence[Dict[str, Any]]) -> str:
+            """Refresh the flat per-step CSV for one Level."""
+            return save_episodes_csv(
+                episodes_done,
+                model=args.model,
+                level=level,
+                results_root=run_results_root,
+                timestamp=timestamp,
+                tag=runner.tag,
+            )
+
+        def _on_episode(
+            level: int,
+            completed: int,
+            total: int,
+            episode: Dict[str, Any],
+            episodes_done: Sequence[Dict[str, Any]],
+        ) -> None:
+            """Progress reporting plus an always-current CSV for the Level.
+
+            The CSV used to be written only after a whole Level finished, so an
+            interruption in the middle of a Level left the JSON records on disk
+            but no flat table.  Rewriting it per episode is cheap (tens of rows)
+            and means the exported data is never behind the saved records.
+            """
+            _progress_callback(level, completed, total, episode, episodes_done)
+            try:
+                _export_csv(level, list(episodes_done))
+            except OSError as exc:
+                _write_progress(
+                    f"WARNING: partial CSV export for level {level} failed: {exc}"
+                )
 
         summaries: Dict[int, Dict[str, Any]] = {}
         for level in levels:
@@ -426,18 +636,12 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
             episodes = runner.run_level(
                 level=level,
                 episodes=args.episodes,
-                progress_callback=_progress_callback,
+                progress_callback=_on_episode,
                 checkpoint=checkpoint,
             )
             summary = BAOExperimentRunner.summarize_level(level, episodes)
             summaries[level] = summary
-            csv_path = save_episodes_csv(
-                episodes,
-                model=args.model,
-                level=level,
-                timestamp=timestamp,
-                tag=getattr(args, "tag", "") or "",
-            )
+            csv_path = _export_csv(level, episodes)
             print(f"[main] saved {csv_path}")
             _write_progress(f"csv saved: {csv_path}")
             _write_progress(
@@ -448,6 +652,12 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
         print_threshold_table(summaries)
         _write_progress("all levels done")
         return summaries
+    except KeyboardInterrupt:
+        # Ctrl-C is how a long sweep is normally stopped; make that visible in
+        # the timeline instead of leaving it indistinguishable from a crash.
+        _write_progress("INTERRUPTED by user (KeyboardInterrupt)")
+        print("\n[main] interrupted; completed episodes are already on disk")
+        raise
     except Exception as exc:
         _write_progress(f"ERROR: {type(exc).__name__}: {exc}")
         _write_progress(traceback.format_exc())

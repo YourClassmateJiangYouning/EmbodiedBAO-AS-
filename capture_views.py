@@ -263,13 +263,15 @@ def main() -> int:
     # the report into a file.
     os.makedirs(args.outdir, exist_ok=True)
     measurements_path = os.path.join(args.outdir, "measurements.txt")
-    with open(measurements_path, "w") as handle:
+    # Explicit UTF-8: the default is the ANSI code page on Windows (cp936 on a
+    # Chinese install), which mangles any non-ASCII text in the report.
+    with open(measurements_path, "w", encoding="utf-8") as handle:
         handle.write("")
 
     def say(message: str) -> None:
         print(message, flush=True)
         try:
-            with open(measurements_path, "a") as handle:
+            with open(measurements_path, "a", encoding="utf-8") as handle:
                 handle.write(message + "\n")
         except OSError:
             pass

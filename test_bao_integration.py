@@ -706,6 +706,78 @@ def test_run_tags_isolate_episode_files() -> None:
     print("[ok] run tags isolate episode persistence and analysis")
 
 
+def test_analysis_discovers_tagged_runs() -> None:
+    """``python analysis.py`` must find the runs a tagged sweep leaves behind.
+
+    ``discover_models`` only looked for the untagged and ``round*`` layouts, so
+    a tree written by ``main.py`` (``level{n}/{model}/{tag}/episode_*.json``,
+    which is what ``run_all_models.sh`` produces) was reported as empty even
+    though every episode was on disk.
+    """
+    _install_scripted_agent("sideways")
+    try:
+        tmp = make_temp_dir()
+        try:
+            root = os.path.join(tmp, "results")
+            runner = BAOExperimentRunner(
+                env=FakeBAOEnv(),
+                model="tagged-model",
+                tag="sweep-1",
+                results_root=root,
+                logs_root=os.path.join(tmp, "logs"),
+            )
+            runner.run_all(levels=[0, 1], episodes_per_level=1)
+
+            found = analysis.discover_models(root)
+            check(
+                found == ["tagged-model"],
+                f"tagged run was not discovered (got {found})",
+            )
+
+            # A tag directory holding only per-step sidecars has no episode
+            # record, so it must not make the model look analysed.
+            sidecar_only = os.path.join(root, "level0", "sidecar-only", "sweep-1")
+            os.makedirs(sidecar_only, exist_ok=True)
+            with open(
+                os.path.join(sidecar_only, "episode_000_steps.json"),
+                "w",
+                encoding="utf-8",
+            ) as handle:
+                handle.write("[]")
+            check(
+                "sidecar-only" not in analysis.discover_models(root),
+                "a directory holding only _steps.json sidecars counted as results",
+            )
+
+            # And the CLI itself must produce a report from that tree.
+            out_dir = os.path.join(tmp, "analysis")
+            rc = analysis.main(
+                [
+                    "--results_root", root,
+                    "--levels", "0", "1",
+                    "--out_dir", out_dir,
+                    "--no_plot",
+                ]
+            )
+            check(rc == 0, f"analysis CLI returned {rc} for a tagged run")
+            report_path = os.path.join(out_dir, "threshold_tagged-model.json")
+            check(
+                os.path.exists(report_path),
+                "analysis CLI wrote no threshold report for a tagged run",
+            )
+            with open(report_path, encoding="utf-8") as handle:
+                report = json.load(handle)
+            check(
+                bool(report.get("levels")),
+                "the CLI report analysed no Levels",
+            )
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+    finally:
+        _restore_agent_adapter()
+    print("[ok] analysis discovers runs written under a tag directory")
+
+
 def test_prompt_uses_configured_move_step() -> None:
     from protocol import build_prompt
 
@@ -1170,6 +1242,7 @@ def main() -> int:
         test_analysis_recovers_threshold,
         test_checkpoint_resume,
         test_run_tags_isolate_episode_files,
+        test_analysis_discovers_tagged_runs,
         test_prompt_uses_configured_move_step,
         test_invalid_action_is_recorded,
         test_episode_memory_reaches_the_model,
