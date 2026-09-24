@@ -285,6 +285,7 @@ inference, and each exists because a guess had already been wrong once:
 | `tools/passability_probe.py` | whether each Level is reachable; single-pose legality, so prefer the next one |
 | `tools/reachability_search.py` | the same question by breadth-first search over the real actions |
 | `tools/memory_test.py` | whether a model carries state across API calls (standalone, no Isaac Sim) |
+| `tools/dry_run_save.py` | what the runner actually writes to disk, field by field, without Isaac Sim |
 | `tools/check_names.py` | unbound names across the package, run as part of the geometry suite |
 
 `tools/check_names.py` is a small AST scope-chain checker; it runs inside
