@@ -1024,25 +1024,33 @@ class BAOEnv:
         #     falloff is harsh, while 1.0 m spreads the same power over an area,
         #     which both softens shadows and cuts the render noise that made the
         #     frames look grainy;
-        #   * intensity raised to 12000, tuned by measurement rather than
-        #     arithmetic.  20000 with these eight 1.0 m emitters rendered the
-        #     frame fully white: raising the radius from 0.35 to 1.0 already
-        #     multiplies emitted power by about (1.0/0.35)^2 = 8x, and eight
-        #     emitters at 2.2x the old intensity compound that, so a value that
-        #     looks like a modest increase overshoots badly.
+        #   * intensity tuned by measurement.  The knob is NOT intuitive once the
+        #     radius moves: 1.0 m emits about (1.0/0.35)^2 = 8x the power of the
+        #     old 0.35 m emitters, so 20000 blew the frame out and 12000 still
+        #     measured mean=235 with a faded-looking image.
         #
-        # Measured exposure history, so these values are not guesses:
-        #   60000 intensity, 4 x 0.35 m,  5 m room -> mean 229.5 (blown out)
-        #    9000 intensity, 4 x 0.35 m, 16 m room -> mean  87.5 (too dark)
-        #   20000 intensity, 8 x 1.0 m,  16 m room -> fully white
-        #   12000 intensity, 8 x 1.0 m,  16 m room -> this setting
+        # Measured exposure history for this 16 m room, all eight 1.0 m emitters:
+        #   20000 -> fully white
+        #   12000 -> eye_start mean=235.0  std=15.6  unique=30350  (too bright,
+        #            colours washed out)
+        #    7000 -> this setting, targeting eye_start mean ~140
+        #
+        # Earlier 5 m room, four 0.35 m emitters, for reference only -- the
+        # geometry differs so the numbers are not comparable:
+        #   60000 -> mean 229.5 (blown out)
+        #    9000 -> mean  87.5 (too dark)
+        #
+        # Target is eye_start mean roughly 130-160 with std above about 30; a
+        # high mean with a LOW std is the signature of a washed-out frame, which
+        # is what 12000 produced (std 15.6).
         #
         # A smaller radius with a larger intensity is specifically NOT wanted: it
         # brightens near the fixtures and leaves the mid-corridor dim, and it
         # increases noise rather than reducing it.
+        #
         # Overridable so exposure can be tuned by rendering rather than by
         # editing this file: capture_views.py --light_intensity / --light_radius.
-        intensity = float(self.task_dict.get("light_intensity", 12000.0))
+        intensity = float(self.task_dict.get("light_intensity", 7000.0))
         radius = float(self.task_dict.get("light_radius", 1.0))
         dome_intensity = float(self.task_dict.get("dome_intensity", 300.0))
 
