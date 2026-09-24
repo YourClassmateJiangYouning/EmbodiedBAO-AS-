@@ -5,7 +5,7 @@ rendered image can be predicted from first principles.  This is the check that
 tells us whether a uniform grey frame is expected (the camera is looking at a
 large flat surface) or impossible (something else is wrong).
 
-    python tools/ray_probe.py --start-x 1.0 --pitch 15 --focal 8
+    python tools/ray_probe.py --start-x 0.5 --pitch 15 --focal 8
 """
 
 from __future__ import annotations
@@ -24,7 +24,7 @@ import environment as env  # noqa: E402
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Analytic ray probe for the eye camera.")
-    parser.add_argument("--start-x", type=float, default=1.0)
+    parser.add_argument("--start-x", type=float, default=float(env.ROBOT_START_POS[0]))
     parser.add_argument("--pitch", type=float, default=env.EYE_PITCH_DEG)
     parser.add_argument("--focal", type=float, default=env.ROBOT_CAMERA_FOCAL)
     parser.add_argument("--height", type=float, default=env.EYE_CAMERA_HEIGHT)
@@ -53,20 +53,32 @@ def ray_hit(origin: np.ndarray, direction: np.ndarray, channel_width: float) -> 
         t = (env.WALL_X - origin[0]) / direction[0]
         if 1e-6 < t < best_t:
             p = origin + direction * t
-            if abs(p[2]) >= channel_width / 2.0 and 0.0 <= p[1] <= env.WALL_HEIGHT:
+            if (
+                channel_width / 2.0 <= abs(p[2]) <= env.ROOM_WIDTH_Z / 2.0
+                and 0.0 <= p[1] <= env.WALL_HEIGHT
+            ):
                 best_t = t
                 what = "wall panel"
 
-    # The far wall of the room at x = SCENE_SIZE (there is none authored, but
-    # the ground ends there; report what is actually beyond it).
+    # The green far wall closes the room at x = ROOM_LENGTH_X.
     if abs(direction[0]) > 1e-12:
-        t = (env.SCENE_SIZE - origin[0]) / direction[0]
-        consider(t, "far room edge")
+        t = (env.ROOM_LENGTH_X - origin[0]) / direction[0]
+        if 1e-6 < t < best_t:
+            p = origin + direction * t
+            if (
+                0.0 <= p[1] <= env.ROOM_WALL_HEIGHT
+                and abs(p[2]) <= env.ROOM_WIDTH_Z / 2.0
+            ):
+                consider(t, "far wall")
 
-    # Far room floor is the same plane; note the ground ends at x = SCENE_SIZE.
+    # Floor bounds use independent longitudinal and lateral room dimensions.
     if what == "floor":
         p = origin + direction * best_t
-        if p[0] > env.SCENE_SIZE or p[0] < 0.0 or abs(p[2]) > env.SCENE_SIZE / 2.0:
+        if (
+            p[0] > env.ROOM_LENGTH_X
+            or p[0] < 0.0
+            or abs(p[2]) > env.ROOM_WIDTH_Z / 2.0
+        ):
             what = "floor (outside room)"
 
     return f"{what} at {best_t:.2f} m"
@@ -89,17 +101,27 @@ def classify(origin: np.ndarray, direction: np.ndarray, channel_width: float) ->
             else:
                 best_t, what = t, "wall panel"
 
-    # Far room wall at x = SCENE_SIZE (only reachable through the opening).
-    t = (env.SCENE_SIZE - origin[0]) / direction[0]
+    # Far room wall at x = ROOM_LENGTH_X (only reachable through the opening).
+    t = (env.ROOM_LENGTH_X - origin[0]) / direction[0]
     if 1e-6 < t < best_t:
-        best_t, what = t, "far wall"
+        p = origin + direction * t
+        if (
+            0.0 <= p[1] <= env.ROOM_WALL_HEIGHT
+            and abs(p[2]) <= env.ROOM_WIDTH_Z / 2.0
+        ):
+            best_t, what = t, "far wall"
 
-    # Side walls at z = +-SCENE_SIZE/2.
+    # Side walls stay at z = +-ROOM_WIDTH_Z/2 and extend only along x.
     for sign in (-1.0, 1.0):
         if abs(direction[2]) > 1e-12:
-            t = (sign * env.SCENE_SIZE / 2.0 - origin[2]) / direction[2]
+            t = (sign * env.ROOM_WIDTH_Z / 2.0 - origin[2]) / direction[2]
             if 1e-6 < t < best_t:
-                best_t, what = t, "side wall"
+                p = origin + direction * t
+                if (
+                    0.0 <= p[0] <= env.ROOM_LENGTH_X
+                    and 0.0 <= p[1] <= env.ROOM_WALL_HEIGHT
+                ):
+                    best_t, what = t, "side wall"
     return what
 
 
@@ -142,11 +164,16 @@ def report_occupancy(args: argparse.Namespace, channel: float, sensor: float) ->
     )
     budget = 30
     for focal in (args.focal, 12.0, 16.0):
-        for start_x in (1.5, 1.0, 0.5, 0.0):
+        for start_x in (
+            float(env.ROBOT_START_POS[0]),
+            env.WALL_X - 3.0,
+            env.WALL_X - 1.5,
+            env.WALL_X - env.MOVE_STEP,
+        ):
             occ = frame_occupancy(
                 start_x, args.pitch, focal, args.height, channel, sensor
             )
-            travel = (env.SUCCESS_X - start_x) + 0.10
+            travel = max(0.0, env.SUCCESS_X - start_x)
             steps = int(round(90.0 / env.TURN_STEP_DEG)) + int(
                 math.ceil(travel / env.MOVE_STEP)
             )
@@ -197,7 +224,10 @@ def main() -> int:
     dist = env.WALL_X - args.start_x
     print(f"  visible height there = {2.0 * dist * math.tan(half):.2f} m")
     print(f"  visible width  there = {2.0 * dist * math.tan(half):.2f} m")
-    print(f"  wall is {env.WALL_HEIGHT:.2f} m tall, spans |z| <= {env.SCENE_SIZE / 2:.1f}")
+    print(
+        f"  wall is {env.WALL_HEIGHT:.2f} m tall, "
+        f"spans |z| <= {env.ROOM_WIDTH_Z / 2.0:.1f}"
+    )
 
     report_occupancy(args, channel, sensor)
     return 0

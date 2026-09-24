@@ -35,19 +35,20 @@ shoulders through a panel.
 ## Scene
 
 ```
-x : forward   (5 m room; wall at x = 3.0, robot starts at x = 0.5)
+x : forward   (16 m room; wall at x = 8.0, robot starts at x = 0.5)
 y : up        (ground at y = 0)
 z : lateral   (opening centred at z = 0, room spans z in [-2.5, 2.5])
 ```
 
 | Element | Value |
 | :--- | :--- |
-| Room | 5.0 × 5.0 m, **fully enclosed**: four walls 3.0 m tall plus a ceiling |
-| Obstacle wall | plane `x = 3.0`, 2.0 m tall, 0.02 m thick, spanning the room |
+| Room | 16.0 m long (`x`) × 5.0 m wide (`z`), **fully enclosed**: floor and ceiling are 16 × 5 m; side walls extend only along `x` |
+| Far wall | green wall at `x = 16.0`, spanning the 5.0 m room width |
+| Obstacle wall | plane `x = 8.0`, 2.0 m tall, 0.02 m thick, spanning the room width |
 | Opening | vertical, centred at `z = 0`, floor to the top of the wall |
 | Channel edge posts | 0.05 m wide, full wall height, one on each side, placed **outside** the opening |
 | Robot start | `(0.5, 0, 0)`, facing `+x` |
-| Success | body centre reaches **`x > 3.5`** |
+| Success | body centre reaches **`x >= 11.0`** |
 | Eye camera | head height 1.68 m, pitched 15° down, 76° field of view |
 
 ### Surface colours
@@ -74,8 +75,8 @@ Eight discrete actions:
 
 | Action | Effect |
 | :--- | :--- |
-| `forward` / `backward` | move **0.28 m** along the torso's facing direction |
-| `left` / `right` | move **0.28 m** along the torso's own left / right |
+| `forward` / `backward` | move **0.75 m** along the torso's facing direction |
+| `left` / `right` | move **0.75 m** along the torso's own left / right |
 | `turn_left` / `turn_right` | rotate the torso (and its head camera) **15°** |
 | `look_left` / `look_right` | rotate the head camera **30°**, body unchanged |
 
@@ -83,10 +84,10 @@ Movement is **egocentric**: after turning sideways, `forward` walks along the ne
 facing direction. Reaching the goal therefore requires composing rotation and
 translation, which is what the benchmark is measuring.
 
-The translation step is 0.28 m so the intended route — six 15° turns plus the walk
-to the far side — takes 18 of the 30 steps, leaving 12 for correction. At 0.20 m
-the same route took 22 steps, which left almost no room to recover from one wrong
-move.
+The translation step is 0.75 m, approximately an adult walking step. From the
+`x = 0.5` start, ten forward translations reach the obstacle plane at `x = 8.0`,
+and four more reach the inclusive success plane at `x = 11.0`. Together with six
+15° turns, the intended sideways route fits within the 30-step budget.
 
 ## Protocol
 
@@ -111,13 +112,12 @@ parameter, so leaking the geometry structurally is not possible.
 
 The history is the agent's own within-episode memory, not a sliding window, and
 it is not truncated. The action distances are derived from `MOVE_STEP` rather
-than hard-coded: an earlier version advertised "move forward 5cm" while
-`MOVE_STEP` was 0.20 m, which would have made every distance judgement the agent
-made wrong by a factor of four.
+than hard-coded, so the prompt always advertises the configured 0.75 m movement
+instead of drifting from the environment.
 
 ## Recorded data
 
-Per episode (`results/level{level}/{model}/episode_{id:03d}.json`):
+Per episode (`results/level{level}/{model}/{tag}/episode_{id:03d}.json`):
 
 ```
 episode_id, level, channel_width, a_s_ratio,
@@ -208,6 +208,8 @@ Then analyse:
 
 ```bash
 python analysis.py --results_root results
+# analyze one exact run without mixing tags
+python analysis.py --results_root results --tag gemini-v1
 ```
 
 Outputs `analysis/threshold_table.{md,csv}`, one JSON report per model, and a
@@ -300,12 +302,11 @@ a 2 m horizontal bar instead of a vertical post.
 
 ## Known issues
 
-* **Model behaviour on Level 0.** Both `qwen-vl-max` and `gemini-2.5-pro` walked
-  cleanly to `x = 2.30` and then stopped advancing, spending the remaining steps
-  alternating turns while reporting no collisions. Both episodes of a two-episode
-  run stopped at the same `x` and the same final yaw, so it is reproducible.
-  Whether that is the phenomenon under study or an artefact of the observation is
-  unresolved; the frames saved with `--save_obs` are what will settle it.
+* **Earlier-layout model behaviour on Level 0.** Runs recorded before the room
+  was extended to 16 × 5 m showed both `qwen-vl-max` and `gemini-2.5-pro`
+  stopping before the obstacle and alternating turns while reporting no
+  collisions. Those coordinates are not comparable with the current layout;
+  fresh runs with a new tag are required.
 * **API latency.** Measured per-step latency at the same settings has varied by
   more than 5× between runs: `qwen-vl-max` at 512 px averaged 5.7–8.0 s, while
   `gemini-2.5-pro` at the same 512 px averaged a median of 31.9 s over 60 steps

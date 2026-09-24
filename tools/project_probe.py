@@ -43,7 +43,9 @@ def main() -> int:
 
     import environment as env
 
-    e = env.BAOEnv(app, task_dict={"headless": True, "start_x": 0.5})
+    e = env.BAOEnv(
+        app, task_dict={"headless": True, "start_x": float(env.ROBOT_START_POS[0])}
+    )
     e.reset_scene()
     e._update_eye_camera()
     for _ in range(60):
@@ -67,7 +69,7 @@ def main() -> int:
         "post_left": [env.WALL_X, 1.0, -env.CHANNEL_WIDTH / 2.0],
         "post_right": [env.WALL_X, 1.0, env.CHANNEL_WIDTH / 2.0],
         "gap_centre": [env.WALL_X, 1.0, 0.0],
-        "far_wall_centre": [env.SCENE_SIZE, 1.5, 0.0],
+        "far_wall_centre": [env.ROOM_LENGTH_X, 1.5, 0.0],
         "floor_under_camera": [env.ROBOT_START_POS[0], 0.0, 0.0],
         "wall_panel_left": [env.WALL_X, 1.0, -1.5],
     }

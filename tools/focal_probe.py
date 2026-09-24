@@ -47,7 +47,7 @@ def main() -> int:
 
     out("=" * 70)
     out("ROBOT_CAMERA_FOCAL constant = %s" % env.ROBOT_CAMERA_FOCAL)
-    task = {"headless": True, "start_x": 0.5}
+    task = {"headless": True, "start_x": float(env.ROBOT_START_POS[0])}
     out("task_dict                    = %s" % task)
     out("=" * 70)
 

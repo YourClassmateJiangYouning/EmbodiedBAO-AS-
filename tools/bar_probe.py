@@ -38,7 +38,9 @@ def main() -> int:
 
     import environment as env
 
-    e = env.BAOEnv(app, task_dict={"headless": True, "start_x": 0.5})
+    e = env.BAOEnv(
+        app, task_dict={"headless": True, "start_x": float(env.ROBOT_START_POS[0])}
+    )
     e.reset_scene()
     e._update_eye_camera()
     for _ in range(60):

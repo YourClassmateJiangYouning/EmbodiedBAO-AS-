@@ -14,9 +14,9 @@ plus one flat CSV per (model, tag), print the A/S threshold table, and close the
 environment.
 
 Hierarchy of outputs:
-    results/level{level}/{model}/episode_{id:03d}.json         episode record
-    results/level{level}/{model}/episode_{id:03d}_steps.json   per-step record
-    results/level{level}/{model}/summary_{tag}.json            Level metrics
+    results/level{level}/{model}/{tag}/episode_{id:03d}.json       episode record
+    results/level{level}/{model}/{tag}/episode_{id:03d}_steps.json per-step record
+    results/level{level}/{model}/{tag}/summary_{tag}.json          Level metrics
     results/{model}/checkpoint_{tag}.json                      resume state
     results/{model}_level{level}_{tag}.csv                     flat per-step CSV
     logs/{tag}/level{level}_episode{id:03d}_agent.txt          raw model I/O
@@ -138,8 +138,8 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         type=float,
         default=None,
         help=(
-            "Translation per action in metres (default: 0.20). Must rise with "
-            "--start_x or the robot cannot reach the far side in 30 steps."
+            "Translation per action in metres (default: 0.75). The prompt uses "
+            "the same configured value, so overrides remain self-consistent."
         ),
     )
     parser.add_argument(

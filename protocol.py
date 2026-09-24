@@ -70,6 +70,22 @@ ACTION_OPTIONS_STRING: str = "\n".join(
     f'{{"action": "{name}"}} - {ACTION_DESCRIPTIONS[name]}' for name in ACTIONS
 )
 
+
+def action_options_string(move_step: float = MOVE_STEP) -> str:
+    """Render action descriptions for the environment's actual move step."""
+    step_text = _format_step(float(move_step) * 100.0)
+    descriptions = dict(ACTION_DESCRIPTIONS)
+    for name, direction in (
+        ("forward", "forward"),
+        ("backward", "backward"),
+        ("left", "left"),
+        ("right", "right"),
+    ):
+        descriptions[name] = f"move {direction} {step_text}cm"
+    return "\n".join(
+        f'{{"action": "{name}"}} - {descriptions[name]}' for name in ACTIONS
+    )
+
 # Compact comma-separated list used by the JSON response instruction.
 ACTION_NAMES_TEXT: str = ", ".join(ACTIONS)
 
@@ -123,11 +139,15 @@ def build_prompt(
     state: Optional[Dict[str, Any]] = None,
     history: Optional[Sequence[Dict[str, Any]]] = None,
     max_steps: int = 30,
+    move_step: Optional[float] = None,
 ) -> str:
     """Build the per-step prompt.
 
     ``level`` is intentionally *not* a parameter: the prompt is identical for
     every Level, so there is no way for a caller to leak the channel geometry.
+
+    ``move_step`` optionally overrides the default translation distance in the
+    action descriptions, keeping CLI-configured environments truthful.
 
     ``history`` is the agent's own within-episode memory: one entry per step
     already taken, each carrying the action, the environment's feedback and the
@@ -137,9 +157,9 @@ def build_prompt(
     """
     parts: List[str] = [TASK_INSTRUCTION]
 
+    options = ACTION_OPTIONS_STRING if move_step is None else action_options_string(move_step)
     parts.append(
-        "Available actions (each action is one discrete step):\n"
-        + ACTION_OPTIONS_STRING
+        "Available actions (each action is one discrete step):\n" + options
     )
     parts.append(ACTION_FRAME_NOTE)
 

@@ -37,11 +37,13 @@ import numpy as np
 from environment import (
     LEVEL_CHANNEL_WIDTHS,
     MOVE_STEP,
+    ROBOT_START_POS,
     SUCCESS_X,
     TURN_STEP_DEG,
     WALL_X,
     _check_wall_collision,
     _rotate_xz,
+    _translation_path_is_clear,
     _turn_path_is_clear,
     a_s_ratio,
 )
@@ -53,7 +55,7 @@ from experiments import (
 )
 import analysis
 
-ROBOT_START = np.array([1.5, 0.0, 0.0], dtype=float)
+ROBOT_START = ROBOT_START_POS.copy()
 
 
 class Failure(AssertionError):
@@ -121,6 +123,7 @@ class FakeBAOEnv:
             "camera_yaw": float(self._camera_yaw),
             "channel_width": self.get_channel_width(),
             "a_s_ratio": self.get_a_s_ratio(),
+            "move_step": float(getattr(self, "_move_step", MOVE_STEP)),
         }
 
     def get_torso_rotation(self) -> float:
@@ -128,7 +131,7 @@ class FakeBAOEnv:
 
     # -- task ----------------------------------------------------------
     def check_success(self) -> bool:
-        return bool(self._position[0] > SUCCESS_X)
+        return bool(self._position[0] >= SUCCESS_X)
 
     def check_collision_with_wall(self) -> bool:
         return (
@@ -158,12 +161,12 @@ class FakeBAOEnv:
             else:
                 direction = _rotate_xz(np.array([0.0, 0.0, -1.0]), yaw_rad)
             candidate = self._position + direction * MOVE_STEP
-            collision = _check_wall_collision(
-                candidate, yaw_rad, self._channel_width
+            collision = _translation_path_is_clear(
+                self._position, candidate, yaw_rad, self._channel_width
             )
             if collision is not None:
                 legal = False
-                feedback = f"blocked by transparent wall ({collision['part']})"
+                feedback = f"blocked by obstacle or room boundary ({collision['part']})"
             else:
                 self._position = candidate
         elif action in ("turn_left", "turn_right"):
@@ -174,7 +177,7 @@ class FakeBAOEnv:
             )
             if collision is not None:
                 legal = False
-                feedback = "cannot turn: body would collide with transparent wall"
+                feedback = "cannot turn: body would collide with obstacle or room boundary"
             else:
                 self._yaw = candidate_yaw
         elif action in ("look_left", "look_right"):
@@ -212,7 +215,7 @@ class ScriptedAgent:
     def get_action(self, **kwargs: Any) -> Dict[str, Any]:
         state = kwargs.get("state") or {}
         yaw = float(state.get("torso_rotation", 0.0))
-        position = state.get("position", [1.5, 0.0, 0.0])
+        position = state.get("position", ROBOT_START.tolist())
         x, z = float(position[0]), float(position[2])
 
         if self.policy == "frontal":
@@ -229,7 +232,7 @@ class ScriptedAgent:
             #
             # The agent never needs to rotate back: the channel is an opening
             # through the wall, so once the body is past it the straight slide
-            # continues to x > 3.5.  Rotating back mid-channel is what the gate
+            # continues to x >= 11.0.  Rotating back mid-channel is what the gate
             # correctly forbids, because the shoulders would sweep the panel.
             if self.phase == 0:
                 if yaw >= 90.0 - 1e-6:
@@ -595,6 +598,7 @@ def test_checkpoint_resume() -> None:
                 env=env,
                 model="scripted-sideways",
                 max_steps=DEFAULT_MAX_STEPS,
+                tag="resume-test",
                 results_root=os.path.join(tmp, "results"),
                 logs_root=os.path.join(tmp, "logs"),
             )
@@ -609,6 +613,7 @@ def test_checkpoint_resume() -> None:
                 env=env2,
                 model="scripted-sideways",
                 max_steps=DEFAULT_MAX_STEPS,
+                tag="resume-test",
                 results_root=os.path.join(tmp, "results"),
                 logs_root=os.path.join(tmp, "logs"),
             )
@@ -630,6 +635,48 @@ def test_checkpoint_resume() -> None:
     finally:
         _restore_agent_adapter()
     print("[ok] checkpoint resume skips already-completed episodes")
+
+
+def test_run_tags_isolate_episode_files() -> None:
+    """Different run tags must never overwrite or resume each other's episodes."""
+    _install_scripted_agent("frontal")
+    try:
+        tmp = make_temp_dir()
+        try:
+            root = os.path.join(tmp, "results")
+            runner_a = BAOExperimentRunner(
+                env=FakeBAOEnv(), model="tagged", tag="run-a",
+                results_root=root, logs_root=os.path.join(tmp, "logs"),
+            )
+            runner_b = BAOExperimentRunner(
+                env=FakeBAOEnv(), model="tagged", tag="run-b",
+                results_root=root, logs_root=os.path.join(tmp, "logs"),
+            )
+            runner_a.run_level(0, episodes=1)
+            runner_b.run_level(0, episodes=1)
+            path_a = runner_a._episode_path(0, 0)
+            path_b = runner_b._episode_path(0, 0)
+            check(path_a != path_b, "run tags share one episode path")
+            check(os.path.exists(path_a) and os.path.exists(path_b), "tagged episode missing")
+            check(
+                analysis.load_episodes(root, 0, "tagged", tag="run-a")[0]["run_tag"]
+                == "run-a",
+                "analysis loaded the wrong run tag",
+            )
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+    finally:
+        _restore_agent_adapter()
+    print("[ok] run tags isolate episode persistence and analysis")
+
+
+def test_prompt_uses_configured_move_step() -> None:
+    from protocol import build_prompt
+
+    prompt = build_prompt(state={}, move_step=0.6)
+    check("move forward 60cm" in prompt, "prompt ignored configured move step")
+    check("move forward 75cm" not in prompt, "prompt leaked the default move step")
+    print("[ok] prompt uses the environment's configured move step")
 
 
 def test_invalid_action_is_recorded() -> None:
@@ -1014,6 +1061,8 @@ def main() -> int:
         test_csv_export_columns,
         test_analysis_recovers_threshold,
         test_checkpoint_resume,
+        test_run_tags_isolate_episode_files,
+        test_prompt_uses_configured_move_step,
         test_invalid_action_is_recorded,
         test_episode_memory_reaches_the_model,
         test_full_protocol_and_analysis,

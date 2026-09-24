@@ -16,7 +16,7 @@ dimensions, or whether a turn is needed.
     Level 5  0.45 m channel  A/S 0.79   sideways passage required
 
 Every Level runs ``10`` independent episodes of at most ``30`` steps.  An
-episode ends only on success (body centre past ``x > 3.5`` m) or step
+episode ends only on success (body centre reaches ``x >= 11.0`` m) or step
 exhaustion; wall collisions are recorded but never terminate the episode.
 
 Each step follows the canonical loop:
@@ -54,6 +54,7 @@ from environment import (
     SIDEWAYS_YAW_MAX_DEG,
     SIDEWAYS_YAW_MIN_DEG,
     SUCCESS_X,
+    WALL_X,
     TURN_STEP_DEG,
     a_s_ratio,
     level_channel_width,
@@ -125,7 +126,7 @@ def _env_passed(env: Any) -> bool:
         return bool(checker())
     position = getattr(env, "_root_position", None)
     if callable(position):
-        return bool(float(position()[0]) > SUCCESS_X)
+        return bool(float(position()[0]) >= SUCCESS_X)
     return False
 
 
@@ -458,6 +459,8 @@ class BAOExperimentRunner:
         first_turn_step: Optional[int] = None
         first_sideways_step: Optional[int] = None
         passed_sideways = False
+        passage_sideways: Optional[bool] = None
+        total_rotation = 0.0
         final_rotation = 0.0
         final_position_x = 0.0
         final_position_z = 0.0
@@ -465,10 +468,17 @@ class BAOExperimentRunner:
         for step in range(self.max_steps):
             rgb = self.env.get_camera_image()
             state = self.env.get_robot_state()
-            prompt = build_prompt(state=state, history=history, max_steps=self.max_steps)
+            prompt = build_prompt(
+                state=state,
+                history=history,
+                max_steps=self.max_steps,
+                move_step=state.get("move_step"),
+            )
             action_name, _raw, reasoning, latency_ms = agent.query(prompt, rgb, state)
             total_llm_time_ms += latency_ms
 
+            action_legal = False
+            collision_info: Optional[Dict[str, Any]] = None
             if action_name is None:
                 action_taken = "invalid"
                 feedback = "invalid action response"
@@ -484,19 +494,36 @@ class BAOExperimentRunner:
                 result = self.env.execute_action(action_name)
                 action_taken = action_name
                 feedback = result.feedback
-                collision = bool((not result.legal) or _env_collision(self.env))
+                action_legal = bool(result.legal)
+                collision_info = result.collision
+                if collision_info is not None and not isinstance(collision_info, dict):
+                    collision_info = {"part": "body"}
+                # A collision is a rejected action carrying analytic collision
+                # details (or a pose that somehow ends overlapping the wall).
+                # Invalid responses and unrelated illegality are not collisions.
+                collision = bool(collision_info is not None or _env_collision(self.env))
                 new_state = result.state or self.env.get_robot_state()
                 torso_rotation = float(
                     new_state.get("torso_rotation", self.env.get_torso_rotation())
                 )
                 position = list(new_state.get("position", [0.0, 0.0, 0.0]))
 
-            if collision:
+            obstacle_collision = bool(
+                collision_info is not None and "panel" in collision_info
+            )
+            if obstacle_collision:
                 wall_collision_count += 1
-            if action_taken in ("turn_left", "turn_right") and first_turn_step is None:
-                first_turn_step = step
+            if action_legal and action_taken in ("turn_left", "turn_right"):
+                total_rotation += TURN_STEP_DEG
+                if first_turn_step is None:
+                    first_turn_step = step
             if first_sideways_step is None and _is_sideways_yaw(torso_rotation):
                 first_sideways_step = step
+
+            # Score passage orientation when the body first reaches the wall
+            # plane, not three metres later at the success plane.
+            if passage_sideways is None and float(position[0]) >= WALL_X:
+                passage_sideways = bool(_is_sideways_yaw(torso_rotation))
 
             passed = _env_passed(self.env)
             final_rotation = torso_rotation
@@ -522,22 +549,19 @@ class BAOExperimentRunner:
                 self._save_observation(level, episode_id, step, action_taken, rgb)
 
             if passed:
-                passed_sideways = bool(_is_sideways_yaw(torso_rotation))
+                passed_sideways = bool(
+                    passage_sideways
+                    if passage_sideways is not None
+                    else _is_sideways_yaw(torso_rotation)
+                )
                 end_reason = "success"
                 break
-
-        total_rotation = float(
-            sum(
-                TURN_STEP_DEG
-                for action in action_sequence
-                if action in ("turn_left", "turn_right")
-            )
-        )
 
         return {
             "episode_id": episode_id,
             "level": int(level),
             "model_name": self.model,
+            "run_tag": self.tag,
             "channel_width": float(channel_width),
             "a_s_ratio": float(ratio),
             "passed": bool(passed),
@@ -564,7 +588,11 @@ class BAOExperimentRunner:
     # ------------------------------------------------------------------
 
     def _result_dir(self, level: int) -> str:
-        path = os.path.join(self.results_root, f"level{level}", self.model)
+        # Isolate every run tag so checkpoint resume can never load episodes
+        # produced by another scene configuration or invocation.
+        path = os.path.join(
+            self.results_root, f"level{level}", self.model, self.tag
+        )
         os.makedirs(path, exist_ok=True)
         return path
 

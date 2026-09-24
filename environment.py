@@ -1,20 +1,19 @@
 """EmbodiedBAO environment for NVIDIA Isaac Sim.
 
 The benchmark recreates the psychological "Body-as-Obstacle" (BAO) task in a
-4m x 4m room.  World coordinates follow the project convention:
+16 m long by 5 m wide room.  World coordinates follow the project convention:
 
-    x : forward axis (scene spans x in [0, 4]; the robot starts at x < 2)
+    x : forward axis (room spans x in [0, 16]; the robot starts at x = 0.5)
     y : up axis (the ground plane is y = 0)
-    z : lateral axis (scene spans z in [-2, 2])
+    z : lateral axis (room spans z in [-2.5, 2.5])
 
-The transparent acrylic wall sits on the plane x = 2.0 and spans the whole
-scene.  A vertical channel centred at z = 0 runs from the ground to the top of
+The opaque obstacle wall sits on the plane x = 8.0 and spans the room width.  A vertical channel centred at z = 0 runs from the ground to the top of
 the wall.  The channel width is the single independent variable of the
 benchmark: it is set per Level so that the channel-to-shoulder ratio (A/S)
 sweeps past the human threshold of 1.30 (Warren & Whang, 1987).
 
-The task is a pure gap-traversal problem: the robot must get its whole body to
-the far side of the wall (x > 3.5 m).  There is no reachable target object; the
+The task is a pure gap-traversal problem: the robot must move its body centre
+to the goal plane on the far side of the wall (x >= 11.0 m).  There is no reachable target object; the
 only question is whether the agent rotates its body before the channel becomes
 too narrow for a frontal passage.
 
@@ -69,7 +68,10 @@ except Exception as _isaac_import_error:  # pragma: no cover - only outside Isaa
 # Scene constants (metres / degrees)
 # ---------------------------------------------------------------------------
 
-SCENE_SIZE = 5.0
+# Longitudinal and lateral dimensions are deliberately independent: extending
+# the approach/run-out must never widen the room or alter any channel width.
+ROOM_LENGTH_X = 16.0
+ROOM_WIDTH_Z = 5.0
 GROUND_THICKNESS = 0.02
 
 # `FixedCuboid`'s size/scale combination does NOT mean metres, and behaves
@@ -108,36 +110,20 @@ WALL_COLOR = [0.13, 0.28, 0.72]
 WALL_OPACITY = 1.0
 ROOM_CEILING_COLOR = [0.92, 0.93, 0.95]
 
-WALL_X = 3.0
+WALL_X = 8.0
 WALL_HEIGHT = 2.0
 WALL_THICKNESS = 0.02
 CHANNEL_WIDTH = 0.90  # Level 0 default; every Level overrides this
 CHANNEL_HALF_WIDTH = CHANNEL_WIDTH / 2.0
-PANEL_WIDTH = (SCENE_SIZE - CHANNEL_WIDTH) / 2.0
+PANEL_WIDTH = (ROOM_WIDTH_Z - CHANNEL_WIDTH) / 2.0
 
-# Start 2.5 m from the obstacle wall.  Measured reason for moving the wall back
-# from x=2.0: the turn gate samples the robot's CURRENT pose, and the wall slab
-# spans WALL_X +- (thickness/2 + MOVE_STEP).  With the wall at x=2.0 the robot
-# could not rotate at all past x=1.60, so from x=0.5 it had only ~1.1 m of
-# manoeuvring room and a 1.5 m walk to the wall.  A recorded qwen-vl-max run
-# went 0.5 -> 1.6, then wedged: x froze for eight steps while turn_left and
-# turn_right alternated and were both blocked.  At x=3.0 the same start leaves
-# 2.3 m of free space, which fits the turn and the walk inside 30 steps.
+# With a 0.75 m adult step, the obstacle is exactly ten forward translations
+# from the start: 0.5 + 10 * 0.75 = 8.0 m.
 ROBOT_START_POS = np.array([0.5, 0.0, 0.0], dtype=float)
 ROBOT_START_YAW_DEG = 0.0
-# Success: the body centre reaches past the wall plane, at x > 3.5.
-#
-# This plane is deliberately OUT OF REACH for a forward-only walk.  With the wall
-# at x=3.0 the slab spans 2.99..3.01 and the body's half-extent facing forward is
-# 0.11, so walking straight ahead stalls at 2.88 (2.69 on 0.20 m steps).  Reaching
-# 3.5 requires rotating so the body's long axis carries the centre further along
-# x.  That is the whole point of the benchmark: the agent must turn, and the
-# question is whether it turns EARLY ENOUGH to fit through the opening.
-#
-# Do not "fix" this by lowering the plane.  A six-Level sweep already confirmed
-# the geometry behaves as intended: every Level stalled short of 3.5, and the one
-# Level that passed (3, channel 0.68 m) did so by turning.
-SUCCESS_X = 3.5
+# The goal is 3 m behind the obstacle: four further forward translations reach
+# x=11 exactly.  The inclusive check makes that fourth step count as success.
+SUCCESS_X = 11.0
 
 # ---------------------------------------------------------------------------
 # A/S threshold ladder (Warren & Whang 1987 human threshold is A/S = 1.30)
@@ -154,8 +140,13 @@ LEVEL_CHANNEL_WIDTHS: Dict[int, float] = {
     5: 0.45,
 }
 
-MOVE_STEP = 0.28  # 28 cm; 12 moves + 6 turns = 18 steps, inside the 30 budget
+# Approximate step length for a 1.80 m adult man: 1.80 * 0.415 ~= 0.747 m.
+MOVE_STEP = 0.75
 TURN_STEP_DEG = 15.0
+# Collision sampling within one discrete turn.  Sampling only at TURN_STEP_DEG
+# checks the two endpoint poses but can miss a corner touching a wall or room
+# boundary midway through the rotation.
+TURN_COLLISION_SAMPLE_DEG = 1.0
 CAMERA_TURN_STEP_DEG = 30.0
 TURN_TOLERANCE_DEG = 1e-6
 
@@ -307,7 +298,7 @@ def _panel_boxes(
         channel_width = CHANNEL_WIDTH
     channel_width = float(channel_width)
     half_width = channel_width / 2.0
-    panel_width = (SCENE_SIZE - channel_width) / 2.0
+    panel_width = (ROOM_WIDTH_Z - channel_width) / 2.0
     z_center = panel_width / 2.0 + half_width
     half = np.array(
         [WALL_THICKNESS / 2.0, WALL_HEIGHT / 2.0, panel_width / 2.0], dtype=float
@@ -442,7 +433,9 @@ def _check_wall_collision(
             dtype=float,
         )
         return {
-            "part": "shoulder" if ROBOT_BODY_CENTER_Y > 1.2 else "torso",
+            # The analytic collider is one combined torso-and-shoulder box; it
+            # does not contain enough geometry to identify a narrower body part.
+            "part": "body",
             "panel": index,
             "point": point.tolist(),
             "body_center": (root + np.array([0.0, ROBOT_BODY_CENTER_Y, 0.0])).tolist(),
@@ -467,9 +460,9 @@ def _check_room_boundary(
     ) * c
     limits = (
         (root[0] - half_x, 0.0, "near"),
-        (SCENE_SIZE - (root[0] + half_x), 0.0, "far"),
-        (root[2] - half_z, -SCENE_SIZE / 2.0, "left"),
-        (SCENE_SIZE / 2.0 - (root[2] + half_z), 0.0, "right"),
+        (ROOM_LENGTH_X - (root[0] + half_x), 0.0, "far"),
+        (root[2] - half_z, -ROOM_WIDTH_Z / 2.0, "left"),
+        (ROOM_WIDTH_Z / 2.0 - (root[2] + half_z), 0.0, "right"),
     )
     for value, minimum, name in limits:
         if value < minimum:
@@ -512,19 +505,19 @@ def _turn_path_is_clear(
     to_yaw_deg: float,
     channel_width: Optional[float] = None,
 ) -> Optional[Dict[str, Any]]:
-    """Check the swept yaw arc of a turn in ``TURN_STEP_DEG`` sub-steps.
+    """Check the complete swept yaw arc of a turn.
 
-    Sampling every intermediate orientation catches a turn that would sweep the
-    shoulders through a wall panel.  The current pose is sampled first, which is
-    what stops a robot that is already fouling the wall from rotating its way
-    free: every turn from a colliding pose is rejected, so the only recovery is
-    to translate away.  Because the pose is part of a collision-free state, the
-    turnaround rotation is still available on the far side of the wall.
+    Sampling at most ``TURN_COLLISION_SAMPLE_DEG`` apart catches a corner that
+    sweeps through a wall panel or room boundary even when both endpoint poses
+    are clear.  The current pose is sampled first, which also stops a robot that
+    is already fouling the wall from rotating its way free: its only recovery is
+    to translate away.  Because normal poses are collision-free, turnaround
+    rotation remains available on the far side of the wall.
     """
-    step = TURN_STEP_DEG if to_yaw_deg >= from_yaw_deg else -TURN_STEP_DEG
-    count = max(1, int(round(abs(to_yaw_deg - from_yaw_deg) / TURN_STEP_DEG)))
+    delta = float(to_yaw_deg) - float(from_yaw_deg)
+    count = max(1, int(math.ceil(abs(delta) / TURN_COLLISION_SAMPLE_DEG)))
     for i in range(0, count + 1):
-        sample = from_yaw_deg + step * i
+        sample = float(from_yaw_deg) + delta * (i / count)
         collision = _check_scene_collision(
             root_pos, np.radians(sample), channel_width=channel_width
         )
@@ -616,9 +609,9 @@ class BAOEnv:
             [start_x, ROBOT_START_POS[1], ROBOT_START_POS[2]], dtype=float
         )
         self._move_step = float(self.task_dict.get("move_step", MOVE_STEP))
-        if not math.isfinite(self._move_step) or not (0.0 < self._move_step <= SCENE_SIZE):
+        if not math.isfinite(self._move_step) or not (0.0 < self._move_step <= ROOM_LENGTH_X):
             raise ValueError(
-                f"move_step must be finite and in (0, {SCENE_SIZE}], got {self._move_step}"
+                f"move_step must be finite and in (0, {ROOM_LENGTH_X}], got {self._move_step}"
             )
         self._channel_width = float(self.task_dict.get("channel_width", CHANNEL_WIDTH))
         self._camera_yaw_offset = 0.0
@@ -739,13 +732,13 @@ class BAOEnv:
     def _create_ground(self) -> None:
         self._add_box(
             "Ground",
-            np.array([SCENE_SIZE / 2.0, -GROUND_THICKNESS / 2.0, 0.0]),
-            np.array([SCENE_SIZE, GROUND_THICKNESS, SCENE_SIZE]),
+            np.array([ROOM_LENGTH_X / 2.0, -GROUND_THICKNESS / 2.0, 0.0]),
+            np.array([ROOM_LENGTH_X, GROUND_THICKNESS, ROOM_WIDTH_Z]),
         )
         self._create_ground_grid()
 
     def _create_room(self) -> None:
-        """Close the room: four green walls plus a ceiling.
+        """Close the room with four walls and a full-length ceiling.
 
         Measured motivation: with only the obstacle wall and the floor, the
         space behind the channel was floor plus empty background, so every ray
@@ -755,9 +748,10 @@ class BAOEnv:
         opening reveals something distinct.
 
         The obstacle wall at ``WALL_X`` is built separately by :meth:`_create_wall`;
-        this only adds the enclosure around the 4x4 m floor.
+        this only adds the enclosure around the 16 m by 5 m floor.
         """
-        half = SCENE_SIZE / 2.0
+        half_x = ROOM_LENGTH_X / 2.0
+        half_z = ROOM_WIDTH_Z / 2.0
         height = ROOM_WALL_HEIGHT
         thickness = ROOM_WALL_THICKNESS
 
@@ -768,28 +762,28 @@ class BAOEnv:
             # "aimed at a panel" do not look the same up close.
             (
                 "room_far",
-                [SCENE_SIZE + thickness / 2.0, height / 2.0, 0.0],
-                [thickness, height, SCENE_SIZE + 2.0 * thickness],
+                [ROOM_LENGTH_X + thickness / 2.0, height / 2.0, 0.0],
+                [thickness, height, ROOM_WIDTH_Z + 2.0 * thickness],
                 ROOM_FAR_WALL_COLOR,
             ),
             # Near wall, behind the robot.
             (
                 "room_near",
                 [-thickness / 2.0, height / 2.0, 0.0],
-                [thickness, height, SCENE_SIZE + 2.0 * thickness],
+                [thickness, height, ROOM_WIDTH_Z + 2.0 * thickness],
                 ROOM_SIDE_WALL_COLOR,
             ),
             # Side walls.
             (
                 "room_side_left",
-                [half, height / 2.0, -half - thickness / 2.0],
-                [SCENE_SIZE, height, thickness],
+                [half_x, height / 2.0, -half_z - thickness / 2.0],
+                [ROOM_LENGTH_X, height, thickness],
                 ROOM_SIDE_WALL_COLOR,
             ),
             (
                 "room_side_right",
-                [half, height / 2.0, half + thickness / 2.0],
-                [SCENE_SIZE, height, thickness],
+                [half_x, height / 2.0, half_z + thickness / 2.0],
+                [ROOM_LENGTH_X, height, thickness],
                 ROOM_SIDE_WALL_COLOR,
             ),
         ]
@@ -804,8 +798,8 @@ class BAOEnv:
         # Ceiling, so rays above the wall tops do not escape to the background.
         self._add_box(
             "room_ceiling",
-            np.array([half, height + thickness / 2.0, 0.0]),
-            np.array([SCENE_SIZE, thickness, SCENE_SIZE]),
+            np.array([half_x, height + thickness / 2.0, 0.0]),
+            np.array([ROOM_LENGTH_X, thickness, ROOM_WIDTH_Z]),
             material=("room_ceilingMaterial", ROOM_CEILING_COLOR),
         )
 
@@ -814,30 +808,34 @@ class BAOEnv:
 
         The floor is otherwise a single flat grey slab, which makes every
         camera view unreadable: there is no scale reference, no way to judge
-        distance, and nothing to contrast the transparent wall against.  Thin
+        distance, and nothing to contrast the obstacle wall against.  Thin
         dark strips every ``spacing`` metres give the scene a readable
         reference frame without changing any of the task geometry.
         """
-        half = SCENE_SIZE / 2.0
         thickness = 0.012
         height = 0.002
-        steps = int(round(SCENE_SIZE / spacing))
 
-        for i in range(steps + 1):
-            offset = -half + i * spacing
-            for axis, tag in ((0, "x"), (2, "z")):
-                if axis == 0:
-                    position = np.array([offset, height / 2.0, 0.0])
-                    dims = np.array([thickness, height, SCENE_SIZE])
-                else:
-                    position = np.array([0.0, height / 2.0, offset])
-                    dims = np.array([SCENE_SIZE, height, thickness])
-                self._add_box(
-                    f"Grid_{tag}_{i}",
-                    position,
-                    dims,
-                    material=(f"GridMaterial_{tag}_{i}", [0.30, 0.32, 0.35]),
-                )
+        # Lines at fixed x run across the 5 m width.
+        x_steps = int(round(ROOM_LENGTH_X / spacing))
+        for i in range(x_steps + 1):
+            x = i * spacing
+            self._add_box(
+                f"Grid_x_{i}",
+                np.array([x, height / 2.0, 0.0]),
+                np.array([thickness, height, ROOM_WIDTH_Z]),
+                material=(f"GridMaterial_x_{i}", [0.30, 0.32, 0.35]),
+            )
+
+        # Lines at fixed z run along the full 16 m length.
+        z_steps = int(round(ROOM_WIDTH_Z / spacing))
+        for i in range(z_steps + 1):
+            z = -ROOM_WIDTH_Z / 2.0 + i * spacing
+            self._add_box(
+                f"Grid_z_{i}",
+                np.array([ROOM_LENGTH_X / 2.0, height / 2.0, z]),
+                np.array([ROOM_LENGTH_X, height, thickness]),
+                material=(f"GridMaterial_z_{i}", [0.30, 0.32, 0.35]),
+            )
 
     def _create_wall(self) -> None:
         """The obstacle wall: opaque blue panels with a channel between them.
@@ -847,7 +845,7 @@ class BAOEnv:
         opaque surface turns the channel into a clean silhouette.
         """
         channel_half = self._channel_width / 2.0
-        panel_width = (SCENE_SIZE - self._channel_width) / 2.0
+        panel_width = (ROOM_WIDTH_Z - self._channel_width) / 2.0
         z_center = panel_width / 2.0 + channel_half
         for i, sign in enumerate((-1.0, 1.0)):
             self._add_box(
@@ -877,9 +875,9 @@ class BAOEnv:
             self._add_box(
                 f"ChannelEdge_{edge_id}",
                 np.array([WALL_X, WALL_HEIGHT / 2.0, sign * post_centre_offset]),
-                np.array(
-                    [WALL_THICKNESS * 2.5, WALL_HEIGHT, CHANNEL_EDGE_THICKNESS]
-                ),
+                # Match the panel depth so the visible frame never protrudes
+                # beyond the analytic collision geometry along x.
+                np.array([WALL_THICKNESS, WALL_HEIGHT, CHANNEL_EDGE_THICKNESS]),
                 material=(
                     f"ChannelEdgeMaterial_{edge_id}",
                     CHANNEL_EDGE_COLOR,
@@ -900,8 +898,8 @@ class BAOEnv:
     def set_channel_width(self, width: float) -> float:
         """Resize the wall channel and rebuild its visual/collision prims."""
         width = float(width)
-        if not 0.1 <= width <= SCENE_SIZE - 0.1:
-            raise ValueError(f"channel width must be in [0.1, {SCENE_SIZE - 0.1}]")
+        if not 0.1 <= width <= ROOM_WIDTH_Z - 0.1:
+            raise ValueError(f"channel width must be in [0.1, {ROOM_WIDTH_Z - 0.1}]")
         if abs(width - self._channel_width) < 1e-9:
             return self._channel_width
         self._channel_width = width
@@ -1012,9 +1010,14 @@ class BAOEnv:
         # Intensity matters: at 60000 the eye view measured mean=229.5 with only
         # 226 unique colours, i.e. blown out to near-white.  These values target
         # a mid-grey exposure.
+        # Distribute lights across the full 16 m enclosure.  Keeping the old
+        # pair at x=1 and x=3 would leave the obstacle at x=8 and the 5 m
+        # run-out behind the goal severely under-lit.
         positions = [
-            ("/World/LightFront", np.array([1.0, 2.6, 0.0])),
-            ("/World/LightBack", np.array([3.0, 2.6, 0.0])),
+            ("/World/LightApproachNear", np.array([2.0, 2.6, 0.0])),
+            ("/World/LightApproachFar", np.array([6.0, 2.6, 0.0])),
+            ("/World/LightRunoutNear", np.array([10.0, 2.6, 0.0])),
+            ("/World/LightRunoutFar", np.array([14.0, 2.6, 0.0])),
         ]
         for path, position in positions:
             light = UsdLux.SphereLight.Define(self.stage, path)
@@ -1743,6 +1746,7 @@ class BAOEnv:
             "channel_width": self.get_channel_width(),
             "a_s_ratio": self.get_a_s_ratio(),
             "distance_to_goal": self.get_distance_to_goal(),
+            "move_step": float(self._move_step),
         }
 
     def get_torso_rotation(self) -> float:
@@ -1786,8 +1790,8 @@ class BAOEnv:
         return list(info["point"]) if info else None
 
     def check_success(self) -> bool:
-        """Success condition: the whole body is past the wall (x > 3.5 m)."""
-        return bool(self._root_position()[0] > SUCCESS_X)
+        """Success condition: the body centre reaches the x=11 m goal plane."""
+        return bool(self._root_position()[0] >= SUCCESS_X)
 
     def _get_wall_collision_info(self) -> Optional[Dict[str, Any]]:
         return _check_wall_collision(
@@ -1857,7 +1861,7 @@ class BAOEnv:
             if collision is not None:
                 return (
                     False,
-                    f"blocked by transparent wall ({collision['part']})",
+                    f"blocked by obstacle or room boundary ({collision['part']})",
                     collision,
                 )
             self._set_robot_pose(target, self._robot_yaw)
@@ -1881,7 +1885,7 @@ class BAOEnv:
             if collision is not None:
                 return (
                     False,
-                    "cannot turn: body would collide with transparent wall",
+                    "cannot turn: body would collide with obstacle or room boundary",
                     collision,
                 )
             self._set_robot_pose(root, new_yaw)

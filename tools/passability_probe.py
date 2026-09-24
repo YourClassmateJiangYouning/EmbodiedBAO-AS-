@@ -24,9 +24,9 @@ from __future__ import annotations
 
 import math
 import sys
+from pathlib import Path
 
-sys.path.insert(0, __file__.rsplit("/", 2)[0].replace("\\", "/"))
-sys.path.insert(0, ".")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
 def main() -> int:
@@ -58,18 +58,22 @@ def main() -> int:
         )
 
     def max_x_at(yaw_deg: float, width: float) -> float:
-        """Furthest root x reachable at this yaw, by scan then refine."""
-        best = None
-        x = start_x
-        while x < WALL_X + 1.0:
-            if not legal(x, yaw_deg, width):
+        """Furthest root x on a fixed-yaw, collision-free action-grid path."""
+        position = np.array([start_x, 0.0, 0.0])
+        yaw = math.radians(yaw_deg)
+        forward = np.array([math.cos(yaw), 0.0, -math.sin(yaw)])
+        right = np.array([math.sin(yaw), 0.0, math.cos(yaw)])
+        # Choose the real egocentric translation axis that advances most in +x.
+        direction = max((forward, -forward, right, -right), key=lambda v: float(v[0]))
+        for _ in range(30):
+            target = position + direction * MOVE_STEP
+            from environment import _translation_path_is_clear
+            if _translation_path_is_clear(position, target, yaw, width) is not None:
                 break
-            best = x
-            x += 0.01
-        if best is None:
-            return float("nan")
-        # Quantise onto the 0.20 m action grid: the robot cannot stop anywhere.
-        return start_x + math.floor((best - start_x) / MOVE_STEP + 1e-9) * MOVE_STEP
+            position = target
+            if position[0] >= SUCCESS_X:
+                break
+        return float(position[0])
 
     print(
         "body half-extents: along facing %.3f, lateral %.3f (incl %.3f clearance)"
@@ -91,7 +95,7 @@ def main() -> int:
         fit = None
         for deg in range(0, 91):
             t = math.radians(deg)
-            lateral = bt * abs(math.cos(t)) + bw * abs(math.sin(t))
+            lateral = bw * abs(math.cos(t)) + bt * abs(math.sin(t))
             if lateral <= width / 2.0:
                 fit = deg
                 break

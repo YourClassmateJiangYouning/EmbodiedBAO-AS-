@@ -44,16 +44,18 @@ def main() -> int:
     import environment as env
     from pxr import UsdGeom
 
-    e = env.BAOEnv(app, task_dict={"headless": True, "start_x": 0.5})
+    e = env.BAOEnv(
+        app, task_dict={"headless": True, "start_x": float(env.ROBOT_START_POS[0])}
+    )
     e.reset_scene()
     for _ in range(30):
         app.update()
 
     out("expected (user frame, authored):")
     out("  ChannelEdge  x=%.3f  height=%.3f  left_right=%.3f" % (
-        env.WALL_THICKNESS * 2.5, env.WALL_HEIGHT, env.CHANNEL_EDGE_THICKNESS))
+        env.WALL_THICKNESS, env.WALL_HEIGHT, env.CHANNEL_EDGE_THICKNESS))
     out("  WallPanel    x=%.3f  height=%.3f  left_right=%.3f" % (
-        env.WALL_THICKNESS, env.WALL_HEIGHT, 2.05))
+        env.WALL_THICKNESS, env.WALL_HEIGHT, env.PANEL_WIDTH))
     out("")
     out("  %-18s %-28s %-28s %-28s" % ("prim", "isaac x span", "isaac y span", "isaac z span"))
     for name in NAMES:

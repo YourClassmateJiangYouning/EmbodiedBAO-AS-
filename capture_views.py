@@ -365,19 +365,31 @@ def main() -> int:
         if not args.only_eye:
             capture(
                 "top",
-                [2.0, 7.0, 0.0],
-                [2.0, 0.0, 0.0],
+                [environment.ROOM_LENGTH_X / 2.0, 18.0, 0.0],
+                [environment.ROOM_LENGTH_X / 2.0, 0.0, 0.0],
                 up=(0.0, 1.0, 0.0),
             )
 
             # 2. Elevated three-quarter view from behind-right of the robot.
-            capture("iso", [0.3, 2.2, 1.8], [2.2, 0.7, 0.2])
+            capture(
+                "iso",
+                [environment.WALL_X - 4.0, 3.2, 2.2],
+                [environment.WALL_X, 0.9, 0.0],
+            )
 
             # 3. Wall face-on from the robot's side, showing the opening.
-            capture("front", [0.2, 1.3, 0.0], [2.0, 1.0, 0.0])
+            capture(
+                "front",
+                [environment.WALL_X - 3.0, 1.3, 0.0],
+                [environment.WALL_X, 1.0, 0.0],
+            )
 
             # 4. From behind the wall looking back through the opening.
-            capture("behind", [3.8, 1.3, 0.0], [2.0, 1.0, 0.0])
+            capture(
+                "behind",
+                [environment.WALL_X + 3.0, 1.3, 0.0],
+                [environment.WALL_X, 1.0, 0.0],
+            )
 
         # 5. Optional pitch sweep: find the pitch at which the channel becomes
         #    visible, by separating vertical edges (the posts) from horizontal

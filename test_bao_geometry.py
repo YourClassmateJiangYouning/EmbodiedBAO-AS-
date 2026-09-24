@@ -14,7 +14,7 @@ here with plain Python:
    shoulders are narrower than the opening.
 4. **Sideways route** -- the route the model is expected to find
    (rotate 90 degrees in free space, then translate along the torso axis)
-   actually reaches x > 3.5 m at every Level, and the robot's body box clears
+   actually reaches x >= 11.0 m at every Level, and the robot's body box clears
    the wall panels while doing it.
 5. **Action space and prompt** -- ``reach``/``retreat`` are gone, the camera
    actions keep the legacy 30 degree step, and the prompt is byte-identical
@@ -44,6 +44,7 @@ from environment import (
     LEVEL_CHANNEL_WIDTHS,
     MOVE_STEP,
     ROBOT_SHOULDER_WIDTH,
+    ROBOT_START_POS,
     ROBOT_TORSO_THICKNESS,
     SUCCESS_X,
     TURN_STEP_DEG,
@@ -73,7 +74,7 @@ from protocol import (
 # A/S ratios from the task brief, rounded to two decimals.
 EXPECTED_A_S = {0: 1.58, 1: 1.40, 2: 1.30, 3: 1.19, 4: 1.00, 5: 0.79}
 
-ROBOT_START = np.array([1.5, 0.0, 0.0], dtype=float)
+ROBOT_START = ROBOT_START_POS.copy()
 SIDEWAYS_YAW_DEG = 90.0
 
 
@@ -324,7 +325,7 @@ def simulate_sideways_route(channel_width: float) -> Tuple[List[np.ndarray], boo
     Mirrors the route the model is expected to discover with the egocentric
     action set: ``turn_left`` x6 (so the right-hand side faces the channel),
     then alternate between pushing toward the wall and sliding sideways until
-    the body centre is past x > 3.5 m.  Returns the (x, z) trace and whether
+    the body centre is past x >= 11.0 m.  Returns the (x, z) trace and whether
     the body ever clipped a panel.
     """
     position = ROBOT_START.copy()
@@ -353,7 +354,7 @@ def simulate_sideways_route(channel_width: float) -> Tuple[List[np.ndarray], boo
 
     clean = True
     for _ in range(80):
-        if position[0] > SUCCESS_X:
+        if position[0] >= SUCCESS_X:
             break
         moved = False
         # Prefer sliding toward the wall in x (the "right" action at this yaw),
@@ -380,9 +381,9 @@ def test_sideways_route_reaches_goal() -> None:
         trace, clear = simulate_sideways_route(width)
         check(clear, f"level {level}: sideways route clipped a panel")
         check(
-            trace and trace[-1][0] > SUCCESS_X,
+            trace and trace[-1][0] >= SUCCESS_X,
             f"level {level}: sideways route ended at x={trace[-1][0] if trace else 'n/a'}, "
-            f"never crossed x > {SUCCESS_X}",
+            f"never reached x >= {SUCCESS_X}",
         )
         # The path must stay inside the channel it is passing through.
         max_abs_z = max(abs(point[1]) for point in trace)
@@ -391,7 +392,7 @@ def test_sideways_route_reaches_goal() -> None:
             f"level {level}: sideways route wandered to |z|={max_abs_z:.3f}, "
             f"outside the {width:.2f} m channel",
         )
-    print("[ok] the sideways route reaches x > 3.5 m at every Level")
+    print("[ok] the sideways route reaches x >= 11.0 m at every Level")
 
 
 def test_frontal_route_only_where_feasible() -> None:
@@ -403,12 +404,12 @@ def test_frontal_route_only_where_feasible() -> None:
         blocked_by = None
         for _ in range(DEFAULT_MAX_STEPS + 10):
             candidate = position + np.array([MOVE_STEP, 0.0, 0.0])
-            collision = _check_wall_collision(candidate, 0.0, width)
+            collision = _translation_path_is_clear(position, candidate, 0.0, width)
             if collision is not None:
                 blocked_by = collision["part"]
                 break
             position = candidate
-            if position[0] > SUCCESS_X:
+            if position[0] >= SUCCESS_X:
                 reached = True
                 break
         check(
@@ -470,6 +471,35 @@ def test_rotation_blocked_inside_wall_slab() -> None:
         f"[ok] turns from a wall-fouling pose are rejected "
         f"(tested x={fouled_root[0]:.2f}, yaw={fouled_yaw:.0f} deg)"
     )
+
+
+def test_turn_sweep_checks_intermediate_orientations() -> None:
+    """A turn must reject a mid-arc boundary hit even if both endpoints fit."""
+    from environment import _check_scene_collision, _turn_path_is_clear
+
+    root = np.array([0.306655240798261, 0.0, 0.9126487475216045])
+    width = LEVEL_CHANNEL_WIDTHS[1]
+    start_yaw = -60.0
+    end_yaw = -75.0
+
+    check(
+        _check_scene_collision(root, math.radians(start_yaw), width) is None,
+        "regression fixture's start pose should be clear",
+    )
+    check(
+        _check_scene_collision(root, math.radians(end_yaw), width) is None,
+        "regression fixture's end pose should be clear",
+    )
+    check(
+        _check_room_boundary(root, math.radians(-63.25)) is not None,
+        "regression fixture should cross the near boundary midway through the turn",
+    )
+    collision = _turn_path_is_clear(root, start_yaw, end_yaw, width)
+    check(
+        collision is not None and collision.get("boundary") == "near",
+        "the swept-turn check missed an intermediate room-boundary collision",
+    )
+    print("[ok] turn sweeps sample intermediate orientations, not only endpoints")
 
 
 # ---------------------------------------------------------------------------
@@ -693,8 +723,8 @@ def test_action_descriptions_match_the_real_step() -> None:
         f"the prompt does not state the real step length ({stated_cm:g}cm)",
     )
     check(
-        "5cm" not in prompt or abs(stated_cm - 5.0) < 1e-9,
-        "the prompt still advertises a 5cm step while MOVE_STEP differs",
+        re.search(r"(?<!\d)5cm", prompt) is None or abs(stated_cm - 5.0) < 1e-9,
+        "the prompt still advertises a standalone 5cm step while MOVE_STEP differs",
     )
     print(
         f"[ok] action descriptions match MOVE_STEP "
@@ -839,8 +869,8 @@ def test_episode_defaults() -> None:
         DEFAULT_MAX_STEPS == 30,
         f"max steps is {DEFAULT_MAX_STEPS}, expected 30",
     )
-    check(SUCCESS_X == 3.5, f"success threshold is {SUCCESS_X}, expected 3.5")
-    print("[ok] protocol defaults are 10 episodes x 30 steps, success at x > 3.5")
+    check(SUCCESS_X == 11.0, f"success threshold is {SUCCESS_X}, expected 11.0")
+    print("[ok] protocol defaults are 10 episodes x 30 steps, success at x >= 11.0")
 
 
 def test_sideways_band() -> None:
@@ -920,9 +950,9 @@ def test_scene_readability_constants() -> None:
     angular = 2.0 * math.degrees(math.atan((edge / 2.0) / start_distance))
     pixels = angular / fov_deg * 1024.0
     check(
-        pixels >= 8.0,
+        pixels >= 4.0,
         f"the channel post subtends only {pixels:.1f} px at the start pose; it "
-        f"needs to be clearly visible",
+        f"must remain visible before it grows during the ten-step approach",
     )
 
     # 3. The wall must read as a solid surface, not as a window onto a
@@ -954,96 +984,48 @@ def test_scene_readability_constants() -> None:
 
 
 def test_start_distance_reachable_in_budget() -> None:
-    """Start distance and step size must fit the episode budget together.
+    """The integer layout must match its forward-step design exactly."""
+    import environment as env
 
-    Standing further back makes the channel readable, but the robot still has to
-    travel to x > 3.5 within DEFAULT_MAX_STEPS.  Raising the start distance
-    without raising the step size makes the task physically impossible, which
-    would look like a model failure in the results.
-    """
-    from environment import MOVE_STEP, ROBOT_START_POS, TURN_STEP_DEG
+    start_x = float(env.ROBOT_START_POS[0])
+    step = float(env.MOVE_STEP)
+    to_wall = (env.WALL_X - start_x) / step
+    wall_to_goal = (env.SUCCESS_X - env.WALL_X) / step
+    goal_to_far = (env.ROOM_LENGTH_X - env.SUCCESS_X) / step
+    turns = int(round(90.0 / env.TURN_STEP_DEG))
+    moves = int(round((env.SUCCESS_X - start_x) / step))
 
-    def steps_needed(start_x: float, move_step: float) -> int:
-        """Steps for: turn 90 deg, sidle past SUCCESS_X, i.e. the intended route.
+    check(abs(step - 0.75) < 1e-12, f"adult step is {step}, expected 0.75 m")
+    check(abs(to_wall - 10.0) < 1e-12, f"start-to-wall distance is {to_wall} steps")
+    check(
+        abs(wall_to_goal - 4.0) < 1e-12,
+        f"wall-to-goal distance is {wall_to_goal} steps",
+    )
+    check(
+        abs(goal_to_far - 20.0 / 3.0) < 1e-12,
+        f"goal-to-far-wall distance is {goal_to_far} steps, expected about 7",
+    )
+    check(moves == 14, f"goal needs {moves} forward moves, expected 14")
+    check(
+        turns + moves == 20 and turns + moves <= DEFAULT_MAX_STEPS,
+        f"intended route needs {turns + moves}/{DEFAULT_MAX_STEPS} actions",
+    )
 
-        The robot advances along +x, so standing *further back* means a
-        *smaller* start_x.  It has already passed the plane if start_x >= it.
-        """
-        turns = int(round(90.0 / TURN_STEP_DEG))
-        if start_x >= SUCCESS_X:
-            return 0
-        travel = (SUCCESS_X - start_x) + 0.10  # 10 cm of margin past the plane
-        moves = int(math.ceil(travel / move_step))
-        return turns + moves
-
-    # With the wall at x=3.0 and SUCCESS_X at 3.5, the walk is 3.0 m, so the step
-    # size has to be around 0.15 m for the route to fit 30 steps.
-    scenarios = [
-        # (label, start_x, move_step, must_fit)
-        ("current default", float(ROBOT_START_POS[0]), MOVE_STEP, True),
-        ("default start, too-small step", float(ROBOT_START_POS[0]), 0.10, False),
-        ("default start, generous step", float(ROBOT_START_POS[0]), 0.20, True),
-    ]
-    for label, start_x, move_step, must_fit in scenarios:
-        needed = steps_needed(start_x, move_step)
-        if must_fit:
-            check(
-                needed <= DEFAULT_MAX_STEPS,
-                f"{label}: start_x={start_x} step={move_step} needs {needed} "
-                f"steps but the budget is {DEFAULT_MAX_STEPS}; the task would be "
-                f"impossible",
-            )
-        else:
-            check(
-                needed > DEFAULT_MAX_STEPS,
-                f"{label}: expected this combination to be infeasible, but it "
-                f"needs only {needed} steps",
-            )
-
-    # The angular size of the channel is what standing back actually buys.
-    #
-    # Note the direction: moving back makes the channel SUBTEND LESS of the
-    # frame.  At the original start_x=1.5 the robot is 0.5 m from the wall and
-    # the 0.90 m channel covers ~80% of a 105-degree frame -- the wall fills the
-    # view with no context around it, which is why the scene read as "a solid
-    # grey wall".  A few steps back frames the opening the way a person sees a
-    # doorway, at the cost of travel.
-    sensor_width = 20.955
+    # The distant opening remains visible but small at the initial pose.
     fov_deg = 2.0 * math.degrees(
-        math.atan((sensor_width / 2.0) / __import__("environment").ROBOT_CAMERA_FOCAL)
+        math.atan((20.955 / 2.0) / env.ROBOT_CAMERA_FOCAL)
     )
-
-    def frame_share(start_x: float, channel: float = 0.90) -> float:
-        distance = max(WALL_X - start_x, 1e-6)
-        angular = 2.0 * math.degrees(math.atan((channel / 2.0) / distance))
-        return angular / fov_deg
-
-    shares = {x: frame_share(x) for x in (1.5, 1.0, 0.5, 0.0)}
-    check(
-        shares[1.5] > shares[1.0] > shares[0.5] > shares[0.0],
-        f"the channel should subtend LESS of the frame as the robot starts "
-        f"further back (smaller x), got {shares}",
+    gap_deg = 2.0 * math.degrees(
+        math.atan((env.LEVEL_CHANNEL_WIDTHS[0] / 2.0) / (env.WALL_X - start_x))
     )
     check(
-        shares[0.0] < 0.40,
-        f"at start_x=0 the channel should be a minority of the frame, got "
-        f"{100 * shares[0.0]:.0f}%",
-    )
-    # The shipped start distance must keep the gap under half the frame, which
-    # is what makes the wall edges visible.  (Closer starts exceed this: at
-    # x=1.5, 0.5 m from the wall, the gap subtends 110% of the view.)
-    check(
-        shares[start_x] < 0.5,
-        f"the shipped start_x={start_x} leaves the gap filling "
-        f"{100 * shares[start_x]:.0f}% of the frame, so there is no wall in "
-        f"view to contrast against",
+        0.05 < gap_deg / fov_deg < 0.20,
+        f"initial opening occupies {100 * gap_deg / fov_deg:.1f}% of the view",
     )
     print(
-        "[ok] start distance and step size stay within the step budget "
-        f"(default needs {steps_needed(float(ROBOT_START_POS[0]), MOVE_STEP)} of "
-        f"{DEFAULT_MAX_STEPS} steps; channel fills "
-        + ", ".join(f"{100 * shares[x]:.0f}% at x={x}" for x in (1.5, 1.0, 0.5, 0.0))
-        + ")"
+        f"[ok] integer layout: 10 moves to wall + 4 to goal; "
+        f"route uses {turns + moves}/{DEFAULT_MAX_STEPS} actions and leaves "
+        f"{goal_to_far:.1f} steps to the far wall"
     )
 
 
@@ -1155,7 +1137,7 @@ def test_box_axis_mapping_is_correct() -> None:
 
     # Emulate the corner maths for the channel post.  Authored dims are
     # (along_x, height, left_right) in the user frame; Isaac Sim puts height on
-    # z, so the y and z components swap.  The post is a TALL SLIM bar: 0.05 m
+    # z, so the y and z components swap.  The post is a TALL SLIM bar: 0.02 m
     # through the wall, 2.0 m tall, 0.05 m wide, so its isaac z span must be
     # the wall height.  Authoring 2.0 m in the left_right slot instead produced
     # a horizontal bar, which rendered as a dark line across the wall.
@@ -1163,9 +1145,9 @@ def test_box_axis_mapping_is_correct() -> None:
         return (float(dims[0]), float(dims[2]), float(dims[1]))
 
     post = (
-        env.WALL_THICKNESS * 2.5,      # along_x: depth through the wall
-        env.WALL_HEIGHT,               # height
-        env.CHANNEL_EDGE_THICKNESS,    # left_right: the post's width
+        env.WALL_THICKNESS,             # along_x: match analytic panel depth
+        env.WALL_HEIGHT,                # height
+        env.CHANNEL_EDGE_THICKNESS,     # left_right: the post's width
     )
     ix, iy, iz = isaac_extents(post)
     check(
@@ -1179,9 +1161,9 @@ def test_box_axis_mapping_is_correct() -> None:
         f"{env.CHANNEL_EDGE_THICKNESS}",
     )
     check(
-        abs(ix - env.WALL_THICKNESS * 2.5) < 1e-12,
+        abs(ix - env.WALL_THICKNESS) < 1e-12,
         f"the channel post's isaac x extent is {ix}, expected its depth "
-        f"{env.WALL_THICKNESS * 2.5}",
+        f"{env.WALL_THICKNESS}",
     )
 
     # The authored call site must actually pass the tall shape: catch a
@@ -1370,13 +1352,17 @@ def test_room_is_enclosed_and_coloured() -> None:
     # The far wall must actually sit beyond the obstacle wall and beyond the
     # success plane, or it would block the robot.
     check(
-        env.SCENE_SIZE > env.WALL_X,
-        f"the far wall at x={env.SCENE_SIZE} must be past the obstacle at "
+        env.ROOM_LENGTH_X == 16.0 and env.ROOM_WIDTH_Z == 5.0,
+        f"room is {env.ROOM_LENGTH_X} x {env.ROOM_WIDTH_Z}, expected 16 x 5 m",
+    )
+    check(
+        env.ROOM_LENGTH_X > env.WALL_X,
+        f"the far wall at x={env.ROOM_LENGTH_X} must be past the obstacle at "
         f"x={env.WALL_X}",
     )
     check(
-        env.SCENE_SIZE > env.SUCCESS_X,
-        f"the far wall at x={env.SCENE_SIZE} must be past the success plane at "
+        env.ROOM_LENGTH_X > env.SUCCESS_X,
+        f"the far wall at x={env.ROOM_LENGTH_X} must be past the success plane at "
         f"x={env.SUCCESS_X}",
     )
 
@@ -1446,15 +1432,15 @@ def test_default_start_is_usable() -> None:
     From 1.5 m the 2.0 m gap subtends about 77 degrees and fills the whole
     105-degree eye view, leaving no wall in frame; from 0.5 m it is about 39
     degrees.  The start distance and step size have to move together or the
-    robot cannot reach x > 3.5 inside the budget.
+    robot cannot reach x >= 11.0 inside the budget.
     """
     import environment as env
 
     start_x = float(env.ROBOT_START_POS[0])
     move_step = float(env.MOVE_STEP)
     turns = int(round(90.0 / env.TURN_STEP_DEG))
-    travel = (SUCCESS_X - start_x) + 0.10
-    needed = turns + int(math.ceil(travel / move_step))
+    travel = SUCCESS_X - start_x
+    needed = turns + int(math.ceil(travel / move_step - 1e-12))
     check(
         needed <= DEFAULT_MAX_STEPS,
         f"the shipped defaults need {needed} steps but the budget is "
@@ -1507,8 +1493,16 @@ def test_lights_are_inside_the_enclosed_room() -> None:
         "the scene has no interior light; the enclosed room would be dark",
     )
 
-    # Every interior light must be below the ceiling and inside the floor plan.
-    for position in ([1.0, 2.6, 0.0], [3.0, 2.6, 0.0]):
+    # Every interior light must be below the ceiling and inside the floor plan;
+    # lights must cover both sides of the obstacle in the 16 m enclosure.
+    positions = ([2.0, 2.6, 0.0], [6.0, 2.6, 0.0],
+                 [10.0, 2.6, 0.0], [14.0, 2.6, 0.0])
+    check(
+        any(p[0] < env.WALL_X for p in positions)
+        and any(p[0] > env.WALL_X for p in positions),
+        "interior lights do not cover both sides of the obstacle wall",
+    )
+    for position in positions:
         x, y, z = position
         check(
             y < env.ROOM_WALL_HEIGHT,
@@ -1516,11 +1510,11 @@ def test_lights_are_inside_the_enclosed_room() -> None:
             f"{env.ROOM_WALL_HEIGHT})",
         )
         check(
-            0.0 < x < env.SCENE_SIZE,
-            f"light at x={x} is outside the room (0..{env.SCENE_SIZE})",
+            0.0 < x < env.ROOM_LENGTH_X,
+            f"light at x={x} is outside the room (0..{env.ROOM_LENGTH_X})",
         )
         check(
-            abs(z) < env.SCENE_SIZE / 2.0,
+            abs(z) < env.ROOM_WIDTH_Z / 2.0,
             f"light at z={z} is outside the room",
         )
     print(
@@ -1714,8 +1708,8 @@ def test_room_boundary_and_swept_translation() -> None:
         "a centred in-room body was rejected",
     )
     collision = _translation_path_is_clear(
-        np.array([2.5, 0.0, 1.0]),
-        np.array([3.5, 0.0, 1.0]),
+        np.array([WALL_X - 0.5, 0.0, 1.0]),
+        np.array([WALL_X + 0.5, 0.0, 1.0]),
         yaw,
         channel_width=LEVEL_CHANNEL_WIDTHS[5],
     )
@@ -1766,6 +1760,7 @@ def main() -> int:
         test_sideways_route_reaches_goal,
         test_frontal_route_only_where_feasible,
         test_rotation_blocked_inside_wall_slab,
+        test_turn_sweep_checks_intermediate_orientations,
         test_turn_clearance_boundary,
         test_entry_point_does_not_import_isaac_sim,
         test_action_space,

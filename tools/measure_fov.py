@@ -70,7 +70,12 @@ def main() -> int:
 
     height = 1.68
     e = env.BAOEnv(
-        app, task_dict={"headless": True, "eye_pitch_deg": 89.0, "start_x": 2.0}
+        app,
+        task_dict={
+            "headless": True,
+            "eye_pitch_deg": 89.0,
+            "start_x": float(env.ROBOT_START_POS[0]),
+        }
     )
     e.reset_scene()
     e._update_eye_camera()

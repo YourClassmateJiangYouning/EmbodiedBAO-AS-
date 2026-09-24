@@ -2,7 +2,8 @@
 
 Earlier probes asked whether a single pose is legal, which is the wrong question:
 a pose on the far side of the wall is trivially legal for a robot that could
-teleport there, so x=3.90 'passed' while the wall was clearly in the way.  What
+teleport there, so an isolated far-side pose can appear to have "passed" while
+the wall was clearly in the way.  What
 matters is whether a collision-free PATH exists, which only the same checks the
 simulator uses can answer.
 
@@ -26,10 +27,9 @@ from __future__ import annotations
 import math
 import sys
 from collections import deque
+from pathlib import Path
 
-sys.path.insert(0, ".")
-sys.path.insert(0, __file__.rsplit("\\", 1)[0])
-sys.path.insert(0, __file__.rsplit("/", 1)[0])
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
 def main() -> int:
@@ -53,7 +53,7 @@ def main() -> int:
         )
 
     print(
-        "start x=%.2f  step=%.2f  turn=%.0f deg  budget=%d  success x>%.2f"
+        "start x=%.2f  step=%.2f  turn=%.0f deg  budget=%d  success x>=%.2f"
         % (start_x, step, turn, budget, env.SUCCESS_X)
     )
     print()
@@ -74,7 +74,7 @@ def main() -> int:
             (x, z, yaw), depth = queue.popleft()
             if x > best_x:
                 best_x = x
-            if x > env.SUCCESS_X and best_steps is None:
+            if x >= env.SUCCESS_X - 1e-9 and best_steps is None:
                 best_steps = depth
                 break
             if depth >= budget:
@@ -135,7 +135,7 @@ def main() -> int:
 
     print()
     print("max x    = furthest body-centre x reached by any collision-free route")
-    print("passable = a route reaches x > SUCCESS_X within the budget")
+    print("passable = a route reaches x >= SUCCESS_X within the budget")
     print("min steps= shortest such route, from a breadth-first search")
     return 0
 

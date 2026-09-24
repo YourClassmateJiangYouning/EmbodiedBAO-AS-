@@ -6,7 +6,7 @@ how its behaviour changes as the channel narrows.
 
 Headline metrics (per Level, and per model overall):
 
-* **Pass rate**       -- fraction of episodes that got the body past x > 3.5 m.
+* **Pass rate**       -- fraction of episodes that reached the x >= 11 m goal plane.
 * **Sideways rate**   -- fraction of episodes that passed while the torso was
   rotated into the sideways band (45-135 degrees).
 * **Sideways threshold** -- the widest A/S ratio (largest channel) at which the
@@ -47,10 +47,26 @@ HUMAN_THRESHOLD = 1.30
 # ---------------------------------------------------------------------------
 
 
-def load_episodes(results_root: str, level: int, model: str) -> List[Dict[str, Any]]:
-    """Load and sort per-episode JSON files for one model at one Level."""
+def load_episodes(
+    results_root: str, level: int, model: str, tag: Optional[str] = None
+) -> List[Dict[str, Any]]:
+    """Load per-episode JSON files for one model/Level, optionally one run tag."""
     model_dir = os.path.join(results_root, f"level{level}", model)
-    paths = sorted(glob.glob(os.path.join(model_dir, "episode_*.json")))
+    if tag:
+        paths = sorted(glob.glob(os.path.join(model_dir, tag, "episode_*.json")))
+    else:
+        # Preserve legacy direct files.  For tagged runs, analyse only the most
+        # recently modified run directory rather than mixing incompatible runs.
+        paths = sorted(glob.glob(os.path.join(model_dir, "episode_*.json")))
+        if not paths:
+            run_dirs = [
+                path
+                for path in glob.glob(os.path.join(model_dir, "*"))
+                if os.path.isdir(path)
+            ]
+            if run_dirs:
+                latest = max(run_dirs, key=os.path.getmtime)
+                paths = sorted(glob.glob(os.path.join(latest, "episode_*.json")))
     # Exclude the per-step sidecars written next to the episode records.
     paths = [p for p in paths if not p.endswith("_steps.json")]
     if not paths:
@@ -214,19 +230,37 @@ def anticipation_class(threshold: Optional[float]) -> str:
 
 
 def analyze_model(
-    results_root: str, model: str, levels: Sequence[int]
+    results_root: str,
+    model: str,
+    levels: Sequence[int],
+    tag: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Build the full per-model report across every requested Level."""
+    selected_tag = tag
+    if selected_tag is None:
+        tagged_dirs = [
+            path
+            for level in levels
+            for path in glob.glob(
+                os.path.join(results_root, f"level{level}", model, "*")
+            )
+            if os.path.isdir(path) and not os.path.basename(path).startswith("round")
+        ]
+        if tagged_dirs:
+            selected_tag = os.path.basename(max(tagged_dirs, key=os.path.getmtime))
+
     per_level: Dict[int, Dict[str, Any]] = {}
     for level in levels:
-        episodes = load_episodes(results_root, level, model)
+        episodes = load_episodes(results_root, level, model, tag=selected_tag)
         if not episodes:
             continue
         per_level[int(level)] = summarize_level(int(level), episodes)
 
     threshold = sideways_threshold(per_level)
     all_episodes = [
-        ep for level in levels for ep in load_episodes(results_root, level, model)
+        ep
+        for level in levels
+        for ep in load_episodes(results_root, level, model, tag=selected_tag)
     ]
     total_passed = sum(1 for ep in all_episodes if episode_passed(ep))
     total_sideways = sum(1 for ep in all_episodes if episode_passed_sideways(ep))
@@ -469,6 +503,10 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--models", type=str, nargs="*", default=None, help="Model names; default: all"
     )
+    parser.add_argument(
+        "--tag", type=str, default=None,
+        help="Analyze one run tag; default: latest tagged run (or legacy files)",
+    )
     parser.add_argument("--out_dir", type=str, default="analysis")
     parser.add_argument("--no_plot", action="store_true", help="Skip matplotlib plots")
     return parser.parse_args(argv)
@@ -482,7 +520,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 1
 
     os.makedirs(args.out_dir, exist_ok=True)
-    reports = [analyze_model(args.results_root, model, args.levels) for model in models]
+    reports = [
+        analyze_model(args.results_root, model, args.levels, tag=args.tag)
+        for model in models
+    ]
     reports = [r for r in reports if r["levels"]]
     if not reports:
         print("No analyzable episodes.")
