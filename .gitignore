@@ -7,3 +7,8 @@ assets/
 .hf_assets_cache/
 _test_tmp/
 run_progress.txt
+
+# Scratch files used to pass a multi-line commit message to `git commit -F`.
+# They are created and deleted around the commit, but one was committed twice by
+# accident, so they are ignored rather than trusted to be cleaned up in time.
+COMMIT_MSG_*.txt

@@ -177,8 +177,11 @@ The threshold classifies a model:
 | `capture_views.py` | render the scene from fixed viewpoints (diagnostics) |
 | `test_bao_geometry.py` | offline geometry/protocol verification (no Isaac Sim needed) |
 | `test_bao_integration.py` | end-to-end runner + analysis test against a mock environment |
-| `run_diagnostics.sh` | one-shot environment check on a new machine |
-| `tools/` | measurement probes: field of view, mesh points, ray casting, box sizes |
+| `models.json` | the model roster: which models are tested, and why the others were excluded |
+| `run_all_models.sh` | sweep the roster sequentially, resuming each model by tag |
+| `verify_professor_machine.sh` | one-shot machine check: suites, passability, Isaac probe, scripted Level-5 run, rendered views |
+| `download.py` | fetch the H1 USD asset if `assets/` is empty |
+| `tools/` | measurement probes used while building the scene; `check_names.py` also runs inside the geometry suite |
 
 ## Running
 
@@ -258,12 +261,16 @@ properties that make the ladder meaningful:
 ## Diagnostics on a new machine
 
 ```bash
-bash run_diagnostics.sh 2>&1 | tee diagnose.log
+ISAAC_PY=/home/ybh/isaacsim/python.sh bash verify_professor_machine.sh 2>&1 | tee professor_verify.log
 ```
 
-Runs the offline suites, probes the Isaac Sim import, captures the scene from
-several viewpoints, and writes everything to `diagnose.log`. Each probe under
-`tools/` answers one question with a measurement rather than an inference:
+Runs the offline suites, the passability diagnostic, an Isaac Sim import probe, a
+scripted Level-5 traversal and the rendered Level-0/Level-5 views, and reports each
+section as OK or FAILED without aborting early. `PROFESSOR_TEST_CONTEXT.md` lists
+the scene constants it checks and the visual acceptance criteria.
+
+Each probe under `tools/` answers one question with a measurement rather than an
+inference, and each exists because a guess had already been wrong once:
 
 | Probe | Answers |
 | :--- | :--- |
@@ -273,11 +280,19 @@ several viewpoints, and writes everything to `diagnose.log`. Each probe under
 | `tools/points_probe.py` | the authored mesh points, per axis, for every box |
 | `tools/focal_probe.py` | where the camera focal length is set and what it resolves to |
 | `tools/bar_probe.py` | which world height a dark image row corresponds to |
+| `tools/image_format_probe.py` | which image payload formats the gateway accepts |
+| `tools/verify_models.py` | which models can serve a text+image request at all |
+| `tools/passability_probe.py` | whether each Level is reachable; single-pose legality, so prefer the next one |
+| `tools/reachability_search.py` | the same question by breadth-first search over the real actions |
+| `tools/memory_test.py` | whether a model carries state across API calls (standalone, no Isaac Sim) |
 | `tools/check_names.py` | unbound names across the package, run as part of the geometry suite |
 
 `tools/check_names.py` is a small AST scope-chain checker; it runs inside
 `test_bao_geometry.py`, which is why a name error fails the suite rather than
 waiting for Isaac Sim.
+
+`tools/memory_test.py` imports nothing from the project — only the standard
+library — so it can be run anywhere with an API key, without Isaac Sim.
 
 `capture_views.py` renders the scene from fixed viewpoints — a floor plan, an
 elevated three-quarter view, the wall face-on, behind the wall, and the robot's
