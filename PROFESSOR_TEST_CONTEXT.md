@@ -100,6 +100,54 @@ RUN_MODEL_SMOKE=1 MODEL=gemini-2.5-pro \
 This runs one Level-5 episode with a fresh timestamped tag and saves observations.
 Do not reuse pre-layout-change tags or results.
 
+## Running the scored sweep
+
+Only after the automated and visual checks pass, start the 11-model roster.
+`models.json` is the single definition of the roster; `run_all_models.sh` reads
+it, gives every model its own tag, and resumes each model from its checkpoint.
+
+```bash
+export BOYUE_API_KEY='...'
+tmux new -s bao
+ISAAC_PY=/home/ybh/isaacsim/python.sh \
+  bash run_all_models.sh 2>&1 | tee sweep.log
+# Ctrl-b d to detach; tmux attach -t bao to come back
+```
+
+The script refuses to start if that interpreter cannot import `isaacsim`, so a
+wrong `ISAAC_PY` fails immediately instead of 11 times. Budget **days** for the
+whole roster: up to 1800 model calls per model. Each episode record is written
+atomically the moment it is scored, and `results/{model}/checkpoint_{tag}.json`
+is updated after its episode, so an interruption loses at most the episode in
+flight; re-running the same command continues from there.
+
+Afterwards, on the same machine:
+
+```bash
+python3 analysis.py --results_root results
+```
+
+`analysis.py` discovers every model under `results/`, follows the tagged layout
+that `main.py` writes, and prints the A/S threshold table.
+
+Return these artifacts for the scored sweep (about 660 episode records and 660
+agent logs for 11 models — a single archive is easiest):
+
+```bash
+tar czf bao_results.tgz results logs analysis run_progress.txt
+```
+
+- `results/` — episode records, per-step sidecars, Level summaries, per-invocation
+  flat CSVs, and `{model}/checkpoint_{tag}.json`;
+- `logs/` — the raw model I/O per episode, plus `logs/{tag}/args.json` with the
+  effective settings of each run;
+- `analysis/` — the threshold reports and plot, if the analysis was run there;
+- `run_progress.txt` — the timeline, including timestamps and any interruption.
+
+If a model's run was interrupted, re-running `run_all_models.sh` on that machine
+first is cheaper than analysing a partial Level: it resumes from the checkpoint
+and only re-runs what is missing.
+
 ## Visual acceptance criteria
 
 Inspect the generated PNGs and verify:
@@ -119,8 +167,16 @@ Inspect the generated PNGs and verify:
 On the development machine, without Isaac Sim:
 
 - geometry/protocol suite: `32/32` passed;
-- integration suite: `14/14` passed;
+- integration suite: `16/16` passed;
+- persistence suite: `13/13` passed;
 - Python compilation and `git diff --check`: passed;
 - passability diagnostic: all Levels reachable; Levels 4–5 require 90-degree passage.
 
 Real USD authoring and rendered brightness still require the professor-machine run.
+
+`verify_professor_machine.sh` runs all three offline suites, so the persistence
+checks are exercised on the professor's machine too. A sweep must be started
+inside `tmux` or `nohup`: it runs for days, and a dropped SSH session would kill
+it. Each episode is written atomically as it is scored, so an interruption costs
+at most the episode in flight, and `run_all_models.sh` resumes from the
+checkpoint when re-run with the same command.

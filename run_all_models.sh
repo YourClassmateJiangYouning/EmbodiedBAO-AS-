@@ -5,13 +5,24 @@
 # model's results can never be mistaken for another's.  Scale: 6 Levels x 10
 # episodes x 30 steps = a 60-episode, 1800-call ceiling per model.
 #
-# Usage:
+# Usage (on the Isaac Sim workstation):
 #     export BOYUE_API_KEY='...'
-#     bash run_all_models.sh              # every model in models.json
-#     bash run_all_models.sh qwen-vl-max  # just one
+#     ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_all_models.sh
+#     ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_all_models.sh qwen-vl-max
 #
 # Re-running skips episodes already recorded in the model's checkpoint, so an
 # interrupted sweep continues rather than starting over.
+#
+# This runs for a long time -- budget days, not hours (11 models x up to 1800
+# calls each).  Start it inside tmux or nohup, or a dropped SSH session will
+# kill the sweep mid-model:
+#     tmux new -s bao
+#     ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_all_models.sh 2>&1 | tee sweep.log
+#     # Ctrl-b d to detach
+#
+# Every episode is written as it is scored, so an interruption loses at most the
+# episode in flight; re-running with the same command resumes from the
+# checkpoint.  HEADLESS=0 runs Isaac Sim with a window instead of headless.
 set -u
 
 cd "$(dirname "$0")"
@@ -21,11 +32,30 @@ if [ -z "${BOYUE_API_KEY:-}" ] && [ -z "${TAOTOKEN_API_KEY:-}" ] && [ -z "${OPEN
     exit 1
 fi
 
-PYTHON="${ISAACSIM_PYTHON:-python3}"
+PLAIN_PY="${PY:-python3}"
+# ISAAC_PY is the name the README and verify_professor_machine.sh use;
+# ISAACSIM_PYTHON is accepted so older invocations keep working.
+ISAAC_PY="${ISAAC_PY:-${ISAACSIM_PYTHON:-/home/ybh/isaacsim/python.sh}}"
+HEADLESS="${HEADLESS:-1}"
+
+if [ ! -x "$ISAAC_PY" ]; then
+    echo "Isaac launcher is missing or not executable: $ISAAC_PY" >&2
+    echo "Set ISAAC_PY=/path/to/isaacsim/python.sh and re-run." >&2
+    exit 1
+fi
+
+# Fail before the first model instead of after the eleventh.  Without this, a
+# wrong interpreter makes every model exit non-zero with "No module named
+# isaacsim" and the sweep still looks like it finished.
+if ! "$ISAAC_PY" -c 'from isaacsim import SimulationApp' >/dev/null 2>&1; then
+    echo "cannot import isaacsim with: $ISAAC_PY" >&2
+    echo "That interpreter is not the Isaac Sim one; nothing has been run." >&2
+    exit 1
+fi
 
 # Read the roster from models.json so the list has exactly one definition.
 mapfile -t MODELS < <(
-    python3 - <<'PY'
+    "$PLAIN_PY" - <<'PY'
 import json
 with open("models.json", encoding="utf-8") as handle:
     for entry in json.load(handle)["models"]:
@@ -37,26 +67,54 @@ if [ "$#" -gt 0 ]; then
     MODELS=("$@")
 fi
 
+if [ "${#MODELS[@]}" -eq 0 ]; then
+    echo "no models to run: models.json listed none and no names were given" >&2
+    exit 1
+fi
+
+HEADLESS_FLAG=""
+if [ "$HEADLESS" = "1" ]; then
+    HEADLESS_FLAG="--headless"
+fi
+
 echo "roster: ${#MODELS[@]} model(s)"
+echo "isaac  : $ISAAC_PY"
+echo "plain  : $PLAIN_PY"
+echo "started: $(date)"
+FAILED=""
+
 for model in "${MODELS[@]}"; do
     tag="$(printf '%s' "$model" | tr '/.' '--' | tr -cd 'A-Za-z0-9_-')"
     echo
     echo "=============================================================="
-    echo "model: $model    tag: $tag"
+    echo "model: $model    tag: $tag    $(date)"
     echo "=============================================================="
-    "$PYTHON" main.py \
+    # $HEADLESS_FLAG is deliberately unquoted: when HEADLESS=0 it is empty and
+    # must expand to no argument at all.  (An empty array expansion would do
+    # the same, but it trips `set -u` on bash older than 4.4.)
+    "$ISAAC_PY" main.py \
         --model "$model" \
         --all-levels \
         --episodes 10 \
         --max_steps 30 \
         --image_size 512 \
         --tag "$tag" \
+        $HEADLESS_FLAG \
         --resume
     status=$?
     if [ "$status" -ne 0 ]; then
         echo "!! $model exited with status $status; continuing to the next model" >&2
+        FAILED="$FAILED $model"
     fi
 done
 
 echo
+echo "finished: $(date)"
+if [ -n "$FAILED" ]; then
+    echo "these model(s) exited non-zero:$FAILED" >&2
+    echo "summaries under analysis/; re-run this script to resume them" >&2
+    exit 1
+fi
+
 echo "all models finished. results under results/, summaries under analysis/"
+echo "analyse with: $PLAIN_PY analysis.py --results_root results"

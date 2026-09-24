@@ -82,6 +82,7 @@ print("10 forward moves to wall; 4 more to goal; 6.67-step run-out")
 section "2. offline regression suites"
 run "geometry-tests" "$PY" test_bao_geometry.py
 run "integration-tests" "$PY" test_bao_integration.py
+run "persistence-tests" "$PY" test_bao_persistence.py
 run "passability-probe" "$PY" tools/passability_probe.py
 
 section "3. Isaac Sim import"

@@ -146,6 +146,23 @@ Per step (`episode_{id:03d}_steps.json`, and the flat CSV):
 step, action, torso_rotation, position_x, position_z, collision, step_success
 ```
 
+Episodes, sidecars, summaries, run settings and the threshold reports are all
+written **atomically** (temporary file + `os.replace`), so a crash, an OOM kill
+or Ctrl-C cannot leave a half-written record behind for the next `--resume` to
+choke on. The checkpoint is written *after* its episode record, so an
+interruption costs a re-run rather than the episode; and if a record or the
+checkpoint is unreadable, the damaged file is renamed to
+`*.corrupt-<timestamp>` and the episode is re-run instead of being silently
+dropped from the sample.
+
+Paths are anchored to the repository rather than to the working directory, so
+`python /path/to/main.py` cannot scatter `results/` into whatever directory the
+shell happened to be in; `BAO_OUTPUT_ROOT` relocates every artefact at once.
+A run also writes `logs/{tag}/args.json` (the effective settings, including the
+resolved tag and output paths) and `run_progress.txt` (a greppable timeline),
+and the flat CSV is refreshed after **every** episode, so an interrupted Level
+is still exported.
+
 ## Metrics
 
 | Metric | Definition |
@@ -175,8 +192,10 @@ The threshold classifies a model:
 | `main.py` | CLI entry point, CSV export, threshold report |
 | `analysis.py` | per-Level metrics, A/S threshold, reports and plots |
 | `capture_views.py` | render the scene from fixed viewpoints (diagnostics) |
+| `persistence.py` | atomic writes, tag sanitising, corrupt-file quarantine: the durability layer every writer goes through |
 | `test_bao_geometry.py` | offline geometry/protocol verification (no Isaac Sim needed) |
 | `test_bao_integration.py` | end-to-end runner + analysis test against a mock environment |
+| `test_bao_persistence.py` | offline checks that an interrupted run cannot lose or corrupt collected data |
 | `models.json` | the model roster: which models are tested, and why the others were excluded |
 | `run_all_models.sh` | sweep the roster sequentially, resuming each model by tag |
 | `verify_professor_machine.sh` | one-shot machine check: suites, passability, Isaac probe, scripted Level-5 run, rendered views |
@@ -204,6 +223,30 @@ python main.py --model random --level 0 --episodes 2
 
 # resume a run whose tag is already recorded
 python main.py --model gemini-2.5-pro --all-levels --image_size 512 --tag gemini-v1 --resume
+```
+
+### The whole roster (11 models)
+
+```bash
+export BOYUE_API_KEY='...'
+ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_all_models.sh 2>&1 | tee sweep.log
+```
+
+`models.json` is the single definition of the roster: the script reads it, gives
+each model its own tag, and runs 6 Levels × 10 episodes × 30 steps per model
+with `--resume`, so a second invocation continues instead of starting over. It
+refuses to start if the interpreter cannot import `isaacsim` — rather than
+failing 11 times and looking like a finished sweep — and it exits non-zero if
+any model did.
+
+Budget **days, not hours**: up to 1800 model calls per model. Run it inside
+`tmux` or `nohup`, because a dropped SSH session would kill the sweep. Every
+episode is written as it is scored, so an interruption costs at most the episode
+in flight. Afterwards:
+
+```bash
+python analysis.py                     # every model found under results/
+python analysis.py --tag gemini-v1     # one exact run
 ```
 
 ### Useful flags
@@ -238,8 +281,9 @@ Outputs `analysis/threshold_table.{md,csv}`, one JSON report per model, and a
 Everything that can be decided without a renderer runs on plain Python:
 
 ```bash
-python test_bao_geometry.py     # offline checks: ladder, collision gate, routes, colours, prompt
-python test_bao_integration.py  # 12 checks: full protocol against a mock environment
+python test_bao_geometry.py     # 32 checks: ladder, collision gate, routes, colours, prompt
+python test_bao_integration.py  # 16 checks: full protocol, tagged runs, CLI flags, against a mock environment
+python test_bao_persistence.py  # 13 checks: interrupt and corruption safety of every artefact written
 ```
 
 The geometry suite re-derives the collision model independently and pins the
@@ -264,10 +308,11 @@ properties that make the ladder meaningful:
 ISAAC_PY=/home/ybh/isaacsim/python.sh bash verify_professor_machine.sh 2>&1 | tee professor_verify.log
 ```
 
-Runs the offline suites, the passability diagnostic, an Isaac Sim import probe, a
-scripted Level-5 traversal and the rendered Level-0/Level-5 views, and reports each
-section as OK or FAILED without aborting early. `PROFESSOR_TEST_CONTEXT.md` lists
-the scene constants it checks and the visual acceptance criteria.
+Runs the offline suites (geometry, integration, persistence), the passability
+diagnostic, an Isaac Sim import probe, a scripted Level-5 traversal and the
+rendered Level-0/Level-5 views, and reports each section as OK or FAILED without
+aborting early. `PROFESSOR_TEST_CONTEXT.md` lists the scene constants it checks
+and the visual acceptance criteria.
 
 Each probe under `tools/` answers one question with a measurement rather than an
 inference, and each exists because a guess had already been wrong once:
@@ -282,6 +327,7 @@ inference, and each exists because a guess had already been wrong once:
 | `tools/bar_probe.py` | which world height a dark image row corresponds to |
 | `tools/image_format_probe.py` | which image payload formats the gateway accepts |
 | `tools/verify_models.py` | which models can serve a text+image request at all |
+| `tools/check_credit.py` | whether a gateway failure is the key, the account balance, or one model |
 | `tools/passability_probe.py` | whether each Level is reachable; single-pose legality, so prefer the next one |
 | `tools/reachability_search.py` | the same question by breadth-first search over the real actions |
 | `tools/memory_test.py` | whether a model carries state across API calls (standalone, no Isaac Sim) |
@@ -312,6 +358,7 @@ python capture_views.py --level 0 --outdir views
 | `BAO_IMAGE_SIZE` | same as `--image_size` |
 | `BAO_LLM_TIMEOUT`, `BAO_MAX_RETRIES` | request timeout / retry count |
 | `BAO_DISABLE_PROXY=1` | clear proxy variables before calling the API |
+| `BAO_OUTPUT_ROOT` | write `results/`, `logs/` and `run_progress.txt` under this directory instead of the repository (e.g. a large scratch disk) |
 | `EMBODIEDBAO_H1_USD` | explicit path to the H1 USD asset |
 
 ## Notes on the physics model

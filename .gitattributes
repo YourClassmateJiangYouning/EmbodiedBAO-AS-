@@ -1,0 +1,5 @@
+# Shell scripts must reach the Isaac Sim workstation with LF endings. A CRLF
+# shebang makes bash fail with "bad interpreter: /usr/bin/env: bad interpreter",
+# and copying a Windows working tree (where core.autocrlf rewrites checkouts) is
+# one of the ways this repository gets to that machine.
+*.sh text eol=lf
