@@ -127,6 +127,15 @@ def encode_image(image: Any) -> str:
         try:
             side = max(64, int(float(target)))
             if image.size != (side, side):
+                if side > max(image.size):
+                    # Upscaling adds no information and only costs tokens, so say
+                    # so rather than letting it look like a resolution increase.
+                    print(
+                        f"[ai_agent] BAO_IMAGE_SIZE={side} exceeds the camera's "
+                        f"{image.size[0]}px; upsampling adds no detail. Raise the "
+                        f"camera resolution instead.",
+                        flush=True,
+                    )
                 image = image.resize((side, side), Image.LANCZOS)
         except ValueError:
             pass
