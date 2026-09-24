@@ -742,17 +742,58 @@ def test_prompt_is_uniform_and_leak_free() -> None:
     }
     prompt = build_prompt(state=base_state, history=[], max_steps=30)
 
-    forbidden = [
+    # Two different kinds of leak, checked separately because they are not the
+    # same thing.
+    #
+    # 1. GEOMETRY tokens would tell the agent the numbers, or tell it that the
+    #    passage is in any way awkward.  These are banned in the task statement,
+    #    the state block and the closing instruction -- everywhere the agent
+    #    reads about its situation.  They are permitted inside the action list,
+    #    where they would only ever appear while describing the controls.
+    #
+    # 2. ADVISORY phrasing would push the agent toward the solution.  This is
+    #    banned in the task statement specifically, because "turn your body" as
+    #    a task hint hands over the answer, whereas the same words inside a
+    #    description of what turn_left mechanically does are just documentation.
+    #    An earlier version of this test banned the phrase outright and failed
+    #    once the action list spelled the mechanics out.
+    segments = prompt.split("\n\n")
+    situation = "\n\n".join(
+        seg for seg in segments if not seg.startswith("Available actions")
+    ).lower()
+
+    geometry_tokens = [
         "0.90", "0.80", "0.74", "0.68", "0.57", "0.45",
         "1.58", "1.40", "1.30", "1.19", "1.00", "0.79",
-        "shoulder", "sideways", "turn your body", "A/S",
+        "shoulder", "sideways", "A/S",
         "wide", "narrow", "opening width", "0.22", "0.338",
     ]
-    lowered = prompt.lower()
-    for token in forbidden:
+    for token in geometry_tokens:
         check(
-            token.lower() not in lowered,
-            f"prompt leaks geometry token {token!r}",
+            token.lower() not in situation,
+            f"prompt leaks geometry token {token!r} outside the action list",
+        )
+
+    advisory_tokens = ["turn your body", "you should turn", "turn sideways"]
+    task_lowered = TASK_INSTRUCTION.lower()
+    for token in advisory_tokens:
+        check(
+            token not in task_lowered,
+            f"the task statement advises the solution with {token!r}",
+        )
+
+    # The action mechanism must still be documented, since an agent that does
+    # not know turn_* moves its view as well as its facing -- or that look_*
+    # leaves a persistent offset -- is being tested on guessing the interface
+    # rather than on judging its body.
+    check(
+        "head camera" in prompt.lower(),
+        "the prompt does not explain that the head camera exists",
+    )
+    for action in ("turn_left", "look_left"):
+        check(
+            action in prompt,
+            f"the prompt does not list the {action} action",
         )
 
     # Same state + same history must give the same prompt for every Level; the

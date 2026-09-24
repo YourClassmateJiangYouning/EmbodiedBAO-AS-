@@ -99,16 +99,31 @@ and four more reach the inclusive success plane at `x = 11.0`. Together with six
 
 ### What the model is told each step
 
-The prompt contains the task, the eight actions with their real distances, a note
-that movement is egocentric, the robot's own position and torso rotation, the step
-limit, and **the full action history for the episode so far**. Each history entry
-is `step N: <action> -> <feedback> | your reasoning: <the agent's own reasoning>`,
+The prompt contains the task, the eight actions with their real distances and their
+mechanical effects, a note that movement is egocentric, the robot's own position,
+torso rotation and **head-camera offset**, the step limit, and **the full action
+history for the episode so far**. Each history entry is
+`step N: <action> -> <feedback> | your reasoning: <the agent's own reasoning>`,
 listed oldest first, and the block explicitly invites the agent to use it to
 notice what it has already tried and whether it worked.
 
+The head-camera offset is reported because the two rotation families are not the
+same thing and nothing in a single frame distinguishes them. `turn_left` /
+`turn_right` rotate the body, and the head camera turns with it, so the facing and
+the view change together. `look_left` / `look_right` rotate only the head, leaving
+an offset that **persists** and rides along when the body later turns. An agent
+that had called `look_left` three times would otherwise be judging its alignment
+from a view rotated 90 degrees with nothing in the prompt saying so — being tested
+on guessing the interface rather than on judging its own body. The environment
+already produced this value in `get_robot_state()`; the prompt simply never
+rendered it.
+
 The prompt never contains the channel width, the body dimensions, the A/S ratio,
 or any hint that a turn may be needed. `build_prompt()` takes no `level`
-parameter, so leaking the geometry structurally is not possible.
+parameter, so leaking the geometry structurally is not possible. The action
+descriptions mention turning and the head camera, but only to document what the
+controls do; the task statement itself carries no advice about the solution, and
+the test suite checks those two properties separately.
 
 The history is the agent's own within-episode memory, not a sliding window, and
 it is not truncated. The action distances are derived from `MOVE_STEP` rather

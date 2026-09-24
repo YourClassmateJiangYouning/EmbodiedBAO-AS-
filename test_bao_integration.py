@@ -242,6 +242,15 @@ class ScriptedAgent:
             action = "right"
         elif self.policy == "random_walk":
             action = "forward" if (x + z) % 2 < 1 else "turn_left"
+        elif self.policy == "look-then-forward":
+            # Turn the head twice, then walk.  Used to check that the head-camera
+            # offset the environment tracks actually becomes visible to the agent:
+            # a client that never reports it is aiming its view 60 degrees away
+            # from its body with nothing saying so.
+            if self.phase < 2:
+                self.phase += 1
+                return self._reply("look_left")
+            action = "forward"
         else:
             raise ValueError(self.policy)
         return self._reply(action)
@@ -1052,6 +1061,78 @@ def test_cli_flags_reach_the_runner() -> None:
     print("[ok] every CLI flag reaches the runner (no dead options)")
 
 
+def test_head_camera_offset_reaches_the_model() -> None:
+    """The agent must be told how far its head camera is turned.
+
+    turn_left/turn_right move the view with the body, but look_left/look_right
+    leave a head offset that PERSISTS and rides along when the body later turns,
+    so the direction the agent faces and the direction it is looking can differ
+    by up to 90 degrees.  Nothing in a single frame reveals that difference, and
+    an agent that had turned its head three times would otherwise be judging its
+    alignment from a view rotated 90 degrees with no way to know.
+
+    The environment already produced the value in get_robot_state(); the prompt
+    simply never rendered it.  This pins it end to end through the runner.
+    """
+    import experiments
+
+    seen: List[str] = []
+
+    class _ProbeAdapter(experiments.AgentAdapter):  # type: ignore[misc]
+        def __init__(self, model: str, log_file: Optional[str] = None) -> None:
+            self.model = model
+            self.log_file = None
+            self.history = []
+            self._callable = None
+            self._agent = ScriptedAgent("look-then-forward")
+
+        def query(self, prompt: str, image: Any, state: Any) -> Any:
+            seen.append(prompt)
+            return super().query(prompt, image, state)
+
+    original = experiments.AgentAdapter
+    experiments.AgentAdapter = _ProbeAdapter
+    try:
+        tmp = make_temp_dir()
+        try:
+            env = FakeBAOEnv()
+            runner = BAOExperimentRunner(
+                env=env,
+                model="scripted-headcamera",
+                max_steps=DEFAULT_MAX_STEPS,
+                results_root=os.path.join(tmp, "results"),
+                logs_root=os.path.join(tmp, "logs"),
+            )
+            runner.run_level(level=0, episodes=1)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+    finally:
+        experiments.AgentAdapter = original
+
+    check(bool(seen), "the probe never saw a prompt")
+    check(
+        "head camera offset" in seen[0].lower(),
+        "the prompt does not state the head camera offset, so the agent cannot "
+        "tell which way it is looking",
+    )
+    # The offset must actually track the actions: at least one later prompt has
+    # to report a non-zero value once a look_* action has run, otherwise the line
+    # is present but inert.
+    offsets = [
+        0.0 if "head camera offset from your torso (degrees): 0.0" in p else 1.0
+        for p in seen
+    ]
+    check(
+        any(offsets),
+        "no prompt ever reported a non-zero head camera offset, so a look_* "
+        "action never became visible to the agent",
+    )
+    print(
+        "[ok] the head camera offset is reported to the agent "
+        f"({len(seen)} prompt(s) inspected)"
+    )
+
+
 def main() -> int:
     tests = [
         test_episode_record_contract,
@@ -1065,6 +1146,7 @@ def main() -> int:
         test_prompt_uses_configured_move_step,
         test_invalid_action_is_recorded,
         test_episode_memory_reaches_the_model,
+        test_head_camera_offset_reaches_the_model,
         test_full_protocol_and_analysis,
         test_progress_callback_signature,
         test_cli_flags_reach_the_runner,
