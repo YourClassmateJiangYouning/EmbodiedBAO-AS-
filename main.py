@@ -194,13 +194,23 @@ def save_episodes_csv(
     level: int,
     results_root: str = "results",
     timestamp: str = "",
+    tag: str = "",
 ) -> str:
-    """Flatten episodes into one CSV row per step."""
+    """Flatten episodes into one CSV row per step.
+
+    The tag goes in the filename, not just the timestamp.  Episode JSON is
+    isolated per run under ``results/level{n}/{model}/{tag}/``, but the CSV used
+    to be named ``level{n}_{timestamp}.csv`` in the model directory, so every
+    re-run of the same Level overwrote the previous file and there was no way to
+    tell which CSV belonged to which tag.  Across an 11-model sweep that makes
+    the flat tables unusable.
+    """
     safe_model = model.replace("/", "-").replace("\\", "-")
     out_dir = os.path.join(results_root, safe_model)
     os.makedirs(out_dir, exist_ok=True)
     timestamp = timestamp or time.strftime("%Y%m%d-%H%M%S")
-    path = os.path.join(out_dir, f"level{level}_{timestamp}.csv")
+    safe_tag = str(tag).replace("/", "-").replace("\\", "-") or "untagged"
+    path = os.path.join(out_dir, f"level{level}_{safe_tag}_{timestamp}.csv")
 
     fields = [
         "episode_id",
@@ -422,7 +432,11 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
             summary = BAOExperimentRunner.summarize_level(level, episodes)
             summaries[level] = summary
             csv_path = save_episodes_csv(
-                episodes, model=args.model, level=level, timestamp=timestamp
+                episodes,
+                model=args.model,
+                level=level,
+                timestamp=timestamp,
+                tag=getattr(args, "tag", "") or "",
             )
             print(f"[main] saved {csv_path}")
             _write_progress(f"csv saved: {csv_path}")

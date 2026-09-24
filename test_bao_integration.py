@@ -501,6 +501,33 @@ def test_csv_export_columns() -> None:
                 level=2,
                 results_root=os.path.join(tmp, "results"),
                 timestamp="test",
+                tag="runA",
+            )
+            # The tag must be in the filename.  Episode JSON is isolated per run
+            # under results/level{n}/{model}/{tag}/, but the CSV lives beside the
+            # model directory; without the tag every re-run of the same Level
+            # overwrites the previous file and there is no way to tell which run
+            # a CSV came from.
+            check(
+                "runA" in os.path.basename(csv_path),
+                f"CSV filename {os.path.basename(csv_path)!r} does not carry the "
+                f"run tag, so reruns would be indistinguishable",
+            )
+            untagged = main_module.save_episodes_csv(
+                episodes,
+                model="scripted-sideways",
+                level=2,
+                results_root=os.path.join(tmp, "results"),
+                timestamp="test2",
+            )
+            check(
+                untagged != csv_path,
+                "an untagged export reused the tagged path",
+            )
+            check(
+                "untagged" in os.path.basename(untagged),
+                f"an untagged export produced {os.path.basename(untagged)!r}, "
+                f"which does not say it is untagged",
             )
             with open(csv_path, "r", encoding="utf-8", newline="") as handle:
                 rows = list(csv.DictReader(handle))
