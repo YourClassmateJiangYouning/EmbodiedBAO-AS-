@@ -811,14 +811,13 @@ class BAOEnv:
         )
 
     def _create_goal_marker(self) -> None:
-        """A finish-line ribbon spanning the corridor at the goal.
+        """A red square on the green far wall, as a distance cue.
 
-        Purely decorative: added by :meth:`_create_scene` but deliberately NOT
-        part of :func:`_panel_boxes`, so no collision check sees it and it cannot
-        block the robot.
+        Purely decorative and NOT part of :func:`_panel_boxes`, so no collision
+        check sees it and it cannot block the robot.
 
-        A recorded run shows why a marker is needed at all.  With the obstacle at
-        x=8 and the green far wall at x=16, an agent that has walked to x=7.25 --
+        A recorded run shows why a cue is needed.  With the obstacle at x=8 and
+        the unbroken green far wall at x=16, an agent that has walked to x=7.25 --
         correctly centred on the channel at z=0.00 and already entering it --
         reports:
 
@@ -827,37 +826,43 @@ class BAOEnv:
              wall."
 
         and then spends the rest of the episode turning and sidestepping, looking
-        for an opening that is behind it.  Once the blue panels leave the frame
-        there is nothing ahead but the unbroken far wall, so "aligned with the
-        channel" and "facing a dead end" look identical.  An independent run with
-        a different model produced the same description, so it is a property of
-        the scene rather than of one agent.
+        for an opening that was behind it.  An independent run with a different
+        model produced the same description, so it is a property of the scene
+        rather than of one agent.
 
-        Shape: a single ribbon strung across the corridor at the goal line, like
-        a finish banner.  It runs past both side walls so it reads as strung
-        across the passage rather than fitted inside it, and it is thin in x
-        (0.05 m) so it looks like hanging material rather than a wall.
+        A fixed-size mark on the far wall is a CONTINUOUS distance cue, which a
+        marker sitting at the goal is not: its apparent size is inversely
+        proportional to the agent's distance, so "am I getting closer?" can be
+        answered by comparing the current frame against the previous one, without
+        needing any notion of world coordinates.  A ribbon at x=11 only became
+        informative on arrival.
 
-        Height placement is the part that has to be right, and the arithmetic is
-        recorded because a first attempt got it wrong.  The eye sits at 1.68 m and
-        the opening the agent must aim at tops out at 2.0 m, so a ribbon starting
-        at 1.75 m crossed the upper part of the opening and sat below the H1's
-        measured 1.81 m head height.  The ribbon therefore starts at 2.15 m,
-        clear of both, while still well inside the frame: at x=11, which is
-        10.5 m ahead, the frame's top edge is 3.1 m or higher for any plausible
-        vertical field of view, so the ribbon is comfortably in view.
+        Size and placement are measured rather than chosen by eye.  At 0.80 m
+        square the apparent edge, at 1024 px and a 52 degree vertical field of
+        view, runs:
+
+            agent x=0.5  ->  54 px      (start, a small distant mark)
+            agent x=4.0  ->  70 px
+            agent x=7.0  ->  93 px      (approaching the obstacle)
+            agent x=11.0 -> 168 px      (at the goal, over 3x the start)
+
+        so the change is large enough to read frame to frame.  Centred at 1.40 m
+        it spans 1.00 m to 1.80 m, comfortably inside the 0.0 to 2.0 m opening,
+        so it is visible through the channel from the start -- which is the whole
+        point: it must be visible while the agent is still making the approach.
         """
         if not self.task_dict.get("goal_marker", True):
             return
-        depth = float(self.task_dict.get("goal_marker_span", 0.05))
-        height = float(self.task_dict.get("goal_marker_height", 0.80))
-        base = float(self.task_dict.get("goal_marker_base", 2.15))
-        span = float(self.task_dict.get("goal_marker_width", ROOM_WIDTH_Z + 0.30))
+        size = float(self.task_dict.get("goal_marker_height", 0.80))
+        centre_y = float(self.task_dict.get("goal_marker_base", 1.40))
+        thickness = float(self.task_dict.get("goal_marker_span", 0.02))
         self._add_box(
-            "GoalRibbon",
-            np.array([SUCCESS_X, base + height / 2.0, 0.0]),
-            np.array([depth, height, span]),
-            material=("GoalRibbonMaterial", GOAL_MARKER_COLOR),
+            "GoalMarker",
+            np.array(
+                [ROOM_LENGTH_X - thickness / 2.0 - 0.01, centre_y, 0.0]
+            ),
+            np.array([thickness, size, size]),
+            material=("GoalMarkerMaterial", GOAL_MARKER_COLOR),
         )
 
     def _create_ground_grid(self, spacing: float = 0.5) -> None:
