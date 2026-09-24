@@ -1007,27 +1007,47 @@ class BAOEnv:
         """
         # A distant light is directional and originates outside the room, so it
         # would be blocked by the ceiling; interior lights are used instead.
-        # Intensity matters: at 60000 the eye view measured mean=229.5 with only
-        # 226 unique colours, i.e. blown out to near-white.  These values target
-        # a mid-grey exposure.
-        # Distribute lights across the full 16 m enclosure.  Keeping the old
-        # pair at x=1 and x=3 would leave the obstacle at x=8 and the 5 m
-        # run-out behind the goal severely under-lit.
+        #
+        # Measured exposure history, so the values are not guesses:
+        #   60000 intensity, 5 m room  -> mean=229.5, 226 unique colours (blown out)
+        #    9000 intensity, 16 m room -> mean= 87.5                        (too dark)
+        #                                     mean= 80.8 at eye_near
+        # The room is now 16 m rather than 5 m, so four small emitters have to
+        # cover three times the length and the far surfaces receive very little.
+        #
+        # Two changes rather than one, because intensity alone is the wrong tool:
+        #
+        #   * more emitters -- eight along the 16 m instead of four, so the gap
+        #     between lights is 2 m rather than 4 m and no stretch of wall sits
+        #     far from any light;
+        #   * a larger radius -- 0.35 m is effectively a point source whose
+        #     falloff is harsh, while 1.0 m spreads the same power over an area,
+        #     which both softens shadows and cuts the render noise that made the
+        #     frames look grainy;
+        #   * intensity raised to 20000 to lift the mean toward mid-grey.
+        #
+        # A smaller radius with a larger intensity is specifically NOT wanted: it
+        # brightens near the fixtures and leaves the mid-corridor dim, and it
+        # increases noise rather than reducing it.
         positions = [
-            ("/World/LightApproachNear", np.array([2.0, 2.6, 0.0])),
-            ("/World/LightApproachFar", np.array([6.0, 2.6, 0.0])),
-            ("/World/LightRunoutNear", np.array([10.0, 2.6, 0.0])),
-            ("/World/LightRunoutFar", np.array([14.0, 2.6, 0.0])),
+            ("/World/Light_01", np.array([1.5, 2.6, 0.0])),
+            ("/World/Light_02", np.array([3.5, 2.6, 0.0])),
+            ("/World/Light_03", np.array([5.5, 2.6, 0.0])),
+            ("/World/Light_04", np.array([7.5, 2.6, 0.0])),
+            ("/World/Light_05", np.array([9.5, 2.6, 0.0])),
+            ("/World/Light_06", np.array([11.5, 2.6, 0.0])),
+            ("/World/Light_07", np.array([13.5, 2.6, 0.0])),
+            ("/World/Light_08", np.array([15.0, 2.6, 0.0])),
         ]
         for path, position in positions:
             light = UsdLux.SphereLight.Define(self.stage, path)
-            light.GetIntensityAttr().Set(9000.0)
-            light.GetRadiusAttr().Set(0.35)
+            light.GetIntensityAttr().Set(20000.0)
+            light.GetRadiusAttr().Set(1.0)
             light.AddTranslateOp().Set(Gf.Vec3d(*_user_to_isaac_pos(position)))
 
         # Ambient fill so no surface is pure black.
         dome = UsdLux.DomeLight.Define(self.stage, "/World/DomeLight")
-        dome.GetIntensityAttr().Set(120.0)
+        dome.GetIntensityAttr().Set(300.0)
 
     def _load_robot(self) -> None:
         usd_path = self._resolve_robot_usd_path()
