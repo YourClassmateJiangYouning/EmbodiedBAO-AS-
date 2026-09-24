@@ -315,8 +315,18 @@ def _progress_callback(
 
     It must accept all five arguments (level, completed, total, the episode
     just finished, and the running list) even though it only uses some of them.
+
+    The interval is configurable because a fixed 10 meant a run with
+    ``--episodes 10`` wrote exactly one progress line per Level, so a multi-hour
+    sweep across models looked stalled from run_progress.txt alone.  The runner
+    already prints every episode to stdout; this only controls the durable,
+    greppable line.
     """
-    if completed % 10 == 0 or completed == total:
+    try:
+        every = max(1, int(os.environ.get("BAO_PROGRESS_EVERY", "5")))
+    except ValueError:
+        every = 5
+    if completed % every == 0 or completed == total:
         success_count = sum(1 for ep in episodes_done if ep.get("passed"))
         rate = success_count / completed if completed else 0.0
         message = (
