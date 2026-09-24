@@ -837,23 +837,31 @@ class BAOEnv:
         needing any notion of world coordinates.  A ribbon at x=11 only became
         informative on arrival.
 
-        Size and placement are measured rather than chosen by eye.  At 0.80 m
-        square the apparent edge, at 1024 px and a 52 degree vertical field of
-        view, runs:
+        Size and placement are measured rather than chosen by eye.  A 0.80 m
+        square was tried first and rejected: at x=14, only 2 m from the wall, its
+        apparent edge reached 420 px and the view became a red field with no
+        visible edges, so it stopped reading as an object at the very moment its
+        growth should have been most informative.  It is now 0.30 m, trading a
+        small far-end mark for edges that stay visible throughout the approach.
 
-            agent x=0.5  ->  54 px      (start, a small distant mark)
-            agent x=4.0  ->  70 px
-            agent x=7.0  ->  93 px      (approaching the obstacle)
-            agent x=11.0 -> 168 px      (at the goal, over 3x the start)
+        Apparent edge at 1024 px and a 52 degree vertical field of view:
 
-        so the change is large enough to read frame to frame.  Centred at 1.40 m
-        it spans 1.00 m to 1.80 m, comfortably inside the 0.0 to 2.0 m opening,
-        so it is visible through the channel from the start -- which is the whole
-        point: it must be visible while the agent is still making the approach.
+            agent x=0.5  ->  20 px     (start: a small distant mark)
+            agent x=4.0  ->  26 px
+            agent x=7.0  ->  34 px     (approaching the obstacle)
+            agent x=11.0 ->  63 px     (at the goal)
+            agent x=14.0 -> 158 px     (close, edges still clear)
+
+        Centred at 1.40 m it spans 1.25 m to 1.55 m.  The camera sits at 1.68 m,
+        so from the start (15.5 m away) the mark is 1.0 degree below the optical
+        axis while the frame's lower edge is 11 degrees below it at a 52 degree
+        vertical field of view -- comfortably inside the frame, and inside the
+        0.0 to 2.0 m opening, so it is visible through the channel from the very
+        start, which is what makes it usable during the approach.
         """
         if not self.task_dict.get("goal_marker", True):
             return
-        size = float(self.task_dict.get("goal_marker_height", 0.80))
+        size = float(self.task_dict.get("goal_marker_height", 0.30))
         centre_y = float(self.task_dict.get("goal_marker_base", 1.40))
         thickness = float(self.task_dict.get("goal_marker_span", 0.02))
         self._add_box(
