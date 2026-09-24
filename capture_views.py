@@ -55,6 +55,33 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--width", type=int, default=1024)
     parser.add_argument("--height", type=int, default=1024)
     parser.add_argument(
+        "--light_intensity",
+        type=float,
+        default=None,
+        help=(
+            "Sphere light intensity (default 12000). Exposure is easiest to tune "
+            "by rendering: 20000 with eight 1.0 m emitters blew the frame out to "
+            "white, while 9000 with four 0.35 m emitters left it at mean 87."
+        ),
+    )
+    parser.add_argument(
+        "--light_radius",
+        type=float,
+        default=None,
+        help=(
+            "Sphere light radius in metres (default 1.0). Larger radii behave as "
+            "area lights: softer falloff and visibly less render noise than the "
+            "0.35 m point-like emitters. Prefer raising this over raising "
+            "intensity when frames look grainy."
+        ),
+    )
+    parser.add_argument(
+        "--dome_intensity",
+        type=float,
+        default=None,
+        help="Ambient dome light intensity (default 300).",
+    )
+    parser.add_argument(
         "--eye_height",
         type=float,
         default=None,
@@ -266,6 +293,12 @@ def main() -> int:
             task_dict["move_step"] = float(args.move_step)
         if args.eye_forward_offset is not None:
             task_dict["eye_forward_offset"] = float(args.eye_forward_offset)
+        if args.light_intensity is not None:
+            task_dict["light_intensity"] = float(args.light_intensity)
+        if args.light_radius is not None:
+            task_dict["light_radius"] = float(args.light_radius)
+        if args.dome_intensity is not None:
+            task_dict["dome_intensity"] = float(args.dome_intensity)
         if args.hide_robot:
             task_dict["hide_robot"] = True
         try:

@@ -1024,11 +1024,28 @@ class BAOEnv:
         #     falloff is harsh, while 1.0 m spreads the same power over an area,
         #     which both softens shadows and cuts the render noise that made the
         #     frames look grainy;
-        #   * intensity raised to 20000 to lift the mean toward mid-grey.
+        #   * intensity raised to 12000, tuned by measurement rather than
+        #     arithmetic.  20000 with these eight 1.0 m emitters rendered the
+        #     frame fully white: raising the radius from 0.35 to 1.0 already
+        #     multiplies emitted power by about (1.0/0.35)^2 = 8x, and eight
+        #     emitters at 2.2x the old intensity compound that, so a value that
+        #     looks like a modest increase overshoots badly.
+        #
+        # Measured exposure history, so these values are not guesses:
+        #   60000 intensity, 4 x 0.35 m,  5 m room -> mean 229.5 (blown out)
+        #    9000 intensity, 4 x 0.35 m, 16 m room -> mean  87.5 (too dark)
+        #   20000 intensity, 8 x 1.0 m,  16 m room -> fully white
+        #   12000 intensity, 8 x 1.0 m,  16 m room -> this setting
         #
         # A smaller radius with a larger intensity is specifically NOT wanted: it
         # brightens near the fixtures and leaves the mid-corridor dim, and it
         # increases noise rather than reducing it.
+        # Overridable so exposure can be tuned by rendering rather than by
+        # editing this file: capture_views.py --light_intensity / --light_radius.
+        intensity = float(self.task_dict.get("light_intensity", 12000.0))
+        radius = float(self.task_dict.get("light_radius", 1.0))
+        dome_intensity = float(self.task_dict.get("dome_intensity", 300.0))
+
         positions = [
             ("/World/Light_01", np.array([1.5, 2.6, 0.0])),
             ("/World/Light_02", np.array([3.5, 2.6, 0.0])),
@@ -1041,13 +1058,13 @@ class BAOEnv:
         ]
         for path, position in positions:
             light = UsdLux.SphereLight.Define(self.stage, path)
-            light.GetIntensityAttr().Set(20000.0)
-            light.GetRadiusAttr().Set(1.0)
+            light.GetIntensityAttr().Set(intensity)
+            light.GetRadiusAttr().Set(radius)
             light.AddTranslateOp().Set(Gf.Vec3d(*_user_to_isaac_pos(position)))
 
         # Ambient fill so no surface is pure black.
         dome = UsdLux.DomeLight.Define(self.stage, "/World/DomeLight")
-        dome.GetIntensityAttr().Set(300.0)
+        dome.GetIntensityAttr().Set(dome_intensity)
 
     def _load_robot(self) -> None:
         usd_path = self._resolve_robot_usd_path()
