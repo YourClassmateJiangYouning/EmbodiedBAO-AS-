@@ -110,6 +110,12 @@ WALL_COLOR = [0.13, 0.28, 0.72]
 WALL_OPACITY = 1.0
 ROOM_CEILING_COLOR = [0.92, 0.93, 0.95]
 
+# Goal marker: a mirrored pair of red bands on the side walls at the goal line.
+# Red because every other surface is blue, green, grey or white, so it is the
+# only warm colour in the scene and stays identifiable from the far end of a
+# 10 m corridor through a 0.45 m opening.
+GOAL_MARKER_COLOR = [0.85, 0.15, 0.12]
+
 WALL_X = 8.0
 WALL_HEIGHT = 2.0
 WALL_THICKNESS = 0.02
@@ -621,6 +627,7 @@ class BAOEnv:
         self._create_wall()
         if self.task_dict.get("hide_wall", False):
             self._remove_wall()
+        self._create_goal_marker()
         self._create_lights()
         self._create_camera()
         self._load_robot()
@@ -802,6 +809,50 @@ class BAOEnv:
             np.array([ROOM_LENGTH_X, thickness, ROOM_WIDTH_Z]),
             material=("room_ceilingMaterial", ROOM_CEILING_COLOR),
         )
+
+    def _create_goal_marker(self) -> None:
+        """Mark the goal with a pair of bands on the side walls.
+
+        Purely decorative: added by :meth:`_create_scene` but deliberately NOT
+        part of :func:`_panel_boxes`, so no collision check sees it and it cannot
+        block the robot.
+
+        A recorded run shows why a marker is needed at all.  With the obstacle at
+        x=8 and the green far wall at x=16, an agent that has walked to x=7.25 --
+        correctly centred on the channel at z=0.00 and already entering it --
+        reports:
+
+            "After nine consecutive forward steps, the robot has not yet passed
+             through an opening and instead appears to be facing a solid green
+             wall."
+
+        and then spends the rest of the episode turning and sidestepping, looking
+        for an opening that is behind it.  Once the blue panels leave the frame
+        there is nothing ahead but the unbroken far wall, so "aligned with the
+        channel" and "facing a dead end" look identical.  An independent run with
+        a different model produced the same description, so it is a property of
+        the scene rather than of one agent.
+
+        Wall bands rather than a free-standing post, for two reasons: a post in
+        the middle of the corridor would have to be dodged or could read as an
+        obstacle, and it looks wrong in an otherwise empty passage.  A mirrored
+        pair of bands frames the goal line, gives the agent a symmetric reference
+        to judge its own lateral position against, and occupies no floor space.
+        """
+        if not self.task_dict.get("goal_marker", True):
+            return
+        band_width = float(self.task_dict.get("goal_marker_width", 0.30))
+        span = float(self.task_dict.get("goal_marker_span", 0.02))
+        height = float(self.task_dict.get("goal_marker_height", ROOM_WALL_HEIGHT))
+        for index, sign in enumerate((-1.0, 1.0)):
+            # Flush against the inside face of each side wall.
+            z = sign * (ROOM_WIDTH_Z / 2.0 - span / 2.0)
+            self._add_box(
+                f"GoalMarker_{index}",
+                np.array([SUCCESS_X, height / 2.0, z]),
+                np.array([band_width, height, span]),
+                material=(f"GoalMarkerMaterial_{index}", GOAL_MARKER_COLOR),
+            )
 
     def _create_ground_grid(self, spacing: float = 0.5) -> None:
         """Mark the floor with a faint grid.
