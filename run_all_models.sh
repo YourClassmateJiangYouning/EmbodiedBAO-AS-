@@ -63,6 +63,21 @@ with open("models.json", encoding="utf-8") as handle:
 PY
 )
 
+# Tag each model with the SAME function main.py applies, so the sweep and a
+# manual `main.py --tag ...` agree on where results live.  An earlier version
+# rewrote the name in shell (`tr '/.' '--'`), which turned dots into dashes:
+# gemini-2.5-pro became gemini-2-5-pro here but main.py's sanitize_tag keeps the
+# dot, so a manual run and a sweep run of the same model would use different
+# directories and --resume could not find the other's checkpoint.
+model_tag() {
+    "$PLAIN_PY" - "$1" <<'PY'
+import sys
+sys.path.insert(0, ".")
+from persistence import sanitize_tag
+print(sanitize_tag(sys.argv[1]))
+PY
+}
+
 if [ "$#" -gt 0 ]; then
     MODELS=("$@")
 fi
@@ -84,7 +99,7 @@ echo "started: $(date)"
 FAILED=""
 
 for model in "${MODELS[@]}"; do
-    tag="$(printf '%s' "$model" | tr '/.' '--' | tr -cd 'A-Za-z0-9_-')"
+    tag="$(model_tag "$model")"
     echo
     echo "=============================================================="
     echo "model: $model    tag: $tag    $(date)"
