@@ -7,9 +7,9 @@ the wall was clearly in the way.  What
 matters is whether a collision-free PATH exists, which only the same checks the
 simulator uses can answer.
 
-This runs a breadth-first search over the eight actions, using
-_apply_move/_apply_turn semantics via environment's own path gates, and reports
-for every Level:
+This runs a breadth-first search over the eight actions, using the shipped
+``environment.action_delta`` for the displacement and the environment's own path
+gates for legality, and reports for every Level:
 
   * the largest x reachable at all within the step budget;
   * whether the success plane is reachable;

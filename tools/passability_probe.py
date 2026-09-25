@@ -50,14 +50,6 @@ def main() -> int:
     bw = ROBOT_SHOULDER_WIDTH / 2.0 + BODY_CLEARANCE
     start_x = float(ROBOT_START_POS[0])
 
-    def legal(x: float, yaw_deg: float, width: float) -> bool:
-        return (
-            _check_wall_collision(
-                np.array([x, 0.0, 0.0]), math.radians(yaw_deg), width
-            )
-            is None
-        )
-
     def max_x_at(yaw_deg: float, width: float) -> float:
         """Furthest root x on a fixed-yaw, collision-free action-grid path."""
         position = np.array([start_x, 0.0, 0.0])

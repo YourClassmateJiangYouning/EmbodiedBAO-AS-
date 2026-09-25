@@ -6,16 +6,17 @@ here with plain Python:
 
 1. **Channel ladder**  -- each Level builds exactly the width from the task
    brief and the derived A/S ratio matches the hand-computed value.
-2. **Frontal feasibility** -- a Level must be frantically passable only when
-   the channel is genuinely wider than the shoulders.  Levels 0-3 pass
-   head-on, Levels 4-5 cannot; Levels 4-5 must pass sideways.
+2. **Frontal feasibility** -- a Level must be frontally passable only when the
+   channel is genuinely as wide as the shoulders.  Levels 0-4 pass head-on
+   (Level 4 exactly, with no aim tolerance to spare); Level 5 cannot at any yaw
+   below 75 degrees, so it is the Level that requires a rotation.
 3. **Analytic gate** -- ``_check_wall_collision`` agrees with the closed-form
    projected-width test, including the critical 0.90 m channel where the
    shoulders are narrower than the opening.
-4. **Sideways route** -- the route the model is expected to find
-   (rotate 90 degrees in free space, then translate along the torso axis)
-   actually reaches x >= 11.0 m at every Level, and the robot's body box clears
-   the wall panels while doing it.
+4. **Rotation route** -- the route the model is expected to find (rotate the torso
+   until it is narrow across the opening, then keep walking forward, because the
+   walking direction does not follow the torso) actually reaches x >= 11.0 m at
+   every Level, and the robot's body box clears the wall panels while doing it.
 5. **Action space and prompt** -- ``reach``/``retreat`` are gone, the camera
    actions keep the legacy 30 degree step, and the prompt is byte-identical
    across Levels and free of geometry leaks.
@@ -366,7 +367,7 @@ def test_frontal_passability_matches_the_ladder() -> None:
 
 
 # ---------------------------------------------------------------------------
-# 4. Sideways route
+# 4. Rotation route
 # ---------------------------------------------------------------------------
 
 
@@ -509,6 +510,16 @@ def test_run_tag_carries_the_protocol_version() -> None:
     from protocol import PROTOCOL_TAG
 
     check(bool(PROTOCOL_TAG), "PROTOCOL_TAG is empty: the tag cannot distinguish protocols")
+    # Idempotent, because run_all_models.sh composes the tag and then passes it
+    # through --tag, so this function sees it twice.  Non-idempotent, the sweep
+    # wrote ...-v4-walkframe-v4-walkframe while printing ...-v4-walkframe.
+    once = effective_tag("gpt-4o")
+    check(
+        effective_tag("gpt-4o", once) == once,
+        f"effective_tag is not idempotent: {once!r} became "
+        f"{effective_tag('gpt-4o', once)!r}, so the sweep and a manual run would "
+        f"use different directories",
+    )
     for model, tag in (
         ("gpt-4o", ""),
         ("gemini-2.5-pro", ""),
@@ -1220,6 +1231,10 @@ def test_start_distance_reachable_in_budget() -> None:
     to_wall = (env.WALL_X - start_x) / step
     wall_to_goal = (env.SUCCESS_X - env.WALL_X) / step
     goal_to_far = (env.ROOM_LENGTH_X - env.SUCCESS_X) / step
+    # The conservative route: six 15 deg turns (90 deg) plus fourteen moves.  The
+    # measured minimum for the narrowest Level is five turns (75 deg), which is
+    # asserted in test_rotation_route_reaches_goal; this one checks the budget
+    # still holds for the coarser, safer route.
     turns = int(round(90.0 / env.TURN_STEP_DEG))
     moves = int(round((env.SUCCESS_X - start_x) / step))
 
@@ -1236,7 +1251,7 @@ def test_start_distance_reachable_in_budget() -> None:
     check(moves == 14, f"goal needs {moves} forward moves, expected 14")
     check(
         turns + moves == 20 and turns + moves <= DEFAULT_MAX_STEPS,
-        f"intended route needs {turns + moves}/{DEFAULT_MAX_STEPS} actions",
+        f"the 90 degree route needs {turns + moves}/{DEFAULT_MAX_STEPS} actions",
     )
 
     # The distant opening remains visible but small at the initial pose.
@@ -1252,8 +1267,8 @@ def test_start_distance_reachable_in_budget() -> None:
     )
     print(
         f"[ok] integer layout: 10 moves to wall + 4 to goal; "
-        f"route uses {turns + moves}/{DEFAULT_MAX_STEPS} actions and leaves "
-        f"{goal_to_far:.1f} steps to the far wall"
+        f"the 90 degree route uses {turns + moves}/{DEFAULT_MAX_STEPS} actions and "
+        f"leaves {goal_to_far:.1f} steps to the far wall"
     )
 
 
@@ -1824,8 +1839,9 @@ def test_eye_camera_pitches_downward() -> None:
     # And the gaze must not follow the torso.  A person crossing a narrow opening
     # keeps looking at the opening while rotating their shoulders; a gaze that
     # tracked the torso would swing the view onto the side wall at exactly the
-    # 75-90 degree rotations Levels 4 and 5 ask for, taking the channel out of a
-    # 76 degree field of view.  The torso angle is reported as a number instead.
+    # large rotations this ladder asks for (Level 5 needs 75 degrees), taking the
+    # channel out of a 76 degree field of view.  The torso angle is reported as a
+    # number instead.
     check(
         "_robot_yaw" not in source,
         "_update_eye_camera reads the torso yaw, so the view rotates with the "
@@ -1995,6 +2011,7 @@ def main() -> int:
         test_gate_matches_exact_geometry,
         test_body_centre_does_not_drift,
         test_off_axis_collision,
+        test_frontal_passability_matches_the_ladder,
         test_rotation_route_reaches_goal,
         test_walking_frame_is_fixed,
         test_run_tag_carries_the_protocol_version,

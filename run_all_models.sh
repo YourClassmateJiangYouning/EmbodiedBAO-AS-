@@ -72,8 +72,9 @@ PY
 #
 # The protocol tag is appended here for the same reason: the tag keys --resume,
 # so a run under a changed prompt or action semantics must not resume onto the
-# previous protocol's episodes.  main.effective_tag appends the same constant,
-# and tools/check_sweep_tags.py checks that the two agree.
+# previous protocol's episodes.  main.effective_tag appends the same constant and
+# is idempotent, so passing this value through --tag below does not double it, and
+# tools/check_sweep_tags.py replays that composition to check the two agree.
 model_tag() {
     "$PLAIN_PY" - "$1" <<'PY'
 import sys

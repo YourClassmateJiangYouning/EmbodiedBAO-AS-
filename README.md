@@ -109,15 +109,17 @@ can be compared with the human threshold of 1.30.
 The **gaze** is pinned to the walking direction: rotating the torso changes the
 body's footprint and nothing the agent can see. That matches how a person crosses
 a narrow opening — eyes on the opening, shoulders rotated — and it keeps the
-channel in view at the 75–90° rotations Levels 4 and 5 ask for, which a
-torso-mounted camera could not (the channel subtends 76°). The torso angle is
-reported to the agent as a number, which is the proprioception a person has.
+channel in view at the large rotations this ladder asks for (Level 5 needs 75°,
+and 90° also works), which a torso-mounted camera could not: the channel subtends
+76° and would leave the field of view. The torso angle is reported to the agent as
+a number, which is the proprioception a person has.
 
 The translation step is 0.75 m, approximately an adult walking step. From the
 `x = 0.5` start, ten forward translations reach the obstacle plane at `x = 8.0`,
 and four more reach the inclusive success plane at `x = 11.0`. Level 5 needs five
-15° turns (75°) plus those fourteen steps, so the intended route fits within the
-30-step budget.
+15° turns (75°, the measured minimum — 60° is not enough) plus those fourteen
+steps, so the narrowest route is 19 of the 30 steps. The budget tests use the
+conservative six-turn/90° route, which is 20.
 
 ## Protocol
 
@@ -140,14 +142,14 @@ notice what it has already tried and whether it worked.
 
 The head-camera offset is reported because the two rotation families are not the
 same thing and nothing in a single frame distinguishes them. `turn_left` /
-`turn_right` rotate the body, and the head camera turns with it, so the facing and
-the view change together. `look_left` / `look_right` rotate only the head, leaving
-an offset that **persists** and rides along when the body later turns. An agent
-that had called `look_left` three times would otherwise be judging its alignment
-from a view rotated 90 degrees with nothing in the prompt saying so — being tested
-on guessing the interface rather than on judging its own body. The environment
-already produced this value in `get_robot_state()`; the prompt simply never
-rendered it.
+`turn_right` rotate the torso and leave the view **unchanged**: the eyes are pinned
+to the walking direction. `look_left` / `look_right` offset the gaze from that
+walking direction, and the offset **persists** — a torso turn does not remove it.
+An agent that had called `look_left` three times would otherwise be judging the
+opening from a view rotated 90 degrees off its path with nothing in the prompt
+saying so — being tested on guessing the interface rather than on judging its own
+body. The environment already produced this value in `get_robot_state()`; the
+prompt simply never rendered it.
 
 The prompt never contains the channel width, the body dimensions, the A/S ratio,
 or any hint that a turn may be needed. `build_prompt()` takes no `level`
@@ -167,9 +169,16 @@ Per episode (`results/level{level}/{model}/{tag}/episode_{id:03d}.json`):
 
 ```
 episode_id, level, channel_width, a_s_ratio,
-passed, passed_sideways, total_rotation, first_turn_step,
+passed, passed_sideways, passage_rotation_deg, total_rotation, first_turn_step,
 total_steps, action_sequence
 ```
+
+`passage_rotation_deg` is the torso angle at the step where the body reached the
+wall plane, which is where the passage is scored. It is recorded as an angle and
+not only as the 45–135° boolean because the human comparison is a *curve* —
+shoulder rotation against aperture width — and scoring the orientation at the end
+of the episode instead would call a person who straightened up after getting
+through "never turned sideways".
 
 Per step (`episode_{id:03d}_steps.json`, and the flat CSV):
 
@@ -198,19 +207,28 @@ is still exported.
 
 | Metric | Definition |
 | :--- | :--- |
-| **Sideways rate** | fraction of episodes that passed while the torso was rotated 45–135° |
-| **Sideways threshold** | widest A/S at which a sideways passage was observed — compare against the human **1.30** |
-| **First turn step** | step index of the first rotation action |
+| **Turned rate** | fraction of episodes in which the torso was successfully rotated at all |
+| **Turned threshold** | widest A/S at which the torso was rotated — **the metric to compare against the human 1.30** |
+| **Sideways rate** | fraction of episodes that passed while the torso was rotated 45–135° at the wall plane |
+| **Sideways threshold** | widest A/S at which a sideways *passage* was observed; also requires success |
+| **Rotation at passage** | mean torso angle at the wall plane, the graded version of the threshold |
+| **First turn step** | step index of the first successful rotation action |
 | **Mean pass steps** | average steps needed for a successful passage |
 
-The threshold classifies a model:
+The human reference (Warren & Whang 1987) counts rotated shoulders, not completed
+passages, so **Turned threshold** is the closer analogue: it separates the decision
+from the execution and cannot be depressed by a model that rotates correctly and
+then fails to follow through. `Sideways threshold` is reported alongside it for
+continuity with the earlier runs.
+
+Either threshold classifies a model:
 
 | Class | Threshold | Reading |
 | :--- | :--- | :--- |
 | `anticipatory` | ≥ 1.30 | turns before the gap is tight, like a human |
 | `borderline` | 1.00 – 1.30 | turns while still passable |
 | `reactive` | < 1.00 | only turns after being blocked |
-| `no_sideways` | — | never passed sideways |
+| `no_sideways` | — | never rotated |
 
 ## Files
 
@@ -312,8 +330,8 @@ Outputs `analysis/threshold_table.{md,csv}`, one JSON report per model, and a
 Everything that can be decided without a renderer runs on plain Python:
 
 ```bash
-python test_bao_geometry.py     # 32 checks: ladder, collision gate, routes, colours, prompt
-python test_bao_integration.py  # 16 checks: full protocol, tagged runs, CLI flags, against a mock environment
+python test_bao_geometry.py     # 35 checks: ladder, collision gate, routes, colours, prompt
+python test_bao_integration.py  # 19 checks: full protocol, tagged runs, CLI flags, against a mock environment
 python test_bao_persistence.py  # 13 checks: interrupt and corruption safety of every artefact written
 ```
 
@@ -322,8 +340,9 @@ properties that make the ladder meaningful:
 
 * the declared frontal/sideways feasibility of every Level,
 * the body footprint stays centred on the root pose under rotation,
-* the sideways route reaches past the success plane at every Level,
-* a frontal walk succeeds at Levels 0–3 and is blocked at 4–5,
+* the rotate-then-walk-forward route reaches past the success plane at every
+  Level, and Level 5 is asserted to fail without a rotation and at 60°,
+* a frontal walk succeeds at Levels 0–4 and is blocked only at Level 5,
 * turns from a wall-fouling pose are always rejected,
 * the clearance boundary for a full 0→90° turn sits in front of the wall,
 * the robot has enough free run from its start pose to complete that turn,
@@ -397,10 +416,15 @@ python capture_views.py --level 0 --outdir views
 The robot is kinematic: actions teleport the root pose and every candidate pose is
 gated by an analytic collision test. The torso footprint is an oriented rectangle
 (0.22 m × 0.57 m) tested against the two wall panels with an exact
-separating-axis test, inflated by a 2 mm skin so that A/S = 1.00 is a real pinch
-point rather than a zero-clearance squeeze. Rotation checks sweep the whole 15°
-arc, and a pose that already fouls the wall cannot rotate free — so the agent
-cannot teleport through the wall one 15° hop at a time.
+separating-axis test, with **no inflation**: `BODY_CLEARANCE` is 0, and a
+`OVERLAP_TOLERANCE` of 2e-7 m is subtracted from each projection so that boxes
+touching exactly count as clear. That is what makes A/S = 1.00 a width an aligned
+body can actually pass; an earlier 2 mm skin made the same Level demand 0.574 m
+while still printing 1.00, so Level 4 was geometrically impossible and every model
+scored zero there for a reason that had nothing to do with its behaviour.
+Rotation checks sweep the whole 15° arc, and a pose that already fouls the wall
+cannot rotate free — so the agent cannot teleport through the wall one 15° hop at
+a time.
 
 Every box in the scene is an explicit `UsdGeom.Mesh` whose eight corners are
 authored directly in metres, so local geometry, world size and reported bounds

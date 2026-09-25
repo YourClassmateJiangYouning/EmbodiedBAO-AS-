@@ -209,8 +209,15 @@ def build_prompt(context: Optional[Dict[str, Any]] = None) -> str:
 
     Delegates to ``protocol.build_prompt`` so there is exactly one prompt in
     the project.  ``context`` may carry ``position``, ``torso_rotation`` (or
-    ``yaw``), ``history`` and ``max_steps``.  The channel geometry is
-    deliberately never part of the prompt.
+    ``yaw``), ``camera_yaw``, ``history`` and ``max_steps``.  The channel geometry
+    is deliberately never part of the prompt.
+
+    ``camera_yaw`` is forwarded because the gaze is pinned to the walking
+    direction and look_left/look_right offset it: dropping the field would omit
+    the one line that tells the agent where it is looking, and nothing in a
+    single frame reveals it.  (Nothing calls this wrapper today; it exists as the
+    documented entry point, and it is fixed rather than deleted because a caller
+    silently losing that line is exactly the failure it is meant to prevent.)
     """
     from protocol import build_prompt as _build_prompt
 
@@ -220,6 +227,7 @@ def build_prompt(context: Optional[Dict[str, Any]] = None) -> str:
     state = {
         "position": context.get("position"),
         "torso_rotation": context.get("torso_rotation"),
+        "camera_yaw": context.get("camera_yaw"),
     }
     return _build_prompt(
         state=state,

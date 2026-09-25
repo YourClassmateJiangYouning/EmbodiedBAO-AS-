@@ -42,8 +42,12 @@ The room became longer, not wider. The six channel widths remain:
 
 `0.90, 0.80, 0.74, 0.68, 0.57, 0.45 m`
 
-The H1 analytic body remains `0.57 m` shoulder width by `0.22 m` torso thickness.
-Therefore Levels 0–3 permit frontal passage, while Levels 4–5 require rotation.
+The H1 analytic body remains `0.57 m` shoulder width by `0.22 m` torso thickness,
+with no inflation: the gate tests the body exactly, and a 2e-7 m tolerance in the
+separating-axis comparison keeps boxes that touch exactly clear. Therefore Levels
+0–4 permit a frontal passage (Level 4 exactly: shoulder and channel are equal, so
+an aligned body fits with no aim tolerance to spare), while Level 5 does not at
+any torso angle below 75 degrees and is the Level that requires a rotation.
 
 ## Important implementation details
 
@@ -170,11 +174,13 @@ Inspect the generated PNGs and verify:
 
 On the development machine, without Isaac Sim:
 
-- geometry/protocol suite: `32/32` passed;
-- integration suite: `16/16` passed;
+- geometry/protocol suite: `35/35` passed;
+- integration suite: `19/19` passed;
 - persistence suite: `13/13` passed;
 - Python compilation and `git diff --check`: passed;
-- passability diagnostic: all Levels reachable; Levels 4–5 require 90-degree passage.
+- passability diagnostic: all Levels reachable; Level 4 is passable straight
+  (0.000 m of aim tolerance) or turned at 45 degrees and above, and Level 5 needs
+  at least 75 degrees of torso rotation (measured; 60 degrees is not enough).
 
 Real USD authoring and rendered brightness still require the professor-machine run.
 

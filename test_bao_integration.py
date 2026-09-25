@@ -10,9 +10,10 @@ What it verifies:
 * the runner's step loop, record fields and success detection,
 * the exact field contract from the task brief (episode-level and step-level),
 * collisions are recorded but never terminate an episode,
-* a scripted "always frontal" policy passes Levels 0-3 and fails 4-5,
-* a scripted "turn then slide" policy passes every Level and is scored as a
-  sideways passage,
+* a scripted "always frontal" policy passes Levels 0-4 and fails Level 5,
+* a scripted "rotate then walk forward" policy passes every Level and is scored as
+  a sideways passage, including when it straightens up again after getting
+  through,
 * the exported CSV carries the required columns,
 * ``analysis.py`` recovers the right sideways threshold from saved results,
 * the within-episode action history reaches every model call in full.
@@ -261,8 +262,8 @@ class ScriptedAgent:
         elif self.policy == "look-then-forward":
             # Turn the head twice, then walk.  Used to check that the head-camera
             # offset the environment tracks actually becomes visible to the agent:
-            # a client that never reports it is aiming its view 60 degrees away
-            # from its body with nothing saying so.
+            # a client that never reports it is aiming its view 60 degrees off its
+            # walking direction with nothing saying so.
             if self.phase < 2:
                 self.phase += 1
                 return self._reply("look_left")
@@ -461,7 +462,7 @@ def test_collisions_do_not_end_episode() -> None:
 
 
 def test_sideways_policy_is_scored_sideways() -> None:
-    """The turn-then-slide policy must pass every Level and score sideways."""
+    """The rotate-then-walk-forward policy must pass every Level and score sideways."""
     _install_scripted_agent("sideways")
     try:
         tmp = make_temp_dir()
@@ -1348,15 +1349,18 @@ def test_cli_flags_reach_the_runner() -> None:
 def test_head_camera_offset_reaches_the_model() -> None:
     """The agent must be told how far its head camera is turned.
 
-    turn_left/turn_right move the view with the body, but look_left/look_right
-    leave a head offset that PERSISTS and rides along when the body later turns,
-    so the direction the agent faces and the direction it is looking can differ
-    by up to 90 degrees.  Nothing in a single frame reveals that difference, and
-    an agent that had turned its head three times would otherwise be judging its
-    alignment from a view rotated 90 degrees with no way to know.
+    The gaze is pinned to the WALKING direction, so turn_left/turn_right do not
+    change the view at all; look_left/look_right offset the gaze from that
+    direction, the offset PERSISTS, and a torso turn does not remove it.  The
+    direction the agent is walking and the direction it is looking can therefore
+    differ by up to 90 degrees, and nothing in a single frame reveals it: an agent
+    that had turned its head three times would otherwise be judging the opening
+    from a view rotated 90 degrees off its path with no way to know.
 
     The environment already produced the value in get_robot_state(); the prompt
-    simply never rendered it.  This pins it end to end through the runner.
+    simply never rendered it.  This pins it end to end through the runner, and
+    checks the exact 0.0 and 60.0 labels -- an earlier version matched a string
+    the prompt no longer contains, so it passed while asserting nothing.
     """
     import experiments
 
@@ -1402,14 +1406,25 @@ def test_head_camera_offset_reaches_the_model() -> None:
     # The offset must actually track the actions: at least one later prompt has
     # to report a non-zero value once a look_* action has run, otherwise the line
     # is present but inert.
-    offsets = [
-        0.0 if "head camera offset from your torso (degrees): 0.0" in p else 1.0
-        for p in seen
-    ]
+    #
+    # This keyed off "head camera offset from your torso (degrees): 0.0" until the
+    # gaze was pinned to the walking direction and the label changed to
+    # "from straight ahead".  The old string then never appeared, every entry
+    # scored 1.0, and `any(offsets)` was true no matter what the environment did:
+    # the check passed while asserting nothing.  It now matches the current label
+    # and requires the exact 0.0 and 60.0 values a two-look_left run produces.
+    zero_label = "head camera offset from straight ahead (degrees): 0.0"
     check(
-        any(offsets),
-        "no prompt ever reported a non-zero head camera offset, so a look_* "
-        "action never became visible to the agent",
+        any(zero_label in p for p in seen),
+        f"no prompt reported a zero head offset; expected the line {zero_label!r}",
+    )
+    check(
+        any(
+            "head camera offset from straight ahead (degrees): 60.0" in p
+            for p in seen
+        ),
+        "no prompt reported the 60 degree offset after two look_left actions, so "
+        "a look_* action never became visible to the agent",
     )
     print(
         "[ok] the head camera offset is reported to the agent "

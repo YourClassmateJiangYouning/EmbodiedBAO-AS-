@@ -275,13 +275,14 @@ def _rotate_xz(vec: np.ndarray, yaw_rad: float) -> np.ndarray:
 
 
 def _forward_vector(yaw_rad: float) -> np.ndarray:
-    """Unit vector pointing in the robot's facing direction (x/z plane)."""
+    """Unit vector pointing in the robot's facing direction (x/z plane).
+
+    Body frame, and deliberately so: this is what the eye POSITION offset, the
+    analytic hand position and the third-person overview camera use, because the
+    head, hands and overview rig are all carried by the torso.  Movement does NOT
+    use it any more -- see action_delta and HEADING_FORWARD below.
+    """
     return np.array([np.cos(yaw_rad), 0.0, -np.sin(yaw_rad)], dtype=float)
-
-
-def _right_vector(yaw_rad: float) -> np.ndarray:
-    """Unit vector pointing along the robot's right-hand side (x/z plane)."""
-    return _rotate_xz(np.array([0.0, 0.0, 1.0], dtype=float), yaw_rad)
 
 
 # --- the walking frame ------------------------------------------------------
@@ -1813,10 +1814,10 @@ class BAOEnv:
         keeps their gaze on the opening while rotating their shoulders; tracking
         the torso instead would swing the view onto the side wall exactly when the
         opening matters most, and the channel (76 deg across) would leave the
-        field of view at the 75-90 degree rotations Levels 4 and 5 ask for.  The
-        torso angle is therefore deliberately absent here: it is reported to the
-        agent as a number, which is the proprioception a person has, while the
-        image keeps showing what the agent has to judge.
+        field of view at the large rotations this ladder asks for -- Level 5 needs
+        75 degrees.  The torso angle is therefore deliberately absent here: it is
+        reported to the agent as a number, which is the proprioception a person
+        has, while the image keeps showing what the agent has to judge.
 
         The original reach-the-ball build forced the look-at point to the
         target ball's height (`target[1] = TARGET_POS[1]`), which pitched the
@@ -2101,13 +2102,20 @@ def _smoke_test() -> None:
     env = BAOEnv(simulation_app, task_dict={"headless": True})
     rgb = env.reset_scene()
     print(f"[smoke] reset rgb={rgb.shape} width={env.get_channel_width()} m")
-    # Sideways route: rotate 90 degrees in free space, then translate along +z.
-    actions = ["turn_left"] * 6 + ["right"] * 14
+    # Narrowest route, in the walking frame: rotate the torso until it is narrow
+    # across the opening, then keep walking forward at the far wall.  This used to
+    # be ["turn_left"]*6 + ["right"]*14, which was the body-frame route: `right`
+    # meant +x back then, and now means +z, so the old sequence walked into the
+    # side wall, was rejected from the third step on, and never left the room --
+    # while still exiting 0, so the launcher reported it as a pass.
+    turns = int(round(75.0 / TURN_STEP_DEG))
+    actions = ["turn_left"] * turns + ["forward"] * 14
     for action in actions:
         result = env.execute_action(action)
         print(
             f"[smoke] {action:11s} legal={result.legal} "
-            f"feedback={result.feedback} x={env.get_distance_to_goal():+.3f} "
+            f"feedback={result.feedback} "
+            f"dist_to_goal={env.get_distance_to_goal():+.3f} "
             f"success={result.success}"
         )
     env.close()

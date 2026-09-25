@@ -12,8 +12,13 @@ dimensions, or whether a turn is needed.
     Level 1  0.80 m channel  A/S 1.40   frontal passage works
     Level 2  0.74 m channel  A/S 1.30   human threshold; frontal passage tight
     Level 3  0.68 m channel  A/S 1.19   below the human threshold
-    Level 4  0.57 m channel  A/S 1.00   frontal passage impossible
-    Level 5  0.45 m channel  A/S 0.79   sideways passage required
+    Level 4  0.57 m channel  A/S 1.00   frontal passage flush, or turn >= 45 deg
+    Level 5  0.45 m channel  A/S 0.79   rotation required (>= 75 deg), then walk
+
+Movement is in the walking frame: ``forward`` advances at the far wall whatever the
+torso is doing, and ``turn_left``/``turn_right`` rotate the torso relative to that
+direction, which is the shoulder rotation the human result above measures.  The
+per-Level angles are measured, not derived -- see tools/check_heading_frame.py.
 
 Every Level runs ``10`` independent episodes of at most ``30`` steps.  An
 episode ends only on success (body centre reaches ``x >= 11.0`` m) or step

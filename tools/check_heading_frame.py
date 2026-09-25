@@ -77,16 +77,6 @@ def traverse(channel_width: float, yaw_deg: float, z0: float, frame: str) -> dic
     }
 
 
-def side_slack(channel_width: float, z0: float, yaw_deg: float) -> float:
-    """Gap left between the body's flank and the channel edge at this yaw."""
-    t = np.radians(yaw_deg)
-    half_z = (
-        ROBOT_TORSO_THICKNESS / 2.0 * abs(np.sin(t))
-        + ROBOT_SHOULDER_WIDTH / 2.0 * abs(np.cos(t))
-    )
-    return channel_width / 2.0 - abs(z0) - half_z
-
-
 def max_offset(channel_width: float, yaw_deg: float, frame: str) -> float:
     best = 0.0
     for index in range(int(round(0.35 / SIDE_FINE)) + 1):
@@ -112,8 +102,8 @@ def main() -> int:
     print()
 
     for frame, title in (
-        ("body", "FRAME body  (current: forward follows the torso)"),
-        ("heading", "FRAME heading  (proposal: forward is toward the far wall)"),
+        ("body", "FRAME body  (superseded: forward followed the torso)"),
+        ("heading", "FRAME heading  (shipped: forward is toward the far wall)"),
     ):
         print(title)
         head = (

@@ -81,8 +81,8 @@ def main() -> int:
             "The two columns agree, so the recorded A/S is exactly what the gate "
             "enforces.  Note that this is a statement about ORIENTATION only: it "
             "says the body fits the opening when aligned.  Whether a walk can "
-            "reach the far side is a different question, and is what "
-            "tools/check_passage.py measures."
+            "reach the far side is a different question: tools/check_heading_frame.py "
+            "answers it per Level and per torso angle."
         )
     print()
     print(

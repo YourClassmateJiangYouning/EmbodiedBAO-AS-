@@ -55,7 +55,12 @@ def main() -> int:
             capture_output=True,
             text=True,
         ).stdout.strip()
-        want = entry.effective_tag(model)
+        # Feed the shell's tag back through the runner's own composition, which is
+        # what the sweep does: run_all_models.sh builds the tag and passes it as
+        # --tag.  Comparing against effective_tag(model) with no tag only ever
+        # tested the default path, so a doubled protocol suffix -- or a script
+        # that forgot the suffix altogether -- passed this check unnoticed.
+        want = entry.effective_tag(model, got)
         flag = ""
         if got != want:
             mismatches += 1

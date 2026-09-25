@@ -61,10 +61,21 @@ import persistence
 
 
 def effective_tag(model: str, tag: str = "") -> str:
-    """Results-directory tag for a run, including the protocol version."""
+    """Results-directory tag for a run, including the protocol version.
+
+    Idempotent: a tag that already carries the protocol version is returned
+    unchanged.  run_all_models.sh composes the tag itself (so the tag it prints
+    is the directory it will use) and then passes it through ``--tag``, which
+    reaches this function a second time; without the check the directory became
+    ``<model>-v4-walkframe-v4-walkframe``, the sweep log disagreed with the path
+    actually written, and a manual ``main.py --tag <model>`` could not find the
+    sweep's resume checkpoint.
+    """
     from protocol import PROTOCOL_TAG
 
     base = persistence.sanitize_tag(tag or model, "untagged")
+    if base == PROTOCOL_TAG or base.endswith("-" + PROTOCOL_TAG):
+        return base
     return f"{base}-{PROTOCOL_TAG}"
 
 # ---------------------------------------------------------------------------

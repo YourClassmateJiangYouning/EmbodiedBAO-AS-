@@ -11,6 +11,14 @@ pose, so the attempted move can be rebuilt from the log: position, torso yaw and
 the action are all recorded.  Each attempted move is then re-judged twice, once
 with the old 2 mm inflation and once with the current 0 mm.
 
+LIMITATION, and it is easy to get wrong: the move is rebuilt with the CURRENT
+action semantics (environment.action_delta, the walking frame).  Episodes recorded
+under the earlier body-frame protocol moved in a direction rotated by their own
+torso yaw, so for those this probe reconstructs the wrong displacement and its
+verdict is meaningless.  It can therefore only re-judge walking-frame episodes;
+filter the results tree by tag (every tag now ends in protocol.PROTOCOL_TAG)
+before trusting a count.
+
     python3 tools/check_skin_sensitivity.py                       # reads results/
     python3 tools/check_skin_sensitivity.py --root /path/whatever
 """
