@@ -144,6 +144,40 @@ def report(args, forward, visible, hidden, note: str) -> None:
     diff = np.abs(visible.astype(int) - hidden.astype(int)).max(axis=2)
     print(f"[look_down] mean |visible - hidden| = {diff.mean():.2f}, "
           f"pixels differing by >10: {100.0 * (diff > 10).mean():.2f}%")
+
+    # Structure, to tell a readable silhouette from a close-up blur.  Pixels that
+    # change when the robot is hidden ARE the robot; the rest is the scene behind
+    # it.  If the scene part has structure, the agent is looking at its own body
+    # against a visible room -- which is what makes the glance usable as a scale
+    # reference.  If the scene part is flat, the body fills the frame at point-blank
+    # range and the glance shows nothing comparable to the opening.
+    body = diff > 10
+    print(
+        f"[look_down] structure (pixel std): forward {forward.std():.1f}, "
+        f"glance {visible.std():.1f}"
+    )
+    if body.any():
+        print(
+            f"[look_down] body pixels are {100.0 * body.mean():.1f}% of the frame, "
+            f"std {visible[body].std():.1f}"
+        )
+    if (~body).any():
+        scene_std = float(visible[~body].std())
+        print(
+            f"[look_down] the rest of the frame (scene behind you) is "
+            f"{100.0 * (~body).mean():.1f}% of pixels, std {scene_std:.1f}"
+        )
+        print(
+            f"[look_down] readability: "
+            + (
+                "the scene is visible alongside the body, so sizes could be "
+                "compared"
+                if scene_std > 8.0
+                else "the scene part is nearly flat, so this is a close-up of your "
+                "own surface with no room context -- looking at the PNG is the "
+                "decisive check"
+            )
+        )
     print()
     print(f"{'band':>8} {'mean diff':>10} {'% pixels >10':>13}")
     for label, sl in (
