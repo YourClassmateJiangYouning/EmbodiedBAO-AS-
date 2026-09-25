@@ -8,6 +8,11 @@ assets/
 _test_tmp/
 run_progress.txt
 
+# Model logs and episode records copied back from the lab machine for reading.
+# They are the lab's own outputs and can be tens of MB, so they are read here
+# rather than committed.
+lab_logs/
+
 # Scratch files used to pass a multi-line commit message to `git commit -F`.
 # They are created and deleted around the commit, but one was committed twice by
 # accident, so they are ignored rather than trusted to be cleaned up in time.
