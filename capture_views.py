@@ -43,11 +43,10 @@ import numpy as np
 
 
 def _available_levels() -> list:
-    """The ladder's Level indices, taken from the protocol rather than listed.
+    """The ladder's Level indices, from the protocol.
 
-    The choices used to be the literal [0..5]; when the ladder was resampled to the
-    reference 12 widths that turned the two Levels the diagnostics render into
-    arbitrary mid-ladder ones, and --level 11 was rejected outright.
+    Only to be called AFTER SimulationApp exists: it imports environment, and the
+    other order latches the Isaac import to False.
     """
     from environment import LEVEL_CHANNEL_WIDTHS
 
@@ -61,8 +60,11 @@ def parse_args() -> argparse.Namespace:
         "--level",
         type=int,
         default=0,
-        choices=_available_levels(),
-        help="Which A/S level's channel width to build",
+        # No `choices=` here on purpose: deriving them needs environment, and
+        # importing environment before SimulationApp latches the Isaac import to
+        # False, after which the app starts, the scene is never built and this
+        # script exits zero having done nothing.  Validated after the app is up.
+        help="Which A/S level's channel width to build (see environment.LEVEL_CHANNEL_WIDTHS)",
     )
     parser.add_argument("--width", type=int, default=1024)
     parser.add_argument("--height", type=int, default=1024)
@@ -295,6 +297,16 @@ def main() -> int:
         from PIL import Image
 
         import environment
+
+        # Validate --level now that environment is importable, instead of using
+        # argparse `choices=` before the app exists (which would import it too
+        # early).  An out-of-range Level would otherwise be built with
+        # environment.CHANNEL_WIDTH, silently rendering the wrong opening.
+        if args.level not in _available_levels():
+            say(
+                f"--level {args.level} is not in the ladder "
+                f"({_available_levels()}); using environment.CHANNEL_WIDTH instead"
+            )
 
         task_dict = {"headless": True, "camera_resolution": (args.width, args.height)}
         if args.eye_height is not None:

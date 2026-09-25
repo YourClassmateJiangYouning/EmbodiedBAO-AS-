@@ -460,6 +460,109 @@ def test_rotation_route_reaches_goal() -> None:
     print("[ok] rotating then walking forward reaches the goal at every Level")
 
 
+def test_isaac_scripts_start_the_app_before_importing_environment() -> None:
+    """No script may import environment before constructing SimulationApp.
+
+    Regression guard for a failure that is completely silent: importing
+    environment runs ``isaacsim.core.api`` before the app exists, which raises, and
+    latches ``environment._HAS_ISAAC_SIM`` to False for the life of the process.  A
+    script that does it then starts the app, builds nothing, prints nothing and
+    exits ZERO -- so it looks like a clean run that measured nothing.
+
+    That is what the first version of tools/check_look_down_view.py did, and the
+    only symptom was "Simulation App Startup Complete" followed a second later by
+    "Simulation App Shutting Down".
+
+    Parsed with ast rather than matched as text: a docstring or a comment that
+    merely mentions the import must not count, or the check flags correct scripts.
+    """
+    import ast
+
+    root = os.path.dirname(os.path.abspath(__file__))
+    candidates = ["main.py", "capture_views.py", "environment.py"]
+    tools_dir = os.path.join(root, "tools")
+    candidates += [
+        os.path.join("tools", name)
+        for name in sorted(os.listdir(tools_dir))
+        if name.endswith(".py")
+    ]
+
+    checked = 0
+    for rel in candidates:
+        path = os.path.join(root, rel)
+        if not os.path.exists(path):
+            continue
+        with open(path, encoding="utf-8") as handle:
+            source = handle.read()
+        tree = ast.parse(source)
+
+        def app_call_line(scope: ast.AST) -> "int | None":
+            """Line of the first SimulationApp() call anywhere inside one scope."""
+            found = None
+            for node in ast.walk(scope):
+                if not isinstance(node, ast.Call):
+                    continue
+                func = node.func
+                name = getattr(func, "attr", None) or getattr(func, "id", None)
+                if name == "SimulationApp":
+                    found = node.lineno if found is None else min(found, node.lineno)
+            return found
+
+        def env_imports(scope: ast.AST) -> list:
+            """Line numbers of environment imports directly inside one scope."""
+            lines = []
+            for node in scope.body if hasattr(scope, "body") else []:
+                if isinstance(node, (ast.Import, ast.ImportFrom)):
+                    names = (
+                        [alias.name for alias in node.names]
+                        if isinstance(node, ast.Import)
+                        else [node.module or ""]
+                    )
+                    if any(name.split(".")[0] == "environment" for name in names):
+                        lines.append(node.lineno)
+            return lines
+
+        file_app_line = app_call_line(tree)
+        if file_app_line is None:
+            continue  # a library, not a script that starts the app
+        checked += 1
+
+        # Rule 1: a module-level import runs at import time, before anything else
+        # in the file, so it must come after the app call.
+        for line in env_imports(tree):
+            check(
+                line > file_app_line,
+                f"{rel}: module-level 'import environment' at line {line} precedes "
+                f"SimulationApp at line {file_app_line}; that order latches the "
+                f"Isaac import to False, so the script starts the app, builds "
+                f"nothing and exits zero.",
+            )
+
+        # Rule 2: a function that BOTH starts the app and imports environment must
+        # import it after starting it.  This is the shape that bit
+        # tools/check_look_down_view.py, whose main() imported environment two
+        # lines above its own SimulationApp() call.
+        for node in ast.walk(tree):
+            if not isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            scope_app = app_call_line(node)
+            if scope_app is None:
+                continue
+            for line in env_imports(node):
+                check(
+                    line > scope_app,
+                    f"{rel}: {node.name}() imports environment at line {line}, "
+                    f"before its SimulationApp() at line {scope_app}; that order "
+                    f"latches the Isaac import to False and the script does "
+                    f"nothing while exiting zero.",
+                )
+    check(checked >= 4, f"only {checked} script(s) were checked; expected several")
+    print(
+        f"[ok] all {checked} Isaac scripts construct SimulationApp before importing "
+        f"environment"
+    )
+
+
 def test_walking_frame_is_fixed() -> None:
     """forward must walk at the wall whatever the torso is doing.
 
@@ -2262,6 +2365,7 @@ def main() -> int:
         test_off_axis_collision,
         test_frontal_passability_matches_the_ladder,
         test_rotation_route_reaches_goal,
+        test_isaac_scripts_start_the_app_before_importing_environment,
         test_walking_frame_is_fixed,
         test_model_request_params_reach_both_request_paths,
         test_run_tag_carries_the_protocol_version,

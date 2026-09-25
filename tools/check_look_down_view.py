@@ -36,16 +36,23 @@ def main() -> int:
     parser.add_argument("--outdir", type=str, default="look_down_check")
     args = parser.parse_args()
 
-    import environment as env_module
-
-    channel = env_module.level_channel_width(args.level)
-    if args.level not in env_module.LEVEL_CHANNEL_WIDTHS:
-        print(f"warning: level {args.level} is not in the ladder, using its width anyway")
-
+    # SimulationApp FIRST, then environment.  The other order runs
+    # isaacsim.core.api before the app exists, which latches
+    # environment._HAS_ISAAC_SIM to False forever: the app started, the scene was
+    # never built, the script did nothing and exited zero.  That is exactly what
+    # the first version of this tool did.
     from isaacsim import SimulationApp
 
     app = SimulationApp({"headless": True})
     try:
+        import environment as env_module
+
+        channel = env_module.level_channel_width(args.level)
+        if args.level not in env_module.LEVEL_CHANNEL_WIDTHS:
+            print(
+                f"warning: level {args.level} is not in the ladder, "
+                f"using its width anyway"
+            )
         env = env_module.setup_scene(
             app,
             task_dict={"headless": True, "channel_width": channel, "hide_robot": False},
