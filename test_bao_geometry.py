@@ -662,6 +662,28 @@ def test_run_tag_carries_the_protocol_version() -> None:
             == ("-effortnone" if request_params_for(name).get("reasoning_effort") == "none" else request_params_suffix(name)),
             "invalid BAO_MODEL_PARAMS was not ignored",
         )
+
+        # And when the configuration cannot be resolved at all, the suffix must say
+        # so rather than disappear: an empty suffix would look exactly like "no
+        # configuration", which is the aliasing this suffix exists to prevent.
+        import builtins
+
+        real_import = builtins.__import__
+
+        def _broken(name_, *args, **kwargs):
+            if name_ == "ai_agent":
+                raise ImportError("simulated")
+            return real_import(name_, *args, **kwargs)
+
+        builtins.__import__ = _broken
+        try:
+            check(
+                request_params_suffix("gpt-4o") == "-params-unknown",
+                "an unresolvable configuration produced an empty suffix, so it "
+                "would share a directory with the default run",
+            )
+        finally:
+            builtins.__import__ = real_import
     finally:
         _os.environ.pop("BAO_MODEL_PARAMS", None)
         if saved is not None:

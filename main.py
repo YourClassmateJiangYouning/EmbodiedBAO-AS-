@@ -77,6 +77,8 @@ def request_params_suffix(model: str) -> str:
     import before SimulationApp starts.
 
     Readable when the configuration is a single well-known knob, hashed otherwise.
+    Unresolvable configurations get "-params-unknown" rather than nothing, so a
+    broken import can never silently alias with the default run.
     """
     import hashlib
 
@@ -84,8 +86,12 @@ def request_params_suffix(model: str) -> str:
         from ai_agent import request_params_for
 
         params = dict(request_params_for(model))
-    except Exception:  # pragma: no cover - defensive; quoting the tag must not fail
-        return ""
+    except Exception:
+        # Fail CLOSED.  Returning "" here would make "this configuration could not
+        # be resolved" indistinguishable from "this model has no configuration",
+        # which is exactly the aliasing this suffix exists to prevent: a run with
+        # thinking off and one at the default would share a directory again.
+        return "-params-unknown"
     if not params:
         return ""
     if len(params) == 1:
