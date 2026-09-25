@@ -263,6 +263,26 @@ def sideways_threshold(level_summaries: Dict[int, Dict[str, Any]]) -> Optional[f
     return float(max(candidates, key=lambda s: float(s["a_s_ratio"]))["a_s_ratio"])
 
 
+def turned_threshold(level_summaries: Dict[int, Dict[str, Any]]) -> Optional[float]:
+    """Widest A/S ratio at which the model rotated its torso at all.
+
+    Distinct from ``sideways_threshold``, which additionally requires the episode
+    to have SUCCEEDED.  The human reference (Warren & Whang 1987, 1.30) measures
+    whether the shoulders were rotated, not whether the person got through, so
+    this is the closer analogue: it separates the decision from the execution and
+    cannot be depressed by a model that rotates correctly and then fails to
+    follow through.
+    """
+    candidates = [
+        summary
+        for summary in level_summaries.values()
+        if float(summary.get("turned_rate", 0.0)) > 0.0
+    ]
+    if not candidates:
+        return None
+    return float(max(candidates, key=lambda s: float(s["a_s_ratio"]))["a_s_ratio"])
+
+
 def anticipation_class(threshold: Optional[float]) -> str:
     """Bucket a threshold against the human reference of 1.30."""
     if threshold is None:
@@ -292,7 +312,42 @@ def analyze_model(
             if os.path.isdir(path) and not os.path.basename(path).startswith("round")
         ]
         if tagged_dirs:
-            selected_tag = os.path.basename(max(tagged_dirs, key=os.path.getmtime))
+            # Prefer a directory from the CURRENT protocol.  The tag carries the
+            # protocol version (protocol.PROTOCOL_TAG, appended by
+            # main.effective_tag), so a directory that ends with it is this
+            # protocol's data and an older one is a different experiment with
+            # different action semantics.  Choosing purely by mtime would let a
+            # partially re-run model -- or a stray touch -- summarise the old
+            # protocol under the new protocol's name, which is exactly the mix
+            # the tag exists to prevent.
+            from protocol import PROTOCOL_TAG
+
+            current = [
+                path
+                for path in tagged_dirs
+                if os.path.basename(path).endswith("-" + PROTOCOL_TAG)
+                or os.path.basename(path) == PROTOCOL_TAG
+            ]
+            pool = current or tagged_dirs
+            selected_tag = os.path.basename(max(pool, key=os.path.getmtime))
+            if not current:
+                print(
+                    f"[analysis] WARNING: no {model} results tagged with the "
+                    f"current protocol ({PROTOCOL_TAG}); using {selected_tag!r}. "
+                    f"Run main.py with a fresh tag before comparing."
+                )
+            older = sorted(
+                {
+                    os.path.basename(path)
+                    for path in tagged_dirs
+                    if os.path.basename(path) != selected_tag
+                }
+            )
+            if older:
+                print(
+                    f"[analysis] {model}: analysing tag {selected_tag!r}; "
+                    f"ignoring {len(older)} other tag(s): {', '.join(older)}"
+                )
 
     per_level: Dict[int, Dict[str, Any]] = {}
     for level in levels:
@@ -302,6 +357,7 @@ def analyze_model(
         per_level[int(level)] = summarize_level(int(level), episodes)
 
     threshold = sideways_threshold(per_level)
+    turned = turned_threshold(per_level)
     all_episodes = [
         ep
         for level in levels
@@ -314,11 +370,16 @@ def analyze_model(
         "model": model,
         "levels": per_level,
         "sideways_threshold": threshold,
+        "turned_threshold": turned,
         "human_reference_threshold": HUMAN_THRESHOLD,
         "threshold_gap_vs_human": (
             None if threshold is None else float(threshold - HUMAN_THRESHOLD)
         ),
         "threshold_class": anticipation_class(threshold),
+        "turned_threshold_class": anticipation_class(turned),
+        "turned_threshold_gap_vs_human": (
+            None if turned is None else float(turned - HUMAN_THRESHOLD)
+        ),
         "overall": {
             "episodes": len(all_episodes),
             "passed_count": total_passed,
@@ -380,6 +441,7 @@ def format_markdown_table(
         "A/S",
         "Width (m)",
         "Pass %",
+        "Turned %",
         "Sideways %",
         "1st Turn",
         "Avg Pass Steps",
@@ -399,6 +461,7 @@ def format_markdown_table(
                 f"{summary['a_s_ratio']:.2f}",
                 f"{summary['channel_width']:.2f}",
                 f"{100.0 * summary['pass_rate']:.1f}",
+                f"{100.0 * summary['turned_rate']:.1f}",
                 f"{100.0 * summary['sideways_rate']:.1f}",
                 "-" if first_turn is None else f"{first_turn:.1f}",
                 "-" if avg_steps is None else f"{avg_steps:.2f}",
@@ -408,6 +471,7 @@ def format_markdown_table(
     lines.append("")
     threshold_header = [
         "Model",
+        "Turned Threshold (A/S)",
         "Sideways Threshold (A/S)",
         "Human Reference",
         "Gap vs Human",
@@ -417,12 +481,14 @@ def format_markdown_table(
     lines.append("|" + "---|" * len(threshold_header))
     for report in reports:
         threshold = report["sideways_threshold"]
+        turned = report.get("turned_threshold")
         gap = report["threshold_gap_vs_human"]
         lines.append(
             "| "
             + " | ".join(
                 [
                     str(report["model"]),
+                    "-" if turned is None else f"{turned:.2f}",
                     "-" if threshold is None else f"{threshold:.2f}",
                     f"{HUMAN_THRESHOLD:.2f}",
                     "-" if gap is None else f"{gap:+.2f}",
@@ -431,6 +497,17 @@ def format_markdown_table(
             )
             + " |"
         )
+    lines.append("")
+    lines.append(
+        "Turned Threshold is the widest A/S at which the torso was rotated at all;"
+    )
+    lines.append(
+        "Sideways Threshold additionally requires the episode to have succeeded."
+    )
+    lines.append(
+        "The human reference of 1.30 measures whether the shoulders were rotated,"
+    )
+    lines.append("so Turned Threshold is the closer analogue.")
     return "\n".join(lines)
 
 
@@ -452,6 +529,7 @@ def table_rows(
                     "episodes": summary["episodes"],
                     "pass_rate": summary["pass_rate"],
                     "sideways_rate": summary["sideways_rate"],
+                    "turned_rate": summary["turned_rate"],
                     "passed_sideways_count": summary["passed_sideways_count"],
                     "first_turn_step_mean": summary["first_turn_step_mean"],
                     "avg_success_steps": summary["avg_success_steps"],
@@ -463,7 +541,9 @@ def table_rows(
                 "model": report["model"],
                 "level": "ALL",
                 "sideways_threshold": report["sideways_threshold"],
+                "turned_threshold": report.get("turned_threshold"),
                 "threshold_class": report["threshold_class"],
+                "turned_threshold_class": report.get("turned_threshold_class"),
                 "overall_pass_rate": report["overall"]["pass_rate"],
                 "overall_sideways_rate": report["overall"]["sideways_rate"],
             }

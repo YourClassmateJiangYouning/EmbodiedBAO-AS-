@@ -780,6 +780,88 @@ def test_analysis_discovers_tagged_runs() -> None:
     print("[ok] analysis discovers runs written under a tag directory")
 
 
+def test_analysis_prefers_the_current_protocol_tag() -> None:
+    """Analysis must not summarise the previous protocol by accident.
+
+    ``analyze_model`` with no ``--tag`` used to pick the most recently modified
+    tag directory.  Now that the tag carries the protocol version, an old
+    directory can still be the newest one -- a re-run that stopped early, or a
+    stray touch -- and the report would then describe an experiment with
+    different action semantics under the current protocol's name.  A directory
+    tagged with the current protocol must win regardless of mtime.
+    """
+    from protocol import PROTOCOL_TAG
+
+    tmp = make_temp_dir()
+    try:
+        root = os.path.join(tmp, "results")
+        old_dir = os.path.join(root, "level0", "m1", "old-egocentric")
+        new_dir = os.path.join(root, "level0", "m1", f"m1-{PROTOCOL_TAG}")
+        for directory, passed in ((old_dir, False), (new_dir, True)):
+            os.makedirs(directory, exist_ok=True)
+            with open(
+                os.path.join(directory, "episode_000.json"), "w", encoding="utf-8"
+            ) as handle:
+                json.dump(
+                    {
+                        "level": 0,
+                        "episode_id": 0,
+                        "channel_width": 0.90,
+                        "a_s_ratio": 1.58,
+                        "passed": passed,
+                        "total_steps": 5,
+                    },
+                    handle,
+                )
+        # Make the OLD directory the most recently modified one.
+        os.utime(old_dir, None)
+
+        report = analysis.analyze_model(root, "m1", [0])
+        summary = report["levels"].get(0)
+        check(summary is not None, "analysis found no Level 0 episodes")
+        check(
+            summary["passed_count"] == 1,
+            "analysis used the old-protocol tag directory: the current-protocol "
+            "episode was not the one summarised",
+        )
+        check(
+            report.get("turned_threshold") is None
+            or isinstance(report["turned_threshold"], float),
+            "turned_threshold is missing or not a ratio",
+        )
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    print("[ok] analysis prefers the current protocol's tag directory")
+
+
+def test_turned_threshold_separates_decision_from_success() -> None:
+    """The threshold must exist for a model that rotates and still fails.
+
+    The human reference (1.30) counts rotated shoulders, not successful
+    passages, so a model that rotates at a wide Level and then trips must still
+    register a threshold there.  ``sideways_threshold`` cannot do that by
+    construction: it requires the episode to have passed.
+    """
+    summaries = {
+        0: {"a_s_ratio": 1.58, "turned_rate": 0.0, "passed_sideways_count": 0},
+        2: {"a_s_ratio": 1.30, "turned_rate": 0.5, "passed_sideways_count": 0},
+        5: {"a_s_ratio": 0.79, "turned_rate": 1.0, "passed_sideways_count": 3},
+    }
+    check(
+        analysis.sideways_threshold(summaries) == 0.79,
+        "sideways_threshold changed: it is the widest A/S that PASSED sideways",
+    )
+    check(
+        analysis.turned_threshold(summaries) == 1.30,
+        "turned_threshold is not the widest A/S at which the torso was rotated",
+    )
+    check(
+        analysis.turned_threshold({0: summaries[0]}) is None,
+        "turned_threshold reported a value for a model that never rotated",
+    )
+    print("[ok] turned threshold records the decision, not the outcome")
+
+
 def test_prompt_uses_configured_move_step() -> None:
     from protocol import ACTION_DESCRIPTIONS, action_options_string, build_prompt
 
@@ -1268,6 +1350,8 @@ def main() -> int:
         test_checkpoint_resume,
         test_run_tags_isolate_episode_files,
         test_analysis_discovers_tagged_runs,
+        test_analysis_prefers_the_current_protocol_tag,
+        test_turned_threshold_separates_decision_from_success,
         test_prompt_uses_configured_move_step,
         test_invalid_action_is_recorded,
         test_episode_memory_reaches_the_model,
