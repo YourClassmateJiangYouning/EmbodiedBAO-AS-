@@ -2,15 +2,13 @@
 
 A/S is defined as channel width divided by the NOMINAL shoulder width (0.57 m),
 and that is the number recorded in every episode record and printed in every
-table.  The collision model, however, tests a body inflated by BODY_CLEARANCE on
-each side, so the width it requires is 1.4 mm per side larger than the nominal
-figure.  At most Levels the difference is irrelevant; at A/S = 1.00 it decides
-the outcome, because the gap and the body are then nominally equal and the
-inflation makes the body strictly wider.
+table.  The collision model tests a body possibly inflated by BODY_CLEARANCE on
+each side, so if that constant is non-zero the width required is larger than the
+nominal figure -- which is how Level 4 silently became A/S 0.993 instead of the
+1.00 it claimed.  BODY_CLEARANCE is now 0.0, so the two columns agree.
 
-This prints both numbers per Level so the discrepancy is visible rather than
-assumed, and reports which Levels a straight frontal walk is geometrically
-capable of clearing.
+This prints both numbers per Level so any future discrepancy is visible rather
+than assumed, and reports which Levels a straight frontal walk can clear.
 
     python tools/check_clearance.py
 """
@@ -73,18 +71,26 @@ def main() -> int:
     print("A/S effective = channel / (0.570 + 2 * clearance), what the geometry allows")
     print("margin        = free space per side; negative means it cannot fit at all")
     print()
-    print(
-        "The gap between the two columns is 4 mm of body inflation.  It is "
-        "invisible above A/S 1.0 and decisive at Level 4, where the channel and "
-        "the nominal shoulder are equal: the inflated body is then 2 mm too wide "
-        "per side, so a frontal passage is geometrically impossible and the "
-        "recorded 1.00 is really 0.993."
-    )
+    if abs(BODY_CLEARANCE) > 1e-12:
+        print(
+            "The two A/S columns disagree, so the recorded A/S is not the width "
+            "the gate enforces."
+        )
+    else:
+        print(
+            "The two columns agree, so the recorded A/S is exactly what the gate "
+            "enforces.  Note that this is a statement about ORIENTATION only: it "
+            "says the body fits the opening when aligned.  Whether a walk can "
+            "reach the far side is a different question, and is what "
+            "tools/check_passage.py measures."
+        )
     print()
-    print("For frontal REACHABILITY see tools/check_frontal.py, which walks the")
-    print("action grid with the real translation gate.  An earlier version of")
-    print("this file reported that a straight walk stops at x=10.25 even at")
-    print("Level 0, which is wrong: it is 12.50, well past the plane at 11.0.")
+    print(
+        "For frontal REACHABILITY see tools/check_frontal.py, which walks the "
+        "action grid with the real translation gate.  An earlier version of this "
+        "file reported that a straight walk stops at x=10.25 even at Level 0, "
+        "which is wrong: it is 12.50, past the plane at 11.0."
+    )
     return 0
 
 
