@@ -71,18 +71,20 @@ PY
 # dot, so a manual run and a sweep run of the same model would use different
 # directories and --resume could not find the other's checkpoint.
 #
-# The protocol tag is appended here for the same reason: the tag keys --resume,
-# so a run under a changed prompt or action semantics must not resume onto the
-# previous protocol's episodes.  main.effective_tag appends the same constant and
-# is idempotent, so passing this value through --tag below does not double it, and
-# tools/check_sweep_tags.py replays that composition to check the two agree.
+# The tag also carries the protocol version AND any per-model request parameters
+# (extended thinking is switched off for the models that deliberate; see
+# ai_agent.MODEL_REQUEST_PARAMS).  Both key --resume, so a run under a changed
+# protocol or a changed agent configuration must not resume onto the other one's
+# episodes.  Rather than re-implement that composition here -- which is how it
+# went wrong twice, once with dots and once with a doubled protocol suffix -- this
+# asks main for the tag it will actually use, so the printed tag IS the directory.
+# tools/check_sweep_tags.py replays this through effective_tag to check.
 model_tag() {
     "$PLAIN_PY" - "$1" <<'PY'
 import sys
 sys.path.insert(0, ".")
-from protocol import PROTOCOL_TAG
-from persistence import sanitize_tag
-print(f"{sanitize_tag(sys.argv[1])}-{PROTOCOL_TAG}")
+from main import effective_tag
+print(effective_tag(sys.argv[1]))
 PY
 }
 

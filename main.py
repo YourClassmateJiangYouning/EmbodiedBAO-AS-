@@ -60,37 +60,43 @@ import persistence
 # ---------------------------------------------------------------------------
 
 
-def request_params_suffix() -> str:
-    """A short tag suffix describing BAO_MODEL_PARAMS, when it is set.
+def request_params_suffix(model: str) -> str:
+    """A short tag suffix describing the request parameters for one model.
 
-    Overriding request parameters changes the agent's behaviour -- measured: the
-    same model and prompt took 62 s at its default reasoning setting and 3 s with
-    ``reasoning_effort: "none"`` -- so the override has to show up in the results
-    path.  Without this, a run with thinking disabled and one at the model's
-    default would share a directory, and --resume would happily mix two agent
-    configurations into one dataset.
+    Request parameters change what the model DOES, so they have to show up in the
+    results path: measured on the real prompt and a 512 px frame, deepseek-v4.1-flash
+    spends about 12,800 tokens per call at its default reasoning setting and about
+    1,230 with ``reasoning_effort: "none"``.  Without this suffix a run with
+    thinking disabled and one with it on would share a directory, and --resume
+    would mix two agent configurations into one dataset.
 
-    Readable when the override is a single reasoning_effort value, hashed
-    otherwise; empty when BAO_MODEL_PARAMS is unset, which is the sweep's case.
+    Reads the EFFECTIVE parameters (the shipped map plus any BAO_MODEL_PARAMS
+    override) rather than the environment variable alone, because the shipped map
+    is where the overrides actually live.  Imported lazily: ai_agent reaches
+    environment through protocol, and a top-level import here would latch the Isaac
+    import before SimulationApp starts.
+
+    Readable when the configuration is a single well-known knob, hashed otherwise.
     """
     import hashlib
 
-    raw = os.environ.get("BAO_MODEL_PARAMS")
-    if not raw:
-        return ""
     try:
-        override = json.loads(raw)
-    except ValueError:
-        return "-params-invalid"
-    if isinstance(override, dict):
-        efforts = {
-            str(extra.get("reasoning_effort"))
-            for extra in override.values()
-            if isinstance(extra, dict) and extra.get("reasoning_effort") is not None
-        }
-        if len(efforts) == 1:
-            return f"-effort{persistence.sanitize_tag(efforts.pop(), 'x')}"
-    return "-params" + hashlib.sha1(raw.encode("utf-8")).hexdigest()[:6]
+        from ai_agent import request_params_for
+
+        params = dict(request_params_for(model))
+    except Exception:  # pragma: no cover - defensive; quoting the tag must not fail
+        return ""
+    if not params:
+        return ""
+    if len(params) == 1:
+        effort = params.get("reasoning_effort")
+        if effort is not None:
+            return f"-effort{persistence.sanitize_tag(str(effort), 'x')}"
+        thinking = params.get("thinking")
+        if isinstance(thinking, dict) and str(thinking.get("type")) == "disabled":
+            return "-nothinking"
+    blob = json.dumps(params, sort_keys=True, separators=(",", ":"))
+    return "-params" + hashlib.sha1(blob.encode("utf-8")).hexdigest()[:6]
 
 
 def effective_tag(model: str, tag: str = "") -> str:
@@ -107,9 +113,16 @@ def effective_tag(model: str, tag: str = "") -> str:
     from protocol import PROTOCOL_TAG
 
     base = persistence.sanitize_tag(tag or model, "untagged")
+    # Strip any suffix that is already there before composing, so a full tag fed
+    # back in comes out unchanged.  Checking only for the protocol tag at the END
+    # was not enough: once a request-parameter suffix follows it, the protocol tag
+    # is no longer last and both suffixes were appended a second time.
+    suffix = request_params_suffix(model)
+    if suffix and base.endswith(suffix):
+        base = base[: -len(suffix)]
     if not (base == PROTOCOL_TAG or base.endswith("-" + PROTOCOL_TAG)):
         base = f"{base}-{PROTOCOL_TAG}"
-    return base + request_params_suffix()
+    return base + suffix
 
 # ---------------------------------------------------------------------------
 # Output layout

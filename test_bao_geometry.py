@@ -589,39 +589,78 @@ def test_run_tag_carries_the_protocol_version() -> None:
         f"{effective_tag('gpt-4o', once)!r}, so the sweep and a manual run would "
         f"use different directories",
     )
+    # And for a model whose configuration adds a suffix: the sweep asks for a full
+    # tag and the runner composes it again, which must not double anything.
+    for name in ("deepseek-v4.1-flash", "glm-4.6v"):
+        full = effective_tag(name)
+        check(
+            effective_tag(name, full) == full,
+            f"{name}: effective_tag doubled a suffix ({full!r} -> "
+            f"{effective_tag(name, full)!r})",
+        )
 
-    # A request-parameter override changes the agent's behaviour (measured: 62 s
-    # per call at DeepSeek's default reasoning setting, 3 s with
-    # reasoning_effort "none"), so it must change the directory too.
+    # A request-parameter override changes the agent's behaviour (measured: ~12,800
+    # tokens per call at DeepSeek's default reasoning setting, ~1,230 with
+    # reasoning_effort "none"), so it must change the directory too -- including the
+    # overrides that live in the shipped map, not just the environment variable.
     import os as _os
 
+    from ai_agent import MODEL_REQUEST_PARAMS, request_params_for
+    from main import request_params_suffix
+
     saved = _os.environ.pop("BAO_MODEL_PARAMS", None)
-    check(
-        effective_tag("gpt-4o") == once,
-        "the tag changed with no BAO_MODEL_PARAMS set",
-    )
     try:
-        _os.environ["BAO_MODEL_PARAMS"] = (
-            '{"deepseek-v4.1-flash": {"reasoning_effort": "none"}}'
-        )
-        with_effort = effective_tag("gpt-4o")
+        deliberating = [
+            name for name in MODEL_REQUEST_PARAMS if request_params_for(name)
+        ]
         check(
-            with_effort.endswith("-effortnone"),
-            f"a reasoning-effort override did not reach the tag: {with_effort!r}",
+            bool(deliberating),
+            "no model has request parameters, so this check would prove nothing",
+        )
+        for name in deliberating:
+            check(
+                bool(request_params_suffix(name)),
+                f"{name} has request parameters but they do not reach the tag, so a "
+                f"run with and without them would share a results directory",
+            )
+            check(
+                effective_tag(name).endswith(request_params_suffix(name)),
+                f"{name}: the suffix is not part of the effective tag",
+            )
+        plain = [
+            name
+            for name in ("gpt-4o", "qwen3-vl-32b-instruct")
+            if not request_params_for(name)
+        ]
+        for name in plain:
+            check(
+                request_params_suffix(name) == "",
+                f"{name} has no request parameters but the tag gained a suffix",
+            )
+        # And the ablating override: clearing the entry must restore the plain tag.
+        name = deliberating[0]
+        _os.environ["BAO_MODEL_PARAMS"] = json.dumps({name: None})
+        check(
+            request_params_for(name) == {},
+            f"BAO_MODEL_PARAMS cannot clear the entry for {name}, so the ablation "
+            f"(thinking on) cannot be run",
         )
         check(
-            with_effort != once,
-            "a reasoning-effort override shares a directory with the default run",
+            request_params_suffix(name) == "",
+            f"clearing the parameters for {name} did not clear the tag suffix",
         )
-        _os.environ["BAO_MODEL_PARAMS"] = '{"m": {"max_tokens": 4096}}'
+        _os.environ["BAO_MODEL_PARAMS"] = json.dumps(
+            {name: {"reasoning_effort": "medium"}}
+        )
         check(
-            effective_tag("gpt-4o").startswith(once + "-params"),
-            "a non-reasoning override did not reach the tag",
+            request_params_suffix(name).endswith("-effortmedium"),
+            "an overriding reasoning_effort did not reach the tag",
         )
         _os.environ["BAO_MODEL_PARAMS"] = "{not json"
         check(
-            effective_tag("gpt-4o").endswith("-params-invalid"),
-            "invalid BAO_MODEL_PARAMS did not reach the tag",
+            request_params_suffix(name)
+            == ("-effortnone" if request_params_for(name).get("reasoning_effort") == "none" else request_params_suffix(name)),
+            "invalid BAO_MODEL_PARAMS was not ignored",
         )
     finally:
         _os.environ.pop("BAO_MODEL_PARAMS", None)

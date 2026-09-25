@@ -117,15 +117,22 @@ def request_params_for(model_name: str) -> Dict[str, Any]:
     environment override, so an experiment can be re-run under a different
     configuration without editing code -- and, because the runner records the
     result in args.json, without the report disagreeing with what was sent.
+
+    An override of ``null`` or ``{}`` CLEARS the model's entry, which is how the
+    ablation is run: the shipped map turns extended thinking off for the models
+    that deliberate, and measuring what that costs in behaviour means running the
+    same model with "no params" as well.
     """
     params: Dict[str, Any] = dict(MODEL_REQUEST_PARAMS.get(model_name, {}))
     raw = os.environ.get("BAO_MODEL_PARAMS")
     if raw:
         try:
             override = json.loads(raw)
-            if isinstance(override, dict):
-                extra = override.get(model_name)
-                if isinstance(extra, dict):
+            if isinstance(override, dict) and model_name in override:
+                extra = override[model_name]
+                if extra is None or extra == {}:
+                    params = {}
+                elif isinstance(extra, dict):
                     params.update(extra)
         except ValueError as exc:
             print(f"[ai_agent] BAO_MODEL_PARAMS is not valid JSON ({exc}); ignored")
