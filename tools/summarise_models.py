@@ -20,7 +20,7 @@ worth answering from the tree itself: episodes found, files that will not parse,
 files the runner quarantined as corrupt, and gaps in the episode id sequence.
 
     python tools/summarise_models.py
-    python tools/summarise_models.py --tag qwen3-vl-235b-a22b-instruct-v5-12widths
+    python tools/summarise_models.py --tag qwen3-vl-235b-a22b-instruct-v6-marker-ahead
 """
 
 from __future__ import annotations

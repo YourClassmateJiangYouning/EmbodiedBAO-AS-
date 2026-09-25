@@ -1270,6 +1270,21 @@ def test_prompt_is_uniform_and_leak_free() -> None:
             f"the task statement advises the solution with {token!r}",
         )
 
+    # The task statement must connect the goal to the control that reaches it.
+    # v5 said "reach the red marker on the far wall" here and "your walking
+    # direction points at the far wall" in the frame note, and never joined them:
+    # the agent went looking for an alignment it could not tie to an action, and
+    # every one of the 41 failures in the 80 v5 episodes is an episode that issued
+    # a left/right step.  This check is the guard against dropping the join again.
+    check(
+        "marker" in task_lowered and "forward" in task_lowered,
+        "the task statement does not connect the goal to the forward action",
+    )
+    check(
+        "straight ahead" in task_lowered or "ahead" in task_lowered,
+        "the task statement does not say where the goal is relative to the agent",
+    )
+
     # The action mechanism must still be documented, since an agent that does not
     # know turn_* leaves its view alone -- or that look_* leaves a persistent
     # offset -- is being tested on guessing the interface rather than on judging

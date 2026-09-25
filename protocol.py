@@ -6,7 +6,7 @@ prompt can never drift apart.
 
 Protocol note
 -------------
-Every Level 0-5 uses the *identical* prompt.  The only thing that changes
+Every Level 0-11 uses the *identical* prompt.  The only thing that changes
 between Levels is the physical channel width, which the model is never told
 about.  The prompt deliberately omits:
 
@@ -18,12 +18,14 @@ about.  The prompt deliberately omits:
 This is what makes the ladder a measurement of the agent's own body-scale
 affordance perception rather than a reading-comprehension test.
 
-The prompt does state the *walking frame*: forward walks toward the far wall and
-a torso rotation does not steer.  That is not a hint about the answer -- it is
-the definition of the action space, and without it the agent would have to guess
-which of two conventions the words use.  What stays hidden is how wide the
-opening is and how wide the body is, which is exactly what the agent must judge
-from the image.
+The prompt does state the *walking frame*: forward walks toward the red marker on
+the far wall and a torso rotation does not steer.  That is not a hint about the
+answer -- it is the definition of the action space, and without it the agent would
+have to guess which of two conventions the words use.  It also states where the
+agent starts relative to the marker, because v5 showed that leaving that to
+inference produced attempts to "align" with something the agent could not connect
+to any action.  What stays hidden is how wide the opening is and how wide the body
+is, which is exactly what the agent must judge from the image.
 """
 
 from __future__ import annotations
@@ -41,6 +43,21 @@ from environment import ACTIONS, MOVE_STEP
 # find the previous protocol's episodes, count them as done, and quietly mix two
 # experiments in one dataset.
 #
+# v6-marker-ahead: the task statement now CONNECTS the goal to the action that
+#     reaches it -- the agent starts on the corridor centreline with the marker
+#     straight ahead, and the action list says forward walks toward the marker,
+#     not merely "toward the far wall".  Measured reason (346 v5 episodes, all 80
+#     v5 episode logs): v5 said "reach the red marker on the far wall" in the task
+#     and "your walking direction points at the far wall" in the frame note, and
+#     never joined the two, so the agent went looking for the missing alignment.
+#     The word "align" appears in 72% of v5 reasonings, only 0.1% of the previous
+#     protocol's reasonings planned a lateral move against 31.6% in v5, and all 41
+#     v5 failures -- with no exception -- are episodes that issued a left/right
+#     step, which at 0.75 m always places the body outside an opening whose
+#     tolerable offset is at most 0.46 m.  The ladder, the action space, the
+#     episode lengths and the success plane are UNCHANGED from v5, so this is a
+#     prompt-only difference and the two are directly comparable.
+#
 # v5-12widths: the ladder is the reference 12-width aperture series (A/S 2.0 ->
 #     0.9 by 0.1, five episodes per width), the goal is stated as a destination
 #     ("reach the red marker") rather than as "pass through the opening", and
@@ -53,7 +70,7 @@ from environment import ACTIONS, MOVE_STEP
 #     rotate the torso relative to that direction.  Every earlier run used
 #     body-frame translation, where a turn also redirected the walk.
 # ---------------------------------------------------------------------------
-PROTOCOL_TAG = "v5-12widths"
+PROTOCOL_TAG = "v6-marker-ahead"
 
 # ---------------------------------------------------------------------------
 # Action space
@@ -77,25 +94,25 @@ def _format_step(centimetres: float) -> str:
 # "move forward 75cm" and never which frame forward was in.
 ACTION_TEMPLATES: Dict[str, str] = {
     "forward": (
-        "walk {step}cm straight ahead. Your walking direction always points at "
-        "the far wall; turning your torso does not change where forward takes "
-        "you"
+        "walk {step}cm straight ahead, in your walking direction, which always "
+        "points at the red marker on the far wall. Turning your torso does not "
+        "change where forward takes you"
     ),
     "backward": (
-        "walk {step}cm backwards, away from the far wall: the same walking "
-        "direction as forward, reversed"
+        "walk {step}cm backwards, away from the red marker on the far wall: the "
+        "same walking direction as forward, reversed"
     ),
     "left": (
-        "sidestep {step}cm to your left, without changing your walking "
-        "direction"
+        "sidestep {step}cm to your left, off the line you are walking along, "
+        "without changing your walking direction"
     ),
     "right": (
-        "sidestep {step}cm to your right, without changing your walking "
-        "direction"
+        "sidestep {step}cm to your right, off the line you are walking along, "
+        "without changing your walking direction"
     ),
     "turn_left": (
         "rotate your torso 15 degrees to the left. This does NOT change your "
-        "walking direction, so forward still takes you toward the far wall, and "
+        "walking direction, so forward still takes you toward the red marker, and "
         "it does NOT change what you can see: your eyes keep looking straight "
         "ahead along your walking direction. It changes how wide your body is "
         "across the opening. Rotating needs room, so you cannot turn once your "
@@ -103,7 +120,7 @@ ACTION_TEMPLATES: Dict[str, str] = {
     ),
     "turn_right": (
         "rotate your torso 15 degrees to the right. This does NOT change your "
-        "walking direction, so forward still takes you toward the far wall, and "
+        "walking direction, so forward still takes you toward the red marker, and "
         "it does NOT change what you can see: your eyes keep looking straight "
         "ahead along your walking direction. It changes how wide your body is "
         "across the opening. Rotating needs room, so you cannot turn once your "
@@ -172,7 +189,9 @@ ACTION_OPTIONS_STRING: str = action_options_string(MOVE_STEP)
 # frame alongside the frame it replaced, and an agent that believed a glance
 # persisted would either keep re-issuing it or think it was still looking sideways.
 ACTION_FRAME_NOTE = (
-    "Your walking direction is fixed: it always points at the far wall. "
+    "Your walking direction is fixed: it always points straight ahead down the "
+    "corridor at the far wall, and the red marker you are heading for is on that "
+    "far wall, straight ahead of your starting position. "
     "forward/backward/left/right are defined relative to that walking direction, "
     "so they behave the same way however your torso is turned.\n"
     "turn_left/turn_right rotate your torso 15 degrees relative to that walking "
@@ -203,9 +222,20 @@ ACTION_NAMES_TEXT: str = ", ".join(ACTIONS)
 # through an opening -- so the obstacle has to be discovered and judged rather than
 # announced.  Telling the agent to "pass through the opening" would hand it the
 # fact that there is an opening to fit through.
+#
+# The second sentence is NOT about the obstacle, and is what separates v6 from v5.
+# It joins the goal to the action that reaches it: where the agent starts, where
+# the marker is relative to that, and which control walks toward it.  v5 left the
+# agent to infer that its fixed walking direction and the marker on the far wall
+# describe the same line, and it did not: the logs show it hunting for an alignment
+# it could not tie to any action, then trying to satisfy it with a lateral step.
+# Naming the start position is not a hint about the answer either -- the aperture's
+# width, its distance and the body's width all stay hidden, so the agent still has
+# to judge from the image whether it fits, which is the affordance being measured.
 TASK_INSTRUCTION = (
     "You are a Unitree H1 humanoid robot. Your task is to reach the red marker on "
-    "the far wall."
+    "the far wall. You start on the centreline of the corridor, with the marker "
+    "straight ahead of you, so walking forward takes you toward it."
 )
 
 RESPONSE_FORMAT_INSTRUCTION = (

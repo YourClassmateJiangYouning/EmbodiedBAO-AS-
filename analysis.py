@@ -373,7 +373,7 @@ def analyze_model(
             #
             # Matched by CONTAINMENT, not by suffix: a tag can also carry a
             # request-parameter suffix after the protocol tag
-            # ("...-v5-12widths-effortnone", for models whose extended thinking is
+            # ("...-<protocol>-effortnone", for models whose extended thinking is
             # switched off), and an endswith test would classify every one of those
             # as a different protocol.
             from protocol import PROTOCOL_TAG

@@ -15,19 +15,18 @@ body dimensions, or whether a turn is needed.
     Level 10   0.57 m channel  A/S 1.0   flush: an aligned body just fits
     Level 11   0.51 m channel  A/S 0.9   cannot be walked through facing forward
 
-Movement is in the walking frame: ``forward`` advances at the far wall whatever the
-torso is doing, and ``turn_left``/``turn_right`` rotate the torso relative to that
-direction, which is the shoulder rotation the human studies measure.  The
-per-Level angles are measured, not derived -- see tools/check_heading_frame.py.
+Movement is in the walking frame: ``forward`` advances at the far wall -- and so at
+the red marker on it -- whatever the torso is doing, and ``turn_left``/
+``turn_right`` rotate the torso relative to that direction, which is the shoulder
+rotation the human studies measure.  The per-Level angles are measured, not derived
+-- see tools/check_heading_frame.py.
 
 Every Level runs ``5`` independent episodes of at most ``30`` steps, so a model is
 scored on 12 x 5 = 60 episodes: the 12-width series of the reference design with
-enough repetitions per width for a per-model rotation-onset curve.
-
-Every Level runs ``10`` independent episodes of at most ``30`` steps.  An
-episode ends only on success (the body clears the wall: centre reaches
-``x >= 8.75`` m, one stride past the wall plane) or step exhaustion; wall
-collisions are recorded but never terminate the episode.
+enough repetitions per width for a per-model rotation-onset curve.  An episode ends
+only on success (the body clears the wall: centre reaches ``x >= 8.75`` m, one
+stride past the wall plane) or step exhaustion; wall collisions are recorded but
+never terminate the episode.
 
 Each step follows the canonical loop:
 
