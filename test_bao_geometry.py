@@ -589,6 +589,44 @@ def test_run_tag_carries_the_protocol_version() -> None:
         f"{effective_tag('gpt-4o', once)!r}, so the sweep and a manual run would "
         f"use different directories",
     )
+
+    # A request-parameter override changes the agent's behaviour (measured: 62 s
+    # per call at DeepSeek's default reasoning setting, 3 s with
+    # reasoning_effort "none"), so it must change the directory too.
+    import os as _os
+
+    saved = _os.environ.pop("BAO_MODEL_PARAMS", None)
+    check(
+        effective_tag("gpt-4o") == once,
+        "the tag changed with no BAO_MODEL_PARAMS set",
+    )
+    try:
+        _os.environ["BAO_MODEL_PARAMS"] = (
+            '{"deepseek-v4.1-flash": {"reasoning_effort": "none"}}'
+        )
+        with_effort = effective_tag("gpt-4o")
+        check(
+            with_effort.endswith("-effortnone"),
+            f"a reasoning-effort override did not reach the tag: {with_effort!r}",
+        )
+        check(
+            with_effort != once,
+            "a reasoning-effort override shares a directory with the default run",
+        )
+        _os.environ["BAO_MODEL_PARAMS"] = '{"m": {"max_tokens": 4096}}'
+        check(
+            effective_tag("gpt-4o").startswith(once + "-params"),
+            "a non-reasoning override did not reach the tag",
+        )
+        _os.environ["BAO_MODEL_PARAMS"] = "{not json"
+        check(
+            effective_tag("gpt-4o").endswith("-params-invalid"),
+            "invalid BAO_MODEL_PARAMS did not reach the tag",
+        )
+    finally:
+        _os.environ.pop("BAO_MODEL_PARAMS", None)
+        if saved is not None:
+            _os.environ["BAO_MODEL_PARAMS"] = saved
     for model, tag in (
         ("gpt-4o", ""),
         ("gemini-2.5-pro", ""),

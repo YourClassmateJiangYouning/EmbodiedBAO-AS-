@@ -60,6 +60,39 @@ import persistence
 # ---------------------------------------------------------------------------
 
 
+def request_params_suffix() -> str:
+    """A short tag suffix describing BAO_MODEL_PARAMS, when it is set.
+
+    Overriding request parameters changes the agent's behaviour -- measured: the
+    same model and prompt took 62 s at its default reasoning setting and 3 s with
+    ``reasoning_effort: "none"`` -- so the override has to show up in the results
+    path.  Without this, a run with thinking disabled and one at the model's
+    default would share a directory, and --resume would happily mix two agent
+    configurations into one dataset.
+
+    Readable when the override is a single reasoning_effort value, hashed
+    otherwise; empty when BAO_MODEL_PARAMS is unset, which is the sweep's case.
+    """
+    import hashlib
+
+    raw = os.environ.get("BAO_MODEL_PARAMS")
+    if not raw:
+        return ""
+    try:
+        override = json.loads(raw)
+    except ValueError:
+        return "-params-invalid"
+    if isinstance(override, dict):
+        efforts = {
+            str(extra.get("reasoning_effort"))
+            for extra in override.values()
+            if isinstance(extra, dict) and extra.get("reasoning_effort") is not None
+        }
+        if len(efforts) == 1:
+            return f"-effort{persistence.sanitize_tag(efforts.pop(), 'x')}"
+    return "-params" + hashlib.sha1(raw.encode("utf-8")).hexdigest()[:6]
+
+
 def effective_tag(model: str, tag: str = "") -> str:
     """Results-directory tag for a run, including the protocol version.
 
@@ -74,9 +107,9 @@ def effective_tag(model: str, tag: str = "") -> str:
     from protocol import PROTOCOL_TAG
 
     base = persistence.sanitize_tag(tag or model, "untagged")
-    if base == PROTOCOL_TAG or base.endswith("-" + PROTOCOL_TAG):
-        return base
-    return f"{base}-{PROTOCOL_TAG}"
+    if not (base == PROTOCOL_TAG or base.endswith("-" + PROTOCOL_TAG)):
+        base = f"{base}-{PROTOCOL_TAG}"
+    return base + request_params_suffix()
 
 # ---------------------------------------------------------------------------
 # Output layout
