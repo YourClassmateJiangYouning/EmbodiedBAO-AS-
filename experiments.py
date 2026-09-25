@@ -580,6 +580,13 @@ class BAOExperimentRunner:
         first_sideways_step: Optional[int] = None
         passed_sideways = False
         passage_sideways: Optional[bool] = None
+        # The torso angle at the moment the body reaches the wall plane.  Stored
+        # as an angle and not only as the sideways boolean because the human
+        # comparison is a CURVE -- shoulder rotation against aperture width
+        # (Warren & Whang 1987) -- and a boolean at an arbitrary 45 degree
+        # boundary throws away exactly the graded part of the measurement that
+        # the walking-frame action space now makes available.
+        passage_rotation_deg: Optional[float] = None
         total_rotation = 0.0
         final_rotation = 0.0
         final_position_x = 0.0
@@ -641,9 +648,12 @@ class BAOExperimentRunner:
                 first_sideways_step = step
 
             # Score passage orientation when the body first reaches the wall
-            # plane, not three metres later at the success plane.
+            # plane, not three metres later at the success plane: a model that
+            # rotates back to face forward after getting through -- which is what
+            # a person does -- would otherwise be scored as never having turned.
             if passage_sideways is None and float(position[0]) >= WALL_X:
                 passage_sideways = bool(_is_sideways_yaw(torso_rotation))
+                passage_rotation_deg = float(torso_rotation)
 
             passed = _env_passed(self.env)
             final_rotation = torso_rotation
@@ -686,6 +696,9 @@ class BAOExperimentRunner:
             "a_s_ratio": float(ratio),
             "passed": bool(passed),
             "passed_sideways": bool(passed_sideways),
+            "passage_rotation_deg": (
+                None if passage_rotation_deg is None else float(passage_rotation_deg)
+            ),
             "total_rotation": total_rotation,
             "first_turn_step": first_turn_step,
             "first_sideways_step": first_sideways_step,
@@ -864,6 +877,24 @@ class BAOExperimentRunner:
             "avg_total_rotation_deg": float(
                 np.mean([float(e.get("total_rotation", 0.0)) for e in episodes])
             ),
+            # Shoulder rotation at the wall plane, the graded measurement; None
+            # rather than 0.0 when no episode recorded one, so a legacy or empty
+            # set cannot read as "never rotated".
+            "avg_passage_rotation_deg": (
+                float(
+                    np.mean(
+                        [
+                            float(e["passage_rotation_deg"])
+                            for e in episodes
+                            if e.get("passage_rotation_deg") is not None
+                        ]
+                    )
+                )
+                if any(
+                    e.get("passage_rotation_deg") is not None for e in episodes
+                )
+                else None
+            ),
             "end_reason_counts": dict(Counter(str(e.get("end_reason")) for e in episodes)),
             "total_wall_collisions": int(
                 sum(int(e.get("wall_collision_count", 0)) for e in episodes)
@@ -881,11 +912,12 @@ class BAOExperimentRunner:
     def sideways_threshold(
         level_summaries: Dict[int, Dict[str, Any]]
     ) -> Optional[float]:
-        """Smallest A/S ratio at which the agent chose to pass sideways.
+        """Widest A/S ratio at which the agent chose to pass sideways.
 
-        Levels are inspected from the widest channel (largest A/S) downwards,
-        so the result is the first A/S at which sideways passage appears -- the
-        direct analogue of the human threshold of 1.30.
+        Levels are inspected from the widest channel (largest A/S) downwards, so
+        the result is the FIRST A/S at which sideways passage appears -- which is
+        also the widest one, and the direct analogue of the human threshold of
+        1.30, above which people stop rotating.
         """
         candidates = [
             summary

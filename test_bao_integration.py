@@ -234,6 +234,28 @@ class ScriptedAgent:
                 else:
                     return self._reply("turn_left")
             action = "forward"
+        elif self.policy == "sideways-then-straight":
+            # What a person actually does: rotate to get through, then straighten
+            # up again once past the wall.  The rotation that matters happened at
+            # the wall plane, so scoring the orientation at the END of the episode
+            # would call this "never turned sideways" while the final torso
+            # rotation is back at 0.
+            if self.phase == 0:
+                if yaw >= 90.0 - 1e-6:
+                    self.phase = 1
+                else:
+                    return self._reply("turn_left")
+            if self.phase == 1:
+                if x >= WALL_X + 0.5:
+                    self.phase = 2
+                else:
+                    return self._reply("forward")
+            if self.phase == 2:
+                if yaw <= 1e-6:
+                    self.phase = 3
+                else:
+                    return self._reply("turn_right")
+            action = "forward"
         elif self.policy == "random_walk":
             action = "forward" if (x + z) % 2 < 1 else "turn_left"
         elif self.policy == "look-then-forward":
@@ -706,6 +728,62 @@ def test_run_tags_isolate_episode_files() -> None:
     finally:
         _restore_agent_adapter()
     print("[ok] run tags isolate episode persistence and analysis")
+
+
+def test_passage_rotation_is_scored_at_the_wall_plane() -> None:
+    """Turning back after getting through must not erase the rotation.
+
+    A person who sidesteps through a narrow opening straightens up again once
+    past it.  Scoring "did it go through sideways" from the torso angle at the
+    END of the episode would record that person as never having turned, which
+    would depress the threshold exactly for the most human-like policy.  The
+    rotation is therefore scored where the body reaches the wall plane, and the
+    angle itself is kept, giving the rotation-against-A/S curve rather than only a
+    boolean.
+    """
+    _install_scripted_agent("sideways-then-straight")
+    try:
+        tmp = make_temp_dir()
+        try:
+            root = os.path.join(tmp, "results")
+            runner = BAOExperimentRunner(
+                env=FakeBAOEnv(),
+                model="scripted-rotate-back",
+                max_steps=DEFAULT_MAX_STEPS,
+                results_root=root,
+                logs_root=os.path.join(tmp, "logs"),
+            )
+            runner.run_level(level=0, episodes=1)
+            episodes = analysis.load_episodes(
+                root, 0, "scripted-rotate-back", tag=runner.tag
+            )
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+    finally:
+        _restore_agent_adapter()
+
+    check(len(episodes) == 1, f"expected one episode on disk, got {len(episodes)}")
+    episode = episodes[0]
+
+    check(bool(episode.get("passed")), "the rotate-back route did not pass")
+    check(
+        bool(episode.get("passed_sideways")),
+        "a passage made with the torso at 90 degrees was not scored as sideways",
+    )
+    check(
+        abs(float(episode.get("passage_rotation_deg", 0.0)) - 90.0) < 1e-6,
+        f"passage rotation was {episode.get('passage_rotation_deg')!r}, expected 90",
+    )
+    check(
+        abs(float(episode.get("final_torso_rotation", 0.0))) < 1e-6,
+        "the scripted policy did not straighten up, so this test proves nothing "
+        "about scoring the final orientation",
+    )
+    check(
+        not analysis._sideways_yaw(float(episode.get("final_torso_rotation", 0.0))),
+        "the final orientation would have counted as sideways after all",
+    )
+    print("[ok] the passage orientation is scored at the wall plane, angle included")
 
 
 def test_analysis_discovers_tagged_runs() -> None:
@@ -1349,6 +1427,7 @@ def main() -> int:
         test_analysis_recovers_threshold,
         test_checkpoint_resume,
         test_run_tags_isolate_episode_files,
+        test_passage_rotation_is_scored_at_the_wall_plane,
         test_analysis_discovers_tagged_runs,
         test_analysis_prefers_the_current_protocol_tag,
         test_turned_threshold_separates_decision_from_success,

@@ -248,6 +248,27 @@ def summarize_level(level: int, episodes: Sequence[Dict[str, Any]]) -> Dict[str,
                 ]
             )
         ),
+        # The shoulder rotation at the moment of passage, for the episodes that
+        # crossed the wall plane.  This is the graded measurement: the human
+        # reference is a curve of rotation angle against A/S, not a boundary.
+        # Legacy records have no such field, so it stays None rather than 0.0 --
+        # reporting a mean of 0 degrees would look like "never rotated".
+        "avg_passage_rotation_deg": (
+            float(
+                np.mean(
+                    [
+                        float(ep["passage_rotation_deg"])
+                        for ep in episodes
+                        if ep.get("passage_rotation_deg") is not None
+                    ]
+                )
+            )
+            if any(ep.get("passage_rotation_deg") is not None for ep in episodes)
+            else None
+        ),
+        "passage_rotation_deg_count": int(
+            sum(1 for ep in episodes if ep.get("passage_rotation_deg") is not None)
+        ),
     }
 
 
@@ -444,6 +465,7 @@ def format_markdown_table(
         "Turned %",
         "Sideways %",
         "1st Turn",
+        "Rot@Pass",
         "Avg Pass Steps",
     ]
     lines = ["| " + " | ".join(header) + " |", "|" + "---|" * len(header)]
@@ -455,6 +477,7 @@ def format_markdown_table(
                 continue
             first_turn = summary.get("first_turn_step_mean")
             avg_steps = summary.get("avg_success_steps")
+            rot_at_pass = summary.get("avg_passage_rotation_deg")
             values = [
                 str(model),
                 str(level),
@@ -464,6 +487,7 @@ def format_markdown_table(
                 f"{100.0 * summary['turned_rate']:.1f}",
                 f"{100.0 * summary['sideways_rate']:.1f}",
                 "-" if first_turn is None else f"{first_turn:.1f}",
+                "-" if rot_at_pass is None else f"{rot_at_pass:.1f}",
                 "-" if avg_steps is None else f"{avg_steps:.2f}",
             ]
             lines.append("| " + " | ".join(values) + " |")
@@ -534,6 +558,9 @@ def table_rows(
                     "first_turn_step_mean": summary["first_turn_step_mean"],
                     "avg_success_steps": summary["avg_success_steps"],
                     "avg_total_rotation_deg": summary["avg_total_rotation_deg"],
+                    "avg_passage_rotation_deg": summary.get(
+                        "avg_passage_rotation_deg"
+                    ),
                 }
             )
         rows.append(
