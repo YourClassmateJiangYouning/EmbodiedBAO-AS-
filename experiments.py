@@ -441,11 +441,15 @@ class BAOExperimentRunner:
             f"[runner] logs    -> {os.path.abspath(self.log_dir)}"
         )
         if self.save_obs:
-            expected = self.episodes_per_level * 6 * self.max_steps
+            # Derived from the ladder, not hard-coded: this said "6" and the free
+            # disk-space warning was therefore a third of the truth once the ladder
+            # became the reference 12 widths.
+            levels = len(DEFAULT_LEVELS)
+            expected = self.episodes_per_level * levels * self.max_steps
             print(
                 f"[runner] --save_obs is on: up to {expected} PNGs can be written "
-                f"for a full 6-Level run at {self.episodes_per_level} episodes "
-                f"x {self.max_steps} steps"
+                f"for a full {levels}-Level run at {self.episodes_per_level} "
+                f"episodes x {self.max_steps} steps"
             )
 
 

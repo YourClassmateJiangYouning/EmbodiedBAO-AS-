@@ -1,11 +1,37 @@
 {
-  "_comment": "Final model roster for the EmbodiedBAO A/S threshold experiment. Every entry was verified against the gateway with a text+image request carrying a solid red 64x64 PNG; 'ok' means the model both accepted the image and named its colour. Latency is a single-probe measurement, not an average.",
+  "_comment": "Final model roster for the EmbodiedBAO A/S threshold experiment. Every entry was verified against the gateway with a text+image request carrying a solid red 64x64 PNG; 'ok' means the model both accepted the image and named its colour. probe_latency_s is a single 64x64 probe, NOT an average and NOT a predictor of sweep cost: the real per-step latency at 512 px with the full prompt and history is what matters, and it can differ by more than an order of magnitude from the probe (deepseek-v4.1-flash probes at 3.5 s but was measured at 30-86 s per real call).",
+  "_sweep_order": "The list order IS the sweep order: run_all_models.sh reads this file top to bottom. The Qwen group is first because it is the fastest to run and the researcher asked for it first; the rest follow in their existing order rather than by probe_latency_s, which would put deepseek-v4.1-flash early despite it being the slowest model on the roster in practice.",
   "endpoint": "http://35.220.164.252:3888/v1",
   "image_size": 512,
-  "episodes_per_level": 10,
+  "episodes_per_level": 5,
   "max_steps": 30,
-  "levels": [0, 1, 2, 3, 4, 5],
+  "levels": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+  "levels_note": "12 widths, A/S = 2.0 down to 0.9 in steps of 0.1, widest first; see environment.LEVEL_CHANNEL_WIDTHS. 12 x 5 = 60 scored episodes per model.",
   "models": [
+    {
+      "runner": "qwen3-vl-235b-a22b-instruct",
+      "label": "Qwen3-VL 235B A22B",
+      "group": "qwen",
+      "origin": "CN",
+      "probe_latency_s": 1.0,
+      "verified": "ok"
+    },
+    {
+      "runner": "qwen3-vl-32b-instruct",
+      "label": "Qwen3-VL 32B",
+      "group": "qwen",
+      "origin": "CN",
+      "probe_latency_s": 1.1,
+      "verified": "ok"
+    },
+    {
+      "runner": "qwen-vl-max",
+      "label": "Qwen-VL-Max",
+      "group": "qwen",
+      "origin": "CN",
+      "probe_latency_s": 9.2,
+      "verified": "ok"
+    },
     {
       "runner": "gemini-2.5-pro",
       "label": "Gemini 2.5 Pro",
@@ -55,37 +81,13 @@
       "verified": "ok"
     },
     {
-      "runner": "qwen-vl-max",
-      "label": "Qwen-VL-Max",
-      "group": "qwen",
-      "origin": "CN",
-      "probe_latency_s": 9.2,
-      "verified": "ok"
-    },
-    {
-      "runner": "qwen3-vl-235b-a22b-instruct",
-      "label": "Qwen3-VL 235B A22B",
-      "group": "qwen",
-      "origin": "CN",
-      "probe_latency_s": 1.0,
-      "verified": "ok"
-    },
-    {
-      "runner": "qwen3-vl-32b-instruct",
-      "label": "Qwen3-VL 32B",
-      "group": "qwen",
-      "origin": "CN",
-      "probe_latency_s": 1.1,
-      "verified": "ok"
-    },
-    {
       "runner": "deepseek-v4.1-flash",
       "label": "DeepSeek V4.1 Flash",
       "group": "deepseek",
       "origin": "CN",
       "probe_latency_s": 3.5,
       "verified": "ok",
-      "note": "The only DeepSeek on this gateway that can actually see. deepseek-v4-pro answered 'Unknown.' and deepseek-v4-flash answered 'Orange' to a solid red image."
+      "note": "The only DeepSeek on this gateway that can actually see. deepseek-v4-pro answered 'Unknown.' and deepseek-v4-flash answered 'Orange' to a solid red image. Slowest model on the roster in practice: 30-86 s per real call, so run it last."
     },
     {
       "runner": "glm-4.6v",
