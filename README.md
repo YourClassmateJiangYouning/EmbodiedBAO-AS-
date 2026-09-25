@@ -81,8 +81,8 @@ Eight discrete actions:
 | :--- | :--- |
 | `forward` / `backward` | walk **0.75 m** toward / away from the far wall |
 | `left` / `right` | sidestep **0.75 m** to the walker's left / right |
-| `turn_left` / `turn_right` | rotate the torso (and its head camera) **15°** |
-| `look_left` / `look_right` | rotate the head camera **30°**, body unchanged |
+| `turn_left` / `turn_right` | rotate the torso **15°**; view unchanged |
+| `look_left` / `look_right` | turn the head camera **30°** off the walking direction |
 
 Movement is in the **walking frame**, not the body frame: the walking direction
 always points at the far wall, and a torso rotation does not steer. `turn_*`
@@ -106,6 +106,13 @@ by side in `tools/check_heading_frame.py`; the shipped frame is:
 So the rotation a model adopts is graded in 15° steps, which is the quantity that
 can be compared with the human threshold of 1.30.
 
+The **gaze** is pinned to the walking direction: rotating the torso changes the
+body's footprint and nothing the agent can see. That matches how a person crosses
+a narrow opening — eyes on the opening, shoulders rotated — and it keeps the
+channel in view at the 75–90° rotations Levels 4 and 5 ask for, which a
+torso-mounted camera could not (the channel subtends 76°). The torso angle is
+reported to the agent as a number, which is the proprioception a person has.
+
 The translation step is 0.75 m, approximately an adult walking step. From the
 `x = 0.5` start, ten forward translations reach the obstacle plane at `x = 8.0`,
 and four more reach the inclusive success plane at `x = 11.0`. Level 5 needs five
@@ -123,10 +130,10 @@ and four more reach the inclusive success plane at `x = 11.0`. Level 5 needs fiv
 ### What the model is told each step
 
 The prompt contains the task, the eight actions with their real distances and their
-mechanical effects, a note that the walking direction is fixed at the far wall,
-the robot's own position, torso rotation and **head-camera offset**, the step
-limit, and **the full action history for the episode so far**. Each history entry
-is
+mechanical effects, a note that the walking direction is fixed at the far wall and
+that the eyes stay on it when the torso turns, the robot's own position, torso
+rotation and **head-camera offset**, the step limit, and **the full action history
+for the episode so far**. Each history entry is
 `step N: <action> -> <feedback> | your reasoning: <the agent's own reasoning>`,
 listed oldest first, and the block explicitly invites the agent to use it to
 notice what it has already tried and whether it worked.

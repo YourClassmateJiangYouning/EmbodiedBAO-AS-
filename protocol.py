@@ -88,27 +88,31 @@ ACTION_TEMPLATES: Dict[str, str] = {
     ),
     "turn_left": (
         "rotate your torso 15 degrees to the left. This does NOT change your "
-        "walking direction, so forward still takes you toward the far wall. It "
-        "changes how wide your body is across the opening, and your head camera "
-        "turns with your torso. Rotating needs room, so you cannot turn once "
-        "your shoulders are inside the opening"
+        "walking direction, so forward still takes you toward the far wall, and "
+        "it does NOT change what you can see: your eyes keep looking straight "
+        "ahead along your walking direction. It changes how wide your body is "
+        "across the opening. Rotating needs room, so you cannot turn once your "
+        "shoulders are inside the opening"
     ),
     "turn_right": (
         "rotate your torso 15 degrees to the right. This does NOT change your "
-        "walking direction, so forward still takes you toward the far wall. It "
-        "changes how wide your body is across the opening, and your head camera "
-        "turns with your torso. Rotating needs room, so you cannot turn once "
-        "your shoulders are inside the opening"
+        "walking direction, so forward still takes you toward the far wall, and "
+        "it does NOT change what you can see: your eyes keep looking straight "
+        "ahead along your walking direction. It changes how wide your body is "
+        "across the opening. Rotating needs room, so you cannot turn once your "
+        "shoulders are inside the opening"
     ),
     "look_left": (
-        "rotate only your head camera 30 degrees to the left. Your body and your "
-        "walking direction are unaffected. Use this to inspect the scene, not to "
-        "travel"
+        "turn your head camera (your eyes) 30 degrees to the left of your "
+        "walking direction, so you can look at something that is not straight "
+        "ahead. Your body and your walking direction are unaffected. Use this to "
+        "inspect the scene, not to travel"
     ),
     "look_right": (
-        "rotate only your head camera 30 degrees to the right. Your body and your "
-        "walking direction are unaffected. Use this to inspect the scene, not to "
-        "travel"
+        "turn your head camera (your eyes) 30 degrees to the right of your "
+        "walking direction, so you can look at something that is not straight "
+        "ahead. Your body and your walking direction are unaffected. Use this to "
+        "inspect the scene, not to travel"
     ),
 }
 
@@ -139,27 +143,34 @@ ACTION_OPTIONS_STRING: str = action_options_string(MOVE_STEP)
 # who assumed the body frame would conclude that turning steers, which it no
 # longer does.
 #
-# The three families are spelled out separately because conflating them is easy
+# The gaze rule needs stating for the same reason: the eyes are pinned to the
+# walking direction, so rotating the torso changes the body's footprint and
+# nothing else the agent can see.  Without this line an agent that had turned
+# would be entitled to expect a rotated view, and would be reading a stale
+# mental model of its own sensors.
+#
+# The two families are spelled out separately because conflating them is easy
 # and costly.  ``turn_*`` changes the torso and therefore the body's width across
-# the opening; ``look_*`` changes only the view.  The head offset left by
-# ``look_*`` also PERSISTS rather than snapping back, and it rides along when the
-# torso turns -- stated explicitly because it is not visible in any single frame,
-# and a run that made three look_left calls while believing it faced forward
-# would be judging its alignment from a view rotated 90 degrees.
+# the opening; ``look_*`` changes only where the head is aimed.  The head offset
+# left by ``look_*`` PERSISTS rather than snapping back -- stated explicitly
+# because it is not visible in any single frame, and a run that made three
+# look_left calls while believing it faced straight ahead would be judging its
+# alignment from a view rotated 90 degrees off the walking direction.
 ACTION_FRAME_NOTE = (
     "Your walking direction is fixed: it always points at the far wall. "
     "forward/backward/left/right are defined relative to that walking direction, "
     "so they behave the same way however your torso is turned.\n"
     "turn_left/turn_right rotate your torso 15 degrees relative to that walking "
-    "direction. Your head camera turns with your torso, so your view rotates, "
-    "but the direction you walk does not change. Turning changes how your body "
-    "is oriented; it does not steer you.\n"
-    "look_left/look_right rotate only your head camera. Your torso and your "
-    "walking direction are unaffected.\n"
-    "A head-camera offset left by look_left/look_right persists, and it stays "
-    "offset by the same amount when you later turn your torso. Use the opposite "
-    "look action if you want to aim your camera the same way as your torso "
-    "again."
+    "direction. The direction you walk does not change, and neither does your "
+    "view: your eyes look straight ahead along your walking direction whatever "
+    "your torso is doing. Turning changes how your body is oriented; it does not "
+    "steer you and it does not change what you see.\n"
+    "look_left/look_right turn only your head, 30 degrees to the left or right of "
+    "your walking direction, so you can look at something that is not straight "
+    "ahead. Your torso and your walking direction are unaffected.\n"
+    "A head offset left by look_left/look_right persists: it does not return to "
+    "straight ahead on its own, and turning your torso does not remove it. Use "
+    "the opposite look action to look straight ahead again."
 )
 
 # Compact comma-separated list used by the JSON response instruction.
@@ -255,18 +266,20 @@ def build_prompt(
             yaw = orientation.get("yaw")
     if yaw is not None:
         lines.append(f"- torso rotation (degrees): {float(yaw):.1f}")
-    # The head-camera offset is part of where the agent is looking, and nothing
-    # in a single frame reveals it.  Without this line an agent that has called
+    # The head offset is part of where the agent is looking, and nothing in a
+    # single frame reveals it.  Without this line an agent that has called
     # look_left three times is judging its alignment from a view rotated 90
-    # degrees while the prompt says nothing about it.  The value is generated by
-    # the environment already (get_robot_state returns "camera_yaw"); this only
-    # puts it in front of the model.
+    # degrees while the prompt says nothing about it.  The reference direction is
+    # the WALKING direction, not the torso: the eyes do not follow the torso, so
+    # "aimed the same way as your torso" would be false once the agent has turned.
+    # The value is generated by the environment already (get_robot_state returns
+    # "camera_yaw"); this only puts it in front of the model.
     camera_yaw = state.get("camera_yaw")
     if camera_yaw is not None:
         lines.append(
-            f"- head camera offset from your torso (degrees): "
-            f"{float(camera_yaw):.1f} (0 = camera aimed the same way as your "
-            f"torso; positive = turned left)"
+            f"- head camera offset from straight ahead (degrees): "
+            f"{float(camera_yaw):.1f} (0 = looking straight ahead down your "
+            f"walking direction; positive = turned left)"
         )
     lines.append(f"- step limit for this episode: {int(max_steps)}")
     parts.append("\n".join(lines))

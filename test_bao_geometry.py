@@ -961,13 +961,21 @@ def test_prompt_is_uniform_and_leak_free() -> None:
             f"the task statement advises the solution with {token!r}",
         )
 
-    # The action mechanism must still be documented, since an agent that does
-    # not know turn_* moves its view as well as its facing -- or that look_*
-    # leaves a persistent offset -- is being tested on guessing the interface
-    # rather than on judging its body.
+    # The action mechanism must still be documented, since an agent that does not
+    # know turn_* leaves its view alone -- or that look_* leaves a persistent
+    # offset -- is being tested on guessing the interface rather than on judging
+    # its body.  The gaze rule is the newer half of this and the easier one to
+    # get wrong: the eyes are pinned to the walking direction, so an agent that
+    # had turned would otherwise expect a rotated view and act on a stale model
+    # of its own sensors.
     check(
         "head camera" in prompt.lower(),
         "the prompt does not explain that the head camera exists",
+    )
+    check(
+        "straight ahead" in prompt.lower(),
+        "the prompt does not say the eyes look straight ahead down the walking "
+        "direction when the torso turns",
     )
     for action in ("turn_left", "look_left"):
         check(
@@ -1813,9 +1821,19 @@ def test_eye_camera_pitches_downward() -> None:
         "eye_pitch_deg" in source,
         "_update_eye_camera does not read eye_pitch_deg",
     )
+    # And the gaze must not follow the torso.  A person crossing a narrow opening
+    # keeps looking at the opening while rotating their shoulders; a gaze that
+    # tracked the torso would swing the view onto the side wall at exactly the
+    # 75-90 degree rotations Levels 4 and 5 ask for, taking the channel out of a
+    # 76 degree field of view.  The torso angle is reported as a number instead.
+    check(
+        "_robot_yaw" not in source,
+        "_update_eye_camera reads the torso yaw, so the view rotates with the "
+        "body instead of staying on the walking direction",
+    )
     print(
         f"[ok] head camera pitches down {EYE_PITCH_DEG:.0f} deg from "
-        f"y={EYE_CAMERA_HEIGHT} m"
+        f"y={EYE_CAMERA_HEIGHT} m and does not follow the torso"
     )
 
 

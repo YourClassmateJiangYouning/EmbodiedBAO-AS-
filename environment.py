@@ -1807,23 +1807,27 @@ class BAOEnv:
             )
 
     def _update_eye_camera(self) -> None:
-        """Point the robot eye camera along robot yaw plus camera offset.
+        """Point the robot eye camera along the WALKING direction plus head offset.
+
+        The eye does not follow the torso.  A person crossing a narrow opening
+        keeps their gaze on the opening while rotating their shoulders; tracking
+        the torso instead would swing the view onto the side wall exactly when the
+        opening matters most, and the channel (76 deg across) would leave the
+        field of view at the 75-90 degree rotations Levels 4 and 5 ask for.  The
+        torso angle is therefore deliberately absent here: it is reported to the
+        agent as a number, which is the proprioception a person has, while the
+        image keeps showing what the agent has to judge.
 
         The original reach-the-ball build forced the look-at point to the
         target ball's height (`target[1] = TARGET_POS[1]`), which pitched the
         head camera downward.  Removing the ball removed that pitch, and a
-        camera sitting 0.5 m from a 2.0 m wall at head height, looking
-        perfectly level, sees nothing but a featureless grey plane -- the
-        opening and the wall are indistinguishable and no floor is visible, so
-        there is no visual frame of reference at all.
-
-        Reinstating an explicit downward pitch restores a readable view: floor,
-        wall and the channel region all appear in the same frame.
+        level camera renders the wall as a featureless plane; the explicit
+        downward pitch is what makes floor, wall and channel readable together.
         """
         if self.eye_camera is None:
             return
         eye = self._head_camera_position()
-        look_yaw = self._robot_yaw + self._camera_yaw_offset
+        look_yaw = self._camera_yaw_offset
         distance = float(self.task_dict.get("eye_look_distance", 2.0))
         pitch_deg = float(self.task_dict.get("eye_pitch_deg", EYE_PITCH_DEG))
         # Unit vector pitched down by `pitch_deg` in the vertical plane.
@@ -1856,6 +1860,10 @@ class BAOEnv:
         overrides it.
         """
         root = self._root_position()
+        # Body-frame on purpose: the head is carried by the torso, so this offset
+        # may follow the torso yaw.  Only the GAZE is pinned to the walking
+        # direction (see _update_eye_camera).  The offset is 0 by default, so in
+        # practice the eye sits at the body centre and neither term moves it.
         forward = _forward_vector(np.radians(self._robot_yaw))
         height = float(self.task_dict.get("eye_camera_height", EYE_CAMERA_HEIGHT))
         offset = float(self.task_dict.get("eye_forward_offset", 0.0))
