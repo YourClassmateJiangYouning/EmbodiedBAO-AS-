@@ -64,47 +64,84 @@ def main() -> int:
         forward = np.asarray(env.get_camera_image())
         # 2. the glance with the robot visible
         visible = np.asarray(env.execute_action("look_down").rgb)
-        # 3. the same glance with the robot's own prims switched off
-        hidden_count = 0
-        for prim in env.stage.Traverse():
-            if str(prim.GetPath()).startswith(env.robot_prim_path):
-                try:
-                    prim.SetActive(False)
-                    hidden_count += 1
-                except Exception:
-                    pass
-        print(f"[look_down] deactivated {hidden_count} robot prim(s)")
-        hidden = np.asarray(env.execute_action("look_down").rgb)
+
+        # 3. the same glance with the robot's own prims switched off.  Wrapped:
+        #    deactivating the robot can invalidate whatever execute_action touches,
+        #    and losing the whole report to that would be worse than losing the
+        #    comparison -- the visible frame alone answers the question by eye.
+        hidden = None
+        hide_note = ""
+        try:
+            hidden_paths = []
+            for prim in env.stage.Traverse():
+                if str(prim.GetPath()).startswith(env.robot_prim_path):
+                    hidden_paths.append(str(prim.GetPath()))
+                    try:
+                        prim.SetActive(False)
+                    except Exception as exc:
+                        hide_note = f"{type(exc).__name__}: {exc}"
+            print(
+                f"[look_down] deactivated {len(hidden_paths)} robot prim(s): "
+                f"{', '.join(hidden_paths[:5])}"
+                + (" ..." if len(hidden_paths) > 5 else "")
+            )
+            hidden = np.asarray(env.execute_action("look_down").rgb)
+        except Exception as exc:
+            hide_note = f"{type(exc).__name__}: {exc}"
+
+        # Everything below runs BEFORE app.close(): printing after shutdown proved
+        # fragile, and the first run of this tool lost its whole report that way.
+        report(args, forward=forward, visible=visible, hidden=hidden, note=hide_note)
     finally:
         app.close()
+    return 0
 
+
+def report(args, forward, visible, hidden, note: str) -> None:
+    """Save the frames and print the comparison.  Runs before app.close()."""
     if visible.ndim == 3 and visible.shape[2] == 4:
         visible = visible[:, :, :3]
-    if hidden.ndim == 3 and hidden.shape[2] == 4:
-        hidden = hidden[:, :, :3]
     if forward.ndim == 3 and forward.shape[2] == 4:
         forward = forward[:, :, :3]
+    if hidden is not None and hidden.ndim == 3 and hidden.shape[2] == 4:
+        hidden = hidden[:, :, :3]
 
     os.makedirs(args.outdir, exist_ok=True)
     from PIL import Image
 
-    for name, frame in (
-        ("forward.png", forward),
-        ("look_down_visible.png", visible),
-        ("look_down_hidden.png", hidden),
-    ):
-        Image.fromarray(np.asarray(frame, dtype=np.uint8)).save(
-            os.path.join(args.outdir, name)
+    Image.fromarray(np.asarray(forward, dtype=np.uint8)).save(
+        os.path.join(args.outdir, "forward.png")
+    )
+    Image.fromarray(np.asarray(visible, dtype=np.uint8)).save(
+        os.path.join(args.outdir, "look_down_visible.png")
+    )
+    if hidden is not None:
+        Image.fromarray(np.asarray(hidden, dtype=np.uint8)).save(
+            os.path.join(args.outdir, "look_down_hidden.png")
         )
 
     height = int(visible.shape[0])
-    third = height // 3
-    diff = np.abs(visible.astype(int) - hidden.astype(int)).max(axis=2)
+    third = max(1, height // 3)
     print()
-    print(f"[look_down] frame {visible.shape[1]}x{height} at level {args.level} "
-          f"(A/S {env_module.a_s_ratio(channel):.2f}), robot x = {args.x}")
-    print(f"[look_down] mean brightness: forward {forward.mean():.1f}, "
-          f"look_down {visible.mean():.1f} (the glance must change the view)")
+    print(
+        f"[look_down] glance frame {visible.shape[1]}x{height}; forward frame mean "
+        f"brightness {forward.mean():.1f}, glance frame {visible.mean():.1f}"
+    )
+    print(
+        f"[look_down] forward vs glance differ by "
+        f"{np.abs(forward.astype(int) - visible.astype(int)).mean():.2f} on average "
+        f"(must be large: the glance has to change the view)"
+    )
+    if hidden is None:
+        print(
+            f"[look_down] could not capture the robot-hidden frame ({note}), so the "
+            f"comparison is skipped.  look_down_visible.png is written: judge it by "
+            f"eye."
+        )
+        print(f"[look_down] frames in {os.path.abspath(args.outdir)}/")
+        return
+
+    diff = np.abs(visible.astype(int) - hidden.astype(int)).max(axis=2)
     print(f"[look_down] mean |visible - hidden| = {diff.mean():.2f}, "
           f"pixels differing by >10: {100.0 * (diff > 10).mean():.2f}%")
     print()
@@ -115,10 +152,7 @@ def main() -> int:
         ("lower", slice(2 * third, height)),
     ):
         band = diff[sl]
-        print(
-            f"{label:>8} {band.mean():>10.2f} "
-            f"{100.0 * (band > 10).mean():>12.2f}%"
-        )
+        print(f"{label:>8} {band.mean():>10.2f} {100.0 * (band > 10).mean():>12.2f}%")
     print()
     lower_change = 100.0 * (diff[2 * third :] > 10).mean()
     if lower_change > 1.0:
@@ -132,10 +166,10 @@ def main() -> int:
             "VERDICT: the look_down frame is the same with and without the robot "
             "prims, so the agent sees NO part of its own body in it. The glance "
             "shows only the floor, and cannot serve as a body-size reference: "
-            "either pitch further down / move the eye back, or drop the action."
+            "either pitch further down / move the eye back, or drop the action and "
+            "the prompt sentence that promises it."
         )
     print(f"Frames written to {os.path.abspath(args.outdir)}/ for eyeballing.")
-    return 0
 
 
 if __name__ == "__main__":
