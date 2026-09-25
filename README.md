@@ -198,16 +198,26 @@ and the control that reaches it lives in the **action list** instead, since that
 where the controls are documented: `forward` is "walk 75cm straight ahead, in your
 walking direction, which always takes you toward the red marker on the far wall",
 and the walking-frame note says the fixed walking direction is where the marker is.
-That is the one change in v6, and it is not a hint about the obstacle — the width
-of the opening, its distance and the body's own width all stay hidden, so the agent
-still has to judge from the image whether it fits. It was made because the v5 logs
-showed what happens without it: the agent read "reach the red marker" in the task
-and "your walking direction points at the far wall" in the action list, never
-joined the two, and spent the episode trying to *align* itself with something it
-could not connect to any action, usually with a sidestep that put its body outside
-the opening. v6 is wording-only: the task statement is byte-identical to v5, and
-the ladder, the action mechanics, the episode length and the success plane are
-unchanged, so the two protocols are directly comparable.
+That is the v6 change, and it is not a hint about the obstacle — the width of the
+opening, its distance and the body's own width all stay hidden, so the agent still
+has to judge from the image whether it fits. It was made because the v5 logs showed
+what happens without it: the agent read "reach the red marker" in the task and "your
+walking direction points at the far wall" in the action list, never joined the two,
+and spent the episode trying to *align* itself with something it could not connect
+to any action, usually with a sidestep that put its body outside the opening.
+
+v7 adds the other half, in the state block: which axis each control moves along.
+`x` is the forward axis and `z` is the lateral one, and the raw tuple
+`position (x, y, z)` was being read as image coordinates, where x is horizontal.
+That is measured, not assumed — the v6 run reported "I am currently at x=1.25,
+meaning I am significantly to the right of the centerline" and answered every
+forward step with `left` steps until the room's side wall blocked the third one,
+then tried to fix its "width" by rotating its torso to 90 degrees. The same class of
+statement as the walking-frame note, and again not a hint about the answer.
+
+v6 and v7 are wording-only: the task statement is byte-identical to v5, and the
+ladder, the action mechanics, the episode length and the success plane are
+unchanged, so the protocols are directly comparable.
 
 Note the goal marker sits at `x = 16.0` while success is scored at `x = 8.75`:
 the agent is scored as soon as it is clear of the wall, which is what "get through"

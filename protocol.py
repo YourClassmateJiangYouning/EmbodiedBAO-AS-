@@ -43,6 +43,28 @@ from environment import ACTIONS, MOVE_STEP
 # find the previous protocol's episodes, count them as done, and quietly mix two
 # experiments in one dataset.
 #
+# v7-state-axes: the state block now says which axis each control moves along.
+#     Same action list as v6 (forward is described as heading for the marker); the
+#     task statement is unchanged and still byte-identical to v5.
+#
+#     Measured reason: v6 ran for 15 steps before it was stopped, and its log shows
+#     the goal-to-direction join had landed -- the scene description reads "the view
+#     is aligned with the walking direction, which points directly at the red
+#     marker" -- while the lateral drift was unchanged and its cause became visible.
+#     The agent was reading the raw tuple `position (x, y, z): [2.000, 0.000,
+#     -1.500]` as image coordinates, in which x is horizontal: "I am positioned at
+#     x=0.5, which suggests I'm slightly offset from the centerline"; "I am
+#     currently at x=1.25, meaning I'm significantly to the right of the
+#     centerline"; "positioned at x=2.0, which is further right than before".  x is
+#     the FORWARD axis, so every forward step looked like a drift to the right and
+#     it answered with `left` steps until the room's side wall blocked the third
+#     one, then tried to fix its "width" by rotating the torso to -90 degrees.
+#
+#     This is the control-to-axis map, the same class of statement as the
+#     walking-frame note.  It is not a hint about the answer: the opening's width,
+#     its distance and the body's width all stay hidden, so judging whether the body
+#     fits is still the whole task.
+#
 # v6-marker-ahead: the ACTION LIST now connects the goal to the control that
 #     reaches it -- ``forward`` is described as taking you toward the red marker,
 #     not merely "toward the far wall", and the walking-frame note names the marker
@@ -75,7 +97,7 @@ from environment import ACTIONS, MOVE_STEP
 #     rotate the torso relative to that direction.  Every earlier run used
 #     body-frame translation, where a turn also redirected the walk.
 # ---------------------------------------------------------------------------
-PROTOCOL_TAG = "v6-marker-ahead"
+PROTOCOL_TAG = "v7-state-axes"
 
 # ---------------------------------------------------------------------------
 # Action space
@@ -311,6 +333,22 @@ def build_prompt(
             f"- position (x, y, z): "
             f"[{float(position[0]):.3f}, {float(position[1]):.3f}, "
             f"{float(position[2]):.3f}]"
+        )
+        # WHICH AXIS EACH CONTROL MOVES ALONG has to be stated, and it is the same
+        # kind of statement as the action list: a fact about the controls, not about
+        # the obstacle.  Without it the raw tuple is read as image coordinates, in
+        # which x is the horizontal axis: the measured v6 run had the agent report
+        # "I am currently at x=1.25, meaning I am significantly to the right of the
+        # centerline" and spend the episode correcting a lateral offset that did not
+        # exist -- every forward step looked to it like a drift to the right, so it
+        # answered with left steps until the room's side wall blocked it, then tried
+        # to fix the "width" by rotating its torso to 90 degrees.  The opening's
+        # width, its distance and the body's width stay hidden either way.
+        lines.append(
+            "  x is how far forward you have walked from where you started, and "
+            "changes only when you use forward/backward; y is always 0; z is how "
+            "far to the left (negative) or right (positive) of the line you "
+            "started on you are, and changes only when you use left/right"
         )
     yaw = state.get("torso_rotation")
     if yaw is None:

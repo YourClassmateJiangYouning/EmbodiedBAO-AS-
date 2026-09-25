@@ -1299,6 +1299,21 @@ def test_prompt_is_uniform_and_leak_free() -> None:
             f"the {action} description does not connect the control to the goal",
         )
 
+    # The state block must say which axis each control moves along.  The raw
+    # `position (x, y, z)` tuple is read as image coordinates, where x is the
+    # horizontal axis: measured in the v6 run, the agent reported "I am currently
+    # at x=1.25, meaning I am significantly to the right of the centerline" and
+    # answered every forward step with left steps until the room's side wall
+    # blocked it.  x is the forward axis; z is the lateral one.
+    check(
+        "changes only when you use forward/backward" in prompt,
+        "the state block does not say which axis forward/backward move along",
+    )
+    check(
+        "changes only when you use left/right" in prompt,
+        "the state block does not say which axis left/right move along",
+    )
+
     # The action mechanism must still be documented, since an agent that does not
     # know turn_* leaves its view alone -- or that look_* leaves a persistent
     # offset -- is being tested on guessing the interface rather than on judging
