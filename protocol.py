@@ -21,11 +21,11 @@ affordance perception rather than a reading-comprehension test.
 The prompt does state the *walking frame*: forward walks toward the red marker on
 the far wall and a torso rotation does not steer.  That is not a hint about the
 answer -- it is the definition of the action space, and without it the agent would
-have to guess which of two conventions the words use.  It also states where the
-agent starts relative to the marker, because v5 showed that leaving that to
-inference produced attempts to "align" with something the agent could not connect
-to any action.  What stays hidden is how wide the opening is and how wide the body
-is, which is exactly what the agent must judge from the image.
+have to guess which of two conventions the words use.  It says so in the ACTION
+LIST, which documents the controls, and never in the task statement: the task stays
+a bare destination, because the aperture has to be found incidentally.  What stays
+hidden is how wide the opening is, how far away it is and how wide the body is,
+which is exactly what the agent must judge from the image.
 """
 
 from __future__ import annotations
@@ -43,20 +43,25 @@ from environment import ACTIONS, MOVE_STEP
 # find the previous protocol's episodes, count them as done, and quietly mix two
 # experiments in one dataset.
 #
-# v6-marker-ahead: the task statement now CONNECTS the goal to the action that
-#     reaches it -- the agent starts on the corridor centreline with the marker
-#     straight ahead, and the action list says forward walks toward the marker,
-#     not merely "toward the far wall".  Measured reason (346 v5 episodes, all 80
-#     v5 episode logs): v5 said "reach the red marker on the far wall" in the task
-#     and "your walking direction points at the far wall" in the frame note, and
-#     never joined the two, so the agent went looking for the missing alignment.
-#     The word "align" appears in 72% of v5 reasonings, only 0.1% of the previous
-#     protocol's reasonings planned a lateral move against 31.6% in v5, and all 41
-#     v5 failures -- with no exception -- are episodes that issued a left/right
-#     step, which at 0.75 m always places the body outside an opening whose
-#     tolerable offset is at most 0.46 m.  The ladder, the action space, the
-#     episode lengths and the success plane are UNCHANGED from v5, so this is a
-#     prompt-only difference and the two are directly comparable.
+# v6-marker-ahead: the ACTION LIST now connects the goal to the control that
+#     reaches it -- ``forward`` is described as taking you toward the red marker,
+#     not merely "toward the far wall", and the walking-frame note names the marker
+#     as what the walking direction heads for.  The task statement is deliberately
+#     UNCHANGED and byte-identical to v5: it stays a bare destination and must not
+#     mention the corridor, the start position or the passage, because the aperture
+#     has to be discovered incidentally rather than announced.
+#
+#     Measured reason (346 v5 episode records, 80 v5 episode logs): v5 said "reach
+#     the red marker on the far wall" in the task and "your walking direction points
+#     at the far wall" in the action list, and never joined the two, so the agent
+#     went looking for an alignment it could not tie to any action.  The word
+#     "align" appears in 72% of v5 reasonings; only 0.1% of the previous protocol's
+#     reasonings planned a lateral move against 31.6% in v5; and all 41 v5 failures
+#     -- with no exception -- are episodes that issued a left/right step, which at
+#     0.75 m always places the body outside an opening whose tolerable offset is at
+#     most 0.46 m.  The ladder, the action space's mechanics, the episode lengths
+#     and the success plane are UNCHANGED from v5, so the two are directly
+#     comparable and the difference is attributable to the wording alone.
 #
 # v5-12widths: the ladder is the reference 12-width aperture series (A/S 2.0 ->
 #     0.9 by 0.1, five episodes per width), the goal is stated as a destination
@@ -95,8 +100,8 @@ def _format_step(centimetres: float) -> str:
 ACTION_TEMPLATES: Dict[str, str] = {
     "forward": (
         "walk {step}cm straight ahead, in your walking direction, which always "
-        "points at the red marker on the far wall. Turning your torso does not "
-        "change where forward takes you"
+        "takes you toward the red marker on the far wall. Turning your torso does "
+        "not change where forward takes you"
     ),
     "backward": (
         "walk {step}cm backwards, away from the red marker on the far wall: the "
@@ -189,9 +194,8 @@ ACTION_OPTIONS_STRING: str = action_options_string(MOVE_STEP)
 # frame alongside the frame it replaced, and an agent that believed a glance
 # persisted would either keep re-issuing it or think it was still looking sideways.
 ACTION_FRAME_NOTE = (
-    "Your walking direction is fixed: it always points straight ahead down the "
-    "corridor at the far wall, and the red marker you are heading for is on that "
-    "far wall, straight ahead of your starting position. "
+    "Your walking direction is fixed: it always points straight ahead at the far "
+    "wall, which is where the red marker you are heading for is. "
     "forward/backward/left/right are defined relative to that walking direction, "
     "so they behave the same way however your torso is turned.\n"
     "turn_left/turn_right rotate your torso 15 degrees relative to that walking "
@@ -223,19 +227,15 @@ ACTION_NAMES_TEXT: str = ", ".join(ACTIONS)
 # announced.  Telling the agent to "pass through the opening" would hand it the
 # fact that there is an opening to fit through.
 #
-# The second sentence is NOT about the obstacle, and is what separates v6 from v5.
-# It joins the goal to the action that reaches it: where the agent starts, where
-# the marker is relative to that, and which control walks toward it.  v5 left the
-# agent to infer that its fixed walking direction and the marker on the far wall
-# describe the same line, and it did not: the logs show it hunting for an alignment
-# it could not tie to any action, then trying to satisfy it with a lateral step.
-# Naming the start position is not a hint about the answer either -- the aperture's
-# width, its distance and the body's width all stay hidden, so the agent still has
-# to judge from the image whether it fits, which is the affordance being measured.
+# This sentence is therefore BYTE-IDENTICAL to the v5 one, and deliberately so.
+# v6 does not touch it: it must not mention the corridor, where the agent starts,
+# or that there is a passage at all.  The connection between the goal and the
+# control that reaches it is a fact about the CONTROLS, so it belongs in the action
+# list and the walking-frame note, which describe the controls -- not here.  The
+# test suite asserts the split, in both directions.
 TASK_INSTRUCTION = (
     "You are a Unitree H1 humanoid robot. Your task is to reach the red marker on "
-    "the far wall. You start on the centreline of the corridor, with the marker "
-    "straight ahead of you, so walking forward takes you toward it."
+    "the far wall."
 )
 
 RESPONSE_FORMAT_INSTRUCTION = (

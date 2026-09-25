@@ -191,18 +191,23 @@ fact that there is an opening to fit through. The marker is visible **only**
 through the opening (sight lines to it are blocked by the 2 m obstacle wall
 everywhere else), so obeying the instruction requires finding and using it.
 
-The statement also says where the agent starts relative to the goal and which
-control walks toward it ("you start on the centreline of the corridor, with the
-marker straight ahead of you, so walking forward takes you toward it"). That is
-the one addition over the v5 prompt, and it is not a hint about the obstacle: the
-width of the opening, its distance and the body's own width all stay hidden, so
-the agent still has to judge from the image whether it fits. It was added because
-the v5 logs showed what happens without it — the agent read "reach the red marker"
-in the task and "your walking direction points at the far wall" in the frame note,
-never joined the two, and spent the episode trying to *align* itself with something
-it could not connect to any action, usually with a sidestep that put its body
-outside the opening. v6 is prompt-only: ladder, action space, episode length and
-success plane are unchanged from v5, so the two protocols are directly comparable.
+The task statement is a bare destination and nothing more: it must not mention the
+corridor, where the agent starts, or that there is a passage at all, because those
+are the things the agent is supposed to discover. The connection between the goal
+and the control that reaches it lives in the **action list** instead, since that is
+where the controls are documented: `forward` is "walk 75cm straight ahead, in your
+walking direction, which always takes you toward the red marker on the far wall",
+and the walking-frame note says the fixed walking direction is where the marker is.
+That is the one change in v6, and it is not a hint about the obstacle — the width
+of the opening, its distance and the body's own width all stay hidden, so the agent
+still has to judge from the image whether it fits. It was made because the v5 logs
+showed what happens without it: the agent read "reach the red marker" in the task
+and "your walking direction points at the far wall" in the action list, never
+joined the two, and spent the episode trying to *align* itself with something it
+could not connect to any action, usually with a sidestep that put its body outside
+the opening. v6 is wording-only: the task statement is byte-identical to v5, and
+the ladder, the action mechanics, the episode length and the success plane are
+unchanged, so the two protocols are directly comparable.
 
 Note the goal marker sits at `x = 16.0` while success is scored at `x = 8.75`:
 the agent is scored as soon as it is clear of the wall, which is what "get through"

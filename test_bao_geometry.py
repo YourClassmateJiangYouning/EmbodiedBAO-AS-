@@ -1270,20 +1270,34 @@ def test_prompt_is_uniform_and_leak_free() -> None:
             f"the task statement advises the solution with {token!r}",
         )
 
-    # The task statement must connect the goal to the control that reaches it.
-    # v5 said "reach the red marker on the far wall" here and "your walking
-    # direction points at the far wall" in the frame note, and never joined them:
-    # the agent went looking for an alignment it could not tie to an action, and
-    # every one of the 41 failures in the 80 v5 episodes is an episode that issued
-    # a left/right step.  This check is the guard against dropping the join again.
-    check(
-        "marker" in task_lowered and "forward" in task_lowered,
-        "the task statement does not connect the goal to the forward action",
-    )
-    check(
-        "straight ahead" in task_lowered or "ahead" in task_lowered,
-        "the task statement does not say where the goal is relative to the agent",
-    )
+    # The task statement must stay a BARE DESTINATION.  It may name the goal and
+    # where the goal is; it may not describe the agent's situation.  The corridor,
+    # the start position and the existence of a passage are all things the agent
+    # has to discover, which is the design of the studies this benchmark follows --
+    # Keizer et al. (2013) presented the aperture as meaningless panels.  An earlier
+    # attempt at the v6 fix put "you start on the centreline of the corridor" here
+    # and this check is what keeps that from happening again.
+    for token in ("corridor", "centreline", "centerline", "opening", "passage",
+                  "you start", "your start", "you begin"):
+        check(
+            token not in task_lowered,
+            f"the task statement describes the situation with {token!r}; it must "
+            f"stay a bare destination and leave the passage to be discovered",
+        )
+
+    # ...and the join between the goal and the control that reaches it must live in
+    # the ACTION LIST instead, which documents the controls rather than the world.
+    # v5 left this out: the agent read "reach the red marker" in the task and "your
+    # walking direction points at the far wall" in the list, never joined the two,
+    # and spent the episode trying to align itself -- every one of the 41 failures
+    # in the 80 v5 episodes is an episode that issued a left/right step.
+    from protocol import ACTION_DESCRIPTIONS
+
+    for action in ("forward", "turn_left"):
+        check(
+            "marker" in ACTION_DESCRIPTIONS[action].lower(),
+            f"the {action} description does not connect the control to the goal",
+        )
 
     # The action mechanism must still be documented, since an agent that does not
     # know turn_* leaves its view alone -- or that look_* leaves a persistent
