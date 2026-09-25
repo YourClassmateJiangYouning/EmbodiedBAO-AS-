@@ -1470,10 +1470,12 @@ def test_box_axis_mapping_is_correct() -> None:
     )
 
     # The authored call site must actually pass the tall shape: catch a
-    # regression where WALL_HEIGHT goes back into the left_right slot.
-    wall_source = inspect.getsource(env.BAOEnv._create_wall)
+    # regression where WALL_HEIGHT goes back into the left_right slot.  The post
+    # boxes now come from channel_edge_post_boxes, so that is where the shape is
+    # authored; the test checks the helper AND that the builder uses it.
+    post_source = inspect.getsource(env.channel_edge_post_boxes)
     check(
-        "WALL_HEIGHT, CHANNEL_EDGE_THICKNESS" in wall_source,
+        "WALL_HEIGHT, CHANNEL_EDGE_THICKNESS" in post_source,
         "the channel post is not authored as (depth, WALL_HEIGHT, width); it "
         "would render as a horizontal bar rather than a vertical post",
     )
@@ -1498,49 +1500,75 @@ def test_channel_edges_do_not_narrow_the_opening() -> None:
     """The visible clear width must equal the modelled channel width.
 
     The A/S ratio is channel width over shoulder width, so anything drawn inside
-    the gap silently changes what the benchmark is measuring.  The edge posts
-    were centred ON the channel edge, which ate CHANNEL_EDGE_THICKNESS/2 into the
+    the gap silently changes what the benchmark is measuring.  The edge posts were
+    once centred ON the channel edge, which ate CHANNEL_EDGE_THICKNESS/2 into the
     opening: the gap looked 0.85 m while the collision model -- which uses
     _panel_boxes and ignores the posts -- still allowed 0.90 m.
+
+    Measured from the boxes that are actually built (``channel_edge_post_boxes``)
+    and from the collision panels, for every Level.  The first version of this test
+    recomputed ``channel_half + half - half``, which is a tautology: it would have
+    passed with the posts centred on the edge.
     """
     import environment as env
+    from environment import _check_wall_collision, _panel_boxes
 
     for level, width in sorted(env.LEVEL_CHANNEL_WIDTHS.items()):
-        post_half = env.CHANNEL_EDGE_THICKNESS / 2.0
         channel_half = width / 2.0
-        # Inner face of each post, measured from the channel centre line.
-        inner_face = channel_half + post_half - post_half
-        clear = 2.0 * inner_face
+        for post_centre, post_dims in env.channel_edge_post_boxes(width):
+            inner_face = abs(float(post_centre[2])) - float(post_dims[2]) / 2.0
+            check(
+                abs(inner_face - channel_half) < 1e-12,
+                f"level {level}: a post's inner face is at z={inner_face:.6f} but "
+                f"the channel edge is at z={channel_half:.6f}",
+            )
+        for panel_centre, panel_half in _panel_boxes(width):
+            panel_inner = abs(float(panel_centre[2])) - float(panel_half[2])
+            check(
+                abs(panel_inner - channel_half) < 1e-12,
+                f"level {level}: a collision panel's inner edge is at "
+                f"z={panel_inner:.6f} but the channel edge is at z={channel_half:.6f}",
+            )
+        # So the gap the agent sees is exactly the gap the gate enforces, which is
+        # the width the recorded A/S is computed from.
         check(
-            abs(clear - width) < 1e-9,
-            f"level {level}: the posts leave a {clear:.4f} m clear opening but "
-            f"the channel is {width:.4f} m wide; A/S would be wrong",
+            abs(a_s_ratio(width) - width / env.ROBOT_SHOULDER_WIDTH) < 1e-12,
+            f"level {level}: the recorded A/S is not channel / shoulder width",
         )
 
-    # And the posts must sit outside the gap, never inside it.
-    channel_half = env.LEVEL_CHANNEL_WIDTHS[0] / 2.0
-    post_centre = channel_half + env.CHANNEL_EDGE_THICKNESS / 2.0
-    inner_face = post_centre - env.CHANNEL_EDGE_THICKNESS / 2.0
-    check(
-        inner_face >= channel_half - 1e-9,
-        f"the post's inner face is at z={inner_face:.4f}, inside the channel "
-        f"edge at z={channel_half:.4f}",
-    )
+    # The posts must sit OUTSIDE the gap at every Level (no Level may be narrowed).
+    for level, width in sorted(env.LEVEL_CHANNEL_WIDTHS.items()):
+        for post_centre, post_dims in env.channel_edge_post_boxes(width):
+            outer_face = abs(float(post_centre[2])) - float(post_dims[2]) / 2.0
+            check(
+                outer_face >= width / 2.0 - 1e-12,
+                f"level {level}: a post protrudes into the opening",
+            )
 
-    # The collision model must agree at a genuine 90-degree sideways pose.
-    from environment import _check_wall_collision
-
-    width = env.LEVEL_CHANNEL_WIDTHS[0]
-    check(
-        _check_wall_collision(
-            np.array([env.WALL_X, 0.0, 0.0]), math.radians(90.0), width
+    # And the gate must agree: a body at A/S >= 1.0 fits the channel with no
+    # rotation at all, which is what "the model can walk straight through at 1.0"
+    # means.
+    for level, width in sorted(env.LEVEL_CHANNEL_WIDTHS.items()):
+        if a_s_ratio(width) < 1.0 - 1e-12:
+            continue
+        check(
+            _check_wall_collision(
+                np.array([env.WALL_X, 0.0, 0.0]), 0.0, width
+            )
+            is None,
+            f"level {level}: an aligned body does not fit a {width:.3f} m channel "
+            f"even though A/S is {a_s_ratio(width):.2f}",
         )
-        is None,
-        "a sideways body inside the channel should not collide",
-    )
+        check(
+            _check_wall_collision(
+                np.array([env.WALL_X, 0.0, 0.0]), math.radians(90.0), width
+            )
+            is None,
+            f"level {level}: a sideways body does not fit either",
+        )
     print(
-        f"[ok] the edge posts leave exactly the modelled opening "
-        f"({env.LEVEL_CHANNEL_WIDTHS[0]:.2f} m clear, posts outside the gap)"
+        "[ok] the edge posts and the collision panels leave exactly the modelled "
+        "opening at all 12 widths, so the recorded A/S is the real one"
     )
 
 

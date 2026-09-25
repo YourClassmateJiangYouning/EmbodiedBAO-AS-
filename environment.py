@@ -115,8 +115,15 @@ ROOM_CEILING_COLOR = [0.92, 0.93, 0.95]
 # Goal marker: a mirrored pair of red bands on the side walls at the goal line.
 # Red because every other surface is blue, green, grey or white, so it is the
 # only warm colour in the scene and stays identifiable from the far end of a
-# 10 m corridor through a 0.45 m opening.
+# 10 m corridor through the opening.
 GOAL_MARKER_COLOR = [0.85, 0.15, 0.12]
+# Edge length of the marker square, in metres.  It is the TASK ("reach the red
+# marker on the far wall"), not decoration, so it must be identifiable from the
+# start pose at the 512 px input the sweep uses: at the previous 0.30 m it was
+# only about 10 px there.  0.60 m doubles that, and the old "red field at close
+# range" objection no longer applies because success is scored at x = 8.75, one
+# stride past the wall, so the agent is never scored while near the far wall.
+GOAL_MARKER_SIZE = 0.60
 
 WALL_X = 8.0
 WALL_HEIGHT = 2.0
@@ -415,6 +422,43 @@ def _panel_boxes(
     return [
         (np.array([WALL_X, WALL_HEIGHT / 2.0, -z_center], dtype=float), half.copy()),
         (np.array([WALL_X, WALL_HEIGHT / 2.0, z_center], dtype=float), half.copy()),
+    ]
+
+
+def channel_edge_post_boxes(
+    channel_width: Optional[float] = None,
+) -> List[Tuple[np.ndarray, np.ndarray]]:
+    """Return (centre, dims) of the two dark posts that mark the channel edges.
+
+    Pure, and the only place those two boxes are defined, so a test can measure
+    the geometry that is actually built instead of recomputing the arithmetic that
+    placed it.  The earlier test did the latter -- ``channel_half + half - half`` --
+    which is a tautology and would have passed with the posts centred on the edge,
+    eating CHANNEL_EDGE_THICKNESS/2 into the opening and making the visible gap
+    narrower than the A/S the benchmark reports.
+
+    The inner face sits exactly on the channel edge (z = +/- channel_width/2), so
+    the clear opening the agent sees equals the width the collision model uses.
+    """
+    if channel_width is None:
+        channel_width = CHANNEL_WIDTH
+    channel_half = float(channel_width) / 2.0
+    # dims are (along_x, height, left_right): a TALL SLIM bar, so the height slot
+    # gets WALL_HEIGHT.  Authoring it with WALL_HEIGHT in the left_right slot made
+    # it a horizontal bar 2 m long and 5 cm tall, which rendered as a dark line
+    # across the wall in every view.
+    dims = np.array([WALL_THICKNESS, WALL_HEIGHT, CHANNEL_EDGE_THICKNESS], dtype=float)
+    # Centre offset chosen so inner_face = centre - thickness/2 = channel_half.
+    centre_offset = channel_half + CHANNEL_EDGE_THICKNESS / 2.0
+    return [
+        (
+            np.array([WALL_X, WALL_HEIGHT / 2.0, -centre_offset], dtype=float),
+            dims.copy(),
+        ),
+        (
+            np.array([WALL_X, WALL_HEIGHT / 2.0, centre_offset], dtype=float),
+            dims.copy(),
+        ),
     ]
 
 
@@ -952,12 +996,20 @@ class BAOEnv:
         square was tried first and rejected: at x=14, only 2 m from the wall, its
         apparent edge reached 420 px and the view became a red field with no
         visible edges, so it stopped reading as an object at the very moment its
-        growth should have been most informative.  It is now 0.30 m, trading a
+        growth should have been most informative.  It was then 0.30 m, trading a
         small far-end mark for edges that stay visible throughout the approach.
+
+        It is 0.60 m now, because the prompt makes this marker the TASK ("reach
+        the red marker on the far wall") rather than a decoration, so it has to be
+        identifiable from the start pose at the 512 px input the sweep uses: at
+        0.30 m it was about 10 px there.  The old objection -- a red field at
+        close range -- no longer applies, because success is scored at x = 8.75,
+        one stride past the wall, so the agent is never scored while standing 2 m
+        from the far wall.
 
         Apparent edge at 1024 px and a 52 degree vertical field of view:
 
-            agent x=0.5  ->  20 px     (start: a small distant mark)
+            agent x=0.5  ->  20 px     (at 0.30 m; doubled to ~40 px at 0.60 m)
             agent x=4.0  ->  26 px
             agent x=7.0  ->  34 px     (approaching the obstacle)
             agent x=8.75 ->  43 px     (at the goal plane; the rows above follow
@@ -966,16 +1018,20 @@ class BAOEnv:
             agent x=11.0 ->  63 px     (the old goal plane, kept as measured)
             agent x=14.0 -> 158 px     (close, edges still clear)
 
-        Centred at 1.40 m it spans 1.25 m to 1.55 m.  The camera sits at 1.68 m,
-        so from the start (15.5 m away) the mark is 1.0 degree below the optical
-        axis while the frame's lower edge is 11 degrees below it at a 52 degree
-        vertical field of view -- comfortably inside the frame, and inside the
-        0.0 to 2.0 m opening, so it is visible through the channel from the very
-        start, which is what makes it usable during the approach.
+        The figures in that table were measured at 0.30 m; the marker is now
+        0.60 m, so they double (about 40 px at the start pose at 1024, i.e. 20 px
+        at the 512 px sweep input, and 86 px at the goal plane).  Centred at
+        1.40 m it spans 1.10 m to 1.70 m, still inside the 0.0 to 2.0 m opening.
+        The camera sits at 1.68 m, so from the start (15.5 m away) the mark is
+        1.0 degree below the optical axis while the frame's lower edge is 11
+        degrees below it at a 52 degree vertical field of view -- comfortably
+        inside the frame, and inside the opening, so it is visible through the
+        channel from the very start, which is what makes it usable during the
+        approach.
         """
         if not self.task_dict.get("goal_marker", True):
             return
-        size = float(self.task_dict.get("goal_marker_height", 0.30))
+        size = float(self.task_dict.get("goal_marker_height", GOAL_MARKER_SIZE))
         centre_y = float(self.task_dict.get("goal_marker_base", 1.40))
         thickness = float(self.task_dict.get("goal_marker_span", 0.02))
         self._add_box(
@@ -1040,28 +1096,17 @@ class BAOEnv:
             )
 
         # Dark posts mark the channel edges, so the opening's boundary is
-        # unambiguous rather than a colour boundary alone.
-        #
-        # They sit OUTSIDE the channel, with their inner face exactly on the
-        # channel edge.  Centring a 5 cm post on the edge would eat 5 cm into
-        # the gap: the opening would look 0.85 m while the collision model (which
-        # uses _panel_boxes and ignores the posts) allowed 0.90 m.  The whole
-        # benchmark compares shoulder width against this gap, so the visible
-        # clear width must equal the modelled one.
-        post_centre_offset = channel_half + CHANNEL_EDGE_THICKNESS / 2.0
-        for sign in (-1.0, 1.0):
-            edge_id = 0 if sign < 0 else 1
-            # dims are (along_x, height, left_right): the post must be a TALL
-            # SLIM bar, so the height slot gets WALL_HEIGHT.  Authoring it with
-            # WALL_HEIGHT in the left_right slot made it a horizontal bar 2 m
-            # long and 5 cm tall, which is what rendered as the dark line across
-            # the wall in every view.
+        # unambiguous rather than a colour boundary alone.  Placed from a pure
+        # helper so the test can measure the boxes that are actually built rather
+        # than recompute the arithmetic that placed them; see
+        # channel_edge_post_boxes.
+        for edge_id, (centre, dims) in enumerate(
+            channel_edge_post_boxes(self._channel_width)
+        ):
             self._add_box(
                 f"ChannelEdge_{edge_id}",
-                np.array([WALL_X, WALL_HEIGHT / 2.0, sign * post_centre_offset]),
-                # Match the panel depth so the visible frame never protrudes
-                # beyond the analytic collision geometry along x.
-                np.array([WALL_THICKNESS, WALL_HEIGHT, CHANNEL_EDGE_THICKNESS]),
+                centre,
+                dims,
                 material=(
                     f"ChannelEdgeMaterial_{edge_id}",
                     CHANNEL_EDGE_COLOR,
