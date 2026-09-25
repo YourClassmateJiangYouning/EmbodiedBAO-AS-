@@ -126,10 +126,14 @@ person has.
 
 The eye is at body centre 1.68 m up, pitched 15° down, so the agent's own body is
 **outside the frame**. `look_down` exists for that: one 45° downward glance, which
-is how a person checks their own width. Whether the robot's own mesh actually
-enters that frame is an empirical question, checked on the lab machine with
-`--save_obs` (or `capture_views.py`); if it does not, the agent has no visual
-access to its own body at all and every Level is judged from the opening alone.
+is how a person checks their own width — and it was verified on the lab machine
+rather than assumed. `tools/check_look_down_view.py` captures the glance twice,
+with the robot's prims active and with them deactivated: 84.5% of the frame changes
+when the robot is hidden, so the body is in view; the body region has real
+structure (pixel std 33.5, not a flat close-up blur); and the remaining 15.5% is
+structured room (std 23.3), so there is a scale reference around it. Eyeballed on
+the rendered frame: shoulders and below, much as a person sees looking down.
+Frames land in `look_down_check/`.
 
 The translation step is 0.75 m, approximately an adult walking step. From the
 `x = 0.5` start, ten forward translations reach the obstacle plane at `x = 8.0`,
