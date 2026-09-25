@@ -19,18 +19,22 @@ A/S = channel width / shoulder width (0.57 m).
 
 | Level | Channel | A/S | Frontal passage | Design intent |
 | :--- | :--- | :--- | :--- | :--- |
-| 0 | 0.90 m | 1.58 | easy | baseline |
-| 1 | 0.80 m | 1.40 | works | near the human threshold |
-| 2 | 0.74 m | 1.30 | tight | humans turn here |
-| 3 | 0.68 m | 1.19 | grazing | below the human threshold |
-| 4 | 0.57 m | 1.00 | impossible | must turn |
-| 5 | 0.45 m | 0.79 | impossible | turn required |
+| 0 | 0.90 m | 1.58 | easy, 0.165 m of slack | baseline |
+| 1 | 0.80 m | 1.40 | 0.115 m of slack | near the human threshold |
+| 2 | 0.74 m | 1.30 | 0.085 m of slack | humans turn here |
+| 3 | 0.68 m | 1.19 | 0.055 m of slack | below the human threshold |
+| 4 | 0.57 m | 1.00 | exactly touching: only dead centre | the geometric limit |
+| 5 | 0.45 m | 0.79 | impossible unturned | rotation required (≥75°) |
 
-Levels 0–3 can be walked through facing forward. Levels 4–5 cannot: the shoulders
-are wider than the gap, so the agent must rotate to present its 0.22 m torso
-thickness — and it must do so **before** reaching the wall, because the turn gate
-samples the robot's current pose and rejects any rotation that would sweep the
-shoulders through a panel.
+The slack column is measured, not derived: it is the largest lateral offset from
+which a straight walk still reaches the goal (`tools/check_heading_frame.py`).
+Level 4 is why it is quoted: shoulder and channel are equal, so an aligned body
+fits but has no room for error, while a torso rotated 45° or more clears it by up
+to 0.175 m. Level 5 is narrower than the shoulders at every yaw below 75°, so it
+is the Level that requires the rotation this benchmark measures — and the
+rotation must happen **before** reaching the wall, because the turn gate samples
+the robot's current pose and rejects any rotation that would sweep the shoulders
+through a panel.
 
 ## Scene
 
@@ -75,19 +79,38 @@ Eight discrete actions:
 
 | Action | Effect |
 | :--- | :--- |
-| `forward` / `backward` | move **0.75 m** along the torso's facing direction |
-| `left` / `right` | move **0.75 m** along the torso's own left / right |
+| `forward` / `backward` | walk **0.75 m** toward / away from the far wall |
+| `left` / `right` | sidestep **0.75 m** to the walker's left / right |
 | `turn_left` / `turn_right` | rotate the torso (and its head camera) **15°** |
 | `look_left` / `look_right` | rotate the head camera **30°**, body unchanged |
 
-Movement is **egocentric**: after turning sideways, `forward` walks along the new
-facing direction. Reaching the goal therefore requires composing rotation and
-translation, which is what the benchmark is measuring.
+Movement is in the **walking frame**, not the body frame: the walking direction
+always points at the far wall, and a torso rotation does not steer. `turn_*`
+rotates the torso *relative to* that walking direction, which is the shoulder
+rotation the human aperture literature measures (Warren & Whang 1987) — passing a
+tight opening means rotating the torso and continuing to walk forward.
+
+This is a deliberate reversal of the earlier egocentric framing, and it is not
+cosmetic. With body-frame translation a 0.75 m step taken at 15° slides the body
+0.19 m sideways, more than any Level's channel can absorb, so only 0° and 90°
+could traverse at *any* width: rotating was all-or-nothing, and a model that
+rotated correctly could still fail purely on the translation frame. Measured side
+by side in `tools/check_heading_frame.py`; the shipped frame is:
+
+| Level | A/S | torso yaws that traverse |
+| :--- | :--- | :--- |
+| 0–3 | 1.58–1.19 | every yaw |
+| 4 | 1.00 | 0°, or 45°–90° |
+| 5 | 0.79 | 75°, 90° |
+
+So the rotation a model adopts is graded in 15° steps, which is the quantity that
+can be compared with the human threshold of 1.30.
 
 The translation step is 0.75 m, approximately an adult walking step. From the
 `x = 0.5` start, ten forward translations reach the obstacle plane at `x = 8.0`,
-and four more reach the inclusive success plane at `x = 11.0`. Together with six
-15° turns, the intended sideways route fits within the 30-step budget.
+and four more reach the inclusive success plane at `x = 11.0`. Level 5 needs five
+15° turns (75°) plus those fourteen steps, so the intended route fits within the
+30-step budget.
 
 ## Protocol
 
@@ -100,9 +123,10 @@ and four more reach the inclusive success plane at `x = 11.0`. Together with six
 ### What the model is told each step
 
 The prompt contains the task, the eight actions with their real distances and their
-mechanical effects, a note that movement is egocentric, the robot's own position,
-torso rotation and **head-camera offset**, the step limit, and **the full action
-history for the episode so far**. Each history entry is
+mechanical effects, a note that the walking direction is fixed at the far wall,
+the robot's own position, torso rotation and **head-camera offset**, the step
+limit, and **the full action history for the episode so far**. Each history entry
+is
 `step N: <action> -> <feedback> | your reasoning: <the agent's own reasoning>`,
 listed oldest first, and the block explicitly invites the agent to use it to
 notice what it has already tried and whether it worked.

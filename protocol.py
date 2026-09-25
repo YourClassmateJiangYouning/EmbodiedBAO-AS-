@@ -17,6 +17,13 @@ about.  The prompt deliberately omits:
 
 This is what makes the ladder a measurement of the agent's own body-scale
 affordance perception rather than a reading-comprehension test.
+
+The prompt does state the *walking frame*: forward walks toward the far wall and
+a torso rotation does not steer.  That is not a hint about the answer -- it is
+the definition of the action space, and without it the agent would have to guess
+which of two conventions the words use.  What stays hidden is how wide the
+opening is and how wide the body is, which is exactly what the agent must judge
+from the image.
 """
 
 from __future__ import annotations
@@ -26,6 +33,22 @@ from typing import Any, Dict, List, Optional, Sequence
 from environment import ACTIONS, MOVE_STEP
 
 # ---------------------------------------------------------------------------
+# Protocol version
+#
+# BUMP THIS whenever the prompt or the action semantics change.  It is appended
+# to the run tag by main.effective_tag and by run_all_models.sh, so results from
+# different protocols can never share a directory: without it, --resume would
+# find the previous protocol's episodes, count them as done, and quietly mix two
+# experiments in one dataset.
+#
+# v4-walkframe: forward/backward/left/right translate in the WALKING frame -- at
+#     the far wall, whatever the torso is doing -- and turn_left/turn_right
+#     rotate the torso relative to that direction.  Every earlier run used
+#     body-frame translation, where a turn also redirected the walk.
+# ---------------------------------------------------------------------------
+PROTOCOL_TAG = "v4-walkframe"
+
+# ---------------------------------------------------------------------------
 # Action space
 # ---------------------------------------------------------------------------
 
@@ -33,9 +56,6 @@ from environment import ACTIONS, MOVE_STEP
 # hard-coded as "move forward 5cm" while MOVE_STEP had risen to 0.20 m, so the
 # prompt told the agent it moved 5 cm when it moved 20 -- a four-fold error in
 # exactly the quantity this benchmark asks the agent to reason about.
-_STEP_CM = MOVE_STEP * 100.0
-
-
 def _format_step(centimetres: float) -> str:
     """Render a step length without a trailing .0 (5 not 5.0, but 7.5 stays)."""
     if abs(centimetres - round(centimetres)) < 1e-9:
@@ -43,86 +63,104 @@ def _format_step(centimetres: float) -> str:
     return f"{centimetres:g}"
 
 
-_STEP_TEXT = _format_step(_STEP_CM)
-
-ACTION_DESCRIPTIONS: Dict[str, str] = {
-    "forward": f"move forward {_STEP_TEXT}cm in the direction your torso faces",
-    "backward": f"move backward {_STEP_TEXT}cm, opposite to the way your torso faces",
+# One template per action, with {step} for the distance.  Both prompt paths are
+# rendered from these, because the alternative -- a second, terser table for the
+# move_step path -- had silently dropped the semantics: the runner passes the
+# environment's move_step (experiments.py), so the models were only ever told
+# "move forward 75cm" and never which frame forward was in.
+ACTION_TEMPLATES: Dict[str, str] = {
+    "forward": (
+        "walk {step}cm straight ahead. Your walking direction always points at "
+        "the far wall; turning your torso does not change where forward takes "
+        "you"
+    ),
+    "backward": (
+        "walk {step}cm backwards, away from the far wall: the same walking "
+        "direction as forward, reversed"
+    ),
     "left": (
-        f"move {_STEP_TEXT}cm straight to your own left, without changing "
-        f"which way you face"
+        "sidestep {step}cm to your left, without changing your walking "
+        "direction"
     ),
     "right": (
-        f"move {_STEP_TEXT}cm straight to your own right, without changing "
-        f"which way you face"
+        "sidestep {step}cm to your right, without changing your walking "
+        "direction"
     ),
     "turn_left": (
-        "rotate your torso 15 degrees to the left. Your head camera rotates "
-        "with it, so the view turns 15 degrees left as well. This changes which "
-        "way you face, and therefore which way forward moves you."
+        "rotate your torso 15 degrees to the left. This does NOT change your "
+        "walking direction, so forward still takes you toward the far wall. It "
+        "changes how wide your body is across the opening, and your head camera "
+        "turns with your torso. Rotating needs room, so you cannot turn once "
+        "your shoulders are inside the opening"
     ),
     "turn_right": (
-        "rotate your torso 15 degrees to the right. Your head camera rotates "
-        "with it, so the view turns 15 degrees right as well. This changes which "
-        "way you face, and therefore which way forward moves you."
+        "rotate your torso 15 degrees to the right. This does NOT change your "
+        "walking direction, so forward still takes you toward the far wall. It "
+        "changes how wide your body is across the opening, and your head camera "
+        "turns with your torso. Rotating needs room, so you cannot turn once "
+        "your shoulders are inside the opening"
     ),
     "look_left": (
-        "rotate only your head camera 30 degrees to the left. Your body stays "
-        "exactly where it is and keeps facing the same way, and forward still "
-        "moves you in the same direction. Use this to inspect the scene, not to "
-        "travel."
+        "rotate only your head camera 30 degrees to the left. Your body and your "
+        "walking direction are unaffected. Use this to inspect the scene, not to "
+        "travel"
     ),
     "look_right": (
-        "rotate only your head camera 30 degrees to the right. Your body stays "
-        "exactly where it is and keeps facing the same way, and forward still "
-        "moves you in the same direction. Use this to inspect the scene, not to "
-        "travel."
+        "rotate only your head camera 30 degrees to the right. Your body and your "
+        "walking direction are unaffected. Use this to inspect the scene, not to "
+        "travel"
     ),
 }
 
-# ``forward``/``backward``/``left``/``right`` are egocentric: they translate
-# the robot along its own current facing direction, exactly like a human
-# stepping.  This has to be stated because it is not inferable from the action
-# names alone, and it is the same for every Level.
-#
-# The two families are spelled out separately because conflating them is easy
-# and costly.  ``turn_*`` changes the body and therefore the walking direction;
-# ``look_*`` changes only the view.  The head offset left by ``look_*`` also
-# PERSISTS rather than snapping back, and it rides along when the body turns --
-# stated explicitly because it is not visible in any single frame, and a run
-# that made three look_left calls while believing it faced forward would be
-# judging its alignment from a view rotated 90 degrees.
-ACTION_FRAME_NOTE = (
-    "Movement is egocentric: forward/backward move along the direction your "
-    "torso currently faces, and left/right move along your own left/right.\n"
-    "turn_left/turn_right rotate your whole body; your head camera turns with "
-    "it, so both your facing and your view change together.\n"
-    "look_left/look_right rotate only your head camera. Your body and your "
-    "walking direction are unaffected.\n"
-    "A head-camera offset left by look_left/look_right persists, and it stays "
-    "offset by the same amount when you later turn your body. Use the opposite "
-    "look action if you want to face the same way as your body again."
-)
 
-ACTION_OPTIONS_STRING: str = "\n".join(
-    f'{{"action": "{name}"}} - {ACTION_DESCRIPTIONS[name]}' for name in ACTIONS
-)
+def action_descriptions(move_step: float = MOVE_STEP) -> Dict[str, str]:
+    """Render every action description for the environment's actual step."""
+    step_text = _format_step(float(move_step) * 100.0)
+    return {
+        name: ACTION_TEMPLATES[name].format(step=step_text) for name in ACTIONS
+    }
+
+
+ACTION_DESCRIPTIONS: Dict[str, str] = action_descriptions(MOVE_STEP)
 
 
 def action_options_string(move_step: float = MOVE_STEP) -> str:
-    """Render action descriptions for the environment's actual move step."""
-    step_text = _format_step(float(move_step) * 100.0)
-    descriptions = dict(ACTION_DESCRIPTIONS)
-    for name, direction in (
-        ("forward", "forward"),
-        ("backward", "backward"),
-        ("left", "left"),
-        ("right", "right"),
-    ):
-        descriptions[name] = f"move {direction} {step_text}cm"
+    """The action menu as it is shown to the model."""
+    descriptions = action_descriptions(move_step)
     return "\n".join(
         f'{{"action": "{name}"}} - {descriptions[name]}' for name in ACTIONS
     )
+
+
+ACTION_OPTIONS_STRING: str = action_options_string(MOVE_STEP)
+
+# The walking frame has to be stated because it is not inferable from the action
+# names: ``forward`` walks toward the far wall, NOT along the torso.  A reader
+# who assumed the body frame would conclude that turning steers, which it no
+# longer does.
+#
+# The three families are spelled out separately because conflating them is easy
+# and costly.  ``turn_*`` changes the torso and therefore the body's width across
+# the opening; ``look_*`` changes only the view.  The head offset left by
+# ``look_*`` also PERSISTS rather than snapping back, and it rides along when the
+# torso turns -- stated explicitly because it is not visible in any single frame,
+# and a run that made three look_left calls while believing it faced forward
+# would be judging its alignment from a view rotated 90 degrees.
+ACTION_FRAME_NOTE = (
+    "Your walking direction is fixed: it always points at the far wall. "
+    "forward/backward/left/right are defined relative to that walking direction, "
+    "so they behave the same way however your torso is turned.\n"
+    "turn_left/turn_right rotate your torso 15 degrees relative to that walking "
+    "direction. Your head camera turns with your torso, so your view rotates, "
+    "but the direction you walk does not change. Turning changes how your body "
+    "is oriented; it does not steer you.\n"
+    "look_left/look_right rotate only your head camera. Your torso and your "
+    "walking direction are unaffected.\n"
+    "A head-camera offset left by look_left/look_right persists, and it stays "
+    "offset by the same amount when you later turn your torso. Use the opposite "
+    "look action if you want to aim your camera the same way as your torso "
+    "again."
+)
 
 # Compact comma-separated list used by the JSON response instruction.
 ACTION_NAMES_TEXT: str = ", ".join(ACTIONS)

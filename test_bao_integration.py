@@ -42,9 +42,9 @@ from environment import (
     TURN_STEP_DEG,
     WALL_X,
     _check_wall_collision,
-    _rotate_xz,
     _translation_path_is_clear,
     _turn_path_is_clear,
+    action_delta,
     a_s_ratio,
 )
 from experiments import (
@@ -152,15 +152,10 @@ class FakeBAOEnv:
         yaw_rad = np.radians(self._yaw)
 
         if action in ("forward", "backward", "left", "right"):
-            if action == "forward":
-                direction = _rotate_xz(np.array([1.0, 0.0, 0.0]), yaw_rad)
-            elif action == "backward":
-                direction = _rotate_xz(np.array([-1.0, 0.0, 0.0]), yaw_rad)
-            elif action == "right":
-                direction = _rotate_xz(np.array([0.0, 0.0, 1.0]), yaw_rad)
-            else:
-                direction = _rotate_xz(np.array([0.0, 0.0, -1.0]), yaw_rad)
-            candidate = self._position + direction * MOVE_STEP
+            # The shipped walking frame, not a re-derived one: this fake must
+            # mirror _apply_action or it silently validates the wrong protocol.
+            direction = action_delta(action, MOVE_STEP)
+            candidate = self._position + direction
             collision = _translation_path_is_clear(
                 self._position, candidate, yaw_rad, self._channel_width
             )
@@ -221,25 +216,24 @@ class ScriptedAgent:
         if self.policy == "frontal":
             action = "forward"
         elif self.policy == "sideways":
-            # Route, entirely in the egocentric action vocabulary.  The phase
-            # counter is essential: a stateless rule like "turn until yaw is 90"
-            # oscillates forever once it is one step past the target.
-            #   0. turn_left x6  -> torso faces -z, so the wall is off the
-            #      robot's right-hand side
-            #   1. "right"       -> drives the body along +x toward the wall and,
-            #      because the torso is now sideways, straight through the
-            #      channel opening and on to the goal on the far side
+            # Route, using rotation to change the body's width, not to steer.
+            # The phase counter is essential: a stateless rule like "turn until
+            # yaw is 90" oscillates forever once it is one step past the target.
+            #   0. turn_left x6  -> the torso is 90 degrees to the walking
+            #      direction, so the body is only 0.22 m wide across the opening
+            #   1. "forward"     -> walks at the far wall; the direction is fixed,
+            #      so the rotated body goes through the channel sideways
             #
             # The agent never needs to rotate back: the channel is an opening
-            # through the wall, so once the body is past it the straight slide
-            # continues to x >= 11.0.  Rotating back mid-channel is what the gate
-            # correctly forbids, because the shoulders would sweep the panel.
+            # through the wall, so once the body is past it the walk continues to
+            # x >= 11.0.  Rotating back mid-channel is what the gate correctly
+            # forbids, because the shoulders would sweep the panel.
             if self.phase == 0:
                 if yaw >= 90.0 - 1e-6:
                     self.phase = 1
                 else:
                     return self._reply("turn_left")
-            action = "right"
+            action = "forward"
         elif self.policy == "random_walk":
             action = "forward" if (x + z) % 2 < 1 else "turn_left"
         elif self.policy == "look-then-forward":
@@ -787,12 +781,28 @@ def test_analysis_discovers_tagged_runs() -> None:
 
 
 def test_prompt_uses_configured_move_step() -> None:
-    from protocol import build_prompt
+    from protocol import ACTION_DESCRIPTIONS, action_options_string, build_prompt
 
     prompt = build_prompt(state={}, move_step=0.6)
-    check("move forward 60cm" in prompt, "prompt ignored configured move step")
-    check("move forward 75cm" not in prompt, "prompt leaked the default move step")
-    print("[ok] prompt uses the environment's configured move step")
+    check("60cm" in prompt, "prompt ignored configured move step")
+    check("75cm" not in prompt, "prompt leaked the default move step")
+    # The configured step must not cost the prompt its semantics.  The move_step
+    # path used to render a bare "move forward 60cm", so the models were never
+    # told which frame the movement was in -- the runner always passes move_step.
+    check(
+        "walking direction" in prompt,
+        "prompt lost the walking-frame semantics on the configured-step path",
+    )
+    check(
+        ACTION_DESCRIPTIONS["forward"].replace("75cm", "60cm") in prompt
+        or "walk 60cm straight ahead" in prompt,
+        "prompt did not carry the forward description on the configured-step path",
+    )
+    check(
+        action_options_string(0.6) in prompt,
+        "the prompt's action menu is not the rendered one",
+    )
+    print("[ok] prompt uses the environment's configured move step, semantics intact")
 
 
 def test_invalid_action_is_recorded() -> None:
@@ -1121,13 +1131,20 @@ def test_cli_flags_reach_the_runner() -> None:
         "save_obs=args.save_obs",
         "max_steps=args.max_steps",
         "episodes_per_level=args.episodes",
-        "tag=args.tag",
+        "tag=effective_tag(args.model, args.tag)",
         "model=args.model",
     ):
         check(
             forwarded in source,
             f"run_experiment does not forward {forwarded!r} to the runner",
         )
+    # The tag must go through effective_tag, which is what keeps a protocol
+    # change from resuming onto the previous protocol's episodes.
+    check(
+        "tag=args.tag" not in source,
+        "run_experiment passes the raw tag; the protocol version would be lost "
+        "and --resume could mix two protocols",
+    )
 
     # Every flag parse_args declares must be referenced somewhere in main.py;
     # an unreferenced flag is a flag that does nothing.  Extract the flag

@@ -284,6 +284,50 @@ def _right_vector(yaw_rad: float) -> np.ndarray:
     return _rotate_xz(np.array([0.0, 0.0, 1.0], dtype=float), yaw_rad)
 
 
+# --- the walking frame ------------------------------------------------------
+#
+# The task is a walk through an opening toward the far wall, so the WALKING
+# direction is fixed: +x, the direction the goal lies in.  ``turn_left`` and
+# ``turn_right`` rotate the torso relative to that walking direction, which is
+# the shoulder rotation studied in the human aperture literature (Warren &
+# Whang 1987) -- not a steering command.
+#
+# The distinction is not cosmetic.  With body-frame translation a 0.75 m step
+# taken at 15 degrees slides the body 0.19 m sideways, more than any Level's
+# channel can absorb, so ONLY 0 and 90 degrees could traverse at ANY width, at
+# every Level.  Rotating was therefore all-or-nothing, a model that turned
+# correctly could still fail purely on the translation frame, and "did it turn
+# enough?" could not be read off the trajectory.  Measured before and after in
+# tools/check_heading_frame.py.
+#
+# The torso yaw still governs the collision footprint, so rotating remains the
+# way to make a narrow channel passable; it simply no longer changes where
+# ``forward`` goes.
+HEADING_FORWARD = np.array([1.0, 0.0, 0.0], dtype=float)
+HEADING_RIGHT = np.array([0.0, 0.0, 1.0], dtype=float)
+
+_HEADING_DELTAS: Dict[str, np.ndarray] = {
+    "forward": HEADING_FORWARD,
+    "backward": -HEADING_FORWARD,
+    "right": HEADING_RIGHT,
+    "left": -HEADING_RIGHT,
+}
+
+
+def action_delta(action: str, move_step: float = MOVE_STEP) -> Optional[np.ndarray]:
+    """Translation delta for a locomotion action, in the walking frame.
+
+    Module-level and pure so that tests and probes can exercise the real action
+    semantics without an Isaac Sim instance: the frame is a property of the
+    protocol, and re-deriving it in a test is how a test starts agreeing with a
+    bug.  Returns None for actions that do not translate.
+    """
+    unit = _HEADING_DELTAS.get(str(action).strip().lower())
+    if unit is None:
+        return None
+    return unit * float(move_step)
+
+
 def _user_to_isaac_pos(pos: np.ndarray) -> np.ndarray:
     """Map a user-frame position (y up) to Isaac Sim (z up): swap y and z."""
     p = np.asarray(pos, dtype=float)
@@ -1980,22 +2024,19 @@ class BAOEnv:
 
     def _apply_action(self, action: str) -> Tuple[bool, str, Optional[Dict[str, Any]]]:
         root = self._root_position()
-        yaw = np.radians(self._robot_yaw)
 
         if action in ("forward", "backward", "left", "right"):
-            # Egocentric translations: forward/backward follow the robot's
-            # facing direction; left/right are relative to the robot.
-            if action == "forward":
-                delta = _forward_vector(yaw) * self._move_step
-            elif action == "backward":
-                delta = _forward_vector(yaw) * -self._move_step
-            elif action == "right":
-                delta = _right_vector(yaw) * self._move_step
-            else:
-                delta = _right_vector(yaw) * -self._move_step
+            # Translation is in the walking frame (see action_delta): forward
+            # always advances toward the far wall, whatever the torso is doing.
+            # The torso yaw is still passed to the gate because the footprint --
+            # and therefore whether the body fits the opening -- depends on it.
+            delta = action_delta(action, self._move_step)
             target = root + delta
             collision = _translation_path_is_clear(
-                root, target, yaw, channel_width=self._channel_width
+                root,
+                target,
+                np.radians(self._robot_yaw),
+                channel_width=self._channel_width,
             )
             if collision is not None:
                 return (

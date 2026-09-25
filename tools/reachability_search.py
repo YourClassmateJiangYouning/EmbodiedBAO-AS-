@@ -81,15 +81,9 @@ def main() -> int:
                 continue
 
             yaw_rad = math.radians(yaw)
-            fwd = np.array([math.cos(yaw_rad), 0.0, -math.sin(yaw_rad)])
-            right = np.array(
-                [math.sin(yaw_rad), 0.0, math.cos(yaw_rad)]
-            )
             moves = {
-                "forward": fwd * step,
-                "backward": -fwd * step,
-                "left": -right * step,
-                "right": right * step,
+                name: env.action_delta(name, step)
+                for name in ("forward", "backward", "left", "right")
             }
             pos = np.array([x, 0.0, z])
 

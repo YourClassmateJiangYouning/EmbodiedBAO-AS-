@@ -43,6 +43,7 @@ def main() -> int:
         WALL_THICKNESS,
         WALL_X,
         _check_wall_collision,
+        action_delta,
     )
 
     bt = ROBOT_TORSO_THICKNESS / 2.0 + BODY_CLEARANCE
@@ -61,12 +62,11 @@ def main() -> int:
         """Furthest root x on a fixed-yaw, collision-free action-grid path."""
         position = np.array([start_x, 0.0, 0.0])
         yaw = math.radians(yaw_deg)
-        forward = np.array([math.cos(yaw), 0.0, -math.sin(yaw)])
-        right = np.array([math.sin(yaw), 0.0, math.cos(yaw)])
-        # Choose the real egocentric translation axis that advances most in +x.
-        direction = max((forward, -forward, right, -right), key=lambda v: float(v[0]))
+        # The shipped walking frame: forward is toward the far wall whatever the
+        # torso is doing, so the advancing action is simply "forward".
+        direction = action_delta("forward", MOVE_STEP)
         for _ in range(30):
-            target = position + direction * MOVE_STEP
+            target = position + direction
             from environment import _translation_path_is_clear
             if _translation_path_is_clear(position, target, yaw, width) is not None:
                 break

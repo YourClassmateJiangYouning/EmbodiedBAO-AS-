@@ -33,10 +33,9 @@ from environment import (  # noqa: E402
     MOVE_STEP,
     SUCCESS_X,
     TURN_STEP_DEG,
-    _forward_vector,
-    _right_vector,
     _translation_path_is_clear,
     _turn_path_is_clear,
+    action_delta,
 )
 
 OLD_INFLATION = 0.002
@@ -73,14 +72,7 @@ def gate_blocks(
     if kind == "turn":
         return _turn_path_is_clear(pos, before, after, width) is not None
     yaw_rad = np.radians(yaw)
-    if action == "forward":
-        delta = _forward_vector(yaw_rad) * MOVE_STEP
-    elif action == "backward":
-        delta = _forward_vector(yaw_rad) * -MOVE_STEP
-    elif action == "right":
-        delta = _right_vector(yaw_rad) * MOVE_STEP
-    else:
-        delta = _right_vector(yaw_rad) * -MOVE_STEP
+    delta = action_delta(action, MOVE_STEP)
     return _translation_path_is_clear(pos, pos + delta, yaw_rad, width) is not None
 
 

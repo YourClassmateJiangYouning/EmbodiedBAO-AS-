@@ -7,8 +7,10 @@ which turned dots into dashes, so `gemini-2.5-pro` became `gemini-2-5-pro` in a
 sweep but stayed `gemini-2.5-pro` in a manual run -- two directories for one
 model, and --resume unable to find the other's checkpoint.
 
-This extracts the same helper the script calls and compares it against
-persistence.sanitize_tag for every model in the roster.
+The tag also carries the protocol version, so a run under a changed prompt or
+action semantics cannot resume onto the previous protocol's episodes.  This
+script therefore compares the shell's tag against main.effective_tag, i.e. the
+value the runner actually uses, rather than against sanitize_tag alone.
 
     python tools/check_sweep_tags.py
 """
@@ -25,22 +27,25 @@ sys.path.insert(0, ROOT)
 
 
 def main() -> int:
-    from persistence import sanitize_tag
+    import main as entry
+    from protocol import PROTOCOL_TAG
 
     roster = json.load(open(os.path.join(ROOT, "models.json"), encoding="utf-8"))
-    models = [entry["runner"] for entry in roster["models"]]
+    models = [entry_["runner"] for entry_ in roster["models"]]
     # Names that exercise the characters the two implementations disagreed on.
     models += ["gemini-2.5-pro", "deepseek-v4.1-flash", "a/b", "x:y", "", ".."]
 
     script = (
         "import sys\n"
         'sys.path.insert(0, r"%s")\n'
+        "from protocol import PROTOCOL_TAG\n"
         "from persistence import sanitize_tag\n"
-        "print(sanitize_tag(sys.argv[1]))\n" % ROOT
+        'print(f"{sanitize_tag(sys.argv[1])}-{PROTOCOL_TAG}")\n' % ROOT
     )
 
-    print("%-36s %-30s %s" % ("model", "sweep tag", "sanitize_tag"))
-    print("-" * 96)
+    print(f"protocol tag: {PROTOCOL_TAG}")
+    print("%-36s %-46s %s" % ("model", "sweep tag", "main.effective_tag"))
+    print("-" * 112)
     mismatches = 0
     seen: dict = {}
     collisions = []
@@ -50,7 +55,7 @@ def main() -> int:
             capture_output=True,
             text=True,
         ).stdout.strip()
-        want = sanitize_tag(model)
+        want = entry.effective_tag(model)
         flag = ""
         if got != want:
             mismatches += 1
@@ -58,7 +63,7 @@ def main() -> int:
         if got in seen and seen[got] != model:
             collisions.append((got, seen[got], model))
         seen[got] = model
-        print("%-36s %-30s %s%s" % (model, got, want, flag))
+        print("%-36s %-46s %s%s" % (model, got, want, flag))
 
     print()
     print(f"mismatches: {mismatches}")

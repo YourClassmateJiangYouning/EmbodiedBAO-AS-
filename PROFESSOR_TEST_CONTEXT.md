@@ -25,12 +25,16 @@ The distance arithmetic is intentional:
 - `(8.0 - 0.5) / 0.75 = 10` forward translations from the start to the obstacle plane;
 - `(11.0 - 8.0) / 0.75 = 4` more forward translations from the wall to the inclusive goal;
 - `(16.0 - 11.0) / 0.75 = 6.67`, approximately seven steps of unused run-out behind the goal;
-- the conservative sideways route is six 15-degree turns plus fourteen translations,
-  or `20/30` actions.
+- the narrowest route is five 15-degree turns (75 degrees) plus fourteen
+  translations, or `19/30` actions.
 
-“Forward translations” above describe longitudinal distance only. Actions remain
-egocentric: after a 90-degree body turn, the scripted route uses the robot's
-`right` action to translate along world `+x` while presenting its narrow profile.
+Actions are in the **walking frame**: the walking direction always points at the
+far wall, so `forward` advances along world `+x` whether the torso is turned or
+not, and `turn_left`/`turn_right` rotate the torso relative to that direction. The
+turn does not steer; it changes how much of the opening the body occupies, which
+is the shoulder rotation the human aperture literature measures. Measured
+consequences per Level, and the side-by-side comparison with the earlier
+body-frame convention, are in `tools/check_heading_frame.py`.
 
 ## Geometry that must not change
 

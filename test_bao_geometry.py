@@ -31,6 +31,7 @@ Run with a plain Python interpreter:
 from __future__ import annotations
 
 import math
+import inspect
 import os
 import sys
 from typing import List, Optional, Tuple
@@ -55,7 +56,7 @@ from environment import (
     _panel_boxes,
     _translation_path_is_clear,
     _robot_body_aabb,
-    _rotate_xz,
+    action_delta,
     a_s_ratio,
     level_channel_width,
 )
@@ -75,7 +76,6 @@ from protocol import (
 EXPECTED_A_S = {0: 1.58, 1: 1.40, 2: 1.30, 3: 1.19, 4: 1.00, 5: 0.79}
 
 ROBOT_START = ROBOT_START_POS.copy()
-SIDEWAYS_YAW_DEG = 90.0
 
 
 class Failure(AssertionError):
@@ -370,80 +370,162 @@ def test_frontal_passability_matches_the_ladder() -> None:
 # ---------------------------------------------------------------------------
 
 
-def simulate_sideways_route(channel_width: float) -> Tuple[List[np.ndarray], bool]:
-    """Rotate 90 degrees in free space, then close the gap and cross.
+def simulate_rotation_route(
+    channel_width: float, turns: int
+) -> Tuple[List[np.ndarray], bool]:
+    """Rotate ``turns`` steps in free space, then walk at the wall.
 
-    Mirrors the route the model is expected to discover with the egocentric
-    action set: ``turn_left`` x6 (so the right-hand side faces the channel),
-    then alternate between pushing toward the wall and sliding sideways until
-    the body centre is past x >= 11.0 m.  Returns the (x, z) trace and whether
-    the body ever clipped a panel.
+    Uses the shipped action semantics (``action_delta``) and the shipped gate
+    rather than a re-derived frame, so this cannot agree with a bug in
+    ``_apply_action``.  Returns the (x, z) trace and whether the body ever
+    clipped a panel.
     """
     position = ROBOT_START.copy()
     yaw = 0.0
     trace: List[np.ndarray] = []
 
-    # Phase 1: rotate 90 degrees in the free space in front of the wall.
-    for _ in range(int(round(SIDEWAYS_YAW_DEG / TURN_STEP_DEG))):
-        yaw += TURN_STEP_DEG
+    # Phase 1: rotate the torso in the free space in front of the wall.  Rotating
+    # does not steer, so this is the whole of phase 1.
+    yaw += turns * TURN_STEP_DEG
     yaw_rad = math.radians(yaw)
-    if _check_wall_collision(position, yaw_rad, channel_width) is not None:
-        return trace, False
 
-    # Egocentric axes at this yaw.  After +90 degrees the torso faces -z, so
-    # "forward" no longer helps; the wall is off the robot's right-hand side.
-    ahead = _rotate_xz(np.array([1.0, 0.0, 0.0]), yaw_rad)
-    right = _rotate_xz(np.array([0.0, 0.0, 1.0]), yaw_rad)
-    check(
-        abs(ahead[0]) < 1e-9 and ahead[2] < 0,
-        f"expected +90 degree yaw to face -z, got {ahead}",
-    )
-    check(
-        right[0] > 0,
-        f"expected +90 degree yaw to put the wall on the right, got {right}",
-    )
-
+    # Phase 2: walk toward the far wall until past the success plane.
+    delta = action_delta("forward", MOVE_STEP)
     clean = True
     for _ in range(80):
         if position[0] >= SUCCESS_X:
             break
-        moved = False
-        # Prefer sliding toward the wall in x (the "right" action at this yaw),
-        # and use "forward" once the body is clear of the wall plane.
-        for direction in (right, ahead):
-            candidate = position + direction * MOVE_STEP
-            if (
-                _check_wall_collision(candidate, yaw_rad, channel_width)
-                is not None
-            ):
-                continue
-            position = candidate
-            trace.append(position[[0, 2]].copy())
-            moved = True
-            break
-        if not moved:
+        candidate = position + delta
+        if _translation_path_is_clear(position, candidate, yaw_rad, channel_width):
             clean = False
             break
+        position = candidate
+        trace.append(position[[0, 2]].copy())
     return trace, clean
 
 
-def test_sideways_route_reaches_goal() -> None:
+def test_rotation_route_reaches_goal() -> None:
+    """Every Level must be passable by rotating enough and then walking.
+
+    Level 4 (A/S = 1.00) is passable both ways: straight (exactly, since the
+    shoulder and the channel are equal) and turned.  Level 5 is only passable
+    turned, so it is the Level that *requires* the rotation the benchmark is
+    measuring.
+    """
+    expected_turns = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 5}
     for level, width in sorted(LEVEL_CHANNEL_WIDTHS.items()):
-        trace, clear = simulate_sideways_route(width)
-        check(clear, f"level {level}: sideways route clipped a panel")
+        turns = expected_turns[level]
+        trace, clear = simulate_rotation_route(width, turns)
+        check(clear, f"level {level}: the {turns}-turn route clipped a panel")
         check(
             trace and trace[-1][0] >= SUCCESS_X,
-            f"level {level}: sideways route ended at x={trace[-1][0] if trace else 'n/a'}, "
-            f"never reached x >= {SUCCESS_X}",
+            f"level {level}: the {turns}-turn route ended at "
+            f"x={trace[-1][0] if trace else 'n/a'}, never reached x >= {SUCCESS_X}",
         )
-        # The path must stay inside the channel it is passing through.
         max_abs_z = max(abs(point[1]) for point in trace)
         check(
             max_abs_z <= width / 2.0 + 1e-9,
-            f"level {level}: sideways route wandered to |z|={max_abs_z:.3f}, "
-            f"outside the {width:.2f} m channel",
+            f"level {level}: route wandered to |z|={max_abs_z:.3f}, outside the "
+            f"{width:.2f} m channel",
         )
-    print("[ok] the sideways route reaches x >= 11.0 m at every Level")
+
+    # Level 5 must actually be impossible without rotating, or "it rotated" would
+    # not be a meaningful thing to measure there.
+    trace, clear = simulate_rotation_route(LEVEL_CHANNEL_WIDTHS[5], 0)
+    check(
+        not trace or trace[-1][0] < SUCCESS_X,
+        "Level 5 was passable without rotating, so a rotation is not required",
+    )
+    # And 60 degrees must not be enough while 75 is: that gap is what makes the
+    # rotation a graded quantity rather than a switch.
+    trace, clear = simulate_rotation_route(LEVEL_CHANNEL_WIDTHS[5], 4)
+    check(
+        not trace or trace[-1][0] < SUCCESS_X,
+        "Level 5 passed at 60 degrees, so the measured 75 degree floor is wrong",
+    )
+    trace, clear = simulate_rotation_route(LEVEL_CHANNEL_WIDTHS[5], 5)
+    check(
+        clear and trace and trace[-1][0] >= SUCCESS_X,
+        "Level 5 did not pass at 75 degrees",
+    )
+    print("[ok] rotating then walking forward reaches x >= 11.0 m at every Level")
+
+
+def test_walking_frame_is_fixed() -> None:
+    """forward must walk at the wall whatever the torso is doing.
+
+    This is the protocol's central claim now, and it is the one that decides what
+    the ladder measures: if a turn redirected the walk, then only 0 and 90
+    degrees could traverse at any width (measured in tools/check_heading_frame.py)
+    and "did it turn enough?" could not be read off the trajectory.  Asserted
+    against the shipped ``action_delta`` rather than a re-derived frame.
+    """
+    # action_delta takes no orientation at all: the frame is fixed by
+    # construction, so there is no code path by which a turn could steer.
+    parameters = list(inspect.signature(action_delta).parameters)
+    check(
+        parameters == ["action", "move_step"],
+        f"action_delta gained parameters {parameters}; if an orientation reached "
+        f"it, the walking frame would depend on the torso again",
+    )
+    forward = action_delta("forward", MOVE_STEP)
+    check(
+        forward is not None
+        and abs(forward[0] - MOVE_STEP) < 1e-12
+        and abs(forward[2]) < 1e-12,
+        f"forward moved {forward}, not straight at the far wall",
+    )
+    check(
+        np.allclose(action_delta("backward", MOVE_STEP), [-MOVE_STEP, 0, 0]),
+        "backward is not the reverse of the walking direction",
+    )
+    check(
+        np.allclose(action_delta("right", MOVE_STEP), [0, 0, MOVE_STEP]),
+        "right is not the walker's right-hand side",
+    )
+    check(
+        np.allclose(action_delta("left", MOVE_STEP), [0, 0, -MOVE_STEP]),
+        "left is not the walker's left-hand side",
+    )
+    for action in ("turn_left", "turn_right", "look_left", "look_right", "nonsense"):
+        check(
+            action_delta(action, MOVE_STEP) is None,
+            f"{action} must not translate",
+        )
+    print("[ok] the walking frame is fixed: rotation does not steer")
+
+
+def test_run_tag_carries_the_protocol_version() -> None:
+    """A protocol change must not be able to resume onto the old data.
+
+    The tag keys both the results tree and the resume checkpoint, so if it were
+    only the model name, a resumed run under changed prompt or action semantics
+    would find the previous protocol's episodes, count them as done and silently
+    mix two experiments.  The version is therefore part of the tag, whether the
+    caller supplies one or not, and run_all_models.sh composes it the same way
+    (tools/check_sweep_tags.py compares the two directly).
+    """
+    from main import effective_tag
+    from protocol import PROTOCOL_TAG
+
+    check(bool(PROTOCOL_TAG), "PROTOCOL_TAG is empty: the tag cannot distinguish protocols")
+    for model, tag in (
+        ("gpt-4o", ""),
+        ("gemini-2.5-pro", ""),
+        ("gpt-4o", "custom"),
+        ("a/b", ""),
+    ):
+        produced = effective_tag(model, tag)
+        check(
+            produced.endswith("-" + PROTOCOL_TAG),
+            f"effective_tag({model!r}, {tag!r}) = {produced!r} does not carry "
+            f"{PROTOCOL_TAG!r}",
+        )
+        check(
+            "/" not in produced and "\\" not in produced and " " not in produced,
+            f"{produced!r} is not a safe single path component",
+        )
+    print("[ok] the run tag carries the protocol version")
 
 
 def test_frontal_route_only_where_feasible() -> None:
@@ -784,23 +866,48 @@ def test_action_descriptions_match_the_real_step() -> None:
             f"({stated_cm}cm); the agent would misjudge its own travel",
         )
 
-    # And it must actually appear in the prompt the agent receives.
-    from protocol import ACTION_OPTIONS_STRING, build_prompt
+    # And it must actually appear in the prompt the agent receives.  Asserting
+    # the whole description, not just the number: build_prompt has two paths and
+    # the move_step one used to replace the descriptions with a bare
+    # "move forward 75cm", so the models were never told which frame forward was
+    # in even though the constant matched.
+    from protocol import (
+        ACTION_DESCRIPTIONS,
+        ACTION_OPTIONS_STRING,
+        action_options_string,
+        build_prompt,
+    )
 
     prompt = build_prompt(state={"position": [0.5, 0.0, 0.0],
                                  "torso_rotation": 0.0}, max_steps=30)
-    check(
-        f"move forward {stated_cm:g}cm" in prompt
-        or f"move forward {int(stated_cm)}cm" in prompt,
-        f"the prompt does not state the real step length ({stated_cm:g}cm)",
-    )
+    for action in ("forward", "backward", "left", "right", "turn_left"):
+        check(
+            ACTION_DESCRIPTIONS[action] in prompt,
+            f"the prompt does not carry the {action} description verbatim",
+        )
     check(
         re.search(r"(?<!\d)5cm", prompt) is None or abs(stated_cm - 5.0) < 1e-9,
         "the prompt still advertises a standalone 5cm step while MOVE_STEP differs",
     )
+
+    # The move_step path must keep the semantics too.  This is the regression
+    # guard for the bug above: it is the path the runner actually uses.
+    other = action_options_string(0.6)
+    check(
+        "60cm" in other and "walking direction" in other,
+        "action_options_string(move_step) dropped the walking-frame semantics",
+    )
+    check(
+        "move forward 60cm" not in other,
+        "action_options_string(move_step) fell back to the semantics-free text",
+    )
+    check(
+        ACTION_OPTIONS_STRING == action_options_string(env.MOVE_STEP),
+        "the module-level options string disagrees with the rendered one",
+    )
     print(
         f"[ok] action descriptions match MOVE_STEP "
-        f"({stated_cm:g}cm, stated and realised)"
+        f"({stated_cm:g}cm, stated and realised, semantics included)"
     )
 
 
@@ -1870,7 +1977,9 @@ def main() -> int:
         test_gate_matches_exact_geometry,
         test_body_centre_does_not_drift,
         test_off_axis_collision,
-        test_sideways_route_reaches_goal,
+        test_rotation_route_reaches_goal,
+        test_walking_frame_is_fixed,
+        test_run_tag_carries_the_protocol_version,
         test_frontal_route_only_where_feasible,
         test_rotation_blocked_inside_wall_slab,
         test_turn_sweep_checks_intermediate_orientations,

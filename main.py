@@ -45,6 +45,29 @@ from typing import Any, Dict, List, Optional, Sequence
 import persistence
 
 # ---------------------------------------------------------------------------
+# The run tag carries the protocol version
+#
+# The tag is the directory key for both the results tree and the resume
+# checkpoint, and the checkpoint decides which episodes `--resume` treats as
+# already done.  A per-model tag alone is therefore not enough: when the walking
+# frame changed, every prompt and every action meaning changed with it, and a
+# resumed run would have found the previous protocol's episodes, counted them as
+# complete, and produced a dataset mixing two protocols with no way to tell them
+# apart afterwards.
+#
+# So the protocol version is appended to whatever the caller asks for, here and
+# in run_all_models.sh, and tools/check_sweep_tags.py compares the two.
+# ---------------------------------------------------------------------------
+
+
+def effective_tag(model: str, tag: str = "") -> str:
+    """Results-directory tag for a run, including the protocol version."""
+    from protocol import PROTOCOL_TAG
+
+    base = persistence.sanitize_tag(tag or model, "untagged")
+    return f"{base}-{PROTOCOL_TAG}"
+
+# ---------------------------------------------------------------------------
 # Output layout
 #
 # Results, logs and the progress file are anchored to the *repository*, not to
@@ -575,7 +598,7 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
             model=args.model,
             max_steps=args.max_steps,
             episodes_per_level=args.episodes,
-            tag=args.tag,
+            tag=effective_tag(args.model, args.tag),
             save_obs=args.save_obs,
             results_root=run_results_root,
             logs_root=run_logs_root,

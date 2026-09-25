@@ -69,12 +69,18 @@ PY
 # gemini-2.5-pro became gemini-2-5-pro here but main.py's sanitize_tag keeps the
 # dot, so a manual run and a sweep run of the same model would use different
 # directories and --resume could not find the other's checkpoint.
+#
+# The protocol tag is appended here for the same reason: the tag keys --resume,
+# so a run under a changed prompt or action semantics must not resume onto the
+# previous protocol's episodes.  main.effective_tag appends the same constant,
+# and tools/check_sweep_tags.py checks that the two agree.
 model_tag() {
     "$PLAIN_PY" - "$1" <<'PY'
 import sys
 sys.path.insert(0, ".")
+from protocol import PROTOCOL_TAG
 from persistence import sanitize_tag
-print(sanitize_tag(sys.argv[1]))
+print(f"{sanitize_tag(sys.argv[1])}-{PROTOCOL_TAG}")
 PY
 }
 
