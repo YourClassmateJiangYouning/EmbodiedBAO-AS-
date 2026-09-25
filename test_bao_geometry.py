@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import math
 import inspect
+import json
 import os
 import sys
 from typing import List, Optional, Tuple
@@ -501,6 +502,67 @@ def test_walking_frame_is_fixed() -> None:
             f"{action} must not translate",
         )
     print("[ok] the walking frame is fixed: rotation does not steer")
+
+
+def test_model_request_params_reach_both_request_paths() -> None:
+    """Per-model request overrides must be applied wherever a request is built.
+
+    The client has two request paths: the openai SDK when it is installed, and the
+    built-in HTTP compat client when it is not.  Applying an override to only one
+    of them would make a model's behaviour depend on whether an unrelated package
+    happens to be present in the environment the sweep runs in -- and the override
+    in question changes how much the model thinks, i.e. what the benchmark
+    measures, not just how fast it runs.
+    """
+    import os
+
+    import ai_agent
+
+    # An unconfigured model gets nothing: an override must be a deliberate entry.
+    check(
+        ai_agent.request_params_for("gemini-2.5-pro") == {},
+        "a model with no recorded override received request parameters",
+    )
+    for model, expected in ai_agent.MODEL_REQUEST_PARAMS.items():
+        check(
+            ai_agent.request_params_for(model) == expected,
+            f"request_params_for({model!r}) does not return the recorded override",
+        )
+
+    # The environment override wins, so a run can change configuration without
+    # editing code (and args.json records the result).
+    original = os.environ.get("BAO_MODEL_PARAMS")
+    os.environ["BAO_MODEL_PARAMS"] = json.dumps(
+        {"gemini-2.5-pro": {"reasoning_effort": "none"}}
+    )
+    try:
+        check(
+            ai_agent.request_params_for("gemini-2.5-pro")
+            == {"reasoning_effort": "none"},
+            "BAO_MODEL_PARAMS did not override the built-in parameter map",
+        )
+        os.environ["BAO_MODEL_PARAMS"] = "{not json"
+        check(
+            ai_agent.request_params_for("gemini-2.5-pro") == {},
+            "malformed BAO_MODEL_PARAMS should be ignored, not crash or be used",
+        )
+    finally:
+        if original is None:
+            os.environ.pop("BAO_MODEL_PARAMS", None)
+        else:
+            os.environ["BAO_MODEL_PARAMS"] = original
+
+    # Both request paths must consult it.  Asserted on the source because the
+    # failure mode is an omission in one of two places, which no behavioural test
+    # with a single path can see.
+    compat = inspect.getsource(ai_agent._OpenAICompatCompletions.create)
+    sdk = inspect.getsource(ai_agent.AgentAPI._request)
+    for name, source in (("compat client", compat), ("openai client", sdk)):
+        check(
+            "request_params_for" in source,
+            f"the {name} does not apply the per-model request parameters",
+        )
+    print("[ok] per-model request parameters reach both request paths")
 
 
 def test_run_tag_carries_the_protocol_version() -> None:
@@ -2102,6 +2164,7 @@ def main() -> int:
         test_frontal_passability_matches_the_ladder,
         test_rotation_route_reaches_goal,
         test_walking_frame_is_fixed,
+        test_model_request_params_reach_both_request_paths,
         test_run_tag_carries_the_protocol_version,
         test_frontal_route_only_where_feasible,
         test_rotation_blocked_inside_wall_slab,

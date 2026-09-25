@@ -838,6 +838,15 @@ class BAOExperimentRunner:
         payload["resolved_obs_dir"] = (
             os.path.abspath(self.obs_dir) if self.save_obs else None
         )
+        # The per-model request overrides change what the model DOES, so they are
+        # part of the configuration a reader has to see.  Read from the same
+        # function the client uses, so the record cannot drift from what was sent.
+        try:
+            from ai_agent import request_params_for
+
+            payload["model_request_params"] = request_params_for(self.model)
+        except Exception as exc:  # pragma: no cover - import guard only
+            payload["model_request_params"] = {"error": str(exc)}
         atomic_write_json(path, payload)
 
 

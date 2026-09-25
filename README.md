@@ -447,9 +447,38 @@ python capture_views.py --level 0 --outdir views
 | `BOYUE_BASE_URL` / `TAOTOKEN_BASE_URL` / `OPENAI_BASE_URL` | endpoint override |
 | `BAO_IMAGE_SIZE` | same as `--image_size` |
 | `BAO_LLM_TIMEOUT`, `BAO_MAX_RETRIES` | request timeout / retry count |
+| `BAO_MODEL_PARAMS` | JSON per-model request overrides, merged over the built-in map (see below) |
 | `BAO_DISABLE_PROXY=1` | clear proxy variables before calling the API |
 | `BAO_OUTPUT_ROOT` | write `results/`, `logs/` and `run_progress.txt` under this directory instead of the repository (e.g. a large scratch disk) |
 | `EMBODIEDBAO_H1_USD` | explicit path to the H1 USD asset |
+
+## Reasoning budget: a measured, recorded configuration
+
+Some models spend most of a call thinking before they answer, and that is the whole
+cost of a sweep. `tools/probe_reasoning.py` measures that with the real prompt and a
+512 px frame, because the gateway answers **HTTP 200 for every unknown parameter**,
+so a key being accepted proves nothing — only the token count and the latency show
+whether it had an effect:
+
+| model | default | with thinking off | knob |
+| :--- | :--- | :--- | :--- |
+| `deepseek-v4.1-flash` | 86.8 s / 12,820 tok | **20.1 s / 1,224 tok** | `reasoning_effort="none"` |
+| `glm-4.6v` | 12.9 s / 1,595 tok | **6.4 s / 1,397 tok** | `thinking={"type":"disabled"}` |
+| `qwen3-vl-32b-instruct` | 3.9 s / 1,342 tok | unchanged | — (no extended thinking) |
+| `qwen3-vl-235b-a22b-instruct` | 3.3 s / 1,331 tok | unchanged | — |
+| `qwen-vl-max` | 3.5 s / 1,304 tok | unchanged | (`reasoning_effort="low"` → HTTP 400) |
+
+The Qwen family already answers without deliberation, so turning thinking off for
+the models that do deliberate makes the roster **more** comparable, not less. The
+overrides live in `ai_agent.MODEL_REQUEST_PARAMS`, apply on **both** request paths
+(the openai SDK and the built-in HTTP client — otherwise behaviour would depend on
+whether an unrelated package is installed), can be overridden with
+`BAO_MODEL_PARAMS`, and are written into each run's `logs/{tag}/args.json` so the
+report cannot disagree with what was sent.
+
+They change what the model *does*, so they are a reported configuration: a run with
+them removed is the ablation, and `deepseek-v4.1-flash` at its default setting costs
+about 43 h for one sweep instead of about 7 h.
 
 ## Notes on the physics model
 

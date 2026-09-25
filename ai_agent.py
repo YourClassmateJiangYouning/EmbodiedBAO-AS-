@@ -17,6 +17,20 @@ model is also provided as a baseline, matching MirrorBench's ``AgentRandom``.
 
 Reference: MirrorBench ``agent.py`` (base64 image encoding, OpenAI client,
 temperature 0, retry loop).
+
+Per-model request overrides
+---------------------------
+Some models spend most of a call thinking before they answer, which is the whole
+cost of a sweep.  deepseek-v4.1-flash measured 86.8 s and 12,820 tokens per call
+at the default setting, against 20.1 s and 1,224 tokens with
+``reasoning_effort="none"`` (tools/probe_reasoning.py, real prompt + 512 px frame,
+n=2 per variant).  ``MODEL_REQUEST_PARAMS`` records such overrides per model name
+so that a run cannot silently use a different configuration from the one it
+reports: the effective parameters are logged into the run's args.json.
+
+The gateway answers HTTP 200 for every unknown parameter, so a key being accepted
+proves nothing -- only the token count and the latency show whether it had an
+effect.  That is why the probe measures both.
 """
 
 from __future__ import annotations
@@ -79,6 +93,43 @@ MODEL_ALIASES: Dict[str, str] = {
 
 BOYUE_DEFAULT_BASE_URL = "http://35.220.164.252:3888/v1/"
 OPENAI_DEFAULT_BASE_URL = "https://api.openai.com/v1"
+
+# Extra request parameters per model, keyed by the name the gateway is given.
+# Empty unless a measurement in tools/probe_reasoning.py justified an entry: this
+# changes what the model DOES, not just how fast it runs, so an entry belongs here
+# only with the numbers next to it.
+#
+#   deepseek-v4.1-flash: default 86.8 s / 12,820 tokens per call, versus 20.1 s /
+#   1,224 tokens with reasoning_effort="none" (n=2, real prompt + 512 px frame).
+#   Without it a 60-episode run is ~43 h; see the probe's table for the variants.
+MODEL_REQUEST_PARAMS: Dict[str, Dict[str, Any]] = {
+    "deepseek-v4.1-flash": {"reasoning_effort": "none"},
+    # glm-4.6v honours the Zhipu spelling: 12.9 s / 1,595 tokens at the default,
+    # 6.4 s / 1,397 tokens with thinking disabled (n=4 each, same probe).
+    "glm-4.6v": {"thinking": {"type": "disabled"}},
+}
+
+
+def request_params_for(model_name: str) -> Dict[str, Any]:
+    """Extra request parameters for one model.
+
+    Merged from MODEL_REQUEST_PARAMS and an optional ``BAO_MODEL_PARAMS`` JSON
+    environment override, so an experiment can be re-run under a different
+    configuration without editing code -- and, because the runner records the
+    result in args.json, without the report disagreeing with what was sent.
+    """
+    params: Dict[str, Any] = dict(MODEL_REQUEST_PARAMS.get(model_name, {}))
+    raw = os.environ.get("BAO_MODEL_PARAMS")
+    if raw:
+        try:
+            override = json.loads(raw)
+            if isinstance(override, dict):
+                extra = override.get(model_name)
+                if isinstance(extra, dict):
+                    params.update(extra)
+        except ValueError as exc:
+            print(f"[ai_agent] BAO_MODEL_PARAMS is not valid JSON ({exc}); ignored")
+    return params
 
 
 def disable_proxy() -> None:
@@ -271,6 +322,11 @@ class _OpenAICompatCompletions:
         }
         if response_format is not None:
             payload["response_format"] = response_format
+        # Per-model overrides (e.g. thinking off) must reach BOTH request paths:
+        # this one is used when the openai package is missing, so applying them
+        # only to the openai client would make the model's behaviour depend on the
+        # environment the sweep happens to run in.
+        payload.update(request_params_for(model))
         request = urllib.request.Request(
             self._client._base_url + "/chat/completions",
             data=json.dumps(payload).encode("utf-8"),
@@ -497,6 +553,8 @@ class AgentAPI:
             "messages": messages,
             "temperature": self.temperature,
         }
+        # Same override as the compat path above; see request_params_for.
+        kwargs.update(request_params_for(self.model_name))
         if self._json_mode_enabled:
             try:
                 completion = self.client.chat.completions.create(

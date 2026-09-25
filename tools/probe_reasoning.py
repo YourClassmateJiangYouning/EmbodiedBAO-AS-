@@ -51,6 +51,9 @@ VARIANTS: dict = {
     },
     'thinking={"type":"disabled"}': {"thinking": {"type": "disabled"}},
     "max_tokens=512": {"max_tokens": 512},
+    "max_tokens=1024": {"max_tokens": 1024},
+    "max_tokens=2048": {"max_tokens": 2048},
+    "max_tokens=4096": {"max_tokens": 4096},
 }
 
 
