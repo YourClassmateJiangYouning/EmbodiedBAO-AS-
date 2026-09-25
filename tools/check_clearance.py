@@ -89,7 +89,7 @@ def main() -> int:
         "For frontal REACHABILITY see tools/check_frontal.py, which walks the "
         "action grid with the real translation gate.  An earlier version of this "
         "file reported that a straight walk stops at x=10.25 even at Level 0, "
-        "which is wrong: it is 12.50, past the plane at 11.0."
+        "which is wrong: it reaches 12.50, well past the success plane."
     )
     return 0
 

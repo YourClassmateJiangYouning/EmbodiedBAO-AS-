@@ -151,6 +151,11 @@ class FakeBAOEnv:
         feedback = "executed"
         collision = None
         yaw_rad = np.radians(self._yaw)
+        # Mirrors the real _apply_action: the gaze is a one-look glance, so it is
+        # cleared for every action and set only by a look_*.  Accumulating here
+        # (as this fake used to) made the offset test pass or fail on the fake
+        # rather than on the environment it stands in for.
+        self._camera_yaw = 0.0
 
         if action in ("forward", "backward", "left", "right"):
             # The shipped walking frame, not a re-derived one: this fake must
@@ -177,7 +182,9 @@ class FakeBAOEnv:
             else:
                 self._yaw = candidate_yaw
         elif action in ("look_left", "look_right"):
-            self._camera_yaw += 30.0 if action == "look_left" else -30.0
+            # Assignment, not accumulation: the real environment returns the gaze
+            # to straight ahead instead of letting two glances add up to 60.
+            self._camera_yaw = 30.0 if action == "look_left" else -30.0
         else:
             legal = False
             feedback = f"unknown action: {action}"
@@ -247,7 +254,7 @@ class ScriptedAgent:
                 else:
                     return self._reply("turn_left")
             if self.phase == 1:
-                if x >= WALL_X + 0.5:
+                if x >= WALL_X:
                     self.phase = 2
                 else:
                     return self._reply("forward")
@@ -260,10 +267,10 @@ class ScriptedAgent:
         elif self.policy == "random_walk":
             action = "forward" if (x + z) % 2 < 1 else "turn_left"
         elif self.policy == "look-then-forward":
-            # Turn the head twice, then walk.  Used to check that the head-camera
-            # offset the environment tracks actually becomes visible to the agent:
-            # a client that never reports it is aiming its view 60 degrees off its
-            # walking direction with nothing saying so.
+            # Glance twice, then walk.  Used to check that the head-camera offset
+            # the environment tracks actually becomes visible to the agent: a
+            # client that never reports it reads a view 30 degrees off its walking
+            # direction as if it were straight ahead.  Two glances must NOT add up.
             if self.phase < 2:
                 self.phase += 1
                 return self._reply("look_left")
@@ -1347,20 +1354,21 @@ def test_cli_flags_reach_the_runner() -> None:
 
 
 def test_head_camera_offset_reaches_the_model() -> None:
-    """The agent must be told how far its head camera is turned.
+    """The agent must be told where its head camera is aimed.
 
     The gaze is pinned to the WALKING direction, so turn_left/turn_right do not
-    change the view at all; look_left/look_right offset the gaze from that
-    direction, the offset PERSISTS, and a torso turn does not remove it.  The
-    direction the agent is walking and the direction it is looking can therefore
-    differ by up to 90 degrees, and nothing in a single frame reveals it: an agent
-    that had turned its head three times would otherwise be judging the opening
-    from a view rotated 90 degrees off its path with no way to know.
+    change the view at all; look_left/look_right give a single 30 degree glance
+    that clears on the next action, so the agent can never be looking more than 30
+    degrees off its path.  The direction the agent is walking and the direction it
+    is looking can still differ, and nothing in a single frame reveals it: without
+    this line an agent that had just glanced would read the sideways view as
+    straight ahead.
 
     The environment already produced the value in get_robot_state(); the prompt
     simply never rendered it.  This pins it end to end through the runner, and
-    checks the exact 0.0 and 60.0 labels -- an earlier version matched a string
-    the prompt no longer contains, so it passed while asserting nothing.
+    checks the exact 0.0 and 30.0 labels plus the absence of a 60.0 one -- an
+    earlier version matched a string the prompt no longer contains, so it passed
+    while asserting nothing.
     """
     import experiments
 
@@ -1403,28 +1411,37 @@ def test_head_camera_offset_reaches_the_model() -> None:
         "the prompt does not state the head camera offset, so the agent cannot "
         "tell which way it is looking",
     )
-    # The offset must actually track the actions: at least one later prompt has
-    # to report a non-zero value once a look_* action has run, otherwise the line
-    # is present but inert.
+    # The offset must actually track the actions: a prompt right after a look_*
+    # has to report the glance, every other prompt has to report zero, and the
+    # glance must NOT accumulate -- the head returns to straight ahead instead of
+    # leaving the agent staring 60 degrees off its path with nothing saying so.
     #
     # This keyed off "head camera offset from your torso (degrees): 0.0" until the
     # gaze was pinned to the walking direction and the label changed to
     # "from straight ahead".  The old string then never appeared, every entry
     # scored 1.0, and `any(offsets)` was true no matter what the environment did:
-    # the check passed while asserting nothing.  It now matches the current label
-    # and requires the exact 0.0 and 60.0 values a two-look_left run produces.
+    # the check passed while asserting nothing.
     zero_label = "head camera offset from straight ahead (degrees): 0.0"
+    glance_label = "head camera offset from straight ahead (degrees): 30.0"
     check(
         any(zero_label in p for p in seen),
         f"no prompt reported a zero head offset; expected the line {zero_label!r}",
     )
     check(
-        any(
+        any(glance_label in p for p in seen),
+        "no prompt reported the 30 degree glance after a look_left, so a look_* "
+        "action never became visible to the agent",
+    )
+    check(
+        not any(
             "head camera offset from straight ahead (degrees): 60.0" in p
             for p in seen
         ),
-        "no prompt reported the 60 degree offset after two look_left actions, so "
-        "a look_* action never became visible to the agent",
+        "two look_left actions added up to 60 degrees, so the glance persists",
+    )
+    check(
+        f"head camera offset from straight ahead (degrees): 0.0" in seen[-1],
+        "the gaze did not return to straight ahead after the glances",
     )
     print(
         "[ok] the head camera offset is reported to the agent "

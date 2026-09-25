@@ -12,8 +12,10 @@ the wall.  The channel width is the single independent variable of the
 benchmark: it is set per Level so that the channel-to-shoulder ratio (A/S)
 sweeps past the human threshold of 1.30 (Warren & Whang, 1987).
 
-The task is a pure gap-traversal problem: the robot must move its body centre
-to the goal plane on the far side of the wall (x >= 11.0 m).  There is no reachable target object; the
+The task is a pure gap-traversal problem: the robot must get its body through the
+opening and clear of the wall (success at x >= 8.75 m, one stride past the wall
+plane; the largest half-extent of the body is 0.306 m, so at that x the whole body
+is on the far side at any torso angle).  There is no reachable target object; the
 only question is whether the agent rotates its body before the channel becomes
 too narrow for a frontal passage.
 
@@ -127,9 +129,16 @@ PANEL_WIDTH = (ROOM_WIDTH_Z - CHANNEL_WIDTH) / 2.0
 # from the start: 0.5 + 10 * 0.75 = 8.0 m.
 ROBOT_START_POS = np.array([0.5, 0.0, 0.0], dtype=float)
 ROBOT_START_YAW_DEG = 0.0
-# The goal is 3 m behind the obstacle: four further forward translations reach
-# x=11 exactly.  The inclusive check makes that fourth step count as success.
-SUCCESS_X = 11.0
+# Success is scored as soon as the body is through the opening and clear of the
+# wall, which is what the task statement asks for.  It used to be x = 11.0, three
+# metres past the wall and four strides beyond the opening: a model that went
+# through and then stopped was recorded as a failure, and the extra travel told us
+# nothing about the affordance being measured.  One stride past the wall plane is
+# 8.75 m, and the body's largest half-extent is 0.306 m, so at 8.75 the whole body
+# is on the far side whatever its torso angle.  Written as a literal because
+# MOVE_STEP is defined below; test_bao_geometry asserts SUCCESS_X == WALL_X +
+# MOVE_STEP, so the two cannot drift apart.
+SUCCESS_X = 8.75
 
 # ---------------------------------------------------------------------------
 # A/S threshold ladder (Warren & Whang 1987 human threshold is A/S = 1.30)
@@ -917,7 +926,10 @@ class BAOEnv:
             agent x=0.5  ->  20 px     (start: a small distant mark)
             agent x=4.0  ->  26 px
             agent x=7.0  ->  34 px     (approaching the obstacle)
-            agent x=11.0 ->  63 px     (at the goal)
+            agent x=8.75 ->  43 px     (at the goal plane; the rows above follow
+                                        ~315 / distance-to-the-far-wall, and
+                                        16 - 8.75 = 7.25 m gives 43 px)
+            agent x=11.0 ->  63 px     (the old goal plane, kept as measured)
             agent x=14.0 -> 158 px     (close, edges still clear)
 
         Centred at 1.40 m it spans 1.25 m to 1.55 m.  The camera sits at 1.68 m,
@@ -2033,6 +2045,10 @@ class BAOEnv:
 
     def _apply_action(self, action: str) -> Tuple[bool, str, Optional[Dict[str, Any]]]:
         root = self._root_position()
+        # The gaze returns to straight ahead for every action except a look_*:
+        # the head offset is a one-look glance, so it is cleared here and set
+        # again by the camera branch below when this action is itself a glance.
+        self._camera_yaw_offset = 0.0
 
         if action in ("forward", "backward", "left", "right"):
             # Translation is in the walking frame (see action_delta): forward
@@ -2081,7 +2097,16 @@ class BAOEnv:
             return True, "executed", None
 
         if action in CAMERA_ACTIONS:
-            self._camera_yaw_offset += (
+            # A glance, not a persistent offset.  The head turns 30 degrees for
+            # one look and then returns to straight ahead: that is what a person
+            # does when they glance at something and carry on walking, and it is
+            # what keeps the gaze on the walking direction, where the opening is.
+            # A persistent offset let an agent walk around permanently looking 60
+            # degrees off its path -- at which point the channel is outside the 76
+            # degree field of view and the agent has blinded itself -- and nothing
+            # in the frame revealed it.  Assignment rather than accumulation, so
+            # two looks in the same direction do not add up to 60.
+            self._camera_yaw_offset = (
                 CAMERA_TURN_STEP_DEG if action == "look_left" else -CAMERA_TURN_STEP_DEG
             )
             return True, "executed", None

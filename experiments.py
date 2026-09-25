@@ -21,8 +21,9 @@ direction, which is the shoulder rotation the human result above measures.  The
 per-Level angles are measured, not derived -- see tools/check_heading_frame.py.
 
 Every Level runs ``10`` independent episodes of at most ``30`` steps.  An
-episode ends only on success (body centre reaches ``x >= 11.0`` m) or step
-exhaustion; wall collisions are recorded but never terminate the episode.
+episode ends only on success (the body clears the wall: centre reaches
+``x >= 8.75`` m, one stride past the wall plane) or step exhaustion; wall
+collisions are recorded but never terminate the episode.
 
 Each step follows the canonical loop:
 

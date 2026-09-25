@@ -1,14 +1,15 @@
-"""Explain why a straight frontal walk stops short of the success plane.
+"""Explain why a straight frontal walk stops short, if it ever does.
 
-tools/check_clearance.py reported that walking straight ahead reaches only
-x=10.25 at Levels 0-3 and x=7.25 at Levels 4-5, against a success plane of
-x>11.0.  That would mean NO Level is passable by walking forward, which
-contradicts the recorded runs where Levels 0-3 pass 60-100% of the time.
+An early version of tools/check_clearance.py reported that walking straight ahead
+reaches only x=10.25 at Levels 0-3 and x=7.25 at Levels 4-5, against the then
+success plane of x>11.0.  That would have meant NO Level was passable by walking
+forward, contradicting the recorded runs where Levels 0-3 passed 60-100% of the
+time.  The report was the bug (the walk reaches 12.50 unbounded), and this tool
+exists to re-check that from the grid rather than from a formula.
 
-The likely cause is the step grid: positions advance in 0.75 m jumps from x=0.5,
-giving 0.5, 1.25, ... 10.25, 11.0.  Whether x=11.0 is legal decides whether a
-frontal walk can finish at all, so this checks that single pose and the poses
-around it with the real collision gate, and reports what blocks each one.
+The step grid is 0.75 m jumps from x=0.5: 0.5, 1.25, ..., 8.0, 8.75, 9.5.  The
+success plane is at 8.75, one stride past the wall, so the walk-in poses that
+matter are 7.25 (last one before the wall) and 8.0, 8.75 (through it).
 
     python tools/check_frontal.py
 """

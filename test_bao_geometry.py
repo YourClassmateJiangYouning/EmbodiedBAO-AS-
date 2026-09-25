@@ -1108,8 +1108,19 @@ def test_episode_defaults() -> None:
         DEFAULT_MAX_STEPS == 30,
         f"max steps is {DEFAULT_MAX_STEPS}, expected 30",
     )
-    check(SUCCESS_X == 11.0, f"success threshold is {SUCCESS_X}, expected 11.0")
-    print("[ok] protocol defaults are 10 episodes x 30 steps, success at x >= 11.0")
+    check(
+        SUCCESS_X == WALL_X + MOVE_STEP,
+        f"success threshold is {SUCCESS_X}, expected one stride past the wall "
+        f"({WALL_X} + {MOVE_STEP})",
+    )
+    check(
+        SUCCESS_X - ROBOT_START_POS[0] > 0,
+        "the success plane is behind the start pose",
+    )
+    print(
+        "[ok] protocol defaults are 10 episodes x 30 steps, success one stride "
+        f"past the wall (x >= {SUCCESS_X})"
+    )
 
 
 def test_sideways_band() -> None:
@@ -1241,16 +1252,18 @@ def test_start_distance_reachable_in_budget() -> None:
     check(abs(step - 0.75) < 1e-12, f"adult step is {step}, expected 0.75 m")
     check(abs(to_wall - 10.0) < 1e-12, f"start-to-wall distance is {to_wall} steps")
     check(
-        abs(wall_to_goal - 4.0) < 1e-12,
-        f"wall-to-goal distance is {wall_to_goal} steps",
+        abs(wall_to_goal - 1.0) < 1e-12,
+        f"wall-to-goal distance is {wall_to_goal} steps; the goal is one stride "
+        f"past the wall now, so it must be exactly 1",
     )
     check(
-        abs(goal_to_far - 20.0 / 3.0) < 1e-12,
-        f"goal-to-far-wall distance is {goal_to_far} steps, expected about 7",
+        goal_to_far > 9.0,
+        f"the goal is only {goal_to_far:.1f} steps from the far wall; the room "
+        f"should still extend well past the goal",
     )
-    check(moves == 14, f"goal needs {moves} forward moves, expected 14")
+    check(moves == 11, f"goal needs {moves} forward moves, expected 11")
     check(
-        turns + moves == 20 and turns + moves <= DEFAULT_MAX_STEPS,
+        turns + moves == 17 and turns + moves <= DEFAULT_MAX_STEPS,
         f"the 90 degree route needs {turns + moves}/{DEFAULT_MAX_STEPS} actions",
     )
 
@@ -1266,9 +1279,9 @@ def test_start_distance_reachable_in_budget() -> None:
         f"initial opening occupies {100 * gap_deg / fov_deg:.1f}% of the view",
     )
     print(
-        f"[ok] integer layout: 10 moves to wall + 4 to goal; "
+        f"[ok] integer layout: 10 moves to the wall + 1 to the goal plane; "
         f"the 90 degree route uses {turns + moves}/{DEFAULT_MAX_STEPS} actions and "
-        f"leaves {goal_to_far:.1f} steps to the far wall"
+        f"leaves {goal_to_far:.1f} steps of room beyond the goal"
     )
 
 

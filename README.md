@@ -52,7 +52,7 @@ z : lateral   (opening centred at z = 0, room spans z in [-2.5, 2.5])
 | Opening | vertical, centred at `z = 0`, floor to the top of the wall |
 | Channel edge posts | 0.05 m wide, full wall height, one on each side, placed **outside** the opening |
 | Robot start | `(0.5, 0, 0)`, facing `+x` |
-| Success | body centre reaches **`x >= 11.0`** |
+| Success | body centre reaches **`x >= 8.75`** (one stride past the wall) |
 | Eye camera | head height 1.68 m, pitched 15° down, 76° field of view |
 
 ### Surface colours
@@ -116,10 +116,12 @@ a number, which is the proprioception a person has.
 
 The translation step is 0.75 m, approximately an adult walking step. From the
 `x = 0.5` start, ten forward translations reach the obstacle plane at `x = 8.0`,
-and four more reach the inclusive success plane at `x = 11.0`. Level 5 needs five
-15° turns (75°, the measured minimum — 60° is not enough) plus those fourteen
-steps, so the narrowest route is 19 of the 30 steps. The budget tests use the
-conservative six-turn/90° route, which is 20.
+and **one more** clears the wall: success is scored at `x = 8.75`, because the task
+is to get through the opening and the body's largest half-extent is 0.306 m, so at
+8.75 the whole body is on the far side at any torso angle. Level 5 needs five 15°
+turns (75°, the measured minimum — 60° is not enough) plus those eleven steps, so
+the narrowest route is 16 of the 30 steps. The budget tests use the conservative
+six-turn/90° route, which is 17.
 
 ## Protocol
 

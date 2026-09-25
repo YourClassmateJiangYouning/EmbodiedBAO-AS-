@@ -16,17 +16,17 @@ A/S experiment.
 | Robot start | `(0.5, 0, 0)` |
 | Translation per locomotion action | `0.75 m` |
 | Obstacle wall | `x = 8.0 m` |
-| Success condition | body centre `x >= 11.0 m` |
+| Success condition | body centre `x >= 8.75 m` (one stride past the wall) |
 | Green far wall | `x = 16.0 m` |
 | Episode budget | `30 actions` |
 
 The distance arithmetic is intentional:
 
 - `(8.0 - 0.5) / 0.75 = 10` forward translations from the start to the obstacle plane;
-- `(11.0 - 8.0) / 0.75 = 4` more forward translations from the wall to the inclusive goal;
-- `(16.0 - 11.0) / 0.75 = 6.67`, approximately seven steps of unused run-out behind the goal;
-- the narrowest route is five 15-degree turns (75 degrees) plus fourteen
-  translations, or `19/30` actions.
+- 1 more clears the wall: success is at `x = 8.75`, one stride past the wall plane;
+- `(16.0 - 8.75) / 0.75 = 9.67`, so the room still extends about ten steps past the goal;
+- the narrowest route is five 15-degree turns (75 degrees) plus eleven
+  translations, or `16/30` actions.
 
 Actions are in the **walking frame**: the walking direction always points at the
 far wall, so `forward` advances along world `+x` whether the torso is turned or
