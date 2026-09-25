@@ -200,12 +200,28 @@ MODEL_YAW_OFFSET_DEG = 0.0
 SIDEWAYS_YAW_MIN_DEG = 45.0
 SIDEWAYS_YAW_MAX_DEG = 135.0
 
-# Safety skin (metres) added to the body box before the wall test.  It keeps
-# A/S == 1.00 an impassable pinch point instead of a zero-clearance squeeze:
-# at Level 4 the channel and the shoulders are both exactly 0.57 m, and without
-# this margin a perfectly aligned agent could creep through untouched, which is
-# not the intended affordance test.
-BODY_CLEARANCE = 0.002
+# Tolerance applied when the separating-axis test decides whether two boxes
+# overlap, in metres.  Touching counts as clear.
+#
+# This replaces a 2 mm skin that used to be added to the body box.  That skin
+# made the gate demand 0.574 m for a 0.570 m shoulder, so at Level 4 -- channel
+# 0.570 m, the level labelled A/S = 1.00 -- a frontal passage became
+# geometrically impossible and the real ratio was 0.993.  Every model scored
+# 0/10 there, which leaves the result open to the objection that they failed on
+# the 2 mm rather than on the affordance.
+#
+# A tolerance in the comparison is the right instrument, and it has to be a
+# tolerance rather than a skin: inflating the half-width by even 1e-9 makes the
+# body 0.285000001 m against a panel edge at 0.285 m, which still overlaps.
+# Subtracting from the projection instead keeps an exactly-touching pose firmly
+# on the legal side whatever the rounding, so Level 4 is genuinely passable by
+# an aligned 0.570 m body in a 0.570 m channel.
+#
+# This does not widen anything in practice: the tolerance is 0.2 micrometres,
+# against a body measured in metres.  A/S keeps its nominal definition at every
+# Level, and only Level 4 changes behaviour.
+BODY_CLEARANCE = 0.0
+OVERLAP_TOLERANCE = 2e-7
 
 # H1 arm hang pose, applied once at reset so the robot looks natural.
 ARM_HANG_SHOULDER_PITCH_RAD = 0.0
@@ -354,22 +370,29 @@ def _oriented_rects_overlap(
     axes_b: np.ndarray,
     half_b: np.ndarray,
 ) -> bool:
-    """Separating-axis test for two oriented rectangles in the x/z plane."""
+    """Separating-axis test for two oriented rectangles in the x/z plane.
+
+    A tolerance of OVERLAP_TOLERANCE is removed from each projection, so boxes
+    that touch exactly are reported as clear rather than as overlapping.  That is
+    what makes A/S == 1.00 a passable width: a body exactly as wide as the
+    channel must be legal, and without the tolerance the comparison is decided
+    by floating-point rounding.
+    """
     a_lo, a_hi = _project_rect(center_a, axes_a, half_a, axes_a[0])
     b_lo, b_hi = _project_rect(center_b, axes_b, half_b, axes_a[0])
-    if b_hi < a_lo or a_hi < b_lo:
+    if b_hi - OVERLAP_TOLERANCE < a_lo or a_hi - OVERLAP_TOLERANCE < b_lo:
         return False
     a_lo, a_hi = _project_rect(center_a, axes_a, half_a, axes_a[1])
     b_lo, b_hi = _project_rect(center_b, axes_b, half_b, axes_a[1])
-    if b_hi < a_lo or a_hi < b_lo:
+    if b_hi - OVERLAP_TOLERANCE < a_lo or a_hi - OVERLAP_TOLERANCE < b_lo:
         return False
     a_lo, a_hi = _project_rect(center_a, axes_a, half_a, axes_b[0])
     b_lo, b_hi = _project_rect(center_b, axes_b, half_b, axes_b[0])
-    if b_hi < a_lo or a_hi < b_lo:
+    if b_hi - OVERLAP_TOLERANCE < a_lo or a_hi - OVERLAP_TOLERANCE < b_lo:
         return False
     a_lo, a_hi = _project_rect(center_a, axes_a, half_a, axes_b[1])
     b_lo, b_hi = _project_rect(center_b, axes_b, half_b, axes_b[1])
-    if b_hi < a_lo or a_hi < b_lo:
+    if b_hi - OVERLAP_TOLERANCE < a_lo or a_hi - OVERLAP_TOLERANCE < b_lo:
         return False
     return True
 

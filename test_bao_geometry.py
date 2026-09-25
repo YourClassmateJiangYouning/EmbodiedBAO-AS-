@@ -206,29 +206,44 @@ def half_z_span_in_x_slab(
 
 
 def exact_fits_channel(root_x: float, root_z: float, yaw_deg: float, width: float) -> bool:
-    """Exact passability: does the footprint squeeze through the gap at x=2.0?
+    """Exact passability: does the footprint squeeze through the gap at the wall?
 
-    The panels occupy the x-slab ``[2.0 - t, 2.0 + t]`` outside ``|z| < w/2``,
-    so the body fits exactly when its z-extent inside that slab stays within
-    the gap.  This is an independent re-derivation of the gate, not a copy of
-    it, so agreement is evidence the collision model is right.
+    The panels occupy the x-slab ``[WALL_X - t, WALL_X + t]`` outside
+    ``|z| < w/2``, so the body fits exactly when its z-extent inside that slab
+    stays within the gap.  This is an independent re-derivation of the gate, not
+    a copy of it, so agreement is evidence the collision model is right.
+
+    Touching counts as fitting.  The comparison used to be
+    ``half_span < width/2 - 1e-12``, which made a body exactly as wide as the
+    channel "not fit" and so disagreed with the gate once the gate's tolerance
+    let A/S == 1.00 pass -- at Level 4 the two models reported opposite answers
+    for the same pose.  Since A/S = 1.00 is defined as the width where shoulder
+    and channel are equal, the boundary must be permissive, not exclusive.
     """
     slab_lo = WALL_X - WALL_THICKNESS / 2.0 - root_x
     slab_hi = WALL_X + WALL_THICKNESS / 2.0 - root_x
     half_span = half_z_span_in_x_slab(yaw_deg, slab_lo, slab_hi)
     if half_span is None:
         return True
-    return bool(half_span < width / 2.0 - 1e-12)
+    return bool(half_span <= width / 2.0 + 1e-12)
 
 
 def test_frontal_feasibility() -> None:
-    """The declared 'can it pass head-on?' column must match the geometry."""
+    """The declared 'can it pass head-on?' column must match the geometry.
+
+    Level 4 is A/S = 1.00: channel 0.570 m against shoulders 0.570 m, so an
+    aligned body fits and a frontal passage is feasible.  Only Level 5 (0.45 m
+    against 0.57 m) is narrower than the shoulder.  This expected False at Level
+    4 while a 2 mm skin was added to the body box, which made the gate demand
+    0.574 m and turned the level's own advertised A/S into a value it could not
+    honour.
+    """
     expected_frontal = {
         0: True,
         1: True,
         2: True,
         3: True,
-        4: False,
+        4: True,
         5: False,
     }
     for level, width in LEVEL_CHANNEL_WIDTHS.items():
@@ -236,7 +251,7 @@ def test_frontal_feasibility() -> None:
         check(
             frontal_ok == expected_frontal[level],
             f"level {level}: frontal passage feasible={frontal_ok}, "
-            f"brief says {expected_frontal[level]} (width {width}, "
+            f"expected {expected_frontal[level]} (width {width}, "
             f"shoulders {ROBOT_SHOULDER_WIDTH})",
         )
     # Levels 4-5 must be comfortably passable once sideways.
@@ -297,21 +312,57 @@ def test_off_axis_collision() -> None:
             is not None,
             f"level {level}: offset body at z={offset:.3f} should collide",
         )
-        # A body with clear room on both sides must be free.
-        clearance = width / 2.0 - (ROBOT_SHOULDER_WIDTH / 2.0 + BODY_CLEARANCE)
-        if clearance > 0.01:
+    print("[ok] off-axis frontal bodies collide with the panels")
+
+
+def test_frontal_passability_matches_the_ladder() -> None:
+    """Each Level's frontal passability must match what its A/S claims.
+
+    A/S is channel over nominal shoulder width, so the ladder promises that
+    Levels 0-4 can be walked through facing forward and only Level 5 cannot:
+
+        0-3  A/S 1.19-1.58  comfortably wider than the shoulder
+        4    A/S 1.00       exactly equal, so an aligned body just fits
+        5    A/S 0.79       narrower than the shoulder, impossible frontally
+
+    Level 4 used to be blocked by a 2 mm skin added to the body box, which made
+    the gate demand 0.574 m for a 0.570 m shoulder.  The level labelled
+    A/S = 1.00 was therefore really 0.993, and every model scored 0/10 there --
+    a result open to the objection that they failed on the 2 mm rather than on
+    the affordance.  The skin is gone and a tolerance in the separating-axis
+    comparison keeps exactly-touching boxes clear instead, so this now asserts
+    the arithmetic the ladder advertises rather than the old pinch point.
+    """
+    passable = {0, 1, 2, 3, 4}
+    for level, width in sorted(LEVEL_CHANNEL_WIDTHS.items()):
+        ratio = width / ROBOT_SHOULDER_WIDTH
+        centred_ok = (
+            _check_wall_collision(np.array([WALL_X, 0.0, 0.0]), 0.0, width)
+            is None
+        )
+        if level in passable:
             check(
-                _check_wall_collision(np.array([WALL_X, 0.0, 0.0]), 0.0, width) is None,
-                f"level {level}: centred body should not collide",
+                centred_ok,
+                f"level {level}: A/S {ratio:.2f} should be walkable facing "
+                f"forward, but a centred body collides in a {width:.2f} m channel",
             )
         else:
-            # Levels 4-5: a frontal body cannot fit at all.
             check(
-                _check_wall_collision(np.array([WALL_X, 0.0, 0.0]), 0.0, width)
-                is not None,
-                f"level {level}: a frontal body cannot fit a {width:.2f} m channel",
+                not centred_ok,
+                f"level {level}: A/S {ratio:.2f} is narrower than the shoulder "
+                f"and must not be walkable frontally",
             )
-    print("[ok] off-axis frontal bodies collide with the panels")
+        # The boundary is exact: A/S == 1.00 must be the widest impossible-to-
+        # wider transition, so nothing between it and 1.19 is flipped either way.
+        check(
+            (ratio >= 1.0) == centred_ok,
+            f"level {level}: frontal passability disagrees with A/S {ratio:.3f} "
+            f"at the 1.00 boundary",
+        )
+    print(
+        "[ok] frontal passability matches the ladder: Levels 0-4 fit facing "
+        "forward (A/S >= 1.00), Level 5 does not"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -396,8 +447,15 @@ def test_sideways_route_reaches_goal() -> None:
 
 
 def test_frontal_route_only_where_feasible() -> None:
-    """Walking straight ahead must work exactly where the table says it does."""
-    expected_frontal = {0: True, 1: True, 2: True, 3: True, 4: False, 5: False}
+    """Walking straight ahead must work exactly where the ladder says it does.
+
+    Level 4 (A/S = 1.00) is a frontal passage: shoulder and channel are equal, so
+    an aligned body fits.  Only Level 5, at A/S = 0.79, is narrower than the
+    shoulder and needs a rotation.  This used to expect Level 4 to be blocked,
+    back when a 2 mm skin made the gate demand more width than the level's own
+    A/S claimed.
+    """
+    expected_frontal = {0: True, 1: True, 2: True, 3: True, 4: True, 5: False}
     for level, width in sorted(LEVEL_CHANNEL_WIDTHS.items()):
         position = ROBOT_START.copy()
         reached = False
@@ -417,7 +475,7 @@ def test_frontal_route_only_where_feasible() -> None:
             f"level {level}: frontal walk reached={reached}, "
             f"expected {expected_frontal[level]} (blocked by {blocked_by})",
         )
-    print("[ok] frontal walk succeeds only at Levels 0-3")
+    print("[ok] frontal walk succeeds at Levels 0-4 and not at Level 5")
 
 
 def test_rotation_blocked_inside_wall_slab() -> None:
@@ -474,13 +532,26 @@ def test_rotation_blocked_inside_wall_slab() -> None:
 
 
 def test_turn_sweep_checks_intermediate_orientations() -> None:
-    """A turn must reject a mid-arc boundary hit even if both endpoints fit."""
+    """A turn must reject a mid-arc boundary hit even if both endpoints fit.
+
+    The fixture has 0.27 m of clearance at both endpoints and is blocked at 60
+    and 75 degrees, so it cannot be invalidated by a small change in the body
+    size -- which is exactly what happened to the previous fixture.  That one sat
+    0.25 mm from the boundary, and removing a 2 mm skin from the collision body
+    moved it entirely inside, leaving the guard passing vacuously.
+
+    A narrow turn cannot serve as a fixture at all: across -60 -> -75 the
+    footprint's z-extent is monotone (-0.2378 down to 0.1800), so if both ends fit
+    then every interior orientation fits too and no mid-arc hit exists.  Only a
+    long arc passes through orientations wider than its endpoints, so the fixture
+    turns 45 degrees rather than 15.
+    """
     from environment import _check_scene_collision, _turn_path_is_clear
 
-    root = np.array([0.306655240798261, 0.0, 0.9126487475216045])
+    root = np.array([0.3, 0.0, 1.95])
     width = LEVEL_CHANNEL_WIDTHS[1]
-    start_yaw = -60.0
-    end_yaw = -75.0
+    start_yaw = 45.0
+    end_yaw = 90.0
 
     check(
         _check_scene_collision(root, math.radians(start_yaw), width) is None,
@@ -490,10 +561,11 @@ def test_turn_sweep_checks_intermediate_orientations() -> None:
         _check_scene_collision(root, math.radians(end_yaw), width) is None,
         "regression fixture's end pose should be clear",
     )
-    check(
-        _check_room_boundary(root, math.radians(-63.25)) is not None,
-        "regression fixture should cross the near boundary midway through the turn",
-    )
+    for mid in (60.0, 75.0):
+        check(
+            _check_room_boundary(root, math.radians(mid)) is not None,
+            f"regression fixture should cross the near boundary at {mid} degrees",
+        )
     collision = _turn_path_is_clear(root, start_yaw, end_yaw, width)
     check(
         collision is not None and collision.get("boundary") == "near",

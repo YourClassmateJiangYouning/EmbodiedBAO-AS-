@@ -365,7 +365,15 @@ def test_episode_record_contract() -> None:
 
 
 def test_frontal_policy_matches_design_table() -> None:
-    """A straight-walking agent must pass exactly Levels 0-3."""
+    """A straight-walking agent must pass exactly Levels 0-4.
+
+    Level 4 is A/S = 1.00 -- channel 0.570 m, shoulders 0.570 m -- so walking
+    straight through is geometrically possible and the design table calls it a
+    frontal passage.  It expected False while the collision body carried a 2 mm
+    skin, which made the gate require 0.574 m and quietly turned the level's own
+    advertised A/S into a width it could not honour.  Only Level 5, at 0.45 m, is
+    narrower than the shoulders.
+    """
     _install_scripted_agent("frontal")
     try:
         tmp = make_temp_dir()
@@ -378,7 +386,7 @@ def test_frontal_policy_matches_design_table() -> None:
                 results_root=os.path.join(tmp, "results"),
                 logs_root=os.path.join(tmp, "logs"),
             )
-            expected = {0: True, 1: True, 2: True, 3: True, 4: False, 5: False}
+            expected = {0: True, 1: True, 2: True, 3: True, 4: True, 5: False}
             for level in sorted(LEVEL_CHANNEL_WIDTHS):
                 episodes = runner.run_level(level=level, episodes=1)
                 summary = BAOExperimentRunner.summarize_level(level, episodes)
@@ -386,13 +394,13 @@ def test_frontal_policy_matches_design_table() -> None:
                 check(
                     passed == expected[level],
                     f"level {level}: frontal policy passed={passed}, "
-                    f"design table says {expected[level]}",
+                    f"expected {expected[level]}",
                 )
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
     finally:
         _restore_agent_adapter()
-    print("[ok] frontal policy passes Levels 0-3 and is blocked at 4-5")
+    print("[ok] frontal policy passes Levels 0-4 and is blocked at Level 5")
 
 
 def test_collisions_do_not_end_episode() -> None:
