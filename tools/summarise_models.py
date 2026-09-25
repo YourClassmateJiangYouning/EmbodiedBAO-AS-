@@ -80,6 +80,9 @@ def main() -> int:
     print()
 
     summary_rows = []
+    grand_episodes = 0
+    grand_steps = 0
+    grand_corrupt = 0
     for (model, tag) in sorted(found):
         levels = found[(model, tag)]
         all_paths = [p for paths in levels.values() for p in paths]
@@ -94,8 +97,13 @@ def main() -> int:
             except (OSError, ValueError):
                 unreadable += 1
                 unreadable_paths.append(os.path.basename(path))
+        sidecars = 0
         for dirpath in {os.path.dirname(p) for p in all_paths}:
             corrupt += len(glob.glob(os.path.join(dirpath, "*.corrupt-*")))
+            sidecars += len(glob.glob(os.path.join(dirpath, "episode_*_steps.json")))
+        grand_episodes += len(all_paths)
+        grand_steps += sidecars
+        grand_corrupt += corrupt
         gaps = []
         for level_name, paths in sorted(levels.items()):
             ids = sorted(
@@ -111,9 +119,10 @@ def main() -> int:
             f"{len(levels)} Level(s)"
         )
         print(
-            f"  integrity: {len(all_paths)} found, {unreadable} unreadable, "
-            f"{corrupt} quarantined as corrupt, id gaps: "
-            f"{', '.join(gaps) if gaps else 'none'}"
+            f"  integrity: {len(all_paths)} found, {sidecars} step sidecar(s)"
+            f"{'' if sidecars == len(all_paths) else '  <-- MISMATCH'}, "
+            f"{unreadable} unreadable, {corrupt} quarantined as corrupt, "
+            f"id gaps: {', '.join(gaps) if gaps else 'none'}"
         )
         if unreadable_paths:
             print(f"  UNREADABLE: {', '.join(unreadable_paths[:6])}")
@@ -171,6 +180,16 @@ def main() -> int:
         print()
         summary_rows.append((f"{model} [{tag}]", best_threshold))
 
+    print("=" * 104)
+    print(
+        f"TOTAL: {grand_episodes} episode record(s), {grand_steps} step sidecar(s), "
+        f"{grand_corrupt} quarantined file(s), {len(found)} run(s)"
+    )
+    print(
+        "  the two counts must match each other, and the episode count must match "
+        "`find results -name 'episode_*.json' ! -name '*_steps.json' | wc -l` taken "
+        "at the same moment -- the tree grows while a sweep is running"
+    )
     print("=" * 104)
     print("THRESHOLDS (human reference 1.30) -- one line per RUN, not per model:")
     print("  runs under different ladders are different experiments, which is why")
