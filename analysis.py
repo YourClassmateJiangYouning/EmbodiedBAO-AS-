@@ -365,18 +365,23 @@ def analyze_model(
         if tagged_dirs:
             # Prefer a directory from the CURRENT protocol.  The tag carries the
             # protocol version (protocol.PROTOCOL_TAG, appended by
-            # main.effective_tag), so a directory that ends with it is this
-            # protocol's data and an older one is a different experiment with
-            # different action semantics.  Choosing purely by mtime would let a
-            # partially re-run model -- or a stray touch -- summarise the old
-            # protocol under the new protocol's name, which is exactly the mix
-            # the tag exists to prevent.
+            # main.effective_tag), so a directory containing it is this protocol's
+            # data and an older one is a different experiment with different action
+            # semantics.  Choosing purely by mtime would let a partially re-run
+            # model -- or a stray touch -- summarise the old protocol under the new
+            # protocol's name, which is exactly the mix the tag exists to prevent.
+            #
+            # Matched by CONTAINMENT, not by suffix: a tag can also carry a
+            # request-parameter suffix after the protocol tag
+            # ("...-v5-12widths-effortnone", for models whose extended thinking is
+            # switched off), and an endswith test would classify every one of those
+            # as a different protocol.
             from protocol import PROTOCOL_TAG
 
             current = [
                 path
                 for path in tagged_dirs
-                if os.path.basename(path).endswith("-" + PROTOCOL_TAG)
+                if f"-{PROTOCOL_TAG}" in os.path.basename(path)
                 or os.path.basename(path) == PROTOCOL_TAG
             ]
             pool = current or tagged_dirs

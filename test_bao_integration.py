@@ -939,6 +939,36 @@ def test_analysis_prefers_the_current_protocol_tag() -> None:
             or isinstance(report["turned_threshold"], float),
             "turned_threshold is missing or not a ratio",
         )
+
+        # And a tag that carries a request-parameter suffix AFTER the protocol tag
+        # is still this protocol's data.  Matched by containment, not by suffix:
+        # an endswith test classified every "...-effortnone" directory as a
+        # different protocol, which is what the models whose thinking is switched
+        # off are tagged with.
+        for params_tag, passed in ((f"m1-{PROTOCOL_TAG}-effortnone", False),):
+            suffix_dir = os.path.join(root, "level0", "m1", params_tag)
+            os.makedirs(suffix_dir, exist_ok=True)
+            with open(
+                os.path.join(suffix_dir, "episode_000.json"), "w", encoding="utf-8"
+            ) as handle:
+                json.dump(
+                    {
+                        "level": 0,
+                        "episode_id": 0,
+                        "channel_width": 1.14,
+                        "a_s_ratio": 2.0,
+                        "passed": passed,
+                        "total_steps": 5,
+                    },
+                    handle,
+                )
+        os.utime(old_dir, None)
+        report = analysis.analyze_model(root, "m1", [0])
+        check(
+            report["levels"][0]["a_s_ratio"] == 2.0,
+            "a parameter-suffixed tag directory was not recognised as the current "
+            "protocol, so analysis picked a different directory",
+        )
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     print("[ok] analysis prefers the current protocol's tag directory")
