@@ -109,9 +109,11 @@ def parse_args() -> argparse.Namespace:
         type=float,
         default=None,
         help=(
-            "Push the eye camera this far forward along the facing direction, "
-            "in metres. Useful for testing whether the robot's own body geometry "
-            "occludes the head camera."
+            "Push the eye camera this far forward along the TORSO's facing "
+            "direction, in metres (the eye sits on the head, which the torso "
+            "carries; only the gaze is pinned to the walking direction). Useful "
+            "for testing whether the robot's own body geometry occludes the head "
+            "camera."
         ),
     )
     parser.add_argument(

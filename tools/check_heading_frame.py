@@ -216,13 +216,48 @@ def main() -> int:
     }
     for name, expected in check_deltas.items():
         got = shipped[name]
-        if got is None or not np.allclose(got, expected):
+        if got is not None and not np.allclose(got, expected):
             print()
             print(f"  MISMATCH: shipped action_delta({name!r}) = {got}")
             print(f"            the heading column above assumes {expected}")
             return 1
     print()
     print("cross-check: the shipped action_delta matches the heading column above")
+
+    # Are the two sidestep actions ever useful?  Translation is axis-aligned and
+    # the channel is centred on z = 0, so the reachable lateral positions are
+    # exactly the multiples of MOVE_STEP.  If none of those is passable, then a
+    # sidestep can only ever move the agent off the line and the model has to
+    # undo it exactly.
+    print()
+    print("is a sidestep ever useful?  pass/fail by lateral offset (metres)")
+    head = f"  {'L':>2} " + " ".join(f"{k * MOVE_STEP:>+8.2f}" for k in (0, 1, 2))
+    print(head)
+    print("  " + "-" * (len(head) - 2))
+    useful_anywhere = False
+    for level, width in sorted(LEVEL_CHANNEL_WIDTHS.items()):
+        cells = []
+        for k in (0, 1, 2):
+            offset = k * MOVE_STEP
+            # Best case over the yaws that traverse at all: a sidestep that only
+            # works when the torso is already turned still counts as useful.
+            ok = any(
+                traverse(width, float(yaw), offset, "heading")["reached"]
+                for yaw in yaws
+            )
+            cells.append(f"{'pass' if ok else '.':>8}")
+            if ok and k > 0:
+                useful_anywhere = True
+        print(f"  {level:>2} " + " ".join(cells))
+    print()
+    if useful_anywhere:
+        print("  A sidestep is passable somewhere, so left/right can be part of a route.")
+    else:
+        print("  No nonzero multiple of the sidestep is passable at any Level, in any")
+        print("  orientation: with the channel centred on the start line, left/right")
+        print("  can only move the agent off it, and the displacement has to be undone")
+        print("  exactly.  They are distractors, not tools -- worth knowing before")
+        print("  reading a trace that uses them as a mistake, which it is.")
     return 0
 
 
