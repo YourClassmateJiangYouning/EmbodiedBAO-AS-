@@ -2,8 +2,9 @@
 # Run the full model roster, one model at a time.
 #
 # Each model gets its own tag so a run can be resumed with --resume and one
-# model's results can never be mistaken for another's.  Scale: 6 Levels x 10
-# episodes x 30 steps = a 60-episode, 1800-call ceiling per model.
+# model's results can never be mistaken for another's.  Scale: 12 Levels x 5
+# episodes x 30 steps = a 60-episode ceiling per model -- the 12-width A/S series
+# of Warren & Whang (1987) / Keizer et al. (2013), five repetitions per width.
 #
 # Usage (on the Isaac Sim workstation):
 #     export BOYUE_API_KEY='...'
@@ -117,7 +118,7 @@ for model in "${MODELS[@]}"; do
     "$ISAAC_PY" main.py \
         --model "$model" \
         --all-levels \
-        --episodes 10 \
+        --episodes 5 \
         --max_steps 30 \
         --image_size 512 \
         --tag "$tag" \

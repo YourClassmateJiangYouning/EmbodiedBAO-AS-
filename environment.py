@@ -141,19 +141,33 @@ ROBOT_START_YAW_DEG = 0.0
 SUCCESS_X = 8.75
 
 # ---------------------------------------------------------------------------
-# A/S threshold ladder (Warren & Whang 1987 human threshold is A/S = 1.30)
+# A/S threshold ladder
 # ---------------------------------------------------------------------------
-# The channel widths are the primary protocol constants from the task brief.
-# The A/S ratios are derived from them so the geometry can never drift out of
-# sync with the recorded `a_s_ratio` field.
-LEVEL_CHANNEL_WIDTHS: Dict[int, float] = {
-    0: 0.90,
-    1: 0.80,
-    2: 0.74,
-    3: 0.68,
-    4: 0.57,
-    5: 0.45,
-}
+# A/S = channel width / shoulder width, so the ladder is defined as ratios and the
+# widths are derived.  ROBOT_SHOULDER_WIDTH is defined just below, so the dict is
+# built after it.
+#
+# The ratios are the aperture series of the human study this benchmark is modelled
+# on: Warren & Whang (1987) put the critical ratio at A/S = 1.3 (people rotate
+# their torso for anything narrower), and Keizer et al. (2013) replicated the
+# design with 12 aperture widths from A/S 0.9 to 2.0 in steps of 0.1, three trials
+# each.  We use the same 12 ratios, which is what makes a per-model
+# rotation-onset curve directly comparable with the published A/S_crit (healthy
+# controls: 1.25-1.30).
+#
+# 12 points rather than a coarse ladder matters for more than comparability: a
+# fixed policy ("always turn 90 degrees") produces a high rotation rate at every
+# width and would look like a threshold unless the curve has enough points to show
+# that it does not vary with A/S.
+#
+# Level 0 is the widest, so a sweep runs from the trivially passable end toward the
+# end that cannot be passed without rotating.  A/S = 1.0 (level 10) is the exact
+# geometric limit: shoulder and channel are equal, so an aligned body just fits,
+# and A/S = 0.9 (level 11) is the only one that cannot be walked through facing
+# forward.
+_APERTURE_RATIOS: Tuple[float, ...] = (
+    2.0, 1.9, 1.8, 1.7, 1.6, 1.5, 1.4, 1.3, 1.2, 1.1, 1.0, 0.9,
+)
 
 # Approximate step length for a 1.80 m adult man: 1.80 * 0.415 ~= 0.747 m.
 MOVE_STEP = 0.75
@@ -163,6 +177,13 @@ TURN_STEP_DEG = 15.0
 # boundary midway through the rotation.
 TURN_COLLISION_SAMPLE_DEG = 1.0
 CAMERA_TURN_STEP_DEG = 30.0
+# look_down pitches the head this far below the normal eye pitch, for one frame.
+# It exists because the agent has no proprioceptive body schema: a person judging
+# whether they fit through an opening glances down at their own body, and this is
+# the only way this agent can see itself at all (the eye sits at body centre at
+# 1.68 m looking 15 degrees down, so the torso and hands are outside the frame
+# until the head pitches further).
+CAMERA_PITCH_STEP_DEG = 45.0
 TURN_TOLERANCE_DEG = 1e-6
 
 # Downward pitch of the head camera, in degrees.  The original build got this
@@ -196,13 +217,23 @@ CHANNEL_EDGE_COLOR = [0.10, 0.11, 0.13]
 # length is now written to the USD attribute as well; see _apply_focal_length.
 ROBOT_CAMERA_FOCAL = 13.36
 
-# H1 kinematic constants (used for analytic collision checks).
+# H1 kinematic constants (used for analytic collision checks).  Defined before the
+# A/S ladder below because the ladder is derived from the shoulder width.
 ROBOT_SHOULDER_WIDTH = 0.57
 ROBOT_TORSO_THICKNESS = 0.22
 ROBOT_BODY_CENTER_Y = 0.9
 ROBOT_BODY_HALF_HEIGHT = 0.9
 ROBOT_HEAD_HEIGHT = 1.55
 MODEL_YAW_OFFSET_DEG = 0.0
+
+# The channel widths ARE the derived quantity: see _APERTURE_RATIOS above, which
+# is where the ladder is documented.  Built here because it needs the shoulder
+# width, and the recorded `a_s_ratio` is computed back from it, so the geometry
+# and the reported ratio cannot drift apart.
+LEVEL_CHANNEL_WIDTHS: Dict[int, float] = {
+    level: round(ROBOT_SHOULDER_WIDTH * ratio, 6)
+    for level, ratio in enumerate(_APERTURE_RATIOS)
+}
 
 # Yaw band that counts as "sideways" (body rotated so the narrow torso
 # dimension faces the channel).
@@ -245,10 +276,12 @@ ACTIONS = [
     "turn_right",
     "look_left",
     "look_right",
+    "look_down",
 ]
 
-# Camera-yaw controls keep the legacy 30-degree head-rotation mechanism.
-CAMERA_ACTIONS = ("look_left", "look_right")
+# Head-only camera controls, all of them single-frame glances that clear on the
+# next action.  ``look_down`` is the agent's only view of its own body.
+CAMERA_ACTIONS = ("look_left", "look_right", "look_down")
 
 
 def level_channel_width(level: int) -> float:
@@ -698,6 +731,7 @@ class BAOEnv:
             )
         self._channel_width = float(self.task_dict.get("channel_width", CHANNEL_WIDTH))
         self._camera_yaw_offset = 0.0
+        self._camera_pitch_offset = 0.0
 
         self._create_ground()
         self._create_room()
@@ -1826,10 +1860,15 @@ class BAOEnv:
         keeps their gaze on the opening while rotating their shoulders; tracking
         the torso instead would swing the view onto the side wall exactly when the
         opening matters most, and the channel (76 deg across) would leave the
-        field of view at the large rotations this ladder asks for -- Level 5 needs
-        75 degrees.  The torso angle is therefore deliberately absent here: it is
-        reported to the agent as a number, which is the proprioception a person
-        has, while the image keeps showing what the agent has to judge.
+        field of view at the large rotations this ladder asks for.  The torso angle
+        is therefore deliberately absent here: it is reported to the agent as a
+        number, which is the proprioception a person has, while the image keeps
+        showing what the agent has to judge.
+
+        The pitch, by contrast, IS adjustable -- by look_down, for one frame.  That
+        is how the agent can look at its own body at all, which is what a person
+        does when judging whether they fit through an opening.  See
+        CAMERA_PITCH_STEP_DEG.
 
         The original reach-the-ball build forced the look-at point to the
         target ball's height (`target[1] = TARGET_POS[1]`), which pitched the
@@ -1843,6 +1882,7 @@ class BAOEnv:
         look_yaw = self._camera_yaw_offset
         distance = float(self.task_dict.get("eye_look_distance", 2.0))
         pitch_deg = float(self.task_dict.get("eye_pitch_deg", EYE_PITCH_DEG))
+        pitch_deg += self._camera_pitch_offset
         # Unit vector pitched down by `pitch_deg` in the vertical plane.
         target = eye + _eye_look_direction(
             np.radians(look_yaw), pitch_deg, distance
@@ -1907,6 +1947,7 @@ class BAOEnv:
         self._init_robot_controller()
         self._set_robot_pose(self._start_pos, ROBOT_START_YAW_DEG)
         self._camera_yaw_offset = 0.0
+        self._camera_pitch_offset = 0.0
         if self._articulation is not None:
             try:
                 self._articulation.post_reset()
@@ -1947,6 +1988,7 @@ class BAOEnv:
             "hand_position": hand.tolist(),
             "torso_rotation": self.get_torso_rotation(),
             "camera_yaw": self._camera_yaw_offset,
+            "camera_pitch": self._camera_pitch_offset,
             "channel_width": self.get_channel_width(),
             "a_s_ratio": self.get_a_s_ratio(),
             "distance_to_goal": self.get_distance_to_goal(),
@@ -2045,10 +2087,11 @@ class BAOEnv:
 
     def _apply_action(self, action: str) -> Tuple[bool, str, Optional[Dict[str, Any]]]:
         root = self._root_position()
-        # The gaze returns to straight ahead for every action except a look_*:
-        # the head offset is a one-look glance, so it is cleared here and set
-        # again by the camera branch below when this action is itself a glance.
+        # Every glance is one frame: both head offsets are cleared here and set
+        # again by the camera branch below when this action is itself a glance, so
+        # no glance persists and none accumulates.
         self._camera_yaw_offset = 0.0
+        self._camera_pitch_offset = 0.0
 
         if action in ("forward", "backward", "left", "right"):
             # Translation is in the walking frame (see action_delta): forward
@@ -2097,18 +2140,27 @@ class BAOEnv:
             return True, "executed", None
 
         if action in CAMERA_ACTIONS:
-            # A glance, not a persistent offset.  The head turns 30 degrees for
-            # one look and then returns to straight ahead: that is what a person
-            # does when they glance at something and carry on walking, and it is
-            # what keeps the gaze on the walking direction, where the opening is.
-            # A persistent offset let an agent walk around permanently looking 60
-            # degrees off its path -- at which point the channel is outside the 76
-            # degree field of view and the agent has blinded itself -- and nothing
-            # in the frame revealed it.  Assignment rather than accumulation, so
-            # two looks in the same direction do not add up to 60.
-            self._camera_yaw_offset = (
-                CAMERA_TURN_STEP_DEG if action == "look_left" else -CAMERA_TURN_STEP_DEG
-            )
+            # A glance, not a persistent offset.  The head turns for one look and
+            # then returns to straight ahead: that is what a person does when they
+            # glance at something and carry on walking, and it is what keeps the
+            # gaze on the walking direction, where the opening is.  A persistent
+            # offset let an agent walk around permanently looking 60 degrees off its
+            # path -- at which point the channel is outside the 76 degree field of
+            # view and the agent has blinded itself -- and nothing in the frame
+            # revealed it.  Assignment rather than accumulation, so two looks in the
+            # same direction do not add up to 60.
+            #
+            # look_down is the same mechanism on the other axis, and is the agent's
+            # only view of its own body (a person glances down at themselves when
+            # judging whether they fit).
+            if action == "look_down":
+                self._camera_pitch_offset = CAMERA_PITCH_STEP_DEG
+            else:
+                self._camera_yaw_offset = (
+                    CAMERA_TURN_STEP_DEG
+                    if action == "look_left"
+                    else -CAMERA_TURN_STEP_DEG
+                )
             return True, "executed", None
 
         return False, "invalid action", None

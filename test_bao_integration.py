@@ -36,6 +36,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 import numpy as np
 
 from environment import (
+    CAMERA_PITCH_STEP_DEG,
     LEVEL_CHANNEL_WIDTHS,
     MOVE_STEP,
     ROBOT_START_POS,
@@ -91,6 +92,7 @@ class FakeBAOEnv:
         self._position = ROBOT_START.copy()
         self._yaw = 0.0
         self._camera_yaw = 0.0
+        self._camera_pitch = 0.0
         self.steps = 0
 
     # -- scene ---------------------------------------------------------
@@ -108,6 +110,7 @@ class FakeBAOEnv:
         self._position = ROBOT_START.copy()
         self._yaw = 0.0
         self._camera_yaw = 0.0
+        self._camera_pitch = 0.0
         self.steps = 0
         return self.get_camera_image()
 
@@ -122,6 +125,7 @@ class FakeBAOEnv:
             "position": self._position.tolist(),
             "torso_rotation": float(self._yaw),
             "camera_yaw": float(self._camera_yaw),
+            "camera_pitch": float(self._camera_pitch),
             "channel_width": self.get_channel_width(),
             "a_s_ratio": self.get_a_s_ratio(),
             "move_step": float(getattr(self, "_move_step", MOVE_STEP)),
@@ -151,11 +155,12 @@ class FakeBAOEnv:
         feedback = "executed"
         collision = None
         yaw_rad = np.radians(self._yaw)
-        # Mirrors the real _apply_action: the gaze is a one-look glance, so it is
-        # cleared for every action and set only by a look_*.  Accumulating here
-        # (as this fake used to) made the offset test pass or fail on the fake
-        # rather than on the environment it stands in for.
+        # Mirrors the real _apply_action: every glance lasts one frame, so both
+        # offsets are cleared for each action and set only by a look_*.  This fake
+        # must track the environment it stands in for, or the offset test passes
+        # or fails on the fake instead of on the protocol.
         self._camera_yaw = 0.0
+        self._camera_pitch = 0.0
 
         if action in ("forward", "backward", "left", "right"):
             # The shipped walking frame, not a re-derived one: this fake must
@@ -181,10 +186,14 @@ class FakeBAOEnv:
                 feedback = "cannot turn: body would collide with obstacle or room boundary"
             else:
                 self._yaw = candidate_yaw
-        elif action in ("look_left", "look_right"):
+        elif action in ("look_left", "look_right", "look_down"):
             # Assignment, not accumulation: the real environment returns the gaze
-            # to straight ahead instead of letting two glances add up to 60.
-            self._camera_yaw = 30.0 if action == "look_left" else -30.0
+            # to straight ahead instead of letting two glances add up to 60, and
+            # look_down pitches the head further down on its own axis.
+            if action == "look_down":
+                self._camera_pitch = CAMERA_PITCH_STEP_DEG
+            else:
+                self._camera_yaw = 30.0 if action == "look_left" else -30.0
         else:
             legal = False
             feedback = f"unknown action: {action}"
@@ -267,13 +276,18 @@ class ScriptedAgent:
         elif self.policy == "random_walk":
             action = "forward" if (x + z) % 2 < 1 else "turn_left"
         elif self.policy == "look-then-forward":
-            # Glance twice, then walk.  Used to check that the head-camera offset
-            # the environment tracks actually becomes visible to the agent: a
-            # client that never reports it reads a view 30 degrees off its walking
-            # direction as if it were straight ahead.  Two glances must NOT add up.
+            # Glance left twice and down once, then walk.  Used to check that the
+            # head-camera offsets the environment tracks actually become visible to
+            # the agent: a client that never reports them reads a view 30 degrees
+            # off its walking direction (or 45 degrees down) as if it were normal.
+            # Two glances in the same direction must NOT add up, and look_down must
+            # be reported on its own axis.
             if self.phase < 2:
                 self.phase += 1
                 return self._reply("look_left")
+            if self.phase == 2:
+                self.phase = 3
+                return self._reply("look_down")
             action = "forward"
         else:
             raise ValueError(self.policy)
@@ -389,14 +403,14 @@ def test_episode_record_contract() -> None:
 
 
 def test_frontal_policy_matches_design_table() -> None:
-    """A straight-walking agent must pass exactly Levels 0-4.
+    """A straight-walking agent must pass exactly where A/S >= 1.0.
 
-    Level 4 is A/S = 1.00 -- channel 0.570 m, shoulders 0.570 m -- so walking
-    straight through is geometrically possible and the design table calls it a
-    frontal passage.  It expected False while the collision body carried a 2 mm
-    skin, which made the gate require 0.574 m and quietly turned the level's own
-    advertised A/S into a width it could not honour.  Only Level 5, at 0.45 m, is
-    narrower than the shoulders.
+    A/S = 1.00 -- channel 0.570 m, shoulders 0.570 m -- is geometrically possible
+    to walk straight through, and the design calls it a frontal passage.  It
+    expected False while the collision body carried a 2 mm skin, which made the
+    gate require 0.574 m and quietly turned that Level's own advertised A/S into a
+    width it could not honour.  Only the narrowest Level (A/S = 0.9) is narrower
+    than the shoulders.  Derived from the ratio, not tabulated.
     """
     _install_scripted_agent("frontal")
     try:
@@ -410,21 +424,21 @@ def test_frontal_policy_matches_design_table() -> None:
                 results_root=os.path.join(tmp, "results"),
                 logs_root=os.path.join(tmp, "logs"),
             )
-            expected = {0: True, 1: True, 2: True, 3: True, 4: True, 5: False}
             for level in sorted(LEVEL_CHANNEL_WIDTHS):
+                expected = a_s_ratio(LEVEL_CHANNEL_WIDTHS[level]) >= 1.0 - 1e-12
                 episodes = runner.run_level(level=level, episodes=1)
                 summary = BAOExperimentRunner.summarize_level(level, episodes)
                 passed = summary["passed_count"] == 1
                 check(
-                    passed == expected[level],
+                    passed == expected,
                     f"level {level}: frontal policy passed={passed}, "
-                    f"expected {expected[level]}",
+                    f"expected {expected}",
                 )
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
     finally:
         _restore_agent_adapter()
-    print("[ok] frontal policy passes Levels 0-4 and is blocked at Level 5")
+    print("[ok] the frontal policy passes wherever A/S >= 1.00, not below it")
 
 
 def test_collisions_do_not_end_episode() -> None:
@@ -441,9 +455,14 @@ def test_collisions_do_not_end_episode() -> None:
                 results_root=os.path.join(tmp, "results"),
                 logs_root=os.path.join(tmp, "logs"),
             )
-            episodes = runner.run_level(level=5, episodes=1)
+            narrow = max(LEVEL_CHANNEL_WIDTHS)
+            episodes = runner.run_level(level=narrow, episodes=1)
             episode = episodes[0]
-            check(not episode["passed"], "frontal policy cannot pass 0.45 m")
+            check(
+                not episode["passed"],
+                f"frontal policy cannot pass the narrowest Level "
+                f"({LEVEL_CHANNEL_WIDTHS[narrow]:.3f} m)",
+            )
             check(
                 episode["end_reason"] == "max_steps",
                 f"blocked episode ended as {episode['end_reason']}",
@@ -590,12 +609,16 @@ def test_analysis_recovers_threshold() -> None:
     """analysis.py must find the widest A/S at which sideways passage occurs."""
     tmp = make_temp_dir()
     try:
-        # Synthetic results: sideways only at Levels 4 and 5 (A/S 1.00, 0.79).
+        # Synthetic results: sideways only at the two narrowest Levels.  Which
+        # Levels those are is derived, not hard-coded, so this keeps testing the
+        # recovery of the WIDEST sideways A/S rather than a particular ladder.
+        sideways_levels = sorted(LEVEL_CHANNEL_WIDTHS)[-2:]
+        expected_threshold = a_s_ratio(LEVEL_CHANNEL_WIDTHS[sideways_levels[0]])
         results_root = os.path.join(tmp, "results")
         for level, width in LEVEL_CHANNEL_WIDTHS.items():
             out_dir = os.path.join(results_root, f"level{level}", "synthetic")
             os.makedirs(out_dir, exist_ok=True)
-            sideways = level in (4, 5)
+            sideways = level in sideways_levels
             episode = {
                 "episode_id": 0,
                 "level": level,
@@ -629,15 +652,16 @@ def test_analysis_recovers_threshold() -> None:
         report = analysis.analyze_model(results_root, "synthetic", list(LEVEL_CHANNEL_WIDTHS))
         threshold = report["sideways_threshold"]
         check(
-            threshold is not None and abs(threshold - 1.00) < 1e-9,
-            f"recovered threshold {threshold}, expected 1.00",
+            threshold is not None and abs(threshold - expected_threshold) < 1e-9,
+            f"recovered threshold {threshold}, expected {expected_threshold} "
+            f"(the widest A/S with a sideways passage)",
         )
         check(
             report["threshold_class"] == "borderline",
             f"threshold class {report['threshold_class']}, expected borderline",
         )
         check(
-            abs(report["threshold_gap_vs_human"] - (1.00 - 1.30)) < 1e-9,
+            abs(report["threshold_gap_vs_human"] - (expected_threshold - 1.30)) < 1e-9,
             "threshold gap vs human is wrong",
         )
 
@@ -1407,44 +1431,50 @@ def test_head_camera_offset_reaches_the_model() -> None:
 
     check(bool(seen), "the probe never saw a prompt")
     check(
-        "head camera offset" in seen[0].lower(),
-        "the prompt does not state the head camera offset, so the agent cannot "
-        "tell which way it is looking",
+        "head camera" in seen[0].lower(),
+        "the prompt never mentions the head camera, so the agent cannot tell "
+        "which way it is looking",
     )
-    # The offset must actually track the actions: a prompt right after a look_*
-    # has to report the glance, every other prompt has to report zero, and the
-    # glance must NOT accumulate -- the head returns to straight ahead instead of
-    # leaving the agent staring 60 degrees off its path with nothing saying so.
+    # The offsets must actually track the actions: a prompt right after a look_*
+    # has to report that glance, every other prompt has to report zero, and the
+    # yaw glance must NOT accumulate -- the head returns to straight ahead instead
+    # of leaving the agent staring 60 degrees off its path with nothing saying so.
     #
-    # This keyed off "head camera offset from your torso (degrees): 0.0" until the
-    # gaze was pinned to the walking direction and the label changed to
-    # "from straight ahead".  The old string then never appeared, every entry
-    # scored 1.0, and `any(offsets)` was true no matter what the environment did:
-    # the check passed while asserting nothing.
-    zero_label = "head camera offset from straight ahead (degrees): 0.0"
-    glance_label = "head camera offset from straight ahead (degrees): 30.0"
+    # These labels are matched exactly on purpose.  An earlier version keyed off
+    # "head camera offset from your torso (degrees): 0.0"; when the gaze was pinned
+    # to the walking direction the label changed, the old string never appeared
+    # again, and the check silently asserted nothing.
+    zero_yaw = "head camera sideways offset from straight ahead (degrees): 0.0"
+    glance_yaw = "head camera sideways offset from straight ahead (degrees): 30.0"
+    zero_pitch = "head camera extra downward pitch (degrees): 0.0"
+    glance_pitch = "head camera extra downward pitch (degrees): 45.0"
     check(
-        any(zero_label in p for p in seen),
-        f"no prompt reported a zero head offset; expected the line {zero_label!r}",
+        any(zero_yaw in p for p in seen),
+        f"no prompt reported a zero sideways offset; expected {zero_yaw!r}",
     )
     check(
-        any(glance_label in p for p in seen),
+        any(glance_yaw in p for p in seen),
         "no prompt reported the 30 degree glance after a look_left, so a look_* "
         "action never became visible to the agent",
     )
     check(
+        any(glance_pitch in p for p in seen),
+        "no prompt reported the 45 degree downward glance after a look_down, so "
+        "the agent cannot tell that it is looking at its own body",
+    )
+    check(
         not any(
-            "head camera offset from straight ahead (degrees): 60.0" in p
+            "head camera sideways offset from straight ahead (degrees): 60.0" in p
             for p in seen
         ),
         "two look_left actions added up to 60 degrees, so the glance persists",
     )
     check(
-        f"head camera offset from straight ahead (degrees): 0.0" in seen[-1],
-        "the gaze did not return to straight ahead after the glances",
+        zero_yaw in seen[-1] and zero_pitch in seen[-1],
+        "the gaze did not return to its usual direction after the glances",
     )
     print(
-        "[ok] the head camera offset is reported to the agent "
+        "[ok] the head camera glances are reported to the agent, and clear "
         f"({len(seen)} prompt(s) inspected)"
     )
 

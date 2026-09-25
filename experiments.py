@@ -4,21 +4,25 @@ The benchmark asks a single question: does an MLLM-driven humanoid rotate its
 body *before* a channel becomes too narrow for a frontal passage, the way
 humans do at a channel-to-shoulder ratio of about 1.30 (Warren & Whang, 1987)?
 
-The six Levels differ **only** in the physical channel width.  The prompt is
-identical across Levels, and it never discloses the channel width, the body
-dimensions, or whether a turn is needed.
+The Levels differ **only** in the physical channel width, and the ladder is the
+aperture series of the human study this benchmark follows: 12 widths from A/S = 2.0
+down to A/S = 0.9 in steps of 0.1 (Warren & Whang 1987; Keizer et al. 2013).  The
+prompt is identical across Levels, and it never discloses the channel width, the
+body dimensions, or whether a turn is needed.
 
-    Level 0  0.90 m channel  A/S 1.58   frontal passage is easy
-    Level 1  0.80 m channel  A/S 1.40   frontal passage works
-    Level 2  0.74 m channel  A/S 1.30   human threshold; frontal passage tight
-    Level 3  0.68 m channel  A/S 1.19   below the human threshold
-    Level 4  0.57 m channel  A/S 1.00   frontal passage flush, or turn >= 45 deg
-    Level 5  0.45 m channel  A/S 0.79   rotation required (>= 75 deg), then walk
+    Level  0   1.14 m channel  A/S 2.0   trivially passable
+    ...
+    Level 10   0.57 m channel  A/S 1.0   flush: an aligned body just fits
+    Level 11   0.51 m channel  A/S 0.9   cannot be walked through facing forward
 
 Movement is in the walking frame: ``forward`` advances at the far wall whatever the
 torso is doing, and ``turn_left``/``turn_right`` rotate the torso relative to that
-direction, which is the shoulder rotation the human result above measures.  The
+direction, which is the shoulder rotation the human studies measure.  The
 per-Level angles are measured, not derived -- see tools/check_heading_frame.py.
+
+Every Level runs ``5`` independent episodes of at most ``30`` steps, so a model is
+scored on 12 x 5 = 60 episodes: the 12-width series of the reference design with
+enough repetitions per width for a per-model rotation-onset curve.
 
 Every Level runs ``10`` independent episodes of at most ``30`` steps.  An
 episode ends only on success (the body clears the wall: centre reaches
@@ -64,6 +68,7 @@ from persistence import (
 )
 from environment import (
     ACTIONS,
+    LEVEL_CHANNEL_WIDTHS,
     SIDEWAYS_YAW_MAX_DEG,
     SIDEWAYS_YAW_MIN_DEG,
     SUCCESS_X,
@@ -74,8 +79,10 @@ from environment import (
 )
 from protocol import ACTION_OPTIONS_STRING, build_prompt
 
-DEFAULT_LEVELS: Tuple[int, ...] = (0, 1, 2, 3, 4, 5)
-DEFAULT_EPISODES_PER_LEVEL = 10
+# Derived from the ladder so the two can never disagree: adding a width to
+# environment.LEVEL_CHANNEL_WIDTHS adds a Level to the protocol.
+DEFAULT_LEVELS: Tuple[int, ...] = tuple(sorted(LEVEL_CHANNEL_WIDTHS))
+DEFAULT_EPISODES_PER_LEVEL = 5
 DEFAULT_MAX_STEPS = 30
 
 
@@ -593,6 +600,11 @@ class BAOExperimentRunner:
         # boundary throws away exactly the graded part of the measurement that
         # the walking-frame action space now makes available.
         passage_rotation_deg: Optional[float] = None
+        # The largest torso angle reached at any point in the episode.  The human
+        # studies report the AMPLITUDE of shoulder rotation as a function of A/S,
+        # and an agent can rotate and then turn back before entering; the passage
+        # angle alone would score that as "never turned".
+        max_rotation_deg = 0.0
         total_rotation = 0.0
         final_rotation = 0.0
         final_position_x = 0.0
@@ -652,6 +664,7 @@ class BAOExperimentRunner:
                     first_turn_step = step
             if first_sideways_step is None and _is_sideways_yaw(torso_rotation):
                 first_sideways_step = step
+            max_rotation_deg = max(max_rotation_deg, _abs_yaw(torso_rotation))
 
             # Score passage orientation when the body first reaches the wall
             # plane, not three metres later at the success plane: a model that
@@ -705,6 +718,7 @@ class BAOExperimentRunner:
             "passage_rotation_deg": (
                 None if passage_rotation_deg is None else float(passage_rotation_deg)
             ),
+            "max_rotation_deg": float(max_rotation_deg),
             "total_rotation": total_rotation,
             "first_turn_step": first_turn_step,
             "first_sideways_step": first_sideways_step,

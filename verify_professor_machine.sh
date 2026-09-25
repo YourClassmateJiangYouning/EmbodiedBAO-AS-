@@ -106,8 +106,12 @@ finally:
 
     section "5. rendered diagnostics"
     rm -rf professor_views
-    run "capture-level0" "$ISAAC_PY" capture_views.py --level 0 --outdir professor_views/level0
-    run "capture-level5" "$ISAAC_PY" capture_views.py --level 5 --outdir professor_views/level5
+    # The widest and the narrowest Level, derived rather than hard-coded so the
+    # pair keeps spanning the ladder when the sampling changes.
+    WIDE_LEVEL="$("$PY" -c 'import sys; sys.path.insert(0, "."); from environment import LEVEL_CHANNEL_WIDTHS as L; print(min(L))')"
+    NARROW_LEVEL_VIEW="$("$PY" -c 'import sys; sys.path.insert(0, "."); from environment import LEVEL_CHANNEL_WIDTHS as L; print(max(L))')"
+    run "capture-wide" "$ISAAC_PY" capture_views.py --level "$WIDE_LEVEL" --outdir professor_views/level0
+    run "capture-narrow" "$ISAAC_PY" capture_views.py --level "$NARROW_LEVEL_VIEW" --outdir professor_views/level5
     echo
     echo "Rendered files:"
     find professor_views -maxdepth 2 -type f -printf '%p  %s bytes\n' 2>/dev/null | sort || true
@@ -123,15 +127,28 @@ if [ "$RUN_MODEL_SMOKE" = "1" ]; then
         FAILURES=$((FAILURES + 1))
     else
         TAG="professor-smoke-$(date +%Y%m%d-%H%M%S)"
+        # Smoke the NARROWEST Level, derived rather than hard-coded: it is the one
+        # that requires a rotation, so it exercises the whole protocol.  A fixed
+        # index silently became a wide, trivially passable Level when the ladder
+        # was resampled to the reference 12 widths.
+        NARROW_LEVEL="$(
+            "$PY" - <<'PYEOF'
+import sys
+sys.path.insert(0, ".")
+from environment import LEVEL_CHANNEL_WIDTHS
+print(max(LEVEL_CHANNEL_WIDTHS))
+PYEOF
+        )"
         run "model-smoke" "$ISAAC_PY" main.py \
-            --model "$MODEL" --level 5 --episodes 1 --max_steps 30 \
+            --model "$MODEL" --level "$NARROW_LEVEL" --episodes 1 --max_steps 30 \
             --headless --save_obs --tag "$TAG"
     fi
 fi
 
 section "7. manual acceptance checklist"
 cat <<'EOF'
-Open professor_views/level0 and professor_views/level5 and confirm:
+Open professor_views/level0 (widest A/S) and professor_views/level5 (narrowest)
+and confirm:
   [ ] top.png shows a 16 m long, 5 m wide enclosed room.
   [ ] the blue obstacle wall is at the longitudinal midpoint x=8.
   [ ] the green far wall closes the room at x=16.

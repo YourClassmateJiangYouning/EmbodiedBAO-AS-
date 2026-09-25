@@ -41,12 +41,19 @@ from environment import ACTIONS, MOVE_STEP
 # find the previous protocol's episodes, count them as done, and quietly mix two
 # experiments in one dataset.
 #
+# v5-12widths: the ladder is the reference 12-width aperture series (A/S 2.0 ->
+#     0.9 by 0.1, five episodes per width), the goal is stated as a destination
+#     ("reach the red marker") rather than as "pass through the opening", and
+#     look_down was added so the agent can glance at its own body.  The task, the
+#     action space and the response format all changed, so v4 data is not
+#     comparable with v5.
+#
 # v4-walkframe: forward/backward/left/right translate in the WALKING frame -- at
 #     the far wall, whatever the torso is doing -- and turn_left/turn_right
 #     rotate the torso relative to that direction.  Every earlier run used
 #     body-frame translation, where a turn also redirected the walk.
 # ---------------------------------------------------------------------------
-PROTOCOL_TAG = "v4-walkframe"
+PROTOCOL_TAG = "v5-12widths"
 
 # ---------------------------------------------------------------------------
 # Action space
@@ -116,6 +123,13 @@ ACTION_TEMPLATES: Dict[str, str] = {
         "looking twice is not looking 60 degrees. Your body and your walking "
         "direction are unaffected"
     ),
+    "look_down": (
+        "glance downwards with your head camera, 45 degrees below your usual "
+        "view: you see the floor in front of you and your own body. Your gaze "
+        "returns to its usual direction as soon as you do anything else. Use it "
+        "to see how wide you are, which you cannot otherwise see. Your torso and "
+        "your walking direction are unaffected"
+    ),
 }
 
 
@@ -151,13 +165,12 @@ ACTION_OPTIONS_STRING: str = action_options_string(MOVE_STEP)
 # would be entitled to expect a rotated view, and would be reading a stale
 # mental model of its own sensors.
 #
-# The two families are spelled out separately because conflating them is easy
+# The three families are spelled out separately because conflating them is easy
 # and costly.  ``turn_*`` changes the torso and therefore the body's width across
-# the opening; ``look_*`` changes only where the head is aimed.  The head offset
-# left by ``look_*`` PERSISTS rather than snapping back -- stated explicitly
-# because it is not visible in any single frame, and a run that made three
-# look_left calls while believing it faced straight ahead would be judging its
-# alignment from a view rotated 90 degrees off the walking direction.
+# the opening; ``look_*`` changes only where the head is aimed, for exactly one
+# frame.  That last part needs saying: the glance is not visible in any single
+# frame alongside the frame it replaced, and an agent that believed a glance
+# persisted would either keep re-issuing it or think it was still looking sideways.
 ACTION_FRAME_NOTE = (
     "Your walking direction is fixed: it always points at the far wall. "
     "forward/backward/left/right are defined relative to that walking direction, "
@@ -168,10 +181,11 @@ ACTION_FRAME_NOTE = (
     "your torso is doing. Turning changes how your body is oriented; it does not "
     "steer you and it does not change what you see.\n"
     "look_left/look_right are a single glance 30 degrees to the left or right of "
-    "your walking direction. Your torso and your walking direction are "
-    "unaffected, the gaze returns to straight ahead as soon as you do anything "
-    "else, and two glances in the same direction do not add up. You cannot look "
-    "further to the side than 30 degrees."
+    "your walking direction, and look_down is a single glance 45 degrees below it. "
+    "Your torso and your walking direction are unaffected, each glance clears as "
+    "soon as you do anything else, and glances do not accumulate: two glances in "
+    "the same direction do not add up. You cannot look further to the side than "
+    "30 degrees, and you cannot look up."
 )
 
 # Compact comma-separated list used by the JSON response instruction.
@@ -181,9 +195,17 @@ ACTION_NAMES_TEXT: str = ", ".join(ACTIONS)
 # The unified task prompt
 # ---------------------------------------------------------------------------
 
+# The task is stated as a DESTINATION, not as an instruction about the obstacle:
+# the agent is told where to go and nothing about what is in the way.  That is the
+# design of the studies this benchmark follows -- Warren & Whang (1987) and Keizer
+# et al. (2013) sent participants to a table beyond the aperture and presented the
+# aperture as meaningless panels, and Lenkei et al. (2019) sent dogs to their owner
+# through an opening -- so the obstacle has to be discovered and judged rather than
+# announced.  Telling the agent to "pass through the opening" would hand it the
+# fact that there is an opening to fit through.
 TASK_INSTRUCTION = (
-    "You are a Unitree H1 humanoid robot. Your task is to pass through the "
-    "opening in the wall."
+    "You are a Unitree H1 humanoid robot. Your task is to reach the red marker on "
+    "the far wall."
 )
 
 RESPONSE_FORMAT_INSTRUCTION = (
@@ -267,21 +289,29 @@ def build_prompt(
             yaw = orientation.get("yaw")
     if yaw is not None:
         lines.append(f"- torso rotation (degrees): {float(yaw):.1f}")
-    # The head offset is where the agent is looking, and nothing in a single
-    # frame reveals it.  It is a one-look glance now, so this line is non-zero
-    # only on the step immediately after a look_left/look_right, and its value
-    # always matches the image the agent was handed.  The reference direction is
-    # the WALKING direction, not the torso: the eyes do not follow the torso, so
-    # "aimed the same way as your torso" would be false once the agent has turned.
-    # The value is generated by the environment already (get_robot_state returns
-    # "camera_yaw"); this only puts it in front of the model.
+    # The head offsets are where the agent is looking, and nothing in a single
+    # frame reveals them.  Each is a one-frame glance now, so these lines are
+    # non-zero only on the step immediately after the corresponding look_*, and
+    # their values always match the image the agent was handed.  The reference
+    # direction is the WALKING direction, not the torso: the eyes do not follow the
+    # torso, so "aimed the same way as your torso" would be false once the agent has
+    # turned.  The values come from get_robot_state ("camera_yaw"/"camera_pitch");
+    # this only puts them in front of the model.
     camera_yaw = state.get("camera_yaw")
     if camera_yaw is not None:
         lines.append(
-            f"- head camera offset from straight ahead (degrees): "
+            f"- head camera sideways offset from straight ahead (degrees): "
             f"{float(camera_yaw):.1f} (0 = looking straight ahead down your "
             f"walking direction; +30 = the glance to your left you just asked "
             f"for, which clears on your next action)"
+        )
+    camera_pitch = state.get("camera_pitch")
+    if camera_pitch is not None:
+        lines.append(
+            f"- head camera extra downward pitch (degrees): "
+            f"{float(camera_pitch):.1f} (0 = your usual view; +45 = the glance "
+            f"down at your own body you just asked for, which clears on your "
+            f"next action)"
         )
     lines.append(f"- step limit for this episode: {int(max_steps)}")
     parts.append("\n".join(lines))

@@ -42,6 +42,8 @@ import numpy as np
 from environment import (
     ACTIONS,
     BODY_CLEARANCE,
+    CAMERA_ACTIONS,
+    CAMERA_PITCH_STEP_DEG,
     CAMERA_TURN_STEP_DEG,
     LEVEL_CHANNEL_WIDTHS,
     MOVE_STEP,
@@ -69,6 +71,7 @@ from experiments import (
 from protocol import (
     ACTION_OPTIONS_STRING,
     HISTORY_LIMIT,
+    HISTORY_REASONING_CHARS,
     TASK_INSTRUCTION,
     build_prompt,
 )
@@ -94,12 +97,20 @@ def check(condition: bool, message: str) -> None:
 
 
 def test_channel_ladder() -> None:
-    expected_widths = {0: 0.90, 1: 0.80, 2: 0.74, 3: 0.68, 4: 0.57, 5: 0.45}
+    """The ladder must be the reference A/S series, not an arbitrary set.
+
+    12 widths from A/S = 2.0 down to 0.9 in steps of 0.1, which is the aperture
+    series of Keizer et al. (2013) following Warren & Whang (1987).  Asserted as
+    the SERIES rather than as a table of widths: a hand-written table would have to
+    be edited every time the shoulder width or the sampling changes, and the point
+    is that the ratios are the published ones.
+    """
+    expected_ratios = [round(2.0 - 0.1 * index, 1) for index in range(12)]
     check(
-        LEVEL_CHANNEL_WIDTHS == expected_widths,
-        f"channel widths drifted: {LEVEL_CHANNEL_WIDTHS} != {expected_widths}",
+        list(LEVEL_CHANNEL_WIDTHS) == list(range(12)),
+        f"the ladder has levels {sorted(LEVEL_CHANNEL_WIDTHS)}, expected 0-11",
     )
-    for level, expected_ratio in EXPECTED_A_S.items():
+    for level, expected_ratio in zip(sorted(LEVEL_CHANNEL_WIDTHS), expected_ratios):
         width = level_channel_width(level)
         ratio = a_s_ratio(width)
         check(
@@ -107,7 +118,23 @@ def test_channel_ladder() -> None:
             f"level {level}: A/S {ratio:.4f} rounds to {round(ratio, 2)}, "
             f"expected {expected_ratio}",
         )
-    print("[ok] channel ladder matches the brief (widths and A/S ratios)")
+        # The width must be the ratio times the body's own shoulder width, so the
+        # apertures are body-scaled exactly as the human studies' are.
+        check(
+            abs(width - ROBOT_SHOULDER_WIDTH * expected_ratio) < 1e-9,
+            f"level {level}: width {width} is not {expected_ratio} x the shoulder "
+            f"width {ROBOT_SHOULDER_WIDTH}",
+        )
+    # Widest first, so a sweep runs from trivially passable to rotation-required.
+    widths = [level_channel_width(level) for level in sorted(LEVEL_CHANNEL_WIDTHS)]
+    check(
+        all(a > b for a, b in zip(widths, widths[1:])),
+        f"the ladder is not ordered widest first: {widths}",
+    )
+    print(
+        f"[ok] channel ladder is the reference A/S series "
+        f"({expected_ratios[0]} -> {expected_ratios[-1]}, {len(expected_ratios)} widths)"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -230,35 +257,31 @@ def exact_fits_channel(root_x: float, root_z: float, yaw_deg: float, width: floa
 
 
 def test_frontal_feasibility() -> None:
-    """The declared 'can it pass head-on?' column must match the geometry.
+    """The frontal-passage column must match the geometry, derived not tabulated.
 
-    Level 4 is A/S = 1.00: channel 0.570 m against shoulders 0.570 m, so an
-    aligned body fits and a frontal passage is feasible.  Only Level 5 (0.45 m
-    against 0.57 m) is narrower than the shoulder.  This expected False at Level
-    4 while a 2 mm skin was added to the body box, which made the gate demand
-    0.574 m and turned the level's own advertised A/S into a value it could not
-    honour.
+    Frontal passage is feasible exactly when the channel is at least as wide as
+    the shoulders, i.e. A/S >= 1.0, which in the 12-width series is every Level
+    except the last (A/S = 0.9).  This is asserted as that identity rather than as
+    a hand-written table, so it stays true if the sampling changes.  It expected
+    False at A/S = 1.0 while a 2 mm skin was added to the body box, which made the
+    gate demand 0.574 m and turned that Level's own advertised A/S into a value it
+    could not honour.
     """
-    expected_frontal = {
-        0: True,
-        1: True,
-        2: True,
-        3: True,
-        4: True,
-        5: False,
-    }
     for level, width in LEVEL_CHANNEL_WIDTHS.items():
+        expected = a_s_ratio(width) >= 1.0 - 1e-12
         frontal_ok = exact_fits_channel(WALL_X, 0.0, 0.0, width)
         check(
-            frontal_ok == expected_frontal[level],
-            f"level {level}: frontal passage feasible={frontal_ok}, "
-            f"expected {expected_frontal[level]} (width {width}, "
-            f"shoulders {ROBOT_SHOULDER_WIDTH})",
+            frontal_ok == expected,
+            f"level {level}: frontal passage feasible={frontal_ok}, expected "
+            f"{expected} (A/S {a_s_ratio(width):.2f}, width {width}, shoulders "
+            f"{ROBOT_SHOULDER_WIDTH})",
         )
-    # Levels 4-5 must be comfortably passable once sideways.
-    for level in (4, 5):
+    # The levels that are not frontally passable must still be passable sideways.
+    for level, width in LEVEL_CHANNEL_WIDTHS.items():
+        if a_s_ratio(width) >= 1.0 - 1e-12:
+            continue
         check(
-            exact_fits_channel(WALL_X, 0.0, 90.0, LEVEL_CHANNEL_WIDTHS[level]),
+            exact_fits_channel(WALL_X, 0.0, 90.0, width),
             f"level {level} is not passable even sideways",
         )
     # Every Level must remain passable frontally at some angle up to 90 deg,
@@ -319,50 +342,32 @@ def test_off_axis_collision() -> None:
 def test_frontal_passability_matches_the_ladder() -> None:
     """Each Level's frontal passability must match what its A/S claims.
 
-    A/S is channel over nominal shoulder width, so the ladder promises that
-    Levels 0-4 can be walked through facing forward and only Level 5 cannot:
+    A/S is channel over shoulder width, so the ladder promises frontal passage for
+    A/S >= 1.0 -- every Level except A/S = 0.9, the narrowest -- and the transition
+    at exactly 1.0 must be flush rather than blocked.
 
-        0-3  A/S 1.19-1.58  comfortably wider than the shoulder
-        4    A/S 1.00       exactly equal, so an aligned body just fits
-        5    A/S 0.79       narrower than the shoulder, impossible frontally
-
-    Level 4 used to be blocked by a 2 mm skin added to the body box, which made
-    the gate demand 0.574 m for a 0.570 m shoulder.  The level labelled
-    A/S = 1.00 was therefore really 0.993, and every model scored 0/10 there --
-    a result open to the objection that they failed on the 2 mm rather than on
-    the affordance.  The skin is gone and a tolerance in the separating-axis
-    comparison keeps exactly-touching boxes clear instead, so this now asserts
-    the arithmetic the ladder advertises rather than the old pinch point.
+    That Level used to be blocked by a 2 mm skin added to the body box, which made
+    the gate demand 0.574 m for a 0.570 m shoulder.  The Level labelled A/S = 1.00
+    was therefore really 0.993, and every model scored 0/10 there -- a result open
+    to the objection that they failed on the 2 mm rather than on the affordance.
+    The skin is gone and a tolerance in the separating-axis comparison keeps
+    exactly-touching boxes clear instead, so this now asserts the arithmetic the
+    ladder advertises rather than the old pinch point.
     """
-    passable = {0, 1, 2, 3, 4}
     for level, width in sorted(LEVEL_CHANNEL_WIDTHS.items()):
-        ratio = width / ROBOT_SHOULDER_WIDTH
+        ratio = a_s_ratio(width)
         centred_ok = (
             _check_wall_collision(np.array([WALL_X, 0.0, 0.0]), 0.0, width)
             is None
         )
-        if level in passable:
-            check(
-                centred_ok,
-                f"level {level}: A/S {ratio:.2f} should be walkable facing "
-                f"forward, but a centred body collides in a {width:.2f} m channel",
-            )
-        else:
-            check(
-                not centred_ok,
-                f"level {level}: A/S {ratio:.2f} is narrower than the shoulder "
-                f"and must not be walkable frontally",
-            )
-        # The boundary is exact: A/S == 1.00 must be the widest impossible-to-
-        # wider transition, so nothing between it and 1.19 is flipped either way.
         check(
             (ratio >= 1.0) == centred_ok,
-            f"level {level}: frontal passability disagrees with A/S {ratio:.3f} "
-            f"at the 1.00 boundary",
+            f"level {level}: frontal passability ({centred_ok}) disagrees with "
+            f"A/S {ratio:.3f} at the 1.00 boundary",
         )
     print(
-        "[ok] frontal passability matches the ladder: Levels 0-4 fit facing "
-        "forward (A/S >= 1.00), Level 5 does not"
+        "[ok] frontal passability matches the ladder: every Level with A/S >= 1.00 "
+        "fits facing forward, the narrowest does not"
     )
 
 
@@ -406,21 +411,34 @@ def simulate_rotation_route(
 
 
 def test_rotation_route_reaches_goal() -> None:
-    """Every Level must be passable by rotating enough and then walking.
+    """Every Level must be passable: straight where A/S allows it, rotated where not.
 
-    Level 4 (A/S = 1.00) is passable both ways: straight (exactly, since the
-    shoulder and the channel are equal) and turned.  Level 5 is only passable
-    turned, so it is the Level that *requires* the rotation the benchmark is
-    measuring.
+    The minimum rotation is derived rather than tabulated: the smallest multiple of
+    15 degrees whose projected width fits the channel.  The narrowest Level
+    (A/S = 0.9) is the only one that cannot be walked through facing forward, and
+    the assertion that a smaller rotation fails is what makes rotation a graded
+    quantity rather than a switch.
     """
-    expected_turns = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 5}
     for level, width in sorted(LEVEL_CHANNEL_WIDTHS.items()):
-        turns = expected_turns[level]
-        trace, clear = simulate_rotation_route(width, turns)
-        check(clear, f"level {level}: the {turns}-turn route clipped a panel")
+        needed = next(
+            (
+                turns
+                for turns in range(0, 7)
+                if ROBOT_SHOULDER_WIDTH * abs(math.cos(math.radians(turns * TURN_STEP_DEG)))
+                + ROBOT_TORSO_THICKNESS * abs(math.sin(math.radians(turns * TURN_STEP_DEG)))
+                <= width + 1e-12
+            ),
+            None,
+        )
+        check(
+            needed is not None,
+            f"level {level}: not even 90 degrees of rotation fits {width:.3f} m",
+        )
+        trace, clear = simulate_rotation_route(width, needed)
+        check(clear, f"level {level}: the {needed}-turn route clipped a panel")
         check(
             trace and trace[-1][0] >= SUCCESS_X,
-            f"level {level}: the {turns}-turn route ended at "
+            f"level {level}: the {needed}-turn route ended at "
             f"x={trace[-1][0] if trace else 'n/a'}, never reached x >= {SUCCESS_X}",
         )
         max_abs_z = max(abs(point[1]) for point in trace)
@@ -429,27 +447,16 @@ def test_rotation_route_reaches_goal() -> None:
             f"level {level}: route wandered to |z|={max_abs_z:.3f}, outside the "
             f"{width:.2f} m channel",
         )
-
-    # Level 5 must actually be impossible without rotating, or "it rotated" would
-    # not be a meaningful thing to measure there.
-    trace, clear = simulate_rotation_route(LEVEL_CHANNEL_WIDTHS[5], 0)
-    check(
-        not trace or trace[-1][0] < SUCCESS_X,
-        "Level 5 was passable without rotating, so a rotation is not required",
-    )
-    # And 60 degrees must not be enough while 75 is: that gap is what makes the
-    # rotation a graded quantity rather than a switch.
-    trace, clear = simulate_rotation_route(LEVEL_CHANNEL_WIDTHS[5], 4)
-    check(
-        not trace or trace[-1][0] < SUCCESS_X,
-        "Level 5 passed at 60 degrees, so the measured 75 degree floor is wrong",
-    )
-    trace, clear = simulate_rotation_route(LEVEL_CHANNEL_WIDTHS[5], 5)
-    check(
-        clear and trace and trace[-1][0] >= SUCCESS_X,
-        "Level 5 did not pass at 75 degrees",
-    )
-    print("[ok] rotating then walking forward reaches x >= 11.0 m at every Level")
+        if needed:
+            # One turn less must not squeeze through, or the floor above is wrong.
+            trace, _clear = simulate_rotation_route(width, needed - 1)
+            check(
+                not trace or trace[-1][0] < SUCCESS_X,
+                f"level {level} passed at {(needed - 1) * TURN_STEP_DEG:.0f} "
+                f"degrees, so the measured {needed * TURN_STEP_DEG:.0f} degree "
+                f"floor is wrong",
+            )
+    print("[ok] rotating then walking forward reaches the goal at every Level")
 
 
 def test_walking_frame_is_fixed() -> None:
@@ -542,14 +549,14 @@ def test_run_tag_carries_the_protocol_version() -> None:
 def test_frontal_route_only_where_feasible() -> None:
     """Walking straight ahead must work exactly where the ladder says it does.
 
-    Level 4 (A/S = 1.00) is a frontal passage: shoulder and channel are equal, so
-    an aligned body fits.  Only Level 5, at A/S = 0.79, is narrower than the
-    shoulder and needs a rotation.  This used to expect Level 4 to be blocked,
-    back when a 2 mm skin made the gate demand more width than the level's own
-    A/S claimed.
+    A/S = 1.0 is a frontal passage: shoulder and channel are equal, so an aligned
+    body fits.  Only A/S = 0.9, the narrowest Level, is narrower than the shoulder
+    and needs a rotation.  Derived from the ratio rather than tabulated, so it
+    stays true for any sampling; it used to expect A/S = 1.0 to be blocked, back
+    when a 2 mm skin made the gate demand more width than that Level claimed.
     """
-    expected_frontal = {0: True, 1: True, 2: True, 3: True, 4: True, 5: False}
     for level, width in sorted(LEVEL_CHANNEL_WIDTHS.items()):
+        expected = a_s_ratio(width) >= 1.0 - 1e-12
         position = ROBOT_START.copy()
         reached = False
         blocked_by = None
@@ -564,36 +571,48 @@ def test_frontal_route_only_where_feasible() -> None:
                 reached = True
                 break
         check(
-            reached == expected_frontal[level],
-            f"level {level}: frontal walk reached={reached}, "
-            f"expected {expected_frontal[level]} (blocked by {blocked_by})",
+            reached == expected,
+            f"level {level}: frontal walk reached={reached}, expected {expected} "
+            f"(blocked by {blocked_by})",
         )
-    print("[ok] frontal walk succeeds at Levels 0-4 and not at Level 5")
+    print(
+        "[ok] frontal walk succeeds wherever A/S >= 1.00 and not at the narrowest "
+        "Level"
+    )
 
 
 def test_rotation_blocked_inside_wall_slab() -> None:
     """Rotating while fouling the wall must be reported as blocked.
 
-    Levels 4 and 5 are only solvable if the agent turns before reaching the
-    wall, so the gate that forbids turning once the shoulders are in the wall
-    plane is load-bearing.  The current pose is part of the swept arc, so a
-    robot that is already colliding cannot rotate its way free.
+    A Level is only solvable by rotating if the agent turns BEFORE reaching the
+    wall, so the gate that forbids turning once the shoulders are in the wall plane
+    is load-bearing.  The current pose is part of the swept arc, so a robot that is
+    already colliding cannot rotate its way free.
+
+    Tested at the narrowest Level, which is the one that needs a rotation: at a
+    wide Level the body fits at every angle, so a turn with the shoulders in the
+    wall plane is legal and there is nothing to forbid.
     """
     from environment import _turn_path_is_clear
 
-    for level in (4, 5):
-        width = LEVEL_CHANNEL_WIDTHS[level]
-        collision = _turn_path_is_clear(
-            np.array([WALL_X, 0.0, 0.0]), 0.0, TURN_STEP_DEG, width
-        )
-        check(
-            collision is not None,
-            f"level {level}: turning with the shoulders in the wall should collide",
-        )
+    narrow = max(LEVEL_CHANNEL_WIDTHS)  # widest A/S first, so the last is narrowest
+    check(
+        a_s_ratio(LEVEL_CHANNEL_WIDTHS[narrow]) < 1.0,
+        f"the last Level should be the one that needs a rotation, got A/S "
+        f"{a_s_ratio(LEVEL_CHANNEL_WIDTHS[narrow]):.2f}",
+    )
+    width = LEVEL_CHANNEL_WIDTHS[narrow]
+    collision = _turn_path_is_clear(
+        np.array([WALL_X, 0.0, 0.0]), 0.0, TURN_STEP_DEG, width
+    )
+    check(
+        collision is not None,
+        f"level {narrow}: turning with the shoulders in the wall should collide",
+    )
 
     # A pose that is already colliding must not be able to rotate out of it,
     # otherwise the agent can teleport through the wall in 15 degree hops.
-    width = LEVEL_CHANNEL_WIDTHS[4]
+    width = LEVEL_CHANNEL_WIDTHS[narrow]
     fouled_root: Tuple[float, float, float] = (0.0, 0.0, 0.0)
     fouled_yaw = 0.0
     found = False
@@ -607,7 +626,7 @@ def test_rotation_blocked_inside_wall_slab() -> None:
                 break
         if found:
             break
-    check(found, "could not construct a wall-fouling pose for Level 4")
+    check(found, f"could not construct a wall-fouling pose for Level {narrow}")
 
     for target in (fouled_yaw - 15.0, fouled_yaw + 15.0):
         check(
@@ -835,6 +854,7 @@ def test_action_space() -> None:
         "turn_right",
         "look_left",
         "look_right",
+        "look_down",
     ]
     check(ACTIONS == expected, f"unexpected action space: {ACTIONS}")
     for removed in ("reach_left_arm", "reach_right_arm", "retreat_left_arm",
@@ -844,8 +864,22 @@ def test_action_space() -> None:
         CAMERA_TURN_STEP_DEG == 30.0,
         f"camera step changed to {CAMERA_TURN_STEP_DEG}",
     )
+    check(
+        CAMERA_PITCH_STEP_DEG > 0.0,
+        "look_down must pitch the camera downwards",
+    )
     check(TURN_STEP_DEG == 15.0, f"turn step changed to {TURN_STEP_DEG}")
-    print("[ok] action space is the 6 locomotion actions plus 2 camera actions")
+    # look_down is the agent's only view of its own body, so it must be a camera
+    # action (one frame, no translation) rather than something that moves it.
+    check("look_down" in CAMERA_ACTIONS, "look_down is not a camera action")
+    check(
+        action_delta("look_down", MOVE_STEP) is None,
+        "look_down must not translate the robot",
+    )
+    print(
+        "[ok] action space is 6 locomotion actions plus 3 camera glances "
+        "(left, right, down)"
+    )
 
 
 def test_action_descriptions_match_the_real_step() -> None:
@@ -1084,7 +1118,16 @@ def test_history_is_full_episode_memory() -> None:
         max_steps=DEFAULT_MAX_STEPS,
     )
     check("\u2026" in clipped, "an over-long reasoning was not clipped")
-    check(len(clipped) < 4000, "an over-long reasoning blew up the prompt")
+    # The invariant is that the clipped reasoning contributes a bounded amount, not
+    # an absolute prompt size: the action list legitimately grows when the action
+    # space does.  Compare against the same prompt with no history at all.
+    baseline = build_prompt(state={}, history=[], max_steps=DEFAULT_MAX_STEPS)
+    check(
+        len(clipped) < len(baseline) + HISTORY_REASONING_CHARS + 400,
+        f"an over-long reasoning blew up the prompt "
+        f"({len(clipped)} chars vs a {len(baseline)} char baseline): clipping to "
+        f"{HISTORY_REASONING_CHARS} chars should bound the growth",
+    )
     check(
         "- step 0: forward -> executed" in clipped,
         "clipping the reasoning damaged the action/feedback line",
@@ -1101,8 +1144,8 @@ def test_history_is_full_episode_memory() -> None:
 
 def test_episode_defaults() -> None:
     check(
-        DEFAULT_EPISODES_PER_LEVEL == 10,
-        f"episodes per level is {DEFAULT_EPISODES_PER_LEVEL}, expected 10",
+        DEFAULT_EPISODES_PER_LEVEL == 5,
+        f"episodes per level is {DEFAULT_EPISODES_PER_LEVEL}, expected 5",
     )
     check(
         DEFAULT_MAX_STEPS == 30,
@@ -1118,8 +1161,9 @@ def test_episode_defaults() -> None:
         "the success plane is behind the start pose",
     )
     print(
-        "[ok] protocol defaults are 10 episodes x 30 steps, success one stride "
-        f"past the wall (x >= {SUCCESS_X})"
+        f"[ok] protocol defaults are {DEFAULT_EPISODES_PER_LEVEL} episodes x "
+        f"{DEFAULT_MAX_STEPS} steps, success one stride past the wall "
+        f"(x >= {SUCCESS_X})"
     )
 
 
@@ -1320,11 +1364,14 @@ def test_robot_has_room_to_rotate_before_the_wall() -> None:
         return float("nan")
 
     # Use the narrowest channel: it is the first to lose the ability to rotate.
-    limit = first_x_where_rotation_fails(5)
+    # (At a wide Level the body fits at every angle, so rotation is never blocked
+    # and the search legitimately finds no limit.)
+    narrow = max(LEVEL_CHANNEL_WIDTHS)
+    limit = first_x_where_rotation_fails(narrow)
     free_run = limit - start_x
     check(
         math.isfinite(limit),
-        "no rotation limit found for level 5 within the room",
+        f"no rotation limit found for Level {narrow} within the room",
     )
     check(
         free_run > 1.0,
@@ -1339,17 +1386,17 @@ def test_robot_has_room_to_rotate_before_the_wall() -> None:
     )
 
     # The limit must be real: the step before it is allowed, the step at it is not.
-    width5 = LEVEL_CHANNEL_WIDTHS[5]
+    width_narrow = LEVEL_CHANNEL_WIDTHS[narrow]
     check(
         _turn_path_is_clear(
-            np.array([limit - 0.02, 0.0, 0.0]), 0.0, TURN_STEP_DEG, width5
+            np.array([limit - 0.02, 0.0, 0.0]), 0.0, TURN_STEP_DEG, width_narrow
         )
         is None,
         f"turning at x={limit - 0.02:.2f} should still be allowed",
     )
     check(
         _turn_path_is_clear(
-            np.array([limit, 0.0, 0.0]), 0.0, TURN_STEP_DEG, width5
+            np.array([limit, 0.0, 0.0]), 0.0, TURN_STEP_DEG, width_narrow
         )
         is not None,
         f"turning at x={limit:.2f} should be blocked",

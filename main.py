@@ -2,7 +2,7 @@
 
 Usage:
     python main.py --model gpt-4o --level 0                 # one Level
-    python main.py --model gpt-4o --levels 0 1 2 3 4 5      # all six Levels
+    python main.py --model gpt-4o --all-levels        # the 12-width A/S series
     python main.py --model gpt-4o --all-levels
     python main.py --model random --level 3 --episodes 2    # smoke test
     python main.py --model gemini-2.5-pro --all-levels --resume
@@ -226,8 +226,13 @@ def preflight_model(model: str, timeout: float = 10.0) -> str:
 # Keep in sync with environment.LEVEL_CHANNEL_WIDTHS and the experiments
 # DEFAULT_* constants; test_bao_geometry.py asserts the values.
 # ---------------------------------------------------------------------------
-PROTOCOL_LEVELS: Sequence[int] = (0, 1, 2, 3, 4, 5)
-DEFAULT_EPISODES_PER_LEVEL = 10
+# Must not be derived by importing environment here: a top-level import of
+# environment runs before SimulationApp starts, fails, and latches
+# environment._HAS_ISAAC_SIM to False forever (see the regression test in
+# test_bao_geometry).  The duplication with experiments.DEFAULT_LEVELS is pinned
+# by a test so the two cannot drift.
+PROTOCOL_LEVELS: Sequence[int] = tuple(range(12))
+DEFAULT_EPISODES_PER_LEVEL = 5
 DEFAULT_MAX_STEPS = 30
 
 
@@ -260,7 +265,9 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         help="Run multiple Levels in one process",
     )
     parser.add_argument(
-        "--all-levels", action="store_true", help="Run Levels 0, 1, 2, 3, 4, 5"
+        "--all-levels",
+        action="store_true",
+        help="Run every Level of the A/S ladder (0-11, widest first)",
     )
     parser.add_argument(
         "--episodes",
@@ -402,6 +409,7 @@ def save_episodes_csv(
         "passed",
         "passed_sideways",
         "passage_rotation_deg",
+        "max_rotation_deg",
         "total_rotation",
         "first_turn_step",
         "total_steps",
@@ -430,6 +438,7 @@ def save_episodes_csv(
                     "passed": episode.get("passed"),
                     "passed_sideways": episode.get("passed_sideways"),
                     "passage_rotation_deg": episode.get("passage_rotation_deg"),
+                    "max_rotation_deg": episode.get("max_rotation_deg"),
                     "total_rotation": episode.get("total_rotation"),
                     "first_turn_step": episode.get("first_turn_step"),
                     "total_steps": episode.get("total_steps"),

@@ -33,9 +33,22 @@ from environment import (  # noqa: E402
     _translation_path_is_clear,
 )
 
+# The level at A/S = 1.0 is the one this is about: shoulder and channel equal.  It
+# is located by ratio rather than by index, because the ladder is now the reference
+# 12-width series and the index of the flush level is 10, not 4.
+_FLUSH_LEVEL = min(
+    (level for level, width in env.LEVEL_CHANNEL_WIDTHS.items()
+     if width >= env.ROBOT_SHOULDER_WIDTH - 1e-12),
+    key=lambda level: env.LEVEL_CHANNEL_WIDTHS[level],
+)
+_FLUSH_WIDTH = env.LEVEL_CHANNEL_WIDTHS[_FLUSH_LEVEL]
+
 OPTIONS = {
-    "A current (skin 0.000, L4 0.570)": (0.0, 0.570),
-    "B widened (skin 0.002, L4 0.574)": (0.002, 0.574),
+    f"A current (skin 0.000, L{_FLUSH_LEVEL} {_FLUSH_WIDTH:.3f})": (0.0, _FLUSH_WIDTH),
+    f"B widened (skin 0.002, L{_FLUSH_LEVEL} {_FLUSH_WIDTH + 0.004:.3f})": (
+        0.002,
+        _FLUSH_WIDTH + 0.004,
+    ),
 }
 
 
@@ -63,14 +76,15 @@ def frontal_walk(channel_width: float) -> tuple[bool, float, int, float]:
 
 def main() -> int:
     original_skin = env.BODY_CLEARANCE
-    original_l4 = env.LEVEL_CHANNEL_WIDTHS[4]
+    original_flush = env.LEVEL_CHANNEL_WIDTHS[_FLUSH_LEVEL]
     print(f"nominal shoulder width {ROBOT_SHOULDER_WIDTH:.4f} m")
     print(f"success plane x >= {SUCCESS_X}   start x = {ROBOT_START_POS[0]}")
+    print(f"the flush Level is {_FLUSH_LEVEL} at {_FLUSH_WIDTH:.3f} m (A/S 1.0)")
     print()
 
-    for name, (skin, l4_width) in OPTIONS.items():
+    for name, (skin, flush_width) in OPTIONS.items():
         env.BODY_CLEARANCE = float(skin)
-        env.LEVEL_CHANNEL_WIDTHS[4] = float(l4_width)
+        env.LEVEL_CHANNEL_WIDTHS[_FLUSH_LEVEL] = float(flush_width)
         required = ROBOT_SHOULDER_WIDTH + 2.0 * skin
         print(f"{name}")
         print(f"  body the gate tests: {required:.4f} m "
@@ -99,11 +113,14 @@ def main() -> int:
         print()
 
     env.BODY_CLEARANCE = original_skin
-    env.LEVEL_CHANNEL_WIDTHS[4] = original_l4
-    print("Both options make Level 4 passable by a straight walk.  They differ in")
-    print("the printed A/S (1.000 vs 1.007) and in where the collision boundary")
-    print("sits for the OTHER Levels: option A moves it 2 mm for every Level,")
-    print("option B leaves every other Level untouched.")
+    env.LEVEL_CHANNEL_WIDTHS[_FLUSH_LEVEL] = original_flush
+    print(
+        f"Both options make the flush Level ({_FLUSH_LEVEL}, A/S 1.0) passable by a "
+        f"straight walk."
+    )
+    print("They differ in the printed A/S (1.000 vs 1.007) and in where the")
+    print("collision boundary sits for the OTHER Levels: option A moves it 2 mm for")
+    print("every Level, option B leaves every other Level untouched.")
     return 0
 
 

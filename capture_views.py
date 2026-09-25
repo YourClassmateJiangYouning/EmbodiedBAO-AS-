@@ -42,6 +42,18 @@ import traceback
 import numpy as np
 
 
+def _available_levels() -> list:
+    """The ladder's Level indices, taken from the protocol rather than listed.
+
+    The choices used to be the literal [0..5]; when the ladder was resampled to the
+    reference 12 widths that turned the two Levels the diagnostics render into
+    arbitrary mid-ladder ones, and --level 11 was rejected outright.
+    """
+    from environment import LEVEL_CHANNEL_WIDTHS
+
+    return sorted(LEVEL_CHANNEL_WIDTHS)
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Capture diagnostic scene views.")
     parser.add_argument("--outdir", type=str, default="views")
@@ -49,7 +61,7 @@ def parse_args() -> argparse.Namespace:
         "--level",
         type=int,
         default=0,
-        choices=[0, 1, 2, 3, 4, 5],
+        choices=_available_levels(),
         help="Which A/S level's channel width to build",
     )
     parser.add_argument("--width", type=int, default=1024)

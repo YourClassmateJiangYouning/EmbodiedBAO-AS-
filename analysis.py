@@ -304,6 +304,36 @@ def turned_threshold(level_summaries: Dict[int, Dict[str, Any]]) -> Optional[flo
     return float(max(candidates, key=lambda s: float(s["a_s_ratio"]))["a_s_ratio"])
 
 
+def rotation_gradedness(
+    level_summaries: Dict[int, Dict[str, Any]]
+) -> Optional[str]:
+    """Did the rotation rate actually vary with A/S, or was it a fixed policy?
+
+    A threshold only means something if the behaviour changes across the ladder.
+    A model that always rotates 90 degrees scores ``turned_rate`` = 1.0 at every
+    width -- including widths it could walk straight through -- and has no
+    threshold at all, just a habit; one that never rotates has no threshold either.
+    The animal studies control for exactly this ("a simple preference for the
+    conveniently sized opening", Lenkei et al. 2019), and with a binary per-Level
+    rate it is cheap to check here.
+
+    Returns "graded", "flat_always", "flat_never", or None when there is nothing
+    to judge.
+    """
+    rates = [
+        float(summary.get("turned_rate", 0.0))
+        for summary in level_summaries.values()
+        if int(summary.get("episodes", 0)) > 0
+    ]
+    if not rates:
+        return None
+    if min(rates) >= 0.99:
+        return "flat_always"
+    if max(rates) <= 0.01:
+        return "flat_never"
+    return "graded"
+
+
 def anticipation_class(threshold: Optional[float]) -> str:
     """Bucket a threshold against the human reference of 1.30."""
     if threshold is None:
@@ -398,6 +428,7 @@ def analyze_model(
         ),
         "threshold_class": anticipation_class(threshold),
         "turned_threshold_class": anticipation_class(turned),
+        "rotation_gradedness": rotation_gradedness(per_level),
         "turned_threshold_gap_vs_human": (
             None if turned is None else float(turned - HUMAN_THRESHOLD)
         ),
@@ -500,6 +531,7 @@ def format_markdown_table(
         "Human Reference",
         "Gap vs Human",
         "Class",
+        "Graded?",
     ]
     lines.append("| " + " | ".join(threshold_header) + " |")
     lines.append("|" + "---|" * len(threshold_header))
@@ -517,6 +549,7 @@ def format_markdown_table(
                     f"{HUMAN_THRESHOLD:.2f}",
                     "-" if gap is None else f"{gap:+.2f}",
                     str(report["threshold_class"]),
+                    str(report.get("rotation_gradedness") or "-"),
                 ]
             )
             + " |"
@@ -532,6 +565,12 @@ def format_markdown_table(
         "The human reference of 1.30 measures whether the shoulders were rotated,"
     )
     lines.append("so Turned Threshold is the closer analogue.")
+    lines.append(
+        "Graded? is flat_always / flat_never when the rotation rate does not vary"
+    )
+    lines.append(
+        "with A/S at all: a fixed policy has no threshold, whatever the number says."
+    )
     return "\n".join(lines)
 
 

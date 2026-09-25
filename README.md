@@ -15,26 +15,35 @@ size, the A/S ratio, or the need to turn.**
 
 ## The A/S ladder
 
-A/S = channel width / shoulder width (0.57 m).
+A/S = channel width / shoulder width (0.57 m). The ladder is the **12-width
+aperture series of the human study this benchmark follows**: A/S = 2.0 down to 0.9
+in steps of 0.1, five episodes per width (Warren & Whang 1987; Keizer et al. 2013
+used the same 12 ratios × 3 trials). Sampling at 0.1 is what localises the
+threshold: the reference band 1.25–1.30 falls between two Levels.
 
-| Level | Channel | A/S | Frontal passage | Design intent |
-| :--- | :--- | :--- | :--- | :--- |
-| 0 | 0.90 m | 1.58 | easy, 0.165 m of slack | baseline |
-| 1 | 0.80 m | 1.40 | 0.115 m of slack | near the human threshold |
-| 2 | 0.74 m | 1.30 | 0.085 m of slack | humans turn here |
-| 3 | 0.68 m | 1.19 | 0.055 m of slack | below the human threshold |
-| 4 | 0.57 m | 1.00 | exactly touching: only dead centre | the geometric limit |
-| 5 | 0.45 m | 0.79 | impossible unturned | rotation required (≥75°) |
+Widest first, so a sweep runs from trivially passable toward rotation-required:
 
-The slack column is measured, not derived: it is the largest lateral offset from
-which a straight walk still reaches the goal (`tools/check_heading_frame.py`).
-Level 4 is why it is quoted: shoulder and channel are equal, so an aligned body
-fits but has no room for error, while a torso rotated 45° or more clears it by up
-to 0.175 m. Level 5 is narrower than the shoulders at every yaw below 75°, so it
-is the Level that requires the rotation this benchmark measures — and the
-rotation must happen **before** reaching the wall, because the turn gate samples
-the robot's current pose and rejects any rotation that would sweep the shoulders
-through a panel.
+| A/S | Channel | Frontal passage |
+| :--- | :--- | :--- |
+| 2.0 → 1.4 (Levels 0–6) | 1.140 → 0.798 m | easy |
+| 1.3 (Level 7) | 0.741 m | the human reference ratio |
+| 1.2 (Level 8) | 0.684 m | just below it |
+| 1.1 (Level 9) | 0.627 m | tight |
+| 1.0 (Level 10) | 0.570 m | exactly flush: only dead centre |
+| 0.9 (Level 11) | 0.513 m | **impossible unturned** — needs ≥60° of rotation |
+
+The slack is measured, not derived: at A/S = 1.0 the aligned body has zero
+tolerance, and the earlier coarse ladder showed the same effect at its own flush
+Level (`tools/check_heading_frame.py` prints the whole series). A/S = 0.9 is
+narrower than the shoulders at every yaw below 54°, so it is the Level that
+requires the rotation this benchmark measures — and the rotation must happen
+**before** reaching the wall, because the turn gate samples the robot's current
+pose and rejects any rotation that would sweep the shoulders through a panel.
+
+Why 12 points and not 6: a fixed policy ("always turn 90°") produces a high
+rotation rate at *every* width, including the ones that need no rotation at all.
+Only a curve with enough points can show that the rate does not vary with A/S, and
+that check is reported as `rotation_gradedness` in the threshold table.
 
 ## Scene
 
@@ -82,7 +91,8 @@ Eight discrete actions:
 | `forward` / `backward` | walk **0.75 m** toward / away from the far wall |
 | `left` / `right` | sidestep **0.75 m** to the walker's left / right |
 | `turn_left` / `turn_right` | rotate the torso **15°**; view unchanged |
-| `look_left` / `look_right` | turn the head camera **30°** off the walking direction |
+| `look_left` / `look_right` | one-frame glance **30°** off the walking direction |
+| `look_down` | one-frame glance **45°** down: the only view of its own body |
 
 Movement is in the **walking frame**, not the body frame: the walking direction
 always points at the far wall, and a torso rotation does not steer. `turn_*`
@@ -99,9 +109,9 @@ by side in `tools/check_heading_frame.py`; the shipped frame is:
 
 | Level | A/S | torso yaws that traverse |
 | :--- | :--- | :--- |
-| 0–3 | 1.58–1.19 | every yaw |
-| 4 | 1.00 | 0°, or 45°–90° |
-| 5 | 0.79 | 75°, 90° |
+| 0–9 | 2.0–1.1 | every yaw |
+| 10 | 1.0 | 0°, or 45°–90° |
+| 11 | 0.9 | 60°–90° |
 
 So the rotation a model adopts is graded in 15° steps, which is the quantity that
 can be compared with the human threshold of 1.30.
@@ -109,49 +119,56 @@ can be compared with the human threshold of 1.30.
 The **gaze** is pinned to the walking direction: rotating the torso changes the
 body's footprint and nothing the agent can see. That matches how a person crosses
 a narrow opening — eyes on the opening, shoulders rotated — and it keeps the
-channel in view at the large rotations this ladder asks for (Level 5 needs 75°,
-and 90° also works), which a torso-mounted camera could not: the channel subtends
-76° and would leave the field of view. The torso angle is reported to the agent as
-a number, which is the proprioception a person has.
+channel in view at the large rotations this ladder asks for, which a torso-mounted
+camera could not: the channel subtends 76° and would leave the field of view. The
+torso angle is reported to the agent as a number, which is the proprioception a
+person has.
+
+The eye is at body centre 1.68 m up, pitched 15° down, so the agent's own body is
+**outside the frame**. `look_down` exists for that: one 45° downward glance, which
+is how a person checks their own width. Whether the robot's own mesh actually
+enters that frame is an empirical question, checked on the lab machine with
+`--save_obs` (or `capture_views.py`); if it does not, the agent has no visual
+access to its own body at all and every Level is judged from the opening alone.
 
 The translation step is 0.75 m, approximately an adult walking step. From the
 `x = 0.5` start, ten forward translations reach the obstacle plane at `x = 8.0`,
 and **one more** clears the wall: success is scored at `x = 8.75`, because the task
 is to get through the opening and the body's largest half-extent is 0.306 m, so at
-8.75 the whole body is on the far side at any torso angle. Level 5 needs five 15°
-turns (75°, the measured minimum — 60° is not enough) plus those eleven steps, so
-the narrowest route is 16 of the 30 steps. The budget tests use the conservative
-six-turn/90° route, which is 17.
+8.75 the whole body is on the far side at any torso angle. The narrowest Level
+(A/S = 0.9) needs four 15° turns (60°, the measured minimum) plus those eleven
+steps, so the narrowest route is 15 of the 30 steps.
 
 ## Protocol
 
-* 6 Levels × **10 episodes** = **60 scored episodes** per model.
+* 12 Levels × **5 episodes** = **60 scored episodes** per model: the reference's
+  12-width aperture series with five repetitions per width.
 * Each episode: at most **30 steps**. Episodes end on success or exhaustion.
 * Wall collisions are **recorded but never terminate** an episode.
-* Every episode starts fresh from the same pose; Levels are independent.
+* Every episode starts fresh from the same pose; Levels are independent, and the
+  agent carries no memory between episodes.
 * Every Level uses the same prompt — see `protocol.py`.
 
 ### What the model is told each step
 
-The prompt contains the task, the eight actions with their real distances and their
+The prompt contains the task, the nine actions with their real distances and their
 mechanical effects, a note that the walking direction is fixed at the far wall and
 that the eyes stay on it when the torso turns, the robot's own position, torso
-rotation and **head-camera offset**, the step limit, and **the full action history
+rotation and both **head-camera offsets**, the step limit, and **the full action
+history
 for the episode so far**. Each history entry is
 `step N: <action> -> <feedback> | your reasoning: <the agent's own reasoning>`,
 listed oldest first, and the block explicitly invites the agent to use it to
 notice what it has already tried and whether it worked.
 
-The head-camera offset is reported because the two rotation families are not the
+The head-camera offsets are reported because the two rotation families are not the
 same thing and nothing in a single frame distinguishes them. `turn_left` /
 `turn_right` rotate the torso and leave the view **unchanged**: the eyes are pinned
-to the walking direction. `look_left` / `look_right` offset the gaze from that
-walking direction, and the offset **persists** — a torso turn does not remove it.
-An agent that had called `look_left` three times would otherwise be judging the
-opening from a view rotated 90 degrees off its path with nothing in the prompt
-saying so — being tested on guessing the interface rather than on judging its own
-body. The environment already produced this value in `get_robot_state()`; the
-prompt simply never rendered it.
+to the walking direction. `look_left` / `look_right` / `look_down` give a single
+glance on one axis, which **clears on the next action** and does not accumulate. An
+agent that had just glanced would otherwise read a view 30° off its path, or 45°
+down at its own feet, as if it were the normal forward view — being tested on
+guessing the interface rather than on judging its own body.
 
 The prompt never contains the channel width, the body dimensions, the A/S ratio,
 or any hint that a turn may be needed. `build_prompt()` takes no `level`
@@ -159,6 +176,20 @@ parameter, so leaking the geometry structurally is not possible. The action
 descriptions mention turning and the head camera, but only to document what the
 controls do; the task statement itself carries no advice about the solution, and
 the test suite checks those two properties separately.
+
+**The task is stated as a destination**, not as an instruction about the obstacle:
+"reach the red marker on the far wall". That mirrors the studies this benchmark
+follows — Keizer et al. sent participants to a table beyond the aperture and
+presented the aperture as meaningless panels; Lenkei et al. sent dogs to their
+owner through an opening — so the obstacle has to be discovered and judged rather
+than announced. Telling the agent to "pass through the opening" would hand it the
+fact that there is an opening to fit through. The marker is visible **only**
+through the opening (sight lines to it are blocked by the 2 m obstacle wall
+everywhere else), so obeying the instruction requires finding and using it.
+
+Note the goal marker sits at `x = 16.0` while success is scored at `x = 8.75`:
+the agent is scored as soon as it is clear of the wall, which is what "get through"
+means physically, and it never has to reach the marker itself.
 
 The history is the agent's own within-episode memory, not a sliding window, and
 it is not truncated. The action distances are derived from `MOVE_STEP` rather
@@ -284,7 +315,8 @@ ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_all_models.sh 2>&1 | tee sweep.lo
 ```
 
 `models.json` is the single definition of the roster: the script reads it, gives
-each model its own tag, and runs 6 Levels × 10 episodes × 30 steps per model
+each model its own protocol-versioned tag, and runs 12 Levels × 5 episodes × 30
+steps per model
 with `--resume`, so a second invocation continues instead of starting over. It
 refuses to start if the interpreter cannot import `isaacsim` — rather than
 failing 11 times and looking like a finished sweep — and it exits non-zero if
@@ -340,11 +372,16 @@ python test_bao_persistence.py  # 13 checks: interrupt and corruption safety of 
 The geometry suite re-derives the collision model independently and pins the
 properties that make the ladder meaningful:
 
-* the declared frontal/sideways feasibility of every Level,
+* the ladder is the reference 12-width A/S series (2.0 → 0.9 by 0.1) and every
+  width is that ratio times the body's own shoulder width,
+* the declared frontal feasibility of every Level, asserted against A/S >= 1.0
+  rather than from a table,
 * the body footprint stays centred on the root pose under rotation,
 * the rotate-then-walk-forward route reaches past the success plane at every
-  Level, and Level 5 is asserted to fail without a rotation and at 60°,
-* a frontal walk succeeds at Levels 0–4 and is blocked only at Level 5,
+  Level, with the minimum rotation derived per Level, and one turn less than that
+  minimum is asserted to fail,
+* a frontal walk succeeds wherever A/S >= 1.0 and is blocked at the narrowest
+  Level,
 * turns from a wall-fouling pose are always rejected,
 * the clearance boundary for a full 0→90° turn sits in front of the wall,
 * the robot has enough free run from its start pose to complete that turn,
@@ -352,6 +389,7 @@ properties that make the ladder meaningful:
 * box axes map so that a 2.0 m tall post gets a 2.0 m vertical extent,
 * every pair of visible surfaces differs enough to be told apart,
 * the prompt states the same step length that the agent actually moves,
+* look_down is a camera glance that does not translate the robot,
 * the prompt is identical, deterministic, and leak-free.
 
 ## Diagnostics on a new machine
@@ -421,8 +459,8 @@ gated by an analytic collision test. The torso footprint is an oriented rectangl
 separating-axis test, with **no inflation**: `BODY_CLEARANCE` is 0, and a
 `OVERLAP_TOLERANCE` of 2e-7 m is subtracted from each projection so that boxes
 touching exactly count as clear. That is what makes A/S = 1.00 a width an aligned
-body can actually pass; an earlier 2 mm skin made the same Level demand 0.574 m
-while still printing 1.00, so Level 4 was geometrically impossible and every model
+body can actually pass; an earlier 2 mm skin made that Level demand 0.574 m
+while still printing 1.00, so it was geometrically impossible and every model
 scored zero there for a reason that had nothing to do with its behaviour.
 Rotation checks sweep the whole 15° arc, and a pose that already fouls the wall
 cannot rotate free — so the agent cannot teleport through the wall one 15° hop at

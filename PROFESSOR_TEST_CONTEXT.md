@@ -38,16 +38,22 @@ body-frame convention, are in `tools/check_heading_frame.py`.
 
 ## Geometry that must not change
 
-The room became longer, not wider. The six channel widths remain:
+The ladder is the reference aperture series, 12 widths from A/S = 2.0 down to 0.9
+in steps of 0.1 (Warren & Whang 1987; Keizer et al. 2013), which at a 0.57 m
+shoulder is:
 
-`0.90, 0.80, 0.74, 0.68, 0.57, 0.45 m`
+`1.140, 1.083, 1.026, 0.969, 0.912, 0.855, 0.798, 0.741, 0.684, 0.627, 0.570, 0.513 m`
+
+Level 0 is the widest, so a sweep runs toward the narrowest, and the human
+reference band 1.25-1.30 is bracketed by Levels 7 (1.3) and 8 (1.2).
 
 The H1 analytic body remains `0.57 m` shoulder width by `0.22 m` torso thickness,
 with no inflation: the gate tests the body exactly, and a 2e-7 m tolerance in the
-separating-axis comparison keeps boxes that touch exactly clear. Therefore Levels
-0–4 permit a frontal passage (Level 4 exactly: shoulder and channel are equal, so
-an aligned body fits with no aim tolerance to spare), while Level 5 does not at
-any torso angle below 75 degrees and is the Level that requires a rotation.
+separating-axis comparison keeps boxes that touch exactly clear. Therefore every
+Level with A/S >= 1.0 permits a frontal passage (Level 10, A/S = 1.0 exactly:
+shoulder and channel are equal, so an aligned body fits with no aim tolerance to
+spare), while Level 11 (A/S = 0.9) does not at any torso angle below 54 degrees,
+so it needs at least 60 degrees on the agent's 15-degree lattice.
 
 ## Important implementation details
 
