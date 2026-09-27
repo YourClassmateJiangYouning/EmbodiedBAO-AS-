@@ -525,11 +525,15 @@ whether it had an effect:
 
 The Qwen family already answers without deliberation, so turning thinking off for
 the models that do deliberate makes the roster **more** comparable, not less. The
-overrides live in `ai_agent.MODEL_REQUEST_PARAMS`, apply on **both** request paths
-(the openai SDK and the built-in HTTP client — otherwise behaviour would depend on
-whether an unrelated package is installed), can be overridden with
+overrides live in `ai_agent.MODEL_REQUEST_PARAMS`, can be overridden with
 `BAO_MODEL_PARAMS`, and are written into each run's `logs/{tag}/args.json` so the
-report cannot disagree with what was sent.
+report cannot disagree with what was sent. Both request paths are *meant* to apply
+them, so that behaviour does not depend on whether an unrelated package is
+installed — but only the built-in HTTP client is verified here, because the `openai`
+package is not installed on the machine these runs happen on. That path is covered
+by `test_parameterised_models_survive_the_compat_client`; the SDK path passes the
+same values as call kwargs and would need `extra_body` if its `create()` rejects
+unknown names.
 
 They change what the model *does*, so they are a reported configuration: a run with
 them removed is the ablation, and `deepseek-v4.1-flash` at its default setting costs
