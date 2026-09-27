@@ -364,6 +364,29 @@ python analysis.py                     # every model found under results/
 python analysis.py --tag gemini-v1     # one exact run
 ```
 
+**Run this before every sweep**, because `run_all_models.sh`'s own preflight
+cannot cover it:
+
+```bash
+python tools/verify_models.py          # one real text+image request per candidate
+```
+
+The preflight in `main.py` asks `/v1/models` for a status code, which proves the
+endpoint and the key are alive but says nothing about whether a *named* model has a
+working channel behind it. Measured twice, at a cost of about four hours each:
+
+* `claude-sonnet-4-5-20250929` is listed by `/v1/models` and still fails every
+  call — HTTP 500 `get_channel_failed` ("no available channel for this model in
+  group auto"), then HTTP 400 `Access to Bedrock models is not allowed for this
+  account`. It is now excluded; `claude-sonnet-4-6` answers and sees.
+* The runner does not treat a failed call as fatal. It records the episode with
+  `end_reason=max_steps`, `passed=false` and `invalid_response_count=30`, at the
+  start position — which looks exactly like a model that refused to move, and is
+  why `invalid_response_count` has to be checked before any analysis.
+
+`tools/verify_models.py` catches both cases because it sends a real request
+carrying a solid red image and requires the model to name the colour.
+
 ### Useful flags
 
 | Flag | Purpose |
@@ -511,6 +534,24 @@ report cannot disagree with what was sent.
 They change what the model *does*, so they are a reported configuration: a run with
 them removed is the ablation, and `deepseek-v4.1-flash` at its default setting costs
 about 43 h for one sweep instead of about 7 h.
+
+Two traps this configuration has already sprung, both worth knowing before trusting
+the table above:
+
+1. `tools/probe_reasoning.py` measures the gateway with a **raw HTTP request**, which
+   is not the path the runner uses. The two agree because they send the same JSON,
+   so a parameter can measure perfectly and still be unusable in a sweep. The only
+   test that covers the runner's own path is
+   `test_parameterised_models_survive_the_compat_client`, and it exists because it
+   did not: the standard-library client declared four keyword arguments, the runner
+   passed a fifth, and **every call to the only two parameterised models on the
+   roster** died locally with `TypeError: ... unexpected keyword argument
+   'reasoning_effort'` before reaching the network. The nine parameterless models
+   were unaffected, so no amount of smoke-testing them would have found it.
+2. A model with parameters is therefore the risky case, not the exotic one. Run the
+   parameterised models once, end to end, after any change to `ai_agent.py`, and
+   check the recorded `invalid_response_count` before analysing: 30 means the whole
+   episode was fallback steps at the start position.
 
 ## Notes on the physics model
 

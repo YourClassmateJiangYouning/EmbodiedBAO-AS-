@@ -321,6 +321,7 @@ class _OpenAICompatCompletions:
         messages: List[Dict[str, Any]],
         temperature: float = 0.0,
         response_format: Optional[Dict[str, Any]] = None,
+        **extra: Any,
     ) -> _OpenAICompatResponse:
         payload: Dict[str, Any] = {
             "model": model,
@@ -329,6 +330,17 @@ class _OpenAICompatCompletions:
         }
         if response_format is not None:
             payload["response_format"] = response_format
+        # Per-model request parameters arrive here TWICE -- once merged below by
+        # request_params_for (this class owns that merge so the parameter cannot
+        # depend on which request path is in use) and once as caller kwargs, since
+        # AgentAPI._request builds its kwargs the same way for both paths.  Without
+        # this catch-all the duplicated copy is a TypeError: an unregistered name
+        # like reasoning_effort or thinking does not match the explicit signature,
+        # every call fails before it reaches the network, and the runner records 30
+        # bodiless steps at the start position -- measured on the real run, both
+        # models that carry parameters (deepseek-v4.1-flash, glm-4.6v) failed this
+        # way while the nine models without parameters were unaffected.
+        payload.update(extra)
         # Per-model overrides (e.g. thinking off) must reach BOTH request paths:
         # this one is used when the openai package is missing, so applying them
         # only to the openai client would make the model's behaviour depend on the

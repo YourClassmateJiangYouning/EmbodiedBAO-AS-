@@ -73,12 +73,13 @@
       "verified": "ok"
     },
     {
-      "runner": "claude-sonnet-4-5-20250929",
-      "label": "Claude Sonnet 4.5",
+      "runner": "claude-sonnet-4-6",
+      "label": "Claude Sonnet 4.6",
       "group": "reference",
       "origin": "US",
-      "probe_latency_s": 2.6,
-      "verified": "ok"
+      "probe_latency_s": 2.7,
+      "verified": "ok",
+      "note": "Substituted for claude-sonnet-4-5-20250929, which this account cannot reach: see excluded. Same family and tier, so the roster's model-class spread is unchanged. It also has an explicit claude-sonnet-4-6-thinking sibling on the gateway, which is the pair needed to check whether extended thinking is on -- the plain id is the non-deliberating route, and unlike glm there is no parameter whose effect we have to trust."
     },
     {
       "runner": "deepseek-v4.1-flash",
@@ -100,6 +101,7 @@
     }
   ],
   "excluded": [
+    {"model": "claude-sonnet-4-5-20250929", "reason": "no working channel: HTTP 500 get_channel_failed ('no available channel for this model in group auto'), then HTTP 400 'Access to Bedrock models is not allowed for this account'. The name IS listed by /v1/models, so a listing or status-code check cannot catch it -- only a real request can. Replaced by claude-sonnet-4-6, which answers and sees."},
     {"model": "qwen2.5-vl-72b-instruct", "reason": "HTTP 500"},
     {"model": "z-ai/glm-4.5v", "reason": "HTTP 500"},
     {"model": "z-ai/glm-4.6", "reason": "HTTP 500"},

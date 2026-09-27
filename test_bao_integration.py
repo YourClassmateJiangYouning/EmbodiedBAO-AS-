@@ -1509,6 +1509,78 @@ def test_head_camera_offset_reaches_the_model() -> None:
     )
 
 
+def test_parameterised_models_survive_the_compat_client() -> None:
+    """The stdlib client must swallow per-model parameters it does not name.
+
+    Measured failure this pins down.  deepseek-v4.1-flash and glm-4.6v are the only
+    two models on the roster that carry request parameters (reasoning_effort and
+    thinking).  On the real run every one of their calls died locally with
+
+        TypeError: _OpenAICompatCompletions.create() got an unexpected keyword
+        argument 'reasoning_effort'
+
+    because AgentAPI._request merges request_params_for() into the call kwargs while
+    the compat client's explicit signature only named model/messages/temperature/
+    response_format.  Nothing reached the network, so the runner recorded 30
+    bodiless steps per episode at the start position and the run looked exactly
+    like a gateway outage.  The nine parameterless models were unaffected -- which
+    is why this needs its own test: the parameterised models are the ones being
+    measured, and a smoke run of any other model cannot catch it.
+    """
+    import ai_agent
+
+    sent: List[Dict[str, Any]] = []
+
+    class _FakeResponse:
+        def __init__(self) -> None:
+            self._body = json.dumps(
+                {"choices": [{"message": {"content": '{"action": "forward"}'}}]}
+            ).encode("utf-8")
+
+        def read(self) -> bytes:
+            return self._body
+
+        def __enter__(self) -> "_FakeResponse":
+            return self
+
+        def __exit__(self, *exc: Any) -> bool:
+            return False
+
+    def fake_urlopen(request: Any, timeout: Any = None) -> "_FakeResponse":
+        sent.append(json.loads(request.data.decode("utf-8")))
+        return _FakeResponse()
+
+    original = ai_agent.urllib.request.urlopen
+    ai_agent.urllib.request.urlopen = fake_urlopen  # type: ignore[assignment]
+    try:
+        client = ai_agent._OpenAICompatClient("k", "http://example.invalid/v1", 5.0)
+        for model, params in (
+            ("deepseek-v4.1-flash", {"reasoning_effort": "none"}),
+            ("glm-4.6v", {"thinking": {"type": "disabled"}}),
+        ):
+            sent.clear()
+            completion = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": "hi"}],
+                temperature=0.0,
+                **params,
+            )
+            check(bool(sent), f"{model}: no request was sent")
+            for key, value in params.items():
+                check(
+                    sent[0].get(key) == value,
+                    f"{model}: {key} did not reach the payload "
+                    f"(got {sent[0].get(key)!r}, want {value!r})",
+                )
+            check(
+                completion.choices[0].message.content == '{"action": "forward"}',
+                f"{model}: the reply did not survive the compat client",
+            )
+            print(f"[ok] {model}: {sorted(params)} accepted and sent")
+    finally:
+        ai_agent.urllib.request.urlopen = original  # type: ignore[assignment]
+
+
 def main() -> int:
     tests = [
         test_episode_record_contract,
@@ -1527,6 +1599,7 @@ def main() -> int:
         test_invalid_action_is_recorded,
         test_episode_memory_reaches_the_model,
         test_head_camera_offset_reaches_the_model,
+        test_parameterised_models_survive_the_compat_client,
         test_full_protocol_and_analysis,
         test_progress_callback_signature,
         test_cli_flags_reach_the_runner,
