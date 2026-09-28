@@ -213,6 +213,18 @@ class MemoryExperimentRunner:
         self.logs_root = logs_root
         self.max_calls = int(max_calls)
         self.save_obs = bool(save_obs)
+        if self.save_obs:
+            # One warning here beats one per step: without Pillow the saver catches
+            # its own failure and warns, which across a 25,000-step sweep is a wall
+            # of text that hides everything else.
+            try:
+                import PIL  # noqa: F401
+            except Exception as exc:
+                print(
+                    f"[memory] WARNING: --save_obs needs Pillow ({type(exc).__name__}: "
+                    f"{exc}); observations are off for this run"
+                )
+                self.save_obs = False
         self.seed = int(seed)
         self.calls = 0
         self.image_size = int(image_size)

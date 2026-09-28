@@ -603,6 +603,28 @@ def test_the_frame_size_is_set_for_the_client() -> None:
 
 
 def test_save_obs_writes_a_frame_per_step() -> None:
+    try:
+        import PIL  # noqa: F401
+    except Exception:
+        # The runner is supposed to disable observations rather than fail when
+        # Pillow is missing, which is the case on the Isaac Sim workstation, so
+        # there is nothing to check here beyond that behaviour.
+        runner = memory_experiment.MemoryExperimentRunner(
+            env=MockEnvironment(),
+            model="fake-model",
+            runs=[1],
+            results_root=os.path.join(WORKDIR, "results"),
+            logs_root=os.path.join(WORKDIR, "logs"),
+            save_obs=True,
+        )
+        check(
+            runner.save_obs is False,
+            "without Pillow the runner should switch observations off instead of "
+            "warning once per step for the whole sweep",
+        )
+        print("[skip] --save_obs needs Pillow (absent here); the runner disables it with one warning")
+        return
+
     fresh_workspace()
     with patched_adapter():
         runner = memory_experiment.MemoryExperimentRunner(
