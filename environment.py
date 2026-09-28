@@ -36,6 +36,12 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
+# The action space and the step length are defined in protocol.py, which is pure
+# text and therefore importable before SimulationApp exists.  They are re-exported
+# here so that ``from environment import ACTIONS, MOVE_STEP`` keeps working, and so
+# that the controls are described in exactly one place.
+from protocol import ACTIONS, MOVE_STEP
+
 try:
     from isaacsim.core.api import World
     from isaacsim.core.prims import XFormPrim
@@ -143,8 +149,8 @@ ROBOT_START_YAW_DEG = 0.0
 # nothing about the affordance being measured.  One stride past the wall plane is
 # 8.75 m, and the body's largest half-extent is 0.306 m, so at 8.75 the whole body
 # is on the far side whatever its torso angle.  Written as a literal because
-# MOVE_STEP is defined below; test_bao_geometry asserts SUCCESS_X == WALL_X +
-# MOVE_STEP, so the two cannot drift apart.
+# MOVE_STEP is imported from protocol.py above; test_bao_geometry asserts
+# SUCCESS_X == WALL_X + MOVE_STEP, so the two cannot drift apart.
 SUCCESS_X = 8.75
 
 # ---------------------------------------------------------------------------
@@ -176,8 +182,8 @@ _APERTURE_RATIOS: Tuple[float, ...] = (
     2.0, 1.9, 1.8, 1.7, 1.6, 1.5, 1.4, 1.3, 1.2, 1.1, 1.0, 0.9,
 )
 
-# Approximate step length for a 1.80 m adult man: 1.80 * 0.415 ~= 0.747 m.
-MOVE_STEP = 0.75
+# Approximate step length for a 1.80 m adult man is defined in protocol.py and
+# imported above, together with the action list, so the controls have one home.
 TURN_STEP_DEG = 15.0
 # Collision sampling within one discrete turn.  Sampling only at TURN_STEP_DEG
 # checks the two endpoint poses but can miss a corner touching a wall or room
@@ -274,17 +280,8 @@ OVERLAP_TOLERANCE = 2e-7
 ARM_HANG_SHOULDER_PITCH_RAD = 0.0
 ARM_HANG_ELBOW_PITCH_RAD = 1.57
 
-ACTIONS = [
-    "forward",
-    "backward",
-    "left",
-    "right",
-    "turn_left",
-    "turn_right",
-    "look_left",
-    "look_right",
-    "look_down",
-]
+# ACTIONS is imported from protocol.py above, next to the descriptions that
+# document each action, so the action space has exactly one definition.
 
 # Head-only camera controls, all of them single-frame glances that clear on the
 # next action.  ``look_down`` is the agent's only view of its own body.

@@ -32,7 +32,35 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Sequence
 
-from environment import ACTIONS, MOVE_STEP
+# ---------------------------------------------------------------------------
+# The action space and the step length
+# ---------------------------------------------------------------------------
+# These two live here, not in environment.py, because they are facts about the
+# CONTROLS and because environment.py cannot be imported before SimulationApp has
+# started: ``isaacsim.core`` is importable only once the app exists, so a
+# module-level import of environment latches ``_HAS_ISAAC_SIM`` to False and the
+# scene can never be built.  protocol.py is pure text and parses the action names,
+# so everything that needs to describe a control -- including the Stage 2 runner,
+# which is started as a script -- can import it first.  ``environment`` re-exports
+# both names, so ``from environment import MOVE_STEP`` keeps working.
+#
+# Approximate step length for a 1.80 m adult man: 1.80 * 0.415 ~= 0.747 m.
+# It is never reassigned at runtime; the ``--move_step`` flag reaches the
+# environment through its task dict instead, which is why a copy here cannot go
+# stale.
+MOVE_STEP = 0.75
+
+ACTIONS = [
+    "forward",
+    "backward",
+    "left",
+    "right",
+    "turn_left",
+    "turn_right",
+    "look_left",
+    "look_right",
+    "look_down",
+]
 
 # ---------------------------------------------------------------------------
 # Protocol version

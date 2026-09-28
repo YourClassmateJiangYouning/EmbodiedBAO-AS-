@@ -261,6 +261,8 @@ class AgentAdapter:
         self.history: List[Dict[str, str]] = []
         self._callable = None
         self._agent = None
+        # Lazily built, only for the Stage 2 note call; see note().
+        self._text_agent = None
 
         import ai_agent
 
@@ -335,6 +337,28 @@ class AgentAdapter:
         if step is not None:
             entry["step"] = int(step)
         self.history.append(entry)
+
+    def note(self, prompt: str) -> str:
+        """Ask the model for free text: the Stage 2 note, stored verbatim.
+
+        Built separately from the action client because the action path may be a
+        module-level ``ai_agent.get_action`` function with no text entry point of
+        its own.  Nothing is parsed and nothing is retried into shape here: the
+        note IS the datum, so a reply that came back as prose must not be repaired
+        into JSON, and an empty reply is recorded rather than replaced.
+        """
+        import ai_agent
+
+        if self._text_agent is None:
+            self._text_agent = ai_agent.create_agent(
+                model=self.model, log_file=self.log_file
+            )
+        get_text = getattr(self._text_agent, "get_text", None)
+        if get_text is None:
+            # The random baseline has no model behind it; give it a note anyway so
+            # a smoke test can exercise the memory path end to end.
+            return "random baseline: no note"
+        return str(get_text(prompt) or "")
 
     def _normalize(self, raw: Any) -> Tuple[Optional[str], str, str]:
         """Return ``(action_name, raw_text, reasoning)`` for a model reply."""

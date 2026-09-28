@@ -1171,6 +1171,55 @@ def test_module_does_not_import_the_environment() -> None:
     print(f"[ok] memory_metrics imports only {sorted(imported)} and can be loaded before SimulationApp")
 
 
+def test_no_stage_2_module_can_load_the_environment() -> None:
+    """No module-level import path from Stage 2 to ``environment``.
+
+    ``isaacsim.core`` is importable only after ``SimulationApp`` has started, so a
+    module-level import of ``environment`` latches ``_HAS_ISAAC_SIM`` to False, the
+    scene can never be built, and the process runs to completion having built
+    nothing.  Python cannot report that at import time -- it is a property of the
+    import graph, which is what this walks.  It is here because the first version of
+    the Stage 2 runner imported ``protocol``, which imported ``environment``, and
+    only a check like this one catches it.
+    """
+    root = os.path.dirname(MODULE_PATH)
+
+    def module_level_imports(name: str) -> set:
+        path = os.path.join(root, name + ".py")
+        with open(path, encoding="utf-8") as handle:
+            tree = ast.parse(handle.read(), filename=path)
+        found = set()
+        for node in tree.body:
+            if isinstance(node, ast.Import):
+                found.update(alias.name.split(".")[0] for alias in node.names)
+            elif isinstance(node, ast.ImportFrom):
+                found.add((node.module or "").split(".")[0])
+        return found
+
+    graph = {
+        name: module_level_imports(name)
+        for name in ("protocol", "memory_metrics", "memory_protocol", "memory_experiment")
+    }
+    reached: set = set()
+    stack = ["memory_protocol", "memory_experiment"]
+    while stack:
+        current = stack.pop()
+        if current in reached or current not in graph:
+            continue
+        reached.add(current)
+        stack.extend(graph[current])
+    check(
+        "environment" not in reached,
+        f"the module-level import graph from Stage 2 reaches environment via "
+        f"{sorted(reached)}; importing environment before SimulationApp exists "
+        "latches the scene unbuildable",
+    )
+    print(
+        f"[ok] nothing Stage 2 imports at module level reaches environment "
+        f"(walked {len(reached)} modules from memory_protocol and memory_experiment)"
+    )
+
+
 def main() -> int:
     tests = [
         test_constants_match_the_simulator,
@@ -1198,6 +1247,7 @@ def main() -> int:
         test_round_record_is_shaped_in_one_place,
         test_note_log_path_names_the_run_and_the_round,
         test_module_does_not_import_the_environment,
+        test_no_stage_2_module_can_load_the_environment,
     ]
     failures = 0
     for test in tests:

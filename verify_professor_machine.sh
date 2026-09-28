@@ -84,6 +84,7 @@ run "geometry-tests" "$PY" test_bao_geometry.py
 run "integration-tests" "$PY" test_bao_integration.py
 run "persistence-tests" "$PY" test_bao_persistence.py
 run "memory-tests" "$PY" test_bao_memory.py
+run "memory-runner-tests" "$PY" test_bao_memory_runner.py
 run "passability-probe" "$PY" tools/passability_probe.py
 
 section "3. Isaac Sim import"

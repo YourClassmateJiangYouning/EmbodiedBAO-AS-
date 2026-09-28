@@ -307,7 +307,9 @@ Either threshold classifies a model:
 | `analysis.py` | per-Level metrics, A/S threshold, reports and plots |
 | `memory_metrics.py` | Stage 2 measures: how wide the body is across an opening, how close a round came to fitting, actions wasted, attempt labels, and the pre-registered insight/gradual/perseveration criteria. Standard library only, no Isaac Sim, no API |
 | `memory_protocol.py` | Stage 2 protocol: the run plan (6 runs x 17 rounds), the three prompts, the memory block, and the round record |
+| `memory_experiment.py` | Stage 2 runner: the round loop, the note call between attempts, the call budget and resume. Run it as `python memory_experiment.py --model <name> --resume` |
 | `test_bao_memory.py` | offline checks for both of the above, against an independent projection of the body rectangle and the simulator's own collision gate |
+| `test_bao_memory_runner.py` | offline end-to-end checks of the runner against a mock environment and a scripted agent: the memory, the note calls, the phase change, resume |
 | `capture_views.py` | render the scene from fixed viewpoints (diagnostics) |
 | `persistence.py` | atomic writes, tag sanitising, corrupt-file quarantine: the durability layer every writer goes through |
 | `test_bao_geometry.py` | offline geometry/protocol verification (no Isaac Sim needed) |
@@ -391,6 +393,40 @@ working channel behind it. Measured twice, at a cost of about four hours each:
 
 `tools/verify_models.py` catches both cases because it sends a real request
 carrying a solid red image and requires the model to name the colour.
+
+### The repeated-attempt experiment (Stage 2)
+
+`STAGE23_DESIGN.md` is the spec. Each model is run 6 times; a run is 12 attempts at
+an opening it cannot walk through facing forward (A/S 0.80) followed by 5 at one it
+can (A/S 1.10), with a text-only note call between attempts that is the only thing
+it can read about the attempt next time. 17 attempts and 16 note calls per run,
+about 2,300 model calls per model for all six runs.
+
+```bash
+ISAAC_PY=/home/ybh/isaacsim/python.sh
+$ISAAC_PY memory_experiment.py --model qwen3-vl-32b-instruct --runs 1-6 --headless --resume
+```
+
+Cheap checks before committing to the full thing — the first needs no API key, and
+both stop cleanly at the budget with every finished attempt on disk:
+
+```bash
+$ISAAC_PY memory_experiment.py --model random --runs 1 --headless --max_calls 40
+$ISAAC_PY memory_experiment.py --model qwen3-vl-32b-instruct --runs 1 --headless --max_calls 60
+```
+
+To leave it running across a dropped SSH session:
+
+```bash
+cd ~/EmbodiedBAO-AS- && export BOYUE_API_KEY='sk-...' && nohup bash -c '/home/ybh/isaacsim/python.sh memory_experiment.py --model qwen3-vl-32b-instruct --runs 1-6 --headless --resume' > memory_sweep.log 2>&1 & echo $! > memory_sweep.pid
+```
+
+Round records, step sidecars and a checkpoint live under
+`results/memory/{model}/{tag}/`, keyed by the tag `v8-memory-a08-a11-cum` for runs
+1-4 and `-roll` for runs 5-6; note prompts and replies live under
+`logs/{tag}/run{NN}_round{NN}_note.txt`. The `results/memory/` prefix is deliberate:
+Stage 1's `analysis.py` looks for `results/level*`, so it can never mistake a Stage 2
+record for a threshold episode.
 
 ### Useful flags
 
@@ -576,7 +612,7 @@ the two archives and nothing else drops nothing.
 ### From a fresh clone, offline
 
 ```bash
-python test_bao_geometry.py; python test_bao_integration.py; python test_bao_persistence.py
+python test_bao_geometry.py; python test_bao_integration.py; python test_bao_persistence.py; python test_bao_memory.py; python test_bao_memory_runner.py
 python lab_logs/export_table.py
 python lab_logs/analyze_actions.py
 python lab_logs/analyze_reasoning.py
@@ -608,7 +644,8 @@ Everything that can be decided without a renderer runs on plain Python:
 python test_bao_geometry.py     # 37 checks: ladder, collision gate, routes, colours, prompt
 python test_bao_integration.py  # 20 checks: full protocol, tagged runs, CLI flags, against a mock environment
 python test_bao_persistence.py  # 13 checks: interrupt and corruption safety of every artefact written
-python test_bao_memory.py       # 25 checks: the Stage 2 measures and prompts, against an independent model and the real gate
+python test_bao_memory.py       # 26 checks: the Stage 2 measures and prompts, against an independent model and the real gate
+python test_bao_memory_runner.py # 9 checks: the Stage 2 runner end to end against a mock environment and a scripted agent
 ```
 
 The geometry suite re-derives the collision model independently and pins the
