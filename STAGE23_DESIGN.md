@@ -397,6 +397,8 @@ acquired = (d >= 2) and (最后一次成功在最后 5 回合内)
 | 日志 | `logs/{tag}/run{R}_round{NN}_note.txt`（笔记调用的输入与输出分开存） |
 | 护栏 | `--max_calls`、断点续跑、每回合原子落盘 |
 | 测试 | 提示词禁忌词测试（4.4 节）；`gap <= 0 <=> analytic_pass_check` 一致性测试；`optimal_steps` 对 0.456 / 0.627 / 0.513 分别等于 16 / 11 / 15（与 BFS 实测一致） |
+| 数据归档 | 每跑完一段就把 `results logs analysis run_progress.txt` 打成 `lab_logs/bao_v8_a08-a11-<mode>.tgz` **提交进仓库**。这个仓库的约定是"clone 下来就能离线重算全部结果"：`lab_logs/` 除 `extracted/` 外全部受版本控制，Stage 1 的字节级审计见 README 的 "Reproducing this repository"。图的 PDF 不要带 `CreationDate`（`savefig(..., metadata={"CreationDate": None})`），否则每次重跑都显示成"文件被改过"，复现性就没法用 `git status` 验证 |
+| 分析脚本 | Stage 2 的统计脚本也放 `lab_logs/`，并且**直接读 tgz**（照 Stage 1 的 `analyze_actions.py` / `make_figures.py` 的写法），这样 clone 到任何机器都能跑，不需要先解包 |
 
 ## 12. 已实测的支撑数据
 
