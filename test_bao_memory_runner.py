@@ -305,7 +305,7 @@ def test_rolling_runs_carry_only_the_last_note() -> None:
         "run 5 should be a rolling run",
     )
     check(
-        runner.tag_for_run(5) == f"{memory_protocol.PROTOCOL_TAG}-roll",
+        runner.tag_for_run(5) == f"{memory_experiment.default_tag_for_model('fake-model')}-roll",
         f"run 5's tag is {runner.tag_for_run(5)}",
     )
     prompt = adapter_class.created[3].prompts[0]
@@ -629,6 +629,63 @@ def test_save_obs_writes_a_frame_per_step() -> None:
     print(f"[ok] --save_obs writes one frame per step ({len(frames)} files, named run/round/step)")
 
 
+def test_the_default_tag_is_model_scoped() -> None:
+    """Two models must never share a log directory.
+
+    Notes and per-step agent logs live under ``logs/{tag}/``, which is not
+    model-scoped.  A stem that did not carry the model name would make the nine
+    models with no request parameters write to the same paths, so each model's notes
+    would overwrite the previous model's -- and the notes ARE the manipulation.
+    """
+    import json
+
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    roster = [
+        entry["runner"] for entry in json.load(
+            open(os.path.join(project_root, "models.json"), encoding="utf-8")
+        )["models"]
+    ]
+    stems = {model: memory_experiment.default_tag_for_model(model) for model in roster}
+    check(
+        len(set(stems.values())) == len(roster),
+        f"the roster does not get one tag each: {sorted(set(stems.values()))}",
+    )
+    for model, stem in stems.items():
+        check(stem.startswith(model + "-"), f"{model} produced the stem {stem}")
+        check(
+            memory_protocol.PROTOCOL_TAG in stem,
+            f"{stem} does not carry the Stage 2 protocol version",
+        )
+    check(
+        stems["deepseek-v4.1-flash"].endswith("effortnone")
+        and stems["glm-4.6v"].endswith("nothinking"),
+        "the per-model request parameters are missing from the tags",
+    )
+
+    explicit = memory_experiment.MemoryExperimentRunner(
+        env=MockEnvironment(),
+        model="fake-model",
+        runs=[1],
+        tag="pilot",
+        results_root=os.path.join(WORKDIR, "results"),
+        logs_root=os.path.join(WORKDIR, "logs"),
+    )
+    check(explicit.tag == "pilot", f"an explicit tag was not honoured: {explicit.tag}")
+    default = make_runner([1])
+    check(
+        default.tag == memory_experiment.default_tag_for_model("fake-model"),
+        f"the runner's default tag is {default.tag}",
+    )
+    check(
+        len({memory_experiment.default_tag_for_model(model) for model in roster}) == len(roster),
+        "two models share a tag",
+    )
+    print(
+        f"[ok] the {len(roster)} roster models get {len(set(stems.values()))} distinct tags, each "
+        f"carrying the model name and the protocol (e.g. {stems['deepseek-v4.1-flash']})"
+    )
+
+
 def main() -> int:
     tests = [
         test_one_run_writes_every_round_and_grows_its_memory,
@@ -643,6 +700,7 @@ def main() -> int:
         test_save_obs_writes_a_frame_per_step,
         test_checkpoint_rebuilds_from_the_records_it_can_read,
         test_run_selection_and_paths,
+        test_the_default_tag_is_model_scoped,
     ]
     failures = 0
     for test in tests:

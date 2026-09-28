@@ -133,6 +133,28 @@ def round_key(run: int, round_number: int) -> str:
     return f"run{int(run)}/round{int(round_number):02d}"
 
 
+def default_tag_for_model(model: str) -> str:
+    """The tag stem for one model: its name, the protocol, and its request params.
+
+    The model name is in the tag, not only in the results path, because
+    ``logs/{tag}/`` is NOT model-scoped: with a shared stem the nine models that
+    take no request parameters would write their note files and their per-step agent
+    logs to the same paths, and every one of them would be overwritten by the next
+    model in the sweep.  The threshold sweep's tag carries the model name for the
+    same reason, and the parameter suffix is appended so a run with thinking
+    disabled cannot share a directory with one at the default.
+
+    ``request_params_suffix`` is imported from ``main`` lazily: it reads the
+    effective per-model parameters, which live behind ``ai_agent``, which reaches
+    ``environment``, which must not be imported before ``SimulationApp`` exists.
+    """
+    import sys
+
+    from main import request_params_suffix
+
+    return f"{model}-{PROTOCOL_TAG}{request_params_suffix(model)}"
+
+
 def parse_runs(text: str) -> List[int]:
     """Parse a ``--runs`` list such as ``1,2,5`` or ``1-3`` into run numbers."""
     runs: List[int] = []
@@ -166,7 +188,7 @@ class MemoryExperimentRunner:
         model: str,
         runs: Optional[Sequence[int]] = None,
         max_steps: int = MAX_STEPS,
-        tag: str = PROTOCOL_TAG,
+        tag: Optional[str] = None,
         results_root: str = DEFAULT_RESULTS_ROOT,
         logs_root: str = DEFAULT_LOGS_ROOT,
         max_calls: int = 0,
@@ -180,7 +202,13 @@ class MemoryExperimentRunner:
         for run in self.runs:
             memory_mode(run)  # validates the range early, not on round 1
         self.max_steps = int(max_steps)
-        self.tag = persistence.sanitize_tag(tag) if str(tag or "").strip() else PROTOCOL_TAG
+        # Model-scoped by default; see default_tag_for_model.  An explicit --tag is
+        # honoured as given, except for sanitising.
+        self.tag = (
+            persistence.sanitize_tag(tag)
+            if str(tag or "").strip()
+            else persistence.sanitize_tag(default_tag_for_model(self.model))
+        )
         self.results_root = results_root
         self.logs_root = logs_root
         self.max_calls = int(max_calls)
@@ -638,7 +666,14 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         help="which runs to execute, e.g. 1-4, 5,6 or 3 (default 1-6)",
     )
     parser.add_argument("--max_steps", type=int, default=MAX_STEPS)
-    parser.add_argument("--tag", default=PROTOCOL_TAG, help="protocol tag stem")
+    parser.add_argument(
+        "--tag",
+        default="",
+        help=(
+            "tag stem for results, logs and resume; default is the model name plus "
+            "the protocol version and its request parameters (see the banner)"
+        ),
+    )
     parser.add_argument("--resume", action="store_true", help="skip finished rounds")
     parser.add_argument(
         "--max_calls",

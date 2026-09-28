@@ -317,6 +317,7 @@ Either threshold classifies a model:
 | `test_bao_persistence.py` | offline checks that an interrupted run cannot lose or corrupt collected data |
 | `models.json` | the model roster: which models are tested, and why the others were excluded |
 | `run_all_models.sh` | sweep the roster sequentially, resuming each model by tag |
+| `run_all_models_memory.sh` | the same sweep for Stage 2: the roster, six runs each, model-scoped tags |
 | `verify_professor_machine.sh` | one-shot machine check: suites, passability, Isaac probe, scripted Level-5 run, rendered views |
 | `download.py` | fetch the H1 USD asset if `assets/` is empty |
 | `tools/` | measurement probes used while building the scene; `check_names.py` also runs inside the geometry suite |
@@ -422,11 +423,22 @@ cd ~/EmbodiedBAO-AS- && export BOYUE_API_KEY='sk-...' && nohup bash -c '/home/yb
 ```
 
 Round records, step sidecars and a checkpoint live under
-`results/memory/{model}/{tag}/`, keyed by the tag `v8-memory-a08-a11-cum` for runs
-1-4 and `-roll` for runs 5-6; note prompts and replies live under
-`logs/{tag}/run{NN}_round{NN}_note.txt`. The `results/memory/` prefix is deliberate:
-Stage 1's `analysis.py` looks for `results/level*`, so it can never mistake a Stage 2
-record for a threshold episode.
+`results/memory/{model}/{tag}/`, keyed by a **model-scoped** tag — the model name, the
+protocol version and any per-model request parameters, e.g.
+`qwen3-vl-32b-instruct-v8-memory-a08-a11-cum`, or
+`deepseek-v4.1-flash-v8-memory-a08-a11-effortnone-cum`. The model name has to be in
+the tag because `logs/{tag}/` is not model-scoped: a shared stem would make every
+model in the sweep overwrite the previous model's notes, and the notes are the
+manipulation. Note prompts and replies live under `logs/{tag}/run{NN}_round{NN}_note.txt`.
+The `results/memory/` prefix is deliberate: Stage 1's `analysis.py` looks for
+`results/level*`, so it can never mistake a Stage 2 record for a threshold episode.
+
+The whole roster, one model at a time, resuming each from its checkpoint:
+
+```bash
+export BOYUE_API_KEY='...'
+ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_all_models_memory.sh 2>&1 | tee memory_sweep.log
+```
 
 The frame size defaults to 512 px, as in the threshold sweep, and the runner sets it
 through the variable the client reads (`BAO_IMAGE_SIZE`); `--image_size 0` keeps the
