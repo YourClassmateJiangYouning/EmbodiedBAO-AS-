@@ -302,6 +302,8 @@ def build_prompt(
     history: Optional[Sequence[Dict[str, Any]]] = None,
     max_steps: int = 30,
     move_step: Optional[float] = None,
+    memory_block: Optional[str] = None,
+    attempt_wording: bool = False,
 ) -> str:
     """Build the per-step prompt.
 
@@ -316,6 +318,16 @@ def build_prompt(
     agent's own reasoning.  It is rendered oldest-first so the last line is the
     step the agent just took, and it is never truncated unless ``HISTORY_LIMIT``
     is set.
+
+    ``memory_block`` and ``attempt_wording`` exist for the repeated-attempt
+    experiment, and both default to the threshold experiment's behaviour, so a
+    caller that passes neither gets byte-identical text to before.  The memory
+    block is what a model wrote to itself after its *previous* attempts, and it is
+    placed between the walking-frame note and the state, so it is read after the
+    controls are described and before the numbers.  ``attempt_wording`` renames the
+    history block from "this episode" to "this attempt": with 17 attempts in a row
+    the word "episode" would suggest they are separate sessions.  The step-limit
+    line keeps its original wording on purpose, as the design document specifies.
     """
     parts: List[str] = [TASK_INSTRUCTION]
 
@@ -324,6 +336,9 @@ def build_prompt(
         "Available actions (each action is one discrete step):\n" + options
     )
     parts.append(ACTION_FRAME_NOTE)
+
+    if memory_block:
+        parts.append(memory_block)
 
     state = state or {}
     lines = ["Current state:"]
@@ -388,10 +403,11 @@ def build_prompt(
         entries = list(history)
         if HISTORY_LIMIT is not None:
             entries = entries[-HISTORY_LIMIT:]
+        subject = "attempt" if attempt_wording else "episode"
         lines = [
-            "Action history for this episode "
+            f"Action history for this {subject} "
             f"({len(entries)} step(s) already taken, oldest first). "
-            "This is your own record of this episode: use it to notice what you "
+            f"This is your own record of this {subject}: use it to notice what you "
             "have already tried and whether it worked."
         ]
         for index, item in enumerate(entries):

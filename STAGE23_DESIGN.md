@@ -235,6 +235,33 @@ A/S, 0.80, 0.90, 1.10, 0.57, 0.456, 0.627
 **不得出现任何归因**（"你被挡住了"、"开口太窄"、"你应该转身"）。
 结果行只写"是否在 30 步内到达红方块"。
 
+### 4.4.1 一个必须记录在案的事实（实测）
+
+§4.4 的禁区按原文只覆盖**任务句、记忆块、结果行、笔记指令**四项，也就是 Stage 2 自己写的文本。
+逐项扫描确认：这四项 + 笔记提示词的抬头与记录行标签，**一个禁词都没有**（写在 `test_bao_memory.py`）。
+
+但是 **Stage 1 继承下来的动作菜单里含 `opening` / `wide` / `shoulder`，而且它把机制直接说了出来**：
+
+> `{"action": "turn_left"} - rotate your torso 15 degrees to the left. ... It changes how wide
+> your body is across the opening. Rotating needs room, so you cannot turn once your shoulders
+> are inside the opening`
+
+> `{"action": "look_down"} - ... Use it to see how wide you are, which you cannot otherwise see.`
+
+含义：**模型的工具说明已经告诉它"转身会改变身体在开口处的宽度"以及"要趁肩膀还没进开口时转"。**
+也就是说，"它能不能自己发现该转身"这个问题，**答案的一半写在动作说明里**。这是 Stage 1（v7 起）就有的性质，
+不是 Stage 2 引入的；`test_bao_memory.py` 用一条断言把这个事实钉住，免得以后有人以为禁词扫描覆盖了动作菜单。
+
+两个选择，**必须显式决定，不能默认**：
+
+| 方案 | 做法 | 代价 |
+| :--- | :--- | :--- |
+| **1. 保持逐字相同**（当前实现） | 动作菜单一字不动 | "顿悟 vs 渐悟"测的实际上是"**它会不会在连续失败后执行一条已经被告知的规则**"，论文里必须这样写，不能说成"自主发现" |
+| **2. Stage 2 专用中性化** | 只删 `turn_*` 里关于 width / opening / room 的那两句，以及 `look_down` 里 "how wide you are"，其余逐字不动 | 成为真正的"发现"实验；但 §8 的 Stage 1 探针基线（平均 15.0°）是在**带说明**的菜单下测的，跨实验比较要重新说明；且两阶段的提示词不再逐字相同 |
+
+倾向：Stage 2 的问题是"渐悟 vs 顿悟"就用方案 2；只是想看"它能不能学会用已给的规则"就用方案 1。**这一条不定，
+Stage 2 的结论措辞就没法定。**
+
 ---
 
 ## 5. 记录字段
@@ -407,7 +434,8 @@ acquired = (d >= 2) and (最后一次成功在最后 5 回合内)
 | 运行器 | 外层 `for run in 1..6` -> `for round in 1..17`；第 13 回合起 `set_channel_width(1.10)` |
 | 每回合 | 新建 AgentAdapter（历史清空），提示词只注入记忆块 |
 | 笔记调用 | 新增文本调用路径（无图、不解析 JSON、原样取 content） |
-| 代码位置 | **新文件 `memory_metrics.py`**（已写完：开口几何、成本、gap、回合标签、曲线判据，纯算术）+ **新文件 `test_bao_memory.py`**（已写完，17 项，全过）。运行器与提示词下一步进 **新文件 `memory_experiment.py`**。Stage 1 的 `experiments.py` / `environment.py` / `protocol.py` / `analysis.py` 在实现纯函数阶段一行不动 |
+| 代码位置 | **`memory_metrics.py`**（已写完：开口几何、成本、gap、回合标签、曲线判据，纯算术）+ **`memory_protocol.py`**（已写完：跑法、三份提示词、记忆块、回合记录成形）+ **`test_bao_memory.py`**（已写完，25 项，全过）。运行器下一步进 **`memory_experiment.py`**。Stage 1 的 `experiments.py` / `environment.py` / `analysis.py` 一行未动；`protocol.build_prompt` 只加了两个默认参数（`memory_block` / `attempt_wording`），不传它们时输出与改动前逐字节相同（几何套件 37 项仍全过） |
+| 提示词实现 | 动作提示词**不是重写**：由 `protocol.build_prompt` 加记忆块与一处措辞生成。`test_bao_memory.py` 用逐行多重集差分证明：与 Stage 1 提示词的差异**恰好**是"插入记忆块 + `episode`→`attempt`"，多一行都会失败 |
 | 纯函数 | 已实现：`needed_width(theta)` / `max_needed_width()` / `max_needed_angle_deg()` / `forward_steps_to_success()` / `min_turns(W)` / `optimal_steps(W)` / `excess(total_steps, W)` / `gap_for(steps, W)` / `reached_door(steps)` / `strategy_label(n_lateral, n_turn, first_turn_x)` / `insight_index` / `largest_drop` / `abruptness` / `improving_rounds` / `spearman_rho` / `set_index` / `curve_stats` / `classify_curve` |
 | 常量来源 | `memory_metrics.py` **不许 `import environment`**（导入顺序坑：会把 `environment._HAS_ISAAC_SIM` 永久锁成 `False`）。它自己定义 `SHOULDER_WIDTH_M = 0.570` / `TORSO_THICKNESS_M = 0.220` / `MOVE_STEP_M = 0.75` / `SUCCESS_X_M = 8.75` / `START_X_M = 0.5` / `TURN_STEP_DEG = 15.0`，`test_bao_memory.py`（测试进程里可以 import environment）断言它们与 `environment` 的同名值逐个相等；另有一条 AST 测试钉住该模块只 import `math`/`typing` |
 | 日志 | `logs/{tag}/run{R}_round{NN}_note.txt`（笔记调用的输入与输出分开存） |

@@ -306,7 +306,8 @@ Either threshold classifies a model:
 | `main.py` | CLI entry point, CSV export, threshold report |
 | `analysis.py` | per-Level metrics, A/S threshold, reports and plots |
 | `memory_metrics.py` | Stage 2 measures: how wide the body is across an opening, how close a round came to fitting, actions wasted, attempt labels, and the pre-registered insight/gradual/perseveration criteria. Standard library only, no Isaac Sim, no API |
-| `test_bao_memory.py` | offline checks for the above, against an independent projection of the body rectangle and the simulator's own collision gate |
+| `memory_protocol.py` | Stage 2 protocol: the run plan (6 runs x 17 rounds), the three prompts, the memory block, and the round record |
+| `test_bao_memory.py` | offline checks for both of the above, against an independent projection of the body rectangle and the simulator's own collision gate |
 | `capture_views.py` | render the scene from fixed viewpoints (diagnostics) |
 | `persistence.py` | atomic writes, tag sanitising, corrupt-file quarantine: the durability layer every writer goes through |
 | `test_bao_geometry.py` | offline geometry/protocol verification (no Isaac Sim needed) |
@@ -607,7 +608,7 @@ Everything that can be decided without a renderer runs on plain Python:
 python test_bao_geometry.py     # 37 checks: ladder, collision gate, routes, colours, prompt
 python test_bao_integration.py  # 20 checks: full protocol, tagged runs, CLI flags, against a mock environment
 python test_bao_persistence.py  # 13 checks: interrupt and corruption safety of every artefact written
-python test_bao_memory.py       # 17 checks: the Stage 2 measures, against an independent model and the real gate
+python test_bao_memory.py       # 25 checks: the Stage 2 measures and prompts, against an independent model and the real gate
 ```
 
 The geometry suite re-derives the collision model independently and pins the

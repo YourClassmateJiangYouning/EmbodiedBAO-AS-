@@ -27,7 +27,15 @@ Isaac Sim is not needed.  In fact the whole point of most of these checks is tha
 6. **Curve criteria** -- the pre-registered insight / gradual / perseveration /
    oscillation rules on hand-worked curves, and the threshold as a parameter so
    the sensitivity analysis cannot silently change them.
-7. **Isolation** -- ``memory_metrics`` imports nothing but the standard library, so
+7. **The Stage 2 prompt** -- the action prompt differs from the threshold study's
+   prompt in exactly the two places the design document allows, the probe phase's
+   prompt is byte-identical to the learning phase's, the memory block renders both
+   modes exactly, the note prompt carries reasoning in full where the action prompt
+   clips it, and nothing this experiment writes for the model names the obstacle.
+8. **The plan and the record** -- 6 runs x 17 rounds with the widths, modes and
+   tags the document fixes, and a round record whose derived fields are computed
+   in one place and cannot disagree with the pass flag.
+9. **Isolation** -- ``memory_metrics`` imports nothing but the standard library, so
    it can be imported before ``SimulationApp`` exists.
 
 Run with a plain Python interpreter:
@@ -38,6 +46,7 @@ Run with a plain Python interpreter:
 from __future__ import annotations
 
 import ast
+import collections
 import math
 import os
 import sys
@@ -45,6 +54,8 @@ import sys
 import numpy as np
 
 import memory_metrics
+import memory_protocol
+import protocol
 from environment import (
     MOVE_STEP,
     ROBOT_SHOULDER_WIDTH,
@@ -648,7 +659,486 @@ def test_set_index_and_rank_correlation() -> None:
 
 
 # ---------------------------------------------------------------------------
-# 7. Isolation
+# 7. The Stage 2 prompt
+# ---------------------------------------------------------------------------
+
+_SAMPLE_ATTEMPTS = [
+    {"round": 1, "passed": False, "steps": 30, "note": "I could not get past."},
+    {"round": 2, "passed": True, "steps": 22, "note": "Turning first worked."},
+]
+
+
+def sample_state() -> dict:
+    return {
+        "position": [1.25, 0.0, 0.0],
+        "torso_rotation": 15.0,
+        "camera_yaw": 0.0,
+        "camera_pitch": 0.0,
+    }
+
+
+def sample_history(steps: int = 3, reasoning: str = "walking toward the marker") -> list:
+    actions = ["forward", "forward", "look_down", "forward"]
+    return [
+        {
+            "step": index,
+            "action": actions[index % len(actions)],
+            "feedback": "executed",
+            "reasoning": reasoning,
+        }
+        for index in range(steps)
+    ]
+
+
+def test_action_prompt_differs_from_the_threshold_prompt_in_two_places() -> None:
+    """STAGE23_DESIGN.md 4.1: the memory block, and "episode" -> "attempt".
+
+    Checked as a multiset difference over lines rather than by eye, so that any
+    third edit anywhere in the prompt fails this check.
+    """
+    threshold = protocol.build_prompt(
+        state=sample_state(), history=sample_history(), max_steps=30
+    )
+    repeated = memory_protocol.build_action_prompt(
+        state=sample_state(),
+        history=sample_history(),
+        mode=memory_protocol.MODE_CUMULATIVE,
+        attempts=_SAMPLE_ATTEMPTS,
+        max_steps=30,
+    )
+    block = memory_protocol.memory_block(memory_protocol.MODE_CUMULATIVE, _SAMPLE_ATTEMPTS)
+    gained = collections.Counter(repeated.split("\n")) - collections.Counter(
+        threshold.split("\n")
+    )
+    lost = collections.Counter(threshold.split("\n")) - collections.Counter(
+        repeated.split("\n")
+    )
+
+    check(
+        len(lost) == 1 and sum(lost.values()) == 1,
+        f"the repeated-attempt prompt lost {dict(lost)}; expected only the history header",
+    )
+    old_header = next(iter(lost))
+    new_header = old_header.replace("episode", "attempt")
+    # A replacement counts as one line lost and one line gained, so the gained
+    # multiset is the memory block, its paragraph break, and the new header.
+    check(
+        gained == collections.Counter(block.split("\n") + ["", new_header]),
+        f"the repeated-attempt prompt gained {dict(gained)}; expected the memory block, "
+        "the paragraph break that carries it, and the reworded history header",
+    )
+    check(
+        new_header in repeated.split("\n"),
+        "the history header was removed but the attempt wording did not replace it",
+    )
+    check(
+        old_header != new_header and new_header.count("attempt") == 2,
+        f"the wording change is not the documented one: {new_header}",
+    )
+    print(
+        "[ok] the Stage 2 action prompt differs from the threshold prompt in exactly "
+        "the memory block and the two words in the history header"
+    )
+
+
+def test_nothing_in_the_action_prompt_can_name_the_phase_or_the_width() -> None:
+    """The probe phase must be invisible in the text, not merely unmentioned.
+
+    The prompt builder has no parameter for the phase, the Level, the width or the
+    round, so there is nothing for a caller to leak through -- the same property
+    the threshold study's ``build_prompt`` has by not taking a Level.
+    """
+    import inspect
+
+    parameters = list(inspect.signature(memory_protocol.build_action_prompt).parameters)
+    leaky = [
+        name
+        for name in parameters
+        if any(word in name.lower() for word in ("phase", "level", "width", "ratio", "round"))
+    ]
+    check(
+        not leaky,
+        f"build_action_prompt takes {leaky}, which is how the phase would reach the text",
+    )
+
+    empty = memory_protocol.memory_block(memory_protocol.MODE_CUMULATIVE, [])
+    first = memory_protocol.build_action_prompt(
+        state=sample_state(), history=sample_history(), mode=memory_protocol.MODE_CUMULATIVE,
+        attempts=[], max_steps=30,
+    )
+    second = memory_protocol.build_action_prompt(
+        state=sample_state(), history=sample_history(), mode=memory_protocol.MODE_CUMULATIVE,
+        attempts=[], max_steps=30,
+    )
+    check(first == second, "the same inputs produced two different prompts")
+    check(empty == "", "the first attempt of a run must carry no memory block")
+    for number in ("0.456", "0.627", "0.80", "1.10"):
+        check(number not in first, f"the prompt contains the geometry {number}")
+    print(
+        f"[ok] the action prompt has no phase or width parameter, is deterministic, "
+        f"and carries none of the two widths; its parameters are {parameters}"
+    )
+
+
+def test_memory_block_renders_both_modes_exactly() -> None:
+    """The two blocks are quoted verbatim in the design document."""
+    expected_cumulative = (
+        "Previous attempts (oldest first):\n"
+        "- round 1: failed (did not reach the red marker within 30 steps)\n"
+        '  your note: "I could not get past."\n'
+        "- round 2: passed (reached the red marker in 22 steps)\n"
+        '  your note: "Turning first worked."'
+    )
+    actual = memory_protocol.memory_block(memory_protocol.MODE_CUMULATIVE, _SAMPLE_ATTEMPTS)
+    check(actual == expected_cumulative, f"the cumulative block is:\n{actual}")
+
+    expected_rolling = (
+        'Your note from your previous attempt:\n"Turning first worked."'
+    )
+    actual = memory_protocol.memory_block(memory_protocol.MODE_ROLLING, _SAMPLE_ATTEMPTS)
+    check(actual == expected_rolling, f"the rolling block is:\n{actual}")
+
+    for mode in memory_protocol.MEMORY_MODES:
+        check(
+            memory_protocol.memory_block(mode, []) == "",
+            f"{mode} invented a memory block for the first attempt of a run",
+        )
+    rolling = memory_protocol.memory_block(memory_protocol.MODE_ROLLING, _SAMPLE_ATTEMPTS)
+    for leaked in ("round 1", "round 2", "passed", "failed", "Previous attempts"):
+        check(leaked not in rolling, f"the rolling block carries {leaked!r}, which is the cumulative manipulation")
+
+    try:
+        memory_protocol.memory_block("hybrid", _SAMPLE_ATTEMPTS)
+    except ValueError:
+        pass
+    else:
+        raise Failure("an unknown memory mode should be rejected, not guessed at")
+    print(
+        "[ok] both memory blocks match the design document word for word, the first "
+        "attempt gets none, and the rolling block carries no outcome log"
+    )
+
+
+def test_note_prompt_keeps_the_reasoning_the_action_prompt_clips() -> None:
+    """The note is a summary of the model's own thinking, so it gets all of it."""
+    long_reasoning = " ".join(f"thought{index}" for index in range(80))
+    history = sample_history(steps=2, reasoning=long_reasoning)
+    action = memory_protocol.build_action_prompt(
+        state=sample_state(), history=history, mode=memory_protocol.MODE_CUMULATIVE, attempts=[]
+    )
+    note = memory_protocol.build_note_prompt(
+        history, passed=False, steps=30, mode=memory_protocol.MODE_CUMULATIVE
+    )
+    check(
+        len(long_reasoning) > protocol.HISTORY_REASONING_CHARS * 2,
+        "this check needs reasoning longer than the clip to be meaningful",
+    )
+    check(long_reasoning in note, "the note prompt must carry the model's reasoning in full")
+    check(
+        long_reasoning not in action,
+        "the action prompt is supposed to clip reasoning, or this check proves nothing",
+    )
+    clipped = protocol._clip(long_reasoning)
+    check(clipped in action, "the action prompt should still carry the clipped reasoning")
+    check("Complete record of this attempt:" in note, "the record header is missing")
+    check(
+        "- the attempt ended: failed (did not reach the red marker within 30 steps)" in note,
+        "the outcome line of the note prompt is missing or worded differently",
+    )
+
+    rolling = memory_protocol.build_note_prompt(
+        history, passed=True, steps=16, mode=memory_protocol.MODE_ROLLING,
+        previous_note="turn first, then walk",
+    )
+    check(
+        'Your note from your previous attempt:\n"turn first, then walk"' in rolling,
+        "the rolling note prompt has to show the note it is asking the model to rewrite",
+    )
+    check("it will replace the previous one" in rolling, "the rolling instruction is missing")
+    check(
+        "passed (reached the red marker in 16 steps)" in rolling,
+        "the note prompt reports the outcome in the environment's own words",
+    )
+    check(
+        "it will replace the previous one" not in note,
+        "the cumulative instruction must not talk about replacing a note",
+    )
+    print(
+        "[ok] the note prompt carries reasoning in full where the action prompt clips it, "
+        "and each mode gets its own instruction"
+    )
+
+
+def test_our_own_text_never_names_the_obstacle() -> None:
+    """STAGE23_DESIGN.md 4.4, scoped to what this experiment writes for the model.
+
+    The document bans the vocabulary from the task sentence, the memory block, the
+    outcome lines and the note instruction -- the four things Stage 2 authors.  The
+    action list, the walking-frame note, the state block and the response format are
+    inherited verbatim from the threshold study and are outside that scope.  The
+    last check pins where those words actually are, so this scan is not later
+    mistaken for covering the inherited text.
+    """
+    authored = {
+        "task sentence": protocol.TASK_INSTRUCTION,
+        "memory block": (
+            memory_protocol.memory_block(memory_protocol.MODE_CUMULATIVE, _SAMPLE_ATTEMPTS)
+            + "\n"
+            + memory_protocol.memory_block(memory_protocol.MODE_ROLLING, _SAMPLE_ATTEMPTS)
+        ),
+        "outcome lines": (
+            memory_protocol.outcome_phrase(True, 16)
+            + " "
+            + memory_protocol.outcome_phrase(False, 30)
+        ),
+        "note instruction": (
+            memory_protocol.NOTE_INSTRUCTION_CUMULATIVE
+            + " "
+            + memory_protocol.NOTE_INSTRUCTION_ROLLING
+        ),
+        "note prompt header": memory_protocol.NOTE_PROMPT_HEADER,
+        "record line labels": "Complete record of this attempt:\n- the attempt ended: ",
+    }
+    for name, text in authored.items():
+        hits = [word for word in memory_protocol.FORBIDDEN_WORDS if word in text.lower()]
+        check(not hits, f"the {name} contains {hits}")
+
+    inherited = protocol.ACTION_OPTIONS_STRING.lower()
+    present = [word for word in memory_protocol.FORBIDDEN_WORDS if word in inherited]
+    check(
+        present == ["opening", "wide", "shoulder"],
+        f"the inherited action list now contains {present}; this check encodes a fact "
+        "about the threshold study's prompt and has to be updated deliberately",
+    )
+    print(
+        f"[ok] the text Stage 2 authors contains none of the {len(memory_protocol.FORBIDDEN_WORDS)} "
+        f"forbidden words, and the inherited action list still says {present}"
+    )
+
+
+# ---------------------------------------------------------------------------
+# 8. The plan and the round record
+# ---------------------------------------------------------------------------
+
+
+def test_run_plan_is_the_documented_experiment() -> None:
+    """6 runs x 17 rounds, 4 cumulative then 2 rolling, two widths."""
+    plan = memory_protocol.run_plan()
+    check(
+        len(plan) == 102,
+        f"the plan has {len(plan)} rounds, expected 6 runs x 17",
+    )
+    by_run = collections.defaultdict(list)
+    for row in plan:
+        by_run[row["run"]].append(row)
+    check(sorted(by_run) == [1, 2, 3, 4, 5, 6], f"runs are {sorted(by_run)}")
+
+    for run, rows in sorted(by_run.items()):
+        expected_mode = (
+            memory_protocol.MODE_CUMULATIVE if run <= memory_protocol.CUMULATIVE_RUNS
+            else memory_protocol.MODE_ROLLING
+        )
+        check(len(rows) == 17, f"run {run} has {len(rows)} rounds")
+        check(
+            all(row["memory_mode"] == expected_mode for row in rows),
+            f"run {run} is not entirely {expected_mode}",
+        )
+        check(
+            all(row["tag"] == memory_protocol.tag_for(expected_mode) for row in rows),
+            f"run {run} does not carry the {expected_mode} tag",
+        )
+        check(
+            [row["round"] for row in rows] == list(range(1, 18)),
+            f"run {run} has the wrong round numbers",
+        )
+
+    for row in plan:
+        if row["round"] <= memory_protocol.ROUNDS_LEARNING:
+            check(
+                row["phase"] == memory_protocol.PHASE_LEARNING
+                and abs(row["channel_width"] - memory_metrics.WIDTH_LEARNING_M) < 1e-9
+                and abs(row["a_s_ratio"] - 0.80) < 1e-9,
+                f"round {row['round']} is not the A/S 0.80 learning width: {row}",
+            )
+            check(row["optimal_steps"] == 16, f"round {row['round']} optimum is not 16")
+        else:
+            check(
+                row["phase"] == memory_protocol.PHASE_PROBE
+                and abs(row["channel_width"] - memory_metrics.WIDTH_PROBE_M) < 1e-9
+                and abs(row["a_s_ratio"] - 1.10) < 1e-9,
+                f"round {row['round']} is not the A/S 1.10 probe width: {row}",
+            )
+            check(row["optimal_steps"] == 11, f"round {row['round']} optimum is not 11")
+
+    check(
+        memory_protocol.tag_for(memory_protocol.MODE_CUMULATIVE) == "v8-memory-a08-a11-cum",
+        "the cumulative tag is not the documented one",
+    )
+    check(
+        memory_protocol.tag_for(memory_protocol.MODE_ROLLING) == "v8-memory-a08-a11-roll",
+        "the rolling tag is not the documented one",
+    )
+    for bad in (0, 7, -1):
+        try:
+            memory_protocol.memory_mode(bad)
+        except ValueError:
+            pass
+        else:
+            raise Failure(f"run {bad} is outside the plan and should be rejected")
+    for bad in (0, 18):
+        for call in (memory_protocol.phase_of, memory_protocol.width_of):
+            try:
+                call(bad)
+            except ValueError:
+                pass
+            else:
+                raise Failure(f"round {bad} is outside the plan and should be rejected")
+    print(
+        "[ok] the plan is 6 runs x 17 rounds, runs 1-4 cumulative and 5-6 rolling, "
+        "12 rounds at A/S 0.80 (optimum 16) then 5 at A/S 1.10 (optimum 11)"
+    )
+
+
+def round_steps() -> list:
+    """Five turns on the spot, then eleven forwards: the 16-step optimal route."""
+    steps = [
+        {"action": "turn_left", "position_x": 0.5, "torso_rotation": 15.0 * (index + 1)}
+        for index in range(5)
+    ]
+    steps += [
+        {"action": "forward", "position_x": 1.25 + 0.75 * index, "torso_rotation": 75.0}
+        for index in range(11)
+    ]
+    return steps
+
+
+def test_round_record_is_shaped_in_one_place() -> None:
+    """Every derived field, including the two that the design document fixes."""
+    steps = round_steps()
+    common = dict(
+        model="m",
+        run=1,
+        passed=True,
+        total_steps=16,
+        end_reason="success",
+        steps=steps,
+        final_x=8.75,
+        final_z=0.0,
+        max_rotation_deg=75.0,
+        passage_rotation_deg=75.0,
+        wall_collision_count=0,
+        invalid_response_count=0,
+        note_text="turn first",
+    )
+    record = memory_protocol.round_record(round_number=1, **common)
+    check(
+        record["memory_mode"] == memory_protocol.MODE_CUMULATIVE
+        and record["phase"] == memory_protocol.PHASE_LEARNING,
+        "run 1 round 1 should be a cumulative learning round",
+    )
+    check(
+        record["n_forward"] == 11 and record["n_turn"] == 5 and record["n_lateral"] == 0,
+        f"counts are {record['n_forward']}/{record['n_turn']}/{record['n_lateral']}",
+    )
+    check(
+        record["n_look_down"] == 0 and record["n_glance"] == 0,
+        "glances should be counted separately from movement",
+    )
+    check(
+        record["first_turn_step"] == 0 and record["first_turn_x"] == 0.5,
+        f"first turn at step {record['first_turn_step']}, x {record['first_turn_x']}",
+    )
+    check(record["strategy_label"] == memory_metrics.ROT_EARLY, f"labelled {record['strategy_label']}")
+    check(record["reached_door"] is True, "the route reaches the wall")
+    check(
+        record["optimal_steps"] == 16 and record["excess"] == 0,
+        "the optimal route wastes nothing",
+    )
+    expected_gap = memory_metrics.needed_width(75.0) - memory_metrics.WIDTH_LEARNING_M
+    check(
+        abs(float(record["gap"]) - expected_gap) < 1e-12,
+        f"gap is {record['gap']}, expected {expected_gap}",
+    )
+    check(float(record["gap"]) < 0.0, "75 degrees fits an A/S 0.80 opening")
+    check(record["note_chars"] == len("turn first"), "the note length is wrong")
+    check(
+        record["action_sequence"].count(",") == 15
+        and record["action_sequence"].startswith("turn_left,turn_left"),
+        "the action sequence is not the 16 actions of this round",
+    )
+
+    probe = memory_protocol.round_record(round_number=13, **common)
+    check(
+        probe["phase"] == memory_protocol.PHASE_PROBE and probe["gap"] is None,
+        "gap is a learning-phase measure and must be absent in the probe phase",
+    )
+    check(
+        probe["optimal_steps"] == 11 and probe["excess"] == 5,
+        f"the probe optimum is 11, so 16 steps waste 5; got {probe['excess']}",
+    )
+    check(probe["reached_door"] is True, "reaching the wall is a fact in both phases")
+
+    # A round that only sidesteps, and a round that only walks straight.
+    sideways = (
+        [{"action": "left", "position_x": 0.5, "torso_rotation": 0.0}] * 3
+        + [{"action": "forward", "position_x": 7.25, "torso_rotation": 0.0}]
+    )
+    record = memory_protocol.round_record(
+        **{**common, "steps": sideways, "total_steps": 4, "passed": False,
+           "end_reason": "max_steps", "final_x": 7.25, "max_rotation_deg": 0.0,
+           "passage_rotation_deg": None, "note_text": ""},
+        round_number=2,
+    )
+    check(record["strategy_label"] == memory_metrics.SIDEWAYS, f"labelled {record['strategy_label']}")
+    check(
+        abs(float(record["gap"]) - (memory_metrics.needed_width(0.0) - memory_metrics.WIDTH_LEARNING_M)) < 1e-12,
+        "a frontal body at the wall has the frontal gap",
+    )
+    frontal = (
+        [{"action": "left", "position_x": 0.5, "torso_rotation": 0.0}] * 2
+        + [{"action": "forward", "position_x": 7.25, "torso_rotation": 0.0}]
+    )
+    record = memory_protocol.round_record(
+        **{**common, "steps": frontal, "total_steps": 3, "passed": False,
+           "end_reason": "max_steps", "note_text": ""},
+        round_number=3,
+    )
+    check(record["strategy_label"] == memory_metrics.FRONTAL, f"labelled {record['strategy_label']}")
+
+    for passed, end_reason in ((True, "max_steps"), (False, "success")):
+        try:
+            memory_protocol.round_record(
+                round_number=4, **{**common, "passed": passed, "end_reason": end_reason}
+            )
+        except ValueError:
+            pass
+        else:
+            raise Failure(
+                f"a record with passed={passed} and end_reason={end_reason!r} was accepted"
+            )
+    try:
+        memory_protocol.round_record(round_number=4, **{**common, "end_reason": "stuck"})
+    except ValueError:
+        pass
+    else:
+        raise Failure("an unknown end_reason was accepted")
+    print(
+        "[ok] the round record computes counts, the first turn, doors, gap, optimum, "
+        "excess and label in one place, and rejects a pass flag that disagrees with its end reason"
+    )
+
+
+def test_note_log_path_names_the_run_and_the_round() -> None:
+    path = memory_protocol.note_log_path("logs", "v8-memory-a08-a11-cum", 3, 7)
+    check(
+        path.replace("\\", "/") == "logs/v8-memory-a08-a11-cum/run03_round07_note.txt",
+        f"the note log path is {path}",
+    )
+    print(f"[ok] note logs are one file per round, named so a reader can find them: {path}")
+
+
+# ---------------------------------------------------------------------------
+# 9. Isolation
 # ---------------------------------------------------------------------------
 
 
@@ -699,6 +1189,14 @@ def main() -> int:
         test_a_late_first_measurement_is_used_as_the_baseline,
         test_insight_threshold_is_a_parameter,
         test_set_index_and_rank_correlation,
+        test_action_prompt_differs_from_the_threshold_prompt_in_two_places,
+        test_nothing_in_the_action_prompt_can_name_the_phase_or_the_width,
+        test_memory_block_renders_both_modes_exactly,
+        test_note_prompt_keeps_the_reasoning_the_action_prompt_clips,
+        test_our_own_text_never_names_the_obstacle,
+        test_run_plan_is_the_documented_experiment,
+        test_round_record_is_shaped_in_one_place,
+        test_note_log_path_names_the_run_and_the_round,
         test_module_does_not_import_the_environment,
     ]
     failures = 0

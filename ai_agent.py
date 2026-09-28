@@ -566,7 +566,38 @@ class AgentAPI:
             {"role": "user", "content": user_content},
         ]
 
-    def _request(self, messages: List[Dict[str, Any]]) -> str:
+    def get_text(self, prompt: str) -> str:
+        """Ask the model for free text: no image, no JSON, no repair retries.
+
+        The note a Stage 2 model writes to itself between attempts is prose that is
+        stored exactly as it arrives, so parsing it would be a way to lose it and a
+        repair loop would replace what the model chose to say.  JSON mode is
+        deliberately off for this call for the same reason: a note forced into a
+        JSON object is not the note the experiment is about.  Returns an empty
+        string if every attempt fails, and the caller records that, because losing
+        the memory of one round is a datum rather than a reason to abort a sweep.
+        """
+        messages = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": [{"type": "text", "text": prompt}]},
+        ]
+        last_error: Optional[str] = None
+        for attempt in range(self.max_retries + 1):
+            if attempt > 0:
+                time.sleep(min(2 ** (attempt - 1), 4))
+            try:
+                response = self._request(messages, json_mode=False)
+                self._log(f"NOTE RESPONSE:\n{response}")
+                return response
+            except Exception as exc:
+                last_error = (
+                    f"{type(exc).__name__}: {exc}\n" + traceback.format_exc(limit=8)
+                )
+                self._log(f"NOTE REQUEST ERROR: {last_error}")
+        self._log(f"NOTE FALLBACK (no response after {self.max_retries + 1} attempts)")
+        return ""
+
+    def _request(self, messages: List[Dict[str, Any]], json_mode: bool = True) -> str:
         kwargs: Dict[str, Any] = {
             "model": self.model_name,
             "messages": messages,
@@ -574,7 +605,7 @@ class AgentAPI:
         }
         # Same override as the compat path above; see request_params_for.
         kwargs.update(request_params_for(self.model_name))
-        if self._json_mode_enabled:
+        if json_mode and self._json_mode_enabled:
             try:
                 completion = self.client.chat.completions.create(
                     response_format={"type": "json_object"}, **kwargs
