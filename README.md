@@ -315,6 +315,7 @@ Either threshold classifies a model:
 | `verify_professor_machine.sh` | one-shot machine check: suites, passability, Isaac probe, scripted Level-5 run, rendered views |
 | `download.py` | fetch the H1 USD asset if `assets/` is empty |
 | `tools/` | measurement probes used while building the scene; `check_names.py` also runs inside the geometry suite |
+| `STAGE23_DESIGN.md` | authoritative spec for the memory/habit experiment (Stage 2 and 3): geometry, run structure, the three prompts, record fields, pre-registered criteria |
 
 ## Running
 
@@ -413,6 +414,131 @@ python analysis.py --results_root results --tag gemini-v1
 
 Outputs `analysis/threshold_table.{md,csv}`, one JSON report per model, and a
 `thresholds.png` plot with the human 1.30 reference line.
+
+## Lab operations: running a sweep, watching it, and getting the data back
+
+Everything here was learned by getting it wrong on the lab machine at least once.
+On that machine the repository is `~/EmbodiedBAO-AS-` and the Isaac launcher is
+`/home/ybh/isaacsim/python.sh`. `results/`, `logs/`, `analysis/` and
+`run_progress.txt` are all gitignored, so **nothing leaves the machine on its own**:
+a sweep that is never retrieved is a sweep that has to be run again. Retrieve it
+before analysing anything on this side.
+
+### Start it so a dropped SSH session cannot kill it
+
+`tmux` is documented above; the `nohup` form is the same idea for a
+non-interactive session. Single line, so it can be pasted whole:
+
+```bash
+cd ~/EmbodiedBAO-AS- && export BOYUE_API_KEY='sk-...' && nohup bash -c 'ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_all_models.sh' > sweep.log 2>&1 & echo $! > sweep.pid
+```
+
+`$!` is the PID of the `nohup`'d shell — that is what belongs in `sweep.pid`, and it
+is *not* the same number bash prints as the job id in its own `[1] 12345` line. That
+line is the wrapper subshell, and stopping the sweep by job id, or by excluding that
+job id from a wider kill, has already killed the wrong thing here once.
+
+**Never use `pkill -f isaac`, `pkill -f main.py` or `pkill -f python.sh` on that
+machine.** It is shared: one such command takes out somebody else's simulation, and
+Isaac Sim does not survive losing its process group politely. Kill by the recorded
+PID, and only after checking what it is:
+
+```bash
+cat sweep.pid && ps -o pid,ppid,etime,cmd -p "$(cat sweep.pid)"
+```
+
+Only one Isaac Sim instance can run at a time on that box, so two sweeps in
+parallel do not go twice as fast — they collide.
+
+### Is it still running, and where is it?
+
+```bash
+pgrep -af 'run_all_models'          # the sweep loop itself is alive
+pgrep -af 'main.py'                 # the model process inside it is alive
+tail -n 20 sweep.log                # which model it is on right now
+```
+
+Per-model progress, read from the checkpoints `--resume` uses (a finished model
+reports 60 = 12 Levels x 5 episodes; duplicates in the list are separate tags and
+are listed by tag, not by model):
+
+```bash
+python3 -c "import json,glob,os; [print(os.path.basename(p)[11:-5], len(json.load(open(p))['completed'])) for p in sorted(glob.glob('results/*/checkpoint_*.json'))]"
+```
+
+Is the newest record recent, and is what it recorded real? A record that is old, or
+one whose `invalid_response_count` is 30, means the model is not actually being
+asked anything — 30 fallback steps at the start position look exactly like a model
+that refused to move:
+
+```bash
+python3 -c "import glob,json,os,time; p=max(glob.glob('results/level*/*/*/episode_*.json'), key=os.path.getmtime); d=json.load(open(p)); print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.path.getmtime(p))), p, d['passed'], d['end_reason'], 'invalid=' + str(d['invalid_response_count']))"
+```
+
+How many scored episodes exist on disk, across layouts:
+
+```bash
+python3 -c "import glob; print(len([p for p in glob.glob('results/level*/*/*/episode_*.json') if not p.endswith('_steps.json')]))"
+```
+
+`episode_NNN.json` and `episode_NNN_steps.json` both match `episode_*.json`, so a
+count that does not exclude `_steps.json` is exactly twice the number of episodes.
+The per-step sidecar is also a different shape from the record: it is a list of step
+objects, not one dict.
+
+A checkpoint that says an episode is done while its record file is missing is
+handled in the runner rather than trusted (`experiments.py`, the resume path): that
+episode is re-run instead of being counted as missing data. So a disk count below
+the checkpoint count is worth investigating, but it is not automatically lost data.
+
+### Getting the data back
+
+On the lab machine, one archive containing everything a report needs — records,
+per-step sidecars, raw model I/O, the Level summaries, the analysis output and the
+timeline:
+
+```bash
+cd ~/EmbodiedBAO-AS- && tar czf bao_results_$(date +%Y%m%d-%H%M).tgz results logs analysis run_progress.txt && md5sum bao_results_*.tgz
+```
+
+Copy it back with the MD5 that `tar`+`md5sum` just printed, from the Windows
+workspace root (the address is whatever you already `ssh` to):
+
+```powershell
+scp 'eai@<lab-host>:~/EmbodiedBAO-AS-/bao_results_*.tgz' .
+Get-FileHash -Algorithm MD5 .\bao_results_*.tgz
+```
+
+The remote path is quoted so the glob is expanded by the lab machine's shell, not by
+PowerShell; the archive name carries the timestamp of the run, so it is not
+reproducible by hand and is safest left as a glob.
+
+`Get-FileHash` and `md5sum` report the same digest for the same bytes, so the two
+lines are comparable character for character. **Check them before extracting**: a
+truncated `scp` produces a `.tgz` that still extracts part of the way, and a partial
+sweep is much harder to spot after the fact than a mismatched hash.
+
+Unpack into `lab_logs/extracted/` (gitignored, like the archives) rather than into
+the repository root, so the lab's own `results/` cannot be confused with a local
+run's, and analyse from there:
+
+```bash
+mkdir -p lab_logs/extracted && tar xzf bao_results_*.tgz -C lab_logs/extracted && ls lab_logs/extracted
+```
+
+### Traps that have already cost a sweep
+
+| Trap | Symptom | What it actually is |
+| :--- | :--- | :--- |
+| `import environment` before `SimulationApp` | the script builds nothing and **exits 0** | `environment._HAS_ISAAC_SIM` latches to `False` for the life of the process; pinned by the AST check in `test_bao_geometry.py`, which is why that suite must pass before a sweep |
+| Killing by job id | the new sweep loop dies, the old one keeps running | `[1] 12345` is the wrapper subshell, not the script; use the PID you recorded |
+| `pkill -f isaac` | someone else's simulation dies | shared machine, one Isaac instance at a time |
+| a model listed by `/v1/models` but with no channel | 30 identical fallback steps, `passed=false`, `end_reason=max_steps` at the start position | run `tools/verify_models.py` *before* the sweep; measured twice, about four hours each |
+| relative paths | a `--tag` run cannot see the other's checkpoint | always `cd ~/EmbodiedBAO-AS-` first; `--resume` keys on `results/{model}/checkpoint_{tag}.json` |
+| deleting "stale" files next to a diagnostic | good records gone | print the file list, read it, *then* delete; this has already destroyed three usable deepseek episodes |
+| pasting a multi-line command with `<placeholders>` | the shell errors or runs half of it | single line, real values, one command per paste |
+| copying the Windows working tree to the lab | `bash: /usr/bin/env: bad interpreter` | `core.autocrlf` rewrites `*.sh` to CRLF, so the shebang stops being a shebang; `.gitattributes` pins `*.sh text eol=lf` because this transfer path is used |
+| counting `episode_*.json` | double the true episode count | `_steps.json` matches too |
 
 ## Verification without Isaac Sim
 
@@ -602,3 +728,8 @@ The current study is the A/S threshold only. Follow-ups once the threshold is
 known: soft-material edges (does the agent try to squeeze through?), strategy
 persistence (does a wide channel still trigger a turn after priming?), and
 insight-versus-gradual learning curves across repeated episodes.
+
+Of those, strategy persistence and the insight-versus-gradual learning curves are
+now specified, and their prompts and pre-registered criteria fixed, in
+`STAGE23_DESIGN.md`. That document is the authority for everything it covers; the
+threshold study described above is its baseline, not its subject.
