@@ -316,6 +316,7 @@ Either threshold classifies a model:
 | `download.py` | fetch the H1 USD asset if `assets/` is empty |
 | `tools/` | measurement probes used while building the scene; `check_names.py` also runs inside the geometry suite |
 | `STAGE23_DESIGN.md` | authoritative spec for the memory/habit experiment (Stage 2 and 3): geometry, run structure, the three prompts, record fields, pre-registered criteria |
+| `lab_logs/` | retrieved lab data: the v7 and v5 archives every analysis reads, the derived episode table, the figures and the analysis scripts (see "Reproducing this repository") |
 
 ## Running
 
@@ -518,7 +519,8 @@ lines are comparable character for character. **Check them before extracting**: 
 truncated `scp` produces a `.tgz` that still extracts part of the way, and a partial
 sweep is much harder to spot after the fact than a mismatched hash.
 
-Unpack into `lab_logs/extracted/` (gitignored, like the archives) rather than into
+Unpack into `lab_logs/extracted/` (gitignored — the archives themselves are
+committed, the unpacked tree is not) rather than into
 the repository root, so the lab's own `results/` cannot be confused with a local
 run's, and analyse from there:
 
@@ -539,6 +541,61 @@ mkdir -p lab_logs/extracted && tar xzf bao_results_*.tgz -C lab_logs/extracted &
 | pasting a multi-line command with `<placeholders>` | the shell errors or runs half of it | single line, real values, one command per paste |
 | copying the Windows working tree to the lab | `bash: /usr/bin/env: bad interpreter` | `core.autocrlf` rewrites `*.sh` to CRLF, so the shebang stops being a shebang; `.gitattributes` pins `*.sh text eol=lf` because this transfer path is used |
 | counting `episode_*.json` | double the true episode count | `_steps.json` matches too |
+
+## Reproducing this repository
+
+A clone contains the code **and the collected data of every scored experiment**, so
+re-deriving the analysis needs neither Isaac Sim nor an API key:
+
+| Committed | What it holds |
+| :--- | :--- |
+| `lab_logs/bao_v7_all.tgz` | the 660-episode v7 sweep — 11 models x 12 Levels x 5 episodes — with the per-step sidecars, the raw model I/O, `summary_v7.txt`, `run_progress.txt` and `git_head_v7.txt` |
+| `lab_logs/bao_v5_logs.tgz` | the 346-episode v5-era runs on the earlier layouts and prompts |
+| `lab_logs/embodiedbao_v7_episodes.csv` | the 660 rows every figure and table is derived from |
+| `lab_logs/*.py` | `export_table.py`, `analyze_actions.py`, `analyze_reasoning.py`, `make_figures.py`; all four read the archive directly rather than the unpacked tree |
+| `lab_logs/figures/` | fig1–fig4, PDF and 600 dpi PNG |
+| `lab_logs/summary.txt` | the written analysis summary |
+
+Left out on purpose: `lab_logs/extracted/` (a partial unpacking of the v5 archive,
+60 MB) and `lab_logs/bao_v7_qwen.tgz` (a strict subset of the v7 archive). Both were
+checked against the committed archives **key by key and byte by byte** (SHA-256)
+before being left out:
+
+| Copy | Records | Identical to an archive | Conflicting | Unique to this copy |
+| :--- | :--- | :--- | :--- | :--- |
+| `results/` (loose, this machine) | 346 | 346/346 vs `bao_v5_logs.tgz` | 0 | 0 |
+| `lab_logs/extracted/` | 346 | 346/346 vs `bao_v5_logs.tgz` | 0 | 0 |
+| `lab_logs/bao_v7_qwen.tgz` | 180 | 180/180 vs `bao_v7_all.tgz` | 0 | 0 |
+
+The per-step sidecars match the same way (346/346 identical again). So committing
+the two archives and nothing else drops nothing.
+
+### From a fresh clone, offline
+
+```bash
+python test_bao_geometry.py; python test_bao_integration.py; python test_bao_persistence.py
+python lab_logs/export_table.py
+python lab_logs/analyze_actions.py
+python lab_logs/analyze_reasoning.py
+python lab_logs/analyze_door_reach.py lab_logs/bao_v7_all.tgz
+python lab_logs/verify_optimal_steps.py
+python lab_logs/make_figures.py
+```
+
+The first line is the 35 + 19 + 13 offline checks; the rest rebuild the episode
+table, the statistics and the figures from inside the archive. Re-running them
+leaves `git status --short` clean, which is what makes this repository reproducible
+rather than merely archived.
+
+What a clone still cannot reproduce is a **new sweep**: that needs the Isaac Sim
+machine, the API key, and model versions that may since have changed. `models.json`,
+the run tags and `git_head_v7.txt` are what record which models, which settings and
+which commit produced each dataset.
+
+**Before `bao_v7_all.tgz` was committed, the entire 660-episode Stage 1 existed in
+exactly one file on this machine**: the loose `results/` tree holds v5-era runs
+only, zero v7 records. Losing that one archive would have lost Stage 1 outright. It
+is versioned now — do not delete it, and do not regenerate it in place.
 
 ## Verification without Isaac Sim
 

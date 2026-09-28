@@ -8,10 +8,16 @@ assets/
 _test_tmp/
 run_progress.txt
 
-# Model logs and episode records copied back from the lab machine for reading.
-# They are the lab's own outputs and can be tens of MB, so they are read here
-# rather than committed.
-lab_logs/
+# Model logs and episode records retrieved from the lab machine.  The two
+# archives and everything derived from them ARE committed, because a clone has to
+# be able to re-derive every number in the report without the lab machine: the
+# 660-episode v7 sweep exists nowhere else, and the v5 archive is byte-identical to
+# the loose tree on the development machine.  What is NOT committed is a redundant
+# unpacked copy and a redundant subset archive; both were checked key-by-key and
+# byte-by-byte (SHA-256) against the committed archives first.  See the README,
+# "Reproducing this repository".
+lab_logs/extracted/
+lab_logs/bao_v7_qwen.tgz
 
 # Scratch files used to pass a multi-line commit message to `git commit -F`.
 # They are created and deleted around the commit, but one was committed twice by
