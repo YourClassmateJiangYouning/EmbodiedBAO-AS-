@@ -305,6 +305,8 @@ Either threshold classifies a model:
 | `ai_agent.py` | unified OpenAI-compatible MLLM client + `random` baseline |
 | `main.py` | CLI entry point, CSV export, threshold report |
 | `analysis.py` | per-Level metrics, A/S threshold, reports and plots |
+| `memory_metrics.py` | Stage 2 measures: how wide the body is across an opening, how close a round came to fitting, actions wasted, attempt labels, and the pre-registered insight/gradual/perseveration criteria. Standard library only, no Isaac Sim, no API |
+| `test_bao_memory.py` | offline checks for the above, against an independent projection of the body rectangle and the simulator's own collision gate |
 | `capture_views.py` | render the scene from fixed viewpoints (diagnostics) |
 | `persistence.py` | atomic writes, tag sanitising, corrupt-file quarantine: the durability layer every writer goes through |
 | `test_bao_geometry.py` | offline geometry/protocol verification (no Isaac Sim needed) |
@@ -602,9 +604,10 @@ is versioned now — do not delete it, and do not regenerate it in place.
 Everything that can be decided without a renderer runs on plain Python:
 
 ```bash
-python test_bao_geometry.py     # 35 checks: ladder, collision gate, routes, colours, prompt
-python test_bao_integration.py  # 19 checks: full protocol, tagged runs, CLI flags, against a mock environment
+python test_bao_geometry.py     # 37 checks: ladder, collision gate, routes, colours, prompt
+python test_bao_integration.py  # 20 checks: full protocol, tagged runs, CLI flags, against a mock environment
 python test_bao_persistence.py  # 13 checks: interrupt and corruption safety of every artefact written
+python test_bao_memory.py       # 17 checks: the Stage 2 measures, against an independent model and the real gate
 ```
 
 The geometry suite re-derives the collision model independently and pins the
@@ -636,7 +639,7 @@ properties that make the ladder meaningful:
 ISAAC_PY=/home/ybh/isaacsim/python.sh bash verify_professor_machine.sh 2>&1 | tee professor_verify.log
 ```
 
-Runs the offline suites (geometry, integration, persistence), the passability
+Runs the offline suites (geometry, integration, persistence, Stage 2 measures), the passability
 diagnostic, an Isaac Sim import probe, a scripted Level-5 traversal and the
 rendered Level-0/Level-5 views, and reports each section as OK or FAILED without
 aborting early. `PROFESSOR_TEST_CONTEXT.md` lists the scene constants it checks

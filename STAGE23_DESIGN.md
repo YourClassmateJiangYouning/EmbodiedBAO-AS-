@@ -322,7 +322,23 @@ S = D / I
 | **定势** | I <= 0，或（SetIndex >= 0.6 且 gap 无趋势） |
 | **振荡** | 其余 |
 
-`SetIndex = P(strategy(r+1) == strategy(r) | round r failed)`；随机基线 1/6。
+`SetIndex = P(strategy(r+1) == strategy(r) | round r failed)`；随机基线 **1/5**，不是 1/6：
+按 §6.1 的优先级，**MIXED 不可达**——转身 ≥ 1 次必落在某条 `ROT_*` 上，转身 = 0 时按横移次数
+必落在 SIDEWAYS 或 FRONTAL 上。六个名字实际只描述**五种**回合（`test_bao_memory.py` 穷举
+0–12 横移 × 0–8 转身 × 6 个首次转身位置验证了这一点）。在 0.6 这个阈值上 1/5 与 1/6 的差别
+不改变任何判定，但基线必须写对。若希望 MIXED 有意义，需要改 §6.1（例如"横移 ≥ 3 且转身 ≥ 3"
+判 MIXED 并排在 `ROT_*` 之前），那是**改预注册判据**，要单独决定。
+
+**§6.2.1 三处操作化定义**（原文留白，实现时定下，写在 `memory_metrics.py` 里并有用例钉住）：
+
+| 留白 | 操作化定义 | 依据 |
+| :--- | :--- | :--- |
+| "改进回合" | 相邻两个有值回合中，后者 gap 比前者低 **超过 1 mm** | 15° 动作集能产生的**最小真实变化是 3.9 mm**（0.6036 → 0.6075 m 所需宽度），1 mm 既不会把真实变化当噪声，也远高于浮点误差 |
+| "gap 无趋势"（定势用） | `rho > -0.7`，即不具备渐悟所要求的下降趋势 | 复用已预注册的阈值，不另造第二个常数 |
+| "突变回合策略质变" | 突变回合的标签是 `ROT_*` 且上一回合不是 | 这正是该判据要抓的行为变化（"开始转身了"） |
+| `S` 的分母 | `I <= 0` 时判"定势"、**不计算 `S`**（除零） | 无改进空间时比值无定义 |
+| `D` 的符号 | 只取相邻有值回合之间的下降，**下限 0**（上升不是下降） | "最大单回合跌幅"的字面含义 |
+| `rho` 的可用性 | 有值回合 < 3 个、或曲线无变化时返回 `None` | 无变化可相关的相关系数不是数 |
 阈值做敏感性分析（S 取 0.5 / 0.6 / 0.7 各算一遍）。
 
 ### 6.3 "学会"的描述性标签（不用于筛选）
@@ -391,9 +407,9 @@ acquired = (d >= 2) and (最后一次成功在最后 5 回合内)
 | 运行器 | 外层 `for run in 1..6` -> `for round in 1..17`；第 13 回合起 `set_channel_width(1.10)` |
 | 每回合 | 新建 AgentAdapter（历史清空），提示词只注入记忆块 |
 | 笔记调用 | 新增文本调用路径（无图、不解析 JSON、原样取 content） |
-| 代码位置 | **新文件 `stage23.py`**（Stage 2 的纯函数与记录成形），**新文件 `test_stage23.py`**（它的测试）。Stage 1 的 `experiments.py` / `environment.py` / `protocol.py` / `analysis.py` 在实现纯函数阶段一行不动 |
-| 纯函数 | `needed(theta)` / `gap_for(steps, W)` / `optimal_steps(W)` / `min_turns(W)` / `strategy_label(round_record)` / `excess(total_steps, W)`，全部进 `test_stage23.py`，不依赖 Isaac |
-| 常量来源 | `stage23.py` **不许在模块顶层 `import environment`**（导入顺序坑：会把 `environment._HAS_ISAAC_SIM` 永久锁成 `False`）。它自己定义 `BODY_LENGTH = 0.570` / `BODY_WIDTH = 0.220` / `MOVE_STEP = 0.75` / `SUCCESS_X = 8.75` / `START_X = 0.5` / `TURN_STEP_DEG = 15.0`，并由 `test_stage23.py`（测试进程里可以 import environment）断言它们与 `environment`、`protocol` 里的同名值逐个相等，防止漂移 |
+| 代码位置 | **新文件 `memory_metrics.py`**（已写完：开口几何、成本、gap、回合标签、曲线判据，纯算术）+ **新文件 `test_bao_memory.py`**（已写完，17 项，全过）。运行器与提示词下一步进 **新文件 `memory_experiment.py`**。Stage 1 的 `experiments.py` / `environment.py` / `protocol.py` / `analysis.py` 在实现纯函数阶段一行不动 |
+| 纯函数 | 已实现：`needed_width(theta)` / `max_needed_width()` / `max_needed_angle_deg()` / `forward_steps_to_success()` / `min_turns(W)` / `optimal_steps(W)` / `excess(total_steps, W)` / `gap_for(steps, W)` / `reached_door(steps)` / `strategy_label(n_lateral, n_turn, first_turn_x)` / `insight_index` / `largest_drop` / `abruptness` / `improving_rounds` / `spearman_rho` / `set_index` / `curve_stats` / `classify_curve` |
+| 常量来源 | `memory_metrics.py` **不许 `import environment`**（导入顺序坑：会把 `environment._HAS_ISAAC_SIM` 永久锁成 `False`）。它自己定义 `SHOULDER_WIDTH_M = 0.570` / `TORSO_THICKNESS_M = 0.220` / `MOVE_STEP_M = 0.75` / `SUCCESS_X_M = 8.75` / `START_X_M = 0.5` / `TURN_STEP_DEG = 15.0`，`test_bao_memory.py`（测试进程里可以 import environment）断言它们与 `environment` 的同名值逐个相等；另有一条 AST 测试钉住该模块只 import `math`/`typing` |
 | 日志 | `logs/{tag}/run{R}_round{NN}_note.txt`（笔记调用的输入与输出分开存） |
 | 护栏 | `--max_calls`、断点续跑、每回合原子落盘 |
 | 测试 | 提示词禁忌词测试（4.4 节）；`gap <= 0 <=> analytic_pass_check` 一致性测试；`optimal_steps` 对 0.456 / 0.627 / 0.513 分别等于 16 / 11 / 15（与 BFS 实测一致） |
