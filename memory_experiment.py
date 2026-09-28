@@ -737,12 +737,24 @@ def main() -> None:
             image_size=args.image_size,
         )
         runner.save_args(args)
-        records = runner.run_all(checkpoint=runner.make_checkpoints(resume=args.resume))
+        records = runner.run_all(checkpoints=runner.make_checkpoints(resume=args.resume))
         passed = sum(1 for record in records if record["passed"])
         print(
             f"[memory] finished {len(records)} round(s), {passed} passed, "
             f"{runner.calls} model call(s)"
         )
+    except BaseException:
+        # Print and flush BEFORE the finally block closes the app.  Closing Isaac Sim
+        # can take the process down with it, and a traceback that never reaches the
+        # terminal turns a five-minute fix into a mystery -- which is exactly what
+        # the first lab run looked like: a banner, then silence, then shutdown.
+        import sys
+        import traceback
+
+        traceback.print_exc()
+        sys.stdout.flush()
+        sys.stderr.flush()
+        raise
     finally:
         if env is not None:
             env.close()

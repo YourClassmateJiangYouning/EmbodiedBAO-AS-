@@ -708,6 +708,88 @@ def test_the_default_tag_is_model_scoped() -> None:
     )
 
 
+def test_main_runs_end_to_end_with_a_stubbed_app() -> None:
+    """main() is what actually runs on the workstation, so it gets exercised too.
+
+    A regression check with a specific history: after ``run_all``'s parameter was
+    renamed from ``checkpoint`` to ``checkpoints`` the call inside ``main`` still said
+    ``checkpoint``, so the first lab run printed its banner, raised TypeError, and
+    took the process down through ``env.close()`` before the traceback reached the
+    terminal.  Nothing caught it because every other test drives the runner directly,
+    and main() needs SimulationApp.  Everything Isaac-shaped is stubbed here.
+    """
+    import types
+
+    fresh_workspace()
+    saved_argv = list(sys.argv)
+    saved_cwd = os.getcwd()
+    saved_adapter = experiments.AgentAdapter
+    import environment as environment_module
+
+    saved_bao_env = environment_module.BAOEnv
+    saved_isaacsim = sys.modules.get("isaacsim")
+    calls: Dict[str, Any] = {}
+
+    class FakeApp:
+        def __init__(self, config: Any) -> None:
+            calls["config"] = config
+
+        def close(self) -> None:
+            calls["app_closed"] = True
+
+    class FakeEnv:
+        def __init__(self, app: Any, task_dict: Any = None) -> None:
+            self.inner = MockEnvironment()
+            calls["task_dict"] = task_dict
+
+        def __getattr__(self, name: str) -> Any:
+            return getattr(self.inner, name)
+
+        def close(self) -> None:
+            calls["env_closed"] = True
+
+    fake_isaacsim = types.ModuleType("isaacsim")
+    fake_isaacsim.SimulationApp = FakeApp
+    sys.modules["isaacsim"] = fake_isaacsim
+    environment_module.BAOEnv = FakeEnv
+    experiments.AgentAdapter = FakeAdapter
+    FakeAdapter.created = []
+    FakeAdapter.invalid_at = set()
+    sys.argv = [
+        "memory_experiment.py", "--model", "fake-model", "--runs", "1", "--max_calls", "40",
+    ]
+    try:
+        os.chdir(WORKDIR)
+        memory_experiment.main()
+    finally:
+        os.chdir(saved_cwd)
+        sys.argv = saved_argv
+        environment_module.BAOEnv = saved_bao_env
+        experiments.AgentAdapter = saved_adapter
+        if saved_isaacsim is None:
+            sys.modules.pop("isaacsim", None)
+        else:
+            sys.modules["isaacsim"] = saved_isaacsim
+
+    # main() closes the ENVIRONMENT; whether that also closes the app is the
+    # environment's business, and the threshold study's entry point makes the same
+    # division.
+    check(calls.get("env_closed") is True, "main() did not close the environment")
+    check(
+        calls.get("task_dict", {}).get("headless") is False,
+        f"main() did not pass headless through to the environment: {calls.get('task_dict')}",
+    )
+    check(
+        os.path.isdir(os.path.join(WORKDIR, "results", "memory", "fake-model")),
+        "main() wrote no results directory",
+    )
+    check(
+        os.path.exists(os.path.join(WORKDIR, "logs", "fake-model-v8-memory-a08-a11-cum", "args.json")),
+        "main() did not record the effective settings",
+    )
+    print("[ok] main() parses, constructs, saves args, runs a round and closes cleanly under a stubbed app")
+
+
 def main() -> int:
     tests = [
         test_one_run_writes_every_round_and_grows_its_memory,
@@ -723,6 +805,7 @@ def main() -> int:
         test_checkpoint_rebuilds_from_the_records_it_can_read,
         test_run_selection_and_paths,
         test_the_default_tag_is_model_scoped,
+        test_main_runs_end_to_end_with_a_stubbed_app,
     ]
     failures = 0
     for test in tests:
