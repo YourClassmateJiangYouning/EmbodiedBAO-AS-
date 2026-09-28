@@ -34,11 +34,33 @@ needed(theta) = 0.570*|cos theta| + 0.220*|sin theta|
 2. **在 A/S 1.10 上任何转角都能过**（最大需求 0.6110 < 0.627），所以探针里唯一有信息量的
    因变量是**发出多少转身**，不是成败。
 
-**理论最优步数 = 16**（11 次 forward + 5 次 turn），据此定义效率指标：
+**理论最优步数按通道宽度算**，不是一律 16：
 
 ```
-excess(round) = steps_to_pass(round) - 16
+optimal_steps(W) = ceil((SUCCESS_X - START_X) / MOVE_STEP) + min_turns(W)
+                 = 11 + min_turns(W)
+min_turns(W)     = 满足 needed(theta) <= W 的最小 15 度倍数 theta 的转身次数
 ```
+
+| 级别 | W | min_turns | optimal_steps |
+| :--- | :--- | :--- | :--- |
+| A/S 0.80（学习段） | 0.456 | 5 | **16** |
+| A/S 1.10（探针段） | 0.627 | 0 | **11** |
+| A/S 0.90（对照） | 0.513 | 4 | **15** |
+
+这张表是**广度优先搜索实测出来的**，不是算术推断：`lab_logs/verify_optimal_steps.py`
+在真实动作空间里搜出最短无碰撞路径，0.456 → 16（11 forward + 5 turn）、0.627 → 11
+（11 forward + 0 turn）、0.513 → 15（11 forward + 4 turn），与公式逐项一致。
+
+效率指标定义为**每一回合都有值**（失败的回合跑满 30 步上限，所以也有值）：
+
+```
+excess(round) = total_steps(round) - optimal_steps(W(round))     # 失败回合 = 30 - optimal
+```
+
+失败回合的 excess 会恒等于 30 − optimal（学习段 14，探针段 19），它**只说明这回合失败了**，
+不说明效率。所以 §7 的 Q2（"excess 有没有降到 ≤2"）**只在通过的回合里问**；`total_steps`
+和 `optimal_steps` 都要单独存列，两种口径事后都能重算。
 
 ---
 
@@ -225,14 +247,18 @@ a_s_ratio, channel_width, passed, total_steps, end_reason,
 action_sequence, n_forward, n_backward, n_lateral, n_turn, n_look_down, n_glance,
 max_rotation_deg, passage_rotation_deg, first_turn_step, first_turn_x,
 final_x, final_z, wall_collisions, invalid_response_count,
-gap, excess, strategy_label,
+reached_door, optimal_steps, gap, excess, strategy_label,
 note_text, note_chars, memory_injected_chars
 ```
+
+`gap` 允许是 `null`（这一回合没有一步 x >= 7.0，见 6.2）。`reached_door` / `optimal_steps`
+必须落盘：前者是缺口的可见性，后者让两种 excess 口径事后都能重算。
 
 **每 run 派生**：
 
 ```
 d（阶段 A 成功次数 0-12）, first_pass_round, terminal_state（最后 3 回合成败模式）,
+approach_latency（6.2 里被跳过的回合数）, gap_defined_rounds（1-12 里有 gap 值的回合数）,
 probe_rotation[1..5], probe_turn[1..5], probe_look_down[1..5],
 note_drift[1..16]（相邻笔记文本相似度）, excess_series[]
 ```
@@ -252,14 +278,41 @@ note_drift[1..16]（相邻笔记文本相似度）, excess_series[]
 | FRONTAL | 转身 <= 1 且横移 <= 2 |
 | MIXED | 其余 |
 
+**按表格自上而下第一个匹配者胜出**，并且：`ROT_*` 三条都要求"转身次数 ≥ 1"；一回合
+0 次转身时 `first_turn_x = None`，直接跳到 FRONTAL，不得比较 `None`。这个优先级有一个
+必须写进方法里的后果：**只要转身 ≥ 1 次，就一定落在某条 `ROT_*` 上，所以 FRONTAL 实际
+等价于"转身次数 = 0 且横移 ≤ 2"**。这是 §6.1 表格的字面含义，不是新增自由度。
+
+计数口径：横移 = `n_lateral`（left + right），转身 = `n_turn`（turn_left + turn_right），
+`look_*` 不计入任何一类。
+
 ### 6.2 三个曲线判据（基于 gap）
 
 ```
-gap(round) = min over steps with x >= 7.0 of ( needed(theta) - 0.456 )
-I = gap(1) - min(gap)
-D = max single-round drop
+gap(round) = min over steps with x >= 7.0 of ( needed(theta) - W(round) )
+             None，如果这一回合没有任何一步 x >= 7.0
+I = gap(第一个有值的回合) - min(gap 的全部有值回合)
+D = max single-round drop（只在有值的相邻回合之间算）
 S = D / I
 ```
+
+**三个必须先钉死的细节：**
+
+1. **减的是这个回合的通道宽，不是写死的 0.456。** 0.456 只对 A/S 0.80 成立。
+2. **gap 只在学习段（第 1–12 回合）算。** 探针段 W = 0.627 > needed 的最大值 0.6110，
+   所以探针段 gap 恒 ≤ 0 且不携带任何信息；`I`、`D`、`S` 一律只用第 1–12 回合。
+3. **没走到墙就是"没有值"，不许补数。** `gap = None`，同时记一个布尔列 `reached_door`。
+   不补值的理由是实测的：Stage 1 全 660 局里只有 8 局（1.2%）从没到过 x ≥ 7.0，
+   47 个 A/S 0.9 失败局里只有 1 局，而**没有任何一局从没发出过 forward**——"原地转圈"
+   不是常见失败形态，常见的是"走到墙前、从不转身"（47 个失败局里 39 个）。
+   A/S 0.80 更难，但这个比例的数量级不变，所以 `I` 的分母几乎总是存在。
+
+   配套规则：`I` 用**第一个有 gap 值的回合**当基线，被跳过的回合数单独记为
+   `approach_latency` 报出来；如果一个 run 12 个回合全都没有 gap 值（从没接近过墙），
+   就按"定势"归类并打上 `never_approached` 标记，不参与 `S` 的比较。
+
+   **敏感性臂（不需要重跑实验）**：把缺失回合补成 `needed_max - W = 0.6110 - 0.456 = 0.155`
+   （该回合可能出现的最大 gap，因此是对"顿悟"最不利的补法），重算一遍 `S` 并报出分类是否改变。
 
 | 判定 | 条件 |
 | :--- | :--- |
@@ -337,7 +390,30 @@ acquired = (d >= 2) and (最后一次成功在最后 5 回合内)
 | 运行器 | 外层 `for run in 1..6` -> `for round in 1..17`；第 13 回合起 `set_channel_width(1.10)` |
 | 每回合 | 新建 AgentAdapter（历史清空），提示词只注入记忆块 |
 | 笔记调用 | 新增文本调用路径（无图、不解析 JSON、原样取 content） |
-| 纯函数 | `needed(theta)` / `gap_for(...)` / `optimal_steps()` / `strategy_label(...)` -> 全部进 geometry 测试（不依赖 Isaac） |
+| 代码位置 | **新文件 `stage23.py`**（Stage 2 的纯函数与记录成形），**新文件 `test_stage23.py`**（它的测试）。Stage 1 的 `experiments.py` / `environment.py` / `protocol.py` / `analysis.py` 在实现纯函数阶段一行不动 |
+| 纯函数 | `needed(theta)` / `gap_for(steps, W)` / `optimal_steps(W)` / `min_turns(W)` / `strategy_label(round_record)` / `excess(total_steps, W)`，全部进 `test_stage23.py`，不依赖 Isaac |
+| 常量来源 | `stage23.py` **不许在模块顶层 `import environment`**（导入顺序坑：会把 `environment._HAS_ISAAC_SIM` 永久锁成 `False`）。它自己定义 `BODY_LENGTH = 0.570` / `BODY_WIDTH = 0.220` / `MOVE_STEP = 0.75` / `SUCCESS_X = 8.75` / `START_X = 0.5` / `TURN_STEP_DEG = 15.0`，并由 `test_stage23.py`（测试进程里可以 import environment）断言它们与 `environment`、`protocol` 里的同名值逐个相等，防止漂移 |
 | 日志 | `logs/{tag}/run{R}_round{NN}_note.txt`（笔记调用的输入与输出分开存） |
 | 护栏 | `--max_calls`、断点续跑、每回合原子落盘 |
-| 测试 | 提示词禁忌词测试（4.4 节）；`gap <= 0 <=> analytic_pass_check` 一致性测试 |
+| 测试 | 提示词禁忌词测试（4.4 节）；`gap <= 0 <=> analytic_pass_check` 一致性测试；`optimal_steps` 对 0.456 / 0.627 / 0.513 分别等于 16 / 11 / 15（与 BFS 实测一致） |
+
+## 12. 已实测的支撑数据
+
+写进方法里之前先跑出来的数，都不需要重跑实验：
+
+| 量 | 实测值 | 出处 |
+| :--- | :--- | :--- |
+| 从没走到 x ≥ 7.0 的局 | 8/660 = **1.2%**（A/S 0.9 的 47 个失败局里只有 1 局） | `lab_logs/analyze_door_reach.py` 扫 660 个 per-step sidecar |
+| 从没发出过 `forward` 的局 | **0/660** | 同上 |
+| A/S 0.9 失败局的形态 | 47 个里 39 个"走到了墙前但从不转身"，1 个"没走到墙前" | 同上 |
+| A/S 0.9 的失败局动作总量 | forward 795、look_down 153、turn_left 119、left 101、turn_right 101、right 90、backward 20 | 同上 |
+| 最短通过步数（观测，通过局） | 第 0–10 级全部 **11**；第 11 级（A/S 0.9）**16** | 660 条 episode 记录 |
+| 最短通过步数（BFS，真实动作空间） | 0.456 → **16**；0.627 → **11**；0.513 → **15** | `lab_logs/verify_optimal_steps.py` |
+| 失败的回合 | 全部恰好跑满 **30** 步（92/92） | 660 条 episode 记录 |
+
+两点必须写进结果：
+
+1. **第 11 级观测最短 16 步，而 BFS 证明 15 步就够**（11 forward + 4 turn）。也就是说
+   A/S 0.9 上 55 局里没有任何一个模型找到最优路径，全都多花了一步。
+2. 失败回合的 `total_steps` 恒为 30，所以 `excess` 在失败回合上恒为 `30 - optimal_steps(W)`，
+   它不携带效率信息，只能用来区分成败——Q2 必须只在通过回合里问。
