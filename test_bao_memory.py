@@ -1220,6 +1220,45 @@ def test_no_stage_2_module_can_load_the_environment() -> None:
     )
 
 
+def test_the_note_call_does_not_ask_for_json() -> None:
+    """The note is prose where the action call is JSON, and that is deliberate.
+
+    Measured against the gateway: with the action system prompt, the note reply came
+    back as ``{"note": "..."}`` even with the API-level JSON mode switched off,
+    because the sentence that decides the format is the one in the system prompt.
+    Changing only that sentence produced prose.
+    """
+    import inspect
+
+    import ai_agent
+
+    check(
+        "json object" in protocol.SYSTEM_PROMPT.lower(),
+        "the action system prompt no longer asks for a JSON object; this check exists "
+        "precisely because the note prompt has to say the opposite",
+    )
+    check(
+        "not json" in protocol.NOTE_SYSTEM_PROMPT.lower(),
+        f"the note system prompt does not ask for plain text: {protocol.NOTE_SYSTEM_PROMPT!r}",
+    )
+    check(
+        "json object" not in protocol.NOTE_SYSTEM_PROMPT.lower(),
+        "the note system prompt still asks for a JSON object",
+    )
+    for shared in ("benign virtual simulation", "safe, fictional"):
+        check(
+            shared in protocol.NOTE_SYSTEM_PROMPT,
+            f"the note system prompt dropped the safety framing ({shared!r})",
+        )
+    source = inspect.getsource(ai_agent.AgentAPI.get_text)
+    check(
+        "NOTE_SYSTEM_PROMPT" in source,
+        "get_text does not use the note system prompt",
+    )
+    check("json_mode=False" in source, "get_text still allows the API-level JSON mode")
+    print("[ok] the note call asks for plain text where the action call asks for a JSON object")
+
+
 def main() -> int:
     tests = [
         test_constants_match_the_simulator,
@@ -1242,6 +1281,7 @@ def main() -> int:
         test_nothing_in_the_action_prompt_can_name_the_phase_or_the_width,
         test_memory_block_renders_both_modes_exactly,
         test_note_prompt_keeps_the_reasoning_the_action_prompt_clips,
+        test_the_note_call_does_not_ask_for_json,
         test_our_own_text_never_names_the_obstacle,
         test_run_plan_is_the_documented_experiment,
         test_round_record_is_shaped_in_one_place,

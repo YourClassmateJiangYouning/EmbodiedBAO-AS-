@@ -219,6 +219,14 @@ above will not be shown to you again.
 - `the attempt ended:` 那一行由环境填（成功/失败 + 步数），不是它写的。
 - **没有任何字段要求**（不写 what_went_wrong / what_to_try_next / confidence）。
 
+**笔记调用用另一条系统提示词**（`protocol.NOTE_SYSTEM_PROMPT`）。动作调用用的
+`SYSTEM_PROMPT` 最后一句是 "Always respond with a single JSON object"，**实测（网关真实调用）：
+沿用它会得到 `{"note": "..."}`，即使用 `json_mode=False` 关掉了 API 层的 JSON 模式也一样**；
+只把那一句换成 "Reply with plain text, not JSON." 就得到纯文本（880 字符的散文）。
+所以"关掉 response_format"并不够，决定格式的是系统提示词里那句话。
+安全铺垫（benign virtual simulation…）两句系统提示词完全相同，只差最后一句。
+`write_note_log` 会把实际使用的系统提示词一并写进笔记日志，这样日志本身就能自证问了什么。
+
 ### 4.3 提示词 C：探针阶段（第 13-17 回合）
 
 **与提示词 A 完全相同，一字不改。** 只是环境的通道变成 1.10，提示词里不提这件事。
@@ -435,6 +443,15 @@ acquired = (d >= 2) and (最后一次成功在最后 5 回合内)
 | 11 模型合计 | ≈ **25,000 次调用** |
 | 机时估算 | 快模型 5 s/次 ≈ 35 h；deepseek 20 s/次 ≈ 13 h -> **约 2-3 个晚上** |
 
+**上机前实测（qwen3-vl-32b-instruct，走网关真实调用）**，用来校准上面的估算：
+
+| 项 | 实测 |
+| :--- | :--- |
+| 单次笔记调用 | 631 字符提示词 → **21.9 s**；**真实 30 步提示词（11.9 k 字符）→ 25.3 s**，回复 880 字符纯文本 |
+| 单步动作调用 | **3.9 s**（同模型，512 px） |
+| 最大提示词规模 | 第 13 回合第 30 步的动作提示词 ≈ **19 k 字符（约 4.8 k token）**：30 步历史（推理按 240 字截断）+ 12 条笔记的记忆块（≈5.7 k 字符） |
+| 推论 | 一次笔记 ≈ 6 次快模型的单步，但每 run 只有 16 次，所以给快模型的一个 run 只加约 7 分钟（步骤约 25 分钟）≈ **+25%**；对 deepseek（20 s/步）可忽略。**§9 的 2-3 晚估算成立** |
+
 ---
 
 ## 10. 明确不做的事
@@ -467,6 +484,27 @@ acquired = (d >= 2) and (最后一次成功在最后 5 回合内)
 | 测试 | 提示词禁忌词测试（4.4 节）；`gap <= 0 <=> analytic_pass_check` 一致性测试；`optimal_steps` 对 0.456 / 0.627 / 0.513 分别等于 16 / 11 / 15（与 BFS 实测一致） |
 | 数据归档 | 每跑完一段就把 `results logs analysis run_progress.txt` 打成 `lab_logs/bao_v8_a08-a11-<mode>.tgz` **提交进仓库**。这个仓库的约定是"clone 下来就能离线重算全部结果"：`lab_logs/` 除 `extracted/` 外全部受版本控制，Stage 1 的字节级审计见 README 的 "Reproducing this repository"。图的 PDF 不要带 `CreationDate`（`savefig(..., metadata={"CreationDate": None})`），否则每次重跑都显示成"文件被改过"，复现性就没法用 `git status` 验证 |
 | 分析脚本 | Stage 2 的统计脚本也放 `lab_logs/`，并且**直接读 tgz**（照 Stage 1 的 `analyze_actions.py` / `make_figures.py` 的写法），这样 clone 到任何机器都能跑，不需要先解包 |
+
+## 11.1 上机前审计：查出并修掉的四个缺陷
+
+上机前把 Stage 2 全部代码重新审了一遍，四个缺陷都已修复并各配一条回归测试
+（`test_bao_memory.py` 27 项、`test_bao_memory_runner.py` 12 项，连同 Stage 1 的
+37+20+13，共 **109 项全过**）：
+
+| # | 缺陷 | 后果 | 为什么原测试没抓到 | 修法 |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 | `run_round` 里 `collision` 只在"动作合法"分支赋值 | 模型**第一次返回无效动作**就 `NameError`，整轮/整个 sweep 崩掉 | mock agent 永远返回合法动作；`tools/check_names.py` 只做作用域检查，不看分支可达性 | 无效分支补 `collision = False`（与 Stage 1 一致）＋新增"脚本化无效回复"用例 |
+| 2 | **从不设置 `BAO_IMAGE_SIZE`** | 上机跑在相机原生 **1024 px**，而设计固定 512：单步延迟约 5 倍，且与 Stage 1 基线不可比 | mock 环境没有图像尺寸概念 | 运行器加 `--image_size`（默认 512）并在构造时设环境变量；用例钉住 |
+| 3 | 笔记调用沿用动作调用的系统提示词（含 "Always respond with a single JSON object"） | 笔记回来是 `{"note": "..."}` 而非纯文本，违反 §4.2；滚动模式下会出现嵌套引号 | 离线测试不打网络，无法发现 | 新增 `NOTE_SYSTEM_PROMPT`（只差最后一句），`get_text` 改用它；用例比对两条系统提示词 |
+| 4 | 笔记日志只在文件不存在时写抬头 | 崩溃重跑的那一轮与上一次混成一段无法分辨的对话 | — | 每次进入回合都追加带时间戳的抬头 |
+
+另外两处**不是缺陷但必须记录**：
+
+- `readme`/lab-ops 里那条 Stage 1 的进度命令读的是 `results/*/checkpoint_*.json`，**看不到 Stage 2**——
+  Stage 2 的 checkpoint 是 `results/memory/{model}/{tag}/checkpoint.json`。查看进度请用 README 里给的那条。
+- **Stage 2 的分析脚本还没写**（`lab_logs/analyze_memory.py`）。运行器会落盘 §5 要求的全部回合字段，
+  但 §5 的"每 run 派生"字段（d、first_pass_round、probe_rotation[1..5]、note_drift…）与 §7 的
+  Q1–Q4 目前**没有现成产出**，跑完 sweep 后需要先写这个脚本才能出报告。
 
 ## 12. 已实测的支撑数据
 

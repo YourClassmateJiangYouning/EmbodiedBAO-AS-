@@ -428,6 +428,15 @@ Round records, step sidecars and a checkpoint live under
 Stage 1's `analysis.py` looks for `results/level*`, so it can never mistake a Stage 2
 record for a threshold episode.
 
+The frame size defaults to 512 px, as in the threshold sweep, and the runner sets it
+through the variable the client reads (`BAO_IMAGE_SIZE`); `--image_size 0` keeps the
+camera's native resolution, which is about five times slower per step and not
+comparable with Stage 1. Watch a sweep with (17 rounds = a finished run):
+
+```bash
+python -c "import glob, json, os; [print('%-34s %3d completed' % (os.path.basename(os.path.dirname(p)) if p.endswith('checkpoint.json') else os.path.basename(p)[11:-5], len(json.load(open(p)).get('completed', [])))) for p in sorted(glob.glob('results/memory/*/*/checkpoint.json') + glob.glob('results/*/checkpoint_*.json'))]"
+```
+
 ### Useful flags
 
 | Flag | Purpose |

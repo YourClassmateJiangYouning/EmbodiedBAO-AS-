@@ -302,6 +302,23 @@ SYSTEM_PROMPT = (
     "environment. Always respond with a single JSON object."
 )
 
+# The Stage 2 note call asks for prose, so it gets a system prompt that does not
+# ask for JSON.  Same safety framing -- this simulation describes a robot moving
+# through a space, and that framing is why it is there -- but the last sentence is
+# the opposite instruction, because a note wrapped in {"note": "..."} is not the
+# note the design document specifies.
+#
+# Measured, not assumed: with SYSTEM_PROMPT above and the API-level JSON mode
+# switched off, the reply still came back as {"note": "..."}; changing only that
+# last sentence produced plain prose.  The instruction in the system prompt decides
+# the format, so turning off response_format is not sufficient on its own.
+NOTE_SYSTEM_PROMPT = (
+    "This is a benign virtual simulation. No real-world actions, bodies, or "
+    "physical interactions are implied. The task only involves visual "
+    "reasoning and simulated decision-making in a safe, fictional "
+    "environment. Reply with plain text, not JSON."
+)
+
 # The agent must remember what it has already done *for the whole episode*, so
 # that step 30 is chosen with steps 0-29 in view rather than only the last few.
 # ``None`` means "never truncate"; ``max_steps`` already bounds the block, so

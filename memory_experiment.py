@@ -59,6 +59,15 @@ from memory_protocol import (
 DEFAULT_RESULTS_ROOT = "results"
 DEFAULT_LOGS_ROOT = "logs"
 
+# The frame size the model is given, in pixels.  Stage 2 fixes this at 512 to match
+# the threshold sweep, and it is not merely a cost setting: the two experiments are
+# compared, so a probe run at another resolution would not be the same measurement.
+# It reaches the client through the environment variable ``main.py`` also uses,
+# because that is where ``ai_agent.encode_image`` reads it; nothing else in the
+# runner can set it, and a run that silently kept the camera's native 1024 would
+# cost about five times as much per step.
+IMAGE_SIZE_PX = 512
+
 
 class BudgetExhausted(RuntimeError):
     """Raised when ``--max_calls`` is reached; caught to stop cleanly."""
@@ -163,6 +172,7 @@ class MemoryExperimentRunner:
         max_calls: int = 0,
         save_obs: bool = False,
         seed: int = 0,
+        image_size: int = IMAGE_SIZE_PX,
     ) -> None:
         self.env = env
         self.model = model.replace("/", "-").replace("\\", "-")
@@ -177,9 +187,13 @@ class MemoryExperimentRunner:
         self.save_obs = bool(save_obs)
         self.seed = int(seed)
         self.calls = 0
+        self.image_size = int(image_size)
+        if self.image_size > 0:
+            os.environ["BAO_IMAGE_SIZE"] = str(self.image_size)
         print(
             f"[memory] model={self.model} tag={self.tag} runs={self.runs} "
-            f"rounds/run={ROUNDS_PER_RUN} max_steps={self.max_steps}\n"
+            f"rounds/run={ROUNDS_PER_RUN} max_steps={self.max_steps} "
+            f"image={self.image_size or 'native'}\n"
             f"[memory] results -> {os.path.abspath(self.results_root)}\n"
             f"[memory] logs    -> {os.path.abspath(self.logs_root)}"
         )
@@ -258,6 +272,7 @@ class MemoryExperimentRunner:
             "rounds_per_run": ROUNDS_PER_RUN,
             "max_steps": self.max_steps,
             "max_calls": self.max_calls,
+            "image_size": self.image_size,
             "save_obs": self.save_obs,
             "seed": self.seed,
             "started": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -368,13 +383,15 @@ class MemoryExperimentRunner:
 
         agent_log = self.agent_log_path(tag, run, round_number)
         os.makedirs(os.path.dirname(agent_log), exist_ok=True)
-        if not os.path.exists(agent_log):
-            with open(agent_log, "a", encoding="utf-8") as handle:
-                handle.write(
-                    f"{'=' * 60}\nattempt start {time.strftime('%Y-%m-%d %H:%M:%S')} "
-                    f"model={self.model} tag={tag} run={run} round={round_number:02d} "
-                    f"phase={phase} width={width:.3f}\n"
-                )
+        # Stamped every time, not only when the file is new: a re-run of an
+        # interrupted round appends to the same log, and without a stamp the two
+        # attempts read as one impossibly long conversation.
+        with open(agent_log, "a", encoding="utf-8") as handle:
+            handle.write(
+                f"{'=' * 60}\nattempt start {time.strftime('%Y-%m-%d %H:%M:%S')} "
+                f"model={self.model} tag={tag} run={run} round={round_number:02d} "
+                f"phase={phase} width={width:.3f} memory={len(injected)}ch\n"
+            )
         agent = AgentAdapter(model=self.model, log_file=agent_log)
         history: List[Dict[str, Any]] = agent.history
 
@@ -407,6 +424,13 @@ class MemoryExperimentRunner:
                 action_taken = "invalid"
                 feedback = "invalid action response"
                 invalid_response_count += 1
+                # Nothing moved, so there is no collision to report.  This line is
+                # load-bearing: without it `collision` is unbound on this path and
+                # the step record below raises NameError, which would end the sweep
+                # on the first invalid reply rather than recording it.  The mock
+                # agent in the offline suite never replies invalidly, so only a
+                # check that scripts an invalid reply can catch its absence.
+                collision = False
                 current = self.env.get_robot_state()
                 torso_rotation = float(
                     current.get("torso_rotation", self.env.get_torso_rotation())
@@ -451,6 +475,8 @@ class MemoryExperimentRunner:
                 }
             )
             agent.record(action_taken, feedback, reasoning, step=step)
+            if self.save_obs:
+                self._save_observation(tag, run, round_number, step, action_taken, rgb)
             if passed:
                 end_reason = "success"
                 break
@@ -507,6 +533,45 @@ class MemoryExperimentRunner:
             f"note={record['note_chars']}ch memory={record['memory_injected_chars']}ch"
         )
         return record
+
+    def obs_dir(self, tag: str) -> str:
+        return os.path.join(self.logs_root, tag, "obs")
+
+    def _save_observation(
+        self,
+        tag: str,
+        run: int,
+        round_number: int,
+        step: int,
+        action: str,
+        rgb: Any,
+    ) -> None:
+        """Save one camera frame; never let a PNG failure end an attempt.
+
+        Observations are a diagnostic extra, so a lost frame is acceptable and an
+        aborted attempt is not -- the same rule the threshold study applies.
+        """
+        from PIL import Image
+
+        path = os.path.join(
+            self.obs_dir(tag),
+            f"run{run:02d}_round{round_number:02d}_step{step:02d}_{action}.png",
+        )
+        try:
+            import numpy as _np
+
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            array = _np.asarray(rgb)
+            if array.ndim == 3 and array.shape[2] == 4:
+                array = array[:, :, :3]
+            if array.dtype != _np.uint8:
+                array = _np.clip(array, 0, 255).astype(_np.uint8)
+            Image.fromarray(array).save(path)
+        except Exception as exc:  # pragma: no cover - depends on the renderer
+            print(
+                f"[memory] WARNING: could not save observation {path} "
+                f"({type(exc).__name__}: {exc})"
+            )
 
     def write_note(
         self,
@@ -582,6 +647,15 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         help="stop cleanly after this many model calls (0 = no limit)",
     )
     parser.add_argument("--save_obs", action="store_true")
+    parser.add_argument(
+        "--image_size",
+        type=int,
+        default=IMAGE_SIZE_PX,
+        help=(
+            "downscale the frame to this many pixels before sending it; "
+            "0 keeps the camera's native resolution (the threshold sweep used 512)"
+        ),
+    )
     parser.add_argument("--headless", action="store_true")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument(
@@ -613,6 +687,7 @@ def main() -> None:
             max_calls=args.max_calls,
             save_obs=args.save_obs,
             seed=args.seed,
+            image_size=args.image_size,
         )
         runner.save_args(args)
         records = runner.run_all(checkpoint=runner.make_checkpoints(resume=args.resume))

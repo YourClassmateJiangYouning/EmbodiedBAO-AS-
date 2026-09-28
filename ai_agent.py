@@ -50,10 +50,11 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
-from environment import ACTIONS
 from protocol import (
     ACTION_NAMES_TEXT,
     ACTION_OPTIONS_STRING,
+    ACTIONS,
+    NOTE_SYSTEM_PROMPT,
     SYSTEM_PROMPT,
 )
 
@@ -573,12 +574,19 @@ class AgentAPI:
         stored exactly as it arrives, so parsing it would be a way to lose it and a
         repair loop would replace what the model chose to say.  JSON mode is
         deliberately off for this call for the same reason: a note forced into a
-        JSON object is not the note the experiment is about.  Returns an empty
-        string if every attempt fails, and the caller records that, because losing
-        the memory of one round is a datum rather than a reason to abort a sweep.
+        JSON object is not the note the experiment is about.
+
+        The system prompt is the note one, not the action one, and that matters more
+        than the API-level setting: measured against the gateway, SYSTEM_PROMPT's
+        "Always respond with a single JSON object" produced {"note": "..."} even with
+        response_format switched off, and changing only that sentence produced prose.
+
+        Returns an empty string if every attempt fails, and the caller records that,
+        because losing the memory of one round is a datum rather than a reason to
+        abort a sweep.
         """
         messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": NOTE_SYSTEM_PROMPT},
             {"role": "user", "content": [{"type": "text", "text": prompt}]},
         ]
         last_error: Optional[str] = None

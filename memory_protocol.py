@@ -445,11 +445,25 @@ def note_log_path(log_root: str, tag: str, run: int, round_number: int) -> str:
 
 
 def write_note_log(path: str, prompt: str, response: str) -> None:
-    """Write the note call's prompt and reply, atomically."""
+    """Write the note call's prompt and reply, atomically.
+
+    The note system prompt is included: it is the one call in the experiment whose
+    system prompt is not the action one, and a reader checking what the model was
+    asked has to be able to see that from the log alone.
+    """
     import persistence
 
     body = (
-        "NOTE PROMPT:\n" + prompt + "\n" + "=" * 40 + "\nNOTE RESPONSE:\n" + (response or "")
+        "NOTE SYSTEM PROMPT:\n"
+        + protocol.NOTE_SYSTEM_PROMPT
+        + "\n"
+        + "=" * 40
+        + "\nNOTE PROMPT:\n"
+        + prompt
+        + "\n"
+        + "=" * 40
+        + "\nNOTE RESPONSE:\n"
+        + (response or "")
     )
     if not body.endswith("\n"):
         body += "\n"

@@ -27,6 +27,7 @@ Run with a plain Python interpreter:
 
 from __future__ import annotations
 
+import json
 import os
 import shutil
 import sys
@@ -133,6 +134,8 @@ class FakeAdapter:
     """
 
     created: List["FakeAdapter"] = []
+    # Step indices (per attempt) at which this agent replies with nothing usable.
+    invalid_at: set = set()
 
     def __init__(self, model: str = "fake", log_file: Optional[str] = None) -> None:
         self.model = model
@@ -150,6 +153,8 @@ class FakeAdapter:
 
     def query(self, prompt: str, image: Any, state: Dict[str, Any]):
         self.prompts.append(prompt)
+        if len(self.history) in FakeAdapter.invalid_at:
+            return None, "", "", 1.0
         plan = self._plan()
         action = plan[len(self.history)] if len(self.history) < len(plan) else "look_down"
         return action, "{}", "reasoning " * 8, 1.0
@@ -191,6 +196,7 @@ class patched_adapter:
         self._saved = experiments.AgentAdapter
         experiments.AgentAdapter = FakeAdapter
         FakeAdapter.created = []
+        FakeAdapter.invalid_at = set()
         return FakeAdapter
 
     def __exit__(self, *exc: Any) -> None:
@@ -333,6 +339,10 @@ def test_the_note_is_written_once_per_round_except_the_last() -> None:
     with open(runner.note_path(tag, 1, 1), encoding="utf-8") as handle:
         body = handle.read()
     check("NOTE PROMPT:" in body and "NOTE RESPONSE:" in body, "the note log is not self-describing")
+    check(
+        "NOTE SYSTEM PROMPT:" in body and "plain text" in body,
+        "the note log should record the note system prompt, which is not the action one",
+    )
     check("note from round 1" in body, "the note log does not contain what the model wrote")
     check(
         records[16]["note_text"] == "",
@@ -525,6 +535,100 @@ def test_run_selection_and_paths() -> None:
     print("[ok] run selection, tags and the two path shapes are derived and validated")
 
 
+def test_an_invalid_reply_is_recorded_rather_than_crashing_the_round() -> None:
+    """The invalid-reply path has to record a step, not raise.
+
+    This is a regression check with a specific history: the first version of the
+    runner bound the step's ``collision`` flag only on the legal-action path, so the
+    very first unparseable model reply raised NameError and would have ended a
+    2-3 night sweep.  The mock agent here replies with nothing usable at steps 0 and
+    1 of round 1, which is what a real model does when it ignores the JSON
+    instruction.
+    """
+    fresh_workspace()
+    with patched_adapter() as adapter_class:
+        adapter_class.invalid_at = {0, 1}
+        runner = make_runner([1])
+        records = runner.run_all(checkpoints=runner.make_checkpoints(resume=False))
+
+    first = records[0]
+    check(first["invalid_response_count"] == 2, f"expected 2 invalid replies, got {first['invalid_response_count']}")
+    check(first["total_steps"] == 30, "an invalid reply is still a step and the attempt continues")
+    tag = runner.tag_for_run(1)
+    with open(runner.step_path(tag, 1, 1), encoding="utf-8") as handle:
+        steps = json.load(handle)
+    check(steps[0]["action"] == "invalid", f"step 0 recorded {steps[0]['action']!r}")
+    check(
+        steps[0]["collision"] is False and steps[1]["collision"] is False,
+        "an invalid reply moved nothing and cannot have collided",
+    )
+    check(
+        first["action_sequence"].startswith("invalid,invalid,"),
+        f"the action sequence is {first['action_sequence'][:40]!r}",
+    )
+    print("[ok] an unusable model reply is recorded as a step with no collision, and the attempt continues")
+
+
+def test_the_frame_size_is_set_for_the_client() -> None:
+    """512 px reaches the client through the variable it reads.
+
+    Stage 2 fixes the frame size to compare against the threshold sweep, and the
+    only thing that reads it is ``ai_agent.encode_image``, through
+    ``BAO_IMAGE_SIZE``.  A runner that never set it would send the camera's native
+    1024 and cost about five times as much per step.
+    """
+    fresh_workspace()
+    saved = os.environ.pop("BAO_IMAGE_SIZE", None)
+    try:
+        runner = make_runner([1])
+        check(
+            os.environ.get("BAO_IMAGE_SIZE") == "512",
+            f"BAO_IMAGE_SIZE is {os.environ.get('BAO_IMAGE_SIZE')!r} after construction",
+        )
+        check(runner.image_size == 512, f"the runner reports image_size {runner.image_size}")
+        other = memory_experiment.MemoryExperimentRunner(
+            env=MockEnvironment(),
+            model="fake-model",
+            runs=[1],
+            results_root=os.path.join(WORKDIR, "results"),
+            logs_root=os.path.join(WORKDIR, "logs"),
+            image_size=0,
+        )
+        check(other.image_size == 0, "image_size=0 should mean the camera's own size")
+    finally:
+        os.environ.pop("BAO_IMAGE_SIZE", None)
+        if saved is not None:
+            os.environ["BAO_IMAGE_SIZE"] = saved
+    print("[ok] the runner sets BAO_IMAGE_SIZE to 512, which is the only thing the client reads")
+
+
+def test_save_obs_writes_a_frame_per_step() -> None:
+    fresh_workspace()
+    with patched_adapter():
+        runner = memory_experiment.MemoryExperimentRunner(
+            env=MockEnvironment(),
+            model="fake-model",
+            runs=[1],
+            results_root=os.path.join(WORKDIR, "results"),
+            logs_root=os.path.join(WORKDIR, "logs"),
+            save_obs=True,
+        )
+        runner.run_all(checkpoints=runner.make_checkpoints(resume=False))
+    tag = runner.tag_for_run(1)
+    directory = runner.obs_dir(tag)
+    frames = sorted(os.listdir(directory)) if os.path.isdir(directory) else []
+    check(frames, "--save_obs wrote no frames")
+    check(
+        frames[0].startswith("run01_round01_step00_") and frames[0].endswith(".png"),
+        f"the first frame is named {frames[0]}",
+    )
+    check(
+        len(frames) > 100,
+        f"only {len(frames)} frames for 17 rounds; --save_obs is meant to save every step",
+    )
+    print(f"[ok] --save_obs writes one frame per step ({len(frames)} files, named run/round/step)")
+
+
 def main() -> int:
     tests = [
         test_one_run_writes_every_round_and_grows_its_memory,
@@ -534,6 +638,9 @@ def main() -> int:
         test_a_scene_that_ignores_the_width_is_caught,
         test_resume_reruns_only_what_is_missing,
         test_the_call_budget_stops_cleanly,
+        test_an_invalid_reply_is_recorded_rather_than_crashing_the_round,
+        test_the_frame_size_is_set_for_the_client,
+        test_save_obs_writes_a_frame_per_step,
         test_checkpoint_rebuilds_from_the_records_it_can_read,
         test_run_selection_and_paths,
     ]
