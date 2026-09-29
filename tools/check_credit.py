@@ -43,6 +43,28 @@ CREDIT_HINTS = ("quota", "balance", "insufficient", "credit", "exceeded", "æ¬ è´
 KEY_HINTS = ("invalid token", "unauthorized", "authentication", "api key", "no permission")
 
 
+def roster_probes() -> list:
+    """The models the sweep will actually call, from models.json when it is present.
+
+    The hard-coded list below still named claude-sonnet-4-5-20250929, which this account
+    cannot reach and which the roster explicitly excludes, so the tool reported a failure
+    that concerned no experiment we run -- and it never probed five of the eleven models
+    the sweep does call.  Reading the roster means the check covers exactly the models
+    that matter, and a model swapped out of models.json is swapped out of the check too.
+    """
+    for path in ("models.json", os.path.join("..", "models.json")):
+        try:
+            with open(path, encoding="utf-8") as handle:
+                roster = json.load(handle)
+        except Exception:  # noqa: BLE001
+            continue
+        names = [entry["runner"] for entry in roster.get("models", []) if entry.get("runner")]
+        if names:
+            print(f"probing the {len(names)} models in {path}\n")
+            return names
+    return PROBES
+
+
 def describe(body: str) -> str:
     low = body.lower()
     if any(h in low for h in CREDIT_HINTS):
@@ -113,7 +135,7 @@ def main() -> int:
     print("-" * 100)
 
     results = []
-    for model in PROBES:
+    for model in roster_probes():
         result = probe(base_url, key, model, timeout)
         results.append((model, result))
         print(
