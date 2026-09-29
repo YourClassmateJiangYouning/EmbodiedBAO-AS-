@@ -108,6 +108,10 @@ MODEL_REQUEST_PARAMS: Dict[str, Dict[str, Any]] = {
     # glm-4.6v honours the Zhipu spelling: 12.9 s / 1,595 tokens at the default,
     # 6.4 s / 1,397 tokens with thinking disabled (n=4 each, same probe).
     "glm-4.6v": {"thinking": {"type": "disabled"}},
+    # Xiaomi MiMo, same OpenAI spelling as deepseek.  Measured on the solid-red check and
+    # on the real action prompt: without it the reply carries no content at all (0/5 on
+    # the colour check), with it 5/5 and legal JSON in 3.6 s.
+    "mimo-v2.5": {"reasoning_effort": "none"},
 }
 
 

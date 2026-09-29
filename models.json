@@ -82,6 +82,15 @@
       "note": "Substituted for claude-sonnet-4-5-20250929, which this account cannot reach: see excluded. Same family and tier, so the roster's model-class spread is unchanged. It also has an explicit claude-sonnet-4-6-thinking sibling on the gateway, which is the pair needed to check whether extended thinking is on -- the plain id is the non-deliberating route, and unlike glm there is no parameter whose effect we have to trust."
     },
     {
+      "runner": "kimi/kimi-k2.5",
+      "label": "Kimi K2.5",
+      "group": "moonshot",
+      "origin": "CN",
+      "probe_latency_s": 5.0,
+      "verified": "ok",
+      "note": "Chosen over kimi-k2.6 and kimi-k2.7-code on measurement: all three return legal JSON for the real action prompt and prose for the note call, but kimi/kimi-k2.5 is fastest on both paths (5.0 s action, 7.7 s note) and needs NO per-model request override, unlike deepseek-v4.1-flash and glm-4.6v. The bare name kimi-k2.5, every moonshot-v1-* and every moonshotai/* or Pro/moonshotai/* route returns HTTP 500 (no channel), and kimi-k2-thinking has no vision at all: it answered 'Unknown' to a solid red image, the same failure that excluded deepseek-v4-pro and MiniMax-M3. Of 15 Kimi/Moonshot names the gateway lists, three are usable."
+    },
+    {
       "runner": "deepseek-v4.1-flash",
       "label": "DeepSeek V4.1 Flash",
       "group": "deepseek",
@@ -98,6 +107,33 @@
       "probe_latency_s": 2.2,
       "verified": "ok",
       "note": "Chosen over glm-4.5v (newer, 2.2s vs 4.7s, both 6/6 on a stability retest). glm-5v-turbo was excluded: 5/6 with a timeout at 24.5s average."
+    },
+    {
+      "runner": "grok-4.3",
+      "label": "Grok 4.3",
+      "group": "xai",
+      "origin": "US",
+      "probe_latency_s": 1.7,
+      "verified": "ok",
+      "note": "The Mistral replacement: every mistralai/* route returns HTTP 500 (no channel), so that vendor is unavailable. Fully verified at the experiment's own frame size, not a 64 px probe: 5/5 on a solid red 512 px image at 1.7 s, legal JSON for the real action prompt in 4.6 s, prose for the note call in 3.0 s. The NEWER grok-4.5, 4.6 and 4.7 also work but cost 24-41 s per action call, so 4.3 is the pick. The x-ai/* routes (x-ai/grok-4, x-ai/grok-4-fast, x-ai/grok-2-vision-1212, x-ai/grok-3) all return HTTP 500; only the bare grok-* names have channels."
+    },
+    {
+      "runner": "doubao-seed-2-0-pro-260215",
+      "label": "Doubao Seed 2.0 Pro",
+      "group": "bytedance",
+      "origin": "CN",
+      "probe_latency_s": 4.9,
+      "verified": "ok",
+      "note": "ByteDance, replacing MiniMax, whose vision is genuinely unreliable: four independent runs of the solid-red check scored 2/5, 4/5, 3/5 and 3/5, answering Orange, Brown, Black and Green. Doubao scored 5/5 on both the 64 px and the 512 px image at 4.9 s. Its action and note calls were NOT verifiable in the same session: the gateway began refusing roughly two calls in three with HTTP 503 in 0.1 s, for every model including ones that had just passed, so that storm is throttling and not a model property. Re-run tools/probe_families.py on this model before the sweep. doubao-seed-2-1-pro-260628 also sees 5/5 but took 180 s on one action call, which is too slow to use; doubao-1-5-* return HTTP 500; doubao-seedream-* and doubao-seedance-* are image and video generators."
+    },
+    {
+      "runner": "mimo-v2.5",
+      "label": "MiMo v2.5",
+      "group": "xiaomi",
+      "origin": "CN",
+      "probe_latency_s": 5.7,
+      "verified": "ok",
+      "note": "Xiaomi. Verified on all three paths: 5/5 on the solid-red check, legal JSON for the real action prompt in 3.6 s, prose for the note call in 10.1 s (276 characters). Needs reasoning_effort='none' in MODEL_REQUEST_PARAMS, the same override deepseek-v4.1-flash needs -- without it the reply carries no content at all. mimo-v2.6-pro scored only 3/5 on vision, mimo-v2.6-flash 3/5 with the override and 0/5 without, and xiaomi/mimo-v2-pro has no channel (HTTP 500)."
     }
   ],
   "excluded": [
@@ -109,6 +145,10 @@
     {"model": "glm-5.3", "reason": "HTTP 400 - text only"},
     {"model": "glm-5.3-flash", "reason": "empty response"},
     {"model": "MiniMax-M3", "reason": "NO-VISION - answered 'Coral' to a solid red image"},
+    {"model": "MiniMax/MiniMax-M3", "reason": "UNRELIABLE VISION - four independent runs of the solid-red check scored 2/5, 4/5, 3/5 and 3/5, answering Orange, Brown, Black and Green. Not a throttling artefact: the failures are wrong colours, not HTTP errors. Every other MiniMax route is text-only (M2.7, M2.5 and M2.1 answered 'I'm unable to see the image' 5/5) or has no channel (minimax/*, Pro/MiniMaxAI/*, MiniMax/MiniMax-M2.5 all HTTP 500/503)."},
+    {"model": "mistralai/*", "reason": "no working channel: all six mistralai routes (mistral-large-2512, mistral-large-2411, mistral-medium-3.5, mistral-medium-3.1, mistral-small-3.1-24b-instruct, pixtral-large-2411, pixtral-12b) return HTTP 500. The vendor is therefore unavailable and was replaced by xAI."},
+    {"model": "meta-llama/* and llama-4-*", "reason": "no working channel: HTTP 500 for llama-4-maverick, llama-4-scout, llama-3.2-11b-vision-instruct and the meta-llama/* routes. Meta is unavailable."},
+    {"model": "doubao-seed-2-1-pro-260628", "reason": "too slow: sees 5/5 but one real action call took 180 s and timed out, which is unusable at 10,200 episodes."},
     {"model": "deepseek-v4-pro", "reason": "NO-VISION - answered 'Unknown.'"},
     {"model": "deepseek-v4-flash", "reason": "NO-VISION - answered 'Orange'"},
     {"model": "deepseek-v4-pro-0813", "reason": "NO-VISION - answered 'Unknown.'"},
