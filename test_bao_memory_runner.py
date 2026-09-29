@@ -935,7 +935,17 @@ def test_the_stage2_csv_lines_up_with_the_stage1_csv() -> None:
     root = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, os.path.join(root, "lab_logs"))
     import export_memory_table as exporter
-    import export_table as stage1_exporter
+    try:
+        import export_table as stage1_exporter
+    except ImportError as exc:
+        # A missing analysis script in the working copy must read as a failure with the
+        # fix in it, not as a crash: an uncaught ImportError here ended the whole suite
+        # before its summary line, which made it look like the Stage 2 runner had broken.
+        raise Failure(
+            "lab_logs/export_table.py is not in this working copy (%s); a tracked file "
+            "that was deleted locally is not restored by git pull -- restore it with: "
+            "git checkout -- lab_logs/" % exc
+        )
 
     # The contract is the Stage 1 exporter's column list, not a shipped file: the CSV is
     # generated from the archive, so requiring it to be present would make this suite
