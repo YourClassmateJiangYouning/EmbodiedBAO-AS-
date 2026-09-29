@@ -283,7 +283,7 @@ def preflight_model(model: str, timeout: float = 10.0) -> str:
 # environment._HAS_ISAAC_SIM to False forever (see the regression test in
 # test_bao_geometry).  The duplication with experiments.DEFAULT_LEVELS is pinned
 # by a test so the two cannot drift.
-PROTOCOL_LEVELS: Sequence[int] = tuple(range(12))
+PROTOCOL_LEVELS: Sequence[int] = tuple(range(17))
 DEFAULT_EPISODES_PER_LEVEL = 5
 DEFAULT_MAX_STEPS = 30
 
@@ -319,7 +319,7 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser.add_argument(
         "--all-levels",
         action="store_true",
-        help="Run every Level of the A/S ladder (0-11, widest first)",
+        help="Run every Level of the A/S ladder (0-16, widest first)",
     )
     parser.add_argument(
         "--episodes",

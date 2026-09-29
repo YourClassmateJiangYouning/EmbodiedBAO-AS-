@@ -609,11 +609,19 @@ def test_analysis_recovers_threshold() -> None:
     """analysis.py must find the widest A/S at which sideways passage occurs."""
     tmp = make_temp_dir()
     try:
-        # Synthetic results: sideways only at the two narrowest Levels.  Which
-        # Levels those are is derived, not hard-coded, so this keeps testing the
-        # recovery of the WIDEST sideways A/S rather than a particular ladder.
-        sideways_levels = sorted(LEVEL_CHANNEL_WIDTHS)[-2:]
-        expected_threshold = a_s_ratio(LEVEL_CHANNEL_WIDTHS[sideways_levels[0]])
+        # Synthetic results: sideways once the aperture is at or below A/S 1.2, which is
+        # inside the human band, so the verdict must be "borderline" -- it rotates while
+        # the channel is still passable.  Chosen by A/S and not by ladder index on
+        # purpose: taking the two narrowest Levels made this test change verdict when the
+        # ladder grew from 12 to 17, which is a fact about the index, not about the
+        # behaviour under test.
+        sideways_levels = [
+            level for level, width in LEVEL_CHANNEL_WIDTHS.items()
+            if a_s_ratio(width) <= 1.2 + 1e-9
+        ]
+        expected_threshold = max(
+            a_s_ratio(LEVEL_CHANNEL_WIDTHS[level]) for level in sideways_levels
+        )
         results_root = os.path.join(tmp, "results")
         for level, width in LEVEL_CHANNEL_WIDTHS.items():
             out_dir = os.path.join(results_root, f"level{level}", "synthetic")

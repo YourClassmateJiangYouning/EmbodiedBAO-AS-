@@ -22,8 +22,9 @@ rotation the human studies measure.  The per-Level angles are measured, not deri
 -- see tools/check_heading_frame.py.
 
 Every Level runs ``5`` independent episodes of at most ``30`` steps, so a model is
-scored on 12 x 5 = 60 episodes: the 12-width series of the reference design with
-enough repetitions per width for a per-model rotation-onset curve.  An episode ends
+scored on ``len(LEVEL_CHANNEL_WIDTHS) x 5`` episodes: the published 12-ratio series
+down to A/S 0.9, extended to 0.4 because the body's projection keeps falling past 0.9
+until it reaches its 0.220 m thickness at 90 degrees.  An episode ends
 only on success (the body clears the wall: centre reaches ``x >= 8.75`` m, one
 stride past the wall plane) or step exhaustion; wall collisions are recorded but
 never terminate the episode.

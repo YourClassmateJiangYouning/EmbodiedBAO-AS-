@@ -188,11 +188,22 @@ SUCCESS_X = 8.75
 #
 # Level 0 is the widest, so a sweep runs from the trivially passable end toward the
 # end that cannot be passed without rotating.  A/S = 1.0 (level 10) is the exact
-# geometric limit: shoulder and channel are equal, so an aligned body just fits,
-# and A/S = 0.9 (level 11) is the only one that cannot be walked through facing
-# forward.
+# geometric limit: shoulder and channel are equal, so an aligned body just fits.
+#
+# Levels 11-16 all require rotating, and they are not a continuum: the projection of
+# the body rises to 0.611 m at 21.1 degrees before it falls, so 1 and 2 turns are never
+# the best answer and only 45, 60, 75 and 90 degrees are ever useful.  That makes four
+# plateaus below A/S 1.0 -- 0.9 and 0.85 need 60 degrees, 0.8 to 0.65 need 75, and 0.6
+# to 0.4 need 90 -- with the A/S value inside a plateau controlling only how much slack
+# the body has.  Slack is what a threshold measure resolves, so the levels are kept.
+#
+# 0.4 (0.228 m) is the narrowest level we run: the body's smallest projected width is
+# its 0.220 m thickness, so anything below A/S 0.386 cannot be passed at ANY torso
+# angle.  0.35 and 0.30 were considered as "must fail" controls and left out by the
+# researcher's decision.  See tools/ladder_proposal.py for the derivation.
 _APERTURE_RATIOS: Tuple[float, ...] = (
     2.0, 1.9, 1.8, 1.7, 1.6, 1.5, 1.4, 1.3, 1.2, 1.1, 1.0, 0.9,
+    0.8, 0.7, 0.6, 0.5, 0.4,
 )
 
 # Approximate step length for a 1.80 m adult man is defined in protocol.py and

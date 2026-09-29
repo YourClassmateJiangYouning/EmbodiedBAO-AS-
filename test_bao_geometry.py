@@ -100,16 +100,24 @@ def check(condition: bool, message: str) -> None:
 def test_channel_ladder() -> None:
     """The ladder must be the reference A/S series, not an arbitrary set.
 
-    12 widths from A/S = 2.0 down to 0.9 in steps of 0.1, which is the aperture
-    series of Keizer et al. (2013) following Warren & Whang (1987).  Asserted as
-    the SERIES rather than as a table of widths: a hand-written table would have to
-    be edited every time the shoulder width or the sampling changes, and the point
-    is that the ratios are the published ones.
+    17 widths: A/S = 2.0 down to 0.9 in steps of 0.1, which is the aperture series of
+    Keizer et al. (2013) following Warren & Whang (1987), then 0.8 to 0.4 in steps of
+    0.1, which extends it past every angle the body has.  Asserted as the SERIES rather
+    than as a table of widths: a hand-written table would have to be edited every time
+    the shoulder width or the sampling changes, and the point is that the published
+    ratios are reproduced exactly.
+
+    The extension is not more of the same: 0.9 and 0.85 need 60 degrees, 0.8 to 0.65
+    need 75, and 0.6 to 0.4 need 90, because the projection rises to 0.611 m at 21.1
+    degrees before it falls.  0.4 (0.228 m) is the narrowest passable level: the
+    body's smallest projected width is its 0.220 m thickness, which is A/S 0.386.
     """
     expected_ratios = [round(2.0 - 0.1 * index, 1) for index in range(12)]
+    expected_ratios += [0.8, 0.7, 0.6, 0.5, 0.4]
     check(
-        list(LEVEL_CHANNEL_WIDTHS) == list(range(12)),
-        f"the ladder has levels {sorted(LEVEL_CHANNEL_WIDTHS)}, expected 0-11",
+        list(LEVEL_CHANNEL_WIDTHS) == list(range(len(expected_ratios))),
+        f"the ladder has levels {sorted(LEVEL_CHANNEL_WIDTHS)}, expected "
+        f"0-{len(expected_ratios) - 1}",
     )
     for level, expected_ratio in zip(sorted(LEVEL_CHANNEL_WIDTHS), expected_ratios):
         width = level_channel_width(level)

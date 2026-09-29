@@ -5,8 +5,8 @@
   "image_size": 512,
   "episodes_per_level": 5,
   "max_steps": 30,
-  "levels": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-  "levels_note": "12 widths, A/S = 2.0 down to 0.9 in steps of 0.1, widest first; see environment.LEVEL_CHANNEL_WIDTHS. 12 x 5 = 60 scored episodes per model.",
+  "levels": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+  "levels_note": "17 widths: A/S = 2.0 down to 0.9 in steps of 0.1 (the reference series), then 0.8, 0.7, 0.6, 0.5, 0.4. 0.4 (0.228 m) is the narrowest passable level; the body's smallest projected width is its 0.220 m thickness, i.e. A/S 0.386, so anything below that cannot be passed at any torso angle (tools/ladder_proposal.py). 17 x 5 = 85 scored episodes per model.",
   "models": [
     {
       "runner": "qwen3-vl-235b-a22b-instruct",
