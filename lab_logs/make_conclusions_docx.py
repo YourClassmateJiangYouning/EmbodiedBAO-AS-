@@ -17,7 +17,13 @@ import os
 import re
 import zipfile
 
-OUT = "结论与Stage2设计.docx"
+# The document's filename is the researcher's, not this script's: it was renamed to
+# "stage1的大总结和stage2的大计划.docx" on the working copy.  The default follows that name,
+# and --out overrides it, so a re-run does not quietly recreate the old one.
+#
+# Warning worth stating: this script REGENERATES the file from BLOCKS below, so any edit
+# made in Word is lost if it is run again.  Edit BLOCKS and re-run, or do not re-run.
+OUT = "stage1的大总结和stage2的大计划.docx"
 BODY_FONT = "Times New Roman"
 BODY_CJK = "宋体"
 HEAD_FONT = "Arial"
@@ -415,4 +421,7 @@ BLOCKS = [
 
 
 if __name__ == "__main__":
-    build(BLOCKS, OUT)
+    import sys
+
+    out = sys.argv[1] if len(sys.argv) > 1 else OUT
+    build(BLOCKS, out)

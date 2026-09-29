@@ -26,3 +26,7 @@ lab_logs/bao_v7_qwen.tgz
 # They are created and deleted around the commit, but one was committed twice by
 # accident, so they are ignored rather than trusted to be cleaned up in time.
 COMMIT_MSG_*.txt
+
+# Word's lock file for an open document: it appears whenever a .docx is open and
+# vanishes when it closes, so committing it would record a transient state as content.
+~$*.docx
