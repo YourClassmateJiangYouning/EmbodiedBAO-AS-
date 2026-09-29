@@ -126,6 +126,82 @@ def summarise(records) -> dict:
     }
 
 
+def print_run_summary(records) -> None:
+    """The per-run fields of the design document, and the curve verdict.
+
+    This is where the pre-registered criteria are actually applied: the learning
+    phase's gaps, attempt labels and outcomes go through
+    ``memory_metrics.classify_curve``, which returns the slow/fast verdict together
+    with the numbers behind it (I, D, S, rho, improving rounds, SetIndex).  Nothing
+    else in the repository calls it on real data, so without this block the sweep
+    would produce data and no answer to its own question.
+    """
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    import memory_metrics as mm
+
+    runs: dict = collections.defaultdict(list)
+    for record in records:
+        runs[int(record.get("run", 0))].append(record)
+    if not runs:
+        return
+    print()
+    print(
+        "  %-3s %-10s %4s %6s %9s %9s %-11s %6s %6s %5s %6s %8s %8s"
+        % ("run", "memory", "d", "1stP", "acquired", "terminal", "curve",
+           "S", "rho", "impr", "setIdx", "approach", "excess%")
+    )
+    print("  " + "-" * 106)
+    labels_seen: dict = collections.Counter()
+    for run in sorted(runs):
+        rows = sorted(runs[run], key=lambda r: int(r.get("round", 0)))
+        learning = [r for r in rows if int(r.get("round", 0)) <= LEARNING_ROUNDS]
+        probe = [r for r in rows if int(r.get("round", 0)) > LEARNING_ROUNDS]
+        gaps = [r.get("gap") for r in learning]
+        stats = mm.classify_curve(
+            gaps,
+            [str(r.get("strategy_label", "?")) for r in learning],
+            [bool(r.get("passed")) for r in learning],
+        )
+        labels_seen[str(stats["label"])] += 1
+        d = sum(1 for r in learning if r.get("passed"))
+        passing = [int(r["round"]) for r in learning if r.get("passed")]
+        first = passing[0] if passing else None
+        acquired = bool(d >= 2 and passing and passing[-1] > LEARNING_ROUNDS - 5)
+        terminal = "".join("P" if r.get("passed") else "." for r in learning[-3:])
+        excess_passed = [int(r.get("excess", 0)) for r in learning if r.get("passed")]
+        print(
+            "  %-3d %-10s %4d %6s %9s %9s %-11s %6s %6s %5s %6s %8s %8s"
+            % (
+                run,
+                "rolling" if str(rows[0].get("memory_mode")) == "rolling" else "cumulative",
+                d,
+                "-" if first is None else first,
+                "yes" if acquired else "no",
+                terminal or "-",
+                str(stats["label"]),
+                "-" if stats["S"] is None else "%.2f" % float(stats["S"]),
+                "-" if stats["rho"] is None else "%.2f" % float(stats["rho"]),
+                int(stats["improving_rounds"]),
+                "-" if stats["set_index"] is None else "%.2f" % float(stats["set_index"]),
+                int(stats["approach_latency"] or 0),
+                "-" if not excess_passed else "%d/%d" % (sum(excess_passed), len(excess_passed)),
+            )
+        )
+        if probe:
+            print(
+                "        probe rotation deg %s | turns %s | look_down %s"
+                % (
+                    [round(float(r.get("max_rotation_deg", 0.0)), 1) for r in probe],
+                    [int(r.get("n_turn", 0)) for r in probe],
+                    [int(r.get("n_look_down", 0)) for r in probe],
+                )
+            )
+    print(
+        "  curves: %s"
+        % ", ".join("%s x%d" % (name, count) for name, count in sorted(labels_seen.items()))
+    )
+
+
 def print_tag(model: str, tag: str, records, args) -> None:
     mode = "rolling" if tag.endswith("-roll") else "cumulative"
     print()
@@ -195,6 +271,8 @@ def print_tag(model: str, tag: str, records, args) -> None:
             "%.1f s per note) -- the number that says whether the sweep fits"
             % (stats["mean_llm_s"], stats["mean_step_llm_s"], stats["mean_note_s"])
         )
+
+    print_run_summary(records)
 
     if args.notes:
         print("\n  what it wrote to itself:")
