@@ -37,10 +37,12 @@ import time
 from typing import Any, Dict, List, Optional, Sequence
 
 import persistence
+from memory_metrics import TURN_STEP_DEG, classify_curve, is_sideways_yaw
 from memory_protocol import (
     MAX_STEPS,
     MODE_ROLLING,
     PROTOCOL_TAG,
+    ROUNDS_LEARNING,
     ROUNDS_PER_RUN,
     RUNS_PER_MODEL,
     a_s_ratio_of,
@@ -270,6 +272,78 @@ class MemoryExperimentRunner:
     # Persistence
     # ------------------------------------------------------------------
 
+    def summarise(self, tag: str, records: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
+        """The per-tag derived fields of the design, and the curve verdict.
+
+        Written to disk rather than only printed.  The threshold study refreshes its
+        per-Level summary after every episode for a reason worth copying: a sweep that
+        is interrupted has to leave a summary that matches the episodes it did finish,
+        and here the curve verdict IS the experiment's answer, so recomputing it later
+        from a partial directory is exactly the step that goes wrong.
+        """
+        runs: Dict[int, List[Dict[str, Any]]] = {}
+        for record in records:
+            runs.setdefault(int(record.get("run", 0)), []).append(record)
+        summary: Dict[str, Any] = {
+            "model": self.model,
+            "protocol_tag": self.tag,
+            "tag": tag,
+            "memory_mode": memory_mode(next(iter(runs))) if runs else "",
+            "rounds": len(records),
+            "runs": {},
+        }
+        for run in sorted(runs):
+            rows = sorted(runs[run], key=lambda r: int(r.get("round", 0)))
+            learning = [r for r in rows if int(r.get("round", 0)) <= ROUNDS_LEARNING]
+            probe = [r for r in rows if int(r.get("round", 0)) > ROUNDS_LEARNING]
+            stats = classify_curve(
+                [r.get("gap") for r in learning],
+                [str(r.get("strategy_label", "?")) for r in learning],
+                [bool(r.get("passed")) for r in learning],
+            )
+            passing = [int(r["round"]) for r in learning if r.get("passed")]
+            summary["runs"][str(run)] = {
+                "rounds": len(rows),
+                "d": len(passing),
+                "first_pass_round": passing[0] if passing else None,
+                "acquired": bool(
+                    len(passing) >= 2 and passing[-1] > ROUNDS_LEARNING - 5
+                ),
+                "terminal_state": "".join(
+                    "P" if r.get("passed") else "." for r in learning[-3:]
+                ),
+                "probe_rotation_deg": [float(r.get("max_rotation_deg", 0.0)) for r in probe],
+                "probe_turn": [int(r.get("n_turn", 0)) for r in probe],
+                "probe_look_down": [int(r.get("n_look_down", 0)) for r in probe],
+                "excess_series": [int(r.get("excess", 0)) for r in rows],
+                "curve": stats,
+            }
+        return summary
+
+    def save_summary(self, tag: str, records: Sequence[Dict[str, Any]]) -> None:
+        mine = [r for r in records if str(r.get("tag")) == tag]
+        if not mine:
+            return
+        persistence.atomic_write_json(
+            os.path.join(self.record_dir(tag), "summary.json"), self.summarise(tag, mine)
+        )
+
+    def append_progress(self, line: str) -> None:
+        """Append a timestamped line to run_progress.txt, beside results/.
+
+        The threshold study keeps this greppable timeline at the output root, and it is
+        what makes a stalled sweep visible without reading any JSON: the last line says
+        which round finished and when.
+        """
+        root = os.path.dirname(self.results_root) or "."
+        path = os.path.join(root, "run_progress.txt")
+        try:
+            os.makedirs(root, exist_ok=True)
+            with open(path, "a", encoding="utf-8") as handle:
+                handle.write(line + "\n")
+        except Exception as exc:
+            print(f"[memory] WARNING: could not append to {path} ({type(exc).__name__}: {exc})")
+
     def load_record(self, tag: str, run: int, round_number: int) -> Optional[Dict[str, Any]]:
         path = self.record_path(tag, run, round_number)
         if not os.path.exists(path):
@@ -374,11 +448,25 @@ class MemoryExperimentRunner:
                     attempts = self.completed_attempts(run)
                     record = self.run_round(run, round_number, attempts)
                     records.append(record)
+                    # Order matters: the record is on disk before anything claims it
+                    # is done, so a crash in between costs a re-run instead of losing
+                    # the round.
                     if checkpoint is not None:
-                        # Order matters: the record is on disk before the
-                        # checkpoint claims it, so a crash in between costs a
-                        # re-run instead of losing the round.
                         checkpoint.mark(key)
+                    self.save_summary(tag, records)
+                    self.append_progress(
+                        "%s %s %s passed=%s steps=%d end=%s label=%s note=%dch"
+                        % (
+                            time.strftime("%Y-%m-%d %H:%M:%S"),
+                            tag,
+                            key,
+                            record["passed"],
+                            int(record["total_steps"]),
+                            record["end_reason"],
+                            record["strategy_label"],
+                            int(record["note_chars"]),
+                        )
+                    )
         except BudgetExhausted as exc:
             print(f"[memory] stopping: {exc}")
         return records
@@ -442,6 +530,12 @@ class MemoryExperimentRunner:
         note_llm_time_ms = 0.0
         passage_rotation_deg: Optional[float] = None
         max_rotation_deg = 0.0
+        # Mirrors the threshold study's per-episode fields, so the two datasets can be
+        # tabulated together: how much it rotated overall, the angle it ended on, and
+        # the first step it entered the band that study calls sideways.
+        total_rotation = 0.0
+        final_torso_rotation = 0.0
+        first_sideways_step: Optional[int] = None
         final_x = 0.0
         final_z = 0.0
         passed = False
@@ -463,6 +557,7 @@ class MemoryExperimentRunner:
             total_llm_time_ms += float(latency_ms)
 
             collision_info: Optional[Dict[str, Any]] = None
+            action_legal = False
             if action_name is None:
                 action_taken = "invalid"
                 feedback = "invalid action response"
@@ -483,6 +578,7 @@ class MemoryExperimentRunner:
                 result = self.env.execute_action(action_name)
                 action_taken = action_name
                 feedback = result.feedback
+                action_legal = bool(result.legal)
                 collision_info = result.collision
                 if collision_info is not None and not isinstance(collision_info, dict):
                     collision_info = {"part": "body"}
@@ -501,6 +597,11 @@ class MemoryExperimentRunner:
                 position = list(new_state.get("position", [0.0, 0.0, 0.0]))
 
             max_rotation_deg = max(max_rotation_deg, _abs_yaw(torso_rotation))
+            if action_legal and action_taken in ("turn_left", "turn_right"):
+                total_rotation += TURN_STEP_DEG
+            if first_sideways_step is None and is_sideways_yaw(torso_rotation):
+                first_sideways_step = step
+            final_torso_rotation = float(torso_rotation)
             if passage_rotation_deg is None and float(position[0]) >= WALL_X:
                 passage_rotation_deg = float(torso_rotation)
 
@@ -515,6 +616,7 @@ class MemoryExperimentRunner:
                     "position_x": final_x,
                     "position_z": final_z,
                     "collision": bool(collision),
+                    "step_success": bool(passed),
                     "llm_response_time_ms": round(float(latency_ms), 3),
                 }
             )
@@ -559,6 +661,9 @@ class MemoryExperimentRunner:
             final_z=final_z,
             max_rotation_deg=max_rotation_deg,
             passage_rotation_deg=passage_rotation_deg,
+            total_rotation=total_rotation,
+            final_torso_rotation=final_torso_rotation,
+            first_sideways_step=first_sideways_step,
             wall_collision_count=wall_collision_count,
             invalid_response_count=invalid_response_count,
             note_text=note_text,

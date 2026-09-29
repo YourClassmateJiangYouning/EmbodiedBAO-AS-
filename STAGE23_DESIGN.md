@@ -308,6 +308,27 @@ reached_door, optimal_steps, gap, excess, strategy_label,
 note_text, note_chars, memory_injected_chars
 ```
 
+**与 Stage 1 字段的对照（已核对到键级）**：Stage 2 已补上 Stage 1 的
+`turned` / `total_rotation` / `final_torso_rotation` / `first_sideways_step` / `passed_sideways`
+（sidecar 里补上 `step_success`），以及 `total_llm_time_ms` / `note_llm_time_ms` / `mean_step_llm_ms`，
+所以两批数据可以放进同一张表而不必事后重推任何量。其余差异只是改名或刻意的选择：
+
+| Stage 1 | Stage 2 | 说明 |
+| :--- | :--- | :--- |
+| `episode_id` | `round` | "回合"不是"集"：一个 run 有 17 个回合 |
+| `level` | `phase` + `a_s_ratio` | Stage 2 的两个宽度（0.456 / 0.627）不在 12 级阶梯上 |
+| `model_name` / `run_tag` | `model` / `tag` | 同义 |
+| `final_position_x` / `final_position_z` | `final_x` / `final_z` | 同义 |
+| `steps`（把整段步列表也内嵌进记录） | **不内嵌，只在 sidecar** | Stage 1 把同一份步列表写了两遍；Stage 2 单一来源。代价是记录无法脱离 sidecar 自证 `gap` 与标签，但两者同目录、同样原子写，丢失概率相同 |
+
+**流程上对齐 Stage 1 的两件事**（原先缺，现已补）：
+
+- `results/memory/{model}/{tag}/summary.json`：**每完成一个回合就刷新**，内容是上面那组"每 run 派生"
+  字段 + 曲线判据。Stage 1 每个 Level 有一份随集数刷新的 summary，中断也有匹配的汇总；Stage 2 照做，
+  而且曲线判据本身就是实验的答案，不能只存在于内存里。
+- `run_progress.txt`（写在 `results/` 同级）：每个回合一行、带时间戳的可 grep 时间线，
+  与 Stage 1 的位置和用途一致。
+
 `gap` 允许是 `null`（这一回合没有一步 x >= 7.0，见 6.2）。`reached_door` / `optimal_steps`
 必须落盘：前者是缺口的可见性，后者让两种 excess 口径事后都能重算。
 

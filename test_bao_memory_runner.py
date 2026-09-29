@@ -790,6 +790,116 @@ def test_main_runs_end_to_end_with_a_stubbed_app() -> None:
     print("[ok] main() parses, constructs, saves args, runs a round and closes cleanly under a stubbed app")
 
 
+def test_a_round_carries_the_threshold_studys_fields_and_leaves_a_summary() -> None:
+    """The Stage 1 standard: same comparability fields, and a summary on disk.
+
+    The threshold study writes a per-Level summary after every episode so an
+    interrupted sweep still has a summary matching what it finished, and it records
+    whether the episode turned, how far it rotated in total, the angle it ended on and
+    whether it passed sideways.  Stage 2 has to carry the same fields or the two
+    datasets cannot be tabulated together without re-deriving them.
+    """
+    fresh_workspace()
+    with patched_adapter():
+        runner = make_runner([1, 5])
+        records = runner.run_all(checkpoints=runner.make_checkpoints(resume=False))
+
+    for record in records:
+        for name in (
+            "turned",
+            "total_rotation",
+            "final_torso_rotation",
+            "first_sideways_step",
+            "passed_sideways",
+        ):
+            check(
+                name in record,
+                f"{name} is missing from run {record['run']} round {record['round']}",
+            )
+    turning = [r for r in records if r["n_turn"] >= 5]
+    check(turning, "the scripted plan turns in most rounds, so some record should")
+    sample = turning[0]
+    check(sample["turned"] is True, "a round with turns should report turned=True")
+    check(
+        abs(sample["total_rotation"] - sample["n_turn"] * memory_metrics.TURN_STEP_DEG) < 1e-9,
+        f"total_rotation {sample['total_rotation']} does not match its turn count",
+    )
+    check(
+        abs(sample["final_torso_rotation"] - 75.0) < 1e-9,
+        f"final torso angle is {sample['final_torso_rotation']}, expected 75",
+    )
+    check(
+        sample["first_sideways_step"] == 2,
+        f"the first sideways step is {sample['first_sideways_step']}; three 15 degree "
+        "turns reach the 45 degree band, and they are steps 0, 1 and 2",
+    )
+    check(
+        sample["passed_sideways"] is True,
+        "a round that passed at 75 degrees has passed sideways",
+    )
+    front = [r for r in records if r["n_turn"] == 0]
+    check(front, "the scripted plan has rounds that never turn, so one should be here")
+    check(
+        front[0]["turned"] is False and front[0]["first_sideways_step"] is None,
+        "a round that never turned cannot have entered the sideways band",
+    )
+
+    tag = runner.tag_for_run(1)
+    summary_path = os.path.join(runner.record_dir(tag), "summary.json")
+    check(os.path.exists(summary_path), "no per-tag summary was written")
+    with open(summary_path, encoding="utf-8") as handle:
+        summary = json.load(handle)
+    check(summary["rounds"] == 17, f"the summary covers {summary['rounds']} rounds")
+    check(
+        summary["memory_mode"] == memory_protocol.MODE_CUMULATIVE,
+        f"the summary says the mode is {summary['memory_mode']}",
+    )
+    run_one = summary["runs"].get("1")
+    check(run_one is not None, "the summary has no entry for run 1")
+    for name in ("d", "first_pass_round", "acquired", "terminal_state",
+                 "probe_rotation_deg", "probe_turn", "probe_look_down",
+                 "excess_series", "curve"):
+        check(name in run_one, f"the summary's run block has no {name}")
+    check(
+        run_one["curve"].get("label") in (
+            memory_metrics.INSIGHT, memory_metrics.GRADUAL,
+            memory_metrics.PERSEVERATION, memory_metrics.OSCILLATING,
+            memory_metrics.NEVER_APPROACHED,
+        ),
+        f"the summary's curve verdict is {run_one['curve'].get('label')!r}",
+    )
+    check(
+        len(run_one["probe_rotation_deg"]) == memory_protocol.ROUNDS_PROBE,
+        "the probe series should have five entries",
+    )
+
+    progress = os.path.join(os.path.dirname(runner.results_root), "run_progress.txt")
+    check(os.path.exists(progress), "no run_progress.txt timeline was written")
+    with open(progress, encoding="utf-8") as handle:
+        lines = [line for line in handle if line.strip()]
+    check(
+        len(lines) == len(records),
+        f"{len(lines)} progress lines for {len(records)} rounds",
+    )
+    check(
+        " passed=" in lines[0] and "round01" in lines[0],
+        f"the first progress line is {lines[0]!r}",
+    )
+
+    sidecar = None
+    with open(runner.step_path(tag, 1, 1), encoding="utf-8") as handle:
+        sidecar = json.load(handle)
+    check(
+        "step_success" in sidecar[0],
+        "the step sidecar is missing step_success, which the threshold study records",
+    )
+    print(
+        "[ok] rounds carry turned/total_rotation/final_torso_rotation/first_sideways_step/"
+        "passed_sideways, steps carry step_success, and each round leaves a summary and "
+        "a progress line"
+    )
+
+
 def main() -> int:
     tests = [
         test_one_run_writes_every_round_and_grows_its_memory,
@@ -806,6 +916,7 @@ def main() -> int:
         test_run_selection_and_paths,
         test_the_default_tag_is_model_scoped,
         test_main_runs_end_to_end_with_a_stubbed_app,
+        test_a_round_carries_the_threshold_studys_fields_and_leaves_a_summary,
     ]
     failures = 0
     for test in tests:

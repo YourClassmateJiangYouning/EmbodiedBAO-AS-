@@ -1220,6 +1220,42 @@ def test_no_stage_2_module_can_load_the_environment() -> None:
     )
 
 
+def test_the_sideways_band_matches_the_threshold_study() -> None:
+    """Stage 2 must be tabulatable beside Stage 1 without re-deriving the band.
+
+    The band is what makes passed_sideways comparable between the two datasets, so it
+    is pinned twice: against the simulator's constants, and against the threshold
+    study's own predicate over a full sweep of angles.
+    """
+    import experiments
+    from environment import SIDEWAYS_YAW_MAX_DEG, SIDEWAYS_YAW_MIN_DEG
+
+    check(
+        abs(memory_metrics.SIDEWAYS_YAW_MIN_DEG - SIDEWAYS_YAW_MIN_DEG) < 1e-12
+        and abs(memory_metrics.SIDEWAYS_YAW_MAX_DEG - SIDEWAYS_YAW_MAX_DEG) < 1e-12,
+        f"the band is {memory_metrics.SIDEWAYS_YAW_MIN_DEG}-"
+        f"{memory_metrics.SIDEWAYS_YAW_MAX_DEG}, the simulator says "
+        f"{SIDEWAYS_YAW_MIN_DEG}-{SIDEWAYS_YAW_MAX_DEG}",
+    )
+    mismatches = []
+    for tenths in range(-1800, 1801):
+        yaw = tenths / 10.0
+        if memory_metrics.is_sideways_yaw(yaw) != experiments._is_sideways_yaw(yaw):
+            mismatches.append(yaw)
+    check(
+        not mismatches,
+        f"the band disagrees with experiments._is_sideways_yaw at {mismatches[:5]}",
+    )
+    check(
+        memory_metrics.is_sideways_yaw(-90.0) and not memory_metrics.is_sideways_yaw(20.0),
+        "the band is not behaving like a band",
+    )
+    print(
+        "[ok] the sideways band matches the simulator's constants and the threshold "
+        "study's predicate at every 0.1 degree from -180 to 180"
+    )
+
+
 def test_the_note_call_does_not_ask_for_json() -> None:
     """The note is prose where the action call is JSON, and that is deliberate.
 
@@ -1282,6 +1318,7 @@ def main() -> int:
         test_memory_block_renders_both_modes_exactly,
         test_note_prompt_keeps_the_reasoning_the_action_prompt_clips,
         test_the_note_call_does_not_ask_for_json,
+        test_the_sideways_band_matches_the_threshold_study,
         test_our_own_text_never_names_the_obstacle,
         test_run_plan_is_the_documented_experiment,
         test_round_record_is_shaped_in_one_place,

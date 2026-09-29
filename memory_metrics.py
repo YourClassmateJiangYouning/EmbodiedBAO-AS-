@@ -129,6 +129,25 @@ NEVER_APPROACHED = "never_approached"
 # a width derived as A/S x shoulder cannot fail its own boundary by one ulp.
 FIT_TOLERANCE_M = 1e-12
 
+# The yaw band the threshold study calls "sideways": the torso turned far enough that
+# the narrow dimension faces the opening.  Restated here, like the scene constants, so
+# a Stage 2 round can be compared with a Stage 1 episode without this module importing
+# environment; test_bao_memory.py pins both against the simulator's own band and
+# against experiments._is_sideways_yaw.
+SIDEWAYS_YAW_MIN_DEG = 45.0
+SIDEWAYS_YAW_MAX_DEG = 135.0
+
+
+def fold_yaw(yaw_deg: float) -> float:
+    """Fold a torso yaw into [0, 180] so +/- rotations behave symmetrically."""
+    yaw = abs(float(yaw_deg)) % 360.0
+    return float(360.0 - yaw if yaw > 180.0 else yaw)
+
+
+def is_sideways_yaw(yaw_deg: float) -> bool:
+    """Whether a torso angle sits in the band the threshold study scores as sideways."""
+    return SIDEWAYS_YAW_MIN_DEG <= fold_yaw(yaw_deg) <= SIDEWAYS_YAW_MAX_DEG
+
 
 # ---------------------------------------------------------------------------
 # Geometry and cost

@@ -44,6 +44,7 @@ from memory_metrics import (
     WIDTH_PROBE_M,
     excess,
     gap_for,
+    is_sideways_yaw,
     optimal_steps,
     reached_door,
     strategy_label,
@@ -347,6 +348,9 @@ def round_record(
     final_z: float,
     max_rotation_deg: float,
     passage_rotation_deg: Optional[float],
+    total_rotation: float = 0.0,
+    final_torso_rotation: float = 0.0,
+    first_sideways_step: Optional[int] = None,
     wall_collision_count: int,
     invalid_response_count: int,
     note_text: str = "",
@@ -418,6 +422,23 @@ def round_record(
         "first_turn_x": first_turn_x,
         "final_x": float(final_x),
         "final_z": float(final_z),
+        # The four fields below mirror the threshold study's, so a Stage 2 round and a
+        # Stage 1 episode can be put in the same table without re-deriving anything:
+        # whether it ever turned, how much it rotated in total, the torso angle it
+        # finished on, and whether it passed in the sideways band (with the step it
+        # first entered that band).
+        "turned": first_turn_step is not None,
+        "total_rotation": float(total_rotation),
+        "final_torso_rotation": float(final_torso_rotation),
+        "first_sideways_step": first_sideways_step,
+        "passed_sideways": bool(
+            passed
+            and is_sideways_yaw(
+                passage_rotation_deg
+                if passage_rotation_deg is not None
+                else final_torso_rotation
+            )
+        ),
         "wall_collision_count": int(wall_collision_count),
         "invalid_response_count": int(invalid_response_count),
         "reached_door": reached_door(steps),
