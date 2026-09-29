@@ -473,6 +473,23 @@ python lab_logs/export_memory_table.py   # two CSVs: one row per attempt, one pe
 python lab_logs/make_memory_figures.py   # the four Stage-2 figures, LNCS sized
 ```
 
+What a sweep costs is measured rather than estimated, because the panel publishes no
+per-request price:
+
+```bash
+python tools/usage_delta.py --before                                  # before a sweep
+python tools/usage_delta.py --after --rounds 102 --budget-rmb 100     # after it
+python tools/usage_delta.py --status                                  # just the meter
+```
+
+`--after` prints the delta and extrapolates it to one model and to the whole roster,
+which is the number to take to whoever is paying. `--status` prints both readings of
+`total_usage` (hundredths of a dollar and dollars) because the unit is the panel
+owner's setting rather than something the API states, and `--rate` / `--nominal` say
+what the panel's dollar is worth in RMB -- the recharge record settles both. A delta of
+zero is reported as a finding: a refused call is free, which is how the first pilot
+produced a round that looked like data while costing nothing.
+
 The attempt table keeps the Stage 1 column names for every field the two experiments
 share (`final_position_x`, `wall_collisions`, `passed_sideways`, ...), and both tables
 carry `model` and `family`, so the Stage 1 CSV, the Stage 2 attempt table and the

@@ -7,6 +7,9 @@ assets/
 .hf_assets_cache/
 _test_tmp/
 run_progress.txt
+# The meter reading that tools/usage_delta.py --before records.  Per-machine, per-key
+# state that would be wrong in a clone rather than reproducible in one.
+usage_baseline.json
 
 # Model logs and episode records retrieved from the lab machine.  The two
 # archives and everything derived from them ARE committed, because a clone has to
