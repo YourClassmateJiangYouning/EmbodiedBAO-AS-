@@ -118,7 +118,20 @@ WALL_COLOR = [0.13, 0.28, 0.72]
 WALL_OPACITY = 1.0
 ROOM_CEILING_COLOR = [0.92, 0.93, 0.95]
 
-# Goal marker: a mirrored pair of red bands on the side walls at the goal line.
+# Goal marker: a single red square on the GREEN FAR WALL, 15.5 m from the start.
+# (An earlier revision put a pair of red bands on the side walls at the goal line; that
+# is what this comment said until it was corrected, and it is not what the scene builds
+# -- see _create_goal_marker, whose docstring carries the measurements.)
+#
+# NOTE for anyone reading the task text: the prompt tells the agent to "reach the red
+# marker on the far wall", which is at x = 16.0, while success is scored at x >= 8.75,
+# one stride past the obstacle.  Those are 7.25 m apart, and no Stage 1 episode ever got
+# past 8.75 because success ends the episode.  That gap is deliberate in the sense that
+# the marker is a distance cue (see the docstring) and the scoring plane has to sit at
+# the obstacle for the threshold measure to mean anything -- but it does mean the stated
+# goal and the scored goal are not the same place, and the Stage 2 notes show agents
+# reasoning about that mismatch.  It is recorded as a limitation, not papered over.
+#
 # Red because every other surface is blue, green, grey or white, so it is the
 # only warm colour in the scene and stays identifiable from the far end of a
 # 10 m corridor through the opening.
