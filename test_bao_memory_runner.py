@@ -1024,9 +1024,41 @@ def test_the_stage2_csv_lines_up_with_the_stage1_csv() -> None:
     )
 
 
+def test_the_analysis_reads_only_fields_that_exist():
+    """tools/check_field_names.py must stay green.
+
+    It exists because two fields the analysis read did not exist: the Stage 1 table asked
+    for first_turn_x, which is a Stage 2 field (the x of a step lives in the sidecar), and
+    reported "none" for all 660 episodes; and a lateral count looked for "strafe_left",
+    which the protocol calls "left", so it was always zero.  Neither raised anything, and
+    no test that checks the numbers a script does compute can see them.  Running the
+    checker here means the standard suite catches the next one.
+    """
+    import contextlib
+    import importlib.util
+    import io
+
+    root = os.path.dirname(os.path.abspath(__file__))
+    path = os.path.join(root, "tools", "check_field_names.py")
+    spec = importlib.util.spec_from_file_location("check_field_names", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    buffer = io.StringIO()
+    cwd = os.getcwd()
+    os.chdir(root)
+    try:
+        with contextlib.redirect_stdout(buffer):
+            code = module.main()
+    finally:
+        os.chdir(cwd)
+    check(code == 0, "tools/check_field_names.py reports:\n" + buffer.getvalue())
+    print("[ok] every record field and action name the analysis reads exists")
+
+
 def main() -> int:
     tests = [
         test_one_run_writes_every_round_and_grows_its_memory,
+        test_the_analysis_reads_only_fields_that_exist,
         test_rolling_runs_carry_only_the_last_note,
         test_the_note_is_written_once_per_round_except_the_last,
         test_the_width_changes_at_round_thirteen_before_the_reset,
