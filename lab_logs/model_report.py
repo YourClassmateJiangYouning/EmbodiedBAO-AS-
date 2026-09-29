@@ -203,6 +203,8 @@ def model_summary(episodes):
         "wide_turn_pct": pct(sum(1 for e in wide if e["n_turn"]), len(wide)),
         "wide_pass_pct": pct(sum(1 for e in wide if e["passed"]), len(wide)),
         "narrow_pass": "%d/%d" % (sum(1 for e in narrow if e["passed"]), len(narrow)),
+        "narrow_passed": sum(1 for e in narrow if e["passed"]),
+        "narrow_n": len(narrow),
         "turned_pct": pct(len(turned), len(episodes)),
         "first_turn_x": mean([e["first_turn_x"] for e in turned]),
         "mean_max_rot": mean([e["max_rot"] for e in episodes]),
@@ -239,6 +241,83 @@ def quotes(episodes, limit=4):
     return picked[:limit]
 
 
+def classify_model(summary):
+    """A model type from stated thresholds, in both languages.
+
+    The thresholds are listed here rather than tuned per model so the labels can be
+    argued with: a fixed-policy turner turns in >=60% of the episodes at apertures that
+    need no turn, a straight walker turns in <=10% of all episodes, and a
+    turn-on-demand model turns between those while keeping its no-turn-aperture rate
+    under 40%.  Everything else is called mixed, which is a real answer rather than a
+    placeholder.
+
+    Both languages because the PDF's fonts carry no CJK glyphs (Chinese type names
+    rendered as empty boxes) while the write-up is Chinese.
+    """
+    turned = summary["turned_pct"]
+    wide = summary["wide_turn_pct"]
+    look = summary["look_pct"]
+    excess = summary["mean_excess"]
+    passes = summary["pass_pct"]
+    narrow = "%d/%d" % (summary["narrow_passed"], summary["narrow_n"])
+
+    if wide >= 60:
+        kind_en, kind_cn = "fixed-policy turner", "固定策略型"
+        why_en = ("it turns in %.0f%% of the episodes at apertures that need no turn at "
+                  "all, with a mean maximum rotation of %.0f degrees: it is not reading "
+                  "the aperture, it is executing a fixed action, which costs it %.1f "
+                  "steps over the optimum and still passes only %s of the two rotation "
+                  "levels." % (wide, summary["mean_max_rot"], excess, narrow))
+        why_cn = ("在不需要转身的宽度上仍有 %.0f%% 的集转身、平均最大转角 %.0f°；它读的不是"
+                  "开口宽度，而是把「转身」当成固定动作，代价是平均多花 %.1f 步，"
+                  "而且在需要转身的两档只通过 %s。" % (wide, summary["mean_max_rot"], excess, narrow))
+    elif turned <= 10:
+        kind_en, kind_cn = "straight walker", "直立派"
+        why_en = ("it turns in only %.0f%% of all episodes and passes by walking "
+                  "straight; its score comes from the zero-tolerance frontal pass at "
+                  "A/S 1.0, and at A/S 0.9, where at least 60 degrees is required, it "
+                  "almost always fails: %s over the two rotation levels."
+                  % (turned, narrow))
+        why_cn = ("几乎不转身（全部集里仅 %.0f%% 转身），靠正面通过；它的分主要来自 A/S 1.0 的"
+                  "零容差正面通过，到 A/S 0.9（必须 ≥60°）就基本全败，两档合计 %s。"
+                  % (turned, narrow))
+    elif wide <= 40:
+        kind_en, kind_cn = "turn on demand", "按需转身型"
+        why_en = ("whether it turns follows the aperture (only %.0f%% of the no-turn "
+                  "episodes turn, first turn at x = %.2f m on average), which is the "
+                  "closest any of these models comes to a judgement rather than a fixed "
+                  "action; it passes %s of the two rotation levels."
+                  % (wide, summary["first_turn_x"], narrow))
+        why_cn = ("会随宽度改变是否转身（宽档转身率仅 %.0f%%，首次转身平均在 x = %.2f m），"
+                  "是几种类型里最接近「判断」而非「固定策略」的一种；两档合计通过 %s。"
+                  % (wide, summary["first_turn_x"], narrow))
+    else:
+        kind_en, kind_cn = "mixed", "半按需型"
+        why_en = ("the link between turning and aperture is weak: %.0f%% of the no-turn "
+                  "episodes still turn, first turn at x = %.2f m on average, and it "
+                  "passes %s of the two rotation levels -- between a judgement and a "
+                  "fixed action." % (wide, summary["first_turn_x"], narrow))
+        why_cn = ("转身与宽度的关系较弱：宽档仍有 %.0f%% 转身、首次转身平均 x = %.2f m，"
+                  "介于判断与固定策略之间；两档合计通过 %s。"
+                  % (wide, summary["first_turn_x"], narrow))
+
+    flags_en, flags_cn = [], []
+    if look >= 80:
+        flags_en.append("inspects its own body constantly (%.0f%% of episodes)" % look)
+        flags_cn.append("频繁自检（%.0f%% 的集低头看自己）" % look)
+    elif look <= 10:
+        flags_en.append("never looks at its own body (%.0f%%)" % look)
+        flags_cn.append("从不看自己的身体（%.0f%%）" % look)
+    if excess >= 5:
+        flags_en.append("wastes steps (%.1f over the optimum)" % excess)
+        flags_cn.append("步数浪费大（比最优多 %.1f 步）" % excess)
+    if passes < 80:
+        flags_en.append("low overall pass rate (%.0f%%)" % passes)
+        flags_cn.append("总体通过率偏低（%.0f%%）" % passes)
+    return {"kind_en": kind_en, "kind_cn": kind_cn, "why_en": why_en, "why_cn": why_cn,
+            "flags_en": flags_en, "flags_cn": flags_cn}
+
+
 def draw_text(axis, paragraphs, width=76, fontsize=FONT_PT - 1):
     """Wrapped multi-line text in an empty axes.
 
@@ -254,12 +333,14 @@ def draw_text(axis, paragraphs, width=76, fontsize=FONT_PT - 1):
 
 
 def model_page(pdf, model, episodes, summary, table):
-    figure = plt.figure(figsize=(TEXT_WIDTH_CM * CM, 23.0 * CM))
-    figure.suptitle("%s   —   %d episodes, overall pass %.0f%%" % (
-        model, summary["n"], summary["pass_pct"]), fontsize=FONT_PT + 2, y=0.985)
+    verdict = classify_model(summary)
+    figure = plt.figure(figsize=(TEXT_WIDTH_CM * CM, 24.5 * CM))
+    figure.suptitle("%s   —   %s   —   %d episodes, overall pass %.0f%%" % (
+        model, verdict["kind_en"], summary["n"], summary["pass_pct"]),
+        fontsize=FONT_PT + 2, y=0.986)
     grid = figure.add_gridspec(
-        4, 2, height_ratios=[2.9, 2.9, 7.4, 7.6], hspace=0.78, wspace=0.42,
-        top=0.938, bottom=0.012, left=0.11, right=0.98)
+        4, 2, height_ratios=[2.9, 2.9, 7.2, 8.6], hspace=0.80, wspace=0.42,
+        top=0.942, bottom=0.010, left=0.11, right=0.98)
 
     levels = sorted(table)
     ratios = [table[l]["a_s"] for l in levels]
@@ -294,8 +375,10 @@ def model_page(pdf, model, episodes, summary, table):
     axis.bar([x - 0.2 for x in xs], bars, width=0.4, color=PALETTE[0], label="inspected body")
     axis.bar([x + 0.2 for x in xs], nobars, width=0.4, color=PALETTE[4], label="never inspected")
     axis.set_xticks(list(xs))
-    axis.set_xticklabels(["%.1f" % table[l]["a_s"] for l in levels], rotation=90,
-                         fontsize=FONT_PT - 2)
+    # The A/S values are in the table right below, one row per aperture in the same
+    # order, so writing them here again only produced a row of clipped rotated labels.
+    axis.set_xticklabels(["" for _ in levels])
+    axis.set_xlabel("apertures 2.0 → 0.9, in the table's order", fontsize=FONT_PT - 2)
     axis.set_ylabel("pass rate (%)")
     axis.set_ylim(0, 118)
     axis.set_title("self-inspection and outcome, within each aperture")
@@ -339,19 +422,18 @@ def model_page(pdf, model, episodes, summary, table):
     axis = figure.add_subplot(grid[3, :])
     topics = summary["topic_hits"]
     draw_text(axis, [
-        "Columns: pass|look / pass|nolook are this model's pass rate inside that aperture "
-        "when it inspected its own body and when it did not; look% is how often it did.",
+        "Type: %s.  %s%s" % (verdict["kind_en"], verdict["why_en"],
+                             ("  Also: " + "; ".join(verdict["flags_en"]) + ".")
+                             if verdict["flags_en"] else ""),
         "Reasoning mentions (share of episodes): " + ", ".join(
             "%s %.0f%%" % (k, v) for k, v in sorted(topics.items(), key=lambda kv: -kv[1])),
         "Actions: " + ", ".join("%s %.1f%%" % (k, v)
                                 for k, v in list(summary["action_mix"].items())[:6]),
         "Strategy labels: " + ", ".join("%s %.0f%%" % (k, pct(v, summary["n"]))
                                         for k, v in summary["labels"].most_common()),
-        "It turned in %.0f%% of episodes (first turn at x = %.1f m on average), and in %.0f%% "
-        "of the episodes at apertures that need no turn at all; its passes waste %.1f steps "
-        "over the optimum on average." % (
-            summary["turned_pct"], summary["first_turn_x"], summary["wide_turn_pct"],
-            summary["mean_excess"]),
+        "It turned in %.0f%% of all episodes (first turn at x = %.1f m on average), and in "
+        "%.0f%% of the episodes at apertures that need no turn at all."
+        % (summary["turned_pct"], summary["first_turn_x"], summary["wide_turn_pct"]),
         "Inspecting its own body, compared inside each aperture: %+.1f percentage points on "
         "the pass rate (%d of %d apertures positive)." % (
             summary["look_matched_diff"], summary["look_levels_pos"], summary["look_levels_n"]),
@@ -366,8 +448,9 @@ def cross_page_plots(pdf, summaries, tables):
     models = sorted(summaries)
     figure = plt.figure(figsize=(TEXT_WIDTH_CM * CM, 17.5 * CM))
     figure.suptitle("The eleven models together", fontsize=FONT_PT + 2, y=0.975)
-    grid = figure.add_gridspec(2, 2, hspace=1.05, wspace=0.42, top=0.925, bottom=0.175,
-                               left=0.11, right=0.98)
+    grid = figure.add_gridspec(3, 2, height_ratios=[3.0, 3.0, 1.15], hspace=0.72,
+                               wspace=0.55, top=0.905, bottom=0.02,
+                               left=0.13, right=0.945)
     handles = []
 
     axis = figure.add_subplot(grid[0, 0])
@@ -385,6 +468,9 @@ def cross_page_plots(pdf, summaries, tables):
     axis.set_title("pass rate per aperture")
     axis.set_ylim(-6, 110)
     axis.invert_xaxis()
+    axis.legend(handles=handles, labels=[h.get_label() for h in handles], loc="lower left",
+                ncol=2, fontsize=FONT_PT - 3, framealpha=1.0, facecolor="white",
+                edgecolor="none", handlelength=1.3, borderaxespad=0.25)
 
     axis = figure.add_subplot(grid[0, 1])
     for index, model in enumerate(models):
@@ -394,36 +480,40 @@ def cross_page_plots(pdf, summaries, tables):
                   "s-", color=PALETTE[index % len(PALETTE)], markersize=2.4)
     axis.set_xlabel("A/S")
     axis.set_ylabel("episodes with a turn (%)")
-    axis.set_title("turn rate per aperture (flat = a fixed policy)")
+    axis.set_title("turn rate per aperture")
     axis.set_ylim(-6, 110)
     axis.invert_xaxis()
+    axis.text(0.03, 0.94, "flat = a policy that ignores the aperture",
+              transform=axis.transAxes, fontsize=FONT_PT - 3)
 
-    # Only the extreme models are labelled in the scatters: naming all eleven put the
-    # labels on top of each other, which is what made the first version unreadable.
+    # Every point carries its number and the key sits in row 3: naming all eleven points
+    # on the plot itself is what made the first version unreadable.
     for slot, (key, xlabel, title, colour) in enumerate([
-        ("wide_turn_pct", "turn rate where no turn is needed (%)",
+        ("wide_turn_pct", "turning where none is needed (%)",
          "spurious rotation vs success", PALETTE[0]),
-        ("look_pct", "episodes that inspected their own body (%)",
+        ("look_pct", "inspected its own body (%)",
          "self-inspection vs success", PALETTE[2]),
     ]):
         axis = figure.add_subplot(grid[1, slot])
         xs = [summaries[m][key] for m in models]
         ys = [summaries[m]["pass_pct"] for m in models]
         axis.plot(xs, ys, "o", color=colour, markersize=3.5)
-        interesting = {min(range(len(xs)), key=lambda i: xs[i]),
-                       max(range(len(xs)), key=lambda i: xs[i]),
-                       min(range(len(ys)), key=lambda i: ys[i]),
-                       max(range(len(ys)), key=lambda i: ys[i])}
-        for index in sorted(interesting):
-            axis.annotate(models[index].replace("-instruct", "")[:16], (xs[index], ys[index]),
-                          fontsize=FONT_PT - 3, xytext=(3, 3), textcoords="offset points")
+        for index, (x, y) in enumerate(zip(xs, ys)):
+            axis.annotate(str(index + 1), (x, y), fontsize=FONT_PT - 3,
+                          xytext=(3, 2), textcoords="offset points")
         axis.set_xlabel(xlabel)
         axis.set_ylabel("overall pass rate (%)")
         axis.set_title(title)
-        axis.margins(0.16)
+        axis.margins(0.18)
 
-    figure.legend(handles, [h.get_label() for h in handles], loc="lower center",
-                  ncol=4, fontsize=FONT_PT - 2, frameon=False)
+    axis = figure.add_subplot(grid[2, :])
+    key_lines = ["%d  %s   (%s)" % (index + 1, model.replace("-instruct", ""),
+                                    classify_model(summaries[model])["kind_en"])
+                 for index, model in enumerate(models)]
+    draw_text(axis, ["Points in both scatters, numbered:   " + "      ".join(key_lines[:6]),
+                     "                                                          "
+                     + "      ".join(key_lines[6:])], width=110, fontsize=FONT_PT - 3)
+
     pdf.savefig(figure)
     figure.savefig(os.path.join(PNGDIR, "_cross_plots.png"), dpi=150)
     plt.close(figure)
@@ -442,9 +532,9 @@ def cross_page_table(pdf, summaries):
                    "narrow = pass rate at the two apertures that need rotation (A/S 1.0, 0.9);"
                    "   wide turn% = turning where none is needed",
                    fontsize=FONT_PT, pad=6)
-    header = ["model", "pass%", "narrow", "turn%", "wide\nturn%", "first\nturn x",
+    header = ["model", "type", "pass%", "narrow", "turn%", "wide\nturn%", "first\nturn x",
               "look%", "pass|\nlook", "pass|\nnolook"]
-    body = [[m.replace("-instruct", "")[:16],
+    body = [[m.replace("-instruct", "")[:16], classify_model(s)["kind_en"],
              "%.0f" % s["pass_pct"], s["narrow_pass"], "%.0f" % s["turned_pct"],
              "%.0f" % s["wide_turn_pct"], "%.2f" % s["first_turn_x"],
              "%.0f" % s["look_pct"],
@@ -453,7 +543,8 @@ def cross_page_table(pdf, summaries):
             for m, s in ((m, summaries[m]) for m in models)]
     rendered = axis.table(cellText=body, colLabels=header, loc="center", cellLoc="center",
                           colLoc="center", bbox=[0.0, 0.0, 1.0, 1.0],
-                          colWidths=[0.17, 0.08, 0.11, 0.09, 0.10, 0.11, 0.09, 0.12, 0.12])
+                          colWidths=[0.135, 0.135, 0.065, 0.10, 0.075, 0.09, 0.10, 0.075,
+                                     0.10, 0.10])
     rendered.auto_set_font_size(False)
     rendered.set_fontsize(FONT_PT - 2)
 
@@ -504,20 +595,24 @@ def write_markdown(episodes, summaries, tables):
         "",
         "## 跨模型总表",
         "",
-        "| 模型 | 通过率 | A/S 1.0+0.9 | 转身集 | 无需转身处仍转 | 首次转身x | 平均最大转角 | 平均步数 | excess | 低头率 | pass\\|look | pass\\|nolook |",
-        "| :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
+        "| 模型 | 类型 | 通过率 | A/S 1.0+0.9 | 转身集 | 无需转身处仍转 | 首次转身x | 平均最大转角 | 平均步数 | excess | 低头率 | pass\\|look | pass\\|nolook |",
+        "| :--- | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for model, s in sorted(summaries.items(), key=lambda kv: -kv[1]["pass_pct"]):
-        lines.append("| %s | %.0f%% | %s | %.0f%% | %.0f%% | %.2f m | %.0f° | %.1f | %.1f | %.0f%% | %.0f%% | %.0f%% |" % (
-            model, s["pass_pct"], s["narrow_pass"], s["turned_pct"], s["wide_turn_pct"],
-            s["first_turn_x"], s["mean_max_rot"], s["mean_steps"], s["mean_excess"],
-            s["look_pct"], s["look_pass"], s["no_look_pass"]))
+        lines.append("| %s | %s | %.0f%% | %s | %.0f%% | %.0f%% | %.2f m | %.0f° | %.1f | %.1f | %.0f%% | %.0f%% | %.0f%% |" % (
+            model, classify_model(s)["kind_cn"], s["pass_pct"], s["narrow_pass"], s["turned_pct"],
+            s["wide_turn_pct"], s["first_turn_x"], s["mean_max_rot"], s["mean_steps"],
+            s["mean_excess"], s["look_pct"], s["look_pass"], s["no_look_pass"]))
     lines += ["", "---", ""]
 
     for model in sorted(summaries, key=lambda m: -summaries[m]["pass_pct"]):
         s, table = summaries[model], tables[model]
+        verdict = classify_model(s)
+        kind, why, flags = verdict["kind_cn"], verdict["why_cn"], verdict["flags_cn"]
         lines += [
             "## %s" % model,
+            "",
+            "**类型：%s**。%s%s" % (kind, why, ("　另：" + "；".join(flags) + "。") if flags else ""),
             "",
             "**总体**：%d 集，通过率 **%.0f%%**；两个需要转身的档（A/S 1.0 与 0.9）%s。"
             "转身集 %.0f%%，首次转身平均在 x = %.2f m；**在不需要转身的宽度上仍转身的比例 %.0f%%**。"
