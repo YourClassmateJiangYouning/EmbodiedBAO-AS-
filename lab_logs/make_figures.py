@@ -44,7 +44,12 @@ FONT_SANS = ["Arial", "Helvetica", "DejaVu Sans"]
 PALETTE = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#E69F00",
            "#56B4E9", "#F0E442", "#000000"]
 OUTDIR = "lab_logs/figures"
-HUMAN_LO, HUMAN_HI = 1.25, 1.30   # Keizer et al. HC / Warren & Whang A_s = 1.30
+HUMAN_LO, HUMAN_HI = 1.10, 1.30   # human rotation onset across studies: Franchak et al.
+                                  # 2012 (0.5 cm apparatus) report 1.10, Keizer et al. 2013
+                                  # healthy controls 1.25, Warren & Whang 1987 / Higuchi
+                                  # et al. 2006 report 1.2-1.3.  Shading the whole range
+                                  # rather than one number is the honest reading of the
+                                  # literature; a single 1.30 is the coarse-step estimate.
 MODEL_KNEE = 1.00
 WALL_X, LAST_FREE_X = 8.0, 7.25
 CM = 1.0 / 2.54
@@ -178,7 +183,7 @@ def fig1(records, seqs):
     axes[0].plot(as_ratio, passed, "o-", color=PALETTE[0])
     axes[0].set_ylabel("pass rate (%)")
     axes[0].set_ylim(-5, 108)
-    axes[0].text(HUMAN_HI + 0.01, 30, "human rotation threshold\n1.25 - 1.30",
+    axes[0].text(HUMAN_HI + 0.01, 30, "human rotation onset\n1.1 - 1.3\n(studies differ)",
                  fontsize=FONT_PT - 2, ha="right", va="center", color="#00674F")
     axes[0].text(MODEL_KNEE - 0.02, 8, "model knee\nA/S = 1.0", fontsize=FONT_PT - 2,
                  ha="right", va="center", color="0.3")

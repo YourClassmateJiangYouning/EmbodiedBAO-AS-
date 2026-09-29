@@ -184,21 +184,30 @@ BLOCKS = [
           "未手工转录。对应脚本：`lab_logs/stage1_results.py`（结果表）、"
           "`lab_logs/stage1_reasoning_and_positions.py`（推理与转身位置）、"
           "`lab_logs/check_passage_yaws.py`（可穿越角度）、`lab_logs/model_report.py`（逐模型分类）。"
-          "图件见 `lab_logs/figures/`。参考文献编号见文末。"),
+          "图件见 `lab_logs/figures/`。参考文献编号见文末；其中 [2] 与 [13] 的数值主张已联网核对原文。"),
     ("gap", ""),
 
     ("h1", "一、结论"),
 
-    ("h2", "结论 1｜模型的通过阈值在 A/S ≈ 1.00，比人类低 25–30%"),
+    ("h2", "结论 1｜模型直到余量归零（A/S 1.0）才开始改变行为，0.9 处断崖至 14.5%"),
     ("p", "**数据**：660 集 = 11 个多模态模型 × 12 档开口（A/S 2.00 → 0.90，步长 0.1）× 每档 5 次。"
           "A/S ≥ 1.10 的 9 档通过率稳定在 91–98%（A/S 2.00 = 52/55，1.50 = 51/55，1.10 = 50/55）；"
           "**A/S 1.00（0.570 m，恰等于肩宽）降至 80%（44/55）**；"
           "**A/S 0.90（0.513 m）断崖式跌到 14.5%（8/55）**。"
           "A/S 0.90 要求至少 60° 的躯干旋转才能通过（实测可穿越偏航角为 60°–90°）。"),
-    ("p", "**推论**：模型具备身体尺度可供性的方向性（越窄越倾向改变姿态），但阈值系统性低于人类："
-          "人类在 A/S ≈ 1.25–1.30 即开始侧身（约 30% 安全余量），而模型要等到几何上刚好贴平（1.00）"
-          "才显著改变行为，直到几何上不可能（0.90）才失败。即**缺少提前预防的余量判断**。"),
-    ("p", "**参考文献**：[1] Warren & Whang (1987)；[2] Keizer et al. (2013)；[3] Gibson (1979)。"),
+    ("p", "**人类对照（三种口径）**：① Warren & Whang (1987) 及其后续（Higuchi et al. 2006）报告人类"
+          "在开口宽为肩宽 **1.2–1.3 倍**时开始侧身 [1][13]；② Keizer et al. (2013) 的健康对照组为"
+          "**1.25 倍**（该组患者为 1.40 倍）[2]；③ Franchak et al. (2012) 用 0.5 cm 分辨率的装置"
+          "实测仅 **1.10 倍**，并指出早期研究因开口步长较粗（2.5–13 cm）而系统性偏高 [13]。"),
+    ("p", "**推论**：模型在**几何上仍可通过、但余量已归零**（A/S 1.00）时才开始显著改变行为，"
+          "到几何上不可能（0.90）才失败——即**缺少提前预防的安全余量**。"
+          "幅度上，模型阈值 ≈ 1.00 比人类的 1.10/1.25/1.30 分别低约 **9%/20%/23%**，"
+          "因此本文统一表述为“**低 9–23%，取决于所比较的人类口径**”，不写作 25–30%。"
+          "此外须注明口径差异：人类文献测的是**旋转起始阈值**（肩部旋转达 20° 的开口宽），"
+          "本文测的是**通过率曲线**，两者并非同一口径的量；本基准的结论是“模型的门槛更低”，"
+          "而非“模型的旋转起始角等于 1.00”。"),
+    ("p", "**参考文献**：[1] Warren & Whang (1987)；[2] Keizer et al. (2013)；[13] Franchak et al. (2012)；"
+          "[3] Gibson (1979)。"),
 
     ("h2", "结论 2｜转身是早期决定，而不是被挡之后的反应"),
     ("p", "**数据**：281 个至少转身一次的集中，首次转身位置的中位数为 **x = 2.00 m**（平均 2.17 m），"
@@ -365,8 +374,12 @@ BLOCKS = [
     ("p", "[1] Warren, W. H., & Whang, S. (1987). Visual guidance of walking through apertures: "
           "Body-scaled information for affordances. Journal of Experimental Psychology: Human "
           "Perception and Performance, 13(3), 371–383."),
-    ("p", "[2] Keizer, A., et al. (2013). **【待核对：完整作者列表、标题与期刊】**"
-          "——本基准的 12 档比值阶梯（12 ratios × 3 trials）与人类临界带 1.25–1.30 取自该文。"),
+    ("p", "[2] Keizer, A., Smeets, M. A. M., Dijkerman, H. C., Uzunbajakau, S. A., van Elburg, A., & "
+          "Postma, A. (2013). Too fat to fit through the door: First evidence for disturbed "
+          "body-scaled action in anorexia nervosa during locomotion. PLoS ONE, 8(5), e64602. "
+          "doi:10.1371/journal.pone.0064602. **（已核实原文）**：36 次试验 = 12 档开口宽度 × 每档 3 次，"
+          "A/S 自 0.9 至 2.0、步长 0.1；健康对照组在比肩宽宽 25% 时开始侧身（A/S_crit = 1.25），"
+          "患者组为 40%（1.40）。本基准的 12 档阶梯与每档 5 次重复即沿用该设计。"),
     ("p", "[3] Gibson, J. J. (1979). The Ecological Approach to Visual Perception. Houghton Mifflin."),
     ("p", "[4] Fajen, B. R., & Warren, W. H. (2003). Behavioral dynamics of steering, obstacle "
           "avoidance, and route selection. Journal of Experimental Psychology: Human Perception "
@@ -390,9 +403,14 @@ BLOCKS = [
           "solving. Memory & Cognition, 15(3), 238–246."),
     ("p", "[12] Wood, W., & Rünger, D. (2016). Psychology of habit. Annual Review of Psychology, "
           "67, 289–314."),
-    ("p", "**交稿前须处理**：第 [2] 条需补全出处；第 [5][6][11][12] 条请按目标期刊格式核对卷期页码。"
-          "所有引用的具体数值主张（1.25–1.30、12 ratios × 3 trials）均来自人类原始文献，"
-          "本仓库仅在图表常数与 README 中引用，未做二次测量。"),
+    ("p", "[13] Franchak, J. M., Celano, E. C., & Adolph, K. E. (2012). Perception of passage "
+          "through openings depends on the size of the body in motion. Experimental Brain "
+          "Research, 223(2), 301–310. doi:10.1007/s00221-012-3261-y. **（用于人类口径的第三种估计）**："
+          "该文综述 Warren & Whang 与 Higuchi 等的旋转起始比为 1.2–1.3，并以其 0.5 cm 分辨率装置"
+          "实测得 1.10，指出早期研究的开口步长较粗（2.5–13 cm）会系统性抬高阈值。"),
+    ("p", "**交稿前须处理**：[5][6][11][12][13] 请按目标期刊格式核对卷期页码；"
+          "所有引用的数值主张（1.2–1.3、1.25、1.10、12 ratios × 3 trials）均已逐条对照原文，"
+          "其中 [2][13] 由本项目联网核实（原文摘要与方法节）。"),
 ]
 
 

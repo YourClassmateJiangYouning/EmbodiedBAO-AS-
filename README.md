@@ -4,8 +4,11 @@ Does an MLLM-driven humanoid rotate its body **before** a passage becomes too
 narrow to walk through, the way humans do?
 
 Warren & Whang (1987) showed that people start turning sideways once a gap is
-about **1.30×** their shoulder width — they anticipate the constraint instead of
-waiting to be blocked. This benchmark puts a Unitree H1 in front of a wall with
+**1.2-1.3×** their shoulder width, and they anticipate the constraint instead of
+waiting to be blocked.  Two later measurements bracket that estimate: Franchak et al.
+(2012), with a 0.5 cm apparatus, report 1.10 and note that coarse aperture steps
+systematically raise it, while Keizer et al. (2013) report 1.25 for healthy controls.
+This benchmark puts a Unitree H1 in front of a wall with
 a single vertical opening and sweeps that ratio from 1.58 down to 0.79,
 measuring where the agent's body-scale affordance perception sits.
 
@@ -19,7 +22,8 @@ A/S = channel width / shoulder width (0.57 m). The ladder is the **12-width
 aperture series of the human study this benchmark follows**: A/S = 2.0 down to 0.9
 in steps of 0.1, five episodes per width (Warren & Whang 1987; Keizer et al. 2013
 used the same 12 ratios × 3 trials). Sampling at 0.1 is what localises the
-threshold: the reference band 1.25–1.30 falls between two Levels.
+threshold: the reference band 1.10-1.30 (the three measurements above) falls between two
+Levels.
 
 Widest first, so a sweep runs from trivially passable toward rotation-required:
 
