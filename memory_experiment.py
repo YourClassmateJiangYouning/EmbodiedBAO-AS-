@@ -438,6 +438,8 @@ class MemoryExperimentRunner:
         steps: List[Dict[str, Any]] = []
         wall_collision_count = 0
         invalid_response_count = 0
+        total_llm_time_ms = 0.0
+        note_llm_time_ms = 0.0
         passage_rotation_deg: Optional[float] = None
         max_rotation_deg = 0.0
         final_x = 0.0
@@ -457,7 +459,8 @@ class MemoryExperimentRunner:
                 max_steps=self.max_steps,
                 move_step=state.get("move_step"),
             )
-            action_name, _raw, reasoning, _latency = agent.query(prompt, rgb, state)
+            action_name, _raw, reasoning, latency_ms = agent.query(prompt, rgb, state)
+            total_llm_time_ms += float(latency_ms)
 
             collision_info: Optional[Dict[str, Any]] = None
             if action_name is None:
@@ -512,6 +515,7 @@ class MemoryExperimentRunner:
                     "position_x": final_x,
                     "position_z": final_z,
                     "collision": bool(collision),
+                    "llm_response_time_ms": round(float(latency_ms), 3),
                 }
             )
             agent.record(action_taken, feedback, reasoning, step=step)
@@ -529,6 +533,7 @@ class MemoryExperimentRunner:
             previous_note = None
             if mode == MODE_ROLLING and attempts:
                 previous_note = str(attempts[-1].get("note") or "")
+            note_started = time.perf_counter()
             note_text = self.write_note(
                 tag=tag,
                 run=run,
@@ -540,6 +545,7 @@ class MemoryExperimentRunner:
                 mode=mode,
                 previous_note=previous_note,
             )
+            note_llm_time_ms = (time.perf_counter() - note_started) * 1000.0
 
         record = round_record(
             model=self.model,
@@ -557,6 +563,8 @@ class MemoryExperimentRunner:
             invalid_response_count=invalid_response_count,
             note_text=note_text,
             memory_injected_chars=len(injected),
+            total_llm_time_ms=total_llm_time_ms,
+            note_llm_time_ms=note_llm_time_ms,
             max_steps=self.max_steps,
         )
         record["tag"] = tag
@@ -570,7 +578,8 @@ class MemoryExperimentRunner:
             f"passed={passed} steps={len(steps)} end={end_reason} "
             f"label={record['strategy_label']} gap="
             f"{'n/a' if record['gap'] is None else format(record['gap'], '+.4f')} "
-            f"note={record['note_chars']}ch memory={record['memory_injected_chars']}ch"
+            f"note={record['note_chars']}ch memory={record['memory_injected_chars']}ch "
+            f"llm={total_llm_time_ms / 1000.0:.0f}s note_llm={note_llm_time_ms / 1000.0:.0f}s"
         )
         return record
 

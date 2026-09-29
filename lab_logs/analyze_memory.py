@@ -117,6 +117,11 @@ def summarise(records) -> dict:
         "mean_turns": mean([float(r.get("n_turn", 0)) for r in records]),
         "mean_max_rot": mean([float(r.get("max_rotation_deg", 0.0)) for r in records]),
         "mean_steps": mean([float(r.get("total_steps", 0)) for r in records]),
+        "mean_llm_s": mean([float(r.get("total_llm_time_ms", 0.0)) for r in records]) / 1000.0,
+        "mean_step_llm_s": mean(
+            [float(r.get("mean_step_llm_ms", 0.0)) for r in records]
+        ) / 1000.0,
+        "mean_note_s": mean([float(r.get("note_llm_time_ms", 0.0)) for r in records]) / 1000.0,
         "bands": bands,
     }
 
@@ -184,6 +189,12 @@ def print_tag(model: str, tag: str, records, args) -> None:
             stats["mean_steps"],
         )
     )
+    if any(float(r.get("total_llm_time_ms", 0.0)) > 0 for r in records):
+        print(
+            "  timing: %.1f s per round waiting on the model (%.1f s per step, "
+            "%.1f s per note) -- the number that says whether the sweep fits"
+            % (stats["mean_llm_s"], stats["mean_step_llm_s"], stats["mean_note_s"])
+        )
 
     if args.notes:
         print("\n  what it wrote to itself:")

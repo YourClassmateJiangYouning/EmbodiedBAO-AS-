@@ -351,6 +351,8 @@ def round_record(
     invalid_response_count: int,
     note_text: str = "",
     memory_injected_chars: int = 0,
+    total_llm_time_ms: float = 0.0,
+    note_llm_time_ms: float = 0.0,
     max_steps: int = MAX_STEPS,
 ) -> Dict[str, Any]:
     """Shape one finished round into the record the analysis reads.
@@ -426,6 +428,13 @@ def round_record(
         "note_text": str(note_text or ""),
         "note_chars": len(str(note_text or "")),
         "memory_injected_chars": int(memory_injected_chars),
+        # Wall-clock time spent waiting on the model.  Kept because it is the only
+        # way to tell a sweep that is slow because the endpoint is slow from one
+        # that is slow because calls time out and are retried, and that difference
+        # decides whether the whole experiment fits in the time available.
+        "total_llm_time_ms": round(float(total_llm_time_ms), 3),
+        "note_llm_time_ms": round(float(note_llm_time_ms), 3),
+        "mean_step_llm_ms": round(float(total_llm_time_ms) / max(int(total_steps), 1), 3),
     }
 
 
