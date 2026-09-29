@@ -1256,6 +1256,49 @@ def test_the_sideways_band_matches_the_threshold_study() -> None:
     )
 
 
+def test_the_note_call_sends_plain_text_messages() -> None:
+    """A text-only call must look like one: string content, no image, no JSON mode.
+
+    Both the string and the list-of-text-blocks shapes are accepted by the gateway --
+    measured -- so this pins the canonical text-only form rather than a fix.  The first
+    real pilot's empty notes were caused by the account being out of credit, which no
+    message shape avoids.
+    """
+    import ai_agent
+
+    agent = ai_agent.AgentAPI(model_name="test-model", api_key="test-key", max_retries=0)
+    captured: Dict[str, object] = {}
+
+    class FakeCompletions:
+        def create(self, **kwargs):
+            captured.update(kwargs)
+            message = type("M", (), {"content": "a note"})()
+            choice = type("C", (), {"message": message})()
+            return type("R", (), {"choices": [choice]})()
+
+    agent.client = type(
+        "Client", (), {"chat": type("Chat", (), {"completions": FakeCompletions()})()}
+    )()
+    agent._log = lambda text: None  # type: ignore[assignment]
+    out = agent.get_text("write a note")
+    check(out == "a note", f"get_text returned {out!r} rather than the reply")
+    messages = captured["messages"]
+    check(isinstance(messages, list) and len(messages) == 2, f"messages are {messages!r}")
+    check(
+        messages[1]["role"] == "user" and isinstance(messages[1]["content"], str),
+        f"the note user content is {type(messages[1]['content']).__name__}, expected str",
+    )
+    check(
+        "response_format" not in captured,
+        "the note call sent a response format, which forces the note into JSON",
+    )
+    check(
+        "image_url" not in str(messages),
+        "the note call carries an image, which it must not",
+    )
+    print("[ok] the note call is a plain-text message: string content, no image, no response format")
+
+
 def test_the_note_call_does_not_ask_for_json() -> None:
     """The note is prose where the action call is JSON, and that is deliberate.
 
@@ -1318,6 +1361,7 @@ def main() -> int:
         test_memory_block_renders_both_modes_exactly,
         test_note_prompt_keeps_the_reasoning_the_action_prompt_clips,
         test_the_note_call_does_not_ask_for_json,
+        test_the_note_call_sends_plain_text_messages,
         test_the_sideways_band_matches_the_threshold_study,
         test_our_own_text_never_names_the_obstacle,
         test_run_plan_is_the_documented_experiment,

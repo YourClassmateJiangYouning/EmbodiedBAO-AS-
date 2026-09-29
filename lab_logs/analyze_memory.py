@@ -200,6 +200,29 @@ def print_run_summary(records) -> None:
         "  curves: %s"
         % ", ".join("%s x%d" % (name, count) for name, count in sorted(labels_seen.items()))
     )
+    # An all-fallback round is the one failure that looks like data: the model never
+    # answered, nothing moved, and the record reads like a model that refused to walk.
+    # The threshold study's README warns about it and this is where it has to be seen,
+    # because no amount of column reading makes it obvious.
+    fallbacks = [
+        r
+        for r in records
+        if int(r.get("total_steps", 0)) > 0
+        and int(r.get("invalid_response_count", 0)) >= int(r.get("total_steps", 0))
+    ]
+    if fallbacks:
+        print(
+            "  !! WARNING: %d round(s) are ENTIRELY fallback steps -- the model never "
+            "answered (check the gateway quota and the key), and their gaps, labels and "
+            "pass rates are meaningless: %s"
+            % (
+                len(fallbacks),
+                ", ".join(
+                    "run%d/round%02d" % (int(r["run"]), int(r["round"]))
+                    for r in fallbacks[:10]
+                ),
+            )
+        )
 
 
 def print_tag(model: str, tag: str, records, args) -> None:

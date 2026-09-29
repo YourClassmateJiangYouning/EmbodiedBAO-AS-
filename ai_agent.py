@@ -584,10 +584,17 @@ class AgentAPI:
         Returns an empty string if every attempt fails, and the caller records that,
         because losing the memory of one round is a datum rather than a reason to
         abort a sweep.
+
+        The user content is a plain STRING rather than the list of typed blocks the
+        action call uses, because a text-only request has no image to carry.  Both
+        shapes were measured against the gateway and both are accepted, so this is the
+        canonical form rather than a fix: an earlier note here blamed the list shape
+        for empty notes, and the actual cause was the account being out of credit
+        (HTTP 403 insufficient_user_quota), which no message shape can avoid.
         """
         messages = [
             {"role": "system", "content": NOTE_SYSTEM_PROMPT},
-            {"role": "user", "content": [{"type": "text", "text": prompt}]},
+            {"role": "user", "content": prompt},
         ]
         last_error: Optional[str] = None
         for attempt in range(self.max_retries + 1):
