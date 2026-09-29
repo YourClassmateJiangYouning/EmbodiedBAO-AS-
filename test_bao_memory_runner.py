@@ -935,15 +935,25 @@ def test_the_stage2_csv_lines_up_with_the_stage1_csv() -> None:
     root = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, os.path.join(root, "lab_logs"))
     import export_memory_table as exporter
+    import export_table as stage1_exporter
 
-    stage1_csv = os.path.join(root, "lab_logs", "embodiedbao_v7_episodes.csv")
-    check(os.path.exists(stage1_csv), "the Stage 1 CSV is missing from lab_logs")
-    with open(stage1_csv, newline="", encoding="utf-8") as handle:
-        stage1 = set(next(csv_module.reader(handle)))
-    # Stage 2's equivalents of these two are phase and round, which carry more.
-    shared = stage1 - {"level", "episode_id"}
+    # The contract is the Stage 1 exporter's column list, not a shipped file: the CSV is
+    # generated from the archive, so requiring it to be present would make this suite
+    # fail on a clone whose data file was never checked out -- which is exactly what
+    # happened on the workstation.  When the file IS there, its header is compared too,
+    # so drift between the shipped table and the exporter that writes it is caught.
+    shared = set(stage1_exporter.COLUMNS) - {"level", "episode_id"}
     missing = shared - set(exporter.ROUND_COLUMNS)
     check(not missing, f"the Stage 2 table is missing {sorted(missing)} from Stage 1's")
+    stage1_csv = os.path.join(root, "lab_logs", "embodiedbao_v7_episodes.csv")
+    if os.path.exists(stage1_csv):
+        with open(stage1_csv, newline="", encoding="utf-8") as handle:
+            shipped = set(next(csv_module.reader(handle)))
+        check(
+            shipped == set(stage1_exporter.COLUMNS),
+            "the committed Stage 1 CSV and its exporter disagree on: %s"
+            % sorted(shipped ^ set(stage1_exporter.COLUMNS)),
+        )
 
     records = exporter.load_records(os.path.join(runner.results_root, "memory"))
     rounds = [exporter.round_row(r) for r in records]
