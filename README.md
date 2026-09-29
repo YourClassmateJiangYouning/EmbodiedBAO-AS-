@@ -449,6 +449,22 @@ comparable with Stage 1. Watch a sweep with (17 rounds = a finished run):
 python -c "import glob, json, os; [print('%-34s %3d completed' % (os.path.basename(os.path.dirname(p)) if p.endswith('checkpoint.json') else os.path.basename(p)[11:-5], len(json.load(open(p)).get('completed', [])))) for p in sorted(glob.glob('results/memory/*/*/checkpoint.json') + glob.glob('results/*/checkpoint_*.json'))]"
 ```
 
+Read the results per attempt rather than through the log: each attempt is written to
+disk the moment it finishes, while the sweep's Python output is block-buffered when it
+is redirected to a file, so the records are fresher than `memory_sweep.log`.
+
+```bash
+python lab_logs/analyze_memory.py            # one table per tag, plus what it wrote to itself
+python lab_logs/analyze_memory.py --watch 60 # the same, refreshed in place
+python lab_logs/analyze_memory.py --reasoning  # and each attempt's last reasoned step
+```
+
+Each row is an attempt: phase, A/S, passed, steps, turn/lateral/look-down counts, gap
+(how close its best posture at the wall came to fitting), attempt label, largest
+rotation, where the first turn happened, note length. Below the table: how many of the
+12 learning attempts passed, the turn rate and the share that turned *enough*, the
+first-turn position bands, and the mean rotation.
+
 ### Useful flags
 
 | Flag | Purpose |
