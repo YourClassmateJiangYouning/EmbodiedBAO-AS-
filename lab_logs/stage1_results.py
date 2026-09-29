@@ -33,7 +33,7 @@ for key, record in records.items():
     steps = sidecars.get(key, [])
     actions = [s.get("action") for s in steps]
     record["_turns"] = sum(1 for a in actions if a in ("turn_left", "turn_right"))
-    record["_lateral"] = sum(1 for a in actions if a in ("strafe_left", "strafe_right"))
+    record["_lateral"] = sum(1 for a in actions if a in ("left", "right"))
     record["_forward"] = sum(1 for a in actions if a == "forward")
     record["_look_down"] = sum(1 for a in actions if a == "look_down")
     record["_steps_list"] = steps
@@ -101,11 +101,40 @@ print("first turn step: %s" % (
         "none" if e.get("first_turn_step") is None
         else "step %d" % (int(e["first_turn_step"]) // 3 * 3)
         for e in l11_fails).most_common(6)))
+
+
+def first_turn_x(record):
+    """Where the first turn happened, from the per-step sidecar.
+
+    The episode record has no ``first_turn_x``; the x of a step lives in its
+    sidecar.  Reading the record's field quietly reported "none" for all 660
+    episodes, which is the kind of silence that survives a review.  Derived the
+    same way ``model_report.py`` and ``stage1_reasoning_and_positions.py`` derive
+    it, so three scripts cannot disagree about the number the paper quotes.
+    """
+    step = record.get("first_turn_step")
+    steps = record.get("_steps_list") or []
+    if step is None or not 0 <= int(step) < len(steps):
+        return None
+    return float(steps[int(step)].get("position_x") or 0.0)
+
+
+turn_x = [first_turn_x(e) for e in episodes if first_turn_x(e) is not None]
 print("where the first turn happened (x, m): %s" % (
     collections.Counter(
-        "none" if e.get("first_turn_x") is None
-        else "x<4" if float(e["first_turn_x"]) < 4 else "4<=x<7" if float(e["first_turn_x"]) < 7
-        else "x>=7" for e in episodes).most_common()))
+        "none" if first_turn_x(e) is None
+        else "x<4" if first_turn_x(e) < 4 else "4<=x<7" if first_turn_x(e) < 7
+        else "x>=7 (at the wall)" for e in episodes).most_common()))
+if turn_x:
+    late = sum(1 for x in turn_x if x >= 7.0)
+    print("  mean x of the first turn: %.2f m (n=%d), median %.2f m" % (
+        mean(turn_x), len(turn_x), sorted(turn_x)[len(turn_x) // 2]))
+    # Both denominators, because the paper quotes the first one and a reader who
+    # takes the second for it would see 7% where the text says 3%.
+    print("  first turn at x >= 7.0 m (the wall zone): %d | %.1f%% of all %d episodes | "
+          "%.0f%% of the %d that turned at all" % (
+              late, 100.0 * late / len(episodes), len(episodes),
+              100.0 * late / len(turn_x), len(turn_x)))
 
 print()
 print("=" * 108)
