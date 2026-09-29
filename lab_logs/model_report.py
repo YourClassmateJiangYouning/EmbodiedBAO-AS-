@@ -359,8 +359,8 @@ def model_page(pdf, model, episodes, summary, table, png_dir=PNGDIR):
 
     levels = sorted(table)
     ratios = [table[l]["a_s"] for l in levels]
-    left_box = [0.115, 0.795, 0.40, 0.115]
-    right_box = [0.585, 0.795, 0.40, 0.115]
+    left_box = [0.110, 0.795, 0.385, 0.115]
+    right_box = [0.595, 0.795, 0.385, 0.115]
 
     axis = figure.add_axes(left_box)
     axis.plot(ratios, [table[l]["pass_pct"] for l in levels], "o-", color=PALETTE[0])
@@ -384,7 +384,7 @@ def model_page(pdf, model, episodes, summary, table, png_dir=PNGDIR):
                 fontsize=FONT_PT - 3, frameon=False, handlelength=1.1, columnspacing=0.9)
 
     looked = [e for e in episodes if e["looked_down"]]
-    axis = figure.add_axes([0.115, 0.605, 0.40, 0.105])
+    axis = figure.add_axes([0.110, 0.605, 0.385, 0.105])
     bars = [table[l]["pass_if_look"] if table[l]["look_n"] else 0 for l in levels]
     nobars = [table[l]["pass_if_no_look"] if table[l]["n_nolook"] else 0 for l in levels]
     xs = range(len(levels))
@@ -399,7 +399,7 @@ def model_page(pdf, model, episodes, summary, table, png_dir=PNGDIR):
     axis.legend(loc="upper center", bbox_to_anchor=(0.5, -0.42), ncol=2,
                 fontsize=FONT_PT - 3, frameon=False, handlelength=1.0, columnspacing=1.2)
 
-    axis = figure.add_axes([0.585, 0.605, 0.40, 0.105])
+    axis = figure.add_axes([0.595, 0.605, 0.385, 0.105])
     early = sum(1 for e in looked if e["looked_down_early"])
     door = sum(1 for e in looked if e["first_look_x"] is not None and e["first_look_x"] >= DOOR_X)
     mid = len(looked) - early - door
@@ -466,7 +466,7 @@ def cross_page_plots(pdf, summaries, tables, png_dir=PNGDIR):
                 fontsize=FONT_PT + 2, va="top", ha="left")
     handles = []
 
-    axis = figure.add_axes([0.105, 0.700, 0.40, 0.225])
+    axis = figure.add_axes([0.110, 0.685, 0.385, 0.200])
     for index, model in enumerate(models):
         table = tables[model]
         levels = sorted(table)
@@ -481,14 +481,8 @@ def cross_page_plots(pdf, summaries, tables, png_dir=PNGDIR):
     axis.set_title("pass rate per aperture")
     axis.set_ylim(-6, 110)
     axis.invert_xaxis()
-    # In-panel legend, lower left: the pass-rate curves sit at 90-100% for the wide
-    # apertures, so that corner is empty.  Keeping it inside frees the band below the two
-    # top panels, which a four-row figure legend was covering the scatter titles with.
-    axis.legend(handles=handles, labels=[h.get_label() for h in handles], loc="lower left",
-                ncol=2, fontsize=FONT_PT - 3, framealpha=1.0, facecolor="white",
-                edgecolor="none", handlelength=1.2, columnspacing=1.0, borderaxespad=0.2)
 
-    axis = figure.add_axes([0.575, 0.700, 0.40, 0.225])
+    axis = figure.add_axes([0.595, 0.685, 0.385, 0.200])
     for index, model in enumerate(models):
         table = tables[model]
         levels = sorted(table)
@@ -502,6 +496,13 @@ def cross_page_plots(pdf, summaries, tables, png_dir=PNGDIR):
     axis.text(0.03, 0.94, "flat = a policy that ignores the aperture",
               transform=axis.transAxes, fontsize=FONT_PT - 3)
 
+    # Every legend sits outside its panel, this one included: the eleven-model key goes on
+    # the blank band at the foot of the page, which is why this page is taller than the
+    # plots alone need.  A legend laid over the curves hides the thing it labels.
+    figure.legend(handles, [h.get_label() for h in handles], loc="lower center",
+                  bbox_to_anchor=(0.5, 0.020), ncol=4, fontsize=FONT_PT - 2,
+                  frameon=False, columnspacing=1.4, handlelength=1.6)
+
     # Every scatter point carries its number; the key is on the table page, so no label
     # has to be squeezed next to a point.
     for slot, (key, xlabel, title, colour) in enumerate([
@@ -510,7 +511,7 @@ def cross_page_plots(pdf, summaries, tables, png_dir=PNGDIR):
         ("look_pct", "inspected its own body (%)",
          "self-inspection vs success", PALETTE[2]),
     ]):
-        axis = figure.add_axes([0.105 + slot * 0.47, 0.345, 0.40, 0.225])
+        axis = figure.add_axes([0.110 + slot * 0.485, 0.360, 0.385, 0.200])
         xs = [summaries[m][key] for m in models]
         ys = [summaries[m]["pass_pct"] for m in models]
         axis.plot(xs, ys, "o", color=colour, markersize=3.5)
@@ -566,10 +567,12 @@ def cross_page_table(pdf, summaries, png_dir=PNGDIR):
     abstainers = sorted(models, key=lambda m: summaries[m]["wide_turn_pct"])[:2]
     draw_text(axis, [
         "Both scatters on the previous page use these numbers:",
-        "    " + "      ".join(key_lines[:3]),
-        "    " + "      ".join(key_lines[3:6]),
-        "    " + "      ".join(key_lines[6:9]),
-        "    " + "      ".join(key_lines[9:]) + "\n",
+        "    " + "      ".join(key_lines[0:2]),
+        "    " + "      ".join(key_lines[2:4]),
+        "    " + "      ".join(key_lines[4:6]),
+        "    " + "      ".join(key_lines[6:8]),
+        "    " + "      ".join(key_lines[8:10]),
+        "    " + "      ".join(key_lines[10:12]) + "\n",
         textwrap.fill(
             "Pass rate spans %.0f-%.0f%%, and the two apertures that need rotation already "
             "separate the models (%s)." % (
