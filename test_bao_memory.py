@@ -784,9 +784,9 @@ def test_memory_block_renders_both_modes_exactly() -> None:
     """The two blocks are quoted verbatim in the design document."""
     expected_cumulative = (
         "Previous attempts (oldest first):\n"
-        "- round 1: failed (did not reach the red marker within 30 steps)\n"
+        "- round 1: failed after 30 steps\n"
         '  your note: "I could not get past."\n'
-        "- round 2: passed (reached the red marker in 22 steps)\n"
+        "- round 2: passed in 22 steps\n"
         '  your note: "Turning first worked."'
     )
     actual = memory_protocol.memory_block(memory_protocol.MODE_CUMULATIVE, _SAMPLE_ATTEMPTS)
@@ -842,7 +842,7 @@ def test_note_prompt_keeps_the_reasoning_the_action_prompt_clips() -> None:
     check(clipped in action, "the action prompt should still carry the clipped reasoning")
     check("Complete record of this attempt:" in note, "the record header is missing")
     check(
-        "- the attempt ended: failed (did not reach the red marker within 30 steps)" in note,
+        "- the attempt ended: failed after 30 steps" in note,
         "the outcome line of the note prompt is missing or worded differently",
     )
 
@@ -856,7 +856,7 @@ def test_note_prompt_keeps_the_reasoning_the_action_prompt_clips() -> None:
     )
     check("it will replace the previous one" in rolling, "the rolling instruction is missing")
     check(
-        "passed (reached the red marker in 16 steps)" in rolling,
+        "passed in 16 steps" in rolling,
         "the note prompt reports the outcome in the environment's own words",
     )
     check(

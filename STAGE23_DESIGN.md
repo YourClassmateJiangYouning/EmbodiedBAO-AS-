@@ -112,9 +112,9 @@ excess(round) = total_steps(round) - optimal_steps(W(round))     # 失败回合 
 
 ```
 Previous attempts (oldest first):
-- round 1: failed (did not reach the red marker within 30 steps)
+- round 1: failed after 30 steps
   your note: "<它自己写的话>"
-- round 2: passed (reached the red marker in 22 steps)
+- round 2: passed in 22 steps
   your note: "<它自己写的话>"
 ```
 
@@ -203,7 +203,7 @@ Complete record of this attempt:
 - step 1: turn_left -> executed | your reasoning: "<完整未截断>"
 - step 2: forward -> blocked by obstacle or room boundary (body) | your reasoning: "<完整未截断>"
 ...
-- the attempt ended: failed (did not reach the red marker within 30 steps)
+- the attempt ended: failed after 30 steps
 
 <累积模式> Write a short note to yourself for your next attempt. Your note is the only
 thing you will be able to read about this attempt next time; the record above will not
@@ -226,6 +226,20 @@ above will not be shown to you again.
 所以"关掉 response_format"并不够，决定格式的是系统提示词里那句话。
 安全铺垫（benign virtual simulation…）两句系统提示词完全相同，只差最后一句。
 `write_note_log` 会把实际使用的系统提示词一并写进笔记日志，这样日志本身就能自证问了什么。
+
+### 4.2.1 记录与措辞修订（模型可见文本）
+
+每次改动都记在这里，注明**改前原文**，因为"前几个回合用的是旧文本"必须能如实报告。
+
+| 日期 | 位置 | 改前 | 改后 | 理由 |
+| :--- | :--- | :--- | :--- | :--- |
+| 2026-09-29 | `outcome_phrase` 成功分支 | `passed (reached the red marker in N steps)` | `passed in N steps` | **改前是假话**：红标记在远墙 x = 16.0，成功在 x ≥ 8.75 判定，660 集实测最远只到 8.75（差 7.25 m）。它还与失败分支（`did not reach the red marker`）**互相矛盾**，等于递给模型一个"我到了、是判分错了"的理论——这正是 Stage 2 笔记开头出现的错误归因。失败分支同时改为 `failed after 30 steps`：两条对称、真实、都不提标记 |
+| 2026-09-29 | `NOTE_INSTRUCTION_CUMULATIVE` | `Your note is the only thing you will be able to read about this attempt next time` | `Next time you will be shown one line saying whether this attempt passed and how many steps it took, and this note` | **改前是假话**：累积模式下一回合**会**显示结果行（`- round N: passed in … / failed after …`），笔记不是唯一可读的。滚动模式那句（只留一条笔记）仍然正确，保持不变 |
+| 2026-09-29 | `TASK_INSTRUCTION` | 未改，仍是 `reach the red marker on the far wall` | — | "尽可能接近"被否决：穿过墙即判成功并**立即结束该回合**，所以"更接近"不是可达目标（假目标）；保留 `reach` 同时保住与 Stage 1 的可比性 |
+
+**已发现但刻意未改**（与 Stage 1 冻结的提示词共享，改动会让 660 集不可比，故记为 limitation）：
+
+- `turn_left/turn_right` 的动作说明写 "Rotating needs room, so you cannot turn once your shoulders are inside the opening"。**窄档成立、宽档不成立**：A/S 2.0 的开口 1.140 m、肩宽 0.570 m，两侧余量各 0.285 m，而 15° 转身使肩角横向外扩约 0.076 m（`0.285·sin15° + 0.11·(1−cos15°)`）→ 宽档下**在开口内部转身是合法的**。该措辞比机制更强，会把模型推向"提前转身"，因此可能**高估** Stage 1 测到的预期性；论文中作为 limitation 说明。
 
 ### 4.3 提示词 C：探针阶段（第 13-17 回合）
 

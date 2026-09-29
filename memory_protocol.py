@@ -181,12 +181,21 @@ def run_plan() -> List[Dict[str, Any]]:
 def outcome_phrase(passed: bool, steps: int, max_steps: int = MAX_STEPS) -> str:
     """The environment's own words for how an attempt ended.
 
-    Deliberately about reaching the marker only.  Anything about *why* it did not
+    Deliberately about the outcome only.  Anything about *why* it did not pass
     (blocked, too narrow, should have turned) would be the answer.
+
+    It must also be TRUE.  The first revision said "passed (reached the red marker
+    in N steps)", which is false: the marker is on the far wall at x = 16.0 and
+    success is scored at x >= 8.75, so no episode ever came within 7.25 m of it
+    (measured across all 660 Stage 1 episodes).  Worse, it contradicted the failure
+    wording right below it ("did not reach the red marker"), which hands an agent
+    the theory that a block near the marker means it has arrived and the scoring is
+    wrong -- the exact misattribution the Stage 2 notes opened with.  Both arms now
+    name the outcome and the step count, and neither mentions the marker.
     """
     if passed:
-        return f"passed (reached the red marker in {int(steps)} steps)"
-    return f"failed (did not reach the red marker within {int(max_steps)} steps)"
+        return f"passed in {int(steps)} steps"
+    return f"failed after {int(max_steps)} steps"
 
 
 def memory_block(
@@ -257,9 +266,9 @@ def build_action_prompt(
 # Prompt B: the note call
 # ---------------------------------------------------------------------------
 NOTE_INSTRUCTION_CUMULATIVE = (
-    "Write a short note to yourself for your next attempt. Your note is the only "
-    "thing you will be able to read about this attempt next time; the record above "
-    "will not be shown to you again."
+    "Write a short note to yourself for your next attempt. Next time you will be "
+    "shown one line saying whether this attempt passed and how many steps it took, "
+    "and this note; the record above will not be shown to you again."
 )
 
 NOTE_INSTRUCTION_ROLLING = (

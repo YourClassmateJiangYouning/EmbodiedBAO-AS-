@@ -270,7 +270,7 @@ def test_one_run_writes_every_round_and_grows_its_memory() -> None:
         "round 2 does not quote round 1's note",
     )
     check(
-        "- round 1: failed (did not reach the red marker within 30 steps)" in second.prompts[0],
+        "- round 1: failed after 30 steps" in second.prompts[0],
         "round 2 does not report round 1's outcome",
     )
     check(
