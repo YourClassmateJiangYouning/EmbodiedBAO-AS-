@@ -787,6 +787,24 @@ def test_main_runs_end_to_end_with_a_stubbed_app() -> None:
         os.path.exists(os.path.join(WORKDIR, "logs", "fake-model-v8-memory-a08-a11-cum", "args.json")),
         "main() did not record the effective settings",
     )
+    # The timeline opens the way the threshold study's does, which is what makes
+    # "which model is running" answerable from run_progress.txt alone.
+    progress = os.path.join(WORKDIR, "run_progress.txt")
+    check(os.path.exists(progress), "main() wrote no run_progress.txt")
+    with open(progress, encoding="utf-8") as handle:
+        timeline = handle.read()
+    check(
+        "SimulationApp started" in timeline,
+        f"the timeline has no start line: {timeline[:200]!r}",
+    )
+    check(
+        "agent ready: fake-model" in timeline,
+        f"the timeline has no agent-ready line: {timeline[:200]!r}",
+    )
+    check(
+        "pass_rate=" in timeline and "run1/round01" in timeline,
+        "the timeline does not report each round with a pass rate",
+    )
     print("[ok] main() parses, constructs, saves args, runs a round and closes cleanly under a stubbed app")
 
 

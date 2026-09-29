@@ -454,12 +454,25 @@ class MemoryExperimentRunner:
                     if checkpoint is not None:
                         checkpoint.mark(key)
                     self.save_summary(tag, records)
+                    # Wording taken from the threshold study's timeline so that one
+                    # grep works on either file: its "agent ready: <model>" line is the
+                    # model-start marker, and pass_rate is the number worth seeing at a
+                    # glance without opening a record.
+                    mine = [
+                        r
+                        for r in records
+                        if str(r.get("tag")) == tag and int(r.get("run", 0)) == run
+                    ]
+                    rate = sum(1 for r in mine if r.get("passed")) / max(len(mine), 1)
                     self.append_progress(
-                        "%s %s %s passed=%s steps=%d end=%s label=%s note=%dch"
+                        "%s %s run%d/round%02d pass_rate=%.3f passed=%s steps=%d "
+                        "end=%s label=%s note=%dch"
                         % (
                             time.strftime("%Y-%m-%d %H:%M:%S"),
                             tag,
-                            key,
+                            run,
+                            round_number,
+                            rate,
                             record["passed"],
                             int(record["total_steps"]),
                             record["end_reason"],
@@ -851,6 +864,12 @@ def main() -> None:
             image_size=args.image_size,
         )
         runner.save_args(args)
+        # The threshold study's timeline opens with these two lines, and they are what
+        # makes "which model is running, and did the app even start" answerable from
+        # run_progress.txt alone -- which matters most in the roster sweep, where the
+        # "agent ready" line is the start marker for each model.
+        runner.append_progress("SimulationApp started")
+        runner.append_progress(f"agent ready: {runner.model}")
         records = runner.run_all(checkpoints=runner.make_checkpoints(resume=args.resume))
         passed = sum(1 for record in records if record["passed"])
         print(
