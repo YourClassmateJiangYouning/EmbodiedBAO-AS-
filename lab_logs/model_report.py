@@ -21,6 +21,7 @@ import os
 import re
 import sys
 import tarfile
+import textwrap
 
 sys.path.insert(0, ".")
 import memory_metrics as mm  # noqa: E402
@@ -238,20 +239,34 @@ def quotes(episodes, limit=4):
     return picked[:limit]
 
 
+def draw_text(axis, paragraphs, width=76, fontsize=FONT_PT - 1):
+    """Wrapped multi-line text in an empty axes.
+
+    matplotlib's own wrap only breaks at the figure edge, which is what made the first
+    version of this report unreadable: sentences ran past the page and the block grew
+    upward into the table above it.  Wrapping to a measured character count and drawing
+    one text object with a fixed linespacing keeps the block inside its own row.
+    """
+    body = "\n".join(textwrap.fill(p, width=width) for p in paragraphs)
+    axis.text(0.0, 1.0, body, fontsize=fontsize, va="top", ha="left",
+              linespacing=1.55, transform=axis.transAxes)
+    axis.axis("off")
+
+
 def model_page(pdf, model, episodes, summary, table):
-    figure = plt.figure(figsize=(TEXT_WIDTH_CM * CM, 17.0 * CM))
+    figure = plt.figure(figsize=(TEXT_WIDTH_CM * CM, 23.0 * CM))
     figure.suptitle("%s   —   %d episodes, overall pass %.0f%%" % (
         model, summary["n"], summary["pass_pct"]), fontsize=FONT_PT + 2, y=0.985)
-    grid = figure.add_gridspec(4, 2, height_ratios=[1.05, 0.95, 1.5, 0.75],
-                               hspace=0.55, wspace=0.35, top=0.945, bottom=0.02,
-                               left=0.09, right=0.97)
+    grid = figure.add_gridspec(
+        4, 2, height_ratios=[2.9, 2.9, 7.4, 7.6], hspace=0.78, wspace=0.42,
+        top=0.938, bottom=0.012, left=0.11, right=0.98)
 
     levels = sorted(table)
     ratios = [table[l]["a_s"] for l in levels]
     axis = figure.add_subplot(grid[0, 0])
     axis.plot(ratios, [table[l]["pass_pct"] for l in levels], "o-", color=PALETTE[0])
     axis.axvline(1.3, color="0.45", lw=0.6, ls="--")
-    axis.set_ylim(-5, 105)
+    axis.set_ylim(-5, 112)
     axis.set_ylabel("pass rate (%)")
     axis.set_xlabel("A/S")
     axis.set_title("outcome vs aperture")
@@ -259,30 +274,33 @@ def model_page(pdf, model, episodes, summary, table):
 
     axis = figure.add_subplot(grid[0, 1])
     axis.plot(ratios, [table[l]["turn_pct"] for l in levels], "s-", color=PALETTE[1],
-              label="turned")
+              label="turned (%)")
     axis.plot(ratios, [table[l]["mean_max_rot"] for l in levels], "^-", color=PALETTE[2],
               label="mean max rotation (deg)")
     axis.plot(ratios, [table[l]["mean_steps"] for l in levels], "d-", color=PALETTE[3],
               label="mean steps")
     axis.set_xlabel("A/S")
+    axis.set_ylim(-5, 118)
     axis.set_title("behaviour vs aperture")
-    axis.legend(loc="upper left", ncol=1)
+    axis.legend(loc="center left", fontsize=FONT_PT - 3, ncol=1, handlelength=1.2,
+                framealpha=1.0, facecolor="white", edgecolor="none", borderaxespad=0.3)
     axis.invert_xaxis()
 
     axis = figure.add_subplot(grid[1, 0])
     looked = [e for e in episodes if e["looked_down"]]
-    bars = [table[l]["pass_if_look"] for l in levels]
-    nobars = [table[l]["pass_if_no_look"] for l in levels]
+    bars = [table[l]["pass_if_look"] if table[l]["look_n"] else 0 for l in levels]
+    nobars = [table[l]["pass_if_no_look"] if table[l]["n_nolook"] else 0 for l in levels]
     xs = range(len(levels))
-    axis.bar([x - 0.2 for x in xs], bars, width=0.4, color=PALETTE[0], label="looked down")
-    axis.bar([x + 0.2 for x in xs], nobars, width=0.4, color=PALETTE[4], label="never looked")
+    axis.bar([x - 0.2 for x in xs], bars, width=0.4, color=PALETTE[0], label="inspected body")
+    axis.bar([x + 0.2 for x in xs], nobars, width=0.4, color=PALETTE[4], label="never inspected")
     axis.set_xticks(list(xs))
     axis.set_xticklabels(["%.1f" % table[l]["a_s"] for l in levels], rotation=90,
                          fontsize=FONT_PT - 2)
     axis.set_ylabel("pass rate (%)")
-    axis.set_ylim(0, 105)
-    axis.set_title("self-inspection (%d/%d episodes) and outcome" % (len(looked), len(episodes)))
-    axis.legend(loc="lower left")
+    axis.set_ylim(0, 118)
+    axis.set_title("self-inspection and outcome, within each aperture")
+    axis.legend(loc="lower left", fontsize=FONT_PT - 2, handlelength=1.0,
+                borderaxespad=0.2)
 
     axis = figure.add_subplot(grid[1, 1])
     early = sum(1 for e in looked if e["looked_down_early"])
@@ -292,10 +310,14 @@ def model_page(pdf, model, episodes, summary, table):
     axis.set_xticks([0, 1, 2])
     axis.set_xticklabels(["before x=4", "4-7 m", "at the door"], fontsize=FONT_PT - 1)
     axis.set_ylabel("episodes")
-    axis.set_title("when it looked down (mean x %.1f m)" % summary["look_first_x"])
+    axis.set_ylim(0, max(early, mid, door, 1) * 1.25)
+    axis.set_title("when it inspected itself (mean x %.1f m)" % summary["look_first_x"])
 
     axis = figure.add_subplot(grid[2, :])
     axis.axis("off")
+    axis.set_title("per aperture   (side% = share of that aperture's passes made sideways;"
+                   "  '–' = no episode of that kind)",
+                   fontsize=FONT_PT - 2, pad=6)
     header = ["A/S", "width", "pass", "turn%", "side%", "steps", "maxrot", "excess",
               "look%", "pass|look", "pass|nolook"]
     body = [[
@@ -307,140 +329,162 @@ def model_page(pdf, model, episodes, summary, table):
         "–" if table[l]["look_n"] == 0 else "%.0f" % table[l]["pass_if_look"],
         "–" if table[l]["n_nolook"] == 0 else "%.0f" % table[l]["pass_if_no_look"],
     ] for l in levels]
-    rendered = axis.table(cellText=body, colLabels=header, loc="upper center",
-                          cellLoc="center", colLoc="center")
+    rendered = axis.table(cellText=body, colLabels=header, loc="center",
+                          cellLoc="center", colLoc="center", bbox=[0.0, 0.0, 1.0, 1.0],
+                          colWidths=[0.075, 0.085, 0.075, 0.075, 0.075, 0.075, 0.09,
+                                     0.09, 0.075, 0.12, 0.13])
     rendered.auto_set_font_size(False)
     rendered.set_fontsize(FONT_PT - 2)
-    rendered.scale(1.0, 1.32)
-    axis.set_title("per aperture (side%% = share of its passes made sideways; "
-                   "pass|look / pass|nolook = pass rate within that aperture when it did or "
-                   "did not inspect its body; a dash means the aperture had no such episode)",
-                   fontsize=FONT_PT - 1)
 
     axis = figure.add_subplot(grid[3, :])
-    axis.axis("off")
     topics = summary["topic_hits"]
-    lines = [
-        "reasoning mentions (share of episodes): " + ", ".join(
+    draw_text(axis, [
+        "Columns: pass|look / pass|nolook are this model's pass rate inside that aperture "
+        "when it inspected its own body and when it did not; look% is how often it did.",
+        "Reasoning mentions (share of episodes): " + ", ".join(
             "%s %.0f%%" % (k, v) for k, v in sorted(topics.items(), key=lambda kv: -kv[1])),
-        "actions: " + ", ".join("%s %.0f%%" % (k, v) for k, v in list(summary["action_mix"].items())[:5]),
-        "strategy labels: " + ", ".join("%s %.0f%%" % (k, pct(v, summary["n"]))
+        "Actions: " + ", ".join("%s %.1f%%" % (k, v)
+                                for k, v in list(summary["action_mix"].items())[:6]),
+        "Strategy labels: " + ", ".join("%s %.0f%%" % (k, pct(v, summary["n"]))
                                         for k, v in summary["labels"].most_common()),
-        "turned at all in %.0f%% of episodes (first turn at x = %.1f m on average); "
-        "at apertures needing no turn it turned in %.0f%%" % (
-            summary["turned_pct"], summary["first_turn_x"], summary["wide_turn_pct"]),
-        "pass rate when it inspected itself %.0f%% vs %.0f%% when it never did" % (
-            summary["look_pass"], summary["no_look_pass"]),
-    ]
-    for index, line in enumerate(lines):
-        axis.text(0.0, 0.95 - index * 0.19, line, fontsize=FONT_PT - 1, va="top", wrap=True)
+        "It turned in %.0f%% of episodes (first turn at x = %.1f m on average), and in %.0f%% "
+        "of the episodes at apertures that need no turn at all; its passes waste %.1f steps "
+        "over the optimum on average." % (
+            summary["turned_pct"], summary["first_turn_x"], summary["wide_turn_pct"],
+            summary["mean_excess"]),
+        "Inspecting its own body, compared inside each aperture: %+.1f percentage points on "
+        "the pass rate (%d of %d apertures positive)." % (
+            summary["look_matched_diff"], summary["look_levels_pos"], summary["look_levels_n"]),
+    ])
     pdf.savefig(figure)
     figure.savefig(os.path.join(PNGDIR, "%s.png" % model.replace("/", "_")), dpi=150)
     plt.close(figure)
 
 
-def cross_pages(pdf, episodes, summaries, tables):
+def cross_page_plots(pdf, summaries, tables):
+    """The eleven models' curves and the two correlations, on a page of their own."""
     models = sorted(summaries)
-    figure = plt.figure(figsize=(TEXT_WIDTH_CM * CM, 17.0 * CM))
-    figure.suptitle("The eleven models together — %d episodes" % len(episodes),
-                    fontsize=FONT_PT + 2, y=0.985)
-    grid = figure.add_gridspec(4, 2, height_ratios=[1.0, 1.0, 1.1, 0.9],
-                               hspace=0.6, wspace=0.35, top=0.94, bottom=0.03,
-                               left=0.10, right=0.97)
+    figure = plt.figure(figsize=(TEXT_WIDTH_CM * CM, 17.5 * CM))
+    figure.suptitle("The eleven models together", fontsize=FONT_PT + 2, y=0.975)
+    grid = figure.add_gridspec(2, 2, hspace=1.05, wspace=0.42, top=0.925, bottom=0.175,
+                               left=0.11, right=0.98)
+    handles = []
 
     axis = figure.add_subplot(grid[0, 0])
     for index, model in enumerate(models):
         table = tables[model]
         levels = sorted(table)
-        axis.plot([table[l]["a_s"] for l in levels], [table[l]["pass_pct"] for l in levels],
-                  "o-", color=PALETTE[index % len(PALETTE)], label=model.replace("-instruct", ""),
-                  markersize=2.5)
+        line, = axis.plot([table[l]["a_s"] for l in levels],
+                          [table[l]["pass_pct"] for l in levels], "o-",
+                          color=PALETTE[index % len(PALETTE)], markersize=2.4,
+                          label=model.replace("-instruct", ""))
+        handles.append(line)
     axis.axvline(1.3, color="0.45", lw=0.6, ls="--")
     axis.set_xlabel("A/S")
     axis.set_ylabel("pass rate (%)")
     axis.set_title("pass rate per aperture")
+    axis.set_ylim(-6, 110)
     axis.invert_xaxis()
-    axis.legend(loc="lower left", ncol=2, fontsize=FONT_PT - 2)
 
     axis = figure.add_subplot(grid[0, 1])
     for index, model in enumerate(models):
         table = tables[model]
         levels = sorted(table)
         axis.plot([table[l]["a_s"] for l in levels], [table[l]["turn_pct"] for l in levels],
-                  "s-", color=PALETTE[index % len(PALETTE)], markersize=2.5)
+                  "s-", color=PALETTE[index % len(PALETTE)], markersize=2.4)
     axis.set_xlabel("A/S")
     axis.set_ylabel("episodes with a turn (%)")
-    axis.set_title("turn rate per aperture (flat = fixed policy)")
+    axis.set_title("turn rate per aperture (flat = a fixed policy)")
+    axis.set_ylim(-6, 110)
     axis.invert_xaxis()
 
-    axis = figure.add_subplot(grid[1, 0])
-    xs = [summaries[m]["wide_turn_pct"] for m in models]
-    ys = [summaries[m]["pass_pct"] for m in models]
-    axis.plot(xs, ys, "o", color=PALETTE[0])
-    for model, x, y in zip(models, xs, ys):
-        axis.annotate(model.replace("-instruct", "")[:14], (x, y), fontsize=FONT_PT - 3,
-                      xytext=(2, 2), textcoords="offset points")
-    axis.set_xlabel("turn rate where no turn is needed (%)")
-    axis.set_ylabel("overall pass rate (%)")
-    axis.set_title("spurious rotation vs success")
+    # Only the extreme models are labelled in the scatters: naming all eleven put the
+    # labels on top of each other, which is what made the first version unreadable.
+    for slot, (key, xlabel, title, colour) in enumerate([
+        ("wide_turn_pct", "turn rate where no turn is needed (%)",
+         "spurious rotation vs success", PALETTE[0]),
+        ("look_pct", "episodes that inspected their own body (%)",
+         "self-inspection vs success", PALETTE[2]),
+    ]):
+        axis = figure.add_subplot(grid[1, slot])
+        xs = [summaries[m][key] for m in models]
+        ys = [summaries[m]["pass_pct"] for m in models]
+        axis.plot(xs, ys, "o", color=colour, markersize=3.5)
+        interesting = {min(range(len(xs)), key=lambda i: xs[i]),
+                       max(range(len(xs)), key=lambda i: xs[i]),
+                       min(range(len(ys)), key=lambda i: ys[i]),
+                       max(range(len(ys)), key=lambda i: ys[i])}
+        for index in sorted(interesting):
+            axis.annotate(models[index].replace("-instruct", "")[:16], (xs[index], ys[index]),
+                          fontsize=FONT_PT - 3, xytext=(3, 3), textcoords="offset points")
+        axis.set_xlabel(xlabel)
+        axis.set_ylabel("overall pass rate (%)")
+        axis.set_title(title)
+        axis.margins(0.16)
 
-    axis = figure.add_subplot(grid[1, 1])
-    xs = [summaries[m]["look_pct"] for m in models]
-    ys = [summaries[m]["pass_pct"] for m in models]
-    axis.plot(xs, ys, "o", color=PALETTE[2])
-    for model, x, y in zip(models, xs, ys):
-        axis.annotate(model.replace("-instruct", "")[:14], (x, y), fontsize=FONT_PT - 3,
-                      xytext=(2, 2), textcoords="offset points")
-    axis.set_xlabel("episodes that inspected their body (%)")
-    axis.set_ylabel("overall pass rate (%)")
-    axis.set_title("self-inspection vs success")
+    figure.legend(handles, [h.get_label() for h in handles], loc="lower center",
+                  ncol=4, fontsize=FONT_PT - 2, frameon=False)
+    pdf.savefig(figure)
+    figure.savefig(os.path.join(PNGDIR, "_cross_plots.png"), dpi=150)
+    plt.close(figure)
 
-    axis = figure.add_subplot(grid[2, :])
+
+def cross_page_table(pdf, summaries):
+    """The table of every model and the synthesis, on a page of their own."""
+    models = sorted(summaries, key=lambda m: -summaries[m]["pass_pct"])
+    figure = plt.figure(figsize=(TEXT_WIDTH_CM * CM, 15.5 * CM))
+    grid = figure.add_gridspec(2, 1, height_ratios=[7.4, 5.6], hspace=0.30,
+                               top=0.905, bottom=0.03, left=0.015, right=0.985)
+
+    axis = figure.add_subplot(grid[0])
     axis.axis("off")
-    header = ["model", "pass%", "narrow", "turn%", "wide turn%", "1st turn x", "maxrot",
-              "steps", "excess", "look%", "pass|look", "pass|nolook"]
-    body = [[m.replace("-instruct", "")[:20],
+    axis.set_title("Every model, sorted by overall pass rate\n"
+                   "narrow = pass rate at the two apertures that need rotation (A/S 1.0, 0.9);"
+                   "   wide turn% = turning where none is needed",
+                   fontsize=FONT_PT, pad=6)
+    header = ["model", "pass%", "narrow", "turn%", "wide\nturn%", "first\nturn x",
+              "look%", "pass|\nlook", "pass|\nnolook"]
+    body = [[m.replace("-instruct", "")[:16],
              "%.0f" % s["pass_pct"], s["narrow_pass"], "%.0f" % s["turned_pct"],
              "%.0f" % s["wide_turn_pct"], "%.2f" % s["first_turn_x"],
-             "%.0f" % s["mean_max_rot"], "%.1f" % s["mean_steps"],
-             "%.1f" % s["mean_excess"], "%.0f" % s["look_pct"],
-             "%.0f" % s["look_pass"], "%.0f" % s["no_look_pass"]]
-            for m, s in sorted(summaries.items(), key=lambda kv: -kv[1]["pass_pct"])]
-    rendered = axis.table(cellText=body, colLabels=header, loc="upper center",
-                          cellLoc="center", colLoc="center")
+             "%.0f" % s["look_pct"],
+             "–" if s["look_pct"] == 0 else "%.0f" % s["look_pass"],
+             "%.0f" % s["no_look_pass"]]
+            for m, s in ((m, summaries[m]) for m in models)]
+    rendered = axis.table(cellText=body, colLabels=header, loc="center", cellLoc="center",
+                          colLoc="center", bbox=[0.0, 0.0, 1.0, 1.0],
+                          colWidths=[0.17, 0.08, 0.11, 0.09, 0.10, 0.11, 0.09, 0.12, 0.12])
     rendered.auto_set_font_size(False)
     rendered.set_fontsize(FONT_PT - 2)
-    rendered.scale(1.0, 1.25)
-    axis.set_title("every model, sorted by overall pass rate "
-                   "(narrow = the two levels that need rotation: A/S 1.0 and 0.9)",
-                   fontsize=FONT_PT - 1)
 
-    axis = figure.add_subplot(grid[3, :])
-    axis.axis("off")
+    axis = figure.add_subplot(grid[1])
     wide_turn = mean([summaries[m]["wide_turn_pct"] for m in models])
     matched = mean([summaries[m]["look_matched_diff"] for m in models])
     positive = sum(1 for m in models if summaries[m]["look_matched_diff"] > 0)
-    lines = [
-        "Across the eleven: pass rate %.0f-%.0f%%; the two rotation levels separate them "
-        "(%s)." % (min(s["pass_pct"] for s in summaries.values()),
-                   max(s["pass_pct"] for s in summaries.values()),
-                   ", ".join("%s %s" % (m.replace("-instruct", "")[:12], summaries[m]["narrow_pass"])
-                             for m in models[:4]) + ", ..."),
-        "Turning where no turn is needed: %.0f%% of episodes on average (range %.0f-%.0f%%); "
-        "the models that do it most are not the ones that pass most." % (
-            wide_turn, min(summaries[m]["wide_turn_pct"] for m in models),
-            max(summaries[m]["wide_turn_pct"] for m in models)),
-        "Self-inspection, compared WITHIN each aperture (the pooled version would be "
-        "confounded, because looking down clusters at the narrow Levels): %+.1f percentage "
-        "points on average, better in %d of 11 models, so inspection does not buy success." % (
-            matched, positive),
-        "Reading the reasoning: models name the opening, the turn and their own width; the "
-        "failures are in the amount and the alignment, not in knowing what to do.",
-    ]
-    for index, line in enumerate(lines):
-        axis.text(0.0, 0.95 - index * 0.24, line, fontsize=FONT_PT - 1, va="top", wrap=True)
+    turners = sorted(models, key=lambda m: -summaries[m]["wide_turn_pct"])[:2]
+    abstainers = sorted(models, key=lambda m: summaries[m]["wide_turn_pct"])[:2]
+    draw_text(axis, [
+        "Pass rate spans %.0f-%.0f%%, and the two apertures that need rotation already "
+        "separate the models (%s)." % (
+            min(s["pass_pct"] for s in summaries.values()),
+            max(s["pass_pct"] for s in summaries.values()),
+            ", ".join("%s %s" % (m.replace("-instruct", "")[:14], summaries[m]["narrow_pass"])
+                      for m in models[:3])),
+        "Turning where no turn is needed averages %.0f%% and ranges from %.0f%% (%s) to %.0f%% "
+        "(%s), so the models differ by more than an order of magnitude on a decision the "
+        "aperture does not require at all." % (
+            wide_turn, summaries[abstainers[0]]["wide_turn_pct"],
+            abstainers[0].replace("-instruct", "")[:14],
+            summaries[turners[0]]["wide_turn_pct"], turners[0].replace("-instruct", "")[:14]),
+        "Inspecting its own body, compared inside each aperture rather than pooled (pooling "
+        "would be confounded, because looking down clusters at the narrow Levels): %+.1f "
+        "percentage points on average, positive in %d of 11 models, so inspection does not "
+        "buy success by itself." % (matched, positive),
+        "The reasoning names the opening, the turn and the model's own width; what fails is "
+        "the amount of rotation and the alignment, not knowing that a turn is needed.",
+    ])
     pdf.savefig(figure)
-    figure.savefig(os.path.join(PNGDIR, "_cross_model.png"), dpi=150)
+    figure.savefig(os.path.join(PNGDIR, "_cross_table.png"), dpi=150)
     plt.close(figure)
 
 
@@ -543,7 +587,8 @@ def main():
     tables = {m: per_level([e for e in episodes if e["model"] == m]) for m in models}
     summaries = {m: model_summary([e for e in episodes if e["model"] == m]) for m in models}
     with PdfPages(PDF_PATH) as pdf:
-        cross_pages(pdf, episodes, summaries, tables)
+        cross_page_plots(pdf, summaries, tables)
+        cross_page_table(pdf, summaries)
         for model in models:
             model_page(pdf, model, [e for e in episodes if e["model"] == model],
                        summaries[model], tables[model])
