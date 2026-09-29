@@ -918,6 +918,92 @@ def test_a_round_carries_the_threshold_studys_fields_and_leaves_a_summary() -> N
     )
 
 
+def test_the_stage2_csv_lines_up_with_the_stage1_csv() -> None:
+    """The two tables must share their column names, and this uses the real Stage 1 CSV.
+
+    Not a copy of its column list: the file is in the repository, so renaming a column
+    on either side fails here.  That is the mistake that would break a merged table or
+    a figure redrawn across both experiments, and it is invisible otherwise.
+    """
+    import csv as csv_module
+
+    fresh_workspace()
+    with patched_adapter():
+        runner = make_runner([1, 5])
+        runner.run_all(checkpoints=runner.make_checkpoints(resume=False))
+
+    root = os.path.dirname(os.path.abspath(__file__))
+    sys.path.insert(0, os.path.join(root, "lab_logs"))
+    import export_memory_table as exporter
+
+    stage1_csv = os.path.join(root, "lab_logs", "embodiedbao_v7_episodes.csv")
+    check(os.path.exists(stage1_csv), "the Stage 1 CSV is missing from lab_logs")
+    with open(stage1_csv, newline="", encoding="utf-8") as handle:
+        stage1 = set(next(csv_module.reader(handle)))
+    # Stage 2's equivalents of these two are phase and round, which carry more.
+    shared = stage1 - {"level", "episode_id"}
+    missing = shared - set(exporter.ROUND_COLUMNS)
+    check(not missing, f"the Stage 2 table is missing {sorted(missing)} from Stage 1's")
+
+    records = exporter.load_records(os.path.join(runner.results_root, "memory"))
+    rounds = [exporter.round_row(r) for r in records]
+    runs = exporter.run_rows(records)
+    check(len(rounds) == 34, f"the round table has {len(rounds)} rows for two runs")
+    check(len(runs) == 2, f"the run table has {len(runs)} rows for two runs")
+    check(
+        all(name in rounds[0] for name in shared),
+        "a row is missing a column the header advertises",
+    )
+    # The two passages must be the two the protocol names: the narrow one fits nobody
+    # and the wide one needs no turn.  Checked per phase, because a table that put one
+    # width on every row would still look plausible.
+    learning = [row for row in rounds if row["phase"] == "A"]
+    probe = [row for row in rounds if row["phase"] == "B"]
+    check(learning and probe, f"the table has {len(learning)} A rows and {len(probe)} B")
+    check(
+        all(abs(float(row["channel_width"]) - 0.456) < 1e-6 for row in learning),
+        "an A row is not at 0.456 m: %s"
+        % sorted({row["channel_width"] for row in learning}),
+    )
+    check(
+        all(abs(float(row["channel_width"]) - 0.627) < 1e-6 for row in probe),
+        "a B row is not at 0.627 m: %s" % sorted({row["channel_width"] for row in probe}),
+    )
+    # An attempt that never got near the wall has no gap, and writing 0 or -1 there
+    # would put a number into the mean that was never measured.
+    unmeasured = [row for row in rounds if row["gap"] == ""]
+    check(
+        unmeasured,
+        "no row has an empty gap, but the scripted plan has attempts that never move",
+    )
+    check(
+        all(isinstance(row["gap"], float) for row in rounds if row["gap"] != ""),
+        "a measured gap is not a number",
+    )
+    probe_keys = ["probe_rotation_%d" % i for i in range(1, memory_protocol.ROUNDS_PROBE + 1)]
+    check(
+        all(isinstance(runs[0][key], float) for key in probe_keys),
+        "the run table's probe series is not five numbers: %s"
+        % [runs[0].get(key) for key in probe_keys],
+    )
+    check(
+        runs[0]["curve_label"] in (
+            memory_metrics.INSIGHT, memory_metrics.GRADUAL,
+            memory_metrics.PERSEVERATION, memory_metrics.OSCILLATING,
+            memory_metrics.NEVER_APPROACHED,
+        ),
+        f"the run table's verdict is {runs[0]['curve_label']!r}",
+    )
+    check(
+        "," in rounds[0]["action_sequence"],
+        f"action_sequence is {rounds[0]['action_sequence']!r}",
+    )
+    print(
+        "[ok] the Stage 2 round and run tables carry every column name the Stage 1 CSV "
+        "shares, keep an unmeasured gap empty, and classify every run"
+    )
+
+
 def main() -> int:
     tests = [
         test_one_run_writes_every_round_and_grows_its_memory,
@@ -935,6 +1021,7 @@ def main() -> int:
         test_the_default_tag_is_model_scoped,
         test_main_runs_end_to_end_with_a_stubbed_app,
         test_a_round_carries_the_threshold_studys_fields_and_leaves_a_summary,
+        test_the_stage2_csv_lines_up_with_the_stage1_csv,
     ]
     failures = 0
     for test in tests:

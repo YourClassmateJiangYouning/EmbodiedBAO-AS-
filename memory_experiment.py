@@ -37,7 +37,7 @@ import time
 from typing import Any, Dict, List, Optional, Sequence
 
 import persistence
-from memory_metrics import TURN_STEP_DEG, classify_curve, is_sideways_yaw
+from memory_metrics import TURN_STEP_DEG, is_sideways_yaw
 from memory_protocol import (
     MAX_STEPS,
     MODE_ROLLING,
@@ -45,6 +45,7 @@ from memory_protocol import (
     ROUNDS_LEARNING,
     ROUNDS_PER_RUN,
     RUNS_PER_MODEL,
+    summarise_tag,
     a_s_ratio_of,
     build_action_prompt,
     build_note_prompt,
@@ -273,7 +274,7 @@ class MemoryExperimentRunner:
     # ------------------------------------------------------------------
 
     def summarise(self, tag: str, records: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
-        """The per-tag derived fields of the design, and the curve verdict.
+        """The per-tag derived fields, from the rounds of this tag.
 
         Written to disk rather than only printed.  The threshold study refreshes its
         per-Level summary after every episode for a reason worth copying: a sweep that
@@ -281,44 +282,8 @@ class MemoryExperimentRunner:
         and here the curve verdict IS the experiment's answer, so recomputing it later
         from a partial directory is exactly the step that goes wrong.
         """
-        runs: Dict[int, List[Dict[str, Any]]] = {}
-        for record in records:
-            runs.setdefault(int(record.get("run", 0)), []).append(record)
-        summary: Dict[str, Any] = {
-            "model": self.model,
-            "protocol_tag": self.tag,
-            "tag": tag,
-            "memory_mode": memory_mode(next(iter(runs))) if runs else "",
-            "rounds": len(records),
-            "runs": {},
-        }
-        for run in sorted(runs):
-            rows = sorted(runs[run], key=lambda r: int(r.get("round", 0)))
-            learning = [r for r in rows if int(r.get("round", 0)) <= ROUNDS_LEARNING]
-            probe = [r for r in rows if int(r.get("round", 0)) > ROUNDS_LEARNING]
-            stats = classify_curve(
-                [r.get("gap") for r in learning],
-                [str(r.get("strategy_label", "?")) for r in learning],
-                [bool(r.get("passed")) for r in learning],
-            )
-            passing = [int(r["round"]) for r in learning if r.get("passed")]
-            summary["runs"][str(run)] = {
-                "rounds": len(rows),
-                "d": len(passing),
-                "first_pass_round": passing[0] if passing else None,
-                "acquired": bool(
-                    len(passing) >= 2 and passing[-1] > ROUNDS_LEARNING - 5
-                ),
-                "terminal_state": "".join(
-                    "P" if r.get("passed") else "." for r in learning[-3:]
-                ),
-                "probe_rotation_deg": [float(r.get("max_rotation_deg", 0.0)) for r in probe],
-                "probe_turn": [int(r.get("n_turn", 0)) for r in probe],
-                "probe_look_down": [int(r.get("n_look_down", 0)) for r in probe],
-                "excess_series": [int(r.get("excess", 0)) for r in rows],
-                "curve": stats,
-            }
-        return summary
+        mine = [r for r in records if str(r.get("tag")) == tag]
+        return summarise_tag(mine, model=self.model, tag=tag)
 
     def save_summary(self, tag: str, records: Sequence[Dict[str, Any]]) -> None:
         mine = [r for r in records if str(r.get("tag")) == tag]

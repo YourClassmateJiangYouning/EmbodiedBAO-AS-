@@ -463,7 +463,23 @@ Each row is an attempt: phase, A/S, passed, steps, turn/lateral/look-down counts
 (how close its best posture at the wall came to fitting), attempt label, largest
 rotation, where the first turn happened, note length. Below the table: how many of the
 12 learning attempts passed, the turn rate and the share that turned *enough*, the
-first-turn position bands, and the mean rotation.
+first-turn position bands, the mean rotation, and the per-run curve verdict.
+
+The tables and the figures come from the same records, so any plotted number can be
+checked by hand in the CSV:
+
+```bash
+python lab_logs/export_memory_table.py   # two CSVs: one row per attempt, one per run
+python lab_logs/make_memory_figures.py   # the four Stage-2 figures, LNCS sized
+```
+
+The attempt table keeps the Stage 1 column names for every field the two experiments
+share (`final_position_x`, `wall_collisions`, `passed_sideways`, ...), and both tables
+carry `model` and `family`, so the Stage 1 CSV, the Stage 2 attempt table and the
+Stage 2 run table concatenate without renaming anything. A test checks that against the
+Stage 1 CSV itself. Figures go to `lab_logs/figures/` as PDF (the submission artefact)
+plus 600 dpi PNG (preview), drawn at the LNCS text width with the same Okabe-Ito
+palette and 8 pt lettering as the Stage 1 figures.
 
 ### Useful flags
 

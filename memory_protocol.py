@@ -42,6 +42,7 @@ from memory_metrics import (
     SHOULDER_WIDTH_M,
     WIDTH_LEARNING_M,
     WIDTH_PROBE_M,
+    classify_curve,
     excess,
     gap_for,
     is_sideways_yaw,
@@ -272,6 +273,55 @@ NOTE_PROMPT_HEADER = (
     "You are a Unitree H1 humanoid robot. You have just finished one attempt at "
     "your task: reaching the red marker on the far wall."
 )
+
+
+def summarise_run(rows: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
+    """The per-run derived fields of the design, from that run's round records.
+
+    Lives here rather than in the runner because two callers need exactly these
+    numbers -- the runner writes them to summary.json after every round, and the CSV
+    exporter rebuilds them from the records -- and two copies of a derivation that the
+    paper's figures depend on is a guarantee that they will disagree.
+    """
+    ordered = sorted(rows, key=lambda r: int(r.get("round", 0)))
+    learning = [r for r in ordered if int(r.get("round", 0)) <= ROUNDS_LEARNING]
+    probe = [r for r in ordered if int(r.get("round", 0)) > ROUNDS_LEARNING]
+    passing = [int(r.get("round", 0)) for r in learning if r.get("passed")]
+    return {
+        "rounds": len(ordered),
+        "d": len(passing),
+        "first_pass_round": passing[0] if passing else None,
+        "acquired": bool(len(passing) >= 2 and passing[-1] > ROUNDS_LEARNING - 5),
+        "terminal_state": "".join(
+            "P" if r.get("passed") else "." for r in learning[-3:]
+        ),
+        "probe_rotation_deg": [float(r.get("max_rotation_deg", 0.0)) for r in probe],
+        "probe_turn": [int(r.get("n_turn", 0)) for r in probe],
+        "probe_look_down": [int(r.get("n_look_down", 0)) for r in probe],
+        "excess_series": [int(r.get("excess", 0) or 0) for r in ordered],
+        "curve": classify_curve(
+            [r.get("gap") for r in learning],
+            [str(r.get("strategy_label", "?")) for r in learning],
+            [bool(r.get("passed")) for r in learning],
+        ),
+    }
+
+
+def summarise_tag(
+    records: Sequence[Dict[str, Any]], model: str = "", tag: str = ""
+) -> Dict[str, Any]:
+    """Every run of one tag, keyed by run number."""
+    runs: Dict[int, List[Dict[str, Any]]] = {}
+    for record in records:
+        runs.setdefault(int(record.get("run", 0)), []).append(record)
+    return {
+        "model": model,
+        "tag": tag,
+        "protocol_tag": PROTOCOL_TAG,
+        "memory_mode": memory_mode(next(iter(runs))) if runs else "",
+        "rounds": len(records),
+        "runs": {str(run): summarise_run(runs[run]) for run in sorted(runs)},
+    }
 
 
 def render_attempt_record(
