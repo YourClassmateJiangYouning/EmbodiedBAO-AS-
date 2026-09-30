@@ -30,6 +30,21 @@ import scenes as sc
 # ---------------------------------------------------------------------------
 
 
+def prim_name(text: Any) -> str:
+    """A token safe to use inside a USD prim path.
+
+    A scene is called ``stage1.2`` and a dot is a property separator in SdfPath, so
+    ``/World/Looks/Marker_stage1.1_1`` is ill-formed and USD refuses it -- measured on the
+    lab machine, which is the only reason this function exists.  The failure was quiet in the
+    worst way: the material was simply never created, so every scene would have run with its
+    surfaces unbound and nothing in the results would have said so.
+    """
+    return "".join(
+        character if character.isalnum() or character == "_" else "_"
+        for character in str(text)
+    )
+
+
 def _flat_material(stage: Any, path: str, rgb: Sequence[float]) -> Any:
     """A constant-colour UsdPreviewSurface.  Always available, no download, exact colour."""
     from pxr import Gf, UsdShade
@@ -118,7 +133,7 @@ def build_marker(stage: Any, scene: str, slot: int) -> Dict[str, Any]:
     for index, polygon in enumerate(sc.SHAPES[shape]):
         paths.append(_prism(stage, f"/World/GoalMarker/part{index}", polygon, centre,
                             sc.MARKER_THICKNESS_M))
-    material_path = f"/World/Looks/Marker_{scene}_{slot}"
+    material_path = f"/World/Looks/Marker_{prim_name(scene)}_{slot}"
     material = _flat_material(stage, material_path, rgb)
     for path in paths:
         _bind(stage, path, material)
@@ -277,7 +292,8 @@ def apply_scene(stage: Any, scene: str, slot: int,
             continue
         name = os.path.basename(url).replace(".mdl", "")
         material, how = resolve_material(
-            stage, url, name, f"/World/Looks/{surface}_{scene}", fallbacks.get(surface, (0.6,) * 3))
+            stage, url, name, f"/World/Looks/{surface}_{prim_name(scene)}",
+            fallbacks.get(surface, (0.6,) * 3))
         _bind(stage, prim_path, material)
         report["materials"][surface] = {"url": url, "how": how, "prim": prim_path}
 

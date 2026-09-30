@@ -159,6 +159,11 @@ def main() -> int:
         eye_images, iso_images = [], []
         for slot in slots:
             env.set_marker_slot(slot)
+            # The RGB annotator is only attached once the renderer has run, and get_rgb()
+            # raises AttributeError on None until then -- measured on the lab machine.  The
+            # runner steps the world before it reads anything, which is why it never hit this.
+            for _ in range(4):
+                env.world.step(render=True)
             eye = np.asarray(env.get_camera_image())[:, :, :3]
             eye_images.append(eye)
             write_png(os.path.join(args.outdir, f"{args.scene}_slot{slot}_eye.png"), eye)

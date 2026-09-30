@@ -304,6 +304,27 @@ def test_surfaces_are_classified_by_geometry_not_by_name() -> None:
     print("[ok] the four surfaces are found by geometry, and an empty stage yields nothing")
 
 
+def test_prim_paths_from_a_scene_name_are_valid_usd_paths() -> None:
+    """A dot is a property separator in SdfPath, and every scene name has one.
+
+    Measured on the lab machine: /World/Looks/Marker_stage1.1_1 is ill-formed, USD refused
+    it, and the material was simply never created -- so a scene would have run with its
+    surfaces unbound and nothing in the results would have said so.
+    """
+    import scene_builder
+
+    check(scene_builder.prim_name("stage1.2") == "stage1_2",
+          f"prim_name('stage1.2') is {scene_builder.prim_name('stage1.2')!r}")
+    for scene in sc.SCENE_ORDER:
+        for surface in ("floor", "side_wall", "ceiling", "far_wall"):
+            name = f"{surface}_{scene_builder.prim_name(scene)}"
+            check("." not in name, f"{surface} of {scene} composes an ill-formed path {name}")
+        for slot in range(1, sc.MARKERS_PER_SCENE + 1):
+            name = f"Marker_{scene_builder.prim_name(scene)}_{slot}"
+            check("." not in name, f"{scene} slot {slot} composes an ill-formed path {name}")
+    print("[ok] every composed material path is a valid USD path, dots replaced")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -321,6 +342,7 @@ def main() -> int:
         test_the_catalogue_matches_the_environment_it_replaces,
         test_the_scene_tag_separates_scenes_and_leaves_old_tags_alone,
         test_surfaces_are_classified_by_geometry_not_by_name,
+        test_prim_paths_from_a_scene_name_are_valid_usd_paths,
     ]
     failed = 0
     for test in tests:
