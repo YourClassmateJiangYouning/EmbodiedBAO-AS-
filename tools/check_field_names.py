@@ -72,19 +72,19 @@ OTHER = {
     "action_steps", "move_step", "start_x", "max_steps", "headless", "runs",
     "output_root", "save_obs", "resume", "image_size", "reasoning", "episode_id",
     "orientation", "position", "camera_yaw", "camera_pitch", "yaw",
-    "curve", "label", "valued_rounds", "rho", "improving", "runs", "learning",
-    "probe", "runs", "gap_curve", "rounds", "tag", "timestamp", "completed",
+    "curve", "label", "valued_rounds", "rho", "improving", "learning",
+    "probe", "gap_curve", "rounds", "tag", "timestamp", "completed",
     "round", "passed", "steps", "note", "model", "model_name", "level",
     # history items
     "step", "action", "feedback", "success",
     # models.json
-    "runner", "label", "group", "origin", "probe_latency_s", "verified", "models",
+    "runner", "group", "origin", "probe_latency_s", "verified", "models",
     # the Stage 1 runner's per-episode summary
     "episodes", "turned_rate", "passed_sideways_count", "first_turn_step_mean",
     "avg_success_steps", "avg_passage_rotation_deg", "resolved_tag",
     # a Stage 3 dressing item (scenes.py) and a scene material entry (scene_builder.py)
     "asset", "colour", "mount", "at", "size", "collides", "used_asset", "how", "url",
-    "parts", "slot", "scene", "label", "kind",
+    "parts", "slot", "scene", "kind",
 }
 
 
@@ -171,7 +171,8 @@ def main() -> int:
 
     bad_fields, bad_actions, crossovers = [], [], []
     for path in sources():
-        text = open(path, encoding="utf-8").read()
+        with open(path, encoding="utf-8") as handle:
+            text = handle.read()
         reads_stage1 = "bao_v7_all.tgz" in text or "embodiedbao_v7_episodes.csv" in text
         skip = docstring_lines(ast.parse(text))
         for number, line in enumerate(text.splitlines(), 1):

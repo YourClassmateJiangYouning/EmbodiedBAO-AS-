@@ -11,7 +11,6 @@ Run from the repository root:  python test_bao_scenes.py
 from __future__ import annotations
 
 import collections
-import math
 import os
 import sys
 
@@ -107,7 +106,7 @@ def test_no_dressing_occludes_the_opening_or_the_marker() -> None:
             bounds = sc.screen_bounds(item["at"], item["size"])
             if bounds is None:
                 continue  # behind the camera, cannot occlude anything ahead
-            for level, width in enumerate(sorted(_ladder_widths())):
+            for _level, width in enumerate(sorted(_ladder_widths())):
                 opening = sc.screen_bounds(*sc.opening_box(width))
                 # Only what is IN FRONT of the obstacle wall can occlude the opening.  Things
                 # on the far wall are seen THROUGH it, so an earlier version flagged the far

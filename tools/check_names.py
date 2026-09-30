@@ -27,7 +27,7 @@ from __future__ import annotations
 import ast
 import builtins
 import os
-from typing import Dict, List, Optional, Set
+from typing import List, Optional, Set
 
 MODULES = [
     "main.py",
@@ -123,9 +123,7 @@ def collect_bindings(body: List[ast.stmt], scope: Scope) -> None:
         if isinstance(stmt, (ast.Import, ast.ImportFrom)):
             for alias in stmt.names:
                 scope.bound.add((alias.asname or alias.name).split(".")[0])
-        elif isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef)):
-            scope.bound.add(stmt.name)
-        elif isinstance(stmt, ast.ClassDef):
+        elif isinstance(stmt, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
             scope.bound.add(stmt.name)
         elif isinstance(stmt, ast.Assign):
             for target in stmt.targets:
@@ -230,15 +228,15 @@ class Checker:
         # Everything else: check loaded names in this subtree, but do not
         # descend into nested function/class scopes (handled above).
         for node in iter_nodes_shallow_scopes(stmt):
-            if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load):
-                if not scope.resolves(node.id):
-                    self.problems.append(
-                        f"{self.path}:{node.lineno}: '{node.id}' is used but no "
-                        f"enclosing scope binds it"
-                    )
+            if (isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load)
+                    and not scope.resolves(node.id)):
+                self.problems.append(
+                    f"{self.path}:{node.lineno}: '{node.id}' is used but no "
+                    f"enclosing scope binds it"
+                )
 
         # Recurse into nested blocks with the same scope.
-        for field, value in ast.iter_fields(stmt):
+        for _field, value in ast.iter_fields(stmt):
             if isinstance(value, list):
                 for item in value:
                     if isinstance(item, ast.stmt):
@@ -250,12 +248,12 @@ class Checker:
 
     def check_expr(self, expr: ast.AST, scope: Scope) -> None:
         for node in iter_nodes_shallow_scopes(expr):
-            if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load):
-                if not scope.resolves(node.id):
-                    self.problems.append(
-                        f"{self.path}:{node.lineno}: '{node.id}' is used but no "
-                        f"enclosing scope binds it"
-                    )
+            if (isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load)
+                    and not scope.resolves(node.id)):
+                self.problems.append(
+                    f"{self.path}:{node.lineno}: '{node.id}' is used but no "
+                    f"enclosing scope binds it"
+                )
 
 
 def check_file(path: str) -> List[str]:
