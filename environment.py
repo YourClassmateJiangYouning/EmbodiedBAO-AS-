@@ -2082,20 +2082,33 @@ class BAOEnv:
                   f"baseline colour.  Scene is applied, but not in full.")
 
     def set_marker_slot(self, slot: int) -> None:
-        """Swap the goal marker for another of this scene's five, leaving the rest alone."""
+        """Swap the goal marker for another of this scene's five, leaving the rest alone.
+
+        The child count is asserted afterwards.  Removing the old marker and building the new
+        one is the only thing standing between a scene and TWO markers on the far wall -- two
+        colours, one of which the catalogue's uniqueness argument knows nothing about.  If the
+        removal ever silently fails, this raises instead of carrying on with a scene whose
+        premise is false.
+        """
         if not getattr(self, "scene_name", ""):
             return
-        try:
-            import scene_builder
+        import scene_builder
 
-            for prim in list(self.stage.GetPrimAtPath("/World/GoalMarker").GetChildren()):
-                self.stage.RemovePrim(prim.GetPath())
-            report = scene_builder.build_marker(self.stage, self.scene_name, slot)
-            if self.scene_report is not None:
-                self.scene_report["marker"] = report
-            print(f"[scene] marker slot {slot}: {report['shape']} in {report['colour']}")
-        except Exception as exc:  # noqa: BLE001
-            print(f"[scene] FAILED to set marker slot {slot}: {exc!r}")
+        expected = len(scene_builder.sc.SHAPES[
+            scene_builder.sc.MARKERS[self.scene_name][slot - 1][0]])
+        for prim in list(self.stage.GetPrimAtPath("/World/GoalMarker").GetChildren()):
+            self.stage.RemovePrim(prim.GetPath())
+        report = scene_builder.build_marker(self.stage, self.scene_name, slot)
+        left = list(self.stage.GetPrimAtPath("/World/GoalMarker").GetChildren())
+        if len(left) != expected:
+            raise RuntimeError(
+                f"scene {self.scene_name} slot {slot}: expected {expected} marker part(s) on "
+                f"the far wall after replacing it, found {len(left)}.  Two markers means two "
+                f"colours and the uniqueness premise is void; refusing to pretend otherwise."
+            )
+        if self.scene_report is not None:
+            self.scene_report["marker"] = report
+        print(f"[scene] marker slot {slot}: {report['shape']} in {report['colour']}")
 
     def get_camera_image(self) -> np.ndarray:
         if self.eye_camera is not None:

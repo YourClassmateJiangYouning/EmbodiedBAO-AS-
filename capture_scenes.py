@@ -164,20 +164,25 @@ def main() -> int:
 
         eye_images, iso_images = [], []
         for slot in slots:
-            env.set_marker_slot(slot)
-            # reset() is what initialises the camera annotators -- environment.py calls
-            # camera.initialize() there, not in the constructor -- and it also steps the
-            # scene a few times.  Reading the eye camera before a reset raises
-            # AttributeError on a None annotator, which is exactly what happened on the lab.
+            # ORDER MATTERS, and the first version had it backwards.  reset() is what
+            # initialises the camera annotators AND what advances the marker for the next
+            # episode, so calling set_marker_slot() before it meant reset() immediately put a
+            # different marker in place: every image was of slot+1 while being labelled slot.
+            # Reset first, then set the slot explicitly, then read.
             env.reset()
+            env.set_marker_slot(slot)
             eye = np.asarray(env.get_camera_image())[:, :, :3]
             eye_images.append(eye)
             write_png(os.path.join(args.outdir, f"{args.scene}_slot{slot}_eye.png"), eye)
             iso_camera = getattr(env, "camera", None)
             if iso_camera is not None:
+                # Move the camera AFTER the reset, not before: reset() calls _update_camera(),
+                # which puts the external camera back where the environment wants it, so the
+                # earlier order silently threw the iso pose away.
                 look_from(iso_camera, target=(6.0, 0.0, 1.0),
                           distance=args.iso_distance, height=args.iso_height)
-                env.reset()
+                for _ in range(3):
+                    env.world.step(render=True)
                 iso = np.asarray(iso_camera.get_rgb())[:, :, :3]
                 iso_images.append(iso)
                 write_png(os.path.join(args.outdir, f"{args.scene}_slot{slot}_iso.png"), iso)
