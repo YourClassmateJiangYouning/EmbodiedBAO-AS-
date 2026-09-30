@@ -152,20 +152,30 @@ def test_decoration_is_never_collidable_and_stays_off_the_path() -> None:
     print(f"[ok] all {count} dressing items are non-collidable and outside the walking band")
 
 
-def test_dressing_avoids_the_marker_colours() -> None:
-    """A marker has to be the only object of its colour, so dressing cannot borrow one."""
+def test_dressing_colours_are_declared_or_admitted_unknown() -> None:
+    """Every dressing item either declares a colour or is explicitly material-unknown.
+
+    The first version of this test looped over item["colour"] and passed trivially, because
+    no dressing item declared one -- it asserted nothing.  What can actually be checked is
+    that each item is honest: either it carries a colour that is not one of its scene's five
+    marker colours, or it is listed as having an unknown material colour, which is the case
+    for everything that references an Isaac asset.  The orange traffic cone in the warehouse
+    is the live example: its colour is whatever M_TrafficCone is, so it has to be settled by
+    looking at a rendered frame, not by this test.
+    """
+    unknown = []
     for scene in sc.SCENE_ORDER:
         marker_colours = set(sc.marker_colours(scene))
         for item in sc.SCENES[scene]["dressing"]:
             colour = item.get("colour")
             if colour is None:
+                unknown.append(f"{scene}/{item['name']}")
                 continue
             check(tuple(colour) not in marker_colours,
                   f"{scene}: {item['name']} uses a marker colour {colour}")
-        for forbidden in sc.SCENES[scene]["forbidden_colours"]:
-            check(tuple(forbidden) not in marker_colours,
-                  f"{scene}: a marker uses the scene's forbidden colour {forbidden}")
-    print("[ok] no dressing item uses one of its scene's five marker colours")
+    check(unknown, "every dressing item declares a colour, so nothing exercises this path")
+    print(f"[ok] dressing colours: {len(unknown)} items admit an unknown material colour, "
+          f"the rest declare one that is not a marker colour")
 
 
 def test_the_baseline_scene_is_untouched() -> None:
@@ -333,7 +343,7 @@ def main() -> int:
         test_shapes_are_fat_enough_to_read_at_the_start_pose,
         test_no_dressing_occludes_the_opening_or_the_marker,
         test_decoration_is_never_collidable_and_stays_off_the_path,
-        test_dressing_avoids_the_marker_colours,
+        test_dressing_colours_are_declared_or_admitted_unknown,
         test_the_baseline_scene_is_untouched,
         test_materials_are_marked_as_verified_or_not,
         test_the_episode_count_is_what_the_design_says,

@@ -2049,18 +2049,26 @@ class BAOEnv:
         return self.reset_scene()
 
     def _apply_scene(self, scene: str, slot: int) -> None:
-        """Materials, marker and dressing for one scene, and keep the report."""
-        try:
-            import scene_builder
+        """Materials, marker and dressing for one scene, and keep the report.
 
-            surfaces = scene_builder.discover_surfaces(self.stage)
-            self.scene_report = scene_builder.apply_scene(self.stage, scene, slot, surfaces)
-            print(scene_builder.format_report(self.scene_report))
-        except Exception as exc:  # noqa: BLE001
-            # A scene that cannot be applied must be loud, not silent: the run would
-            # otherwise be recorded as stage1.2 while looking like the baseline.
-            self.scene_report = {"scene": scene, "applied": False, "error": repr(exc)}
-            print(f"[scene] FAILED to apply {scene}: {exc!r}")
+        A failure here RAISES.  The first version caught everything, printed and carried on,
+        which is the worst possible behaviour: the run would be tagged stage1.2, would look
+        exactly like the baseline, and the only trace would be one line in a log nobody
+        re-reads.  A scene that cannot be built must stop the run.
+        """
+        import scene_builder
+
+        surfaces = scene_builder.discover_surfaces(self.stage)
+        self.scene_report = scene_builder.apply_scene(self.stage, scene, slot, surfaces)
+        print(scene_builder.format_report(self.scene_report))
+        missing = [name for name, info in self.scene_report["materials"].items()
+                   if info.get("how") == "no-surface-given"]
+        if missing:
+            raise RuntimeError(
+                f"scene {scene}: could not find our own {missing} to bind materials to; "
+                f"discover_surfaces classified the stage as "
+                f"{sorted(surfaces)}.  Refusing to run a scene that is only half applied."
+            )
 
     def set_marker_slot(self, slot: int) -> None:
         """Swap the goal marker for another of this scene's five, leaving the rest alone."""

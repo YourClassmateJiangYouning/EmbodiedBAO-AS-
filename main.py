@@ -105,6 +105,22 @@ def request_params_suffix(model: str) -> str:
     return "-params" + hashlib.sha1(blob.encode("utf-8")).hexdigest()[:6]
 
 
+def _scene_choices() -> list:
+    """The Stage 3 scene names, for --scene's choices.
+
+    scenes.py is pure data and imports nothing from environment, so importing it here is
+    safe -- unlike environment, which must not be imported before SimulationApp starts.
+    If it is missing, --scene accepts nothing but the empty baseline default rather than
+    accepting a name nothing can build.
+    """
+    try:
+        from scenes import SCENE_ORDER
+
+        return list(SCENE_ORDER)
+    except Exception:  # noqa: BLE001
+        return []
+
+
 def effective_tag(model: str, tag: str = "", scene: str = "") -> str:
     """Results-directory tag for a run, including the protocol version and the scene.
 
@@ -346,6 +362,9 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         "--scene",
         type=str,
         default="",
+        # scenes.py imports nothing from environment, so importing its list here is safe
+        # and a typo fails at parse time rather than half-applying a scene at run time.
+        choices=[""] + list(_scene_choices()),
         help="Stage 3 scene from scenes.SCENE_ORDER, e.g. stage1.2.  Empty is the frozen "
              "baseline: no materials rebound, no dressing, and the legacy red square.  The "
              "five repeats of a scene cycle through that scene's five markers automatically.",
