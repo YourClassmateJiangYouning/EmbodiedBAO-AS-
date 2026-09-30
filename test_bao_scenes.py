@@ -109,7 +109,13 @@ def test_no_dressing_occludes_the_opening_or_the_marker() -> None:
                 continue  # behind the camera, cannot occlude anything ahead
             for level, width in enumerate(sorted(_ladder_widths())):
                 opening = sc.screen_bounds(*sc.opening_box(width))
-                if opening and sc.rectangles_overlap(bounds, opening):
+                # Only what is IN FRONT of the obstacle wall can occlude the opening.  Things
+                # on the far wall are seen THROUGH it, so an earlier version flagged the far
+                # wall's own sign for overlapping the opening's projected rectangle -- which is
+                # what everything behind the opening does, the marker's wall included.  The
+                # |z| >= 0.9 rule keeps on-wall items clear of the gap itself.
+                if (opening and float(item["at"][0]) < 8.0
+                        and sc.rectangles_overlap(bounds, opening)):
                     raise Failure(
                         f"{scene}: {item['name']} overlaps the {width:.3f} m opening in the "
                         f"start view (item {bounds}, opening {opening})")
@@ -152,30 +158,21 @@ def test_decoration_is_never_collidable_and_stays_off_the_path() -> None:
     print(f"[ok] all {count} dressing items are non-collidable and outside the walking band")
 
 
-def test_dressing_colours_are_declared_or_admitted_unknown() -> None:
-    """Every dressing item either declares a colour or is explicitly material-unknown.
+def test_dressing_colours_are_declared_and_not_marker_colours() -> None:
+    """Every dressing item has a colour, and none of them borrows a marker's.
 
-    The first version of this test looped over item["colour"] and passed trivially, because
-    no dressing item declared one -- it asserted nothing.  What can actually be checked is
-    that each item is honest: either it carries a colour that is not one of its scene's five
-    marker colours, or it is listed as having an unknown material colour, which is the case
-    for everything that references an Isaac asset.  The orange traffic cone in the warehouse
-    is the live example: its colour is whatever M_TrafficCone is, so it has to be settled by
-    looking at a rendered frame, not by this test.
+    An earlier version looped over item["colour"] and asserted that at least one item had no
+    colour, which was true then and false once every item was given one -- the test was
+    inverted by a fix.  What matters is the two properties below.
     """
-    unknown = []
     for scene in sc.SCENE_ORDER:
         marker_colours = set(sc.marker_colours(scene))
         for item in sc.SCENES[scene]["dressing"]:
             colour = item.get("colour")
-            if colour is None:
-                unknown.append(f"{scene}/{item['name']}")
-                continue
+            check(colour is not None, f"{scene}: {item['name']} has no colour")
             check(tuple(colour) not in marker_colours,
                   f"{scene}: {item['name']} uses a marker colour {colour}")
-    check(unknown, "every dressing item declares a colour, so nothing exercises this path")
-    print(f"[ok] dressing colours: {len(unknown)} items admit an unknown material colour, "
-          f"the rest declare one that is not a marker colour")
+    print("[ok] every dressing item has a colour, and none of them is a marker colour")
 
 
 def test_the_baseline_scene_is_untouched() -> None:
@@ -335,6 +332,43 @@ def test_prim_paths_from_a_scene_name_are_valid_usd_paths() -> None:
     print("[ok] every composed material path is a valid USD path, dots replaced")
 
 
+def test_no_dressing_protrudes_into_the_corridor() -> None:
+    """Nothing may stick out from a wall into the space the agent looks down.
+
+    The first rendered preview showed a black slab hanging across the middle of the agent's
+    own view.  It was the warehouse's duct: size (1.8, 0.30, 0.30) centred on x = 8.0, so it
+    reached 0.9 m out from the wall towards the robot.  The |z| >= 0.9 rule that was supposed
+    to prevent this only constrains where an item sits sideways, not how far it protrudes, so
+    it is now constrained too.
+    """
+    for scene in sc.SCENE_ORDER:
+        for item in sc.SCENES[scene]["dressing"]:
+            if item["mount"] == "floor":
+                continue
+            protrusion = float(item["size"][0]) / 2.0
+            check(protrusion <= 0.20,
+                  f"{scene}: {item['name']} protrudes {protrusion:.2f} m from the wall into "
+                  f"the corridor the agent looks along")
+    print("[ok] no wall-mounted dressing protrudes more than 0.20 m into the corridor")
+
+
+def test_every_dressing_item_has_a_colour() -> None:
+    """An untextured prim with no colour renders black, which is what the first preview showed.
+
+    The lab machine cannot write the material library's cache, so there is no material to fall
+    back on either; a colour on every item is what keeps the scene from having unexplained
+    black slabs in it.
+    """
+    for scene in sc.SCENE_ORDER:
+        for item in sc.SCENES[scene]["dressing"]:
+            colour = item.get("colour")
+            check(colour is not None, f"{scene}: {item['name']} has no colour")
+            check(len(colour) == 3, f"{scene}: {item['name']} colour {colour} is not RGB")
+            check(all(0.0 <= float(v) <= 1.0 for v in colour),
+                  f"{scene}: {item['name']} colour {colour} is out of range")
+    print("[ok] every dressing item carries an in-range RGB colour")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -342,8 +376,10 @@ def main() -> int:
         test_every_shape_fits_the_marker_bounding_box,
         test_shapes_are_fat_enough_to_read_at_the_start_pose,
         test_no_dressing_occludes_the_opening_or_the_marker,
+        test_no_dressing_protrudes_into_the_corridor,
+        test_every_dressing_item_has_a_colour,
         test_decoration_is_never_collidable_and_stays_off_the_path,
-        test_dressing_colours_are_declared_or_admitted_unknown,
+        test_dressing_colours_are_declared_and_not_marker_colours,
         test_the_baseline_scene_is_untouched,
         test_materials_are_marked_as_verified_or_not,
         test_the_episode_count_is_what_the_design_says,

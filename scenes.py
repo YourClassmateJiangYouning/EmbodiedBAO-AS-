@@ -157,18 +157,38 @@ ASSET_ROOT = ("https://omniverse-content-production.s3-us-west-2.amazonaws.com"
 WAREHOUSE_MATERIALS = ASSET_ROOT + "/Environments/Simple_Warehouse/Materials"
 
 
+# Muted, scene-neutral default so that no dressing item is ever rendered untextured black.
+# The first preview came back with a solid black wall on one side and black blocks in the
+# corridor: prims with no colour and no working material render black, and the material
+# library's cache is not writable on the lab machine, so there was nothing to fall back on.
+DRESSING_GREY = (0.45, 0.45, 0.47)
+DRESSING_WOOD = (0.35, 0.24, 0.16)
+DRESSING_METAL = (0.55, 0.57, 0.60)
+DRESSING_GREEN = (0.22, 0.40, 0.18)
+DRESSING_LIGHT = (0.78, 0.78, 0.80)
+
+
 def _dressing_floor(name: str, at: Tuple[float, float, float],
                     size: Tuple[float, float, float], colour: Optional[str] = None,
                     asset: Optional[str] = None) -> Dict[str, Any]:
     return {"name": name, "mount": "floor", "at": at, "size": size,
-            "colour": colour, "asset": asset, "collides": False}
+            "colour": colour or DRESSING_GREY, "asset": asset, "collides": False}
 
 
 def _dressing_wall(name: str, mount: str, at: Tuple[float, float, float],
                    size: Tuple[float, float, float], colour: Optional[str] = None,
                    asset: Optional[str] = None) -> Dict[str, Any]:
-    return {"name": name, "mount": mount, "at": at, "size": size,
-            "colour": colour, "asset": asset, "collides": False}
+    """A wall-mounted item, declared like a picture: (across, tall, thick).
+
+    The thickness is moved to the x axis here, because a wall faces along x and the first
+    version's call sites wrote (0.5, 0.4, 0.03) -- which put half a metre of plate straight
+    out into the corridor, the same mistake as the duct, and the rendered frame showed it as a
+    black slab hanging in the middle of the agent's view.  Callers describe the picture; this
+    function decides which way it faces.
+    """
+    across, tall, thick = (float(v) for v in size)
+    return {"name": name, "mount": mount, "at": at, "size": (thick, tall, across),
+            "colour": colour or DRESSING_GREY, "asset": asset, "collides": False}
 
 
 SCENES: Dict[str, Dict[str, Any]] = {
@@ -193,7 +213,11 @@ SCENES: Dict[str, Dict[str, Any]] = {
             _dressing_wall("sign", "obstacle_wall", (8.0, 1.5, 1.35), (0.5, 0.4, 0.03),
                            asset=WAREHOUSE_MATERIALS + "/MI_SignB.mdl"),
             _dressing_wall("toolboard", "obstacle_wall", (8.0, 1.2, -1.35), (0.8, 0.6, 0.03)),
-            _dressing_wall("duct", "obstacle_wall", (8.0, 2.6, 1.10), (1.8, 0.30, 0.30)),
+            # 0.30 m along x, so it hugs the wall instead of protruding 0.9 m into the
+            # corridor across the middle of the agent's view.  That protrusion is exactly
+            # what the first rendered preview showed as a black slab hanging in the frame.
+            _dressing_wall("duct", "obstacle_wall", (8.0, 2.6, 1.10), (0.30, 0.30, 0.30),
+                           DRESSING_METAL),
             _dressing_wall("bay_sign", "far_wall", (16.0, 2.15, 1.60), (0.9, 0.35, 0.03)),
             _dressing_floor("pallets", (2.2, 0.20, 1.90), (1.2, 0.40, 1.0)),
             _dressing_floor("klt_bins", (3.6, 0.15, -1.80), (0.6, 0.30, 0.4)),

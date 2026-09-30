@@ -314,12 +314,19 @@ def describe_stage(stage: Any, limit: int = 8) -> List[str]:
 
 
 def apply_scene(stage: Any, scene: str, slot: int,
-                surfaces: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
+                surfaces: Optional[Dict[str, str]] = None,
+                use_mdl: bool = False) -> Dict[str, Any]:
     """Put a scene on the stage and report what resolved.
 
     ``surfaces`` maps floor / side_wall / ceiling / far_wall to the prim paths of OUR room,
     so this module never has to know how environment.py builds or names things.  A baseline
     scene has no materials and no dressing, so it is a no-op that still reports.
+
+    ``use_mdl`` is False by default, and that default was bought with a rendered frame.  On the
+    lab machine the material library's cache is not writable, so MDL prims are created without
+    their shaders and every surface that received one rendered as salt-and-pepper noise -- the
+    whole scene came back looking broken.  Flat paint is ugly but correct, and a flat-painted
+    room reads as a room; noise does not.  Opt in when the cache is writable.
     """
     if scene not in sc.SCENES:
         raise ValueError(f"unknown scene {scene!r}, expected one of {list(sc.SCENES)}")
@@ -333,6 +340,11 @@ def apply_scene(stage: Any, scene: str, slot: int,
         prim_path = (surfaces or {}).get(surface)
         if not prim_path:
             report["materials"][surface] = {"url": url, "how": "no-surface-given"}
+            continue
+        if not use_mdl:
+            paint(stage, prim_path, fallbacks.get(surface, (0.6,) * 3))
+            report["materials"][surface] = {"url": url, "how": "flat-paint",
+                                            "prim": prim_path}
             continue
         name = os.path.basename(url).replace(".mdl", "")
         material, how = resolve_material(
