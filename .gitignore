@@ -30,3 +30,11 @@ COMMIT_MSG_*.txt
 # Word's lock file for an open document: it appears whenever a .docx is open and
 # vanishes when it closes, so committing it would record a transient state as content.
 ~$*.docx
+
+# Stage 1 scene extension: the Isaac material sets the scenes need, vendored so that a clone
+# has them.  The lines above ignore assets/ wholesale; these are the exceptions, and they are
+# deliberately narrow: only the material sets, downscaled by tools/shrink_textures.py -- the
+# raw download is 473 MB of 4K maps for a 512 px render.
+!assets/isaac/
+assets/isaac/**/.thumbs/
+
