@@ -80,11 +80,11 @@ PY
 # asks main for the tag it will actually use, so the printed tag IS the directory.
 # tools/check_sweep_tags.py replays this through effective_tag to check.
 model_tag() {
-    "$PLAIN_PY" - "$1" <<'PY'
+    "$PLAIN_PY" - "$1" "${SCENE:-}" <<'PY'
 import sys
 sys.path.insert(0, ".")
 from main import effective_tag
-print(effective_tag(sys.argv[1]))
+print(effective_tag(sys.argv[1], "", sys.argv[2] if len(sys.argv) > 2 else ""))
 PY
 }
 
@@ -124,6 +124,7 @@ for model in "${MODELS[@]}"; do
         --max_steps 30 \
         --image_size 512 \
         --tag "$tag" \
+        ${SCENE:+--scene "$SCENE"} \
         $HEADLESS_FLAG \
         --resume
     status=$?

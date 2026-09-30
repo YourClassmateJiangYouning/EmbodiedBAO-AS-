@@ -185,6 +185,71 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
 
 
 # ---------------------------------------------------------------------------
+# Finding our own room's surfaces
+# ---------------------------------------------------------------------------
+
+
+def classify_surfaces(boxes: Sequence[Tuple[str, Sequence[float], Sequence[float]]]
+                      ) -> Dict[str, str]:
+    """Pick the floor, ceiling, far wall and side wall out of a list of named boxes.
+
+    Pure, so it can be checked without a stage.  Classification is by where a box sits and
+    how big its faces are, not by its name: environment.py is a frozen file and this module
+    must not depend on how it names things.  A large flat box at the bottom is the floor, one
+    at the top is the ceiling, a large box at the far end is the far wall, and a large box off
+    to one side is a side wall.
+    """
+    best: Dict[str, Tuple[float, str]] = {}
+
+    def consider(kind: str, score: float, name: str) -> None:
+        if score > best.get(kind, (0.0, ""))[0]:
+            best[kind] = (score, name)
+
+    for name, low, high in boxes:
+        size_x = abs(float(high[0]) - float(low[0]))
+        size_y = abs(float(high[1]) - float(low[1]))
+        size_z = abs(float(high[2]) - float(low[2]))
+        centre_y = (float(low[1]) + float(high[1])) / 2.0
+        centre_z = (float(low[2]) + float(high[2])) / 2.0
+        minimum_x = min(float(low[0]), float(high[0]))
+        if size_y <= 0.05 and centre_y <= 0.05:
+            consider("floor", size_x * size_z, name)
+        if size_y <= 0.05 and centre_y >= 2.8:
+            consider("ceiling", size_x * size_z, name)
+        if size_x <= 0.05 and minimum_x >= 15.5:
+            consider("far_wall", size_y * size_z, name)
+        if size_z <= 0.05 and abs(centre_z) >= 2.0:
+            consider("side_wall", size_x * size_y, name)
+    return {kind: name for kind, (score, name) in best.items() if score > 0.0}
+
+
+def discover_surfaces(stage: Any) -> Dict[str, str]:
+    """Read every prim's world bounds and classify them.  Never raises."""
+    try:
+        from pxr import Usd, UsdGeom
+    except Exception:  # noqa: BLE001
+        return {}
+    boxes: List[Tuple[str, Sequence[float], Sequence[float]]] = []
+    try:
+        for prim in stage.Traverse():
+            if not prim.IsA(UsdGeom.Boundable):
+                continue
+            boundable = UsdGeom.Boundable(prim)
+            extent = boundable.GetExtentAttr().Get()
+            if not extent or len(extent) != 2:
+                continue
+            xform = UsdGeom.Xformable(prim).ComputeLocalToWorldTransform(Usd.TimeCode.Default())
+            low = xform.Transform(tuple(extent[0]))
+            high = xform.Transform(tuple(extent[1]))
+            boxes.append((str(prim.GetPath()),
+                          (min(low[0], high[0]), min(low[1], high[1]), min(low[2], high[2])),
+                          (max(low[0], high[0]), max(low[1], high[1]), max(low[2], high[2]))))
+    except Exception:  # noqa: BLE001
+        pass
+    return classify_surfaces(boxes)
+
+
+# ---------------------------------------------------------------------------
 # The whole scene
 # ---------------------------------------------------------------------------
 

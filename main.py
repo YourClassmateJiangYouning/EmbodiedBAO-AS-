@@ -105,8 +105,8 @@ def request_params_suffix(model: str) -> str:
     return "-params" + hashlib.sha1(blob.encode("utf-8")).hexdigest()[:6]
 
 
-def effective_tag(model: str, tag: str = "") -> str:
-    """Results-directory tag for a run, including the protocol version.
+def effective_tag(model: str, tag: str = "", scene: str = "") -> str:
+    """Results-directory tag for a run, including the protocol version and the scene.
 
     Idempotent: a tag that already carries the protocol version is returned
     unchanged.  run_all_models.sh composes the tag itself (so the tag it prints
@@ -115,6 +115,10 @@ def effective_tag(model: str, tag: str = "") -> str:
     ``<model>-v4-walkframe-v4-walkframe``, the sweep log disagreed with the path
     actually written, and a manual ``main.py --tag <model>`` could not find the
     sweep's resume checkpoint.
+
+    ``scene`` is appended so that two Stage 3 scenes cannot write into one directory and
+    silently merge.  It is empty by default, so every tag composed before the scenes existed
+    still resolves to exactly the same directory and the committed episodes stay findable.
     """
     from protocol import PROTOCOL_TAG
 
@@ -124,11 +128,14 @@ def effective_tag(model: str, tag: str = "") -> str:
     # was not enough: once a request-parameter suffix follows it, the protocol tag
     # is no longer last and both suffixes were appended a second time.
     suffix = request_params_suffix(model)
+    scene_suffix = f"-{scene}" if scene else ""
+    if scene_suffix and base.endswith(scene_suffix):
+        base = base[: -len(scene_suffix)]
     if suffix and base.endswith(suffix):
         base = base[: -len(suffix)]
     if not (base == PROTOCOL_TAG or base.endswith("-" + PROTOCOL_TAG)):
         base = f"{base}-{PROTOCOL_TAG}"
-    return base + suffix
+    return base + scene_suffix + suffix
 
 # ---------------------------------------------------------------------------
 # Output layout
@@ -335,6 +342,14 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     )
     parser.add_argument("--headless", action="store_true")
     parser.add_argument("--tag", type=str, default="", help="Optional run tag")
+    parser.add_argument(
+        "--scene",
+        type=str,
+        default="",
+        help="Stage 3 scene from scenes.SCENE_ORDER, e.g. stage1.2.  Empty is the frozen "
+             "baseline: no materials rebound, no dressing, and the legacy red square.  The "
+             "five repeats of a scene cycle through that scene's five markers automatically.",
+    )
     parser.add_argument(
         "--resume",
         action="store_true",
@@ -654,6 +669,8 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
 
         task_dict = json.loads(args.env_config)
         task_dict["headless"] = args.headless
+        if getattr(args, "scene", ""):
+            task_dict["scene"] = args.scene
         # Convenience overrides so the camera can be tuned from the command line
         # without editing environment.py.
         if args.eye_height is not None:
@@ -672,7 +689,7 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
             model=args.model,
             max_steps=args.max_steps,
             episodes_per_level=args.episodes,
-            tag=effective_tag(args.model, args.tag),
+            tag=effective_tag(args.model, args.tag, getattr(args, "scene", "") or ""),
             save_obs=args.save_obs,
             results_root=run_results_root,
             logs_root=run_logs_root,

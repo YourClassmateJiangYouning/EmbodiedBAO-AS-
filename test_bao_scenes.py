@@ -255,6 +255,55 @@ def test_the_catalogue_matches_the_environment_it_replaces() -> None:
     print("[ok] the catalogue's baseline marker matches the environment's own constants")
 
 
+def test_the_scene_tag_separates_scenes_and_leaves_old_tags_alone() -> None:
+    """Two scenes must not resolve to one directory, and old tags must not move.
+
+    The committed 660 episodes live under tags composed without a scene, so the no-scene
+    result has to stay byte-identical; and feeding a full tag back in has to be idempotent,
+    which is the trap that once produced <model>-v4-walkframe-v4-walkframe.
+    """
+    import main
+
+    plain = main.effective_tag("some-model")
+    check("stage1." not in plain, f"the default tag mentions a scene: {plain}")
+    for scene in sc.SCENE_ORDER:
+        tagged = main.effective_tag("some-model", "", scene)
+        check(tagged == plain + "-" + scene,
+              f"{scene}: {tagged} is not {plain}-{scene}")
+        again = main.effective_tag("some-model", tagged, scene)
+        check(again == tagged, f"{scene}: feeding the tag back changed it to {again}")
+    for other in sc.SCENE_ORDER[1:]:
+        check(main.effective_tag("some-model", "", other)
+              != main.effective_tag("some-model", "", sc.SCENE_ORDER[0]),
+              "two scenes compose the same tag")
+    print("[ok] the scene is in the tag, reapplying is idempotent, old tags unchanged")
+
+
+def test_surfaces_are_classified_by_geometry_not_by_name() -> None:
+    """The builder finds our floor, ceiling and walls without knowing their names.
+
+    environment.py is frozen, so the builder classifies by where a box sits and how big its
+    faces are.  This is the pure core of discovery, checked here with boxes shaped like the
+    real room.
+    """
+    import scene_builder
+
+    boxes = [
+        ("/World/Anything_7", (0.0, -0.01, -2.5), (16.0, 0.0, 2.5)),     # floor
+        ("/World/Opus_3", (0.0, 3.0, -2.5), (16.0, 3.01, 2.5)),          # ceiling
+        ("/World/Thing", (15.99, 0.0, -2.5), (16.0, 3.0, 2.5)),          # far wall
+        ("/World/Other", (0.0, 0.0, 2.49), (16.0, 3.0, 2.5)),            # side wall
+    ]
+    found = scene_builder.classify_surfaces(boxes)
+    check(found.get("floor") == "/World/Anything_7", f"floor found as {found.get('floor')}")
+    check(found.get("ceiling") == "/World/Opus_3", f"ceiling found as {found.get('ceiling')}")
+    check(found.get("far_wall") == "/World/Thing", f"far wall found as {found.get('far_wall')}")
+    check(found.get("side_wall") == "/World/Other", f"side wall found as {found.get('side_wall')}")
+    check(scene_builder.classify_surfaces([]) == {},
+          "an empty stage should classify to nothing, not to a guess")
+    print("[ok] the four surfaces are found by geometry, and an empty stage yields nothing")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -270,6 +319,8 @@ def main() -> int:
         test_every_colour_is_used_at_least_once,
         test_the_builder_imports_without_a_simulator,
         test_the_catalogue_matches_the_environment_it_replaces,
+        test_the_scene_tag_separates_scenes_and_leaves_old_tags_alone,
+        test_surfaces_are_classified_by_geometry_not_by_name,
     ]
     failed = 0
     for test in tests:

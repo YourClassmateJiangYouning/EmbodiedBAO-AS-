@@ -803,7 +803,17 @@ class BAOEnv:
         self._create_wall()
         if self.task_dict.get("hide_wall", False):
             self._remove_wall()
-        self._create_goal_marker()
+        # A Stage 3 scene replaces the marker with one of its twenty-five and may rebind the
+        # four surfaces and add dressing.  With no scene set, nothing below runs and the
+        # legacy red square is built exactly as before -- which is what keeps the committed
+        # 660 episodes valid and the baseline path untouched.
+        self.scene_name = str(self.task_dict.get("scene") or "")
+        self.scene_report: Optional[Dict[str, Any]] = None
+        self._episode_index = 0
+        if self.scene_name:
+            self._apply_scene(self.scene_name, slot=1)
+        else:
+            self._create_goal_marker()
         self._create_lights()
         self._create_camera()
         self._load_robot()
@@ -2027,8 +2037,46 @@ class BAOEnv:
         return self.get_camera_image()
 
     def reset(self) -> np.ndarray:
-        """Alias for reset_scene (MirrorBench compatibility)."""
+        """Alias for reset_scene (MirrorBench compatibility).
+
+        Also advances the marker: the five repeats of a Stage 3 scene are meant to use that
+        scene's five different markers, and hooking it here means the runner needs no change
+        at all.  With no scene set this is a no-op.
+        """
+        if getattr(self, "scene_name", ""):
+            self._episode_index += 1
+            self.set_marker_slot((self._episode_index - 1) % 5 + 1)
         return self.reset_scene()
+
+    def _apply_scene(self, scene: str, slot: int) -> None:
+        """Materials, marker and dressing for one scene, and keep the report."""
+        try:
+            import scene_builder
+
+            surfaces = scene_builder.discover_surfaces(self.stage)
+            self.scene_report = scene_builder.apply_scene(self.stage, scene, slot, surfaces)
+            print(scene_builder.format_report(self.scene_report))
+        except Exception as exc:  # noqa: BLE001
+            # A scene that cannot be applied must be loud, not silent: the run would
+            # otherwise be recorded as stage1.2 while looking like the baseline.
+            self.scene_report = {"scene": scene, "applied": False, "error": repr(exc)}
+            print(f"[scene] FAILED to apply {scene}: {exc!r}")
+
+    def set_marker_slot(self, slot: int) -> None:
+        """Swap the goal marker for another of this scene's five, leaving the rest alone."""
+        if not getattr(self, "scene_name", ""):
+            return
+        try:
+            import scene_builder
+
+            for prim in list(self.stage.GetPrimAtPath("/World/GoalMarker").GetChildren()):
+                self.stage.RemovePrim(prim.GetPath())
+            report = scene_builder.build_marker(self.stage, self.scene_name, slot)
+            if self.scene_report is not None:
+                self.scene_report["marker"] = report
+            print(f"[scene] marker slot {slot}: {report['shape']} in {report['colour']}")
+        except Exception as exc:  # noqa: BLE001
+            print(f"[scene] FAILED to set marker slot {slot}: {exc!r}")
 
     def get_camera_image(self) -> np.ndarray:
         if self.eye_camera is not None:

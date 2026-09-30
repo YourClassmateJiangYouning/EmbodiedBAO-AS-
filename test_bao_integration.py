@@ -1361,7 +1361,7 @@ def test_cli_flags_reach_the_runner() -> None:
         "save_obs=args.save_obs",
         "max_steps=args.max_steps",
         "episodes_per_level=args.episodes",
-        "tag=effective_tag(args.model, args.tag)",
+        "tag=effective_tag(args.model, args.tag, getattr(args, \"scene\", \"\") or \"\")",
         "model=args.model",
     ):
         check(

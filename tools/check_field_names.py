@@ -82,6 +82,9 @@ OTHER = {
     # the Stage 1 runner's per-episode summary
     "episodes", "turned_rate", "passed_sideways_count", "first_turn_step_mean",
     "avg_success_steps", "avg_passage_rotation_deg", "resolved_tag",
+    # a Stage 3 dressing item (scenes.py) and a scene material entry (scene_builder.py)
+    "asset", "colour", "mount", "at", "size", "collides", "used_asset", "how", "url",
+    "parts", "slot", "scene", "label", "kind",
 }
 
 
