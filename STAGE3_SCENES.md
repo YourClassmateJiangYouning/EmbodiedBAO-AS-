@@ -45,6 +45,40 @@
 且不得进入走廊清扫范围。这样"场景只是皮肤"可以被**证明**：碰撞集不变 → 任务不变。
 这条要写成测试钉住（见 §4 检查 ①）。
 
+## 2.0 素材清单（已逐条在 NVIDIA 公开资产桶中核对，非凭记忆）
+
+**核对方法**：NVIDIA 的资产桶是公开 S3，可直接列目录 —— 下面的名字全部来自 `ListBucketResult`，
+可用同一条命令复核：
+
+```
+curl -s "https://omniverse-content-production.s3-us-west-2.amazonaws.com/?list-type=2&prefix=Assets/Isaac/4.5/Isaac/Props/&delimiter=/" | grep -o '<Prefix>[^<]*</Prefix>'
+```
+
+| 类别 | 实测存在的内容 |
+| :--- | :--- |
+| **环境（10）** | `Digital_Twin_Warehouse` `Grid` `Hospital` `Jetracer` `Modular_Warehouse` `Office` `Outdoor` `Simple_Room` `Simple_Warehouse` `Terrains` |
+| **道具（22 类）** | `Factory` `Pallet` `Forklift` `Conveyors` `KLT_Bin` `Food` `Sektion_Cabinet` `Shapes` `YCB` `PackingTable` `Sortbot_Housing` `Blocks` `Dolly` `Flip_Stack` `Camera` `Mugs` `Beaker` `Mounts` `NVIDIA` `Rubiks_Cube` `UIElements` `DeformableTube` |
+| **材质库** | Isaac 包内**没有**大材质库（`Materials/Isaac/` 只有 `nv_green.mdl` + `Staging/`）→ 经典材质库在**桶根**：`Materials/vMaterials_2/`、`Materials/Base/`、`Materials/OmniSurface/` |
+| **环境自带材质** | `Simple_Warehouse/Materials/`：`MI_Floor_01` `MI_Floor_02b` `MI_WallA_01` `MI_WallA_03b` `MI_WallB_01` `MI_CeilingA_06b` `MI_CratePlasticA/C/E` `MI_FrameA_01` `MI_RackShield_01` `MI_SignB` `MI_Barcode_0001` `M_WallBoard_01` `M_TrafficCone` `M_WetFloorSign` `M_Forklift` + 各自 `Textures/`（`_D/_M/_N/_ORM` 四张） |
+
+**两个必须如实说明的结论**：
+1. **没有图书馆环境，也没有超市环境** ✗ —— 这两个场景只能**用材质拼** ✓（正好符合"只改贴图" ✓）
+2. 四个新场景里，**只有仓库**能直接借到成套材质 ✓（`Simple_Warehouse` ✓）；
+   **公园**可从 `Outdoor` / `Terrains` 借 ✓；**图书馆与超市**要从桶根的通用材质库选 ✓
+
+**素材落地方式**（不加载整套环境，只取材质 → 保住"几何与灯光不动" ✓）：
+用 Omniverse 的标准命令按 MDL 路径直接建材质再绑到**我们自己的**地面/墙/天花板面上：
+
+```python
+omni.kit.commands.execute(
+    "CreateMdlMaterialPrimCommand",
+    mtl_url="https://omniverse-content-production.s3-us-west-2.amazonaws.com/Assets/Isaac/4.5/Isaac/Environments/Simple_Warehouse/Materials/MI_Floor_01.mdl",
+    mtl_name="MI_Floor_01", mtl_path="/World/Looks/MI_Floor_01")
+```
+
+> 注意：**不导入整套环境 USD** ✗ —— 那会带进它自己的灯光与几何 ✓ 与"灯光不动"冲突 ✓。
+> 只按需取材质与（可选的）道具 ✓。
+
 ## 2. 四个新场景：**只改贴图**，灯光不动
 
 每个场景 = **地面 + 侧墙 + 天花板 + 远墙**四张面的材质/贴图替换
@@ -52,10 +86,19 @@
 
 | 编号 | 场景 | 地面 | 侧墙 | 天花板 | 远墙 | 备注 |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| `1.2` | 仓库/工厂 | 混凝土（浅灰、有水渍/划痕） | 波纹金属板 或 砖 | 钢结构桁架色（深灰） | 混凝土灰 | 工业感的来源主要是**地面与侧墙贴图**，不需要真货架 |
-| `1.3` | 图书馆 | 深色地毯（细密噪点） | 木饰面 + 书架纹理贴图 | 米色吸音板 | 米白 | 书架**用贴图表现**（不建几何）就不会挡视野、也不参与碰撞 |
-| `1.4` | 公园 | 草地（带斑驳）+ 一条砂石小径贴图 | 远处树线（贴图） | 天空（浅蓝渐变） | 天空/远景灰绿 | 户外感全靠贴图；**灯光不动**，所以只改"看起来是户外"而不改照度 |
-| `1.5` | 超市 | 浅色地砖（方格） | 货架贴图（彩色包装块） | 白色格栅灯板贴图 | 浅灰 | 最花哨；彩色包装**必须只出现在贴图里**，不能出现与标志物同色的实体 |
+| `1.2` | 仓库/工厂 | `Simple_Warehouse/Materials/MI_Floor_01.mdl` | `MI_WallA_01.mdl`（金属墙板） | `MI_CeilingA_06b.mdl` | `MI_WallB_01.mdl` | **唯一能整套借用材质的场景** ✓ 可选道具：`Props/Pallet/`、`Props/KLT_Bin/`（**关闭物理** ✓） |
+| `1.3` | 图书馆 | 桶根材质库的**地毯**：`Materials/vMaterials_2/Fabric/` 里选 `Carpet*` | `Materials/vMaterials_2/Wood/` 里选木饰面 | `Materials/vMaterials_2/Base/` 米色涂装 | 米白涂装 | 可选道具：`Props/Sektion_Cabinet/`（书柜替代品 ✓） |
+| `1.4` | 公园 | `Terrains` 或 `Outdoor` 里的**草地/土地**材质 | `Outdoor` 里的**树线/远景**材质 | 天空色（浅蓝渐变涂装） | 远景灰绿 | 光照最强的场景 ✗ 必须重跑 17 档可读性 ✓；`Props` 里**没有植被** ✗ → 若要树，用圆柱+球冠自造 ✓ |
+| `1.5` | 超市 | 桶根材质库的**地砖**：`Materials/vMaterials_2/.../Tiles*` | `Simple_Warehouse/Materials/MI_RackShield_01.mdl`（货架板）+ 彩色包装用 `Materials/` 里的杂乱贴图 | `MI_CeilingA_06b.mdl` 或白色格栅 | 浅灰涂装 | **最花哨**；彩色包装只出现在贴图里 ✓ 不能有与标志物同色的实体 ✓ |
+
+**每个场景的四张面各自绑定独立材质** ✓ 这样"只改贴图"在实现上就是**四行绑定** ✓
+（地面 / 左侧墙 / 右侧墙 / 天花板 / 远墙面 ✓），代码里对应 `_create_room` 的那几处 `UsdShade` 绑定 ✓。
+
+**具体 mdl 名字的确定方式**（桶根材质库的目录我还没逐个列完，落地时用同一条列目录命令确认 ✓）：
+
+```
+curl -s "https://omniverse-content-production.s3-us-west-2.amazonaws.com/?list-type=2&prefix=Materials/vMaterials_2/&delimiter=/" | grep -o '<Prefix>[^<]*</Prefix>'
+```
 
 **若老师允许加非碰撞陈设**（建议允许，否则"超市/工厂"只能靠贴图，日常感有限）：
 每个场景最多 2–3 个**简单几何**道具（工厂=两个纸箱堆；公园=一棵圆柱+球冠树 + 一张长椅；
