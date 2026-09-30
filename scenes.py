@@ -213,16 +213,19 @@ SCENES: Dict[str, Dict[str, Any]] = {
             _dressing_wall("sign", "obstacle_wall", (8.0, 1.5, 1.35), (0.5, 0.4, 0.03),
                            asset=WAREHOUSE_MATERIALS + "/MI_SignB.mdl"),
             _dressing_wall("toolboard", "obstacle_wall", (8.0, 1.2, -1.35), (0.8, 0.6, 0.03)),
-            # 0.30 m along x, so it hugs the wall instead of protruding 0.9 m into the
-            # corridor across the middle of the agent's view.  That protrusion is exactly
-            # what the first rendered preview showed as a black slab hanging in the frame.
             _dressing_wall("duct", "obstacle_wall", (8.0, 2.6, 1.10), (0.30, 0.30, 0.30),
                            DRESSING_METAL),
             _dressing_wall("bay_sign", "far_wall", (16.0, 2.15, 1.60), (0.9, 0.35, 0.03)),
-            _dressing_floor("pallets", (2.2, 0.20, 1.90), (1.2, 0.40, 1.0)),
-            _dressing_floor("klt_bins", (3.6, 0.15, -1.80), (0.6, 0.30, 0.4)),
-            _dressing_floor("forklift", (5.2, 0.90, 2.05), (1.8, 1.80, 1.1)),
-            _dressing_floor("traffic_cone", (6.4, 0.35, -1.60), (0.4, 0.70, 0.4),
+            # Floor items are deliberately small and far off the centre line.  The first
+            # version put a 1.8 m tall, 1.1 m deep forklift five metres from the camera, and
+            # the rendered frame came back with a dead black mass filling one side of it: a
+            # big unlit box that close is not dressing, it is an obstruction.  Nothing here is
+            # more than a metre tall, more than 0.9 m long along the view axis, or nearer the
+            # centre line than |z| 2.0.
+            _dressing_floor("pallets", (2.6, 0.20, 2.05), (0.9, 0.40, 0.9)),
+            _dressing_floor("klt_bins", (4.0, 0.15, -2.00), (0.6, 0.30, 0.5)),
+            _dressing_floor("forklift", (6.2, 0.35, 2.15), (0.9, 0.70, 0.7)),
+            _dressing_floor("traffic_cone", (7.0, 0.35, -1.95), (0.4, 0.70, 0.4),
                             asset=WAREHOUSE_MATERIALS + "/M_TrafficCone.mdl"),
         ),
         "forbidden_colours": (),
