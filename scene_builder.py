@@ -46,16 +46,27 @@ def prim_name(text: Any) -> str:
 
 
 def _flat_material(stage: Any, path: str, rgb: Sequence[float]) -> Any:
-    """A constant-colour UsdPreviewSurface.  Always available, no download, exact colour."""
-    from pxr import Gf, UsdShade
+    """A constant-colour UsdPreviewSurface.  Always available, no download, exact colour.
+
+    Types matter to the bindings.  The first version passed a plain string as the input type
+    and connected the output with ``shader.ConnectableAPI()``; the lab got
+    ``Boost.Python.ArgumentError`` from inside this function.  Inputs now declare
+    ``Sdf.ValueTypeNames`` explicitly and the surface output is connected to the shader's
+    ``out`` output, which is the documented shape of the call.
+
+    It also no longer swallows anything: a marker with no colour is not a degraded marker,
+    it is a differently coloured one, which is exactly what this experiment varies.
+    """
+    from pxr import Gf, Sdf, UsdShade
 
     material = UsdShade.Material.Define(stage, path)
-    shader = UsdShade.Shader.Define(stage, os.path.join(path, "Shader"))
+    shader = UsdShade.Shader.Define(stage, path + "/Shader")
     shader.CreateIdAttr("UsdPreviewSurface")
-    shader.CreateInput("diffuseColor", "color").Set(Gf.Vec3f(*[float(v) for v in rgb]))
-    shader.CreateInput("roughness", "float").Set(0.55)
-    shader.CreateInput("metallic", "float").Set(0.0)
-    material.CreateSurfaceOutput().ConnectToSource(shader.ConnectableAPI(), "surface")
+    shader.CreateInput("diffuseColor", Sdf.ValueTypeNames.Color3f).Set(
+        Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2])))
+    shader.CreateInput("roughness", Sdf.ValueTypeNames.Float).Set(0.55)
+    shader.CreateInput("metallic", Sdf.ValueTypeNames.Float).Set(0.0)
+    material.CreateSurfaceOutput().ConnectToSource(shader.GetOutput("out"))
     return material
 
 
