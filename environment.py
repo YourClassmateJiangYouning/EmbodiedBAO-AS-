@@ -2051,24 +2051,35 @@ class BAOEnv:
     def _apply_scene(self, scene: str, slot: int) -> None:
         """Materials, marker and dressing for one scene, and keep the report.
 
-        A failure here RAISES.  The first version caught everything, printed and carried on,
-        which is the worst possible behaviour: the run would be tagged stage1.2, would look
-        exactly like the baseline, and the only trace would be one line in a log nobody
-        re-reads.  A scene that cannot be built must stop the run.
+        Two failure modes, deliberately treated differently.
+
+        A surface we cannot find is a WARNING, and the run continues with that surface in its
+        baseline colour: the lab found floor, far wall and side wall but not the ceiling, and
+        aborting the whole sweep over a ceiling would be worse than running a scene whose
+        ceiling is unpainted.  The report says which, so it is never a silent difference.
+
+        Finding NO surface at all is an ERROR, because that means discover_surfaces is broken
+        rather than a scene being partially paintless -- and the diagnostic listing goes into
+        the log so the next attempt is informed rather than another guess.
         """
         import scene_builder
 
         surfaces = scene_builder.discover_surfaces(self.stage)
         self.scene_report = scene_builder.apply_scene(self.stage, scene, slot, surfaces)
         print(scene_builder.format_report(self.scene_report))
+        if not surfaces:
+            for line in scene_builder.describe_stage(self.stage):
+                print(f"[scene] stage box: {line}")
+            raise RuntimeError(
+                f"scene {scene}: discover_surfaces found none of our surfaces; refusing to "
+                f"run a scene whose materials went nowhere.  The stage's largest boxes are "
+                f"printed above."
+            )
         missing = [name for name, info in self.scene_report["materials"].items()
                    if info.get("how") == "no-surface-given"]
         if missing:
-            raise RuntimeError(
-                f"scene {scene}: could not find our own {missing} to bind materials to; "
-                f"discover_surfaces classified the stage as "
-                f"{sorted(surfaces)}.  Refusing to run a scene that is only half applied."
-            )
+            print(f"[scene] WARNING: no prim found for {missing}; those surfaces keep the "
+                  f"baseline colour.  Scene is applied, but not in full.")
 
     def set_marker_slot(self, slot: int) -> None:
         """Swap the goal marker for another of this scene's five, leaving the rest alone."""

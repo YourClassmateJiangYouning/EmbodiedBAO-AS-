@@ -184,29 +184,30 @@ def _disable_collision(prim: Any) -> None:
 
 
 def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
-    """Place the scene's dressing: reference the named asset, or stand a box in for it."""
+    """Place the scene's dressing as boxes.
+
+    The first version tried to add a USD reference to whatever ``asset`` named.  For the two
+    items whose asset was an .mdl -- MI_SignB and M_TrafficCone -- that was simply wrong: an
+    MDL is a material, not a stage asset, and USD answered "Cannot determine file format".
+    Neither of the two is a mesh anyway, so there is nothing to reference; a box of the item's
+    declared size stands in, every asset name stays in the catalogue as the note it is, and the
+    report says used_asset false so nobody has to guess later what was actually drawn.
+    """
     from pxr import Gf, UsdGeom
 
     placed: List[Dict[str, Any]] = []
     for item in sc.SCENES[scene]["dressing"]:
         path = f"/World/Dressing/{item['name']}"
-        used_asset = False
-        if item.get("asset"):
-            try:
-                prim = UsdGeom.Xform.Define(stage, path).GetPrim()
-                prim.GetReferences().AddReference(item["asset"])
-                used_asset = True
-            except Exception:  # noqa: BLE001
-                used_asset = False
-        if not used_asset:
-            cube = UsdGeom.Cube.Define(stage, path)
-            cube.GetSizeAttr().Set(1.0)
-            cube.AddScaleOp().Set(Gf.Vec3f(*[float(v) for v in item["size"]]))
-            prim = cube.GetPrim()
+        cube = UsdGeom.Cube.Define(stage, path)
+        cube.GetSizeAttr().Set(1.0)
+        cube.AddScaleOp().Set(Gf.Vec3f(*[float(v) for v in item["size"]]))
+        prim = cube.GetPrim()
         UsdGeom.Xformable(prim).AddTranslateOp().Set(Gf.Vec3f(*[float(v) for v in item["at"]]))
         _disable_collision(prim)
+        if item.get("colour"):
+            paint(stage, path, item["colour"])
         placed.append({"name": item["name"], "mount": item["mount"],
-                       "asset": item["asset"], "used_asset": used_asset})
+                       "asset": item["asset"], "used_asset": False})
     return placed
 
 
@@ -278,6 +279,38 @@ def discover_surfaces(stage: Any) -> Dict[str, str]:
 # ---------------------------------------------------------------------------
 # The whole scene
 # ---------------------------------------------------------------------------
+
+
+def describe_stage(stage: Any, limit: int = 8) -> List[str]:
+    """The largest boundable boxes on the stage, for when a surface cannot be classified.
+
+    Printed instead of guessing why.  The lab found floor, far wall and side wall but not the
+    ceiling; without this the next step would have been another guess, and with it the actual
+    extent of whatever the ceiling is comes back in the log.
+    """
+    try:
+        from pxr import Usd, UsdGeom
+    except Exception:  # noqa: BLE001
+        return []
+    found = []
+    try:
+        for prim in stage.Traverse():
+            if not prim.IsA(UsdGeom.Boundable):
+                continue
+            extent = UsdGeom.Boundable(prim).GetExtentAttr().Get()
+            if not extent or len(extent) != 2:
+                continue
+            xform = UsdGeom.Xformable(prim).ComputeLocalToWorldTransform(Usd.TimeCode.Default())
+            low = xform.Transform(tuple(extent[0]))
+            high = xform.Transform(tuple(extent[1]))
+            size = [abs(high[i] - low[i]) for i in range(3)]
+            found.append((max(size), str(prim.GetPath()),
+                          tuple(round(min(low[i], high[i]), 2) for i in range(3)),
+                          tuple(round(max(low[i], high[i]), 2) for i in range(3))))
+    except Exception:  # noqa: BLE001
+        return []
+    found.sort(reverse=True)
+    return [f"{name}  min={low} max={high}" for _, name, low, high in found[:limit]]
 
 
 def apply_scene(stage: Any, scene: str, slot: int,
