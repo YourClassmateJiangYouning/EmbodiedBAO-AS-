@@ -48,6 +48,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--height", type=int, default=512)
     parser.add_argument("--iso_distance", type=float, default=12.0)
     parser.add_argument("--iso_height", type=float, default=7.0)
+    parser.add_argument(
+        "--parts", type=str, default="materials,marker,dressing",
+        help="Which parts of the scene to apply.  Bisecting a wrong-looking frame is two "
+             "renders with this: 'marker' alone shows the task geometry with nothing added, "
+             "then add materials, then dressing, and the step where the view breaks is the "
+             "part responsible.  Guessing at it from a finished frame wasted several rounds.",
+    )
+    parser.add_argument(
+        "--use_mdl", action="store_true",
+        help="Create the surface materials from their MDL URLs instead of flat paint.  Off by "
+             "default because the lab's material library cache is not writable, and surfaces "
+             "that received a shader-less MDL rendered as salt-and-pepper noise.",
+    )
     return parser.parse_args()
 
 
@@ -156,7 +169,8 @@ def main() -> int:
             return 1
 
         task = {"headless": True, "scene": args.scene, "level": args.level,
-                "image_size": args.width}
+                "image_size": args.width,
+                "scene_parts": [p.strip() for p in args.parts.split(",") if p.strip()]}
         env = environment.setup_scene(app, task_dict=task)
         print(f"[preview] scene {args.scene} ({scenes.SCENES[args.scene]['label']}) "
               f"level {args.level} width "

@@ -2065,7 +2065,9 @@ class BAOEnv:
         import scene_builder
 
         surfaces = scene_builder.discover_surfaces(self.stage)
-        self.scene_report = scene_builder.apply_scene(self.stage, scene, slot, surfaces)
+        parts = tuple(self.task_dict.get("scene_parts") or ("materials", "marker", "dressing"))
+        self.scene_report = scene_builder.apply_scene(
+            self.stage, scene, slot, surfaces, parts=parts)
         print(scene_builder.format_report(self.scene_report))
         if not surfaces:
             for line in scene_builder.describe_stage(self.stage):

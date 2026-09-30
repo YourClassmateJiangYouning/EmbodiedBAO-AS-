@@ -315,7 +315,8 @@ def describe_stage(stage: Any, limit: int = 8) -> List[str]:
 
 def apply_scene(stage: Any, scene: str, slot: int,
                 surfaces: Optional[Dict[str, str]] = None,
-                use_mdl: bool = False) -> Dict[str, Any]:
+                use_mdl: bool = False,
+                parts: Sequence[str] = ("materials", "marker", "dressing")) -> Dict[str, Any]:
     """Put a scene on the stage and report what resolved.
 
     ``surfaces`` maps floor / side_wall / ceiling / far_wall to the prim paths of OUR room,
@@ -337,6 +338,9 @@ def apply_scene(stage: Any, scene: str, slot: int,
     fallbacks = {"floor": (0.55, 0.55, 0.55), "side_wall": (0.72, 0.73, 0.75),
                  "ceiling": (0.92, 0.93, 0.95), "far_wall": (0.13, 0.42, 0.20)}
     for surface, url in spec["materials"].items():
+        if "materials" not in parts:
+            report["materials"][surface] = {"url": url, "how": "skipped"}
+            continue
         prim_path = (surfaces or {}).get(surface)
         if not prim_path:
             report["materials"][surface] = {"url": url, "how": "no-surface-given"}
@@ -355,7 +359,8 @@ def apply_scene(stage: Any, scene: str, slot: int,
         report["materials"][surface] = {"url": url, "how": how, "prim": prim_path}
 
     report["marker"] = build_marker(stage, scene, slot)
-    report["dressing"] = place_dressing(stage, scene)
+    report["parts"] = list(parts)
+    report["dressing"] = place_dressing(stage, scene) if "dressing" in parts else []
     report["dressing_count"] = len(report["dressing"])
     return report
 
