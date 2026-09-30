@@ -56,10 +56,11 @@ def parse_args() -> argparse.Namespace:
              "part responsible.  Guessing at it from a finished frame wasted several rounds.",
     )
     parser.add_argument(
-        "--use_mdl", action="store_true",
-        help="Create the surface materials from their MDL URLs instead of flat paint.  Off by "
-             "default because the lab's material library cache is not writable, and surfaces "
-             "that received a shader-less MDL rendered as salt-and-pepper noise.",
+        "--flat_paint", action="store_true",
+        help="Skip the materials and paint the four surfaces flat.  Materials are the default "
+             "now that the warehouse set is vendored under assets/isaac: the earlier flat "
+             "default existed because a material fetched from its URL arrived without shaders "
+             "on a machine whose material-library cache is not writable.",
     )
     return parser.parse_args()
 
@@ -170,6 +171,7 @@ def main() -> int:
 
         task = {"headless": True, "scene": args.scene, "level": args.level,
                 "image_size": args.width,
+                "use_mdl": not args.flat_paint,
                 "scene_parts": [p.strip() for p in args.parts.split(",") if p.strip()]}
         env = environment.setup_scene(app, task_dict=task)
         print(f"[preview] scene {args.scene} ({scenes.SCENES[args.scene]['label']}) "

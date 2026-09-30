@@ -71,6 +71,29 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float]) -> bool:
         return False
 
 
+LOCAL_ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "isaac")
+
+
+def local_asset_for(url: str) -> Optional[str]:
+    """The vendored copy of a remote material, if one is in the repository.
+
+    The scenes name their materials by their NVIDIA URL, and on the lab machine that URL is
+    what failed: the material library's cache is not writable there, so a material created from
+    a URL arrived without its shaders and every surface rendered as noise.  Rather than rewrite
+    every catalogue entry, the vendored set -- committed under assets/isaac by
+    tools/shrink_textures.py -- is consulted first, and the network is only used for materials
+    nobody vendored.  A clone therefore renders the same scene the author saw, without the
+    network and without the cache.
+    """
+    if not url or url.startswith("assets") or os.path.isabs(url):
+        return url if os.path.exists(url) else None
+    name = os.path.basename(url)
+    for folder, _, files in os.walk(LOCAL_ASSETS):
+        if name in files:
+            return os.path.join(folder, name)
+    return None
+
+
 def resolve_material(stage: Any, url: str, name: str, path: str,
                      surface_prim: str, fallback_rgb: Sequence[float]) -> Tuple[Any, str]:
     """Create the material an MDL URL names, or a flat colour if that is not possible.
@@ -82,13 +105,14 @@ def resolve_material(stage: Any, url: str, name: str, path: str,
     try:
         import omni.kit.commands  # type: ignore
 
+        source = local_asset_for(url) or url
         omni.kit.commands.execute(
-            "CreateMdlMaterialPrimCommand", mtl_url=url, mtl_name=name, mtl_path=path)
+            "CreateMdlMaterialPrimCommand", mtl_url=source, mtl_name=name, mtl_path=path)
         from pxr import UsdShade
 
         material = UsdShade.Material(stage.GetPrimAtPath(path))
         if material:
-            return material, "mdl"
+            return material, ("mdl-local" if source != url else "mdl")
     except Exception:  # noqa: BLE001
         pass
     paint(stage, surface_prim, fallback_rgb)
@@ -315,7 +339,7 @@ def describe_stage(stage: Any, limit: int = 8) -> List[str]:
 
 def apply_scene(stage: Any, scene: str, slot: int,
                 surfaces: Optional[Dict[str, str]] = None,
-                use_mdl: bool = False,
+                use_mdl: bool = True,
                 parts: Sequence[str] = ("materials", "marker", "dressing")) -> Dict[str, Any]:
     """Put a scene on the stage and report what resolved.
 
