@@ -49,6 +49,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--iso_distance", type=float, default=12.0)
     parser.add_argument("--iso_height", type=float, default=7.0)
     parser.add_argument(
+        "--hide_robot", action="store_true",
+        help="Hide the robot, using the environment's own hide_robot flag.  The lab's frames "
+             "are unchanged by every scene fix, which means whatever dominates them does not "
+             "depend on the scene; the robot's own body sitting in front of the eye camera is "
+             "the first thing to rule out, and this rules it in or out in one render.",
+    )
+    parser.add_argument(
         "--parts", type=str, default="materials,marker,dressing",
         help="Which parts of the scene to apply.  Bisecting a wrong-looking frame is two "
              "renders with this: 'marker' alone shows the task geometry with nothing added, "
@@ -172,6 +179,7 @@ def main() -> int:
         task = {"headless": True, "scene": args.scene, "level": args.level,
                 "image_size": args.width,
                 "use_mdl": not args.flat_paint,
+                "hide_robot": bool(args.hide_robot),
                 "scene_parts": [p.strip() for p in args.parts.split(",") if p.strip()]}
         env = environment.setup_scene(app, task_dict=task)
         print(f"[preview] scene {args.scene} ({scenes.SCENES[args.scene]['label']}) "

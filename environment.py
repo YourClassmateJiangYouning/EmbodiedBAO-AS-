@@ -2069,7 +2069,10 @@ class BAOEnv:
         self.scene_report = scene_builder.apply_scene(
             self.stage, scene, slot, surfaces, parts=parts,
             use_mdl=bool(self.task_dict.get("use_mdl", True)))
-        print(scene_builder.format_report(self.scene_report))
+        # flush=True because Kit buffers stdout: the lab ran the scene, wrote the PNGs, and
+        # the log contained none of the [scene] lines, so the one piece of evidence that says
+        # which materials were actually used was being dropped on the floor.
+        print(scene_builder.format_report(self.scene_report), flush=True)
         if not surfaces:
             for line in scene_builder.describe_stage(self.stage):
                 print(f"[scene] stage box: {line}")
