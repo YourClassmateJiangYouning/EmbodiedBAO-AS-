@@ -45,33 +45,34 @@ def prim_name(text: Any) -> str:
     )
 
 
-def _flat_material(stage: Any, path: str, rgb: Sequence[float]) -> Any:
-    """A constant-colour UsdPreviewSurface.  Always available, no download, exact colour.
+def paint(stage: Any, prim_path: str, rgb: Sequence[float]) -> bool:
+    """Paint a prim with USD's own displayColor.  No shader graph, no material, no download.
 
-    Types matter to the bindings.  The first version passed a plain string as the input type
-    and connected the output with ``shader.ConnectableAPI()``; the lab got
-    ``Boost.Python.ArgumentError`` from inside this function.  Inputs now declare
-    ``Sdf.ValueTypeNames`` explicitly and the surface output is connected to the shader's
-    ``out`` output, which is the documented shape of the call.
+    Two attempts at building a UsdPreviewSurface by hand both failed on the lab machine: the
+    first passed a plain string where the bindings wanted a type token, the second connected
+    an output that had never been created and got "Used null prim".  displayColor is the
+    primitive that needs neither, it is respected by RTX for unbound geometry, and it holds
+    the exact catalogue colour -- which matters because the marker's colour is the one thing
+    this experiment varies and the uniqueness check compares colours numerically.
 
-    It also no longer swallows anything: a marker with no colour is not a degraded marker,
-    it is a differently coloured one, which is exactly what this experiment varies.
+    Returns whether it worked, so callers can report it rather than assume it.
     """
-    from pxr import Gf, Sdf, UsdShade
+    try:
+        from pxr import Gf, UsdGeom, Vt
 
-    material = UsdShade.Material.Define(stage, path)
-    shader = UsdShade.Shader.Define(stage, path + "/Shader")
-    shader.CreateIdAttr("UsdPreviewSurface")
-    shader.CreateInput("diffuseColor", Sdf.ValueTypeNames.Color3f).Set(
-        Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2])))
-    shader.CreateInput("roughness", Sdf.ValueTypeNames.Float).Set(0.55)
-    shader.CreateInput("metallic", Sdf.ValueTypeNames.Float).Set(0.0)
-    material.CreateSurfaceOutput().ConnectToSource(shader.GetOutput("out"))
-    return material
+        prim = stage.GetPrimAtPath(prim_path)
+        gprim = UsdGeom.Gprim(prim)
+        if not gprim:
+            return False
+        gprim.CreateDisplayColorAttr().Set(Vt.Vec3fArray(
+            [Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2]))]))
+        return True
+    except Exception:  # noqa: BLE001
+        return False
 
 
 def resolve_material(stage: Any, url: str, name: str, path: str,
-                     fallback_rgb: Sequence[float]) -> Tuple[Any, str]:
+                     surface_prim: str, fallback_rgb: Sequence[float]) -> Tuple[Any, str]:
     """Create the material an MDL URL names, or a flat colour if that is not possible.
 
     Returns (material, how) where ``how`` is ``"mdl"`` or ``"fallback"``.  The fallback is
@@ -90,7 +91,8 @@ def resolve_material(stage: Any, url: str, name: str, path: str,
             return material, "mdl"
     except Exception:  # noqa: BLE001
         pass
-    return _flat_material(stage, path, fallback_rgb), "fallback"
+    paint(stage, surface_prim, fallback_rgb)
+    return None, "fallback-paint"
 
 
 # ---------------------------------------------------------------------------
@@ -142,12 +144,10 @@ def build_marker(stage: Any, scene: str, slot: int) -> Dict[str, Any]:
     centre = (sc.MARKER_X_M, sc.MARKER_Y_M, sc.MARKER_Z_M)
     paths = []
     for index, polygon in enumerate(sc.SHAPES[shape]):
-        paths.append(_prism(stage, f"/World/GoalMarker/part{index}", polygon, centre,
-                            sc.MARKER_THICKNESS_M))
-    material_path = f"/World/Looks/Marker_{prim_name(scene)}_{slot}"
-    material = _flat_material(stage, material_path, rgb)
-    for path in paths:
-        _bind(stage, path, material)
+        prim = _prism(stage, f"/World/GoalMarker/part{index}", polygon, centre,
+                      sc.MARKER_THICKNESS_M)
+        paint(stage, str(prim.GetPath()), rgb)
+        paths.append(prim)
     return {"scene": scene, "slot": slot, "shape": shape, "colour": colour_key,
             "rgb": tuple(rgb), "parts": len(paths)}
 
@@ -304,8 +304,9 @@ def apply_scene(stage: Any, scene: str, slot: int,
         name = os.path.basename(url).replace(".mdl", "")
         material, how = resolve_material(
             stage, url, name, f"/World/Looks/{surface}_{prim_name(scene)}",
-            fallbacks.get(surface, (0.6,) * 3))
-        _bind(stage, prim_path, material)
+            prim_path, fallbacks.get(surface, (0.6,) * 3))
+        if material is not None:
+            _bind(stage, prim_path, material)
         report["materials"][surface] = {"url": url, "how": how, "prim": prim_path}
 
     report["marker"] = build_marker(stage, scene, slot)
