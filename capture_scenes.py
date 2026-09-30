@@ -140,7 +140,13 @@ def main() -> int:
 
     from isaacsim import SimulationApp
 
-    app = SimulationApp({"headless": True, "width": args.width, "height": args.height})
+    # Exactly what main.py does: {"headless": ...} and nothing else.  Passing width/height
+    # here set the RENDER target to 256x256 -- half of the 512 asked for -- which the camera
+    # then upscaled to its own 1024, and the frames came back as salt-and-pepper noise.  The
+    # lab log said so in plain words: "DLSS increasing input dimensions: Render resolution of
+    # (256, 256) is below minimal input resolution of 300".  The camera's own resolution is set
+    # by the environment, which is why the runner never needed to pass anything.
+    app = SimulationApp({"headless": True})
     try:
         import environment
         import scenes
