@@ -159,11 +159,11 @@ def main() -> int:
         eye_images, iso_images = [], []
         for slot in slots:
             env.set_marker_slot(slot)
-            # The RGB annotator is only attached once the renderer has run, and get_rgb()
-            # raises AttributeError on None until then -- measured on the lab machine.  The
-            # runner steps the world before it reads anything, which is why it never hit this.
-            for _ in range(4):
-                env.world.step(render=True)
+            # reset() is what initialises the camera annotators -- environment.py calls
+            # camera.initialize() there, not in the constructor -- and it also steps the
+            # scene a few times.  Reading the eye camera before a reset raises
+            # AttributeError on a None annotator, which is exactly what happened on the lab.
+            env.reset()
             eye = np.asarray(env.get_camera_image())[:, :, :3]
             eye_images.append(eye)
             write_png(os.path.join(args.outdir, f"{args.scene}_slot{slot}_eye.png"), eye)
@@ -171,8 +171,7 @@ def main() -> int:
             if iso_camera is not None:
                 look_from(iso_camera, target=(6.0, 0.0, 1.0),
                           distance=args.iso_distance, height=args.iso_height)
-                for _ in range(4):
-                    env.world.step(render=True)
+                env.reset()
                 iso = np.asarray(iso_camera.get_rgb())[:, :, :3]
                 iso_images.append(iso)
                 write_png(os.path.join(args.outdir, f"{args.scene}_slot{slot}_iso.png"), iso)
