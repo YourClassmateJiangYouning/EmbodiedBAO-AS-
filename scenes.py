@@ -55,38 +55,59 @@ SENSOR_WIDTH_MM = 20.955
 # which compares colours -- unreliable, and it would need an asset download.
 # ---------------------------------------------------------------------------
 
-# A shape is a tuple of primitive specs.  ``size`` is the full extent in metres,
-# ``axis`` is which axis a cylinder's circular face points along.
-SHAPES: Dict[str, Tuple[Dict[str, Any], ...]] = {
-    "square": ({"kind": "cube", "size": (MARKER_SIZE_M, MARKER_SIZE_M, MARKER_THICKNESS_M)},),
-    "diamond": ({"kind": "cube", "size": (MARKER_SIZE_M, MARKER_SIZE_M, MARKER_THICKNESS_M),
-                 "roll_deg": 45.0},),
-    "triangle": ({"kind": "cylinder", "radius": MARKER_SIZE_M / 2, "height": MARKER_THICKNESS_M,
-                  "axis": "x", "radial_segments": 3, "roll_deg": 0.0},),
-    "triangle_down": ({"kind": "cylinder", "radius": MARKER_SIZE_M / 2,
-                       "height": MARKER_THICKNESS_M, "axis": "x", "radial_segments": 3,
-                       "roll_deg": 180.0},),
-    "disc": ({"kind": "cylinder", "radius": MARKER_SIZE_M / 2, "height": MARKER_THICKNESS_M,
-              "axis": "x", "radial_segments": 64},),
-    "hexagon": ({"kind": "cylinder", "radius": MARKER_SIZE_M / 2, "height": MARKER_THICKNESS_M,
-                 "axis": "x", "radial_segments": 6},),
-    "cross": ({"kind": "cube", "size": (MARKER_SIZE_M, MARKER_SIZE_M * 0.33, MARKER_THICKNESS_M)},
-              {"kind": "cube", "size": (MARKER_SIZE_M * 0.33, MARKER_SIZE_M, MARKER_THICKNESS_M)}),
-    "bars3": ({"kind": "cube", "size": (MARKER_SIZE_M * 0.23, MARKER_SIZE_M, MARKER_THICKNESS_M),
-               "offset": (-MARKER_SIZE_M * 0.385, 0.0, 0.0)},
-              {"kind": "cube", "size": (MARKER_SIZE_M * 0.23, MARKER_SIZE_M, MARKER_THICKNESS_M)},
-              {"kind": "cube", "size": (MARKER_SIZE_M * 0.23, MARKER_SIZE_M, MARKER_THICKNESS_M),
-               "offset": (MARKER_SIZE_M * 0.385, 0.0, 0.0)}),
-    "bars2": ({"kind": "cube", "size": (MARKER_SIZE_M, MARKER_SIZE_M * 0.23, MARKER_THICKNESS_M),
-               "offset": (0.0, MARKER_SIZE_M * 0.235, 0.0)},
-              {"kind": "cube", "size": (MARKER_SIZE_M, MARKER_SIZE_M * 0.23, MARKER_THICKNESS_M),
-               "offset": (0.0, -MARKER_SIZE_M * 0.235, 0.0)}),
-    "arrow": ({"kind": "cube", "size": (MARKER_SIZE_M * 0.44, MARKER_SIZE_M * 0.23,
-                                       MARKER_THICKNESS_M),
-               "offset": (-MARKER_SIZE_M * 0.20, 0.0, 0.0)},
-              {"kind": "cylinder", "radius": MARKER_SIZE_M * 0.26,
-               "height": MARKER_THICKNESS_M, "axis": "x", "radial_segments": 3,
-               "roll_deg": 90.0, "offset": (MARKER_SIZE_M * 0.28, 0.0, 0.0)}),
+# A shape is a tuple of flat polygons in the marker's own plane, in metres, centred on the
+# origin and no further than half the marker from it.  Polygons rather than primitives
+# because a triangle is not a cylinder: USD's Cylinder has radius and height but its facet
+# count is a render setting, not a per-prim attribute, so a 3-sided one cannot be asked for.
+# Explicit polygons also make every shape exact and low-poly, and let the checks measure the
+# geometry the renderer will actually draw.
+#
+# The marker plane is the far wall's: in-plane coordinates are (z, y), and the thickness is
+# extruded along x, towards the robot.
+SHAPE_HALF_M = MARKER_SIZE_M / 2.0
+
+
+def _regular(sides: int, start_deg: float = 90.0) -> Tuple[Tuple[float, float], ...]:
+    """A regular polygon inscribed in the marker's bounding circle, vertex up by default."""
+    return tuple(
+        (SHAPE_HALF_M * math.cos(math.radians(start_deg + 360.0 * i / sides)),
+         SHAPE_HALF_M * math.sin(math.radians(start_deg + 360.0 * i / sides)))
+        for i in range(sides)
+    )
+
+
+def _rect(x0: float, y0: float, x1: float, y1: float) -> Tuple[Tuple[float, float], ...]:
+    return ((x0, y0), (x1, y0), (x1, y1), (x0, y1))
+
+
+_ARM = SHAPE_HALF_M / 3.0          # half width of the cross's arms
+SHAFT_HALF = SHAPE_HALF_M / 4.3    # half height of the arrow's shaft
+
+SHAPES: Dict[str, Tuple[Tuple[Tuple[float, float], ...], ...]] = {
+    "square": (_rect(-SHAPE_HALF_M, -SHAPE_HALF_M, SHAPE_HALF_M, SHAPE_HALF_M),),
+    "diamond": (((0.0, -SHAPE_HALF_M), (SHAPE_HALF_M, 0.0),
+                 (0.0, SHAPE_HALF_M), (-SHAPE_HALF_M, 0.0)),),
+    "triangle": (_regular(3),),
+    "triangle_down": (_regular(3, start_deg=-90.0),),
+    "disc": (_regular(64),),
+    "hexagon": (_regular(6),),
+    "cross": (((-_ARM, -SHAPE_HALF_M), (_ARM, -SHAPE_HALF_M), (_ARM, -_ARM),
+               (SHAPE_HALF_M, -_ARM), (SHAPE_HALF_M, _ARM), (_ARM, _ARM),
+               (_ARM, SHAPE_HALF_M), (-_ARM, SHAPE_HALF_M), (-_ARM, _ARM),
+               (-SHAPE_HALF_M, _ARM), (-SHAPE_HALF_M, -_ARM), (-_ARM, -_ARM)),),
+    "bars3": (lambda w=SHAPE_HALF_M / 4.3, g=SHAPE_HALF_M * 0.30: (
+        _rect(-g - w, -SHAPE_HALF_M, -g + w, SHAPE_HALF_M),
+        _rect(-w, -SHAPE_HALF_M, w, SHAPE_HALF_M),
+        _rect(g - w, -SHAPE_HALF_M, g + w, SHAPE_HALF_M)))(),
+    "bars2": (lambda h=SHAPE_HALF_M / 4.3, g=SHAPE_HALF_M * 0.235: (
+        _rect(-SHAPE_HALF_M, g - h, SHAPE_HALF_M, g + h),
+        _rect(-SHAPE_HALF_M, -g - h, SHAPE_HALF_M, -g + h)))(),
+    "arrow": (
+        _rect(-SHAPE_HALF_M, -SHAFT_HALF, -SHAPE_HALF_M * 0.07, SHAFT_HALF),
+        ((-SHAPE_HALF_M * 0.07, -SHAPE_HALF_M * 0.60),
+         (SHAPE_HALF_M, 0.0),
+         (-SHAPE_HALF_M * 0.07, SHAPE_HALF_M * 0.60)),
+    ),
 }
 
 COLOURS: Dict[str, Tuple[float, float, float]] = {

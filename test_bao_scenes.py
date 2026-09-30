@@ -66,49 +66,33 @@ def test_every_shape_fits_the_marker_bounding_box() -> None:
     A shape that grew beyond 0.60 m would subtend more pixels at the same distance than the
     others, which would make the five repeats differ in something other than appearance.
     """
-    half = sc.MARKER_SIZE_M / 2.0
-    for name, primitives in sc.SHAPES.items():
-        for spec in primitives:
-            offset = spec.get("offset", (0.0, 0.0, 0.0))
-            if spec["kind"] == "cube":
-                extents = [spec["size"][axis] / 2.0 for axis in range(3)]
-            elif spec["kind"] == "cylinder":
-                radius = float(spec["radius"])
-                # A cylinder whose circular face points along x spreads radius in y/z.
-                extents = [float(spec["height"]) / 2.0, radius, radius]
-                if spec.get("axis") == "x":
-                    extents = [float(spec["height"]) / 2.0, radius, radius]
-                # A 3-sided cylinder is a triangle whose corners reach the radius.
-            else:
-                raise Failure(f"shape {name!r} uses an unsupported primitive "
-                              f"{spec['kind']!r}")
-            for axis, extent in enumerate(extents):
-                reached = abs(float(offset[axis])) + extent
-                check(reached <= half + 1e-9,
-                      f"shape {name!r} reaches {reached:.3f} m on axis {axis}, "
-                      f"past the {half:.3f} m half-size of the marker's bounding box")
-    print("[ok] all 10 shapes stay inside the 0.60 m bounding box on every axis")
+    for name, polygons in sc.SHAPES.items():
+        for polygon in polygons:
+            for px, py in polygon:
+                check(max(abs(px), abs(py)) <= sc.SHAPE_HALF_M + 1e-9,
+                      f"shape {name!r} has a vertex at ({px:.3f}, {py:.3f}), past the "
+                      f"{sc.SHAPE_HALF_M:.3f} m half-size of the marker's bounding box")
+    print("[ok] all 10 shapes stay inside the 0.60 m bounding box")
 
 
 def test_shapes_are_fat_enough_to_read_at_the_start_pose() -> None:
     """At 512 px from the start the marker is about 20 px, so thin parts blur away.
 
-    The measure is the smallest IN-PLANE feature, not the thinnest dimension overall: every
-    marker is a flat plate about 0.02 m thick facing the robot, so its thickness is depth
-    along the view axis and says nothing about legibility.  Measuring min(height, 2*radius)
-    instead flagged the triangle for being a plate, which is what all of them are.
+    The measure is each polygon's smaller bounding dimension, because every marker is a flat
+    plate facing the robot: its 0.02 m thickness runs along the view axis and says nothing
+    about legibility.  An earlier version measured min(height, 2*radius) and flagged the
+    triangle for being a plate, which is what all of them are.
     """
     minimum = sc.MARKER_SIZE_M * 0.20
-    for name, primitives in sc.SHAPES.items():
-        for spec in primitives:
-            if spec["kind"] == "cube":
-                feature = min(spec["size"][0], spec["size"][1])
-            else:
-                feature = 2.0 * float(spec["radius"])
+    for name, polygons in sc.SHAPES.items():
+        for polygon in polygons:
+            xs = [p[0] for p in polygon]
+            ys = [p[1] for p in polygon]
+            feature = min(max(xs) - min(xs), max(ys) - min(ys))
             check(feature >= minimum - 1e-9,
-                  f"shape {name!r} has an in-plane feature {feature:.3f} m across, below "
-                  f"the {minimum:.3f} m that stays legible from the start pose")
-    print("[ok] no shape has an in-plane feature thinner than a fifth of the marker")
+                  f"shape {name!r} has an in-plane part {feature:.3f} m across, below the "
+                  f"{minimum:.3f} m that stays legible from the start pose")
+    print("[ok] no shape has an in-plane part thinner than a fifth of the marker")
 
 
 def test_no_dressing_occludes_the_opening_or_the_marker() -> None:
@@ -226,6 +210,51 @@ def test_every_colour_is_used_at_least_once() -> None:
     print(f"[ok] all {len(sc.COLOURS)} colours and all {len(sc.SHAPES)} shapes are used")
 
 
+def test_the_builder_imports_without_a_simulator() -> None:
+    """scene_builder must import where pxr does not exist.
+
+    The catalogue checks run on the development machine, so a module-level pxr import would
+    make them impossible there; pxr is imported inside the functions that need it instead.
+    """
+    import scene_builder
+
+    check(hasattr(scene_builder, "apply_scene"), "scene_builder has no apply_scene")
+    report = {
+        "scene": "stage1.2", "slot": 3, "label": sc.SCENES["stage1.2"]["label"],
+        "marker": {"shape": "arrow", "colour": "l", "parts": 2},
+        "materials": {"floor": {"how": "mdl", "url": "https://example/MI_Floor_01.mdl"},
+                      "ceiling": {"how": "fallback", "url": "https://example/MI_Ceiling.mdl"}},
+        "dressing": [{"name": "pallets", "mount": "floor", "asset": None, "used_asset": False},
+                     {"name": "sign", "mount": "obstacle_wall", "asset": "x", "used_asset": True}],
+        "dressing_count": 2,
+    }
+    text = scene_builder.format_report(report)
+    check("arrow" in text, f"the report does not name the marker shape:\n{text}")
+    check("fallback" in text, f"the report does not admit a fallback material:\n{text}")
+    check("1 from assets" in text, f"the report miscounts asset-backed dressing:\n{text}")
+    print("[ok] scene_builder imports without pxr and reports what it actually did")
+
+
+def test_the_catalogue_matches_the_environment_it_replaces() -> None:
+    """The baseline marker must reproduce the one the frozen environment already builds.
+
+    Pin the catalogue against environment.py's own constants, so that changing one without
+    the other fails here rather than silently moving the marker on the far wall.
+    """
+    import environment as env
+
+    check(abs(sc.MARKER_SIZE_M - float(env.GOAL_MARKER_SIZE)) < 1e-9,
+          f"catalogue marker size {sc.MARKER_SIZE_M} vs environment "
+          f"{env.GOAL_MARKER_SIZE}")
+    check(abs(sc.MARKER_X_M - float(env.ROOM_LENGTH_X)) < 1e-9,
+          "the catalogue puts the marker on a different wall than the room's far wall")
+    check(abs(sc.MARKER_Y_M - 1.40) < 1e-9,
+          "the catalogue's marker centre height differs from the environment's 1.40 m")
+    check(tuple(sc.COLOURS["r"]) == (0.85, 0.15, 0.12),
+          "the red in the palette is not the existing marker's red")
+    print("[ok] the catalogue's baseline marker matches the environment's own constants")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -239,6 +268,8 @@ def main() -> int:
         test_materials_are_marked_as_verified_or_not,
         test_the_episode_count_is_what_the_design_says,
         test_every_colour_is_used_at_least_once,
+        test_the_builder_imports_without_a_simulator,
+        test_the_catalogue_matches_the_environment_it_replaces,
     ]
     failed = 0
     for test in tests:
