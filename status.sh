@@ -47,23 +47,30 @@ echo "  non-zero invalid counts: $(grep -cE 'invalid_response_count[^0-9]*[1-9]'
 echo "  marker swaps           : $(grep -c 'prompt now says' "$LOG" 2>/dev/null)"
 echo
 
-echo "--- results on disk, per model (levels x scenes) ---"
+echo "--- results on disk ---"
 if [ -d results ]; then
+    # Count only THIS campaign's files, i.e. those whose tag carries the scene.  The first
+    # version counted every CSV it could find and so reported the September campaign's 12 levels
+    # per model as if they were progress, and listed the old level* directories as if they were
+    # model names.
+    NEW=$(ls results/*/*stage1.1*.csv results/level*/*/*stage1.1*.csv 2>/dev/null | wc -l | tr -d ' ')
+    echo "  files tagged stage1.1 : $NEW   (15 models x 17 levels = 255 when finished)"
+    echo "  per model:"
     for d in results/*/; do
         [ -d "$d" ] || continue
         name=$(basename "$d")
-        levels=$(ls "$d"/level*.csv 2>/dev/null | wc -l | tr -d ' ')
-        printf '  %-36s %2s level file(s)\n' "$name" "$levels"
+        case "$name" in level*) continue;; esac
+        n=$(ls "$d"/*stage1.1*.csv 2>/dev/null | wc -l | tr -d ' ')
+        [ "$n" = "0" ] && continue
+        printf '    %-36s %2s level(s)\n' "$name" "$n"
     done
-    total=$(ls results/*/level*.csv 2>/dev/null | wc -l | tr -d ' ')
-    echo "  total level files: $total   (15 models x 17 levels = 255 when finished)"
 else
     echo "  no results/ directory yet"
 fi
 echo
 
-echo "--- the newest finished levels, most recent model last ---"
-ls -t results/*/level*.csv 2>/dev/null | head -6 | sed 's/^/  /'
+echo "--- this campaign's newest files ---"
+ls -t results/*/*stage1.1*.csv results/level*/*/*stage1.1*.csv 2>/dev/null | head -6 | sed 's/^/  /'
 echo
 echo "To stop everything:  pkill -f 'main.py --model'"
 echo "To resume later:     the runner uses --resume, so re-running it continues."
