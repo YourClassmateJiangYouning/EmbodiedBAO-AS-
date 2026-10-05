@@ -378,6 +378,45 @@ def rectangles_overlap(a: Tuple[float, float, float, float],
     return not (a[2] <= b[0] or b[2] <= a[0] or a[3] <= b[1] or b[3] <= a[1])
 
 
+SHAPE_NAMES: Dict[str, str] = {
+    "square": "square",
+    "diamond": "diamond",
+    "triangle": "triangle",
+    "triangle_down": "downward-pointing triangle",
+    "disc": "disc",
+    "hexagon": "hexagon",
+    "cross": "thick cross",
+    "bars3": "set of three bars",
+    "bars2": "set of two bars",
+    "arrow": "arrow",
+}
+
+COLOUR_NAMES: Dict[str, str] = {
+    "r": "red",
+    "m": "magenta",
+    "o": "orange",
+    "l": "lime green",
+    "c": "cyan",
+    "p": "purple",
+    "g": "green",
+    "w": "white",
+    "t": "teal",
+    "k": "black",
+}
+
+
+def describe_marker(scene: str, slot: int) -> str:
+    """The words for the marker that is actually on the far wall, e.g. "cyan disc".
+
+    This is the noun phrase the prompt uses.  Every prompt is the frozen Stage 1 text with only
+    this phrase swapped, so the words have to match the object: a run whose prompt said "red
+    marker" while a cyan disc hung on the wall would be measuring obedience to a false
+    statement rather than the aperture judgement being studied.
+    """
+    shape, colour = MARKERS[scene][slot - 1]
+    return f"{COLOUR_NAMES[colour]} {SHAPE_NAMES[shape]}"
+
+
 def marker_entries(scene: str) -> Tuple[Tuple[str, str], ...]:
     return MARKERS[scene]
 

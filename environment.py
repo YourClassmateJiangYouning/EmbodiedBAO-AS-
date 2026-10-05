@@ -2114,7 +2114,15 @@ class BAOEnv:
             )
         if self.scene_report is not None:
             self.scene_report["marker"] = report
-        print(f"[scene] marker slot {slot}: {report['shape']} in {report['colour']}")
+        # Tell the prompt which object is on the wall.  Every other word of every prompt stays
+        # the frozen Stage 1 text; this one noun phrase is the only thing that changes, because
+        # a prompt naming a red marker while a cyan disc is on the wall is simply false.
+        import protocol
+        import scenes
+
+        protocol.set_marker_descriptor(scenes.describe_marker(self.scene_name, slot))
+        print(f"[scene] marker slot {slot}: {report['shape']} in {report['colour']} "
+              f"-> prompt now says \"{protocol.MARKER_DESCRIPTOR}\"", flush=True)
 
     def get_camera_image(self) -> np.ndarray:
         if self.eye_camera is not None:

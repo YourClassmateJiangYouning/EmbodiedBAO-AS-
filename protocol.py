@@ -226,6 +226,33 @@ def action_options_string(move_step: float = MOVE_STEP) -> str:
 
 ACTION_OPTIONS_STRING: str = action_options_string(MOVE_STEP)
 
+# ---------------------------------------------------------------------------
+# WHICH MARKER THE PROMPT NAMES
+# ---------------------------------------------------------------------------
+# The task sentence, the walking-frame note and four of the action descriptions all name the
+# goal object, and each scene has five markers that differ in shape and colour.  A prompt that
+# always said "the red marker" would be false for four runs in five, so the noun phrase is
+# substituted when the prompt is built.
+#
+# The substitution is a plain string replacement of that one noun phrase and nothing else:
+# every other word of every prompt stays the frozen Stage 1 text, which is what keeps the runs
+# comparable.  MARKER_DESCRIPTOR keeps its historical value, so a caller that never sets it --
+# no scene, or the legacy path -- gets the original bytes back, and the stage 1 archive can
+# still be reproduced word for word.
+MARKER_PHRASE = "the red marker"
+MARKER_DESCRIPTOR = "red marker"
+
+
+def set_marker_descriptor(descriptor: Optional[str]) -> None:
+    """Name the marker the next prompts refer to, for example "cyan disc"."""
+    global MARKER_DESCRIPTOR
+    MARKER_DESCRIPTOR = (descriptor or "red marker").strip() or "red marker"
+
+
+def _name_marker(text: str, marker: Optional[str] = None) -> str:
+    """Swap the goal noun phrase for this run's marker, leaving every other word alone."""
+    return text.replace(MARKER_PHRASE, "the " + (marker or MARKER_DESCRIPTOR))
+
 # The walking frame has to be stated because it is not inferable from the action
 # names: ``forward`` walks toward the far wall, NOT along the torso.  A reader
 # who assumed the body frame would conclude that turning steers, which it no
@@ -374,13 +401,13 @@ def build_prompt(
     the word "episode" would suggest they are separate sessions.  The step-limit
     line keeps its original wording on purpose, as the design document specifies.
     """
-    parts: List[str] = [TASK_INSTRUCTION]
+    parts: List[str] = [_name_marker(TASK_INSTRUCTION)]
 
     options = ACTION_OPTIONS_STRING if move_step is None else action_options_string(move_step)
     parts.append(
-        "Available actions (each action is one discrete step):\n" + options
+        "Available actions (each action is one discrete step):\n" + _name_marker(options)
     )
-    parts.append(ACTION_FRAME_NOTE)
+    parts.append(_name_marker(ACTION_FRAME_NOTE))
 
     if memory_block:
         parts.append(memory_block)
