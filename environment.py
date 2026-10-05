@@ -2017,6 +2017,15 @@ class BAOEnv:
                         sub_prim.SetActive(False)
                     except Exception:
                         pass
+        # The five repeats of a scene use that scene's five markers, and the prompt names the
+        # one on the wall.  This has to live HERE rather than in reset(), because reset() is
+        # only a MirrorBench-compatible alias and the runner calls reset_scene() directly: the
+        # first version hooked it to reset(), the laboratory sweep ran, and the log showed not
+        # one marker swap -- every episode's prompt named the frozen "red marker" while four of
+        # the five markers on the wall were another colour entirely.
+        if getattr(self, "scene_name", ""):
+            self._episode_index += 1
+            self.set_marker_slot((self._episode_index - 1) % 5 + 1)
         self.camera.initialize()
         if self.eye_camera is not None:
             self.eye_camera.initialize()
@@ -2039,13 +2048,10 @@ class BAOEnv:
     def reset(self) -> np.ndarray:
         """Alias for reset_scene (MirrorBench compatibility).
 
-        Also advances the marker: the five repeats of a Stage 3 scene are meant to use that
-        scene's five different markers, and hooking it here means the runner needs no change
-        at all.  With no scene set this is a no-op.
+        Deliberately a pure alias.  It used to advance the marker as well, which meant the
+        marker only ever advanced for callers that went through this name -- and the runner
+        does not.  The advance belongs to reset_scene(), which is what a reset actually is.
         """
-        if getattr(self, "scene_name", ""):
-            self._episode_index += 1
-            self.set_marker_slot((self._episode_index - 1) % 5 + 1)
         return self.reset_scene()
 
     def _apply_scene(self, scene: str, slot: int) -> None:
