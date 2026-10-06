@@ -234,10 +234,10 @@ SCENES: Dict[str, Dict[str, Any]] = {
     "stage1.3": {
         "label": "library",
         "materials": {
-            "floor": "Materials/vMaterials_2/Fabric/Carpet.mdl",
-            "side_wall": "Materials/vMaterials_2/Wood/Wood_Walnut.mdl",
-            "ceiling": "Materials/vMaterials_2/Base/Paint_Beige.mdl",
-            "far_wall": "Materials/vMaterials_2/Base/Paint_OffWhite.mdl",
+            "floor": ASSET_ROOT + "/Environments/Hospital/Materials/M_Wood_Floor.mdl",
+            "side_wall": ASSET_ROOT + "/Environments/Office/Materials/MI_WallOffice_01.mdl",
+            "ceiling": WAREHOUSE_MATERIALS + "/MI_CeilingA_06b.mdl",
+            "far_wall": ASSET_ROOT + "/Environments/Hospital/Materials/M_Wall_Plaster.mdl",
         },
         "material_verified": False,
         "dressing": (
@@ -256,10 +256,9 @@ SCENES: Dict[str, Dict[str, Any]] = {
     "stage1.4": {
         "label": "park / outdoor",
         "materials": {
-            "floor": "Assets/Isaac/4.5/Isaac/Environments/Terrains/.../Grass.mdl",
-            "side_wall": "Assets/Isaac/4.5/Isaac/Environments/Outdoor/.../TreeLine.mdl",
-            "ceiling": "Materials/vMaterials_2/Base/Sky_Blue.mdl",
-            "far_wall": "Materials/vMaterials_2/Base/Paint_GreyGreen.mdl",
+            "side_wall": ASSET_ROOT + "/Environments/Hospital/Materials/M_Wall_Plaster.mdl",
+            "ceiling": WAREHOUSE_MATERIALS + "/MI_CeilingA_06b.mdl",
+            "far_wall": ASSET_ROOT + "/Environments/Office/Materials/MI_WallOffice_01.mdl",
         },
         "material_verified": False,
         "dressing": (
@@ -277,10 +276,10 @@ SCENES: Dict[str, Dict[str, Any]] = {
     "stage1.5": {
         "label": "supermarket",
         "materials": {
-            "floor": "Materials/vMaterials_2/Base/Tiles_White.mdl",
-            "side_wall": WAREHOUSE_MATERIALS + "/MI_RackShield_01.mdl",
+            "floor": ASSET_ROOT + "/Environments/Office/Materials/MI_FloorMarbleTiles_03.mdl",
+            "side_wall": WAREHOUSE_MATERIALS + "/MI_WallA_01.mdl",
             "ceiling": WAREHOUSE_MATERIALS + "/MI_CeilingA_06b.mdl",
-            "far_wall": "Materials/vMaterials_2/Base/Paint_LightGrey.mdl",
+            "far_wall": ASSET_ROOT + "/Environments/Office/Materials/MI_WallOffice_01.mdl",
         },
         "material_verified": False,
         "dressing": (
