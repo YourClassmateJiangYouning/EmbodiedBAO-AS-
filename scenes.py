@@ -424,5 +424,81 @@ def marker_colours(scene: str) -> Tuple[Tuple[float, float, float], ...]:
     return tuple(COLOURS[colour] for _, colour in MARKERS[scene])
 
 
+# ---------------------------------------------------------------------------
+# Dressing for the library, park and supermarket
+# ---------------------------------------------------------------------------
+# Installed here rather than inline so the three blocks can be replaced as a unit, and so the
+# reasoning sits next to the numbers.  Every item obeys the rules the tests enforce:
+#   * collides = False, always: the task must not change because a bench is in the way;
+#   * floor items are >= 1.9 m off the centre line, <= 1 m tall and <= 0.9 m long along the
+#     view axis, because a big unlit box near the camera stops being dressing and becomes an
+#     obstruction -- the warehouse's forklift taught that one twice;
+#   * wall items are >= 0.9 m off the centre line and reach <= 0.20 m off their wall, and are
+#     declared as a picture is: (across, tall, thick);
+#   * no item uses one of its own scene's five marker colours.  The library's markers are
+#     red/cyan/purple/magenta/teal, the park's are red/magenta/orange/purple/white, and the
+#     supermarket's are black/white/teal/purple/lime, so the dressing below is deliberately
+#     grey, wood, steel, green, blue and yellow.
+
+DRESSING_BLUE = (0.20, 0.35, 0.65)
+DRESSING_YELLOW = (0.85, 0.78, 0.30)
+DRESSING_CLAY = (0.62, 0.45, 0.30)
+
+
+def _install_dressing() -> None:
+    """The library: shelves either side of the opening, a reading corner behind the agent."""
+    SCENES["stage1.3"]["dressing"] = (
+        # 1.4 m across, centred 1.65 m off the axis, so the inner edge sits at 0.95 m: clear of
+        # the 1.14 m opening's half width (0.57 m) in the start view, which is the projection
+        # check that caught the first version's 1.6 m shelves at 1.30 m.
+        _dressing_wall("bookshelf_left", "obstacle_wall", (8.0, 1.15, 1.65),
+                       (1.4, 1.9, 0.16), DRESSING_WOOD),
+        _dressing_wall("bookshelf_right", "obstacle_wall", (8.0, 1.15, -1.65),
+                       (1.4, 1.9, 0.16), DRESSING_WOOD),
+        _dressing_wall("clock", "obstacle_wall", (8.0, 2.45, -1.70), (0.4, 0.4, 0.03),
+                       DRESSING_LIGHT),
+        _dressing_wall("reading_poster", "far_wall", (16.0, 2.05, 1.55), (0.7, 0.5, 0.03),
+                       DRESSING_LIGHT),
+        _dressing_floor("study_table", (3.0, 0.38, 2.05), (0.9, 0.75, 0.7), DRESSING_WOOD),
+        _dressing_floor("chair_row", (5.0, 0.25, -2.05), (0.7, 0.50, 0.9), DRESSING_GREY),
+        _dressing_floor("book_cart", (6.6, 0.45, 2.10), (0.8, 0.90, 0.5), DRESSING_METAL),
+        _dressing_floor("reading_lamp", (1.8, 0.48, -2.10), (0.3, 0.95, 0.3), DRESSING_METAL),
+    )
+
+    """The park: benches and planters behind the agent, hedges either side of the opening."""
+    SCENES["stage1.4"]["dressing"] = (
+        _dressing_wall("hedge_left", "obstacle_wall", (8.0, 2.30, 1.50), (1.2, 0.4, 0.16),
+                       DRESSING_GREEN),
+        _dressing_wall("hedge_right", "obstacle_wall", (8.0, 2.30, -1.50), (1.2, 0.4, 0.16),
+                       DRESSING_GREEN),
+        _dressing_wall("park_sign", "far_wall", (16.0, 2.00, -1.60), (0.6, 0.4, 0.03),
+                       DRESSING_CLAY),
+        _dressing_floor("bench_left", (2.4, 0.25, 2.05), (0.9, 0.45, 0.5), DRESSING_WOOD),
+        _dressing_floor("bench_right", (4.8, 0.25, -2.05), (0.9, 0.45, 0.5), DRESSING_WOOD),
+        _dressing_floor("litter_bin", (6.4, 0.35, 2.10), (0.4, 0.70, 0.4), DRESSING_GREEN),
+        _dressing_floor("planter_left", (1.6, 0.20, -2.10), (0.6, 0.40, 0.6), DRESSING_CLAY),
+        _dressing_floor("planter_right", (7.2, 0.20, -2.00), (0.6, 0.40, 0.6), DRESSING_CLAY),
+    )
+
+    """The supermarket: shelving either side, a checkout and produce behind the agent."""
+    SCENES["stage1.5"]["dressing"] = (
+        _dressing_wall("shelf_left", "obstacle_wall", (8.0, 1.05, 1.60), (1.4, 1.9, 0.18),
+                       DRESSING_METAL),
+        _dressing_wall("shelf_right", "obstacle_wall", (8.0, 1.05, -1.60), (1.4, 1.9, 0.18),
+                       DRESSING_METAL),
+        _dressing_wall("price_strip", "obstacle_wall", (7.97, 2.00, 1.60), (1.3, 0.15, 0.03),
+                       DRESSING_YELLOW),
+        _dressing_wall("promo_banner", "far_wall", (16.0, 2.10, 1.55), (0.9, 0.5, 0.03),
+                       DRESSING_YELLOW),
+        _dressing_floor("trolley", (2.8, 0.48, 2.05), (0.8, 0.95, 0.5), DRESSING_METAL),
+        _dressing_floor("produce_bins", (4.6, 0.28, -2.05), (0.9, 0.55, 0.6), DRESSING_YELLOW),
+        _dressing_floor("checkout", (6.4, 0.42, 2.10), (0.9, 0.85, 0.7), DRESSING_GREY),
+        _dressing_floor("stacked_boxes", (7.4, 0.28, -2.00), (0.7, 0.55, 0.5), DRESSING_BLUE),
+    )
+
+
+_install_dressing()
+
+
 def episode_count() -> int:
     return (len(SCENE_ORDER) * LEVELS_PER_SCENE * MARKERS_PER_SCENE * ROSTER_SIZE)
