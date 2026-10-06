@@ -29,7 +29,11 @@ import xml.etree.ElementTree as ElementTree
 BUCKET = "https://omniverse-content-production.s3-us-west-2.amazonaws.com/"
 PREFIX_ROOT = "Assets/Isaac/4.5/Isaac/"
 DEST_ROOT = os.path.join("assets", "isaac")
-EXTENSIONS = (".mdl", ".png", ".jpg", ".jpeg", ".exr")
+EXTENSIONS = (".mdl", ".png", ".jpg", ".jpeg", ".exr",
+              # Props are USD files, not MDLs: listing Props/Beaker showed five keys and zero
+              # .mdl files, because every prop is a .usd.  Without these three extensions the
+              # download step would have skipped every mesh and vendored only the thumbnails.
+              ".usd", ".usda", ".usdc", ".usdz")
 SKIP = (".thumbs/", "/.thumbs", "thumbnails")
 
 
@@ -84,9 +88,12 @@ def main() -> int:
     if args.list:
         keys = list_keys(PREFIX_ROOT + args.list.strip("/") + "/")
         material = [k for k in keys if k.endswith(".mdl")]
-        print(f"{len(keys)} key(s), {len(material)} .mdl file(s) under {args.list}")
-        for key in material:
-            print("  " + key[len(PREFIX_ROOT):])
+        meshes = [k for k in keys if k.lower().endswith((".usd", ".usda", ".usdc", ".usdz"))]
+        print(f"{len(keys)} key(s): {len(material)} .mdl, {len(meshes)} USD under {args.list}")
+        for key in meshes[:20]:
+            print("  USD " + key[len(PREFIX_ROOT):])
+        for key in material[:20]:
+            print("  MDL " + key[len(PREFIX_ROOT):])
         return 0
 
     if not args.set:
