@@ -160,9 +160,48 @@ pkill -f 'main.py --model'
 
 ---
 
-## 9. 下一轮对话该做什么（随进度更新）
+## 9. 会话进展日志（**每次做完事就追加，别只写"下一步"**）
 
-1. 跑 `python3 tools/parse_agent_logs.py --csv logs_reasoning.csv` → 得**每模型"看见标志物"的统计** + 原文例子。
-2. 用 `summary_*.json` + CSV 出**15 模型 × 17 档通过率矩阵**、阈值表，以及**5 个标志物是否改变行为**的检验（每标志物 255 集）。
-3. sweep 跑完后：解决 `stage1.2` 的**深色遮挡**（用 `--parts marker` / `--parts materials,marker` 二分 ✓ 各约 4 分钟），再渲染 1.3/1.4/1.5 验证场景。
-4. 场景验证通过后，按需要跑其它场景的 sweep（每个 ≈ ¥330 / 2.5 天）。
+### 2026-10-06：找到思考过程 + 场景数据层完成
+
+**① 模型的思考过程一直在，只是我找错了地方** ✗→✓
+`logs/{tag}/level{N}_episode{ID:03d}_agent.txt` 里是**每步的完整提示词 + 模型完整 JSON 回答**（`scene_description` / `reasoning` / `confidence`）✓
+每个文件 30+ 处 `scene_description` ✓ 本轮 15 个模型全都有 ✓。
+我错在：`main.py` 顶部注释里**写着**这个路径 ✓ 我却在 `results/` 里翻了四轮 ✓ 还错误地说"思考没存" ✗。
+**教训：找东西先读 `main.py` 顶部输出结构 + 写它的那个函数。**
+
+**② 新增 `tools/parse_agent_logs.py`** ✓ 把 `logs/` 解析成表并统计 ✓
+`python3 tools/parse_agent_logs.py --csv logs_reasoning.csv` → 43,721 步 ✓ 每模型"提到自己标志物颜色/形状/开口"的比例 + 原文例子 ✓。
+**已得的结论**（实验室场景 ✓）：
+- 五种标志物之间的**颜色串色 = 0.0%** ✓，**形状对角线完胜**（disc 4026 / bars 3944 / triangle 3938 / cross 3928 / square 4832 ✓）→ **模型确实识别出了不同标志物** ✓✓
+- 提示词替换**零残留**（`red marker` 计数 0 ✓ `reach the magenta triangle…` 73/73 ✓）✓
+- 但**部分模型的推理里仍有 `red` 命名惯性** ✗（提示词已写 magenta ✓ 它仍说 red ✓）→ 这是**发现** ✓ 论文可写 ✓
+- `green`（开口后的绿墙 ✓ 38–43%）与 `white`（7–9%）是**与提示词无关的场景描述** ✓ = 模型真在看画面 ✓
+- **"说不说开口"差 700 倍** ✓：gpt-4o-mini 0.1% ✗ / gpt-4o 59.2% / qwen 三家 73–76% ✓ → 很可能是"是否把可通行性当问题"这条因果链 ✓
+- 形状表里 `arrow` 是**常数列**（每行 5000+ ✗）→ 与标志物无关 ✓ 分析时要剔除并标注 ✓
+
+**③ 场景数据层做完了（1.2/1.3/1.4/1.5）** ✓ 视觉层一步没做 ✗
+- `test_bao_scenes.py` 18 项 ✓（几何/开口投影遮挡/颜色避让/不碰撞/伸出≤0.20 m/地面物≤1 m 高）✓
+- **新增 `test_bao_assets.py` 3 项** ✓：每张面的材质必须在仓库里存在 ✓ 不许两张面共用一个材质文件 ✓ **`stage1.1` 必须仍然无材质无陈设** ✓✓（守住正在跑的那轮 ✓）
+- 1.3 图书馆 → `M_Wood_Floor` / `MI_WallOffice_01` / `MI_CeilingA_06b` / `M_Wall_Plaster` ✓
+- 1.4 公园 → `M_Wall_Plaster` / `MI_WallOffice_01` / `MI_CeilingA_06b` + **地面纯色** ✗（没抓到草地贴图 ✓ 待补 ✓）
+- 1.5 超市 → `MI_FloorMarbleTiles_03` / `MI_WallA_01` / `MI_CeilingA_06b` / `MI_WallOffice_01` ✓
+- 素材 `assets/isaac` = **136 MB / 880 文件** ✓（Simple_Warehouse + Hospital + Office ✓ 随仓库走 ✓ 克隆即可渲染 ✓）
+- 宽墙件必须离中线够远 ✓ 否则**压住开口投影** ✗（图书馆书架 1.6 m @ z=1.30 → 内边缘 0.50 m < 开口半宽 0.57 m ✗ 被抓 ✓ 现改 1.4 m @ z=±1.65 ✓）
+
+**④ 新增/修好的工具** ✓
+- `tools/fetch_assets.py` ✓ 抓取+降采样；**`--list` 现在区分 mesh 与 material** ✓
+  **道具是 `.usd` 不是 `.mdl`** ✗ → 扩展名过滤不含 USD 时会**只抓贴图、mesh 全跳过** ✗ 已修 ✓
+- `tools/shrink_tree.py` ✓ **一张坏图不能中断整轮**（`Outdoor` 那次 3.9 GB 原图就是这么来的 ✗）
+- `tools/parse_agent_logs.py` ✓（见 ②）· `tools/verify_stage1_lab.py` ✓ · `status.sh` / `watch.sh` ✓
+
+**⑤ 我在这一轮犯的错（写下来防止重犯）**
+猜 pxr API 三次 ✗ · 找错目录四轮 ✗ · 说"思考不影响结论" ✗ · 抓素材前不看体积（`Outdoor` 1.9 GB ✗）· 删目录路径写错致 574 MB 进仓库 ✗ · 用 PowerShell 字符串改 UTF-8 ✗ · 用 `head -30`/`2>/dev/null` 把报错过滤掉 ✗ · 脚本里键名不一致导致输出空表 ✗
+
+### 下一步（**除标注外都不需要仿真器**）
+
+1. **把陈设从"彩色方块"换成真实道具** ✓（在抓 ✓）：`scene_builder.place_dressing` 目前**只造方块** ✗，
+   `asset` 字段只当注释 ✓ → 要改成：`asset` 解析到仓库内的 `.usd` 时**加引用** ✓ 并按声明的尺寸缩放 ✓（或用 `UsdGeom.Boundable` 的 extent 算缩放 ✓）✓ 抓完后做 ✓
+2. **1.4 的草地** ✗：`Environments/Outdoor` 体积大 ✗ → 需要给 `fetch_assets.py` 加**按关键词过滤**（只抓 grass/ground 相关键 ✓）
+3. **需要上机（等显存）**：① 二分定位 1.2 的**深色遮挡**（`--parts marker` → `--parts materials,marker` ✓ 各 4 分钟 ✓）② 修 `discover_surfaces` 认不出**天花板**（诊断代码已写好 ✓ 会打印 stage 上最大的盒子 ✓）③ 四个场景各渲一张图给我看 ✓
+4. 全部验证通过后，按需跑其它场景 sweep（每个 ≈ ¥330 / 2.5 天 ✓）
