@@ -139,19 +139,25 @@ def effective_tag(model: str, tag: str = "", scene: str = "") -> str:
     from protocol import PROTOCOL_TAG
 
     base = persistence.sanitize_tag(tag or model, "untagged")
-    # Strip any suffix that is already there before composing, so a full tag fed
-    # back in comes out unchanged.  Checking only for the protocol tag at the END
-    # was not enough: once a request-parameter suffix follows it, the protocol tag
-    # is no longer last and both suffixes were appended a second time.
     suffix = request_params_suffix(model)
     scene_suffix = f"-{scene}" if scene else ""
-    if scene_suffix and base.endswith(scene_suffix):
-        base = base[: -len(scene_suffix)]
-    if suffix and base.endswith(suffix):
-        base = base[: -len(suffix)]
-    if not (base == PROTOCOL_TAG or base.endswith("-" + PROTOCOL_TAG)):
-        base = f"{base}-{PROTOCOL_TAG}"
-    return base + scene_suffix + suffix
+    # Strip every piece this function appends, repeatedly and in any order, then rebuild in one
+    # canonical order (core, protocol, scene, params).  Stripping in a fixed order was not
+    # enough: with a request-parameter suffix present, the tag arrives as
+    # "<model>-v7-state-axes-stage1.1-effortnone", whose last component is the parameter suffix,
+    # so the scene was not stripped, the protocol tag was then no longer at the end and got
+    # appended a second time, and the directory became
+    # "deepseek-v4.1-flash-v7-state-axes-stage1.1-v7-state-axes-stage1.1-effortnone".  Every
+    # episode of that run was filed under a name the sweep log did not print.
+    pieces = [p for p in (scene_suffix, suffix, f"-{PROTOCOL_TAG}") if p]
+    changed = True
+    while changed:
+        changed = False
+        for piece in pieces:
+            if base.endswith(piece) and len(base) > len(piece):
+                base = base[: -len(piece)]
+                changed = True
+    return f"{base}-{PROTOCOL_TAG}{scene_suffix}{suffix}"
 
 # ---------------------------------------------------------------------------
 # Output layout

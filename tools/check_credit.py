@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import json
 import os
-import sys
 import time
 import urllib.error
 import urllib.request
@@ -146,25 +145,46 @@ def main() -> int:
     print("-" * 100)
     print(f"reachable: {len(ok)}/{len(results)}  {ok if ok else ''}")
 
+    states = [r["state"] for _, r in results]
     if ok:
         print()
         print("VERDICT: the account works. Any failure above is specific to that")
         print("         model or provider, not to the key or the balance.")
     else:
-        verdicts = {describe(r["detail"]) for _, r in results}
         print()
-        print("VERDICT: every model failed. Causes, by error text:")
-        for v in sorted(verdicts):
-            print(f"  - {v}")
-        print("  ACCOUNT means top up; KEY means replace the key; unknown means")
-        print("  read the detail column above.")
+        # Say which layer failed before listing the error texts.  A run of 401s used to be
+        # followed by a dump of gateway headers -- X-New-Api-Version, X-Oneapi-Request-Id and the
+        # rest -- which are present on the error response too and made a dead key look like a
+        # working connection being probed.
+        if all(s == "HTTP 401" for s in states):
+            print("VERDICT: the key is REJECTED by the gateway (401 Invalid token) for every")
+            print("         model. Nothing about quotas or model names can be read from this;")
+            print("         ask for a new key before running anything.")
+        elif all(s == "HTTP 403" for s in states):
+            print("VERDICT: the key is accepted but has no allowance left (403). Top up the")
+            print("         account; a sweep started now would spend hours writing zeros.")
+        else:
+            verdicts = {describe(r["detail"]) for _, r in results}
+            print("VERDICT: every model failed. Causes, by error text:")
+            for v in sorted(verdicts):
+                print(f"  - {v}")
+            print("  ACCOUNT means top up; KEY means replace the key; unknown means")
+            print("  read the detail column above.")
 
-    # Rate-limit and quota headers, when the gateway sends them.
-    interesting = ("ratelimit", "quota", "balance", "credit", "x-")
+    # Rate-limit and balance headers, when the gateway actually sends one.  Only from a request
+    # that was answered or throttled: on an auth failure there is nothing here to read, and
+    # printing the ordinary gateway headers invites the opposite conclusion.
+    interesting = ("ratelimit", "quota", "balance", "credit", "retry-after")
+    printed = False
     for model, result in results:
+        if result["state"] not in ("OK",) and not result["state"].startswith("HTTP 429"):
+            continue
         for name, value in (result.get("headers") or {}).items():
             if any(t in name.lower() for t in interesting):
                 print(f"  header[{model}] {name}: {value}")
+                printed = True
+    if not printed:
+        print("  (no rate-limit or balance header was sent by the gateway)")
     return 0
 
 

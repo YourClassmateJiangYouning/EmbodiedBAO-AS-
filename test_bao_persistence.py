@@ -150,14 +150,22 @@ def test_runner_tag_reaches_paths_intact() -> None:
             logs_root=os.path.join(tmp, "logs"),
         )
         check("/" not in runner.tag, f"tag still has a separator: {runner.tag!r}")
+        # The API name is preserved exactly, separators and all, because the gateway needs
+        # "vendor/model". The path component is the slug. Requiring runner.model to be clean was
+        # the old contract and it is the bug: sanitising that attribute is what sent
+        # "kimi-kimi-k2.5" to the gateway and turned a twelve-hour run into 150 invalid steps.
         check(
-            os.sep not in runner.model,
-            f"model still has a separator: {runner.model!r}",
+            runner.model == "vendor/model",
+            f"the model id must reach the client unchanged: {runner.model!r}",
+        )
+        check(
+            os.sep not in runner.model_slug,
+            f"the path slug still has a separator: {runner.model_slug!r}",
         )
         level_dir = runner._result_dir(0)
         check(
             os.path.abspath(os.path.dirname(level_dir))
-            == os.path.abspath(os.path.join(tmp, "results", "level0", runner.model)),
+            == os.path.abspath(os.path.join(tmp, "results", "level0", runner.model_slug)),
             f"tag escaped its directory: {level_dir}",
         )
     finally:

@@ -209,43 +209,115 @@ def encode_image(image: Any) -> str:
     return f"data:image/jpeg;base64,{data}"
 
 
+ACTION_SYNONYMS: Dict[str, str] = {
+    "forward": "forward", "move_forward": "forward", "moveforward": "forward",
+    "walk": "forward", "walk_forward": "forward", "go_forward": "forward",
+    "advance": "forward", "straight": "forward", "proceed": "forward",
+    "backward": "backward", "move_backward": "backward", "back": "backward",
+    "reverse": "backward", "go_backward": "backward", "retreat": "backward",
+    "left": "left", "strafe_left": "left", "move_left": "left", "sidestep_left": "left",
+    "right": "right", "strafe_right": "right", "move_right": "right",
+    "sidestep_right": "right",
+    "turn_left": "turn_left", "turnleft": "turn_left", "rotate_left": "turn_left",
+    "turn_right": "turn_right", "turnright": "turn_right", "rotate_right": "turn_right",
+    "look_left": "look_left", "lookleft": "look_left", "glance_left": "look_left",
+    "look_right": "look_right", "lookright": "look_right", "glance_right": "look_right",
+    "look_down": "look_down", "lookdown": "look_down", "glance_down": "look_down",
+    "look_at_feet": "look_down",
+}
+
+
+def resolve_action(value: Any) -> Optional[str]:
+    """Map whatever the model called an action onto one of the nine names we accept.
+
+    A correct reply that names the right action in the wrong spelling used to be discarded, and
+    a discarded reply is recorded as an invalid step, which scores zero and looks exactly like a
+    model that could not solve the task.  Case, surrounding whitespace, punctuation and the usual
+    paraphrases ("move forward", "walk", "rotate left") are all resolved here instead.
+    """
+    if not isinstance(value, str):
+        return None
+    cleaned = value.strip().strip("\"'`.,;: ").lower()
+    if not cleaned:
+        return None
+    if cleaned in ACTIONS:
+        return cleaned
+    squashed = cleaned.replace("-", "_").replace(" ", "_")
+    if squashed in ACTIONS:
+        return squashed
+    if squashed in ACTION_SYNONYMS:
+        return ACTION_SYNONYMS[squashed]
+    if cleaned in ACTION_SYNONYMS:
+        return ACTION_SYNONYMS[cleaned]
+    # "walk forward through the gap" and similar.  Longest name first so "turn_left" is not
+    # matched by "left".
+    for action in sorted(ACTIONS, key=len, reverse=True):
+        if action in cleaned or action.replace("_", " ") in cleaned:
+            return action
+    return None
+
+
+def _iter_json_objects(text: str):
+    """Yield every top-level JSON object in a string, trying each opening brace in turn.
+
+    Only the first "{" used to be tried, so a reply that mentioned a brace before the real
+    object -- a code fence, an example, a sentence quoting part of the schema -- parsed as
+    nothing at all.
+    """
+    decoder = json.JSONDecoder(
+        # NaN and Infinity are not JSON.  Python accepts them and a model that writes one used to
+        # make the whole reply unparseable -- the action included, which is the measurement --
+        # over a confidence value.  They decode to None here and the confidence handler turns
+        # that into 0.0, so a malformed number costs a number, not the episode.
+        parse_constant=lambda _value: None
+    )
+    index = 0
+    while True:
+        start = text.find("{", index)
+        if start == -1:
+            return
+        try:
+            data, end = decoder.raw_decode(text[start:])
+        except (json.JSONDecodeError, ValueError):
+            index = start + 1
+            continue
+        if isinstance(data, dict):
+            yield data
+        index = start + max(1, end)
+
+
 def parse_action_json(text: Any) -> Optional[Dict[str, Any]]:
     """Parse the model response into {"action", "confidence", "reasoning"}."""
     if text is None:
         return None
     cleaned = str(text).strip()
-    cleaned = re.sub(r"^```(?:json)?\s*|\s*```$", "", cleaned)
-    start = cleaned.find("{")
-    if start == -1:
-        return None
-    try:
-        data, _end = json.JSONDecoder(
-            parse_constant=lambda value: (_ for _ in ()).throw(
-                ValueError(f"non-finite JSON number: {value}")
-            )
-        ).raw_decode(cleaned[start:])
-    except (json.JSONDecodeError, ValueError):
-        return None
-    if not isinstance(data, dict):
-        return None
-    action = data.get("action")
-    if not isinstance(action, str) or action not in ACTIONS:
-        return None
-    try:
-        confidence = float(data.get("confidence", 0.0))
-    except (TypeError, ValueError):
-        confidence = 0.0
-    if not math.isfinite(confidence):
-        confidence = 0.0
-    confidence = min(1.0, max(0.0, confidence))
-    scene = data.get("scene_description", "")
-    reasoning = data.get("reasoning", "")
-    return {
-        "action": action,
-        "confidence": confidence,
-        "reasoning": str(reasoning),
-        "scene_description": str(scene),
-    }
+    # Any fence, anywhere, in either the ``` or the ~~~ spelling, plus stray backticks.
+    cleaned = re.sub(r"(?m)^\s*(?:```|~~~)[a-zA-Z]*\s*$", "", cleaned)
+    cleaned = cleaned.replace("```", "")
+    for data in _iter_json_objects(cleaned):
+        action = None
+        for key in ("action", "act", "choice", "next_action", "move"):
+            action = resolve_action(data.get(key))
+            if action:
+                break
+        if not action:
+            continue
+        try:
+            confidence = float(data.get("confidence", 0.0))
+        except (TypeError, ValueError):
+            confidence = 0.0
+        if not math.isfinite(confidence):
+            confidence = 0.0
+        confidence = min(1.0, max(0.0, confidence))
+        scene = data.get("scene_description") or data.get("scene") or ""
+        reasoning = data.get("reasoning") or data.get("thought") or ""
+        return {
+            "action": action,
+            "confidence": confidence,
+            "reasoning": str(reasoning),
+            "scene_description": str(scene),
+        }
+    return None
 
 
 def parse_action_text(text: Any) -> Optional[str]:

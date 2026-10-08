@@ -85,6 +85,10 @@ DEFAULT_LEVELS: Tuple[int, ...] = tuple(sorted(LEVEL_CHANNEL_WIDTHS))
 DEFAULT_EPISODES_PER_LEVEL = 5
 DEFAULT_MAX_STEPS = 30
 
+# Consecutive episodes in which every single step failed to yield a usable reply, before the
+# runner stops the model instead of filling the results directory with zeros.
+INVALID_EPISODE_LIMIT = 3
+
 
 class ProtocolCheckpoint:
     """Persistent completion state for pause/resume across experiment runs.
@@ -436,7 +440,18 @@ class BAOExperimentRunner:
         logs_root: str = "logs",
     ) -> None:
         self.env = env
-        self.model = model.replace("/", "-").replace("\\", "-")
+        # The model id goes to the gateway UNCHANGED.  An earlier version sanitised it here --
+        # model.replace("/", "-") -- because the same string is a directory component.  That
+        # turned "kimi/kimi-k2.5" into "kimi-kimi-k2.5", the gateway answered
+        # "503 model_not_found: No available channel for model kimi-kimi-k2.5", every step was
+        # recorded as invalid, and a 12-hour run produced 150 invalid steps and nothing else.
+        # A name that is a legal path is not the same requirement as a name the API accepts, so
+        # they are kept apart: self.model is for requests, self.model_slug is for paths.
+        self.model = str(model)
+        self.model_slug = model.replace("/", "-").replace("\\", "-")
+        # How many consecutive episodes may have every single step fail to produce a usable
+        # reply before the run stops itself.  See _note_episode_health.
+        self._all_invalid_streak = 0
         self.max_steps = int(max_steps)
         self.episodes_per_level = int(episodes_per_level)
         self.save_obs = bool(save_obs)
@@ -572,10 +587,63 @@ class BAOExperimentRunner:
             # Refresh the Level summary after every episode as well, so an
             # interrupted Level still has a summary that matches its episodes.
             self._save_summary(level, all_episodes)
+            self._note_episode_health(episode)
 
         if all_episodes:
             self._save_summary(level, all_episodes)
         return all_episodes
+
+    # ------------------------------------------------------------------
+    # Single episode
+    # ------------------------------------------------------------------
+
+    def _note_episode_health(self, episode: Dict[str, Any]) -> None:
+        """Stop the run when every step of several episodes in a row was unusable.
+
+        An episode in which every call failed is recorded, scored and displayed exactly like an
+        episode in which the model could not solve the task: pass_rate 0.000, end_reason
+        max_steps.  In one sweep that cost twelve, nine and three hours on three models whose
+        real problems were an HTTP 503 for a mangled model name, a 403 for an exhausted quota and
+        a 401 for a dead key -- none of it about aperture judgement.  It was found by hand the
+        next morning.
+
+        So the first such episode gets a warning and the third in a row stops the model.  Raising
+        is deliberate: main.py exits non-zero, run_all_models.sh records that model as failed and
+        moves to the next one, and the whole roster is not spent on a gateway that is refusing
+        every request.
+        """
+        steps = int(episode.get("total_steps") or 0)
+        invalid = int(episode.get("invalid_response_count") or 0)
+        if steps and invalid >= steps:
+            self._all_invalid_streak += 1
+        else:
+            self._all_invalid_streak = 0
+        if self._all_invalid_streak == 0:
+            return
+
+        last_error = ""
+        for entry in reversed(getattr(self, "history", []) or []):
+            text = str(entry.get("feedback") or "")
+            if "REQUEST ERROR" in text or "HTTP" in text or "invalid" in text:
+                last_error = " ".join(text.split())[:300]
+                break
+        banner = (
+            f"[health] {self._all_invalid_streak} episode(s) in a row had EVERY step unusable "
+            f"({invalid}/{steps} invalid) for model {self.model}"
+        )
+        print("!" * 78)
+        print(banner)
+        if last_error:
+            print(f"[health] last recorded failure: {last_error}")
+        print("[health] this is a request problem, not an aperture result.  Check the API key, "
+              "the account quota and the model name before trusting this run's zeros.")
+        print("!" * 78)
+        if self._all_invalid_streak >= INVALID_EPISODE_LIMIT:
+            raise RuntimeError(
+                f"{self.model}: {self._all_invalid_streak} consecutive episodes with every step "
+                f"invalid ({invalid}/{steps} in the last one).  Stopping this model so the "
+                f"remaining roster is not spent on a refusing gateway."
+            )
 
     # ------------------------------------------------------------------
     # Single episode
@@ -771,8 +839,13 @@ class BAOExperimentRunner:
     def _result_dir(self, level: int) -> str:
         # Isolate every run tag so checkpoint resume can never load episodes
         # produced by another scene configuration or invocation.
+        #
+        # model_slug, not model: a model id may contain a slash ("kimi/kimi-k2.5"), and a slash
+        # in the middle of a path component silently creates a subdirectory, so the results of
+        # two different models could be filed under the same parent.  The slug is the same
+        # string with the separators replaced, and it is used only here.
         path = os.path.join(
-            self.results_root, f"level{level}", self.model, self.tag
+            self.results_root, f"level{level}", self.model_slug, self.tag
         )
         os.makedirs(path, exist_ok=True)
         return path
