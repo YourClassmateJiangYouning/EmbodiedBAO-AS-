@@ -2092,6 +2092,13 @@ class BAOEnv:
         if missing:
             print(f"[scene] WARNING: no prim found for {missing}; those surfaces keep the "
                   f"baseline colour.  Scene is applied, but not in full.")
+            # The ceiling has failed classification in every render so far, and there was no way
+            # to see why without running the simulator by hand.  The stage's largest boxes say
+            # what the ceiling actually looks like to the classifier -- its extent, its height,
+            # whether it is one prim or several -- so the rule can be corrected from a log
+            # instead of from a guess.
+            for line in scene_builder.describe_stage(self.stage):
+                print(f"[scene] stage box: {line}")
 
     def set_marker_slot(self, slot: int) -> None:
         """Swap the goal marker for another of this scene's five, leaving the rest alone.
