@@ -848,12 +848,30 @@ across nine suites**, counted at the time of writing rather than remembered (`gr
 python test_bao_geometry.py       # 37 checks: ladder, collision gate, routes, colours, prompt
 python test_bao_integration.py    # 20 checks: full protocol, tagged runs, CLI flags, against a mock environment
 python test_bao_memory.py         # 29 checks: the Stage 2 measures and prompts, against an independent model and the real gate
-python test_bao_scenes.py         # 24 checks: the Stage 1 catalogue, all arithmetic, no simulator
+python test_bao_scenes.py         # 26 checks: the Stage 1 catalogue, all arithmetic, no simulator
 python test_bao_memory_runner.py  # 17 checks: the Stage 2 runner end to end against a mock environment and a scripted agent
 python test_bao_persistence.py    # 13 checks: interrupt and corruption safety of every artefact written
 python test_bao_parsing.py        #  9 checks: the reply parser, including shapes once discarded
 python test_bao_health.py         #  5 checks: the runner stops a model whose every call is failing
 python test_bao_assets.py         #  3 checks: every named material exists, `stage1.1` stays bare
+```
+
+**Which interpreter, and the one test that depends on it.** Nothing here needs Isaac Sim,
+but the suites do need the same libraries the run does, and the workstation has two
+interpreters with different sets: its system `python3` has **no Pillow**, while
+`/home/ybh/isaacsim/python.sh` has Pillow 12.3.0 and is the interpreter the sweeps
+actually run under. On that machine, run the suites with the Isaac interpreter:
+
+```bash
+/home/ybh/isaacsim/python.sh test_bao_persistence.py
+```
+
+The one check that varies is `--save_obs`: under an interpreter without Pillow it reports
+`[skip]` and still asserts the thing that matters -- that a frame the encoder cannot
+serialise does not end a scored episode -- because `_save_observation` imports PIL inside
+the function and catches its own failure. (`ai_agent.encode_image`'s Pillow import is
+unconditional, which is why the sweeps must run under the Isaac interpreter and not under
+`python3`.)
 ```
 
 The scene suite is the one that keeps the skins honest, and every one of its checks is

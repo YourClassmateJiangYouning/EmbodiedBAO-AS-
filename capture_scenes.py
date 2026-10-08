@@ -15,8 +15,12 @@ Output, under ``--outdir``:
 * ``<scene>_slot<N>_iso.png``  an external view, for judging the room rather than the task
 * ``<scene>_sheet.png``        the five markers side by side, eye view above iso view
 
-Images are written with a small PNG encoder rather than Pillow, which is not installed on
-the lab machine -- the persistence suite already fails there for that reason.
+Images are written with a small PNG encoder rather than Pillow, so that this runs under any
+interpreter.  Measured on the workstation: its system ``python3`` has no Pillow at all,
+while the interpreter that runs the sweeps (``/home/ybh/isaacsim/python.sh``) has Pillow
+12.3.0.  Anything that must work under both therefore cannot rely on Pillow -- this file,
+and ai_agent.encode_image, whose Pillow import is unconditional and is the reason the
+sweeps have to run under the Isaac interpreter rather than under python3.
 
 Usage:
     ISAAC_PY=/home/ybh/isaacsim/python.sh

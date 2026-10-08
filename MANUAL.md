@@ -130,7 +130,8 @@ cd ~/EmbodiedBAO-AS- && python3 tools/parse_agent_logs.py --csv logs_reasoning.c
 cd ~/EmbodiedBAO-AS- && python3 tools/verify_stage1_lab.py --log smoke_1.1.log --model gpt-4o-mini
 
 # 全部测试（9 套件，实测 159 项）
-cd ~/EmbodiedBAO-AS- && for s in test_bao_geometry test_bao_integration test_bao_memory test_bao_scenes test_bao_memory_runner test_bao_persistence test_bao_parsing test_bao_health test_bao_assets; do printf '%-28s ' $s; python3 $s.py 2>/dev/null | tail -1; done
+# ★ 必须用 Isaac 解释器：系统 python3 没有 Pillow，test_bao_persistence 会 FAIL（实测）
+cd ~/EmbodiedBAO-AS- && for s in test_bao_geometry test_bao_integration test_bao_memory test_bao_scenes test_bao_memory_runner test_bao_persistence test_bao_parsing test_bao_health test_bao_assets; do printf '%-28s ' $s; /home/ybh/isaacsim/python.sh $s.py 2>/dev/null | tail -1; done
 
 # 渲染预览（会再起一个 Isaac，注意显存）
 cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh capture_scenes.py --scene stage1.2 --level 10 --outdir prev_1.2 --slots 1,2,3,4,5

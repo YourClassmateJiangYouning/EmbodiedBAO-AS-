@@ -606,9 +606,10 @@ def test_save_obs_writes_a_frame_per_step() -> None:
     try:
         import PIL  # noqa: F401
     except Exception:
-        # The runner is supposed to disable observations rather than fail when
-        # Pillow is missing, which is the case on the Isaac Sim workstation, so
-        # there is nothing to check here beyond that behaviour.
+        # The runner is supposed to disable observations rather than fail when Pillow is
+        # missing, so there is nothing to check here beyond that behaviour.  Measured on
+        # the workstation: system python3 has no Pillow, and /home/ybh/isaacsim/python.sh
+        # has Pillow 12.3.0, so which branch runs depends on the interpreter.
         runner = memory_experiment.MemoryExperimentRunner(
             env=MockEnvironment(),
             model="fake-model",
