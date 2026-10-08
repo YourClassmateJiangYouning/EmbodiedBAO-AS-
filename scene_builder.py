@@ -145,6 +145,14 @@ def _prism(stage: Any, path: str, polygon: Sequence[Sequence[float]],
     mesh.CreateFaceVertexCountsAttr(Vt.IntArray(counts))
     mesh.CreateFaceVertexIndicesAttr(Vt.IntArray(indices))
     mesh.CreateSubdivisionSchemeAttr("none")
+    # Two-sided, because the marker is a flat plate seen from one direction and the winding of a
+    # face decides whether the renderer culls it.  The polygons come from SHAPES with whatever
+    # winding reads naturally in (px, py), and those coordinates map to (z, y): with the camera on
+    # the -x side, a polygon that is counter-clockwise as drawn is clockwise as seen, so the front
+    # face can end up back-facing and be invisible.  That is one explanation for the marker
+    # missing from every preview.  doubleSided removes the question entirely; a marker that is a
+    # plate has no wrong side.
+    mesh.CreateDoubleSidedAttr(True)
     xs = [p[0] for p in points]
     ys = [p[1] for p in points]
     zs = [p[2] for p in points]
@@ -396,7 +404,12 @@ def format_report(report: Dict[str, Any]) -> str:
     lines.append(f"[scene] marker: {marker['shape']} in {marker['colour']} "
                  f"({marker['parts']} mesh part(s))")
     for surface, info in report["materials"].items():
-        lines.append(f"[scene] {surface:<9} {info['how']:<11} {info.get('url', '')}")
+        # The prim path is printed because without it the log cannot answer the question that
+        # matters when a surface looks wrong: which prim did this material actually land on.  In
+        # a preview of the library the right-hand wall came out in the floor's wood, and there
+        # was no way to tell from the log whether the classifier had named the wrong prim, named
+        # the same prim twice, or the wall prim was simply not the one being painted.
+        lines.append(f"[scene] {surface:<9} {info['how']:<11} -> {info.get('prim', '-')}")
     if report["dressing"]:
         used = sum(1 for item in report["dressing"] if item["used_asset"])
         lines.append(f"[scene] dressing: {report['dressing_count']} items, "
