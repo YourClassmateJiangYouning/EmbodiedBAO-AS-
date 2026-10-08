@@ -11,9 +11,16 @@ docstring.
 
 Output, under ``--outdir``:
 
-* ``<scene>_slot<N>_eye.png``  what the model sees at the start pose (512 px, the real input)
+* ``<scene>_slot<N>_eye.png``  what the model sees at the start pose.  Rendered at
+  ``--width`` (1024 by default); the pipeline downscales to ``BAO_IMAGE_SIZE`` (512) before
+  sending, so this file is twice the model's resolution and twice as noisy.
 * ``<scene>_slot<N>_iso.png``  an external view, for judging the room rather than the task
-* ``<scene>_sheet.png``        the five markers side by side, eye view above iso view
+* ``<scene>_sheet_eye.png``     the five markers side by side, as the model sees them
+* ``<scene>_sheet_iso.png``     the same five, from the external camera
+
+Use ``--level 0`` to judge materials and dressing: it is the widest opening (1.140 m, about
+24 px at the start pose).  The default ``--level 10`` is the flush Level, whose opening is
+0.570 m and only about 12 px there, which is too narrow a slot to see a room through.
 
 Images are written with a small PNG encoder rather than Pillow, so that this runs under any
 interpreter.  Measured on the workstation: its system ``python3`` has no Pillow at all,
@@ -25,7 +32,7 @@ sweeps have to run under the Isaac interpreter rather than under python3.
 Usage:
     ISAAC_PY=/home/ybh/isaacsim/python.sh
     for s in stage1.1 stage1.2 stage1.3 stage1.4 stage1.5; do
-      $ISAAC_PY capture_scenes.py --scene $s --level 10 --outdir preview; done
+      $ISAAC_PY capture_scenes.py --scene $s --level 0 --outdir preview --slots 1,2,3,4,5; done
 """
 
 from __future__ import annotations
