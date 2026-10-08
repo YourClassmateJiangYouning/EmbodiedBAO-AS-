@@ -152,6 +152,25 @@ def docstring_lines(tree: ast.AST) -> set:
     return lines
 
 
+def alias_lines(tree: ast.AST, actions: set) -> set:
+    """Lines where a string is a dict key whose value is a valid action name.
+
+    ai_agent.ACTION_SYNONYMS maps "move_forward", "walk" and friends onto "forward".  Those keys
+    are the resolver's input vocabulary -- the spellings a model might use -- not names the
+    protocol defines, and reporting them is a false positive.  This check exists to catch code
+    that reads or writes an action name the environment cannot produce, which an alias table by
+    definition does not do: its values are the real names, and those are checked.
+    """
+    lines = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Dict):
+            for key, value in zip(node.keys, node.values):
+                if (isinstance(key, ast.Constant) and isinstance(key.value, str)
+                        and isinstance(value, ast.Constant) and value.value in actions):
+                    lines.add(key.lineno)
+    return lines
+
+
 def main() -> int:
     record, sidecar = stage1_schema()
     stage2 = returned_keys("round_record", "memory_protocol.py")
@@ -174,7 +193,8 @@ def main() -> int:
         with open(path, encoding="utf-8") as handle:
             text = handle.read()
         reads_stage1 = "bao_v7_all.tgz" in text or "embodiedbao_v7_episodes.csv" in text
-        skip = docstring_lines(ast.parse(text))
+        tree = ast.parse(text)
+        skip = docstring_lines(tree) | alias_lines(tree, actions)
         for number, line in enumerate(text.splitlines(), 1):
             if number in skip or line.lstrip().startswith("#"):
                 continue
