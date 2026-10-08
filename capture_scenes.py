@@ -46,8 +46,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--outdir", type=str, default="scene_preview")
     parser.add_argument("--width", type=int, default=512)
     parser.add_argument("--height", type=int, default=512)
-    parser.add_argument("--iso_distance", type=float, default=12.0)
-    parser.add_argument("--iso_height", type=float, default=7.0)
+    parser.add_argument("--iso_x", type=float, default=-2.0,
+                        help="where the external camera stands along x; negative is behind the "
+                             "agent's start, outside the open end of the corridor")
+    parser.add_argument("--iso_height", type=float, default=2.2,
+                        help="external camera height.  Keep it under the 3 m ceiling, or the "
+                             "ceiling is the only thing in the picture")
+    parser.add_argument("--iso_z", type=float, default=1.2,
+                        help="external camera offset sideways.  Keep it inside the 2.5 m half "
+                             "width, or a side wall blocks the view")
     parser.add_argument(
         "--hide_robot", action="store_true",
         help="Hide the robot, using the environment's own hide_robot flag.  The lab's frames "
@@ -105,9 +112,16 @@ def tile(images, columns: int, gap: int = 4, background: int = 255) -> np.ndarra
     return canvas
 
 
-def look_from(camera, target, distance: float, height: float) -> None:
-    """Point an external sensor at the scene, using the documented world-axes call."""
-    position = np.array([target[0] - distance * 0.55, height, distance * 0.55], dtype=float)
+def look_from(camera, target, position) -> None:
+    """Point an external sensor at the scene from an explicit world position.
+
+    It used to place the sensor from (target, distance, height) as
+    (target_x - 0.55 d, height, target_z + 0.55 d).  With the defaults that is
+    (-0.6, 7.0, 7.6): above the 3 m ceiling and outside the 5 m wide room, so it looked at the
+    back of a side wall and every iso frame came out flat grey.  An explicit position cannot do
+    that, and the caller can read where the camera is.
+    """
+    position = np.array(position, dtype=float)
     direction = np.array(target, dtype=float) - position
     norm = float(np.linalg.norm(direction)) or 1.0
     direction = direction / norm
@@ -203,8 +217,11 @@ def main() -> int:
                 # Move the camera AFTER the reset, not before: reset() calls _update_camera(),
                 # which puts the external camera back where the environment wants it, so the
                 # earlier order silently threw the iso pose away.
-                look_from(iso_camera, target=(6.0, 0.0, 1.0),
-                          distance=args.iso_distance, height=args.iso_height)
+                # Stand just outside the open end of the corridor, a little above eye height and
+                # a little to one side, looking down it.  Inside the room in both z and y, which
+                # is what the old placement was not.
+                look_from(iso_camera, target=(10.0, 1.0, 0.0),
+                          position=(args.iso_x, args.iso_height, args.iso_z))
                 for _ in range(3):
                     env.world.step(render=True)
                 iso = np.asarray(iso_camera.get_rgb())[:, :, :3]
