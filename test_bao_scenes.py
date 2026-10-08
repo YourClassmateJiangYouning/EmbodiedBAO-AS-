@@ -310,6 +310,46 @@ def test_surfaces_are_classified_by_geometry_not_by_name() -> None:
     print("[ok] the four surfaces are found by geometry, and an empty stage yields nothing")
 
 
+def test_catalogue_frame_matches_the_environment_converter() -> None:
+    """Pin the catalogue's frame conversion to the environment's own, point for point.
+
+    environment.py already had this: ``_user_to_isaac_pos`` is documented as "Map a user-frame
+    position (y up) to Isaac Sim (z up): swap y and z", and ``_add_box`` calls it for every wall,
+    the ceiling and the original red marker -- which is why those were always in the right place.
+    The catalogue grew its own copy of the operation instead of reading that one, and the copy
+    was never applied at all, which is the entire bug.  Two definitions of one convention is the
+    defect; this test makes them one.
+    """
+    import numpy as np
+
+    import environment as env
+
+    points = [(16.0, 1.40, 0.0), (8.0, 2.6, 1.10), (0.5, 1.68, -0.3), (2.6, 0.20, 2.05)]
+    for point in points:
+        mine = sc.to_world(point)
+        theirs = tuple(float(v) for v in env._user_to_isaac_pos(np.array(point, dtype=float)))
+        check(mine == theirs, f"to_world({point}) = {mine} but the environment says {theirs}")
+        back = tuple(float(v) for v in env._isaac_to_user_pos(np.array(mine, dtype=float)))
+        check(back == point, f"the environment's inverse of {mine} is {back}, not {point}")
+    for size in [(0.02, 0.6, 0.6), (0.9, 0.4, 0.7), (1.4, 1.9, 0.16)]:
+        mine = sc.to_world_size(size)
+        theirs = tuple(float(v) for v in env._user_to_isaac_scale(np.array(size, dtype=float)))
+        check(mine == theirs, f"to_world_size({size}) = {mine} but the environment says {theirs}")
+    # The original red square, authored in _create_goal_marker as
+    # [ROOM_LENGTH_X - thickness/2 - 0.01, 1.40, 0.0] and converted by environment's own
+    # function, is the placement that was always right.  The catalogue marker must land at the
+    # same height and the same lateral offset; x differs by the 0.02 inset that keeps the legacy
+    # square off the wall surface.
+    thickness = 0.02
+    legacy_authored = (env.ROOM_LENGTH_X - thickness / 2.0 - 0.01, 1.40, 0.0)
+    legacy_world = tuple(float(v) for v in env._user_to_isaac_pos(np.array(legacy_authored)))
+    mine_world = sc.to_world((sc.MARKER_X_M, sc.MARKER_Y_M, sc.MARKER_Z_M))
+    check(abs(mine_world[1] - legacy_world[1]) < 1e-9 and abs(mine_world[2] - legacy_world[2]) < 1e-9,
+          f"the marker's world (lateral, height) {mine_world[1:]} must match the original red "
+          f"square's {legacy_world[1:]}")
+    print("[ok] the catalogue's frame conversion is identical to the environment's own")
+
+
 def test_world_and_user_frames_are_inverse() -> None:
     """The stage is Z-up and the catalogue is height-second, and the two must join correctly.
 
@@ -437,6 +477,7 @@ def main() -> int:
         test_the_catalogue_matches_the_environment_it_replaces,
         test_the_scene_tag_separates_scenes_and_leaves_old_tags_alone,
         test_surfaces_are_classified_by_geometry_not_by_name,
+        test_catalogue_frame_matches_the_environment_converter,
         test_world_and_user_frames_are_inverse,
         test_real_room_boxes_classify_correctly,
         test_prim_paths_from_a_scene_name_are_valid_usd_paths,
