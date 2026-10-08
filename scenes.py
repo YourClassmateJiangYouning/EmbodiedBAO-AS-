@@ -320,6 +320,49 @@ VERTICAL_FOV_DEG = 2.0 * math.degrees(
 )
 
 
+# ---------------------------------------------------------------------------
+# Two coordinate conventions, and the one line that joins them
+# ---------------------------------------------------------------------------
+# Everything in this catalogue is written in USER coordinates: (x, y, z) means
+# (along the corridor, height above the floor, sideways from the centre line).  A marker at
+# (16.0, 1.40, 0.0) is therefore 1.40 m up the far wall, on the centre line, which is what the
+# prompt describes.
+#
+# The stage is in WORLD coordinates, which are Z-up: (x, y, z) means
+# (along the corridor, sideways, height).  environment.py writes its own room in user
+# coordinates and passes everything through _add_box, which converts; the room bounds that come
+# back out of discover_surfaces prove it.  room_ceiling is authored at y = 3.01 and reported at
+# world z = 3.01, and room_side_left is authored at z = -2.51 and reported at world y = -2.51.
+#
+# scene_builder builds prims directly with UsdGeom, bypassing _add_box, so it has to convert for
+# itself.  It did not, and a marker meant for the middle of the far wall at 1.40 m was placed at
+# 1.40 m SIDEWAYS and height zero: a plate lying at the foot of the wall, half of it under the
+# floor.  Every dressing item was misplaced the same way, which is what put boxes in the agent's
+# view, and the surface classifier was reading world boxes with user-coordinate rules, which is
+# why the floor material landed on a side wall and the ceiling was never found at all.
+#
+# The conversion is the same in both directions -- it swaps the last two components -- so these
+# two functions are the same operation, named for what the caller means.
+
+
+def to_world(point: Sequence[float]) -> Tuple[float, float, float]:
+    """(x, height, lateral) -> (x, lateral, height), for placing a prim on the stage."""
+    x, y, z = (float(v) for v in point)
+    return (x, z, y)
+
+
+def to_user(point: Sequence[float]) -> Tuple[float, float, float]:
+    """(x, lateral, height) -> (x, height, lateral), for reading a prim back off the stage."""
+    x, y, z = (float(v) for v in point)
+    return (x, z, y)
+
+
+def to_world_size(size: Sequence[float]) -> Tuple[float, float, float]:
+    """A box's dimensions in the same two frames: lengths swap with their axes."""
+    sx, sy, sz = (float(v) for v in size)
+    return (sx, sz, sy)
+
+
 def project(point: Sequence[float], eye_x: float = 0.5) -> Optional[Tuple[float, float]]:
     """Project a world point to normalised screen coordinates, or None if behind.
 

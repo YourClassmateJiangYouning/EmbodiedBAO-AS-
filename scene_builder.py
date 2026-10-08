@@ -126,10 +126,16 @@ def resolve_material(stage: Any, url: str, name: str, path: str,
 
 def _prism(stage: Any, path: str, polygon: Sequence[Sequence[float]],
            centre: Sequence[float], thickness: float) -> Any:
-    """One polygon extruded along x, standing in the y/z plane of the far wall."""
+    """One polygon extruded along x, standing in the plane of the far wall.
+
+    The polygon is given in USER coordinates -- (px, py) is (sideways, height) -- and every point
+    is converted to the stage's WORLD frame before it becomes geometry.  Without that conversion
+    the plate lands at height zero and 1.40 m sideways instead of 1.40 m up the wall, which is
+    why no marker could be seen on the far wall in any render.
+    """
     from pxr import Gf, UsdGeom, Vt
 
-    cx, cy, cz = (float(v) for v in centre)
+    cx, cy, cz = sc.to_world(centre)
     half = thickness / 2.0
     front = [Gf.Vec3f(cx - half, cy + float(py), cz + float(px)) for px, py in polygon]
     back = [Gf.Vec3f(cx + half, cy + float(py), cz + float(px)) for px, py in polygon]
@@ -232,9 +238,13 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
         path = f"/World/Dressing/{item['name']}"
         cube = UsdGeom.Cube.Define(stage, path)
         cube.GetSizeAttr().Set(1.0)
-        cube.AddScaleOp().Set(Gf.Vec3f(*[float(v) for v in item["size"]]))
+        # Position and dimensions are converted from the catalogue's user frame (height second)
+        # to the stage's world frame (height last).  Skipping this put every item at the wrong
+        # height and the wrong sideways offset, several of them outside the 5 m wide room and one
+        # or two across the agent's view.
+        cube.AddScaleOp().Set(Gf.Vec3f(*sc.to_world_size(item["size"])))
         prim = cube.GetPrim()
-        UsdGeom.Xformable(prim).AddTranslateOp().Set(Gf.Vec3f(*[float(v) for v in item["at"]]))
+        UsdGeom.Xformable(prim).AddTranslateOp().Set(Gf.Vec3f(*sc.to_world(item["at"])))
         _disable_collision(prim)
         if item.get("colour"):
             paint(stage, path, item["colour"])
@@ -249,16 +259,22 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
 
 
 def classify_surfaces(boxes: Sequence[Tuple[str, Sequence[float], Sequence[float]]]
-                      ) -> Dict[str, str]:
-    """Pick the floor, ceiling, far wall and side wall out of a list of named boxes.
+                      ) -> Dict[str, Any]:
+    """Pick the floor, ceiling, far wall and side walls out of a list of named boxes.
 
-    Pure, so it can be checked without a stage.  Classification is by where a box sits and
-    how big its faces are, not by its name: environment.py is a frozen file and this module
-    must not depend on how it names things.  A large flat box at the bottom is the floor, one
-    at the top is the ceiling, a large box at the far end is the far wall, and a large box off
-    to one side is a side wall.
+    Pure, so it can be checked without a stage.  Boxes must arrive in the catalogue's frame --
+    (x, height, lateral) -- which is what discover_surfaces converts to before calling this.
+    Classification is by where a box sits and how big its faces are, not by its name:
+    environment.py is a frozen file and this module must not depend on how it names things.
+
+    Two defects lived here.  The floor rule asked for ``centre_y <= 0.05``, which any box below
+    the floor line satisfies -- a side wall at y = -2.51 included, and that is exactly what it
+    picked.  And only the largest side wall was returned, so the other one was never given a
+    material and the two sides of the corridor could differ.  ``side_walls`` now carries all of
+    them and the caller binds every one.
     """
     best: Dict[str, Tuple[float, str]] = {}
+    side_walls: List[Tuple[float, str]] = []
 
     def consider(kind: str, score: float, name: str) -> None:
         if score > best.get(kind, (0.0, ""))[0]:
@@ -271,15 +287,20 @@ def classify_surfaces(boxes: Sequence[Tuple[str, Sequence[float], Sequence[float
         centre_y = (float(low[1]) + float(high[1])) / 2.0
         centre_z = (float(low[2]) + float(high[2])) / 2.0
         minimum_x = min(float(low[0]), float(high[0]))
-        if size_y <= 0.05 and centre_y <= 0.05:
+        if size_y <= 0.05 and abs(centre_y) <= 0.05:
             consider("floor", size_x * size_z, name)
-        if size_y <= 0.05 and centre_y >= 2.8:
+        if size_y <= 0.05 and centre_y >= 2.5:
             consider("ceiling", size_x * size_z, name)
         if size_x <= 0.05 and minimum_x >= 15.5:
             consider("far_wall", size_y * size_z, name)
         if size_z <= 0.05 and abs(centre_z) >= 2.0:
-            consider("side_wall", size_x * size_y, name)
-    return {kind: name for kind, (score, name) in best.items() if score > 0.0}
+            side_walls.append((size_x * size_y, name))
+    found: Dict[str, Any] = {kind: name for kind, (score, name) in best.items() if score > 0.0}
+    if side_walls:
+        side_walls.sort(reverse=True)
+        found["side_wall"] = side_walls[0][1]
+        found["side_walls"] = tuple(name for _, name in side_walls)
+    return found
 
 
 def discover_surfaces(stage: Any) -> Dict[str, str]:
@@ -300,9 +321,15 @@ def discover_surfaces(stage: Any) -> Dict[str, str]:
             xform = UsdGeom.Xformable(prim).ComputeLocalToWorldTransform(Usd.TimeCode.Default())
             low = xform.Transform(tuple(extent[0]))
             high = xform.Transform(tuple(extent[1]))
+            # Back to the catalogue's frame before classifying.  The stage is Z-up and the
+            # catalogue is height-second; feeding world boxes to user-coordinate rules is what
+            # made the floor rule match a side wall (its y is negative, and the rule asked only
+            # for y <= 0.05) and left the ceiling unclassified.
             boxes.append((str(prim.GetPath()),
-                          (min(low[0], high[0]), min(low[1], high[1]), min(low[2], high[2])),
-                          (max(low[0], high[0]), max(low[1], high[1]), max(low[2], high[2]))))
+                          sc.to_user((min(low[0], high[0]), min(low[1], high[1]),
+                                      min(low[2], high[2]))),
+                          sc.to_user((max(low[0], high[0]), max(low[1], high[1]),
+                                      max(low[2], high[2])))))
     except Exception:  # noqa: BLE001
         pass
     return classify_surfaces(boxes)
@@ -373,22 +400,36 @@ def apply_scene(stage: Any, scene: str, slot: int,
         if "materials" not in parts:
             report["materials"][surface] = {"url": url, "how": "skipped"}
             continue
-        prim_path = (surfaces or {}).get(surface)
-        if not prim_path:
+        # A surface can be more than one prim.  There are two side walls and they have to look
+        # alike: binding only the larger one left the other in its original colour, so the
+        # corridor came out with one wall painted and one not, which reads as a lighting fault
+        # rather than as a missing material.
+        prim_paths: List[str] = []
+        single = (surfaces or {}).get(surface)
+        if single:
+            prim_paths.append(str(single))
+        for extra in (surfaces or {}).get(f"{surface}s", ()) or ():
+            if str(extra) not in prim_paths:
+                prim_paths.append(str(extra))
+        if not prim_paths:
             report["materials"][surface] = {"url": url, "how": "no-surface-given"}
             continue
+        prim_path = prim_paths[0]
         if not use_mdl:
-            paint(stage, prim_path, fallbacks.get(surface, (0.6,) * 3))
+            for path in prim_paths:
+                paint(stage, path, fallbacks.get(surface, (0.6,) * 3))
             report["materials"][surface] = {"url": url, "how": "flat-paint",
-                                            "prim": prim_path}
+                                            "prim": ", ".join(prim_paths)}
             continue
         name = os.path.basename(url).replace(".mdl", "")
         material, how = resolve_material(
             stage, url, name, f"/World/Looks/{surface}_{prim_name(scene)}",
             prim_path, fallbacks.get(surface, (0.6,) * 3))
         if material is not None:
-            _bind(stage, prim_path, material)
-        report["materials"][surface] = {"url": url, "how": how, "prim": prim_path}
+            for path in prim_paths:
+                _bind(stage, path, material)
+        report["materials"][surface] = {"url": url, "how": how,
+                                        "prim": ", ".join(prim_paths)}
 
     report["marker"] = build_marker(stage, scene, slot)
     report["parts"] = list(parts)

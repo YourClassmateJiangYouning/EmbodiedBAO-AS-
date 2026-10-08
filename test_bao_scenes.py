@@ -310,6 +310,56 @@ def test_surfaces_are_classified_by_geometry_not_by_name() -> None:
     print("[ok] the four surfaces are found by geometry, and an empty stage yields nothing")
 
 
+def test_world_and_user_frames_are_inverse() -> None:
+    """The stage is Z-up and the catalogue is height-second, and the two must join correctly.
+
+    Not academic: scene_builder places prims directly, so if this swap is wrong a marker meant
+    for 1.40 m up the far wall ends up at height zero and 1.40 m sideways, which is where the
+    first renders found it -- nowhere.
+    """
+    for point in ((16.0, 1.40, 0.0), (8.0, 2.6, 1.10), (0.5, 1.68, -0.3)):
+        world = sc.to_world(point)
+        check(sc.to_user(world) == point, f"to_user(to_world({point})) = {sc.to_user(world)}")
+        check(sc.to_world(world) == point, f"to_world is not its own inverse at {point}")
+    marker_world = sc.to_world((16.0, sc.MARKER_Y_M, sc.MARKER_Z_M))
+    check(marker_world[2] == sc.MARKER_Y_M,
+          f"the marker's world HEIGHT must be its catalogue y; got {marker_world}")
+    check(marker_world[1] == sc.MARKER_Z_M,
+          f"the marker's world lateral offset must be its catalogue z; got {marker_world}")
+    check(sc.to_world_size((0.9, 0.4, 0.7)) == (0.9, 0.7, 0.4),
+          "a box's dimensions must swap with their axes")
+    print("[ok] the catalogue's frame and the stage's Z-up frame are exact inverses")
+
+
+def test_real_room_boxes_classify_correctly() -> None:
+    """Regression: the world boxes reported on the lab machine, converted and classified.
+
+    These are the numbers discover_surfaces actually printed for the real room, in world
+    coordinates.  With user-coordinate rules applied to them directly -- which is what the code
+    did -- the floor came out as room_side_left (its y is negative and the rule asked only for
+    y <= 0.05), the side wall came out as room_ceiling, and the real ceiling was never found.  If
+    this test fails, that bug is back.
+    """
+    import scene_builder
+
+    world_boxes = [
+        ("/World/Ground", (0.0, -2.5, -0.02), (16.0, 2.5, 0.0)),
+        ("/World/room_ceiling", (0.0, -2.5, 3.0), (16.0, 2.5, 3.02)),
+        ("/World/room_side_left", (0.0, -2.52, 0.0), (16.0, -2.5, 3.0)),
+        ("/World/room_side_right", (0.0, 2.5, 0.0), (16.0, 2.52, 3.0)),
+        ("/World/room_far", (16.0, -3.5, 0.0), (16.02, 3.5, 3.0)),
+    ]
+    boxes = [(name, sc.to_user(low), sc.to_user(high)) for name, low, high in world_boxes]
+    found = scene_builder.classify_surfaces(boxes)
+    check(found.get("floor") == "/World/Ground", f"floor found as {found.get('floor')}")
+    check(found.get("ceiling") == "/World/room_ceiling",
+          f"ceiling found as {found.get('ceiling')}")
+    check(found.get("far_wall") == "/World/room_far", f"far wall found as {found.get('far_wall')}")
+    check(set(found.get("side_walls", ())) == {"/World/room_side_left", "/World/room_side_right"},
+          f"both side walls must be reported, got {found.get('side_walls')}")
+    print("[ok] the real room's world boxes classify to the right prims, both side walls")
+
+
 def test_prim_paths_from_a_scene_name_are_valid_usd_paths() -> None:
     """A dot is a property separator in SdfPath, and every scene name has one.
 
@@ -387,6 +437,8 @@ def main() -> int:
         test_the_catalogue_matches_the_environment_it_replaces,
         test_the_scene_tag_separates_scenes_and_leaves_old_tags_alone,
         test_surfaces_are_classified_by_geometry_not_by_name,
+        test_world_and_user_frames_are_inverse,
+        test_real_room_boxes_classify_correctly,
         test_prim_paths_from_a_scene_name_are_valid_usd_paths,
     ]
     failed = 0
