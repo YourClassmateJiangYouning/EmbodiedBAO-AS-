@@ -29,9 +29,7 @@ import csv
 import json
 import os
 import shutil
-import sys
-import tempfile
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -53,7 +51,6 @@ from experiments import (
     DEFAULT_MAX_STEPS,
     BAOExperimentRunner,
     ProtocolCheckpoint,
-    _is_sideways_yaw,
 )
 import analysis
 

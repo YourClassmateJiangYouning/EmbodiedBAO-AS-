@@ -1,4 +1,19 @@
-"""The Stage 3 scene and marker catalogue, as data.
+"""The Stage 1 scene and marker catalogue, as data.
+
+Stage numbering, because this is easy to mis-file and was mis-filed once.  **Stage 1 is the
+A/S threshold study, and the scenes below belong to it**: the supervisor asked for the site
+to look like an everyday place, and the five repeats of a (scene, model, level) cell became
+five different markers rather than five identical ones.  **Stage 2** is the memory/note
+experiment (``memory_protocol.py``, spec in ``STAGE23_DESIGN.md``).  **Stage 3** is the
+follow-up phases of that same memory experiment -- a second passage back through a narrow
+opening and a wide-then-narrow control -- and ``STAGE23_DESIGN.md`` §10 lists both under
+"explicitly not doing".  It is NOT the scene-variant matrix: those ten variants change the
+marker, the far wall, the floor and the prompt, so they are Stage 1 variables, and they
+live in ``STAGE1_SCENE_VARIANTS.md``.
+
+The two documents used to be named ``STAGE3_SCENES.md`` and ``STAGE3_SCENE_VARIANTS.md``,
+which is what put the wrong stage number into this file's first line and into
+``scene_builder.py``'s; they are now ``STAGE1_SCENES.md`` and ``STAGE1_SCENE_VARIANTS.md``.
 
 Nothing here imports Isaac Sim, and nothing here builds anything: this module says *what*
 the five scenes and the twenty-five markers are, in a form that can be checked by arithmetic
@@ -16,7 +31,7 @@ Why the constraints exist, in one place:
   cross would blur into a blob; every shape here is solid or fat.
 * **Five markers per scene, one per repeat.**  The five runs of a (scene, model, level) cell
   use five different markers, so the cell's five episodes are five conditions rather than
-  five replicates.  See STAGE3_SCENES.md 3.5 for what that does to the statistics.
+  five replicates.  See STAGE1_SCENES.md 3.5 for what that does to the statistics.
 * **A marker must be the only object of its colour in its frame**, which is why each scene
   declares forbidden colours and why a green marker is unusable on the baseline's green far
   wall while being fine in the warehouse.
@@ -37,10 +52,32 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 # ---------------------------------------------------------------------------
 
 MARKER_SIZE_M = 0.60
-MARKER_X_M = 16.0
 MARKER_Z_M = 0.0
 MARKER_Y_M = 1.40
 MARKER_THICKNESS_M = 0.02
+
+# The far wall's inner face, and where the plate sits relative to it.
+#
+# environment._create_room builds that wall with its centre at
+# ``ROOM_LENGTH_X + thickness/2``, so its INNER face -- the surface the room sees -- is
+# exactly at ``ROOM_LENGTH_X`` (16.0).  The plate therefore has to be placed so that its
+# BACK face is at or in front of 16.0, not centred on it:
+#
+#   centred on the wall plane   -> spans 15.99 .. 16.01, burying half its thickness in
+#                                  the wall and moving the face the camera sees 0.02 m
+#                                  further away than the environment's own marker;
+#   back face flush + clearance -> spans 15.97 .. 15.99, which is exactly where the
+#                                  environment's marker is.
+#
+# ``MARKER_CLEARANCE_M`` is that clearance.  It is not a new number: the environment's
+# centre line is ``ROOM_LENGTH_X - thickness/2 - 0.01``, i.e. a 0.01 m gap in front of
+# the wall, and this reproduces it so that ``stage1.1`` slot 1 is the same plate by the
+# same coordinates whichever construction path built it.  Getting this wrong is silent
+# in a still frame -- 0.02 m at 15.5 m is under a pixel -- so it is pinned by a test that
+# compares built geometry rather than declared coordinates.
+MARKER_WALL_X_M = 16.0
+MARKER_CLEARANCE_M = 0.01
+MARKER_X_M = MARKER_WALL_X_M - MARKER_THICKNESS_M / 2.0 - MARKER_CLEARANCE_M
 
 # The camera the check below projects with: eye height, downward pitch, and the pinhole
 # model that environment.py's focal length and sensor imply.
@@ -147,9 +184,25 @@ MARKERS: Dict[str, Tuple[Tuple[str, str], ...]] = {
 
 # ---------------------------------------------------------------------------
 # The five scenes.  ``materials`` names the four surfaces we rebind; a scene with no
-# materials is the untouched baseline.  ``verified`` marks whether the asset name was read
-# off NVIDIA's public bucket listing (the warehouse's were) or still has to be confirmed by
-# the same listing on the lab machine.
+# materials is the untouched baseline.  ``material_verified`` marks whether the asset
+# name was read off NVIDIA's public bucket listing (the warehouse's were) or still has to
+# be confirmed by the same listing on the lab machine.
+#
+# WHERE A SCENE'S DRESSING LIVES.  Two of the five carry their layout inline, as the
+# `dressing` value right here: 1.1 has none, and 1.2 has its eight items.  The other
+# three -- 1.3, 1.4, 1.5 -- have an empty tuple here and are filled in by
+# ``_install_dressing`` at the bottom of the module.
+#
+# That split is not a style choice, it is a record of how the layouts were arrived at.
+# The 1.2 list never had to change, so it stayed where it was written.  The other three
+# were re-cut twice against rendered previews -- shelves 1.6 m wide at |z| 1.30 m
+# projected straight across the opening and had to move out to 1.4 m at 1.65 m -- and
+# keeping each layout next to its reasoning was worth more than keeping all five in one
+# place.  What is NOT acceptable is having both: an earlier revision carried full inline
+# tuples for 1.3, 1.4 and 1.5 as well, which ``_install_dressing`` then overwrote at
+# import, so 24 lines of configuration that read exactly like the live layout were dead.
+# A scene therefore has its layout in exactly one of the two places, and
+# test_bao_scenes.py checks that.
 # ---------------------------------------------------------------------------
 
 ASSET_ROOT = ("https://omniverse-content-production.s3-us-west-2.amazonaws.com"
@@ -209,6 +262,8 @@ SCENES: Dict[str, Dict[str, Any]] = {
             "far_wall": WAREHOUSE_MATERIALS + "/MI_WallB_01.mdl",
         },
         "material_verified": True,
+        # This scene's inline layout below IS the live one -- there is no replacement for
+        # 1.2 in _install_dressing(), so these eight items are what gets placed.
         "dressing": (
             _dressing_wall("sign", "obstacle_wall", (8.0, 1.5, 1.35), (0.5, 0.4, 0.03),
                            asset=WAREHOUSE_MATERIALS + "/MI_SignB.mdl"),
@@ -229,7 +284,7 @@ SCENES: Dict[str, Dict[str, Any]] = {
                             asset=WAREHOUSE_MATERIALS + "/M_TrafficCone.mdl"),
         ),
         "forbidden_colours": (),
-        "notes": "The only scene whose材料 were read off the bucket listing in full.",
+        "notes": "The only scene whose materials were read off the bucket listing in full.",
     },
     "stage1.3": {
         "label": "library",
@@ -240,16 +295,12 @@ SCENES: Dict[str, Dict[str, Any]] = {
             "far_wall": ASSET_ROOT + "/Environments/Hospital/Materials/M_Wall_Plaster.mdl",
         },
         "material_verified": False,
-        "dressing": (
-            _dressing_wall("noticeboard", "obstacle_wall", (8.0, 1.45, -1.30), (1.0, 0.7, 0.03)),
-            _dressing_wall("painting", "obstacle_wall", (8.0, 1.40, 1.30), (0.7, 0.5, 0.03)),
-            _dressing_wall("clock", "far_wall", (16.0, 2.20, 1.40), (0.4, 0.4, 0.03)),
-            _dressing_floor("cabinet_a", (2.0, 0.45, 1.85), (0.9, 0.90, 0.5)),
-            _dressing_floor("cabinet_b", (3.2, 0.45, 1.85), (0.9, 0.90, 0.5)),
-            _dressing_floor("reading_table", (5.0, 0.37, -1.75), (1.4, 0.74, 0.9)),
-            _dressing_floor("chair", (5.6, 0.45, -1.75), (0.5, 0.90, 0.5)),
-            _dressing_floor("book_pile", (6.6, 0.12, 1.70), (0.4, 0.24, 0.4)),
-        ),
+        # Not here: `_install_dressing` below sets this scene's layout, because it took two
+        # rendered previews to get the shelves off the opening's sight line.  An earlier
+        # revision also carried a full eight-item tuple at this point, which that function
+        # then overwrote at import -- 24 lines of dead configuration reading as if it were
+        # the live layout.  See the note above SCENES.
+        "dressing": (),
         "forbidden_colours": (),
         "notes": "No library environment exists; composed from bucket-root materials.",
     },
@@ -261,15 +312,8 @@ SCENES: Dict[str, Dict[str, Any]] = {
             "far_wall": ASSET_ROOT + "/Environments/Office/Materials/MI_WallOffice_01.mdl",
         },
         "material_verified": False,
-        "dressing": (
-            _dressing_wall("noticeboard", "obstacle_wall", (8.0, 1.35, 1.35), (0.9, 0.6, 0.03)),
-            _dressing_floor("bench_a", (2.6, 0.45, 1.80), (1.6, 0.90, 0.6)),
-            _dressing_floor("bench_b", (5.4, 0.45, -1.80), (1.6, 0.90, 0.6)),
-            _dressing_floor("bin", (3.9, 0.45, 1.65), (0.5, 0.90, 0.5)),
-            _dressing_floor("tree_a", (4.6, 1.60, 2.05), (0.7, 3.20, 0.7)),
-            _dressing_floor("tree_b", (7.0, 1.60, -2.05), (0.7, 3.20, 0.7)),
-            _dressing_floor("lamp_post", (6.2, 1.70, 1.85), (0.3, 3.40, 0.3)),
-        ),
+        # Set by `_install_dressing` below, as for 1.3.  See the note above SCENES.
+        "dressing": (),
         "forbidden_colours": (),
         "notes": "The Props library has no vegetation; trees are cylinder + sphere.",
     },
@@ -282,16 +326,8 @@ SCENES: Dict[str, Dict[str, Any]] = {
             "far_wall": ASSET_ROOT + "/Environments/Office/Materials/MI_WallOffice_01.mdl",
         },
         "material_verified": False,
-        "dressing": (
-            _dressing_wall("poster_a", "obstacle_wall", (8.0, 1.45, 1.30), (0.8, 0.6, 0.03)),
-            _dressing_wall("poster_b", "obstacle_wall", (8.0, 1.45, -1.30), (0.8, 0.6, 0.03)),
-            _dressing_wall("price_strip", "obstacle_wall", (8.0, 2.10, 1.30), (1.6, 0.15, 0.03)),
-            _dressing_wall("promo_hanger", "far_wall", (16.0, 2.05, -1.40), (0.9, 0.6, 0.03)),
-            _dressing_floor("crate_stack", (2.0, 0.35, 1.80), (0.8, 0.70, 0.8)),
-            _dressing_floor("klt_bins", (3.4, 0.20, -1.75), (0.9, 0.40, 0.6)),
-            _dressing_floor("trolley", (4.8, 0.50, 1.75), (0.7, 1.00, 0.5)),
-            _dressing_floor("checkout_base", (6.8, 0.45, -1.85), (1.4, 0.90, 0.7)),
-        ),
+        # Set by `_install_dressing` below, as for 1.3.  See the note above SCENES.
+        "dressing": (),
         "forbidden_colours": (),
         "notes": "No supermarket environment exists; the busiest scene of the five.",
     },
@@ -433,17 +469,33 @@ SHAPE_NAMES: Dict[str, str] = {
     "arrow": "arrow",
 }
 
+# The word for each colour key, and it has to describe the RGB above, because
+# ``describe_marker`` puts this word into the prompt: the task sentence becomes "reach
+# the <this> on the far wall", so a wrong word here is a false statement handed to the
+# model about the very object it is being asked to walk to.
+#
+# Two entries were wrong and are the reason this comment exists.  ``w`` is
+# (0.55, 0.05, 0.25) -- a dark wine red -- and was called "white"; ``k`` is
+# (1.00, 0.40, 0.70) -- pink -- and was called "black".  The false prompts that
+# produced are "white set of two bars" (scene 1.4 slot 5), "white arrow" (1.5 slot 2)
+# and "black hexagon" (1.5 slot 1).  Nothing caught it: the uniqueness tests compare
+# RGB triples, not words, and no test read the rendered phrase.  A test now pins every
+# colour word against its key's own value.
+#
+# ``l`` is "lime" rather than "lime green" so that the analysis in
+# tools/parse_agent_logs.py counts the phrase the prompt actually used: it looks the
+# marker's colour word up in this same table before searching the model's reasoning.
 COLOUR_NAMES: Dict[str, str] = {
     "r": "red",
     "m": "magenta",
     "o": "orange",
-    "l": "lime green",
+    "l": "lime",
     "c": "cyan",
     "p": "purple",
     "g": "green",
-    "w": "white",
+    "w": "wine",
     "t": "teal",
-    "k": "black",
+    "k": "pink",
 }
 
 
@@ -479,8 +531,8 @@ def marker_colours(scene: str) -> Tuple[Tuple[float, float, float], ...]:
 #   * wall items are >= 0.9 m off the centre line and reach <= 0.20 m off their wall, and are
 #     declared as a picture is: (across, tall, thick);
 #   * no item uses one of its own scene's five marker colours.  The library's markers are
-#     red/cyan/purple/magenta/teal, the park's are red/magenta/orange/purple/white, and the
-#     supermarket's are black/white/teal/purple/lime, so the dressing below is deliberately
+#     red/cyan/purple/magenta/teal, the park's are red/magenta/orange/purple/wine, and the
+#     supermarket's are pink/wine/teal/purple/lime, so the dressing below is deliberately
 #     grey, wood, steel, green, blue and yellow.
 
 DRESSING_BLUE = (0.20, 0.35, 0.65)
@@ -489,7 +541,13 @@ DRESSING_CLAY = (0.62, 0.45, 0.30)
 
 
 def _install_dressing() -> None:
-    """The library: shelves either side of the opening, a reading corner behind the agent."""
+    """The layouts for 1.3, 1.4 and 1.5: the three scenes whose dressing was re-cut.
+
+    Each scene's list is assigned whole, so a scene has its layout either here or inline
+    above and never in both.  ``test_bao_scenes.py`` pins that, because the revision that
+    had both meant editing the inline list changed nothing at all.
+    """
+    # The library: shelves either side of the opening, a reading corner behind the agent.
     SCENES["stage1.3"]["dressing"] = (
         # 1.4 m across, centred 1.65 m off the axis, so the inner edge sits at 0.95 m: clear of
         # the 1.14 m opening's half width (0.57 m) in the start view, which is the projection
@@ -508,7 +566,9 @@ def _install_dressing() -> None:
         _dressing_floor("reading_lamp", (1.8, 0.48, -2.10), (0.3, 0.95, 0.3), DRESSING_METAL),
     )
 
-    """The park: benches and planters behind the agent, hedges either side of the opening."""
+    # The park: benches and planters behind the agent, hedges either side of the opening.
+    # (This used to be a bare string literal between two statements -- not a docstring, so
+    # Python compiled it and threw it away, and it read as though it documented the code.)
     SCENES["stage1.4"]["dressing"] = (
         _dressing_wall("hedge_left", "obstacle_wall", (8.0, 2.30, 1.50), (1.2, 0.4, 0.16),
                        DRESSING_GREEN),
@@ -523,7 +583,7 @@ def _install_dressing() -> None:
         _dressing_floor("planter_right", (7.2, 0.20, -2.00), (0.6, 0.40, 0.6), DRESSING_CLAY),
     )
 
-    """The supermarket: shelving either side, a checkout and produce behind the agent."""
+    # The supermarket: shelving either side, a checkout and produce behind the agent.
     SCENES["stage1.5"]["dressing"] = (
         _dressing_wall("shelf_left", "obstacle_wall", (8.0, 1.05, 1.60), (1.4, 1.9, 0.18),
                        DRESSING_METAL),

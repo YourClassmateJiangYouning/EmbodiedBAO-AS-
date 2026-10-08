@@ -1,4 +1,8 @@
-"""Apply one of the Stage 3 scenes to a live USD stage.
+"""Apply one of the Stage 1 scenes to a live USD stage.
+
+These are the Stage 1 (A/S threshold) scene skins, specified in ``STAGE1_SCENES.md``; see
+``scenes.py`` for why the stage number matters here -- the document they come from used to
+be named ``STAGE3_SCENES.md``, which is what put the wrong label on this module too.
 
 The catalogue in ``scenes.py`` says what a scene is; this module puts it on the stage.  It is
 written defensively because it cannot be exercised on the development machine -- ``pxr`` only

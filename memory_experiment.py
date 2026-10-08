@@ -37,12 +37,15 @@ import time
 from typing import Any, Dict, List, Optional, Sequence
 
 import persistence
+# fold_yaw is imported under this module's local spelling: the arithmetic used to be
+# written out here a second time, identical to memory_metrics's copy, which is the
+# kind of duplicate that only stays correct until one of the two is edited.
 from memory_metrics import TURN_STEP_DEG, is_sideways_yaw
+from memory_metrics import fold_yaw as _abs_yaw
 from memory_protocol import (
     MAX_STEPS,
     MODE_ROLLING,
     PROTOCOL_TAG,
-    ROUNDS_LEARNING,
     ROUNDS_PER_RUN,
     RUNS_PER_MODEL,
     summarise_tag,
@@ -151,8 +154,6 @@ def default_tag_for_model(model: str) -> str:
     effective per-model parameters, which live behind ``ai_agent``, which reaches
     ``environment``, which must not be imported before ``SimulationApp`` exists.
     """
-    import sys
-
     from main import request_params_suffix
 
     return f"{model}-{PROTOCOL_TAG}{request_params_suffix(model)}"
@@ -748,12 +749,6 @@ class MemoryExperimentRunner:
                 "re-running with --resume continues from here"
             )
         self.calls += 1
-
-
-def _abs_yaw(yaw_deg: float) -> float:
-    """Fold a torso yaw into [0, 180] so +/- rotations behave symmetrically."""
-    yaw = abs(float(yaw_deg)) % 360.0
-    return float(360.0 - yaw if yaw > 180.0 else yaw)
 
 
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:

@@ -36,11 +36,19 @@ import glob
 import io
 import json
 import os
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence
 
 import numpy as np
 
 from persistence import atomic_write_json, atomic_write_text
+# The sideways band is scored by the protocol, so it is defined there and only
+# there.  This module carried its own 45/135 copy, which meant the offline report
+# and the live runner could in principle disagree about whether an episode passed
+# sideways.  protocol.py is pure text and imports nothing, so reaching for it here
+# costs nothing and keeps the report free of the Isaac Sim dependency.  The alias
+# is this module's historical name for the predicate, kept because
+# test_bao_integration.py refers to it.
+from protocol import is_sideways_yaw as _sideways_yaw
 
 HUMAN_THRESHOLD = 1.30
 
@@ -154,13 +162,6 @@ def discover_models(results_root: str) -> List[str]:
 # ---------------------------------------------------------------------------
 # Metrics
 # ---------------------------------------------------------------------------
-
-
-def _sideways_yaw(yaw_deg: float) -> bool:
-    yaw = abs(float(yaw_deg)) % 360.0
-    if yaw > 180.0:
-        yaw = 360.0 - yaw
-    return 45.0 <= yaw <= 135.0
 
 
 def episode_passed_sideways(episode: Dict[str, Any]) -> bool:

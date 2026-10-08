@@ -52,7 +52,6 @@ import numpy as np
 
 from protocol import (
     ACTION_NAMES_TEXT,
-    ACTION_OPTIONS_STRING,
     ACTIONS,
     NOTE_SYSTEM_PROMPT,
     SYSTEM_PROMPT,
@@ -339,38 +338,6 @@ def parse_action_text(text: Any) -> Optional[str]:
     return None
 
 
-def build_prompt(context: Optional[Dict[str, Any]] = None) -> str:
-    """Build the prompt for one decision step.
-
-    Delegates to ``protocol.build_prompt`` so there is exactly one prompt in
-    the project.  ``context`` may carry ``position``, ``torso_rotation`` (or
-    ``yaw``), ``camera_yaw``, ``history`` and ``max_steps``.  The channel geometry
-    is deliberately never part of the prompt.
-
-    ``camera_yaw`` is forwarded because the gaze is pinned to the walking
-    direction and look_left/look_right offset it: dropping the field would omit
-    the one line that tells the agent where it is looking, and nothing in a
-    single frame reveals it.  (Nothing calls this wrapper today; it exists as the
-    documented entry point, and it is fixed rather than deleted because a caller
-    silently losing that line is exactly the failure it is meant to prevent.)
-    """
-    from protocol import build_prompt as _build_prompt
-
-    context = dict(context or {})
-    if "torso_rotation" not in context and "yaw" in context:
-        context["torso_rotation"] = context["yaw"]
-    state = {
-        "position": context.get("position"),
-        "torso_rotation": context.get("torso_rotation"),
-        "camera_yaw": context.get("camera_yaw"),
-    }
-    return _build_prompt(
-        state=state,
-        history=context.get("history"),
-        max_steps=int(context.get("max_steps", 30)),
-    )
-
-
 class _OpenAICompatMessage:
     def __init__(self, content: str) -> None:
         self.content = content
@@ -560,15 +527,19 @@ class AgentAPI:
         prompt: str,
         state: Optional[Dict[str, Any]] = None,
         history: Optional[List[Dict[str, str]]] = None,
-        options: Optional[str] = None,
     ) -> Dict[str, Any]:
         """Return {"action", "confidence", "reasoning"} for the current view.
 
-        ``history``/``state``/``options`` exist so the documented call signature
-        stays stable for callers that pass them, but this client does **not**
-        inject them: the within-episode memory is already rendered into
-        ``prompt`` by ``protocol.build_prompt``, and adding it twice would
-        duplicate the block.  Pass the history to the prompt builder, not here.
+        ``history`` and ``state`` exist so the documented call signature stays stable
+        for callers that pass them, but this client does **not** inject them: the
+        within-episode memory is already rendered into ``prompt`` by
+        ``protocol.build_prompt``, and adding it twice would duplicate the block.
+        Pass the history to the prompt builder, not here.
+
+        There used to be an ``options`` parameter beside them, carrying the action
+        menu on every request.  Nothing read it -- the menu is rendered into the
+        prompt -- so it was removed rather than left as a parameter whose only effect
+        was to make two call sites look like they configured something.
         """
         messages = self._build_messages(image, prompt)
         repair_hint = (
@@ -726,7 +697,6 @@ class RandomAgent:
         prompt: str = "",
         state: Optional[Dict[str, Any]] = None,
         history: Optional[List[Dict[str, str]]] = None,
-        options: Optional[str] = None,
     ) -> Dict[str, Any]:
         action = random.choice(ACTIONS)
         return {
@@ -743,7 +713,7 @@ class AIAgent(AgentAPI):
         super().__init__(model_name=model, **kwargs)
 
 
-_AGENT_CACHE: Dict[Tuple[str, str, str, str], AgentAPI] = {}
+_AGENT_CACHE: Dict[Tuple[str, str, str, str, str], AgentAPI] = {}
 
 
 def create_agent(
@@ -782,7 +752,6 @@ def get_action(
     model_name: Optional[str] = None,
     state: Optional[Dict[str, Any]] = None,
     history: Optional[List[Dict[str, str]]] = None,
-    options: Optional[str] = None,
     log_file: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Module-level convenience wrapper used by experiments.py."""
@@ -793,5 +762,4 @@ def get_action(
         prompt=prompt,
         state=state,
         history=history,
-        options=options,
     )

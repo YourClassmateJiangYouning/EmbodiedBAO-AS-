@@ -106,7 +106,7 @@ def request_params_suffix(model: str) -> str:
 
 
 def _scene_choices() -> list:
-    """The Stage 3 scene names, for --scene's choices.
+    """The Stage 1 scene names, for --scene's choices.
 
     scenes.py is pure data and imports nothing from environment, so importing it here is
     safe -- unlike environment, which must not be imported before SimulationApp starts.
@@ -132,7 +132,7 @@ def effective_tag(model: str, tag: str = "", scene: str = "") -> str:
     actually written, and a manual ``main.py --tag <model>`` could not find the
     sweep's resume checkpoint.
 
-    ``scene`` is appended so that two Stage 3 scenes cannot write into one directory and
+    ``scene`` is appended so that two Stage 1 scenes cannot write into one directory and
     silently merge.  It is empty by default, so every tag composed before the scenes existed
     still resolves to exactly the same directory and the committed episodes stay findable.
     """
@@ -371,7 +371,7 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         # scenes.py imports nothing from environment, so importing its list here is safe
         # and a typo fails at parse time rather than half-applying a scene at run time.
         choices=[""] + list(_scene_choices()),
-        help="Stage 3 scene from scenes.SCENE_ORDER, e.g. stage1.2.  Empty is the frozen "
+        help="Stage 1 scene from scenes.SCENE_ORDER, e.g. stage1.2.  Empty is the frozen "
              "baseline: no materials rebound, no dressing, and the legacy red square.  The "
              "five repeats of a scene cycle through that scene's five markers automatically.",
     )
@@ -493,7 +493,13 @@ def save_episodes_csv(
     safe_tag = persistence.sanitize_tag(tag, "untagged")
     path = os.path.join(out_dir, f"level{level}_{safe_tag}_{timestamp}.csv")
 
-    fields = [
+    # One flat table per step.  The episode-level columns come from the episode
+    # record and the step-level ones from each step, so the two lists are written
+    # separately and the header is derived from them -- the previous version named
+    # each of these twenty fields three times (once in the header list, once as a
+    # dictionary key, once as the looked-up name), where a rename in one of the
+    # three places produced a silently empty column.
+    episode_fields = (
         "episode_id",
         "level",
         "channel_width",
@@ -506,6 +512,8 @@ def save_episodes_csv(
         "first_turn_step",
         "total_steps",
         "action_sequence",
+    )
+    step_fields = (
         "step",
         "action",
         "torso_rotation",
@@ -514,36 +522,16 @@ def save_episodes_csv(
         "collision",
         "step_success",
         "llm_response_time_ms",
-    ]
+    )
 
     buffer = io.StringIO()
-    writer = csv.DictWriter(buffer, fieldnames=fields)
+    writer = csv.DictWriter(buffer, fieldnames=[*episode_fields, *step_fields])
     writer.writeheader()
     for episode in episodes:
+        carried = {name: episode.get(name) for name in episode_fields}
         for step in episode.get("steps", []):
             writer.writerow(
-                {
-                    "episode_id": episode.get("episode_id"),
-                    "level": episode.get("level"),
-                    "channel_width": episode.get("channel_width"),
-                    "a_s_ratio": episode.get("a_s_ratio"),
-                    "passed": episode.get("passed"),
-                    "passed_sideways": episode.get("passed_sideways"),
-                    "passage_rotation_deg": episode.get("passage_rotation_deg"),
-                    "max_rotation_deg": episode.get("max_rotation_deg"),
-                    "total_rotation": episode.get("total_rotation"),
-                    "first_turn_step": episode.get("first_turn_step"),
-                    "total_steps": episode.get("total_steps"),
-                    "action_sequence": episode.get("action_sequence"),
-                    "step": step.get("step"),
-                    "action": step.get("action"),
-                    "torso_rotation": step.get("torso_rotation"),
-                    "position_x": step.get("position_x"),
-                    "position_z": step.get("position_z"),
-                    "collision": step.get("collision"),
-                    "step_success": step.get("step_success"),
-                    "llm_response_time_ms": step.get("llm_response_time_ms"),
-                }
+                {**carried, **{name: step.get(name) for name in step_fields}}
             )
     # Atomic: this file is rewritten after every episode, and an interrupted
     # rewrite would otherwise destroy the accumulated table for the Level.
@@ -732,9 +720,13 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
             print(f"[checkpoint] resumed with {len(checkpoint.completed)} completed units")
         _write_progress(f"checkpoint path: {os.path.abspath(checkpoint_path)}")
 
+        # The CSV path written by the most recent export per Level, so the summary line
+        # at the end of a Level can name the file even though _on_episode wrote it.
+        csv_paths: Dict[int, str] = {}
+
         def _export_csv(level: int, episodes_done: Sequence[Dict[str, Any]]) -> str:
             """Refresh the flat per-step CSV for one Level."""
-            return save_episodes_csv(
+            path = save_episodes_csv(
                 episodes_done,
                 model=args.model,
                 level=level,
@@ -742,6 +734,8 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
                 timestamp=timestamp,
                 tag=runner.tag,
             )
+            csv_paths[level] = path
+            return path
 
         def _on_episode(
             level: int,
@@ -780,9 +774,17 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
             )
             summary = BAOExperimentRunner.summarize_level(level, episodes)
             summaries[level] = summary
-            csv_path = _export_csv(level, episodes)
-            print(f"[main] saved {csv_path}")
-            _write_progress(f"csv saved: {csv_path}")
+            if level in csv_paths:
+                # _on_episode already wrote the table for this Level, containing every
+                # episode, so writing it again here would repeat identical rows.
+                print(f"[main] saved {csv_paths[level]}")
+                _write_progress(f"csv saved: {csv_paths[level]}")
+            else:
+                # No episode ran (a resumed Level whose episodes were all already
+                # complete), so the callback never fired and the table is still due.
+                csv_path = _export_csv(level, episodes)
+                print(f"[main] saved {csv_path}")
+                _write_progress(f"csv saved: {csv_path}")
             _write_progress(
                 f"level {level} done: pass_rate={summary['pass_rate']:.3f} "
                 f"sideways_rate={summary['sideways_rate']:.3f}"

@@ -1,4 +1,4 @@
-"""Render one Stage 3 scene so it can be looked at.
+"""Render one Stage 1 scene so it can be looked at.
 
 Why this exists: the scene design is a pile of material URLs, marker polygons and dressing
 coordinates, and the only way to know whether it looks like a supermarket rather than a
@@ -36,7 +36,7 @@ import numpy as np
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Render one Stage 3 scene.")
+    parser = argparse.ArgumentParser(description="Render one Stage 1 scene.")
     # Not derived from scenes.py here: importing it before SimulationApp is the trap
     # capture_views.py documents, so the name is validated after the app is up.
     parser.add_argument("--scene", type=str, required=True)

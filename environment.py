@@ -41,6 +41,8 @@ import numpy as np
 # here so that ``from environment import ACTIONS, MOVE_STEP`` keeps working, and so
 # that the controls are described in exactly one place.
 from protocol import ACTIONS, MOVE_STEP
+from protocol import SIDEWAYS_YAW_MAX_DEG, SIDEWAYS_YAW_MIN_DEG
+from protocol import fold_yaw, is_sideways_yaw
 
 try:
     from isaacsim.core.api import World
@@ -273,9 +275,11 @@ LEVEL_CHANNEL_WIDTHS: Dict[int, float] = {
 }
 
 # Yaw band that counts as "sideways" (body rotated so the narrow torso
-# dimension faces the channel).
-SIDEWAYS_YAW_MIN_DEG = 45.0
-SIDEWAYS_YAW_MAX_DEG = 135.0
+# dimension faces the channel).  Defined in protocol.py and re-exported here: the
+# band is a scored fact of the protocol, and analysis.py and experiments.py need
+# it without importing this module (which cannot be imported before SimulationApp
+# starts).  ``from environment import SIDEWAYS_YAW_MIN_DEG`` keeps working.
+# SIDEWAYS_YAW_MIN_DEG / SIDEWAYS_YAW_MAX_DEG are imported above.
 
 # Tolerance applied when the separating-axis test decides whether two boxes
 # overlap, in metres.  Touching counts as clear.
@@ -529,23 +533,16 @@ def _oriented_rects_overlap(
     what makes A/S == 1.00 a passable width: a body exactly as wide as the
     channel must be legal, and without the tolerance the comparison is decided
     by floating-point rounding.
+
+    Four candidate separating axes have to be tried: the two face normals of each
+    rectangle.  A single clear projection proves the boxes disjoint, so the first
+    successful test returns False and the loop falls through to True.
     """
-    a_lo, a_hi = _project_rect(center_a, axes_a, half_a, axes_a[0])
-    b_lo, b_hi = _project_rect(center_b, axes_b, half_b, axes_a[0])
-    if b_hi - OVERLAP_TOLERANCE < a_lo or a_hi - OVERLAP_TOLERANCE < b_lo:
-        return False
-    a_lo, a_hi = _project_rect(center_a, axes_a, half_a, axes_a[1])
-    b_lo, b_hi = _project_rect(center_b, axes_b, half_b, axes_a[1])
-    if b_hi - OVERLAP_TOLERANCE < a_lo or a_hi - OVERLAP_TOLERANCE < b_lo:
-        return False
-    a_lo, a_hi = _project_rect(center_a, axes_a, half_a, axes_b[0])
-    b_lo, b_hi = _project_rect(center_b, axes_b, half_b, axes_b[0])
-    if b_hi - OVERLAP_TOLERANCE < a_lo or a_hi - OVERLAP_TOLERANCE < b_lo:
-        return False
-    a_lo, a_hi = _project_rect(center_a, axes_a, half_a, axes_b[1])
-    b_lo, b_hi = _project_rect(center_b, axes_b, half_b, axes_b[1])
-    if b_hi - OVERLAP_TOLERANCE < a_lo or a_hi - OVERLAP_TOLERANCE < b_lo:
-        return False
+    for axis in (axes_a[0], axes_a[1], axes_b[0], axes_b[1]):
+        a_lo, a_hi = _project_rect(center_a, axes_a, half_a, axis)
+        b_lo, b_hi = _project_rect(center_b, axes_b, half_b, axis)
+        if b_hi - OVERLAP_TOLERANCE < a_lo or a_hi - OVERLAP_TOLERANCE < b_lo:
+            return False
     return True
 
 
@@ -633,12 +630,13 @@ def _check_room_boundary(
     if root.shape[0] < 3 or not np.all(np.isfinite(root[:3])):
         return {"part": "body", "boundary": "invalid_pose", "point": root.tolist()}
     c, s = abs(float(np.cos(yaw_rad))), abs(float(np.sin(yaw_rad)))
-    half_x = (ROBOT_TORSO_THICKNESS / 2.0 + BODY_CLEARANCE) * c + (
-        ROBOT_SHOULDER_WIDTH / 2.0 + BODY_CLEARANCE
-    ) * s
-    half_z = (ROBOT_TORSO_THICKNESS / 2.0 + BODY_CLEARANCE) * s + (
-        ROBOT_SHOULDER_WIDTH / 2.0 + BODY_CLEARANCE
-    ) * c
+    # The body's half-extents along each axis of the room, from the same oriented
+    # rectangle the wall test uses.  Named once because the same (thickness/2 +
+    # clearance) and (shoulder/2 + clearance) pair is needed for both axes.
+    half_along_body = ROBOT_TORSO_THICKNESS / 2.0 + BODY_CLEARANCE
+    half_across_body = ROBOT_SHOULDER_WIDTH / 2.0 + BODY_CLEARANCE
+    half_x = half_along_body * c + half_across_body * s
+    half_z = half_along_body * s + half_across_body * c
     limits = (
         (root[0] - half_x, 0.0, "near"),
         (ROOM_LENGTH_X - (root[0] + half_x), 0.0, "far"),
@@ -803,7 +801,7 @@ class BAOEnv:
         self._create_wall()
         if self.task_dict.get("hide_wall", False):
             self._remove_wall()
-        # A Stage 3 scene replaces the marker with one of its twenty-five and may rebind the
+        # A Stage 1 scene replaces the marker with one of its twenty-five and may rebind the
         # four surfaces and add dressing.  With no scene set, nothing below runs and the
         # legacy red square is built exactly as before -- which is what keeps the committed
         # 660 episodes valid and the baseline path untouched.
@@ -1863,30 +1861,43 @@ class BAOEnv:
             return
         try:
             names = self._articulation_dof_names()
+            # (substring matched against the lower-cased joint name, target angle).
+            # The legs are held straight and the shoulders stay in the body plane;
+            # only the shoulder pitch and the elbow bend carry the hang pose.  The
+            # rule order is the match order and is significant: a joint takes the
+            # first pattern it contains, and every branch did exactly the same two
+            # things -- record the index, record the angle -- so the chain is a
+            # table rather than five near-identical branches.
+            rules = (
+                ("hip", 0.0),
+                ("knee", 0.0),
+                ("shoulder_roll", 0.0),
+                (
+                    "shoulder_pitch",
+                    float(
+                        self.task_dict.get(
+                            "arm_hang_shoulder_pitch_rad", ARM_HANG_SHOULDER_PITCH_RAD
+                        )
+                    ),
+                ),
+                (
+                    "elbow",
+                    float(
+                        self.task_dict.get(
+                            "arm_hang_elbow_pitch_rad", ARM_HANG_ELBOW_PITCH_RAD
+                        )
+                    ),
+                ),
+            )
             indices: List[int] = []
             positions: List[float] = []
-            hang_shoulder = float(
-                self.task_dict.get(
-                    "arm_hang_shoulder_pitch_rad", ARM_HANG_SHOULDER_PITCH_RAD
-                )
-            )
-            hang_elbow = float(
-                self.task_dict.get("arm_hang_elbow_pitch_rad", ARM_HANG_ELBOW_PITCH_RAD)
-            )
             for i, name in enumerate(names):
                 lower = name.lower()
-                if any(key in lower for key in ("hip", "knee")):
-                    indices.append(i)
-                    positions.append(0.0)
-                elif "shoulder_roll" in lower:
-                    indices.append(i)
-                    positions.append(0.0)
-                elif "shoulder_pitch" in lower:
-                    indices.append(i)
-                    positions.append(hang_shoulder)
-                elif "elbow" in lower:
-                    indices.append(i)
-                    positions.append(hang_elbow)
+                for key, target in rules:
+                    if key in lower:
+                        indices.append(i)
+                        positions.append(target)
+                        break
             if indices:
                 self._articulation_set_targets(
                     np.asarray(positions, dtype=float),
@@ -2174,17 +2185,22 @@ class BAOEnv:
 
     def get_abs_torso_rotation(self) -> float:
         """Absolute torso yaw in degrees, folded into [0, 180]."""
-        yaw = abs(self.get_torso_rotation()) % 360.0
-        return float(360.0 - yaw if yaw > 180.0 else yaw)
+        return fold_yaw(self.get_torso_rotation())
 
     def is_sideways(self, tolerance_deg: float = 0.0) -> bool:
-        """True when the torso is rotated enough to present the thin profile."""
-        yaw = self.get_abs_torso_rotation()
-        return bool(
-            SIDEWAYS_YAW_MIN_DEG - tolerance_deg
-            <= yaw
-            <= SIDEWAYS_YAW_MAX_DEG + tolerance_deg
-        )
+        """True when the torso is rotated enough to present the thin profile.
+
+        ``tolerance_deg`` widens the band on both sides; at 0 this is exactly
+        ``protocol.is_sideways_yaw``, which is where the band itself lives.
+        """
+        if tolerance_deg:
+            yaw = self.get_abs_torso_rotation()
+            return bool(
+                SIDEWAYS_YAW_MIN_DEG - tolerance_deg
+                <= yaw
+                <= SIDEWAYS_YAW_MAX_DEG + tolerance_deg
+            )
+        return bool(is_sideways_yaw(self.get_torso_rotation()))
 
     def get_hand_position(self) -> np.ndarray:
         if self._articulation_ok and self.hand_xform is not None:

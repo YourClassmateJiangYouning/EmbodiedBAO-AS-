@@ -42,9 +42,15 @@ The module only imports Isaac Sim inside ``main()``, so prompt building, action
 parsing and record shaping can be unit-tested with plain Python.
 
 Expected ``ai_agent`` interface (one of):
-    ai_agent.get_action(prompt, image, state, history, options) -> action
+    ai_agent.get_action(image, prompt, state, history) -> action
     ai_agent.create_agent(model, log_file) -> object with get_action(...)
     ai_agent.get_agent(model, log_file)   -> object with get_action(...)
+
+The positional order of ``get_action`` is the one ``ai_agent`` uses -- image first,
+prompt second -- and that order matters, because ``AgentAdapter.query`` has a positional
+fallback for a callable that accepts only those.  It used to be documented with a fifth
+``options`` argument, which was removed from the whole chain: nothing ever read it, since
+the action menu is rendered into the prompt by ``protocol.build_prompt``.
 """
 
 from __future__ import annotations
@@ -69,16 +75,20 @@ from persistence import (
 from environment import (
     ACTIONS,
     LEVEL_CHANNEL_WIDTHS,
-    SIDEWAYS_YAW_MAX_DEG,
-    SIDEWAYS_YAW_MIN_DEG,
     SUCCESS_X,
     WALL_X,
     TURN_STEP_DEG,
     a_s_ratio,
     level_channel_width,
 )
-from protocol import ACTION_OPTIONS_STRING, build_prompt
-
+# The yaw fold and the sideways band are defined once, in protocol.py, which is pure
+# text and importable before SimulationApp exists.  They are imported under this
+# module's historical private names so that every caller -- including the tests that
+# pin the band against the Stage 2 predicate -- keeps working unchanged, and so that
+# there is no longer a second copy of the arithmetic to drift out of step.
+from protocol import build_prompt
+from protocol import fold_yaw as _abs_yaw
+from protocol import is_sideways_yaw as _is_sideways_yaw
 # Derived from the ladder so the two can never disagree: adding a width to
 # environment.LEVEL_CHANNEL_WIDTHS adds a Level to the protocol.
 DEFAULT_LEVELS: Tuple[int, ...] = tuple(sorted(LEVEL_CHANNEL_WIDTHS))
@@ -231,16 +241,6 @@ def _env_collision(env: Any) -> bool:
         return False
 
 
-def _abs_yaw(yaw_deg: float) -> float:
-    """Fold a torso yaw into [0, 180] so +/- rotations behave symmetrically."""
-    yaw = abs(float(yaw_deg)) % 360.0
-    return float(360.0 - yaw if yaw > 180.0 else yaw)
-
-
-def _is_sideways_yaw(yaw_deg: float) -> bool:
-    return bool(SIDEWAYS_YAW_MIN_DEG <= _abs_yaw(yaw_deg) <= SIDEWAYS_YAW_MAX_DEG)
-
-
 def analytic_pass_check(channel_width: float, yaw_deg: float) -> bool:
     """Can the body box pass a channel of ``channel_width`` at ``yaw_deg``?
 
@@ -279,44 +279,53 @@ class AgentAdapter:
             self._agent = ai_agent.get_agent(model=model, log_file=log_file)
         else:
             raise RuntimeError(
-                "ai_agent must expose get_action(prompt, image, state, history, options) "
+                "ai_agent must expose get_action(image, prompt, state, history) "
                 "or a create_agent/get_agent factory."
             )
 
     def query(
         self, prompt: str, image: np.ndarray, state: Dict[str, Any]
     ) -> Tuple[Optional[str], str, str, float]:
-        """Call the model and return (action_name, raw_response, reasoning, latency_ms)."""
+        """Call the model and return (action_name, raw_response, reasoning, latency_ms).
+
+        ``options`` used to be threaded through this call and both client layers on
+        every request.  Nothing ever read it: the action menu is rendered into the
+        prompt by ``protocol.build_prompt``, so a caller passing it was passing the
+        same text a second time.
+        """
         t0 = time.perf_counter()
         if self._callable is not None:
             try:
                 raw = self._callable(
-                    prompt=prompt,
                     image=image,
+                    prompt=prompt,
                     state=state,
                     history=self.history,
-                    options=ACTION_OPTIONS_STRING,
                     model_name=self.model,
                     log_file=self.log_file,
                 )
             except TypeError:
                 try:
                     raw = self._callable(
-                        prompt=prompt,
                         image=image,
+                        prompt=prompt,
                         state=state,
                         history=self.history,
-                        options=ACTION_OPTIONS_STRING,
                     )
                 except TypeError:
-                    raw = self._callable(prompt, image, self.history)
+                    # Last resort, for the minimal mirrorbench-style callable that
+                    # takes only the frame and the text.  It is positional because
+                    # that is the whole point of this branch, and the order is
+                    # ai_agent.get_action's -- (image, prompt) -- not the order the
+                    # keywords happen to read in.  Passing (prompt, image) here
+                    # handed the model the frame as its instruction text.
+                    raw = self._callable(image, prompt)
         else:
             raw = self._agent.get_action(
                 prompt=prompt,
                 image=image,
                 state=state,
                 history=self.history,
-                options=ACTION_OPTIONS_STRING,
             )
         latency_ms = (time.perf_counter() - t0) * 1000.0
         action_name, raw_text, reasoning = self._normalize(raw)
@@ -368,6 +377,11 @@ class AgentAdapter:
     def _normalize(self, raw: Any) -> Tuple[Optional[str], str, str]:
         """Return ``(action_name, raw_text, reasoning)`` for a model reply."""
         if isinstance(raw, str):
+            # ai_agent owns the prose/``Choice: [n]`` fallback parser; this module used
+            # to carry a byte-identical second copy, so a fix to one of them would
+            # silently apply to only one of the two reply paths.
+            from ai_agent import parse_action_text
+
             return parse_action_text(raw), raw, ""
         if raw is None:
             return None, "", ""
@@ -401,29 +415,6 @@ class AgentAdapter:
             handle.write("-" * 40 + "\n")
 
 
-def parse_action_text(text: Any) -> Optional[str]:
-    """Extract an action name from a model response like 'Choice: [3]'.
-
-    Defensive fallback for endpoints that ignore the JSON instruction; the
-    primary path is the JSON ``action`` field.
-    """
-    if text is None:
-        return None
-    text = str(text).strip()
-    if not text:
-        return None
-    match = re.search(r"Choice:?[\n\s]*\[?(\d+)\]?", text, re.IGNORECASE)
-    if match:
-        index = int(match.group(1))
-        if 1 <= index <= len(ACTIONS):
-            return ACTIONS[index - 1]
-    lowered = text.lower()
-    for action in sorted(ACTIONS, key=len, reverse=True):
-        if action in lowered:
-            return action
-    return None
-
-
 class BAOExperimentRunner:
     """Runs the six-Level A/S threshold protocol against a BAOEnv instance."""
 
@@ -452,6 +443,10 @@ class BAOExperimentRunner:
         # How many consecutive episodes may have every single step fail to produce a usable
         # reply before the run stops itself.  See _note_episode_health.
         self._all_invalid_streak = 0
+        # The step record of the most recent episode, bound in _run_episode.  _note_episode_health
+        # reads it to report WHY the calls were failing; without it defined here that lookup fell
+        # through to its empty default and the report never named the underlying error.
+        self.history: List[Dict[str, Any]] = []
         self.max_steps = int(max_steps)
         self.episodes_per_level = int(episodes_per_level)
         self.save_obs = bool(save_obs)
@@ -584,13 +579,13 @@ class BAOExperimentRunner:
                 progress_callback(
                     level, episode_id + 1, episodes, episode, all_episodes
                 )
-            # Refresh the Level summary after every episode as well, so an
-            # interrupted Level still has a summary that matches its episodes.
+            # Refresh the Level summary after every episode, so an interrupted Level
+            # still has a summary that matches its episodes.  This is also the last
+            # write of the Level: re-saving after the loop would repeat it, since the
+            # summary of a finished Level is the summary of its last episode.
             self._save_summary(level, all_episodes)
             self._note_episode_health(episode)
 
-        if all_episodes:
-            self._save_summary(level, all_episodes)
         return all_episodes
 
     # ------------------------------------------------------------------
@@ -675,6 +670,9 @@ class BAOExperimentRunner:
         # its list (rather than to a second, parallel list) is what makes the
         # prompt block and the ``history=`` argument provably the same object.
         history: List[Dict[str, Any]] = agent.history
+        # Hand the same list to the health check, which names the last failure from
+        # it when an episode turns out to have been unusable end to end.
+        self.history = history
 
         self.env.reset_scene()
         steps: List[Dict[str, Any]] = []

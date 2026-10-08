@@ -9,42 +9,78 @@ waiting to be blocked.  Two later measurements bracket that estimate: Franchak e
 (2012), with a 0.5 cm apparatus, report 1.10 and note that coarse aperture steps
 systematically raise it, while Keizer et al. (2013) report 1.25 for healthy controls.
 This benchmark puts a Unitree H1 in front of a wall with
-a single vertical opening and sweeps that ratio from 1.58 down to 0.79,
-measuring where the agent's body-scale affordance perception sits.
+a single vertical opening and sweeps that ratio across **17 widths**, from A/S = 2.0
+down to 0.4, measuring where the agent's body-scale affordance perception sits.
 
 **The only thing that changes between Levels is the physical opening width. The
 prompt is identical for every Level, and it never mentions the width, the body
 size, the A/S ratio, or the need to turn.**
 
+The study has stages, and this README covers all of them. The numbering is worth stating
+because two of these were mis-filed once:
+
+| Stage | What it is | Spec | Code |
+| :--- | :--- | :--- | :--- |
+| **1** | The A/S threshold, on 5 scene skins and 25 markers | `STAGE1_SCENES.md` | `main.py`, `experiments.py`, `scenes.py`, `scene_builder.py` |
+| **1** (variants) | 10 single-variable variants of the stage above: marker size and colour, far-wall distance, floor centre line, three wall heights, three prompt rewrites | `STAGE1_SCENE_VARIANTS.md` | not implemented |
+| **2** | Repeated attempts with a self-written note between them | `STAGE23_DESIGN.md` | `memory_experiment.py`, `memory_protocol.py`, `memory_metrics.py` |
+| **3** | The follow-up phases *of the memory experiment*: a second passage back through a narrow opening, and a wide-then-narrow control. Both are listed under "explicitly not doing" in `STAGE23_DESIGN.md` §10, so there is no code and no plan | `STAGE23_DESIGN.md` §10 | none |
+
+The Stage 1 scene skins used to live in a file named `STAGE3_SCENES.md`, and the variants in
+`STAGE3_SCENE_VARIANTS.md`, which is why older notes call the scene work "Stage 3". It is
+not: Stage 3 is the memory experiment's follow-up. Both files are now named `STAGE1_*`.
+
 ## The A/S ladder
 
-A/S = channel width / shoulder width (0.57 m). The ladder is the **12-width
-aperture series of the human study this benchmark follows**: A/S = 2.0 down to 0.9
-in steps of 0.1, five episodes per width (Warren & Whang 1987; Keizer et al. 2013
-used the same 12 ratios × 3 trials). Sampling at 0.1 is what localises the
-threshold: the reference band 1.10-1.30 (the three measurements above) falls between two
-Levels.
+A/S = channel width / shoulder width (0.57 m). The first twelve widths are the
+**aperture series of the human study this benchmark follows**: A/S = 2.0 down to 0.9
+in steps of 0.1 (Warren & Whang 1987; Keizer et al. 2013 used the same 12 ratios × 3
+trials). Sampling at 0.1 is what localises the threshold: the reference band 1.10-1.30
+(the three measurements above) falls between two Levels.
 
-Widest first, so a sweep runs from trivially passable toward rotation-required:
+**Five more widths extend it to A/S 0.4.** They were added because the level that
+"cannot be walked through" was the only informative point in the old ladder, and one
+point cannot describe a curve. The floor is 0.4 (0.228 m) rather than lower because
+the body's smallest possible projection is its 0.220 m thickness: below A/S 0.386 no
+torso angle fits at all, which would measure nothing. See `tools/ladder_proposal.py`.
 
-| A/S | Channel | Frontal passage |
-| :--- | :--- | :--- |
-| 2.0 → 1.4 (Levels 0–6) | 1.140 → 0.798 m | easy |
-| 1.3 (Level 7) | 0.741 m | the human reference ratio |
-| 1.2 (Level 8) | 0.684 m | just below it |
-| 1.1 (Level 9) | 0.627 m | tight |
-| 1.0 (Level 10) | 0.570 m | exactly flush: only dead centre |
-| 0.9 (Level 11) | 0.513 m | **impossible unturned** — needs ≥60° of rotation |
+Widest first, so a sweep runs from trivially passable toward rotation-required. The
+last three columns are derived from the geometry by `memory_metrics.min_turns` /
+`optimal_steps` and printed here as measured, not asserted:
+
+| Level | A/S | Channel | Min rotation to fit | Min turns | Shortest route |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 0–10 | 2.0 → 1.0 | 1.140 → 0.570 m | 0° | 0 | 11 steps |
+| 11 | 0.9 | 0.513 m | **60°** | 4 | 15 steps |
+| 12 | 0.8 | 0.456 m | **75°** | 5 | 16 steps |
+| 13 | 0.7 | 0.399 m | **75°** | 5 | 16 steps |
+| 14 | 0.6 | 0.342 m | **90°** | 6 | 17 steps |
+| 15 | 0.5 | 0.285 m | **90°** | 6 | 17 steps |
+| 16 | 0.4 | 0.228 m | **90°** | 6 | 17 steps |
+
+Levels 0–10 need no rotation at all, and they are kept rather than collapsed into one
+"easy" Level because they are the control for the claim that the model's behaviour
+*changes* with width. Levels 11–16 are **not** a continuum: the body's projection rises
+to 0.611 m at 21.1° before it falls, so 1 and 2 turns are never the best answer and only
+45°, 60°, 75° and 90° are ever useful. That makes four plateaus below A/S 1.0, with the
+A/S value inside a plateau controlling only how much slack the body has — and slack is
+what a threshold measure resolves.
+
+The Level-11 figure is the one worth being careful about: 45° needs 0.5586 m and the
+opening is 0.513 m, so 45° does **not** fit, while 60° needs 0.4755 m and does. The
+minimum is therefore 60°, four turns. `STAGE1_SCENES.md` §1 says five (75°) and
+`STAGE23_DESIGN.md` §8 implies it in one place; both are stale, the code and
+`lab_logs/verify_optimal_steps.py` (breadth-first search over the real action space,
+0.513 → **15** = 11 forward + 4 turns) agree on four. The A/S 0.9 plateau is the one
+where the minimum is not the 75° that the neighbouring plateaus need.
 
 The slack is measured, not derived: at A/S = 1.0 the aligned body has zero
 tolerance, and the earlier coarse ladder showed the same effect at its own flush
-Level (`tools/check_heading_frame.py` prints the whole series). A/S = 0.9 is
-narrower than the shoulders at every yaw below 54°, so it is the Level that
-requires the rotation this benchmark measures — and the rotation must happen
-**before** reaching the wall, because the turn gate samples the robot's current
+Level (`tools/check_heading_frame.py` prints the whole series). The rotation must
+happen **before** reaching the wall, because the turn gate samples the robot's current
 pose and rejects any rotation that would sweep the shoulders through a panel.
 
-Why 12 points and not 6: a fixed policy ("always turn 90°") produces a high
+Why 17 points and not 6: a fixed policy ("always turn 90°") produces a high
 rotation rate at *every* width, including the ones that need no rotation at all.
 Only a curve with enough points can show that the rate does not vary with A/S, and
 that check is reported as `rotation_gradedness` in the threshold table.
@@ -54,8 +90,16 @@ that check is reported as `rotation_gradedness` in the threshold table.
 ```
 x : forward   (16 m room; wall at x = 8.0, robot starts at x = 0.5)
 y : up        (ground at y = 0)
-z : lateral   (opening centred at z = 0, room spans z in [-2.5, 2.5])
+z : lateral   (opening centred at z = 0, room spans z in [-2.5, 2.5], +z is the robot's right)
 ```
+
+Two frames are in play and they are easy to mix up, which has already cost one silent
+defect: the **catalogue and this README use user coordinates** `(x, height, lateral)`,
+while the **USD stage is Z-up** `(x, lateral, height)`. `scenes.to_world` /
+`scenes.to_user` swap the last two components, and `environment._user_to_isaac_pos` is
+the same operation for the room. A marker authored at 1.40 m up the far wall was once
+placed 1.40 m *sideways* and at height zero, because `scene_builder` builds prims
+directly and did not convert.
 
 | Element | Value |
 | :--- | :--- |
@@ -66,12 +110,49 @@ z : lateral   (opening centred at z = 0, room spans z in [-2.5, 2.5])
 | Channel edge posts | 0.05 m wide, full wall height, one on each side, placed **outside** the opening |
 | Robot start | `(0.5, 0, 0)`, facing `+x` |
 | Success | body centre reaches **`x >= 8.75`** (one stride past the wall) |
-| Eye camera | head height 1.68 m, pitched 15° down, 76° field of view |
+| Eye camera | head height 1.68 m, pitched 15° down, focal 13.36 mm on a 20.955 mm sensor → 76.2° horizontal, 47.6° vertical |
+
+### Five scene skins, twenty-five markers
+
+The site is presented as five everyday places rather than one bare laboratory, because
+a bare laboratory is not what an affordance judgement is made in. The scenes are
+**skins**: they rebind the four visible surfaces (floor, both side walls, ceiling, far
+wall) and add non-collidable dressing. The obstacle wall, the opening, the room bounds,
+the start pose and the success plane are identical in all five, and
+`test_bao_scenes.py` asserts that.
+
+| Scene | Place | Materials | Dressing |
+| :--- | :--- | ---: | ---: |
+| `stage1.1` | plain laboratory (**baseline**) | none | none |
+| `stage1.2` | warehouse / factory | 4 | 8 |
+| `stage1.3` | library | 4 | 8 |
+| `stage1.4` | park / outdoor | 3 | 8 |
+| `stage1.5` | supermarket | 4 | 8 |
+
+Each (scene, model, Level) cell runs **five episodes, one per marker**, so the five
+repeats are five conditions rather than five replicates. Every marker is 0.60 m across,
+at `x = 16.0`, `z = 0`, centre 1.40 m, on the far wall — only its **shape and colour**
+change, so the distance cue is the same size in every condition. Twenty-five markers
+means no (shape, colour) pair repeats, and within a scene the five colours differ.
+
+That changes what the repetitions mean statistically, and it is not a free upgrade:
+`STAGE1_SCENES.md` §3.5 spells out the consequence. The five episodes in a cell are
+**not** independent replicates, so a per-model variance computed over them is too small.
+What they *do* give is a marker-generalisation check: pooled across the roster, each
+marker has 15 models × 17 Levels = 255 episodes, which is enough to ask whether shape or
+colour moves the threshold at all. The 660 committed episodes used five identical
+repeats per cell and are archived, not mixed into the new analysis.
+
+Dressing is decoration and has to stay decoration: every item is `collides = False`, and
+floor items sit at `|z| >= 1.5 m` and wall items at `|z| >= 0.9 m`, so nothing enters the
+band the robot walks or the opening's sight line. One frozen layout per scene — never
+per-episode randomisation, which would be a second independent variable.
 
 ### Surface colours
 
-Every surface the agent can see has its own colour, so that "aimed at the
-opening" and "aimed at a panel" cannot be confused:
+In the baseline scene every surface the agent can see has its own colour, so that "aimed
+at the opening" and "aimed at a panel" cannot be confused. **The four non-baseline scenes
+rebind these**, so the table below describes `stage1.1`:
 
 | Surface | Colour |
 | :--- | :--- |
@@ -84,16 +165,18 @@ opening" and "aimed at a panel" cannot be confused:
 
 The obstacle wall is deliberately **opaque**. A translucent panel made the
 channel hard to read at close range; a saturated opaque surface renders the
-opening as a clean silhouette.
+opening as a clean silhouette. It is also **never rebound by a scene**: it is the
+surface that carries the opening, and retexturing it would change the task.
 
 ## Action space
 
-Eight discrete actions:
+**Nine** discrete actions — this said "eight" until it was counted against
+`protocol.ACTIONS`, which has held nine since `look_down` was added:
 
 | Action | Effect |
 | :--- | :--- |
 | `forward` / `backward` | walk **0.75 m** toward / away from the far wall |
-| `left` / `right` | sidestep **0.75 m** to the walker's left / right |
+| `left` / `right` | sidestep **0.75 m** to the walker's right (+z) / left (-z) |
 | `turn_left` / `turn_right` | rotate the torso **15°**; view unchanged |
 | `look_left` / `look_right` | one-frame glance **30°** off the walking direction |
 | `look_down` | one-frame glance **45°** down: the only view of its own body |
@@ -149,13 +232,19 @@ steps, so the narrowest route is 15 of the 30 steps.
 
 ## Protocol
 
-* 12 Levels × **5 episodes** = **60 scored episodes** per model: the reference's
-  12-width aperture series with five repetitions per width.
+* **One scene per sweep**, chosen with `--scene`. A sweep is 17 Levels × **5 episodes**
+  = **85 scored episodes** per model, so the full matrix is 5 scenes × 85 = 425 per model
+  and 15 models × 425 = **6,375 episodes** (`scenes.episode_count()`).
+* The five episodes of a Level use that scene's **five different markers**, one each:
+  five conditions, not five replicates. See "Five scene skins, twenty-five markers".
 * Each episode: at most **30 steps**. Episodes end on success or exhaustion.
 * Wall collisions are **recorded but never terminate** an episode.
 * Every episode starts fresh from the same pose; Levels are independent, and the
   agent carries no memory between episodes.
-* Every Level uses the same prompt — see `protocol.py`.
+* Every Level uses the same prompt — see `protocol.py`. Only the marker's noun phrase
+  changes, once per episode.
+* The scene is part of the run tag, so two scenes can never resolve to one results
+  directory and a `--resume` cannot mix them.
 
 ### What the model is told each step
 
@@ -186,7 +275,7 @@ controls do; the task statement itself carries no advice about the solution, and
 the test suite checks those two properties separately.
 
 **The task is stated as a destination**, not as an instruction about the obstacle:
-"reach the red marker on the far wall". That mirrors the studies this benchmark
+"reach the \<marker\> on the far wall". That mirrors the studies this benchmark
 follows — Keizer et al. sent participants to a table beyond the aperture and
 presented the aperture as meaningless panels; Lenkei et al. sent dogs to their
 owner through an opening — so the obstacle has to be discovered and judged rather
@@ -194,6 +283,17 @@ than announced. Telling the agent to "pass through the opening" would hand it th
 fact that there is an opening to fit through. The marker is visible **only**
 through the opening (sight lines to it are blocked by the 2 m obstacle wall
 everywhere else), so obeying the instruction requires finding and using it.
+
+**The marker's noun phrase is the one part of the prompt that changes between
+episodes.** Each scene has five markers and the environment advances one slot per
+episode — `reset_scene()` increments a counter and takes `(index - 1) % 5 + 1`, which is
+`(episode_id % 5) + 1` — and `protocol.set_marker_descriptor` substitutes the phrase the
+prompt uses, e.g. "magenta triangle". Everything else in every prompt is the frozen
+Stage 1 text. A prompt that said "red marker" while a cyan disc hung on the wall would be
+measuring obedience to a false statement, which is why `scenes.describe_marker` and the
+word table behind it are checked against their own RGB values by `test_bao_scenes.py`:
+two of those words were wrong ("wine" was called "white", "pink" was called "black") and
+three of the twenty-five prompts were therefore false.
 
 The task statement is a bare destination and nothing more: it must not mention the
 corridor, where the agent starts, or that there is a passage at all, because those
@@ -303,29 +403,40 @@ Either threshold classifies a model:
 
 | File | Role |
 | :--- | :--- |
-| `environment.py` | Isaac Sim scene, kinematics, analytic collision gate, success test |
-| `protocol.py` | single source of truth for the action space and the unified prompt |
+| `environment.py` | Isaac Sim scene, kinematics, analytic collision gate, success test, marker rotation |
+| `protocol.py` | single source of truth for the action space, the unified prompt, and the sideways yaw band |
 | `experiments.py` | episode loop, Level ladder, record shaping, checkpoints |
+| `scenes.py` | **Stage 1 scene catalogue as pure data**: the five scenes, their materials and dressing, the ten shapes, the ten colours and the twenty-five markers. No Isaac Sim, no pxr |
+| `scene_builder.py` | applies a catalogued scene to a live USD stage: material resolution (vendored local copy first), marker meshes, dressing, surface classification. Reports what actually resolved |
+| `capture_scenes.py` | render one scene so it can be looked at: eye view and external view per marker slot |
 | `ai_agent.py` | unified OpenAI-compatible MLLM client + `random` baseline |
 | `main.py` | CLI entry point, CSV export, threshold report |
 | `analysis.py` | per-Level metrics, A/S threshold, reports and plots |
 | `memory_metrics.py` | Stage 2 measures: how wide the body is across an opening, how close a round came to fitting, actions wasted, attempt labels, and the pre-registered insight/gradual/perseveration criteria. Standard library only, no Isaac Sim, no API |
 | `memory_protocol.py` | Stage 2 protocol: the run plan (6 runs x 17 rounds), the three prompts, the memory block, and the round record |
 | `memory_experiment.py` | Stage 2 runner: the round loop, the note call between attempts, the call budget and resume. Run it as `python memory_experiment.py --model <name> --resume` |
-| `test_bao_memory.py` | offline checks for both of the above, against an independent projection of the body rectangle and the simulator's own collision gate |
-| `test_bao_memory_runner.py` | offline end-to-end checks of the runner against a mock environment and a scripted agent: the memory, the note calls, the phase change, resume |
+| `test_bao_scenes.py` | offline checks on the Stage 1 catalogue: markers distinct and legible, dressing cannot occlude the opening or the marker, the colour words match their own RGB |
+| `test_bao_assets.py` | every material a scene names exists in the repository, two surfaces never share one file, and `stage1.1` stays undecorated |
+| `test_bao_memory.py` | offline checks for the Stage 2 modules, against an independent projection of the body rectangle and the simulator's own collision gate |
+| `test_bao_memory_runner.py` | offline end-to-end checks of the Stage 2 runner against a mock environment and a scripted agent: the memory, the note calls, the phase change, resume |
 | `capture_views.py` | render the scene from fixed viewpoints (diagnostics) |
 | `persistence.py` | atomic writes, tag sanitising, corrupt-file quarantine: the durability layer every writer goes through |
 | `test_bao_geometry.py` | offline geometry/protocol verification (no Isaac Sim needed) |
 | `test_bao_integration.py` | end-to-end runner + analysis test against a mock environment |
 | `test_bao_persistence.py` | offline checks that an interrupted run cannot lose or corrupt collected data |
+| `test_bao_parsing.py` | the model reply parser, including the reply shapes that used to be discarded |
+| `test_bao_health.py` | the runner's self-defence: it must stop a model whose every call is failing |
 | `models.json` | the model roster: which models are tested, and why the others were excluded |
-| `run_all_models.sh` | sweep the roster sequentially, resuming each model by tag |
+| `run_all_models.sh` | sweep the roster sequentially, resuming each model by tag. `SCENE=` picks the scene |
 | `run_all_models_memory.sh` | the same sweep for Stage 2: the roster, six runs each, model-scoped tags |
+| `status.sh`, `watch.sh`, `stop.sh` | what is running now, a live line per finished Level, and a precise stop by recorded PID |
 | `verify_professor_machine.sh` | one-shot machine check: suites, passability, Isaac probe, scripted Level-5 run, rendered views |
 | `download.py` | fetch the H1 USD asset if `assets/` is empty |
 | `tools/` | measurement probes used while building the scene; `check_names.py` also runs inside the geometry suite |
-| `STAGE23_DESIGN.md` | authoritative spec for the memory/habit experiment (Stage 2 and 3): geometry, run structure, the three prompts, record fields, pre-registered criteria |
+| `MANUAL.md` | the operating manual to read at the start of every session: where the data lives, the hard rules, mistakes already made |
+| `STAGE1_SCENES.md` | spec for the Stage 1 scene skins and the twenty-five markers (formerly `STAGE3_SCENES.md`) |
+| `STAGE1_SCENE_VARIANTS.md` | spec for the 10 single-variable Stage 1 variants: marker size, far-wall distance, wall height, prompt wording, Chinese (formerly `STAGE3_SCENE_VARIANTS.md`) |
+| `STAGE23_DESIGN.md` | authoritative spec for the memory/habit experiment (Stages 2 and 3) |
 | `lab_logs/` | retrieved lab data: the v7 and v5 archives every analysis reads, the derived episode table, the figures and the analysis scripts (see "Reproducing this repository") |
 
 ## Running
@@ -341,8 +452,14 @@ $ISAACSIM_ROOT/python.sh main.py --model gemini-2.5-pro --all-levels --image_siz
 Common invocations:
 
 ```bash
-# a single Level, two episodes
+# a single Level, two episodes, in the baseline scene
 python main.py --model gemini-2.5-pro --level 0 --episodes 2
+
+# the baseline scene, every Level
+python main.py --model gemini-2.5-pro --all-levels --image_size 512
+
+# a scene skin: stage1.2 is the warehouse
+python main.py --model gemini-2.5-pro --all-levels --scene stage1.2 --tag wh1 --resume
 
 # smoke test (no API key required, but Isaac Sim is still required)
 python main.py --model random --level 0 --episodes 2
@@ -351,25 +468,36 @@ python main.py --model random --level 0 --episodes 2
 python main.py --model gemini-2.5-pro --all-levels --image_size 512 --tag gemini-v1 --resume
 ```
 
-### The whole roster (11 models)
+`--scene` is empty by default, which is the **frozen baseline** `stage1.1`: no materials
+rebound, no dressing, the legacy red square as marker slot 1. The five repeats of a scene
+cycle through that scene's five markers automatically, and the scene becomes part of the
+run tag, so two scenes cannot write into one directory.
+
+### The whole roster (15 models)
 
 ```bash
 export BOYUE_API_KEY='...'
 ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_all_models.sh 2>&1 | tee sweep.log
+
+# one scene skin: SCENE selects it, and it goes into each model's tag
+SCENE=stage1.2 ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_all_models.sh 2>&1 | tee sweep_1.2.log
 ```
 
 `models.json` is the single definition of the roster: the script reads it, gives
-each model its own protocol-versioned tag, and runs 12 Levels × 5 episodes × 30
-steps per model
-with `--resume`, so a second invocation continues instead of starting over. It
-refuses to start if the interpreter cannot import `isaacsim` — rather than
-failing 11 times and looking like a finished sweep — and it exits non-zero if
-any model did.
+each model its own protocol-versioned tag, and runs **17 Levels × 5 episodes × 30
+steps** per model — 85 episodes, up to 2,550 model calls — with `--resume`, so a second
+invocation continues instead of starting over. It refuses to start if the interpreter
+cannot import `isaacsim` — rather than failing 15 times and looking like a finished
+sweep — and it exits non-zero if any model did.
 
-Budget **days, not hours**: up to 1800 model calls per model. Run it inside
-`tmux` or `nohup`, because a dropped SSH session would kill the sweep. Every
-episode is written as it is scored, so an interruption costs at most the episode
-in flight. Afterwards:
+The **five scenes multiply this by five**: 6,375 episodes over the roster. The measured
+figures are in `STAGE1_SCENES.md` §0 (≈97,800 calls, ≈$231, ≈5.7 days serial), derived
+from the v7 run's own 15.34 calls/episode and the gateway's billed
+$0.002362/call — neither is an estimate.
+
+Budget **days, not hours**. Run it inside `tmux` or `nohup`, because a dropped SSH
+session would kill the sweep. Every episode is written as it is scored, so an
+interruption costs at most the episode in flight. Afterwards:
 
 ```bash
 python analysis.py                     # every model found under results/
@@ -573,7 +701,7 @@ tail -n 20 sweep.log                # which model it is on right now
 ```
 
 Per-model progress, read from the checkpoints `--resume` uses (a finished model
-reports 60 = 12 Levels x 5 episodes; duplicates in the list are separate tags and
+reports **85** = 17 Levels x 5 episodes; duplicates in the list are separate tags and
 are listed by tag, not by model):
 
 ```bash
@@ -712,21 +840,44 @@ is versioned now — do not delete it, and do not regenerate it in place.
 
 ## Verification without Isaac Sim
 
-Everything that can be decided without a renderer runs on plain Python:
+Everything that can be decided without a renderer runs on plain Python. **159 checks
+across nine suites**, counted at the time of writing rather than remembered (`grep -c
+'^def test_' test_bao_*.py`):
 
 ```bash
-python test_bao_geometry.py     # 37 checks: ladder, collision gate, routes, colours, prompt
-python test_bao_integration.py  # 20 checks: full protocol, tagged runs, CLI flags, against a mock environment
-python test_bao_persistence.py  # 13 checks: interrupt and corruption safety of every artefact written
-python test_bao_memory.py       # 26 checks: the Stage 2 measures and prompts, against an independent model and the real gate
-python test_bao_memory_runner.py # 9 checks: the Stage 2 runner end to end against a mock environment and a scripted agent
+python test_bao_geometry.py       # 37 checks: ladder, collision gate, routes, colours, prompt
+python test_bao_integration.py    # 20 checks: full protocol, tagged runs, CLI flags, against a mock environment
+python test_bao_memory.py         # 29 checks: the Stage 2 measures and prompts, against an independent model and the real gate
+python test_bao_scenes.py         # 24 checks: the Stage 1 catalogue, all arithmetic, no simulator
+python test_bao_memory_runner.py  # 17 checks: the Stage 2 runner end to end against a mock environment and a scripted agent
+python test_bao_persistence.py    # 13 checks: interrupt and corruption safety of every artefact written
+python test_bao_parsing.py        #  9 checks: the reply parser, including shapes once discarded
+python test_bao_health.py         #  5 checks: the runner stops a model whose every call is failing
+python test_bao_assets.py         #  3 checks: every named material exists, `stage1.1` stays bare
 ```
+
+The scene suite is the one that keeps the skins honest, and every one of its checks is
+arithmetic — no rendered frame is inspected:
+
+* twenty-five markers, no (shape, colour) pair repeated, five distinct colours per scene;
+* every shape inside the 0.60 m bounding box, and no in-plane part thinner than a fifth
+  of it, because the marker is about 20 px from the start pose;
+* no dressing item overlaps the opening or the marker in **any** of the 17 start views
+  (544 item × width projections), and no wall item protrudes more than 0.20 m;
+* every item non-collidable and outside the walking band (`|z| >= 1.5` floor,
+  `>= 0.9` wall);
+* no dressing item borrows one of its scene's five marker colours;
+* **every colour word matches its own RGB**, and all 25 prompt phrases follow from it;
+* a scene declares its dressing in exactly one place — inline or in `_install_dressing`,
+  never both, which is checked off the AST because the overwritten copy is invisible at
+  runtime;
+* `stage1.1` keeps its empty materials, its empty dressing and the red square as slot 1.
 
 The geometry suite re-derives the collision model independently and pins the
 properties that make the ladder meaningful:
 
-* the ladder is the reference 12-width A/S series (2.0 → 0.9 by 0.1) and every
-  width is that ratio times the body's own shoulder width,
+* the ladder is 17 widths (A/S 2.0 → 0.4) and every width is that ratio times the body's
+  own shoulder width,
 * the declared frontal feasibility of every Level, asserted against A/S >= 1.0
   rather than from a table,
 * the body footprint stays centred on the root pose under rotation,
@@ -744,6 +895,9 @@ properties that make the ladder meaningful:
 * the prompt states the same step length that the agent actually moves,
 * look_down is a camera glance that does not translate the robot,
 * the prompt is identical, deterministic, and leak-free.
+
+The geometry suite also runs `tools/check_names.py`, a small AST scope-chain checker, so
+an unbound name fails in seconds instead of after the Isaac Sim startup.
 
 ## Diagnostics on a new machine
 
@@ -893,15 +1047,42 @@ a 2 m horizontal bar instead of a vertical post.
   than by the image, and **this has not been isolated by a controlled A/B test**:
   doing so (same model and prompt at 512 vs 1024) is the measurement that would
   settle whether the resolution can be raised without cost.
+* **Eleven material URLs are unconfirmed.** `scenes.py` marks a scene's materials
+  `material_verified` when the name was read off NVIDIA's public bucket listing. Only
+  `stage1.2` (the warehouse) is: `stage1.3` (4), `stage1.4` (3) and `stage1.5` (4) carry
+  eleven names that still have to be confirmed by the same listing, and
+  `test_bao_scenes.py` fails a scene that claims verification while naming a URL outside
+  the Isaac asset root. Unconfirmed is not the same as wrong — it is unverified.
+* **Scene dressing is boxes, not props.** All 32 dressing items are placed as grey or
+  coloured boxes of their declared size. `scene_builder.place_dressing` deliberately does
+  not use the catalogue's `asset` field: the two items whose asset was an `.mdl` are
+  materials, not stage assets, and USD answers "Cannot determine file format" for them.
+  The report says `used_asset: false` for every item, so nothing has to be guessed later.
+  Real prop meshes are a Stage 1 scene-skin item, not a Stage 3 one.
+* **No marker-uniqueness check exists.** `STAGE1_SCENES.md` §4 lists, as check ②, that a
+  marker must be the only object of its colour in its frame, and that this should be
+  automated. `tools/check_marker_uniqueness.py` **does not exist**; the document says so
+  itself. Until it does, uniqueness rests on the geometric and configuration-level
+  checks plus looking at a rendered frame.
+* **The non-baseline scenes have not been rendered on this machine**, and `stage1.2`
+  previously showed an unlocated dark occlusion in a preview. Rendering needs the lab's
+  GPU; `capture_scenes.py` is the tool.
 
 ## Out of scope (future work)
 
-The current study is the A/S threshold only. Follow-ups once the threshold is
-known: soft-material edges (does the agent try to squeeze through?), strategy
-persistence (does a wide channel still trigger a turn after priming?), and
+The current study is the A/S threshold only, on five scene skins. Follow-ups once the
+threshold is known: soft-material edges (does the agent try to squeeze through?),
+strategy persistence (does a wide channel still trigger a turn after priming?), and
 insight-versus-gradual learning curves across repeated episodes.
 
 Of those, strategy persistence and the insight-versus-gradual learning curves are
-now specified, and their prompts and pre-registered criteria fixed, in
+specified, with their prompts and pre-registered criteria fixed, in
 `STAGE23_DESIGN.md`. That document is the authority for everything it covers; the
 threshold study described above is its baseline, not its subject.
+
+Ten single-variable variants of the threshold study itself — marker size, marker shape
+and colour, far-wall distance, floor centre line, three wall heights, and three prompt
+rewrites including a Chinese translation — are specified in `STAGE1_SCENE_VARIANTS.md`.
+None is implemented. They are the answer to "is the threshold we measure a property of
+the affordance, or of the way we asked the question?", which is the objection the current
+result is most exposed to.

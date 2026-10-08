@@ -216,6 +216,48 @@ def action_descriptions(move_step: float = MOVE_STEP) -> Dict[str, str]:
 ACTION_DESCRIPTIONS: Dict[str, str] = action_descriptions(MOVE_STEP)
 
 
+# ---------------------------------------------------------------------------
+# The sideways band: which torso angles count as "passed sideways"
+# ---------------------------------------------------------------------------
+# A torso angle is folded into [0, 180] -- so -90 and +90 are the same pose -- and
+# the band 45-135 degrees is what the threshold study scores as a sideways passage.
+# Both halves of that rule live here, once, because four different modules need
+# them and an answer to "was this episode sideways?" that depends on which module
+# asked is not a measurement:
+#
+#   * environment.py   re-exports the band and delegates get_abs_torso_rotation /
+#                      is_sideways to these, and is where the collision geometry
+#                      that makes the band meaningful is defined;
+#   * experiments.py   re-exports both for the per-step scoring (and for the tests
+#                      that pin them);
+#   * analysis.py      folds and bands its own step traces with these, so the
+#                      offline report and the live runner cannot disagree -- it
+#                      carried a hard-coded 45/135 copy of both numbers before;
+#   * memory_metrics.py keeps its OWN copy, deliberately and not as an oversight:
+#                      test_bao_memory.py forbids that module from importing
+#                      anything but math/typing, so it can be loaded before
+#                      SimulationApp exists.  That test also sweeps every 0.1
+#                      degree from -180 to 180 and asserts the two agree, which is
+#                      the right instrument for a copy that has to stay a copy.
+#
+# This module is pure text and imports nothing from environment, so every one of
+# those modules can reach it before SimulationApp starts -- which is the property
+# that makes it the correct home rather than environment.
+SIDEWAYS_YAW_MIN_DEG = 45.0
+SIDEWAYS_YAW_MAX_DEG = 135.0
+
+
+def fold_yaw(yaw_deg: float) -> float:
+    """Fold a torso yaw into [0, 180] so +/- rotations behave symmetrically."""
+    yaw = abs(float(yaw_deg)) % 360.0
+    return float(360.0 - yaw if yaw > 180.0 else yaw)
+
+
+def is_sideways_yaw(yaw_deg: float) -> bool:
+    """Whether a torso angle sits in the band the study scores as sideways."""
+    return SIDEWAYS_YAW_MIN_DEG <= fold_yaw(yaw_deg) <= SIDEWAYS_YAW_MAX_DEG
+
+
 def action_options_string(move_step: float = MOVE_STEP) -> str:
     """The action menu as it is shown to the model."""
     descriptions = action_descriptions(move_step)

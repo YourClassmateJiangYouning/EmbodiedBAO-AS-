@@ -427,7 +427,7 @@ def test_resume_reruns_only_what_is_missing() -> None:
     fresh_workspace()
     with patched_adapter():
         runner = make_runner([1])
-        first = runner.run_all(checkpoints=runner.make_checkpoints(resume=False))
+        runner.run_all(checkpoints=runner.make_checkpoints(resume=False))
         calls_after_first = runner.calls
         check(calls_after_first > 17 * 16, "the first pass should have spent its model calls")
 

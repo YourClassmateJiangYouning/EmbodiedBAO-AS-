@@ -57,9 +57,7 @@ from environment import (
     WALL_X,
     _check_room_boundary,
     _check_wall_collision,
-    _panel_boxes,
     _translation_path_is_clear,
-    _robot_body_aabb,
     action_delta,
     a_s_ratio,
     level_channel_width,
@@ -1659,7 +1657,7 @@ def test_robot_has_room_to_rotate_before_the_wall() -> None:
     The free run must be long enough for the robot to walk up to the channel and
     still be able to rotate into it.
     """
-    from environment import MOVE_STEP, ROBOT_START_POS, WALL_X, _turn_path_is_clear
+    from environment import ROBOT_START_POS, WALL_X, _turn_path_is_clear
 
     start_x = float(ROBOT_START_POS[0])
 

@@ -64,8 +64,15 @@ def extract_responses(text: str) -> list:
                     break
     return found
 
+# The inverse of scenes.COLOUR_NAMES, and it has to be kept in step with it: the marker
+# phrase is built from that table, the first word of the phrase is looked up here, and the
+# result is the letter searched for in the model's own reasoning.  "white"->w and
+# "black"->k were wrong in both places -- w is a wine red and k is pink -- so the analysis
+# searched for the word "white" in a run whose prompt had said "white set of two bars"
+# while a dark red plate was on the wall.  Both tables now agree with the RGB values, and
+# test_bao_scenes.py checks that agreement rather than this comment.
 COLOURS = {"red": "r", "magenta": "m", "orange": "o", "lime": "l", "cyan": "c",
-           "purple": "p", "green": "g", "white": "w", "teal": "t", "black": "k"}
+           "purple": "p", "green": "g", "wine": "w", "teal": "t", "pink": "k"}
 
 
 def marker_for(scene: str, episode: int) -> str:

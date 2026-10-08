@@ -1,4 +1,4 @@
-"""Checks on the Stage 3 scene and marker catalogue.
+"""Checks on the Stage 1 scene and marker catalogue.
 
 All arithmetic, no simulator: the properties that matter are statements about numbers --
 markers differ from each other, a marker fits the bounding size the distance cue depends on,
@@ -64,14 +64,104 @@ def test_every_shape_fits_the_marker_bounding_box() -> None:
 
     A shape that grew beyond 0.60 m would subtend more pixels at the same distance than the
     others, which would make the five repeats differ in something other than appearance.
+
+    Measured as the shape's own extent, not as ``|vertex| <= SHAPE_HALF_M``.  Those differ
+    for a shape that is anchored on its centroid rather than on the centre of its bounding
+    box, which the arrow is: its span is -0.30..+0.30 but centred 13.2 mm behind the anchor,
+    so its front tip sits at +0.3132 and the vertex form would reject a shape that is
+    exactly the budgeted 0.60 m across.  The extent is what the distance cue depends on, so
+    the extent is what is checked, and each end is allowed half the budget from the anchor.
     """
     for name, polygons in sc.SHAPES.items():
-        for polygon in polygons:
-            for px, py in polygon:
-                check(max(abs(px), abs(py)) <= sc.SHAPE_HALF_M + 1e-9,
-                      f"shape {name!r} has a vertex at ({px:.3f}, {py:.3f}), past the "
-                      f"{sc.SHAPE_HALF_M:.3f} m half-size of the marker's bounding box")
-    print("[ok] all 10 shapes stay inside the 0.60 m bounding box")
+        xs = [p[0] for poly in polygons for p in poly]
+        ys = [p[1] for poly in polygons for p in poly]
+        width, height = max(xs) - min(xs), max(ys) - min(ys)
+        check(width <= sc.MARKER_SIZE_M + 1e-9,
+              f"shape {name!r} is {width:.4f} m across, past the "
+              f"{sc.MARKER_SIZE_M:.2f} m budget the distance cue depends on")
+        check(height <= sc.MARKER_SIZE_M + 1e-9,
+              f"shape {name!r} is {height:.4f} m tall, past the "
+              f"{sc.MARKER_SIZE_M:.2f} m budget")
+        check(min(xs) >= -sc.SHAPE_HALF_M - sc.MARKER_CLEARANCE_M - 1e-9
+              and max(xs) <= sc.SHAPE_HALF_M + sc.MARKER_CLEARANCE_M + 1e-9,
+              f"shape {name!r} spans x {min(xs):+.4f}..{max(xs):+.4f}, outside the "
+              f"+/-{sc.SHAPE_HALF_M:.3f} m the marker's geometry allows around its anchor")
+    print("[ok] all 10 shapes stay inside the 0.60 m budget around their anchor")
+
+
+def test_the_arrow_keeps_its_size_and_its_measured_centroid_offset() -> None:
+    """The arrow's centroid is 13.2 mm behind the marker's centre line.  Pin all of it.
+
+    Three constraints on this shape cannot hold together, and the numbers were measured
+    rather than argued (see the trade-off table in the commit for this test):
+
+      * the shape's total width must be 0.60 m like the other twenty-four, because the
+        bounding size IS the distance cue;
+      * it must stay inside the +/-0.30 m the marker's geometry allows around its anchor;
+      * its area centroid should sit on the centre line like the other nine shapes.
+
+    A left-to-right arrow whose shaft tail reaches the -x edge and whose head tip reaches
+    the +x edge has a span of exactly 0.60 m, and its centroid then sits 13.23 mm behind
+    the anchor.  Centring that centroid moves the whole shape +x, putting the tip 13.23 mm
+    outside the allowed box; shrinking the shape by 4.22% so that both hold makes it
+    0.5747 m across, i.e. 4.2% narrower than the other markers, which attacks the distance
+    cue this test exists to protect.  The current geometry is therefore the only one of the
+    three options that keeps the size budget intact, and the offset it costs is sub-pixel:
+    0.28 px at the 512 px start pose, where the whole marker is only about 13 px across.
+
+    So the offset is accepted and recorded, and this test fails if it grows, if the width
+    stops being exactly 0.60 m, or if the tip leaves the allowed box.
+    """
+    polygons = sc.SHAPES["arrow"]
+    xs = [p[0] for poly in polygons for p in poly]
+    ys = [p[1] for poly in polygons for p in poly]
+
+    width = max(xs) - min(xs)
+    check(abs(width - sc.MARKER_SIZE_M) < 1e-12,
+          f"the arrow is {width:.6f} m across, not the {sc.MARKER_SIZE_M} m the other "
+          f"markers use; a narrower arrow subtends fewer pixels at the same distance")
+
+    # Area centroid of the union of its polygons -- shaft plus head, area weighted.
+    total = 0.0
+    cx = cy = 0.0
+    for polygon in polygons:
+        n = len(polygon)
+        twice_area = 0.0
+        px = py = 0.0
+        for i in range(n):
+            x0, y0 = polygon[i]
+            x1, y1 = polygon[(i + 1) % n]
+            cross = x0 * y1 - x1 * y0
+            twice_area += cross
+            px += (x0 + x1) * cross
+            py += (y0 + y1) * cross
+        area = twice_area / 2.0
+        px /= (6.0 * area)
+        py /= (6.0 * area)
+        total += abs(area)
+        cx += px * abs(area)
+        cy += py * abs(area)
+    cx /= total
+    cy /= total
+
+    check(abs(cy) < 1e-12, f"the arrow's centroid is {cy:+.6f} m off the centre line in y")
+    check(-0.014 < cx < -0.012,
+          f"the arrow's centroid is {cx*1000:+.2f} mm behind the anchor, outside the "
+          f"measured 12.0-14.0 mm band; if this changed, re-derive the three-way trade-off "
+          f"rather than widening this band")
+    # Sub-pixel at the start pose, which is why it is acceptable at all.
+    import math
+    distance = sc.MARKER_X_M - 0.5
+    fov = 2.0 * math.degrees(math.atan(sc.SENSOR_WIDTH_MM / (2.0 * sc.FOCAL_LENGTH_MM)))
+    mm_per_px = (2.0 * distance * math.tan(math.radians(fov / 2.0))) / 512.0
+    check(abs(cx) / mm_per_px < 0.5,
+          f"the arrow's {abs(cx)*1000:.2f} mm offset is {abs(cx)/mm_per_px:.2f} px at the "
+          f"start pose, no longer sub-pixel")
+
+    check(min(xs) >= -sc.SHAPE_HALF_M - 1e-9,
+          f"the arrow's tail is at {min(xs):+.6f}, outside the allowed -0.30 m")
+    print(f"[ok] arrow: {width:.4f} m across, centroid {cx*1000:+.2f} mm "
+          f"({abs(cx)/mm_per_px:.2f} px at the start pose), tail at {min(xs):+.4f} m")
 
 
 def test_shapes_are_fat_enough_to_read_at_the_start_pose() -> None:
@@ -252,13 +342,73 @@ def test_the_catalogue_matches_the_environment_it_replaces() -> None:
     check(abs(sc.MARKER_SIZE_M - float(env.GOAL_MARKER_SIZE)) < 1e-9,
           f"catalogue marker size {sc.MARKER_SIZE_M} vs environment "
           f"{env.GOAL_MARKER_SIZE}")
-    check(abs(sc.MARKER_X_M - float(env.ROOM_LENGTH_X)) < 1e-9,
+    check(abs(sc.MARKER_WALL_X_M - float(env.ROOM_LENGTH_X)) < 1e-9,
           "the catalogue puts the marker on a different wall than the room's far wall")
     check(abs(sc.MARKER_Y_M - 1.40) < 1e-9,
           "the catalogue's marker centre height differs from the environment's 1.40 m")
     check(tuple(sc.COLOURS["r"]) == (0.85, 0.15, 0.12),
           "the red in the palette is not the existing marker's red")
     print("[ok] the catalogue's baseline marker matches the environment's own constants")
+
+
+def test_the_built_marker_matches_the_environment_plate_exactly() -> None:
+    """The plate the catalogue builds must occupy the same x range as the environment's.
+
+    The check above compares *declared* coordinates, and the marker's placement relative to
+    the wall is exactly the kind of thing that passes such a check while being wrong: the
+    catalogue said x = 16.0 and so does ``ROOM_LENGTH_X``, so it looked pinned -- but
+    ``_add_box`` builds a box *centred* on its coordinate, and the far wall lives at
+    16.00 .. 16.02.  Centring a 0.02 m plate on 16.0 therefore buried half of it in the wall
+    and put the face the camera sees 0.02 m behind the environment's.  Nothing failed.
+
+    Both paths are read from source here (``environment._create_goal_marker``'s corner list
+    and ``scene_builder._prism``'s vertex list) and their world-frame extents are compared,
+    which needs no Isaac Sim because both are pure arithmetic on the constants.
+    """
+    import environment as env
+
+    # --- environment._create_goal_marker -> _add_box -------------------------
+    thickness = 0.02                                    # goal_marker_span default
+    centre_user = (
+        env.ROOM_LENGTH_X - thickness / 2.0 - 0.01,     # goal_marker_base offset
+        1.40,
+        0.0,
+    )
+    dims = (thickness, float(env.GOAL_MARKER_SIZE), float(env.GOAL_MARKER_SIZE))
+    cx, cy, cz = env._user_to_isaac_pos(centre_user)
+    hx, hy, hz = (d / 2.0 for d in dims)
+    env_x = (cx - hx, cx + hx)
+
+    # --- scene_builder.build_marker -> _prism --------------------------------
+    half = sc.MARKER_THICKNESS_M / 2.0
+    ccx, _, _ = sc.to_world((sc.MARKER_X_M, sc.MARKER_Y_M, sc.MARKER_Z_M))
+    cat_x = (ccx - half, ccx + half)
+
+    check(
+        abs(env_x[0] - cat_x[0]) < 1e-12 and abs(env_x[1] - cat_x[1]) < 1e-12,
+        f"the catalogue's plate spans x {cat_x[0]:.4f}..{cat_x[1]:.4f} but the "
+        f"environment's spans {env_x[0]:.4f}..{env_x[1]:.4f}; the far wall's inner face "
+        f"is at {env.ROOM_LENGTH_X}, so a plate centred on the wall plane is half buried "
+        f"in it and its visible face is 0.02 m too far away",
+    )
+
+    # The wall's inner face, from the environment's own room construction.
+    wall_thickness = env.ROOM_WALL_THICKNESS
+    inner_face = (env.ROOM_LENGTH_X + wall_thickness / 2.0) - wall_thickness / 2.0
+    check(
+        cat_x[1] <= inner_face + 1e-12,
+        f"the plate reaches x={cat_x[1]:.4f}, past the far wall's inner face at "
+        f"{inner_face:.4f}; the plate must sit in front of the wall, not inside it",
+    )
+    check(
+        cat_x[1] <= sc.MARKER_WALL_X_M + 1e-12,
+        f"the plate reaches x={cat_x[1]:.4f}, beyond the wall plane "
+        f"{sc.MARKER_WALL_X_M}; half of it would be outside the room",
+    )
+    print(
+        f"[ok] the built plate occupies x {cat_x[0]:.4f}..{cat_x[1]:.4f}, exactly the "
+        f"environment's {env_x[0]:.4f}..{env_x[1]:.4f}, clear of the wall at {inner_face:.4f}"
+    )
 
 
 def test_the_scene_tag_separates_scenes_and_leaves_old_tags_alone() -> None:
@@ -458,11 +608,141 @@ def test_every_dressing_item_has_a_colour() -> None:
     print("[ok] every dressing item carries an in-range RGB colour")
 
 
+def test_every_colour_word_names_its_own_rgb() -> None:
+    """The colour word that goes into the prompt must describe the RGB that is drawn.
+
+    ``describe_marker`` builds the noun phrase the task sentence uses -- "reach the <phrase>
+    on the far wall" -- so a colour word that does not match the plate on the wall hands the
+    model a false statement about the object it is being asked to reach.
+
+    This existed and was wrong: ``w``, a dark wine red (0.55, 0.05, 0.25), was called
+    "white", and ``k``, pink (1.00, 0.40, 0.70), was called "black".  Three of the twenty-five
+    prompts were therefore false -- "white set of two bars", "white arrow", "black hexagon" --
+    and nothing noticed, because the uniqueness tests compare RGB triples and no test ever read
+    the rendered phrase.
+
+    The word table is pinned literally, per colour key, with the key's own RGB printed in the
+    failure so the contradiction is visible rather than asserted.
+    """
+    # key -> (word, what the RGB is, roughly).  The word must match the RGB on the right.
+    expected = {
+        "r": ("red", (0.85, 0.15, 0.12)),
+        "m": ("magenta", (0.90, 0.10, 0.55)),
+        "o": ("orange", (1.00, 0.45, 0.05)),
+        "l": ("lime", (0.85, 0.95, 0.10)),
+        "c": ("cyan", (0.10, 0.65, 0.90)),
+        "p": ("purple", (0.55, 0.15, 0.75)),
+        "g": ("green", (0.20, 0.85, 0.25)),
+        "w": ("wine", (0.55, 0.05, 0.25)),
+        "t": ("teal", (0.05, 0.80, 0.70)),
+        "k": ("pink", (1.00, 0.40, 0.70)),
+    }
+    check(set(expected) == set(sc.COLOURS),
+          f"the palette and this table name different colours: "
+          f"{sorted(set(expected) ^ set(sc.COLOURS))}")
+    for key, (word, rgb) in expected.items():
+        check(sc.COLOUR_NAMES[key] == word,
+              f"colour {key!r} is RGB {sc.COLOURS[key]} but its word is "
+              f"{sc.COLOUR_NAMES[key]!r}, not {word!r}; that word goes into the prompt")
+        check(tuple(sc.COLOURS[key]) == rgb,
+              f"colour {key!r} is {sc.COLOURS[key]}, but this table says {rgb}; the word "
+              f"{word!r} was chosen for the RGB on the right")
+
+    # And the phrases themselves, which is what the prompt actually carries.
+    for scene in sc.SCENE_ORDER:
+        for slot, (shape, colour) in enumerate(sc.MARKERS[scene], start=1):
+            phrase = sc.describe_marker(scene, slot)
+            want = f"{expected[colour][0]} {sc.SHAPE_NAMES[shape]}"
+            check(phrase == want,
+                  f"{scene} slot {slot}: describe_marker gives {phrase!r}, expected {want!r}")
+    print("[ok] every colour word matches its own RGB, and all 25 prompt phrases follow")
+
+
+def test_no_prompt_ever_names_a_colour_the_palette_does_not_use() -> None:
+    """The words that reach the prompt are exactly this palette's words, and no others.
+
+    The companion to the check above from the other side: not "is each word right" but "is
+    each word one of ours".  A stale entry copied from an earlier draft -- "white", "black",
+    "lime green" -- has to fail here even if its own RGB happens to be plausible.
+    """
+    allowed = {"red", "magenta", "orange", "lime", "cyan", "purple", "green",
+               "wine", "teal", "pink"}
+    words = set(sc.COLOUR_NAMES.values())
+    check(words == allowed,
+          f"the colour words are {sorted(words)}, expected exactly {sorted(allowed)}")
+    for scene in sc.SCENE_ORDER:
+        for slot, (_, colour) in enumerate(sc.MARKERS[scene], start=1):
+            first = sc.describe_marker(scene, slot).split()[0]
+            check(first in allowed,
+                  f"{scene} slot {slot}: the prompt would say {first!r}, which is not a "
+                  f"colour in this palette")
+    print(f"[ok] all 25 prompts use one of the {len(allowed)} palette colour words")
+
+
+def test_each_scene_declares_its_dressing_exactly_once() -> None:
+    """A scene's layout lives inline or in _install_dressing, never in both.
+
+    The revision this pins had full inline tuples for 1.3, 1.4 and 1.5 that
+    ``_install_dressing`` overwrote at import.  Twenty-four lines of configuration read
+    exactly like the live layout, and editing them changed nothing whatsoever -- the sort
+    of thing that costs an afternoon of "but I already fixed that".
+
+    Read off the AST rather than off the module, because the overwriting is exactly what
+    the attribute lookup cannot see: at runtime the dead list is simply gone.
+    """
+    import ast
+    import os as _os
+
+    src = _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "scenes.py")
+    tree = ast.parse(open(src, encoding="utf-8").read(), filename=src)
+
+    scenes_literal = None
+    install_assigns = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.AnnAssign) and getattr(node.target, "id", "") == "SCENES":
+            scenes_literal = node.value
+        # SCENES["stage1.3"]["dressing"] = (...)
+        if isinstance(node, ast.Assign) and len(node.targets) == 1:
+            target = node.targets[0]
+            if (isinstance(target, ast.Subscript)
+                    and isinstance(target.value, ast.Subscript)
+                    and getattr(target.value.value, "id", "") == "SCENES"
+                    and isinstance(target.slice, ast.Constant)
+                    and target.slice.value == "dressing"):
+                inner = target.value.slice
+                if isinstance(inner, ast.Constant):
+                    install_assigns.append((inner.value, node.value.lineno))
+
+    check(scenes_literal is not None, "no module-level SCENES literal found")
+    inline_counts = {}
+    for key, value in zip(scenes_literal.keys, scenes_literal.values):
+        for k, v in zip(value.keys, value.values):
+            if isinstance(k, ast.Constant) and k.value == "dressing":
+                inline_counts[key.value] = len(v.elts)
+    installed = {scene for scene, _ in install_assigns}
+    print(f"    inline counts {inline_counts}, assigned by _install_dressing "
+          f"{sorted(installed)}")
+
+    for scene in sc.SCENE_ORDER:
+        inline = inline_counts.get(scene, 0)
+        live = len(sc.SCENES[scene]["dressing"])
+        if scene in installed:
+            check(inline == 0,
+                  f"{scene} has {inline} inline dressing items AND is assigned by "
+                  f"_install_dressing, so the inline list is dead configuration")
+        else:
+            check(inline == live,
+                  f"{scene} is not assigned by _install_dressing, so its {live} live items "
+                  f"must all be inline; the AST found {inline}")
+    print("[ok] every scene declares its dressing in exactly one place")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
         test_every_marker_names_a_real_shape_and_colour,
         test_every_shape_fits_the_marker_bounding_box,
+        test_the_arrow_keeps_its_size_and_its_measured_centroid_offset,
         test_shapes_are_fat_enough_to_read_at_the_start_pose,
         test_no_dressing_occludes_the_opening_or_the_marker,
         test_no_dressing_protrudes_into_the_corridor,
@@ -473,8 +753,12 @@ def main() -> int:
         test_materials_are_marked_as_verified_or_not,
         test_the_episode_count_is_what_the_design_says,
         test_every_colour_is_used_at_least_once,
+        test_every_colour_word_names_its_own_rgb,
+        test_no_prompt_ever_names_a_colour_the_palette_does_not_use,
+        test_each_scene_declares_its_dressing_exactly_once,
         test_the_builder_imports_without_a_simulator,
         test_the_catalogue_matches_the_environment_it_replaces,
+        test_the_built_marker_matches_the_environment_plate_exactly,
         test_the_scene_tag_separates_scenes_and_leaves_old_tags_alone,
         test_surfaces_are_classified_by_geometry_not_by_name,
         test_catalogue_frame_matches_the_environment_converter,
