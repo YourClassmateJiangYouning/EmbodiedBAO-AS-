@@ -118,7 +118,15 @@ pkill -f 'main.py --model'
 
 ## 6. 15 个模型与网关
 
-网关 `http://35.220.164.252:3888/v1`，key `REDACTED`，**用 `BAO_DISABLE_PROXY=1`**。
+网关 `http://35.220.164.252:3888/v1`，key **从环境变量读，绝不写进任何文件**（见下方事故记录）。
+启动前 `export BOYUE_API_KEY='...'`，`run_all_models.sh` 和 `tools/check_credit.py` 都从环境里取。
+另外要用 `BAO_DISABLE_PROXY=1`。
+
+> **事故记录（2026-10-08）**：这一节原来把真实的 key 明文写在文件里，而 `MANUAL.md` 被提交并推到了
+> 公开仓库 `github.com/YourClassmateJiangYouning/EmbodiedBAO-AS-`。此后账户额度从正常一路掉到
+> `$0.0025`（10-07 21:13 首次 403 quota），22:06 起 key 变成 401 Invalid token。
+> **公开仓库里的 key 必须视为已泄露**：删掉这一行不能把它从 git 历史里去掉，任何人 clone 都能翻出来。
+> 正确处理是**换 key**，并且从此只用环境变量。仓库里其他脚本、日志、`results/` 一律不得出现明文 key。
 名单在 `models.json`：qwen3-vl-235b / qwen3-vl-32b / qwen-vl-max / gemini-2.5-pro / gemini-2.5-flash / gpt-4.1 / gpt-4o / gpt-4o-mini / claude-sonnet-4-6 / kimi-k2.5 / deepseek-v4.1-flash / glm-4.6v / grok-4.3 / doubao-seed-2-0-pro-260215 / mimo-v2.5。
 `mimo-v2.5` 需要 `reasoning_effort="none"`（已写入 `ai_agent.py` 的 `MODEL_REQUEST_PARAMS`）。
 **已排除**：MiniMax 全系（认色不稳）、Mistral 全系（HTTP 500）、Meta 全系（500）、kimi-k2-thinking（无视觉）、doubao-seed-2-1-pro（180 s 超时）。
