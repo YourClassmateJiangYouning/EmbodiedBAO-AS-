@@ -162,6 +162,61 @@ pkill -f 'main.py --model'
 
 ## 9. 会话进展日志（**每次做完事就追加，别只写"下一步"**）
 
+### 2026-10-08：三个模型作废的根因 + 五处代码修复
+
+**这一轮的经过**：15 模型 sweep 跑到第 13 个时发现后面三个（kimi、deepseek、glm）每档都是 0.000，
+包括最宽档 A/S 2.0（1.14 m，早期模型 100% 通过）。查原始日志后确认是**三种完全不同的原因**，
+其中两个与模型能力无关：
+
+| 模型 | 真因 | 责任 |
+| :--- | :--- | :--- |
+| kimi/kimi-k2.5 | 模型名被洗成 `kimi-kimi-k2.5` → **503 model_not_found**，150 步全 invalid | **我的代码** |
+| deepseek-v4.1-flash | **403 token quota is not enough** | 账户余额 |
+| glm-4.6v | **401 Unauthorized: Invalid token** | key 失效 |
+| claude-sonnet-4-6 | 第 16 档 150/150 invalid（其余档 0/150）→ 那个 0.0 是故障不是几何 | 待查 |
+
+时间线：10-07 21:13 首次出现 403 配额，22:06 出现 401，之后 key 一直无效。
+
+**检查 key 的正确方式**（`tools/check_credit.py` 已改）：它以前在 401 时也打印一堆网关响应头，
+看着像"连上了"，现在先判层（key 被拒 / 额度为空 / 个别模型），且只在**真正被应答或限流**的行上
+才打印 ratelimit/quota 头。手动一发最便宜请求同样有效：
+
+```bash
+curl -s -m 30 -o /tmp/gw.json -w "HTTP %{http_code}\n" -X POST http://35.220.164.252:3888/v1/chat/completions \
+  -H "Authorization: Bearer $BOYUE_API_KEY" -H 'Content-Type: application/json' \
+  -d '{"model":"gpt-4o-mini","messages":[{"role":"user","content":"ok"}],"max_tokens":5}'; head -c 200 /tmp/gw.json
+```
+
+**五处修复（提交 00ad2a3）**
+
+1. **模型名不再被清洗**：`experiments.py` 里 `self.model` 保持原样给网关用，新增 `self.model_slug`
+   只给路径用。`_result_dir` 改用 slug。`test_bao_persistence.py` 原本断言 `runner.model` 不含分隔符，
+   那正是 bug 被写成了需求，现在反过来断言。
+2. **`effective_tag` 幂等**：带参数后缀时（`-effortnone` / `-nothinking`）以前会重复追加协议标签，
+   产生 `…-stage1.1-…-stage1.1-effortnone`。现在反复剥离自己追加过的每一段，再按固定顺序重建。
+   `tools/check_tags.py` 验证全部 15 条目稳定且单一后缀。
+3. **坏运行会自己停**：`_note_episode_health`。全部步骤无效的回合，第一、二次打印醒目横幅并附上
+   最后一条请求错误，**第三次连续出现就抛错中止该模型**（sweep 记为失败并继续下一个）。
+   会答但答错的模型不受影响——那是结果，不是故障。
+4. **解析宽容化**：只试第一个花括号（前面散文里有个 `{` 就全丢）、动作名必须小写完全一致、
+   只认 `action` 键、`NaN` 置信度会让整条回复作废（连动作一起丢）。四条都改了，
+   `test_bao_parsing.py` 9 项。丢掉一条正确回复会被记成 invalid 步并计 0 分，所以这里值得宽容。
+5. **`check_credit.py` 不再误导**（见上）。
+
+**新增测试套件**：`test_bao_parsing.py`（9 项）、`test_bao_health.py`（5 项）、`tools/check_tags.py`。
+九个套件共 **151 项全过**：geometry 37 / integration 20 / persistence 13 / memory 29 /
+memory_runner 17 / scenes 18 / assets 3 / parsing 9 / health 5。
+
+**审计工具的一处修正**：`tools/check_field_names.py` 把同义词表的**键**（`move_forward`、`walk`…）
+当成"协议里不存在的动作名"报错。已加豁免：字典的键、其值是合法动作名，那是别名表不是动作引用。
+
+**这一轮做对的**：先停 sweep 再查（虽然第一次停错了，见下），先读代码不猜，用原始日志定因。
+
+**这一轮做错的**：`pkill -f 'main.py --model'` **停不掉 sweep**——外层 `run_all_models.sh` 是循环，
+子进程一死它就拉起下一个模型（豆包就是这么起来的）。必须先 `pkill -f 'run_all_models.sh'`。
+已写成 `stop.sh`，用 PID 精确停止，并且会把还活着的 Isaac 进程按命令行分类（我们 / 同事的
+`/workspace/isaaclab` / 未知），同事那个绝不碰。
+
 ### 2026-10-06：找到思考过程 + 场景数据层完成
 
 **① 模型的思考过程一直在，只是我找错了地方** ✗→✓
