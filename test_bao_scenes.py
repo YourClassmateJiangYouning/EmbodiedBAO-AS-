@@ -737,6 +737,70 @@ def test_each_scene_declares_its_dressing_exactly_once() -> None:
     print("[ok] every scene declares its dressing in exactly one place")
 
 
+def test_dressing_stands_on_the_floor_and_hangs_on_its_wall() -> None:
+    """Mounting geometry: nothing buried in the floor, nothing floating off its wall.
+
+    Both faults were real and both were invisible to every other check here, because those
+    compare declarations while these two are about where the box actually ends up.
+
+    Floor items were written with the box CENTRE as their height and the height differs per
+    item, so seven hovered (the park benches by 25 mm) and the supermarket checkout stood with
+    its base 5 mm BELOW the floor plane -- a box half-buried in the ground.  The helper now
+    takes the base, so the design value for anything standing on the floor is 0.
+
+    Wall items were written at the obstacle wall's own centre line, x = 8.0, while the wall
+    occupies 7.99..8.01 -- so all fourteen straddled it, the 0.16-0.30 m ones with 20 mm of
+    themselves inside the wall.  The catalogue names the SURFACE now
+    (OBSTACLE_WALL_FACE_X / FAR_WALL_FACE_X) and the helper offsets by a millimetre of
+    clearance, which is a statement about which way the box faces, not about how big it is --
+    an earlier attempt subtracted half the thickness as well, which made two items of
+    different thickness hang at different distances from the same named face.
+
+    Asserted from the placed geometry, so it holds however the call sites are written.
+    """
+    import environment as env
+
+    obstacle_face = float(env.WALL_X) - float(env.WALL_THICKNESS) / 2.0   # 7.99
+    far_face = float(env.ROOM_LENGTH_X)                                   # 16.0
+    buried_floor, detached_wall = [], []
+    count = 0
+    deepest = 0.0
+
+    for scene in sc.SCENE_ORDER:
+        for item in sc.SCENES[scene]["dressing"]:
+            count += 1
+            at, size = item["at"], item["size"]
+            if item["mount"] == "floor":
+                base = float(at[1]) - float(size[1]) / 2.0
+                if base < -1e-9:
+                    buried_floor.append((scene, item["name"], base))
+                continue
+            face = obstacle_face if item["mount"] == "obstacle_wall" else far_face
+            half = float(size[0]) / 2.0
+            back = float(at[0]) - half
+            # "Hanging on the wall" is a statement about the BACK face: it must sit at the
+            # wall's surface, not in front of it.  The helper puts the box centre ON the face,
+            # so the back ends up half a thickness inside the wall -- which is what mounting
+            # looks like, and the reason this check must not be written against the FRONT
+            # face.  An earlier version of this test did, and failed every item: the front is
+            # meant to stand half a thickness proud, and that is bounded by
+            # test_no_dressing_protrudes_into_the_corridor instead of duplicated here.
+            gap = back - face
+            deepest = min(deepest, gap)
+            if gap > sc.MOUNT_CLEARANCE_M + 1e-9:
+                detached_wall.append((scene, item["name"], round(gap, 4)))
+
+    check(not buried_floor,
+          f"these floor items have their base below the floor plane: "
+          f"{[(s, n, round(b * 1000, 1)) for s, n, b in buried_floor]}")
+    check(not detached_wall,
+          f"these wall items float in front of their wall by this many metres: "
+          f"{detached_wall}")
+    print(f"[ok] all {count} dressing items stand on the floor and hang on their wall "
+          f"(obstacle face {obstacle_face}, far face {far_face}; deepest back face "
+          f"{deepest * 1000:.0f} mm inside the wall)")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -746,6 +810,7 @@ def main() -> int:
         test_shapes_are_fat_enough_to_read_at_the_start_pose,
         test_no_dressing_occludes_the_opening_or_the_marker,
         test_no_dressing_protrudes_into_the_corridor,
+        test_dressing_stands_on_the_floor_and_hangs_on_its_wall,
         test_every_dressing_item_has_a_colour,
         test_decoration_is_never_collidable_and_stays_off_the_path,
         test_dressing_colours_are_declared_and_not_marker_colours,

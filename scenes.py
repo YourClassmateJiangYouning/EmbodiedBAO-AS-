@@ -221,11 +221,46 @@ DRESSING_GREEN = (0.22, 0.40, 0.18)
 DRESSING_LIGHT = (0.78, 0.78, 0.80)
 
 
+# ---------------------------------------------------------------------------
+# Mounting: where a wall item's CENTRE has to be, given the surface it hangs on
+# ---------------------------------------------------------------------------
+# environment builds the obstacle wall with its centre at ``WALL_X`` (8.0) and thickness
+# 0.02, so the wall occupies 7.99..8.01 and the surface the corridor sees is at 7.99.  A
+# wall item written "at x = 8.0" like the wall itself therefore straddles that surface: a
+# 0.03 m plate spans 7.985..8.015, which is 25 mm into the room and 5 mm inside the wall,
+# and the 0.16-0.30 m items are 20 mm inside it -- half their thickness buried.
+#
+# Same fault as the marker had (see MARKER_WALL_X_M above), same answer: the author writes
+# the SURFACE and the helper derives the centre.  ``_dressing_wall`` now takes the x it is
+# given as the face the item hangs on and subtracts half the item's thickness, so its back
+# sits against that face.  A caller no longer has to know that the wall's facing surface is
+# not where its centre is.
+OBSTACLE_WALL_FACE_X = 8.0 - 0.02 / 2.0          # WALL_X - WALL_THICKNESS/2
+# The far wall is built with its centre at ROOM_LENGTH_X + thickness/2, so its inner face is
+# exactly ROOM_LENGTH_X (16.0) -- which is what an author writing "on the far wall" means.
+FAR_WALL_FACE_X = 16.0
+# A millimetre of clearance so two surfaces are never exactly coplanar, which is what a
+# renderer z-fights over.  This is not a placement error and not a size change: 1 mm on a
+# 0.6 m plate, 0.13 px at the start pose.
+MOUNT_CLEARANCE_M = 0.001
+
+
 def _dressing_floor(name: str, at: Tuple[float, float, float],
                     size: Tuple[float, float, float], colour: Optional[str] = None,
                     asset: Optional[str] = None) -> Dict[str, Any]:
-    return {"name": name, "mount": "floor", "at": at, "size": size,
-            "colour": colour or DRESSING_GREY, "asset": asset, "collides": False}
+    """A floor item.  ``at`` is (x, height of the BASE, lateral).
+
+    The caller gives the base height, not the centre height, so a bench declared at 0 has
+    its feet on the floor whatever it is tall.  ``place_dressing`` translates by the box
+    centre, so the centre is derived here; before this, seven items stood 5-25 mm above the
+    floor and one -- the supermarket checkout -- had its base 5 mm BELOW it, all because the
+    call sites were quietly centre coordinates.
+    """
+    height = float(size[1])
+    return {"name": name, "mount": "floor",
+            "at": (float(at[0]), float(at[1]) + height / 2.0, float(at[2])),
+            "size": size, "colour": colour or DRESSING_GREY, "asset": asset,
+            "collides": False}
 
 
 def _dressing_wall(name: str, mount: str, at: Tuple[float, float, float],
@@ -233,15 +268,29 @@ def _dressing_wall(name: str, mount: str, at: Tuple[float, float, float],
                    asset: Optional[str] = None) -> Dict[str, Any]:
     """A wall-mounted item, declared like a picture: (across, tall, thick).
 
-    The thickness is moved to the x axis here, because a wall faces along x and the first
+    ``at``'s x is the SURFACE the item is stuck to, and it is used AS the box centre -- so
+    writing ``OBSTACLE_WALL_FACE_X`` or ``FAR_WALL_FACE_X`` means "against that face at every
+    thickness" rather than "against it provided I also accounted for how thick my item is".
+    The thickness is not subtracted here on purpose: an earlier revision did subtract it, and
+    because every call site writes the same two constants that made two items of different
+    thicknesses hang at different distances from the wall, which is the opposite of what a
+    constant is for.
+
+    The thickness IS moved to the x axis, because a wall faces along x and the first
     version's call sites wrote (0.5, 0.4, 0.03) -- which put half a metre of plate straight
-    out into the corridor, the same mistake as the duct, and the rendered frame showed it as a
-    black slab hanging in the middle of the agent's view.  Callers describe the picture; this
+    out into the corridor, the same mistake as the duct.  Callers describe the picture; this
     function decides which way it faces.
+
+    ``MOUNT_CLEARANCE_M`` is taken off the front face only, so the item never shares a plane
+    with the wall it hangs on (which is what a renderer z-fights over) while its back stays
+    inside the wall where it is hidden.
     """
     across, tall, thick = (float(v) for v in size)
-    return {"name": name, "mount": mount, "at": at, "size": (thick, tall, across),
-            "colour": colour or DRESSING_GREY, "asset": asset, "collides": False}
+    centre_x = float(at[0]) - MOUNT_CLEARANCE_M
+    return {"name": name, "mount": mount,
+            "at": (centre_x, float(at[1]), float(at[2])),
+            "size": (thick, tall, across), "colour": colour or DRESSING_GREY,
+            "asset": asset, "collides": False}
 
 
 SCENES: Dict[str, Dict[str, Any]] = {
@@ -265,22 +314,33 @@ SCENES: Dict[str, Dict[str, Any]] = {
         # This scene's inline layout below IS the live one -- there is no replacement for
         # 1.2 in _install_dressing(), so these eight items are what gets placed.
         "dressing": (
-            _dressing_wall("sign", "obstacle_wall", (8.0, 1.5, 1.35), (0.5, 0.4, 0.03),
+            # Wall items name the SURFACE they hang on, so these read as x = 7.99 (the
+            # obstacle wall's corridor-facing face) and 16.0 (the far wall's inner face).
+            # The helper turns that into a box centre.  Writing the wall's own centre here
+            # is what buried half of every thick item inside it.
+            _dressing_wall("sign", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.5, 1.35),
+                           (0.5, 0.4, 0.03),
                            asset=WAREHOUSE_MATERIALS + "/MI_SignB.mdl"),
-            _dressing_wall("toolboard", "obstacle_wall", (8.0, 1.2, -1.35), (0.8, 0.6, 0.03)),
-            _dressing_wall("duct", "obstacle_wall", (8.0, 2.6, 1.10), (0.30, 0.30, 0.30),
-                           DRESSING_METAL),
-            _dressing_wall("bay_sign", "far_wall", (16.0, 2.15, 1.60), (0.9, 0.35, 0.03)),
+            _dressing_wall("toolboard", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.2, -1.35),
+                           (0.8, 0.6, 0.03)),
+            _dressing_wall("duct", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.6, 1.10),
+                           (0.30, 0.30, 0.30), DRESSING_METAL),
+            _dressing_wall("bay_sign", "far_wall", (FAR_WALL_FACE_X, 2.15, 1.60),
+                           (0.9, 0.35, 0.03)),
             # Floor items are deliberately small and far off the centre line.  The first
             # version put a 1.8 m tall, 1.1 m deep forklift five metres from the camera, and
             # the rendered frame came back with a dead black mass filling one side of it: a
             # big unlit box that close is not dressing, it is an obstruction.  Nothing here is
             # more than a metre tall, more than 0.9 m long along the view axis, or nearer the
             # centre line than |z| 2.0.
-            _dressing_floor("pallets", (2.6, 0.20, 2.05), (0.9, 0.40, 0.9)),
-            _dressing_floor("klt_bins", (4.0, 0.15, -2.00), (0.6, 0.30, 0.5)),
-            _dressing_floor("forklift", (6.2, 0.35, 2.15), (0.9, 0.70, 0.7)),
-            _dressing_floor("traffic_cone", (7.0, 0.35, -1.95), (0.4, 0.70, 0.4),
+            # The height argument is the BASE, so it is 0 for everything standing on the
+            # floor.  It used to be the box centre -- these read 0.20/0.15/0.35/0.35 -- and
+            # because the old helper did not move it, four of these ended up with their
+            # bottoms below the floor plane once the helper started adding half the height.
+            _dressing_floor("pallets", (2.6, 0.0, 2.05), (0.9, 0.40, 0.9)),
+            _dressing_floor("klt_bins", (4.0, 0.0, -2.00), (0.6, 0.30, 0.5)),
+            _dressing_floor("forklift", (6.2, 0.0, 2.15), (0.9, 0.70, 0.7)),
+            _dressing_floor("traffic_cone", (7.0, 0.0, -1.95), (0.4, 0.70, 0.4),
                             asset=WAREHOUSE_MATERIALS + "/M_TrafficCone.mdl"),
         ),
         "forbidden_colours": (),
@@ -552,51 +612,51 @@ def _install_dressing() -> None:
         # 1.4 m across, centred 1.65 m off the axis, so the inner edge sits at 0.95 m: clear of
         # the 1.14 m opening's half width (0.57 m) in the start view, which is the projection
         # check that caught the first version's 1.6 m shelves at 1.30 m.
-        _dressing_wall("bookshelf_left", "obstacle_wall", (8.0, 1.15, 1.65),
+        _dressing_wall("bookshelf_left", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.15, 1.65),
                        (1.4, 1.9, 0.16), DRESSING_WOOD),
-        _dressing_wall("bookshelf_right", "obstacle_wall", (8.0, 1.15, -1.65),
+        _dressing_wall("bookshelf_right", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.15, -1.65),
                        (1.4, 1.9, 0.16), DRESSING_WOOD),
-        _dressing_wall("clock", "obstacle_wall", (8.0, 2.45, -1.70), (0.4, 0.4, 0.03),
+        _dressing_wall("clock", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.45, -1.70), (0.4, 0.4, 0.03),
                        DRESSING_LIGHT),
-        _dressing_wall("reading_poster", "far_wall", (16.0, 2.05, 1.55), (0.7, 0.5, 0.03),
+        _dressing_wall("reading_poster", "far_wall", (FAR_WALL_FACE_X, 2.05, 1.55), (0.7, 0.5, 0.03),
                        DRESSING_LIGHT),
-        _dressing_floor("study_table", (3.0, 0.38, 2.05), (0.9, 0.75, 0.7), DRESSING_WOOD),
-        _dressing_floor("chair_row", (5.0, 0.25, -2.05), (0.7, 0.50, 0.9), DRESSING_GREY),
-        _dressing_floor("book_cart", (6.6, 0.45, 2.10), (0.8, 0.90, 0.5), DRESSING_METAL),
-        _dressing_floor("reading_lamp", (1.8, 0.48, -2.10), (0.3, 0.95, 0.3), DRESSING_METAL),
+        _dressing_floor("study_table", (3.0, 0.00, 2.05), (0.9, 0.75, 0.7), DRESSING_WOOD),
+        _dressing_floor("chair_row", (5.0, 0.00, -2.05), (0.7, 0.50, 0.9), DRESSING_GREY),
+        _dressing_floor("book_cart", (6.6, 0.00, 2.10), (0.8, 0.90, 0.5), DRESSING_METAL),
+        _dressing_floor("reading_lamp", (1.8, 0.00, -2.10), (0.3, 0.95, 0.3), DRESSING_METAL),
     )
 
     # The park: benches and planters behind the agent, hedges either side of the opening.
     # (This used to be a bare string literal between two statements -- not a docstring, so
     # Python compiled it and threw it away, and it read as though it documented the code.)
     SCENES["stage1.4"]["dressing"] = (
-        _dressing_wall("hedge_left", "obstacle_wall", (8.0, 2.30, 1.50), (1.2, 0.4, 0.16),
+        _dressing_wall("hedge_left", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.30, 1.50), (1.2, 0.4, 0.16),
                        DRESSING_GREEN),
-        _dressing_wall("hedge_right", "obstacle_wall", (8.0, 2.30, -1.50), (1.2, 0.4, 0.16),
+        _dressing_wall("hedge_right", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.30, -1.50), (1.2, 0.4, 0.16),
                        DRESSING_GREEN),
-        _dressing_wall("park_sign", "far_wall", (16.0, 2.00, -1.60), (0.6, 0.4, 0.03),
+        _dressing_wall("park_sign", "far_wall", (FAR_WALL_FACE_X, 2.00, -1.60), (0.6, 0.4, 0.03),
                        DRESSING_CLAY),
-        _dressing_floor("bench_left", (2.4, 0.25, 2.05), (0.9, 0.45, 0.5), DRESSING_WOOD),
-        _dressing_floor("bench_right", (4.8, 0.25, -2.05), (0.9, 0.45, 0.5), DRESSING_WOOD),
-        _dressing_floor("litter_bin", (6.4, 0.35, 2.10), (0.4, 0.70, 0.4), DRESSING_GREEN),
-        _dressing_floor("planter_left", (1.6, 0.20, -2.10), (0.6, 0.40, 0.6), DRESSING_CLAY),
-        _dressing_floor("planter_right", (7.2, 0.20, -2.00), (0.6, 0.40, 0.6), DRESSING_CLAY),
+        _dressing_floor("bench_left", (2.4, 0.00, 2.05), (0.9, 0.45, 0.5), DRESSING_WOOD),
+        _dressing_floor("bench_right", (4.8, 0.00, -2.05), (0.9, 0.45, 0.5), DRESSING_WOOD),
+        _dressing_floor("litter_bin", (6.4, 0.00, 2.10), (0.4, 0.70, 0.4), DRESSING_GREEN),
+        _dressing_floor("planter_left", (1.6, 0.00, -2.10), (0.6, 0.40, 0.6), DRESSING_CLAY),
+        _dressing_floor("planter_right", (7.2, 0.00, -2.00), (0.6, 0.40, 0.6), DRESSING_CLAY),
     )
 
     # The supermarket: shelving either side, a checkout and produce behind the agent.
     SCENES["stage1.5"]["dressing"] = (
-        _dressing_wall("shelf_left", "obstacle_wall", (8.0, 1.05, 1.60), (1.4, 1.9, 0.18),
+        _dressing_wall("shelf_left", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.05, 1.60), (1.4, 1.9, 0.18),
                        DRESSING_METAL),
-        _dressing_wall("shelf_right", "obstacle_wall", (8.0, 1.05, -1.60), (1.4, 1.9, 0.18),
+        _dressing_wall("shelf_right", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.05, -1.60), (1.4, 1.9, 0.18),
                        DRESSING_METAL),
-        _dressing_wall("price_strip", "obstacle_wall", (7.97, 2.00, 1.60), (1.3, 0.15, 0.03),
+        _dressing_wall("price_strip", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.00, 1.60), (1.3, 0.15, 0.03),
                        DRESSING_YELLOW),
-        _dressing_wall("promo_banner", "far_wall", (16.0, 2.10, 1.55), (0.9, 0.5, 0.03),
+        _dressing_wall("promo_banner", "far_wall", (FAR_WALL_FACE_X, 2.10, 1.55), (0.9, 0.5, 0.03),
                        DRESSING_YELLOW),
-        _dressing_floor("trolley", (2.8, 0.48, 2.05), (0.8, 0.95, 0.5), DRESSING_METAL),
-        _dressing_floor("produce_bins", (4.6, 0.28, -2.05), (0.9, 0.55, 0.6), DRESSING_YELLOW),
-        _dressing_floor("checkout", (6.4, 0.42, 2.10), (0.9, 0.85, 0.7), DRESSING_GREY),
-        _dressing_floor("stacked_boxes", (7.4, 0.28, -2.00), (0.7, 0.55, 0.5), DRESSING_BLUE),
+        _dressing_floor("trolley", (2.8, 0.00, 2.05), (0.8, 0.95, 0.5), DRESSING_METAL),
+        _dressing_floor("produce_bins", (4.6, 0.00, -2.05), (0.9, 0.55, 0.6), DRESSING_YELLOW),
+        _dressing_floor("checkout", (6.4, 0.00, 2.10), (0.9, 0.85, 0.7), DRESSING_GREY),
+        _dressing_floor("stacked_boxes", (7.4, 0.00, -2.00), (0.7, 0.55, 0.5), DRESSING_BLUE),
     )
 
 
