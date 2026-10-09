@@ -214,6 +214,33 @@ WAREHOUSE_MATERIALS = ASSET_ROOT + "/Environments/Simple_Warehouse/Materials"
 # and a wrapper layer renders as nothing, both of which have been hit here already.
 PROP_ROOT = ASSET_ROOT + "/Props"
 
+# What tools/measure_assets.py measured each vendored mesh to be, in this catalogue's own
+# frame (x, height, lateral).  This is DATA, not a note: a prop's real size is not derivable
+# here (there is no USD reader on the development machine), so it is recorded from the run and
+# a test compares every declared size against it.
+#
+# It lives beside the catalogue because that is what consumes it, and it is keyed by the
+# asset file name a scene's ``asset`` URL ends with.  An entry here is also a statement that
+# the mesh can be referenced at all: the two filenames deliberately ABSENT are
+# sektion_cabinet_visuals.usd (USD: "Unresolved reference prim path ... <defaultPrim>", no
+# default prim, so it references as nothing) and mac_n_cheese_centered.usd (its sublayer
+# mac_n_cheese.usd is not vendored).  Both were measured on the workstation and both came back
+# with no extent.
+PROP_MEASUREMENTS = {
+    "small_KLT.usd": (0.1978, 0.1464, 0.2966),
+    "small_KLT_visual.usd": (0.1978, 0.1464, 0.2966),
+    "pallet.usd": (1.2132, 0.1425, 0.8023),
+    "sektion_cabinet_instanceable.usd": (0.6678, 0.7861, 0.7638),
+    "beaker_500ml.usd": (0.1621, 0.1492, 0.1789),
+    "cone.usd": (1.0, 1.0, 1.0),
+    "cube.usd": (1.0, 1.0, 1.0),
+    "cylinder.usd": (1.0, 1.0, 1.0),
+    "disk.usd": (1.0, 0.0, 1.0),
+    "plane.usd": (1.0, 0.0, 1.0),
+    "sphere.usd": (1.0, 1.0, 1.0),
+    "torus.usd": (1.5, 0.5, 1.5),
+}
+
 
 # Muted, scene-neutral default so that no dressing item is ever rendered untextured black.
 # The first preview came back with a solid black wall on one side and black blocks in the
@@ -342,8 +369,19 @@ SCENES: Dict[str, Dict[str, Any]] = {
             # floor.  It used to be the box centre -- these read 0.20/0.15/0.35/0.35 -- and
             # because the old helper did not move it, four of these ended up with their
             # bottoms below the floor plane once the helper started adding half the height.
-            _dressing_floor("pallets", (2.6, 0.0, 2.05), (0.9, 0.40, 0.9)),
-            _dressing_floor("klt_bins", (4.0, 0.0, -2.00), (0.6, 0.30, 0.5),
+            #
+            # The two sizes below are the MEASURED size of the prop they name, in this frame,
+            # taken from tools/measure_assets.py.  They were descriptive guesses before, and
+            # both were wrong in opposite directions: the pallet was declared SMALLER than a
+            # real pallet (0.9 x 0.9 m against 1.2132 x 0.8023 m) and the small load carrier
+            # LARGER than a real one (0.6 x 0.5 m against 0.1978 x 0.2966 m).  Because
+            # place_dressing references the prop at its own scale, a box that disagrees with
+            # its prop is either a mesh hanging outside its declared volume or a box drawn
+            # around nothing -- and the occlusion and walking-band checks are written against
+            # the box, so they were being satisfied by a number nobody had measured.
+            _dressing_floor("pallets", (2.6, 0.0, 2.05), (1.2132, 0.1425, 0.8023),
+                            asset=PROP_ROOT + "/Pallet/pallet.usd"),
+            _dressing_floor("klt_bins", (4.0, 0.0, -2.00), (0.1978, 0.1464, 0.2966),
                             asset=PROP_ROOT + "/KLT_Bin/small_KLT_visual.usd"),
             _dressing_floor("forklift", (6.2, 0.0, 2.15), (0.9, 0.70, 0.7)),
             _dressing_floor("traffic_cone", (7.0, 0.0, -1.95), (0.4, 0.70, 0.4),

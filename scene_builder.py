@@ -239,19 +239,33 @@ def prop_asset_for(url: Optional[str]) -> Optional[str]:
         MI_SignB and M_TrafficCone as notes rather than references.
       * anything not under assets/isaac has not been vendored, so referencing it would work on
         this machine and not on a clone.
-      * a bare wrapper layer.  Measured: small_KLT.usd is 6.6 kB and sektion_cabinet_
-        instanceable.usd is 5.8 kB, while small_KLT_visual.usd is 180 kB and
-        sektion_cabinet_visuals.usd is 167 kB -- the geometry lives in the ``_visual`` layer
-        and the small file is a proxy that renders as nothing useful.  If a vendored
-        ``<stem>_visual...usd`` exists beside the named file, that is the one to reference.
+      * a bare wrapper layer.  Measured: small_KLT.usd is 6.6 kB against
+        small_KLT_visual.usd's 180 kB, so the geometry lives in the ``_visual`` layer and the
+        small file is a proxy.  If a vendored ``<stem>_visual...usd`` exists beside the named
+        file, that is the one to reference.
+
+    The one exception is a name that says ``instanceable``.  Measured on the workstation:
+
+        Sektion_Cabinet/sektion_cabinet_instanceable.usd   (0.6678, 0.7638, 0.7861) m
+        Sektion_Cabinet/sektion_cabinet_visuals.usd        no measurable extent
+
+    and USD reported why -- the visuals layer has no default prim:
+
+        Unresolved reference prim path @...sektion_cabinet_visuals.usd@<defaultPrim>
+
+    So here "the visual layer" is the one that cannot be referenced at all, and the small
+    ``_instanceable`` wrapper is the only one that measures.  Preferring the bigger file by size
+    would have wired a cabinet that renders as nothing, which is the failure this function
+    exists to prevent, arriving from the opposite direction.
     """
     if not url or not url.endswith(".usd"):
         return None
     name = os.path.basename(url)
-    # A name that is already a visual layer is what the caller meant -- use it as written.
+    # Already a specific layer: a visual layer, or an _instanceable wrapper that is the only
+    # referencable one.  Use the name as written.
     # (Before this check, asking for small_KLT_visual.usd chose small_KLT_visual_collision.usd,
     # because the collision layer is longer and also matches "stem + visual".)
-    if "visual" in name:
+    if "visual" in name or "instanceable" in name:
         for root, _dirs, files in os.walk(LOCAL_ASSETS):
             if name in files:
                 return os.path.join(root, name)

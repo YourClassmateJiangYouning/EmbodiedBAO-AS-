@@ -1013,6 +1013,58 @@ def test_no_module_calls_a_scene_helper_that_does_not_exist() -> None:
     print("[ok] every sc./sb. helper called in the repo exists and takes the arguments given")
 
 
+def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
+    """A floor item that references a mesh declares that mesh's real size.
+
+    place_dressing references the prop at its own scale, on top of a box of the declared size.
+    So if the two disagree, one of two things is silently true and neither is visible from the
+    catalogue: the mesh hangs outside the volume the occlusion and walking-band checks were
+    computed for, or the box is drawn around a much smaller object and every "the dressing is
+    clear of the opening" conclusion is about a box rather than about the thing in it.
+
+    Both directions were found by measuring on the workstation:
+
+        pallet.usd   declared (0.9, 0.40, 0.9)      actually (1.2132, 0.1425, 0.8023)
+        small_KLT    declared (0.6, 0.30, 0.5)      actually (0.1978, 0.1464, 0.2966)
+
+    a pallet declared smaller than a real pallet and a load carrier declared larger than a real
+    one -- the two guesses did not even err the same way.
+
+    The comparison is against scenes.PROP_MEASUREMENTS, which is the recorded output of
+    tools/measure_assets.py, because no USD reader exists on this machine.  A prop referenced
+    without a recorded measurement fails here rather than passing unmeasured.
+    """
+    measured = sc.PROP_MEASUREMENTS
+    problems, checked = [], []
+
+    for scene in sc.SCENE_ORDER:
+        for item in sc.SCENES[scene]["dressing"]:
+            asset = item.get("asset")
+            if not asset or item["mount"] != "floor":
+                continue
+            name = os.path.basename(asset)
+            if not name.endswith(".usd"):
+                # An .mdl is a material and never a reference; test_bao_assets covers those.
+                continue
+            if name not in measured:
+                problems.append(f"{scene}/{item['name']} references {name}, which has no "
+                                f"recorded measurement")
+                continue
+            want = measured[name]
+            got = tuple(float(v) for v in item["size"])
+            if any(abs(got[i] - want[i]) > 1e-4 for i in range(3)):
+                problems.append(f"{scene}/{item['name']} declares {got}, {name} measures {want}")
+            else:
+                checked.append(f"{item['name']}->{name}")
+
+    check(not problems,
+          "these declared sizes are not the size of the prop they reference, so the box the "
+          "fixture checks use is not the thing that will be drawn:\n    "
+          + "\n    ".join(problems))
+    print(f"[ok] {len(checked)} declared size(s) equal the measured prop: {checked}, and "
+          f"{len(measured)} measurement(s) are recorded")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -1045,6 +1097,7 @@ def main() -> int:
         test_no_scene_name_reaches_a_usd_path_unsanitised,
         test_no_module_asks_pxr_for_something_it_does_not_have,
         test_no_module_calls_a_scene_helper_that_does_not_exist,
+        test_a_declared_size_is_the_size_of_the_prop_it_names,
     ]
     failed = 0
     for test in tests:
