@@ -225,6 +225,26 @@ def _disable_collision(prim: Any) -> None:
         pass
 
 
+# One directory listing for the whole process.  prop_asset_for() is called once per dressing
+# item, and place_dressing() runs for every scene, so the uncached version walked assets/isaac
+# (about 900 files) 165 times per sweep for three actual lookups.  The tree cannot change while
+# a run is in progress, so the listing is built once and reused.
+_ASSET_INDEX: Optional[Dict[str, str]] = None
+
+
+def _asset_index() -> Dict[str, str]:
+    """basename -> full path for every vendored .usd, built once."""
+    global _ASSET_INDEX
+    if _ASSET_INDEX is None:
+        index: Dict[str, str] = {}
+        for root, _dirs, files in os.walk(LOCAL_ASSETS):
+            for name in files:
+                if name.endswith(".usd"):
+                    index.setdefault(name, os.path.join(root, name))
+        _ASSET_INDEX = index
+    return _ASSET_INDEX
+
+
 def prop_asset_for(url: Optional[str]) -> Optional[str]:
     """The vendored .usd mesh for a catalogue ``asset``, or None if there is not one.
 
@@ -261,28 +281,24 @@ def prop_asset_for(url: Optional[str]) -> Optional[str]:
     if not url or not url.endswith(".usd"):
         return None
     name = os.path.basename(url)
+    index = _asset_index()
     # Already a specific layer: a visual layer, or an _instanceable wrapper that is the only
     # referencable one.  Use the name as written.
     # (Before this check, asking for small_KLT_visual.usd chose small_KLT_visual_collision.usd,
     # because the collision layer is longer and also matches "stem + visual".)
     if "visual" in name or "instanceable" in name:
-        for root, _dirs, files in os.walk(LOCAL_ASSETS):
-            if name in files:
-                return os.path.join(root, name)
+        return index.get(name)
+    if name not in index:
         return None
     stem = name[: -len(".usd")]
-    for root, _dirs, files in os.walk(LOCAL_ASSETS):
-        if name not in files:
-            continue
-        # The named file may be a wrapper whose geometry is in a sibling visual layer:
-        # small_KLT.usd is 6.6 kB against small_KLT_visual.usd's 180 kB, and a proxy layer
-        # references without error and renders as nothing useful.
-        for candidate in sorted(files):
-            if candidate.endswith(".usd") and candidate != name and stem in candidate \
-                    and "visual" in candidate and "collision" not in candidate:
-                return os.path.join(root, candidate)
-        return os.path.join(root, name)
-    return None
+    # The named file may be a wrapper whose geometry is in a sibling visual layer:
+    # small_KLT.usd is 6.6 kB against small_KLT_visual.usd's 180 kB, and a proxy layer
+    # references without error and renders as nothing useful.
+    for candidate in sorted(index):
+        if candidate.endswith(".usd") and candidate != name and stem in candidate \
+                and "visual" in candidate and "collision" not in candidate:
+            return index[candidate]
+    return index[name]
 
 
 def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
