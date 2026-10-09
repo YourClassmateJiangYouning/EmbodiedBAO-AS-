@@ -114,7 +114,6 @@ def test_the_arrow_keeps_its_size_and_its_measured_centroid_offset() -> None:
     """
     polygons = sc.SHAPES["arrow"]
     xs = [p[0] for poly in polygons for p in poly]
-    ys = [p[1] for poly in polygons for p in poly]
 
     width = max(xs) - min(xs)
     check(abs(width - sc.MARKER_SIZE_M) < 1e-12,
@@ -846,6 +845,88 @@ def test_no_scene_name_reaches_a_usd_path_unsanitised() -> None:
     print("[ok] no scene name reaches a USD path without prim_name()")
 
 
+def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
+    """Catch a misspelt pxr member without needing pxr installed.
+
+    This is the fourth time this session that code reached for a pxr API that does not exist,
+    and every one of them was found by running it on the workstation:
+
+      * Prim.GetReferences() on a schema instead of a prim;
+      * UsdGeom.BoxCache, when the class is UsdGeom.BBoxCache;
+      * UsdGeom.BBoxCache.CreateBoxCache(...).ComputeWorldBounds(), when the constructor takes
+        a time code and the method is ComputeWorldBound(prim);
+      * a probe bound read off a Cube whose extent was never authored.
+
+    None of those can be caught by importing the module here -- there is no pxr on this
+    machine, which is exactly why they survived to the workstation.  What CAN be caught is a
+    reference to a member that the USD Python API does not define, by checking the module
+    against a list of the members these files actually use.  The list is short and explicit on
+    purpose: an allowlist that grows silently is not a check, so a new member has to be added
+    here deliberately, with the docs open.
+
+    See https://openusd.org/release/api/ -- in particular
+    class_usd_geom_b_box_cache.html, which is what corrected the second and third faults above.
+
+    The scan is over the CODE, not the text.  This docstring names the wrong spellings, and the
+    first version of this check flagged its own prose -- as did a message string elswhere that
+    mentioned one.  String literals are blanked before scanning for exactly that reason.
+    """
+    import ast as _ast
+    import re
+
+    # module -> members these files may use, verified against the OpenUSD API reference.
+    ALLOWED = {
+        "Gf": {"Vec3f", "Vec3d", "Matrix4d"},
+        "Sdf": {"ValueTypeNames", "Path", "AssetPath"},
+        "Usd": {"Stage", "Prim", "TimeCode", "Attribute"},
+        "UsdGeom": {
+            "Cube", "Sphere", "Cylinder", "Cone", "Capsule", "Mesh", "Xform", "Scope",
+            "Tokens", "SetStageUpAxis", "Xformable", "XformOp", "BBoxCache", "Gprim",
+            "Imageable", "Boundable", "Camera", "GetStageUpAxis",
+        },
+        "UsdLux": {"SphereLight", "DomeLight", "DiskLight", "RectLight"},
+        "UsdShade": {"Material", "Shader", "ConnectableAPI", "Input", "Output",
+                     "MaterialBindingAPI"},
+        "UsdPhysics": {"RigidBodyAPI", "CollisionAPI", "MassAPI", "ArticulationRootAPI",
+                       "Joint"},
+        "UsdSkel": set(),
+    }
+    PATTERN = re.compile(r"\b(" + "|".join(ALLOWED) + r")\.([A-Za-z_][A-Za-z0-9_]*)")
+
+    def code_text(source: str) -> list:
+        """The source with every string literal blanked out, so prose cannot be mistaken."""
+        rows = [list(line) for line in source.splitlines()]
+        for node in _ast.walk(_ast.parse(source)):
+            if isinstance(node, _ast.Constant) and isinstance(node.value, str):
+                for index in range(node.lineno - 1, node.end_lineno):
+                    if index >= len(rows):
+                        continue
+                    start = node.col_offset if index == node.lineno - 1 else 0
+                    end = node.end_col_offset if index == node.end_lineno - 1 else len(rows[index])
+                    for column in range(min(start, len(rows[index])), min(end, len(rows[index]))):
+                        rows[index][column] = " "
+        return ["".join(chars) for chars in rows]
+
+    root = os.path.dirname(os.path.abspath(__file__))
+    offenders = []
+    for folder in (root, os.path.join(root, "tools")):
+        for name in sorted(os.listdir(folder)):
+            if not name.endswith(".py"):
+                continue
+            source = open(os.path.join(folder, name), encoding="utf-8").read()
+            for number, line in enumerate(code_text(source), start=1):
+                for module, member in PATTERN.findall(line):
+                    if member not in ALLOWED[module]:
+                        offenders.append(f"{name}:{number} {module}.{member}")
+
+    check(not offenders,
+          "these pxr members are not in the allowlist of ones this repo uses, so either the "
+          "name is misspelt or a new API is being used without checking the docs:\n    "
+          + "\n    ".join(sorted(set(offenders))))
+    total = sum(len(v) for v in ALLOWED.values())
+    print(f"[ok] every pxr member used in the repo is on the verified list ({total} members)")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -876,6 +957,7 @@ def main() -> int:
         test_real_room_boxes_classify_correctly,
         test_prim_paths_from_a_scene_name_are_valid_usd_paths,
         test_no_scene_name_reaches_a_usd_path_unsanitised,
+        test_no_module_asks_pxr_for_something_it_does_not_have,
     ]
     failed = 0
     for test in tests:
