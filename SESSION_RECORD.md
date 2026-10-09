@@ -546,5 +546,57 @@ slot 实测；§2 目录地图补 6 个文件、修 `ai_agent.parse_response`（
 3. 补齐 sublayer 依赖（如 `mac_n_cheese.usd`）后才能引用 `mac_n_cheese_centered.usd`。
 4. **性能项**：`prop_asset_for` 每次调用都 `os.walk(assets/isaac)`（约 900 文件）→ 32 件 × 5 场景重复遍历。应加缓存或改目录索引。**已在日志记下，未改**。
 
+---
+
+## L. 第八轮：道具实测表 → 按实测改声明（已接 3 件）
+
+### L1. 实测结果（`tools/measure_assets.py`，14 个资产，2026-10-09 上机）
+
+| 资产 | catalogue 尺寸（x, 高, 横向） | 可用性 |
+| :--- | :--- | :--- |
+| `Pallet/pallet.usd` | **(1.2132, 0.1425, 0.8023)** | 可用（真欧标托盘） |
+| `KLT_Bin/small_KLT_visual.usd` | **(0.1978, 0.1464, 0.2966)** | 可用 |
+| `KLT_Bin/small_KLT.usd` | (0.1978, 0.1464, 0.2966) | 可用（与其 visual 层同尺寸） |
+| `Sektion_Cabinet/sektion_cabinet_instanceable.usd` | **(0.6678, 0.7861, 0.7638)** | **可用** |
+| `Sektion_Cabinet/sektion_cabinet_visuals.usd` | 无 extent | **不可引用**：`Unresolved reference prim path <defaultPrim>` |
+| `Food/mac_n_cheese_centered.usd` | 无 extent | **不可引用**：sublayer `mac_n_cheese.usd` 未 vendored |
+| `Beaker/beaker_500ml.usd` | (0.1621, 0.1492, 0.1789) | 可用，未接 |
+| `Shapes/*`（7 个） | 单位尺寸 | 是基元，不是陈设 |
+
+**坐标系换算已被实验验证**：`small_KLT` 的 stage `(0.1978, 0.2966, 0.1464)` → catalogue `(0.1978, 0.1464, 0.2966)`，y/z 正确交换。
+
+### L2. 声明尺寸此前**两处都错，且方向相反**
+
+| 陈设 | 旧声明 | 实测 | 错法 |
+| :--- | :--- | :--- | :--- |
+| `pallets` | (0.9, 0.40, 0.9) | (1.2132, 0.1425, 0.8023) | **比真托盘小** |
+| `klt_bins` | (0.6, 0.30, 0.5) | (0.1978, 0.1464, 0.2966) | **比真料箱大** |
+
+因为道具按自身比例引用、而遮挡与走道判据是**按方块**算的 → **这些判据此前是在没人量过的数字上成立的**。
+
+### L3. 本轮实现的改动
+
+| 改动 | 内容 |
+| :--- | :--- |
+| `scenes.PROP_MEASUREMENTS` | 新增：12 个资产的实测尺寸（catalogue 系），并注明两个**故意缺席**的文件及原因 |
+| 3 件陈设接引用 | `pallets`→`pallet.usd`、`klt_bins`→`small_KLT_visual.usd`、`cabinet`（新地面件，`stage1.3`）→`sektion_cabinet_instanceable.usd` |
+| `prop_asset_for` | 含 `instanceable` 的名字**按原样使用**（见 L4） |
+| 新测试 | `test_a_declared_size_is_the_size_of_the_prop_it_names`：声明必须等于实测；**未记录测量的引用直接报错** |
+
+### L4. 我本轮犯的错（第 7 次同类）
+
+| # | 错误 | 真相 |
+| :-: | :--- | :--- |
+| L4-1 | `prop_asset_for` 把"**更大的文件**"当作"更好的文件"，把柜子升级到 `sektion_cabinet_visuals.usd` | 该文件**没有 defaultPrim**，引用成空。**能用的恰是我判定为"包装层"的 `_instanceable`**（5.8 KB，自带 extentsHint，实测可测）。这是同一个失效从反方向来 |
+| L4-2 | 差一点给 `shelf_left/right` 写上 `(1.2132, 0.6678, 0.7638)` | `_dressing_wall` 约定是 **(across, tall, thick)** 且 `thick` 落到 x 轴（伸进走廊）。柜子深 0.6678 m → 半深 0.33 已超 0.20 m 上限，**必然违规**。发现后**全部回退**，没有硬推 |
+| L4-3 | 差点按 `\|z\| ≥ 1.5` 放柜子 | 规矩是**底面高于 0.6 m 的地面件要 `\|z\| ≥ 1.8`**。柜子高 0.7861 m（>0.6）→ 必须用 1.8。最终取 2.05 |
+
+### L5. 明确未做（需决策，已问过）
+
+- **柜子不放墙上**：`test_no_dressing_protrudes_into_the_corridor` 限制墙件伸出 ≤ 0.20 m，而柜子深 0.6678 m。
+  该上限源自旧通风管把黑块横在机器人视野中央的教训。用户选择：**放地面当独立家具**（已实现），**不放宽规矩、不压扁网格**。
+- `Beaker` 可用但未接；`Food` 需先补齐 sublayer 才能用。
+- 其余 30 件仍是方块。
+
 
 

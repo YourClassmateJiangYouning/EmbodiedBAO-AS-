@@ -223,22 +223,33 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
   ② `tools/check_marker_uniqueness.py` **不存在**（`STAGE1_SCENES.md` §4 检查②自己承认了），
   在它出现之前，标志物唯一性只能靠几何/配置层检查 + 看图；
   ③ **陈设正在从方块换成真实 `.usd` 道具**（进行中）：`scene_builder.prop_asset_for()` 已能把目录里的
-  `asset` 解析为**仓库内**的 `.usd`，`place_dressing()` 会在方块之上加引用。**当前只接了 1 件**
-  （`stage1.2` 的 `klt_bins` → `KLT_Bin/small_KLT_visual.usd`），因为**道具实际尺寸 vs 声明方块尺寸
-  必须上机测量**（`tools/measure_props.py`），尺寸不符时硬接比方块更糟。
+  `asset` 解析为**仓库内**的 `.usd`，`place_dressing()` 会在方块之上加引用。**已接 3 件**（均按实测尺寸 1:1）：
 
-### 7.2 道具引用的三条硬事实（2026-10-08 实测）
+  | 场景 | 陈设 | 道具 | 实测尺寸（catalogue 系） |
+  | :--- | :--- | :--- | :--- |
+  | `stage1.2` | `pallets` | `Pallet/pallet.usd` | (1.2132, 0.1425, 0.8023) |
+  | `stage1.2` | `klt_bins` | `KLT_Bin/small_KLT_visual.usd` | (0.1978, 0.1464, 0.2966) |
+  | `stage1.3` | `cabinet` | `Sektion_Cabinet/sektion_cabinet_instanceable.usd` | (0.6678, 0.7861, 0.7638) |
+
+### 7.1 道具引用的四条硬事实（2026-10-09 实测，`tools/measure_assets.py`）
 
 | 事实 | 依据 |
 | :--- | :--- |
-| **几何在 `*_visual*.usd` 层，不在同名小文件里** | `small_KLT.usd` **6.6 KB**（包装）vs `small_KLT_visual.usd` **180 KB**；`sektion_cabinet_instanceable.usd` 5.8 KB vs `sektion_cabinet_visuals.usd` 167 KB。接引用必须指 visual 层，否则渲染为空 |
-| **`.mdl` 不是道具** | `MI_SignB.mdl` / `M_TrafficCone.mdl` 是材质；`prop_asset_for` 明确拒绝，这两件**按设计保持方块** |
-| **体积要先把关** | `forklift.usd` **18.4 MB**、`pallet_holder.usd` 3.9 MB → 未下载。抓之前先 `HEAD` 看 Content-Length（`tools/fetch_assets.py` 与 MANUAL 的老教训） |
+| **几何在 `*_visual*.usd` 层** | `small_KLT.usd` 6.6 KB vs `small_KLT_visual.usd` 180 KB。接引用要指 visual 层 |
+| **但 `sektion_cabinet_visuals.usd` 不可引用** | 日志：`Unresolved reference prim path <defaultPrim>`。**能用的恰是 `_instanceable` 那个**（实测 0.6678×0.7861×0.7638）。所以含 `instanceable` 的名字按原样使用 |
+| **`mac_n_cheese_centered.usd` 不可引用** | 日志：`Could not load sublayer mac_n_cheese.usd; skipping` —— sublayer 兄弟文件未入库 |
+| **`.mdl` 不是道具** | `MI_SignB.mdl` / `M_TrafficCone.mdl` 是材质，`prop_asset_for` 明确拒绝，这两件**按设计保持方块** |
 
-新增工具：**`tools/measure_props.py`** —— 上机跑，逐件打印"道具实测外接盒 / 声明方块尺寸"的比值，
-用来决定缩放还是改声明。**不改任何东西，只出数**。
+**声明尺寸必须有出处**：`scenes.PROP_MEASUREMENTS` 记录实测值，`test_a_declared_size_is_the_size_of_the_prop_it_names`
+强制"声明 == 实测"。此前两处声明都错了且**方向相反**：托盘被写小（0.9×0.9 vs 真 1.2132×0.8023），
+料箱被写大（0.6×0.5 vs 真 0.1978×0.2966）。
 
-### 7.1 首批 1024 px 实拍审查（2026-10-08，远程渲染；完整记录见 SESSION_RECORD.md §I）
+**柜子为何在地面而不在墙上**：它深 0.6678 m，半深 0.33 m 已超 `test_no_dressing_protrudes_into_the_corridor`
+的 0.20 m 上限（该上限源自旧通风管把黑块横在机器人视野中央）。**不放宽规矩、也不压扁网格**，改为地面独立家具。
+
+新增工具：**`tools/measure_assets.py`**（量所有 vendored 资产）、**`tools/measure_props.py`**（量某场景已接道具 vs 声明）。
+
+### 7.2 首批 1024 px 实拍审查（2026-10-08，远程渲染；完整记录见 SESSION_RECORD.md §I）
 
 **已核实（像素实测，不是眼估）**：
 

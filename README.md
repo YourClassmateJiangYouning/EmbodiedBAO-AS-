@@ -1071,12 +1071,19 @@ a 2 m horizontal bar instead of a vertical post.
   eleven names that still have to be confirmed by the same listing, and
   `test_bao_scenes.py` fails a scene that claims verification while naming a URL outside
   the Isaac asset root. Unconfirmed is not the same as wrong — it is unverified.
-* **Scene dressing is boxes, not props.** All 32 dressing items are placed as grey or
-  coloured boxes of their declared size. `scene_builder.place_dressing` deliberately does
-  not use the catalogue's `asset` field: the two items whose asset was an `.mdl` are
-  materials, not stage assets, and USD answers "Cannot determine file format" for them.
-  The report says `used_asset: false` for every item, so nothing has to be guessed later.
-  Real prop meshes are a Stage 1 scene-skin item, not a Stage 3 one.
+* **Scene dressing is mostly boxes.** Every one of the 33 dressing items is placed as a box of
+  its declared size, and three of them additionally reference a vendored `.usd` mesh:
+  `stage1.2`'s `pallets` → `Pallet/pallet.usd`, `stage1.2`'s `klt_bins` →
+  `KLT_Bin/small_KLT_visual.usd`, and `stage1.3`'s `cabinet` →
+  `Sektion_Cabinet/sektion_cabinet_instanceable.usd`. Those three declare the mesh's **measured**
+  size (recorded in `scenes.PROP_MEASUREMENTS`, produced by `tools/measure_assets.py`) rather than
+  a guess, because the box is what the occlusion and walking-band checks are computed against.
+  The other 30 are boxes: the `asset` field on two of them names an `.mdl`, which is a material
+  rather than a stage asset (USD answers "Cannot determine file format"), and the rest name no
+  asset at all. The report says `used_asset: false` for every item that did not reference one, so
+  nothing has to be guessed later. Note that `sektion_cabinet_visuals.usd` looks like the better
+  file by size but **cannot be referenced** — USD reports `Unresolved reference prim path
+  <defaultPrim>` — and `mac_n_cheese_centered.usd` is missing its sublayer `mac_n_cheese.usd`.
 * **No marker-uniqueness check exists.** `STAGE1_SCENES.md` §4 lists, as check ②, that a
   marker must be the only object of its colour in its frame, and that this should be
   automated. `tools/check_marker_uniqueness.py` **does not exist**; the document says so
