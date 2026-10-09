@@ -668,6 +668,19 @@ def _install_dressing() -> None:
         _dressing_floor("chair_row", (5.0, 0.00, -2.05), (0.7, 0.50, 0.9), DRESSING_GREY),
         _dressing_floor("book_cart", (6.6, 0.00, 2.10), (0.8, 0.90, 0.5), DRESSING_METAL),
         _dressing_floor("reading_lamp", (1.8, 0.00, -2.10), (0.3, 0.95, 0.3), DRESSING_METAL),
+        # The cabinet is FLOOR furniture, not a wall item, and that is a decision rather than a
+        # convenience.  It measures 0.6678 x 0.7861 x 0.7638 m, so as a wall item its own
+        # half-depth (0.33 m) alone exceeds test_no_dressing_protrudes_into_the_corridor's
+        # 0.20 m cap -- and that cap is what the warehouse's duct taught when it hung a black
+        # slab across the agent's view.  Rather than relax the rule or squash the mesh, the
+        # cabinet stands on the floor, which is a thing cabinets do.
+        #
+        # |z| is 2.05, not 1.5: the rule is that a floor item whose BASE is above 0.6 m needs
+        # |z| >= 1.8, and this is 0.7861 m tall with base 0.  Its lateral half-extent 0.3819
+        # then leaves the inner edge at 1.67 m, clear of the 1.14 m opening's half width.
+        _dressing_floor("cabinet", (7.0, 0.00, 2.05), (0.6678, 0.7861, 0.7638),
+                        DRESSING_WOOD,
+                        asset=PROP_ROOT + "/Sektion_Cabinet/sektion_cabinet_instanceable.usd"),
     )
 
     # The park: benches and planters behind the agent, hedges either side of the opening.
