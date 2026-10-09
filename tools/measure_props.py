@@ -162,6 +162,12 @@ def main() -> int:
         emit("scale     = declared / prop: the factor that would make the prop fill the box")
         emit("            1.0 means it already does.  A value far from 1 is a decision:")
         emit("            scale the prop, or change the declared size, or drop the reference.")
+        emit("            Both are in the STAGE frame here.  The catalogue is written in the")
+        emit("            user frame (x, height, lateral) and the stage is (x, lateral,")
+        emit("            height), so the declared side is converted before dividing --")
+        emit("            comparing one of each printed declared (0.6, 0.5, 0.3) for a")
+        emit("            catalogue entry of (0.6, 0.30, 0.5) in the first version of this")
+        emit("            table, which is precisely the mistake the frames are documented for.")
         emit("MARK done")
         return 0
     except BaseException:

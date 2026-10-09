@@ -927,6 +927,92 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
     print(f"[ok] every pxr member used in the repo is on the verified list ({total} members)")
 
 
+def test_no_module_calls_a_scene_helper_that_does_not_exist() -> None:
+    """Every ``sc.<name>`` / ``sb.<name>`` in the repo exists, and takes the arguments given.
+
+    This exists because of a measured mistake: tools/measure_assets.py called
+    ``scenes.to_user_size()``, which does not exist -- the catalogue defines ``to_user`` for a
+    point and ``to_world_size`` for a size.  That file cannot be run here (it needs isaacsim),
+    so nothing local would have complained until the workstation run 160 s later.
+
+    Unlike the pxr check, this one can be exact: `scenes` and `scene_builder` import fine on
+    this machine, so the attributes and the signatures are available to be inspected.  A call
+    with the wrong number of positional arguments is caught too, which is the same fault one
+    level down.
+    """
+    import ast as _ast
+    import inspect
+
+    import scene_builder
+    import scenes as catalogue
+
+    MODULES = {"sc": catalogue, "sb": scene_builder}
+    problems = []
+
+    root = os.path.dirname(os.path.abspath(__file__))
+    for folder in (root, os.path.join(root, "tools")):
+        for name in sorted(os.listdir(folder)):
+            if not name.endswith(".py"):
+                continue
+            source = open(os.path.join(folder, name), encoding="utf-8").read()
+            tree = _ast.parse(source)
+
+            # Walk ATTRIBUTE ACCESSES, not lines.  A regex over lines cannot tell code from a
+            # comment or a docstring: the previous two attempts at this reported
+            # "sb.SCENE_ORDER does not exist" for a comment that said exactly that, and
+            # "sc.screen_bounds() takes 1" for a correct starred call.  An ast.Attribute whose
+            # value is the imported alias is unambiguous -- comments and strings contain no
+            # nodes at all.
+            for node in _ast.walk(tree):
+                if not isinstance(node, _ast.Attribute):
+                    continue
+                if not isinstance(node.value, _ast.Name) or node.value.id not in MODULES:
+                    continue
+                alias, member = node.value.id, node.attr
+                if not hasattr(MODULES[alias], member):
+                    problems.append(f"{name}:{node.lineno} {alias}.{member} does not exist")
+
+            # Argument counts, walked from the AST so multi-line calls are checked too.
+            for node in _ast.walk(tree):
+                if not isinstance(node, _ast.Call) or not isinstance(node.func, _ast.Attribute):
+                    continue
+                if not isinstance(node.func.value, _ast.Name):
+                    continue
+                alias = node.func.value.id
+                if alias not in MODULES:
+                    continue
+                member = node.func.attr
+                target = getattr(MODULES[alias], member, None)
+                if target is None or not callable(target):
+                    continue
+                try:
+                    signature = inspect.signature(target)
+                except (TypeError, ValueError):
+                    continue
+                if any(p.kind is p.VAR_POSITIONAL for p in signature.parameters.values()):
+                    continue
+                # A starred argument unpacks at runtime, so the count here is unknown.  The
+                # first version of this check ignored that and reported
+                # sc.screen_bounds(*sc.opening_box(width)) -- which is correct code.
+                if any(isinstance(argument, _ast.Starred) for argument in node.args):
+                    continue
+                required = [p for p in signature.parameters.values()
+                            if p.default is p.empty and p.kind in (p.POSITIONAL_ONLY,
+                                                                   p.POSITIONAL_OR_KEYWORD)]
+                positional = len(node.args)
+                maximum = len([p for p in signature.parameters.values()
+                               if p.kind in (p.POSITIONAL_ONLY, p.POSITIONAL_OR_KEYWORD)])
+                if positional < len(required) or positional > maximum:
+                    problems.append(
+                        f"{name}:{node.lineno} {alias}.{member}() takes {len(required)}.."
+                        f"{maximum} positional arguments, {positional} given")
+
+    check(not problems,
+          "these calls into the catalogue or the scene builder cannot work:\n    "
+          + "\n    ".join(sorted(set(problems))))
+    print("[ok] every sc./sb. helper called in the repo exists and takes the arguments given")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -958,6 +1044,7 @@ def main() -> int:
         test_prim_paths_from_a_scene_name_are_valid_usd_paths,
         test_no_scene_name_reaches_a_usd_path_unsanitised,
         test_no_module_asks_pxr_for_something_it_does_not_have,
+        test_no_module_calls_a_scene_helper_that_does_not_exist,
     ]
     failed = 0
     for test in tests:
