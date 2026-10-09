@@ -208,6 +208,11 @@ MARKERS: Dict[str, Tuple[Tuple[str, str], ...]] = {
 ASSET_ROOT = ("https://omniverse-content-production.s3-us-west-2.amazonaws.com"
               "/Assets/Isaac/4.5/Isaac")
 WAREHOUSE_MATERIALS = ASSET_ROOT + "/Environments/Simple_Warehouse/Materials"
+# Where the vendored prop MESHES live (as opposed to the materials above).  A catalogue
+# `asset` on a floor item is a reference to one of these; scene_builder.prop_asset_for()
+# resolves it to the file in assets/isaac and refuses anything else -- an .mdl is a material
+# and a wrapper layer renders as nothing, both of which have been hit here already.
+PROP_ROOT = ASSET_ROOT + "/Props"
 
 
 # Muted, scene-neutral default so that no dressing item is ever rendered untextured black.
@@ -338,7 +343,8 @@ SCENES: Dict[str, Dict[str, Any]] = {
             # because the old helper did not move it, four of these ended up with their
             # bottoms below the floor plane once the helper started adding half the height.
             _dressing_floor("pallets", (2.6, 0.0, 2.05), (0.9, 0.40, 0.9)),
-            _dressing_floor("klt_bins", (4.0, 0.0, -2.00), (0.6, 0.30, 0.5)),
+            _dressing_floor("klt_bins", (4.0, 0.0, -2.00), (0.6, 0.30, 0.5),
+                            asset=PROP_ROOT + "/KLT_Bin/small_KLT_visual.usd"),
             _dressing_floor("forklift", (6.2, 0.0, 2.15), (0.9, 0.70, 0.7)),
             _dressing_floor("traffic_cone", (7.0, 0.0, -1.95), (0.4, 0.70, 0.4),
                             asset=WAREHOUSE_MATERIALS + "/M_TrafficCone.mdl"),

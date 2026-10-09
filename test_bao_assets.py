@@ -31,6 +31,49 @@ def check(condition, message: str) -> None:
         raise Failure(message)
 
 
+def test_every_named_prop_that_can_be_referenced_is_vendored() -> None:
+    """A prop the catalogue names must be a vendored .usd, or be a declared box.
+
+    scene_builder.prop_asset_for() resolves a floor item's ``asset`` to a file under
+    assets/isaac, refuses anything else, and place_dressing() then references it on top of the
+    item's box.  A prop that resolves to nothing is not an error in itself -- the box is the
+    geometry every fixture check is written against -- but it must be VISIBLE, because "this
+    item is still a cube" is exactly the kind of thing that otherwise gets discovered from a
+    screenshot months later.  So this test prints what resolved and what did not, and requires
+    that at least one prop resolved, which would fail if the path prefix or the .usd suffix
+    handling broke.
+
+    The two unresolved names are named here rather than tolerated silently: MI_SignB.mdl and
+    M_TrafficCone.mdl are MATERIALS from the warehouse set, kept on the item as the note of
+    what it is meant to look like.  They are correctly refused, and a test that simply
+    demanded "every asset resolves" would push someone to point them at a mesh that is not
+    what they name.
+    """
+    resolved, refused = [], []
+    for scene in sc.SCENE_ORDER:
+        for item in sc.SCENES[scene]["dressing"]:
+            asset = item.get("asset")
+            if not asset:
+                continue
+            local = sb.prop_asset_for(asset)
+            (resolved if local else refused).append(
+                (scene, item["name"], os.path.basename(asset)))
+
+    check(bool(resolved),
+          "no catalogue asset resolved to a vendored .usd at all; prop_asset_for() or the "
+          "assets/isaac layout is broken")
+
+    check(not [r for r in refused if not r[2].endswith(".mdl")],
+          f"these non-material assets resolved to nothing and will render as plain boxes: "
+          f"{[r for r in refused if not r[2].endswith('.mdl')]}")
+
+    print(f"[ok] {len(resolved)} prop(s) reference a vendored mesh: "
+          f"{[f'{n} -> {a}' for _s, n, a in resolved]}")
+    if refused:
+        print(f"     {len(refused)} name a material and stay boxes (by design): "
+              f"{[f'{n} -> {a}' for _s, n, a in refused]}")
+
+
 def test_every_material_is_vendored() -> None:
     missing = []
     for scene in sc.SCENE_ORDER:
@@ -70,6 +113,7 @@ def main() -> int:
         test_every_material_is_vendored,
         test_surfaces_do_not_share_a_material,
         test_the_laboratory_is_still_undecorated,
+        test_every_named_prop_that_can_be_referenced_is_vendored,
     ]
     failures = 0
     for test in tests:

@@ -222,7 +222,21 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
 - **未完成的三件事**：① 11 条材质 URL 待用桶列表核对（上表 ✗ 的三行）；
   ② `tools/check_marker_uniqueness.py` **不存在**（`STAGE1_SCENES.md` §4 检查②自己承认了），
   在它出现之前，标志物唯一性只能靠几何/配置层检查 + 看图；
-  ③ **陈设仍是方块**，换真实 `.usd` 道具未做（见上）。
+  ③ **陈设正在从方块换成真实 `.usd` 道具**（进行中）：`scene_builder.prop_asset_for()` 已能把目录里的
+  `asset` 解析为**仓库内**的 `.usd`，`place_dressing()` 会在方块之上加引用。**当前只接了 1 件**
+  （`stage1.2` 的 `klt_bins` → `KLT_Bin/small_KLT_visual.usd`），因为**道具实际尺寸 vs 声明方块尺寸
+  必须上机测量**（`tools/measure_props.py`），尺寸不符时硬接比方块更糟。
+
+### 7.2 道具引用的三条硬事实（2026-10-08 实测）
+
+| 事实 | 依据 |
+| :--- | :--- |
+| **几何在 `*_visual*.usd` 层，不在同名小文件里** | `small_KLT.usd` **6.6 KB**（包装）vs `small_KLT_visual.usd` **180 KB**；`sektion_cabinet_instanceable.usd` 5.8 KB vs `sektion_cabinet_visuals.usd` 167 KB。接引用必须指 visual 层，否则渲染为空 |
+| **`.mdl` 不是道具** | `MI_SignB.mdl` / `M_TrafficCone.mdl` 是材质；`prop_asset_for` 明确拒绝，这两件**按设计保持方块** |
+| **体积要先把关** | `forklift.usd` **18.4 MB**、`pallet_holder.usd` 3.9 MB → 未下载。抓之前先 `HEAD` 看 Content-Length（`tools/fetch_assets.py` 与 MANUAL 的老教训） |
+
+新增工具：**`tools/measure_props.py`** —— 上机跑，逐件打印"道具实测外接盒 / 声明方块尺寸"的比值，
+用来决定缩放还是改声明。**不改任何东西，只出数**。
 
 ### 7.1 首批 1024 px 实拍审查（2026-10-08，远程渲染；完整记录见 SESSION_RECORD.md §I）
 

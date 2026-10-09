@@ -225,15 +225,69 @@ def _disable_collision(prim: Any) -> None:
         pass
 
 
-def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
-    """Place the scene's dressing as boxes.
+def prop_asset_for(url: Optional[str]) -> Optional[str]:
+    """The vendored .usd mesh for a catalogue ``asset``, or None if there is not one.
 
-    The first version tried to add a USD reference to whatever ``asset`` named.  For the two
-    items whose asset was an .mdl -- MI_SignB and M_TrafficCone -- that was simply wrong: an
-    MDL is a material, not a stage asset, and USD answered "Cannot determine file format".
-    Neither of the two is a mesh anyway, so there is nothing to reference; a box of the item's
-    declared size stands in, every asset name stays in the catalogue as the note it is, and the
-    report says used_asset false so nobody has to guess later what was actually drawn.
+    Returns a local path, never a network one: a prop fetched from a URL arrives without its
+    material layers on the workstation, so a reference built from one renders as an untextured
+    shell -- the same failure that made the material library local-first.
+
+    Three cases are refused on purpose, and each of them was a real bug on the way here:
+
+      * an ``.mdl`` is a MATERIAL, not a stage asset.  USD answers "Cannot determine file
+        format", which is why the original place_dressing wrote boxes and the catalogue kept
+        MI_SignB and M_TrafficCone as notes rather than references.
+      * anything not under assets/isaac has not been vendored, so referencing it would work on
+        this machine and not on a clone.
+      * a bare wrapper layer.  Measured: small_KLT.usd is 6.6 kB and sektion_cabinet_
+        instanceable.usd is 5.8 kB, while small_KLT_visual.usd is 180 kB and
+        sektion_cabinet_visuals.usd is 167 kB -- the geometry lives in the ``_visual`` layer
+        and the small file is a proxy that renders as nothing useful.  If a vendored
+        ``<stem>_visual...usd`` exists beside the named file, that is the one to reference.
+    """
+    if not url or not url.endswith(".usd"):
+        return None
+    name = os.path.basename(url)
+    # A name that is already a visual layer is what the caller meant -- use it as written.
+    # (Before this check, asking for small_KLT_visual.usd chose small_KLT_visual_collision.usd,
+    # because the collision layer is longer and also matches "stem + visual".)
+    if "visual" in name:
+        for root, _dirs, files in os.walk(LOCAL_ASSETS):
+            if name in files:
+                return os.path.join(root, name)
+        return None
+    stem = name[: -len(".usd")]
+    for root, _dirs, files in os.walk(LOCAL_ASSETS):
+        if name not in files:
+            continue
+        # The named file may be a wrapper whose geometry is in a sibling visual layer:
+        # small_KLT.usd is 6.6 kB against small_KLT_visual.usd's 180 kB, and a proxy layer
+        # references without error and renders as nothing useful.
+        for candidate in sorted(files):
+            if candidate.endswith(".usd") and candidate != name and stem in candidate \
+                    and "visual" in candidate and "collision" not in candidate:
+                return os.path.join(root, candidate)
+        return os.path.join(root, name)
+    return None
+
+
+def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
+    """Place the scene's dressing: a box, or the vendored mesh it names.
+
+    Every item gets a box of its declared size, which is the geometry the occlusion and
+    walking-band checks were written against; where the catalogue names a vendored ``.usd``
+    prop, that prop is referenced on top of it so the item looks like a thing rather than a
+    cube.  The box is what carries the placement and the scale, so a missing prop, a broken
+    layer or a failed reference degrades to exactly the scene that shipped before this
+    function could reference anything -- and the report says which happened.
+
+    Only floor items take a reference.  A wall item's box is a picture plate and the props in
+    the library are furniture, so referencing one there would put a cabinet through a wall for
+    no gain.
+
+    The first version referenced whatever ``asset`` named, which for MI_SignB and
+    M_TrafficCone was an MDL: USD answered "Cannot determine file format" and the item stayed
+    a box.  prop_asset_for() now refuses that case explicitly instead of relying on USD to.
     """
     from pxr import Gf, UsdGeom
 
@@ -252,8 +306,38 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
         _disable_collision(prim)
         if item.get("colour"):
             paint(stage, path, item["colour"])
-        placed.append({"name": item["name"], "mount": item["mount"],
-                       "asset": item["asset"], "used_asset": False})
+
+        record = {"name": item["name"], "mount": item["mount"],
+                  "asset": item["asset"], "used_asset": False}
+        local = prop_asset_for(item["asset"]) if item["mount"] == "floor" else None
+        if local:
+            try:
+                # Reference the prop onto an Xform child of the box:
+                #     UsdGeom.Xform.Define(stage, path) -> schema
+                #     schema.GetPrim()                  -> prim
+                #     prim.GetReferences()              -> UsdReferences metadata
+                #     .AddReference(local_path)         -> the reference itself
+                # Written in that explicit shape because it cannot be exercised on the
+                # development machine (no pxr).  USD's own idiom for this exists as a
+                # convenience call that performs the same four steps; spelling them out keeps
+                # the prim that receives the reference unambiguous, and the except below turns
+                # any mistake here into a recorded message plus the box that was already
+                # built, rather than a stage that fails to assemble mid-sweep.
+                proxy_schema = UsdGeom.Xform.Define(stage, f"{path}/prop")
+                proxy_prim = proxy_schema.GetPrim()
+                proxy_prim.GetReferences().AddReference(local)
+                # The proxy is NOT scaled.  The declared size is the box the item must occupy,
+                # which is what the fixture checks are written against; a prop's own authored
+                # size is a fact about the asset, and forcing one onto the other without a
+                # measurement would change what those checks mean.  Calibrating scale from each
+                # asset's extent is a separate step and it needs a renderer.
+                _disable_collision(proxy_prim)
+                record["used_asset"] = os.path.basename(local)
+                record["reference"] = local
+            except Exception as exc:  # noqa: BLE001
+                # A prop that will not load must leave the box, not the scene, broken.
+                record["reference_error"] = f"{type(exc).__name__}: {exc}"
+        placed.append(record)
     return placed
 
 

@@ -487,5 +487,64 @@ slot 实测；§2 目录地图补 6 个文件、修 `ai_agent.parse_response`（
   用户提出"把实验室的陈设都做好"，**与这条契约冲突**，需明确是指 `stage1.1` 还是其它。
 - 陈设仍是**方块**（`place_dressing` 只造 `UsdGeom.Cube`），换真实 `.usd` 道具未做。
 
+---
+
+## K. 第七轮：把方块陈设接上真实 `.usd` 道具（进行中）
+
+### K0. 用户决定
+
+| 问题 | 决定 |
+| :--- | :--- |
+| `stage1.1` 是否加陈设 | **保持无陈设**（它是对照组；`MANUAL` §3 第 8 条与 `test_bao_assets.py` 强制） |
+| 下一步重点 | **把方块陈设换成真实 `.usd` 道具** |
+
+### K1. 素材现状（实测，非回忆）
+
+| 项 | 实测 |
+| :--- | :--- |
+| 本地已 vendored | `assets/isaac`：**765 png / 120 mdl / 14 usd**；道具类别 Beaker(1) / KLT_Bin(3) / Sektion_Cabinet(3) / Shapes(7) |
+| 桶里存在但本地没有 | Props 共 **23 类**：Pallet / Forklift / Food / Conveyors(142 usd) / Dolly / PackingTable / Mugs / YCB / Blocks / Factory … |
+| **几何在哪个层** | `small_KLT.usd` **6.6 KB**（包装）vs `small_KLT_visual.usd` **180 KB**；`sektion_cabinet_instanceable.usd` 5.8 KB vs `sektion_cabinet_visuals.usd` 167 KB → **接引用必须指向 `*_visual*.usd`，否则渲染为空** |
+| 体积把关 | `forklift.usd` **18.4 MB**、`pallet_holder.usd` 3.9 MB → **超阈值未下载**（与 MANUAL §7 的叉车决策一致） |
+
+**下载入库的新文件**（共 4 个，全部 ≤ 20 KB）：`Pallet/pallet.usd`、`Food/mac_n_cheese_centered.usd`、`KLT_Bin/small_KLT.usd`、`Sektion_Cabinet/sektion_cabinet_instanceable.usd`。
+
+**注意**：`mac_n_cheese_centered.usd` 仅 3.2 KB 且在二进制里能看到 `./mac_n_cheese.usd` —— 它**sublayer 一个没下载的兄弟文件**，所以**不能**直接引用它。
+
+### K2. 实现
+
+| 改动 | 内容 |
+| :--- | :--- |
+| `scene_builder.prop_asset_for()` | 新增。把目录里的 `asset` 解析为**仓库内**的 `.usd`；**明确拒绝**三类：`.mdl`（材质不是资产）、不在 `assets/isaac` 下（未 vendored）、裸包装层（自动升级到 `*_visual*.usd`，且**排除 `*_collision*`**） |
+| `scene_builder.place_dressing()` | 地面件在有 vendored 道具时，在方块之上加一个 `Xform` 子 prim 并 `AddReference`。**方块仍是定位与尺寸的载体**（不变量与遮挡判据都不变）；引用失败只记录 `reference_error`，**不破坏场景** |
+| `scenes.PROP_ROOT` | 新增常量，指向 `.../Isaac/Props` |
+| `scenes.py` | `klt_bins`（stage1.2）接上 `KLT_Bin/small_KLT_visual.usd` |
+| `test_bao_assets.py` | 新增 `test_every_named_prop_that_can_be_referenced_is_vendored`：报告哪些解析成功、哪些仍是方块，并要求**至少一个解析成功**（否则说明路径前缀或 `.usd` 后缀处理坏了） |
+| `tools/measure_props.py` | **新增上机工具**：逐件比较"道具实测外接盒 vs 声明方块尺寸"，输出比值。因为"要不要缩放道具"只能在有渲染器时判断 |
+
+**为什么只接了 1 件**：道具实际尺寸与声明方块尺寸**只有靠测量才知道**是否相符（`tools/measure_props.py`）。
+把尺寸明显不符的道具硬接上去，比方块更糟——这是**诚实做法**：机制先成立并被测试覆盖，逐件按测量结果上线。
+
+**实测（本机可验证的部分）**：`prop_asset_for` 对 `MI_SignB.mdl` / `M_TrafficCone.mdl` / 未 vendored URL 一律返回 `None`；对 `small_KLT.usd` 自动升级为 `small_KLT_visual.usd`；**160 → 161 项全过**。
+
+### K3. 本轮我犯的错
+
+| # | 错误 | 真相 | 怎么发现 |
+| :-: | :--- | :--- | :--- |
+| K3-1 | 桶列表脚本返回"Pallet/Forklift/Food 全部 ABSENT" | **我的前缀写成 `/Assets/...`（多了前导斜杠）**。S3 前缀是 key 前缀，`/Assets/...` 不匹配任何键，**返回 200 + 0 个 CommonPrefixes，不报错** | PowerShell 直接请求同一 URL 拿到 `KeyCount=22`，与 Python 结果矛盾 → 打印实际构造的 URL 发现前导斜杠。**若没交叉验证，我会得出"桶里没有这些道具"的错误结论** |
+| K3-2 | `delimiter=/` 导致查"每类里有哪些 .usd"全部返回 0 | delimiter 只返回子目录，不返回文件 | 去掉 delimiter 后 Pallet 列出 8 个 .usd |
+| K3-3 | 猜 pxr API 三次（`Prim.GetReferences()` 是否存在、`Define` 返回 schema 还是 prim），并在同一行反复改了三次 | 正确答案：`UsdGeom.Xform.Define(...)` 返回 **schema** → `.GetPrim()` 得 prim → `prim.GetReferences()` 得 `UsdReferences` → `.AddReference(path)` | 每次改完都意识到还是不确定，最后用**显式三步写法**并加 `except` 兜底，让 API 错误降级为"记录 + 保留方块" |
+| K3-4 | 解析 `small_KLT_visual.usd` 时选中了 `small_KLT_visual_collision.usd` | 名字里已含 `visual` 时应**原样使用**；升级逻辑只对包装层生效 | 打印解析结果时发现选错，加了早退分支并排除 `collision` |
+
+**K3-1 的教训（新增一条）**：**外部服务的"空结果"必须先证伪，再当成事实**。200 + 空列表既可能是"真的没有"，也可能是"我的查询写错了"。
+与 I5（判据选错对象）、J3（变换代数写错）并列，都属于"结论的载体本身没被验证"。
+
+### K4. 下一步（需上机）
+
+1. `tools/measure_props.py` 量出每个道具与声明方块的尺寸比 → 决定缩放或改声明。
+2. 按测量结果逐件接引用（KLT_Bin 已接；Pallet/Food 待尺寸确认；Sektion_Cabinet 尺寸远大于书架，需先定缩放）。
+3. 补齐 sublayer 依赖（如 `mac_n_cheese.usd`）后才能引用 `mac_n_cheese_centered.usd`。
+4. **性能项**：`prop_asset_for` 每次调用都 `os.walk(assets/isaac)`（约 900 文件）→ 32 件 × 5 场景重复遍历。应加缓存或改目录索引。**已在日志记下，未改**。
+
 
 
