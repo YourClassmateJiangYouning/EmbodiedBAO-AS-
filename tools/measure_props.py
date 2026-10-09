@@ -48,7 +48,12 @@ def main() -> int:
         print("-" * 140)
 
         for scene, item, local in targets:
-            path = f"/World/Probe/{scene}/{item['name']}"
+            # The scene is called stage1.2 and a dot is a PROPERTY separator in SdfPath, so
+            # "/World/Probe/stage1.2/klt_bins" is ill-formed and USD rejects it with a syntax
+            # error -- measured on the workstation, which is the only place this file runs.
+            # scene_builder.prim_name() exists for exactly this and is reused rather than
+            # re-derived, because scene_builder already learned it the same way.
+            path = f"/World/Probe/{sb.prim_name(scene)}/{sb.prim_name(item['name'])}"
             prim = UsdGeom.Xform.Define(stage, path).GetPrim()
             prim.GetReferences().AddReference(local)
 

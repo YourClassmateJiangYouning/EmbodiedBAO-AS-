@@ -801,6 +801,51 @@ def test_dressing_stands_on_the_floor_and_hangs_on_its_wall() -> None:
           f"{deepest * 1000:.0f} mm inside the wall)")
 
 
+def test_no_scene_name_reaches_a_usd_path_unsanitised() -> None:
+    """Every USD path built from a scene name goes through prim_name().
+
+    A scene is called ``stage1.2`` and a dot is a PROPERTY separator in SdfPath, so
+    ``/World/Probe/stage1.2/klt_bins`` is ill-formed.  USD does not fail loudly in a way that
+    stops a run: it prints
+
+        Warning: in SdfPath ... Ill-formed SdfPath </World/Probe/stage1.2/klt_bins>: syntax error
+
+    and the tool carries on having built nothing.  Measured on the workstation, in
+    tools/measure_props.py, which is how this test came to exist -- scene_builder.prim_name()
+    had been there all along and the new file simply did not use it.
+
+    Checked by reading the source rather than by calling anything, because the failure is a
+    missing call, and a missing call looks exactly like a correct one at runtime.
+    """
+    import scene_builder
+
+    # The sanitiser itself.
+    for given, want in (("stage1.2", "stage1_2"), ("stage1.5", "stage1_5"),
+                        ("klt_bins", "klt_bins"), ("a/b", "a_b"), ("a.b.c", "a_b_c")):
+        got = scene_builder.prim_name(given)
+        check(got == want, f"prim_name({given!r}) gave {got!r}, expected {want!r}")
+
+    # Any f-string path under /World that interpolates a scene-name variable must wrap it.
+    import re
+
+    root = os.path.dirname(os.path.abspath(__file__))
+    offenders = []
+    for name in ("scene_builder.py", "environment.py", "capture_scenes.py",
+                 "tools/measure_props.py", "tools/scene_diagrams.py"):
+        path = os.path.join(root, name)
+        if not os.path.exists(path):
+            continue
+        for number, line in enumerate(open(path, encoding="utf-8"), start=1):
+            if "/World" not in line or "{" not in line:
+                continue
+            for variable in re.findall(r"\{(scene|tag|scene_name)\}", line):
+                offenders.append(f"{name}:{number} interpolates {variable!r}: {line.strip()}")
+    check(not offenders,
+          "these USD paths embed a scene name without prim_name():\n    "
+          + "\n    ".join(offenders))
+    print("[ok] no scene name reaches a USD path without prim_name()")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -830,6 +875,7 @@ def main() -> int:
         test_world_and_user_frames_are_inverse,
         test_real_room_boxes_classify_correctly,
         test_prim_paths_from_a_scene_name_are_valid_usd_paths,
+        test_no_scene_name_reaches_a_usd_path_unsanitised,
     ]
     failed = 0
     for test in tests:
