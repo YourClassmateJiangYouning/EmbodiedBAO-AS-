@@ -1186,8 +1186,15 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
     for the same reason place_dressing did, and that skipped the supermarket's shelf goods -- a
     mug standing on a shelf is a wall item, so the two checks that were supposed to catch a
     mismatched declaration were both blind to the newest props.
+
+    The measurement is compared AFTER applying scenes.ASSET_SCALE, because PROP_MEASUREMENTS holds
+    what the asset reports in its own units and part of this library is authored in centimetres:
+    the packing table measures 247.3647 there and is 2.4736 m of furniture.  A declared size is
+    always metres, so the factor is what makes the two comparable; without it every centimetre
+    asset would be reported as a 100x mismatch.
     """
     measured = sc.PROP_MEASUREMENTS
+    scales = getattr(sc, "ASSET_SCALE", {})
     problems, checked = [], []
 
     for scene in sc.SCENE_ORDER:
@@ -1204,9 +1211,17 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
                                 f"recorded measurement")
                 continue
             want = measured[name]
+            factor = float(scales.get(name, 1.0))
+            if factor <= 0:
+                problems.append(f"{scene}/{item['name']}: ASSET_SCALE[{name!r}] is {factor}, "
+                                f"which cannot scale anything")
+                continue
+            metres = tuple(v * factor for v in want)
             got = tuple(float(v) for v in item["size"])
-            if any(abs(got[i] - want[i]) > 1e-4 for i in range(3)):
-                problems.append(f"{scene}/{item['name']} declares {got}, {name} measures {want}")
+            if any(abs(got[i] - metres[i]) > 1e-4 for i in range(3)):
+                problems.append(
+                    f"{scene}/{item['name']} declares {got} m, but {name} measures {want} in its "
+                    f"own units x ASSET_SCALE {factor} = {metres} m")
             else:
                 checked.append(f"{item['name']}->{name}")
 

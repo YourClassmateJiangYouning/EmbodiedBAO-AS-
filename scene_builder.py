@@ -438,18 +438,19 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 proxy_schema = UsdGeom.Xform.Define(stage, f"{path}/prop")
                 proxy_prim = proxy_schema.GetPrim()
                 proxy_prim.GetReferences().AddReference(local)
-                # The proxy is NOT scaled.  The declared size is the box the item must occupy,
-                # which is what the fixture checks are written against; a prop's own authored
-                # size is a fact about the asset, and forcing one onto the other without a
-                # measurement would change what those checks mean.  Calibrating scale from each
-                # asset's extent is a separate step and it needs a renderer.
-                #
-                # This is also why the declared sizes were rewritten from tools/measure_assets.py
-                # output: with no scale factor, a declaration that disagrees with its prop means
-                # the mesh hangs outside the volume the checks reason about.
+                # An asset authored in centimetres is scaled to the metres this room is built in.
+                # This is not cosmetic: the packing table measures 247.36 in its own units, and a
+                # reference with no scale factor draws it 247 m long -- through the walls and over
+                # the whole corridor.  The factor is looked up per ASSET, because the same prop is
+                # scaled the same way wherever it stands, and it is recorded in the item's report
+                # line so a frame that is the wrong size can be traced to the number that caused it.
+                scale = float(sc.ASSET_SCALE.get(os.path.basename(local), 1.0))
+                if scale != 1.0:
+                    UsdGeom.Xformable(proxy_prim).AddScaleOp().Set(Gf.Vec3f(scale, scale, scale))
                 _disable_collision(proxy_prim)
                 record["used_asset"] = os.path.basename(local)
                 record["reference"] = local
+                record["asset_scale"] = scale
                 # Hide the clearance box now that there is something real inside it.  Deactivated
                 # rather than deleted, so the volume the fixture checks reason about still exists
                 # on the stage and can be inspected; USD does not draw an inactive prim.

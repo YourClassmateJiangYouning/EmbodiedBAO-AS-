@@ -268,13 +268,19 @@ PROP_MEASUREMENTS = {
     "005_tomato_soup_can.usd": (0.0677, 0.0677, 0.1019),
     "024_bowl.usd": (0.1612, 0.1615, 0.0550),
     "004_sugar_box.usd": (0.0927, 0.0451, 0.1763),
+    # Measured 2026-10-10 by tools/measure_named_props.py.  NOT all in metres: the entries whose
+    # numbers are implausible as furniture are in the asset's own centimetres, which is what that
+    # tool reports because the assets carry no metersPerUnit metadata.  scenes.ASSET_SCALE holds
+    # the factor that turns each one into metres, and the test that compares a declared size with
+    # its measurement multiplies by that factor -- so a declaration and its asset are checked in
+    # the same units rather than silently differing by 100x.
+    "SM_HeavyDutyPackingTable_C02_01.usd": (247.3647, 99.4051, 76.2),
+    "SM_Crate_A07_Yellow_01.usd": (60.1459, 17.0007, 40.1773),
+    "SM_Crate_A08_Blue_01.usd": (60.5133, 17.0294, 40.5133),
+    "sm_whitecorrugatedbox_b12_brown_01.usd": (51.1862, 51.7182, 52.1379),
+    "sm_whitecorrugatedbox_b20_brown_01.usd": (29.9008, 30.1949, 62.1582),
     "dolly.usd": (0.8504, 0.4407, 1.2594),
-    # NOT vendored, and this entry is the record of why.  It was fetched, measured here, and then
-    # deleted again: 3.4947 m does not fit a 5 m wide room whose central 3 m has to stay clear for
-    # the robot, so stage1.2's forklift stays the box it has always been.  The number is kept
-    # because it is the evidence for that decision, and a measurement is cheap to keep and
-    # expensive to take twice -- the fetch is one command if a bigger room ever wants it.
-    "forklift.usd": (1.2138, 2.1549, 3.4947),
+    "rubiks_cube.usd": (0.0721, 0.0721, 0.0721),
 }
 
 
@@ -287,6 +293,9 @@ DRESSING_WOOD = (0.35, 0.24, 0.16)
 DRESSING_METAL = (0.55, 0.57, 0.60)
 DRESSING_GREEN = (0.22, 0.40, 0.18)
 DRESSING_LIGHT = (0.78, 0.78, 0.80)
+DRESSING_BLUE = (0.20, 0.35, 0.65)
+DRESSING_YELLOW = (0.85, 0.78, 0.30)
+DRESSING_CLAY = (0.62, 0.45, 0.30)
 
 
 # ---------------------------------------------------------------------------
@@ -312,10 +321,35 @@ FAR_WALL_FACE_X = 16.0
 # 0.6 m plate, 0.13 px at the start pose.
 MOUNT_CLEARANCE_M = 0.001
 
+# Some vendored props are authored in centimetres with no metersPerUnit metadata, so a reference
+# to one draws 100x too large: the packing table measures 247.36 in its own units, which is 2.47 m
+# of real furniture.  The sizes recorded in PROP_MEASUREMENTS are therefore NOT all in metres, and
+# a scene that references such an asset has to say so per item.  The distinction is carried by
+# asset_scale on the item and by this constant, rather than by silently dividing somewhere in
+# place_dressing, because a factor applied in one hidden place is a factor nobody can audit.
+CM_TO_M = 0.01
+
+# Which vendored props need scaling, keyed by asset basename.  Scale is a property of the ASSET,
+# not of the item that places it: the same packing table is scaled the same way wherever it
+# stands, so it is recorded once here rather than at every call site.  Only assets whose
+# PROP_MEASUREMENTS entry is not already in metres appear.
+#
+# The two values are the same number for a different reason each time, which is worth stating:
+# the packing table and the crates/boxes are centimetre assets; small_KLT is a metre asset whose
+# scale is simply 1.0 and therefore absent from this table.
+ASSET_SCALE = {
+    "SM_HeavyDutyPackingTable_C02_01.usd": CM_TO_M,
+    "SM_Crate_A07_Yellow_01.usd": CM_TO_M,
+    "SM_Crate_A08_Blue_01.usd": CM_TO_M,
+    "sm_whitecorrugatedbox_b12_brown_01.usd": CM_TO_M,
+    "sm_whitecorrugatedbox_b20_brown_01.usd": CM_TO_M,
+}
+
 
 def _dressing_floor(name: str, at: Tuple[float, float, float],
                     size: Tuple[float, float, float], colour: Optional[str] = None,
-                    asset: Optional[str] = None) -> Dict[str, Any]:
+                    asset: Optional[str] = None,
+                    asset_scale: float = 1.0) -> Dict[str, Any]:
     """A floor item.  ``at`` is (x, height of the BASE, lateral).
 
     The caller gives the base height, not the centre height, so a bench declared at 0 has
@@ -323,17 +357,23 @@ def _dressing_floor(name: str, at: Tuple[float, float, float],
     centre, so the centre is derived here; before this, seven items stood 5-25 mm above the
     floor and one -- the supermarket checkout -- had its base 5 mm BELOW it, all because the
     call sites were quietly centre coordinates.
+
+    ``asset_scale`` scales the referenced prop, and it exists because the library is not in one
+    unit: the packing table measures 247.36 in its own units and the mugs 0.09.  A centimetre
+    asset referenced without scaling draws 100x too large.  ``size`` is always the real size in
+    METRES, whatever the asset's own unit, so the clearance box and the prop agree.
     """
     height = float(size[1])
     return {"name": name, "mount": "floor",
             "at": (float(at[0]), float(at[1]) + height / 2.0, float(at[2])),
             "size": size, "colour": colour or DRESSING_GREY, "asset": asset,
-            "collides": False}
+            "asset_scale": float(asset_scale), "collides": False}
 
 
 def _dressing_wall(name: str, mount: str, at: Tuple[float, float, float],
                    size: Tuple[float, float, float], colour: Optional[str] = None,
-                   asset: Optional[str] = None) -> Dict[str, Any]:
+                   asset: Optional[str] = None,
+                   asset_scale: float = 1.0) -> Dict[str, Any]:
     """A wall-mounted item, declared like a picture: (across, tall, thick).
 
     ``at``'s x is the SURFACE the item is stuck to, and it is used AS the box centre -- so
@@ -358,7 +398,7 @@ def _dressing_wall(name: str, mount: str, at: Tuple[float, float, float],
     return {"name": name, "mount": mount,
             "at": (centre_x, float(at[1]), float(at[2])),
             "size": (thick, tall, across), "colour": colour or DRESSING_GREY,
-            "asset": asset, "collides": False}
+            "asset": asset, "asset_scale": float(asset_scale), "collides": False}
 
 
 SCENES: Dict[str, Dict[str, Any]] = {
@@ -430,6 +470,18 @@ SCENES: Dict[str, Dict[str, Any]] = {
             _dressing_floor("forklift", (6.2, 0.0, 2.15), (0.9, 0.70, 0.7)),
             _dressing_floor("traffic_cone", (7.0, 0.0, -1.95), (0.4, 0.70, 0.4),
                             asset=WAREHOUSE_MATERIALS + "/M_TrafficCone.mdl"),
+            # Real warehouse freight: a second pallet, a plastic crate and a corrugated box.
+            # These replace nothing -- they are added, because this scene is a warehouse and three
+            # boxes standing against the far wall is what a warehouse looks like.  Sizes are the
+            # measured props; the crate and the box are centimetre assets, hence CM_TO_M.
+            _dressing_floor("pallet_stack", (12.0, 0.0, 2.10), (1.2132, 0.1425, 0.8023),
+                            asset=PROP_ROOT + "/Pallet/pallet.usd"),
+            _dressing_floor("crate", (10.2, 0.0, 2.05), (0.6015, 0.1700, 0.4018), DRESSING_YELLOW,
+                            PROP_ROOT + "/PackingTable/props/SM_Crate_A07_Yellow_01/"
+                            "SM_Crate_A07_Yellow_01.usd"),
+            _dressing_floor("carton", (13.4, 0.0, -2.10), (0.2990, 0.3019, 0.6216), DRESSING_WOOD,
+                            PROP_ROOT + "/PackingTable/props/sm_whitecorrugatedbox_b/"
+                            "sm_whitecorrugatedbox_b20_brown_01.usd"),
         ),
         "forbidden_colours": (),
         "notes": "The only scene whose materials were read off the bucket listing in full.",
@@ -700,10 +752,11 @@ def marker_colours(scene: str) -> Tuple[Tuple[float, float, float], ...]:
 #     red/cyan/purple/magenta/teal, the park's are red/magenta/orange/purple/wine, and the
 #     supermarket's are pink/wine/teal/purple/lime, so the dressing below is deliberately
 #     grey, wood, steel, green, blue and yellow.
-
-DRESSING_BLUE = (0.20, 0.35, 0.65)
-DRESSING_YELLOW = (0.85, 0.78, 0.30)
-DRESSING_CLAY = (0.62, 0.45, 0.30)
+#
+# These three live at module level with the rest of the colours.  They used to be defined just
+# above _install_dressing(), which happens to be BELOW the stage1.2 block that a later edit made
+# use of one -- so the catalogue raised NameError on import.  A colour constant is not scoped to
+# the function that first needed it.
 
 
 def _install_dressing() -> None:
@@ -726,10 +779,18 @@ def _install_dressing() -> None:
                        DRESSING_LIGHT),
         _dressing_wall("reading_poster", "far_wall", (FAR_WALL_FACE_X, 2.05, 1.55), (0.7, 0.5, 0.03),
                        DRESSING_LIGHT),
-        _dressing_floor("study_table", (3.0, 0.00, 2.05), (0.9, 0.75, 0.7), DRESSING_WOOD),
+        _dressing_floor("study_table", (3.0, 0.00, 1.60), (2.4736, 0.9941, 0.7620), DRESSING_WOOD,
+                        PROP_ROOT + "/PackingTable/props/SM_HeavyDutyPackingTable_C02_01/"
+                        "SM_HeavyDutyPackingTable_C02_01.usd"),
         _dressing_floor("chair_row", (5.0, 0.00, -2.05), (0.7, 0.50, 0.9), DRESSING_GREY),
-        _dressing_floor("book_cart", (6.6, 0.00, 2.10), (0.8, 0.90, 0.5), DRESSING_METAL),
+        _dressing_floor("book_cart", (6.6, 0.00, 1.60), (0.8504, 0.4407, 1.2594), DRESSING_METAL,
+                        PROP_ROOT + "/Dolly/dolly.usd"),
         _dressing_floor("reading_lamp", (1.8, 0.00, -2.10), (0.3, 0.95, 0.3), DRESSING_METAL),
+        # A carton of stock waiting to be shelved, which is what a library cart holds.  Its scale
+        # comes from ASSET_SCALE.
+        _dressing_floor("stock_carton", (1.8, 0.00, 2.10), (0.2990, 0.3019, 0.6216), DRESSING_WOOD,
+                        PROP_ROOT + "/PackingTable/props/sm_whitecorrugatedbox_b/"
+                        "sm_whitecorrugatedbox_b20_brown_01.usd"),
         # The cabinet is FLOOR furniture, not a wall item, and that is a decision rather than a
         # convenience.  It measures 0.6678 x 0.7861 x 0.7638 m, so as a wall item its own
         # half-depth (0.33 m) alone exceeds test_no_dressing_protrudes_into_the_corridor's
@@ -772,10 +833,18 @@ def _install_dressing() -> None:
                        DRESSING_YELLOW),
         _dressing_wall("promo_banner", "far_wall", (FAR_WALL_FACE_X, 2.10, 1.55), (0.9, 0.5, 0.03),
                        DRESSING_YELLOW),
-        _dressing_floor("trolley", (2.8, 0.00, 2.05), (0.8, 0.95, 0.5), DRESSING_METAL),
-        _dressing_floor("produce_bins", (4.6, 0.00, -2.05), (0.9, 0.55, 0.6), DRESSING_YELLOW),
-        _dressing_floor("checkout", (6.4, 0.00, 2.10), (0.9, 0.85, 0.7), DRESSING_GREY),
-        _dressing_floor("stacked_boxes", (7.4, 0.00, -2.00), (0.7, 0.55, 0.5), DRESSING_BLUE),
+        _dressing_floor("trolley", (2.8, 0.00, 1.60), (0.8504, 0.4407, 1.2594), DRESSING_METAL,
+                        PROP_ROOT + "/Dolly/dolly.usd"),
+        # A plastic crate used as the produce bin, and a corrugated box for the stack.  Both are
+        # centimetre assets, so ASSET_SCALE scales them; without that the crate draws 60 m long.
+        _dressing_floor("produce_bins", (4.6, 0.00, -2.05), (0.6051, 0.1703, 0.4051), DRESSING_YELLOW,
+                        PROP_ROOT + "/PackingTable/props/SM_Crate_A08_Blue_01/SM_Crate_A08_Blue_01.usd"),
+        _dressing_floor("checkout", (6.4, 0.00, 1.90), (2.4736, 0.9941, 0.7620), DRESSING_GREY,
+                        PROP_ROOT + "/PackingTable/props/SM_HeavyDutyPackingTable_C02_01/"
+                        "SM_HeavyDutyPackingTable_C02_01.usd"),
+        _dressing_floor("stacked_boxes", (7.4, 0.00, -2.00), (0.5119, 0.5172, 0.5214), DRESSING_BLUE,
+                        PROP_ROOT + "/PackingTable/props/sm_whitecorrugatedbox_b/"
+                        "sm_whitecorrugatedbox_b12_brown_01.usd"),
         # Real goods standing on the shelving, which is what furnishes a supermarket rather than
         # a room with a shelf in it.  The shelf's own `at` height is a CENTRE (1.9 m tall, so its
         # middle is 0.95 m), so its top face is 0.95 + 0.09 = 1.04 m and these sit on that, each
