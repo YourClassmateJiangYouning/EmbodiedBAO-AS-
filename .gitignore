@@ -33,6 +33,11 @@ COMMIT_MSG_*.txt
 # no tool, so these live outside version control unless one is promoted deliberately.
 render_check/
 
+# Throwaway probes that ask the workstation what an API actually offers.  They are run
+# once, read once, and then either deleted or promoted into tools/ deliberately.  See
+# MANUAL section 8.3 rule 6: a diagnostic is not a deliverable.
+diag_pxr.py
+
 # Word's lock file for an open document: it appears whenever a .docx is open and
 # vanishes when it closes, so committing it would record a transient state as content.
 ~$*.docx
