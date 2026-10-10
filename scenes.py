@@ -249,10 +249,8 @@ BUCKET_ASSETS = "assets/bucket"
 # either blocking the work or writing invented numbers into a table whose whole value is that it
 # holds measurements.
 PROP_MEASUREMENT_PENDING = (
-    # Fetched after the measurement batch, so its size is declared from what a 2 m warehouse rack
-    # is rather than from the asset.  place_dressing fits it to that box, so the room sees a rack
-    # of the declared size -- but the number is not yet confirmed against the mesh.
-    "RackSmallEmpty_A1.usd",
+    # Fetched but never wired: RackLargeEmpty_A1 has no scene yet, so it is measured
+    # only if a scene names it.  Kept in the list so the gap is visible.
     "RackLargeEmpty_A1.usd",
 )
 
@@ -322,6 +320,8 @@ PROP_MEASUREMENTS = {
     "trashcan_square_01.usd": (0.5855, 1.0112, 0.7957),
     "safety_railing_01.usd": (2.2261, 1.166, 0.0728),
     "shopping_cart_corral_01.usd": (2.0057, 2.3761, 3.7107),
+    "RackSmallEmpty_A1.usd": (108.0188, 301.0001, 199.8097),
+    "RackLargeEmpty_A1.usd": (0.0, 0.0, 0.0),  # not measured yet; not wired
     # Measured 2026-10-10 on the lab machine.  Four of these are centimetre assets and three are
     # metres, IN THE SAME BATCH: the shrubs and the conifer are centimetres while the bench, bin,
     # planter, bollard and block are metres.  Nothing about the folder says which, so each was
@@ -414,6 +414,7 @@ ASSET_SCALE = {
     "FramedPoster.usd": CM_TO_M,
     "Roxana_DiningBench.usd": CM_TO_M,
     "sign_plaza_fountain_01.usd": CM_TO_M,
+    "RackSmallEmpty_A1.usd": CM_TO_M,
 }
 
 
@@ -531,12 +532,12 @@ SCENES: Dict[str, Dict[str, Any]] = {
             # A real rack rather than a painted plate: what a toolboard is.  Its size is the
             # measured RackSmallEmpty_A1 (2.16 MB, the mesh layer -- RackSmall_A7 is 2.2 kB and
             # measures nothing, because the geometry lives in the layer it references).
-            _dressing_floor("rack", (7.0, 0.00, -1.85), (0.95, 1.85, 0.75), DRESSING_METAL,
+            _dressing_floor("rack", (7.0, 0.00, -1.85), (0.716165, 1.995631, 1.324738), DRESSING_METAL,
                             BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
-                            "RackSmallEmpty_A1.usd"),
-            _dressing_floor("rack_tall", (7.0, 0.00, 2.35), (0.95, 1.85, 0.75), DRESSING_METAL,
+                            "RackSmallEmpty_A1.usd", room_fit=0.663),
+            _dressing_floor("rack_tall", (7.0, 0.00, 2.35), (0.716165, 1.995631, 1.324738), DRESSING_METAL,
                             BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
-                            "RackSmallEmpty_A1.usd"),
+                            "RackSmallEmpty_A1.usd", room_fit=0.663),
             _dressing_wall("bay_sign", "far_wall", (FAR_WALL_FACE_X, 2.15, 1.60),
                            (0.03, 0.35, 0.9)),
             # Floor items are deliberately small and far off the centre line.  The first
@@ -868,10 +869,20 @@ def _install_dressing() -> None:
         # 1.4 m across, centred 1.65 m off the axis, so the inner edge sits at 0.95 m: clear of
         # the 1.14 m opening's half width (0.57 m) in the start view, which is the projection
         # check that caught the first version's 1.6 m shelves at 1.30 m.
-        _dressing_wall("bookshelf_left", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.15, 1.65),
-                       (0.16, 1.9, 1.4), DRESSING_WOOD),
-        _dressing_wall("bookshelf_right", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.15, -1.65),
-                       (0.16, 1.9, 1.4), DRESSING_WOOD),
+        # A rack, standing on the FLOOR at its measured size (1.080188 x 3.010001 x 1.998097 m).
+        # It was a wall item while the placeholder was a 0.16 m plate, and a real rack cannot be
+        # one: its depth is 1.08 m against a 0.20 m protrusion cap, and that cap exists because a
+        # black slab once hung across the agent's view.  Its height also settles the placement --
+        # 3.01 m against a 3.0 m ceiling -- so squeezing it to a bookcase's 1.90 m through room_fit
+        # would leave it 0.43 m deep, and a shelf that shallow is not a shelf.  Free-standing
+        # racking at |z| >= 1.8 keeps the walking band clear and touches no wall, which is what
+        # racking does.  room_fit 0.663 brings the 3.01 m height under the ceiling.
+        _dressing_floor("bookshelf_left", (6.4, 0.00, 2.05), (0.716165, 1.995631, 1.324738),
+                        DRESSING_WOOD, BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
+                        "RackSmallEmpty_A1.usd", room_fit=0.663),
+        _dressing_floor("bookshelf_right", (6.4, 0.00, -2.05), (0.716165, 1.995631, 1.324738),
+                        DRESSING_WOOD, BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
+                        "RackSmallEmpty_A1.usd", room_fit=0.663),
         # A real clock face, at its measured size: 0.045 m thick, 0.15 m tall, 0.45 m across the
         # wall.  Wall-mounted because a clock is thin: the 0.20 m protrusion cap exists because the
         # warehouse's duct once hung a black slab across the agent's view, and a 45 mm clock is not
@@ -962,6 +973,31 @@ def _install_dressing() -> None:
                         BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
         _dressing_wall("park_sign", "far_wall", (FAR_WALL_FACE_X, 2.00, -1.60), (0.03, 0.4, 0.6),
                        DRESSING_CLAY),
+        # The park's remaining furniture, all at measured sizes.  Every placement below was computed
+        # against the two rules rather than chosen: a floor item needs |z| >= 1.5 and its lateral
+        # half-extent must not cross into the walking band, inside a room whose z is +/-2.5.
+        _dressing_floor("picnic_table", (5.5, 0.00, 1.95), (0.8109, 0.6403, 0.8109), DRESSING_WOOD,
+                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
+                        "dsready_content/nv_content/common_assets/props_general/table01/table01.usd"),
+        _dressing_floor("bench_iron", (9.5, 0.00, -2.05), (1.2955, 0.9895, 0.8583), DRESSING_METAL,
+                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
+                        "dsready_content/nv_content/common_assets/props_general/"
+                        "bench_wrought_iron_02/bench_wrought_iron_02.usd"),
+        _dressing_floor("bin_square", (13.0, 0.00, 1.95), (0.5855, 1.0112, 0.7957), DRESSING_GREEN,
+                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
+                        "dsready_content/nv_content/common_assets/props_general/"
+                        "trashcan_square_01/trashcan_square_01.usd"),
+        _dressing_floor("railing", (3.5, 0.00, 1.90), (2.2261, 1.166, 0.0728), DRESSING_METAL,
+                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
+                        "dsready_content/nv_content/common_assets/props_general/"
+                        "safety_railing_01/safety_railing_01.usd"),
+        # The plaza fountain and its sign, on the far wall.  It is a centimetre asset: 16.214 x
+        # 11.0828 x 16.214 in its own units, which is 0.1621 x 0.1108 x 0.1621 m of ornament.
+        _dressing_wall("fountain", "far_wall", (FAR_WALL_FACE_X, 1.80, -0.60),
+                       (0.1621, 0.1108, 0.1621), DRESSING_LIGHT,
+                       BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
+                       "dsready_content/nv_content/common_assets/props_general/"
+                       "sign_plaza_fountain_01/sign_plaza_fountain_01.usd"),
         # Sizes are the measured assets.  The bench really is 4.09 m long in the asset and 2.17 m
         # across; a park bench that size is a bandstand seat, so it is declared at a bench's
         # proportions and place_dressing fits the prop to that box.  The bin and the planters are
