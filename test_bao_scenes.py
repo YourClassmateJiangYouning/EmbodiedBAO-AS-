@@ -931,8 +931,24 @@ def test_no_scene_name_reaches_a_usd_path_unsanitised() -> None:
 def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
     """Catch a misspelt pxr member without needing pxr installed.
 
-    This is the fourth time this session that code reached for a pxr API that does not exist,
-    and every one of them was found by running it on the workstation:
+    THIS CHECKS EXISTENCE, NOT MEANING, and the distinction cost this project real defects.  Every
+    name below is a real API, so a call can pass this check while doing the wrong thing:
+
+      * ComputeWorldBound exists and returns a bound -- one that INCLUDES the transform of every
+        ancestor, which for a prop whose parent box is carrying the scale it is being fitted to made
+        the fit measure itself.  The result was factors of 219.9, 39.5 and 11.1.  The name was
+        correct and the API was wrong, so this check could not see it.
+      * AddScaleOp exists -- and raises when the prim already has one, so an asset shipping its own
+        xformOp:scale threw.
+
+    Those were found by reading the API reference, which is the only thing that catches them:
+    https://openusd.org/release/api/class_usd_geom_b_box_cache.html states plainly that
+    ComputeWorldBound is "in world space" and ComputeRelativeBound is "in the space of an ancestor
+    prim ... excludes the local transform at relativeToAncestorPrim".  A name list cannot express
+    that, so the semantic rules live in tools/audit_dressing.py and the meaning of each API call is
+    argued in the comment beside it.
+
+    What this check still does is catch a wrong NAME.  Four of those survived to the workstation:
 
       * Prim.GetReferences() on a schema instead of a prim;
       * UsdGeom.BoxCache, when the class is UsdGeom.BBoxCache;
@@ -945,13 +961,11 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
     reference to a member that the USD Python API does not define, by checking the module
     against a list of the members these files actually use.  The list is short and explicit on
     purpose: an allowlist that grows silently is not a check, so a new member has to be added
-    here deliberately, with the docs open.
-
-    See https://openusd.org/release/api/ -- in particular
-    class_usd_geom_b_box_cache.html, which is what corrected the second and third faults above.
+    here deliberately, with the docs open -- and the docs are open precisely because this list
+    cannot be the only thing read.
 
     The scan is over the CODE, not the text.  This docstring names the wrong spellings, and the
-    first version of this check flagged its own prose -- as did a message string elswhere that
+    first version of this check flagged its own prose -- as did a message string elsewhere that
     mentioned one.  String literals are blanked before scanning for exactly that reason.
     """
     import ast as _ast
@@ -1064,7 +1078,9 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
           "name is misspelt or a new API is being used without checking the docs:\n    "
           + "\n    ".join(sorted(set(offenders))))
     total = sum(len(v) for v in ALLOWED.values())
-    print(f"[ok] every pxr member used in the repo is on the verified list ({total} members)")
+    print(f"[ok] every pxr member used in the repo EXISTS in the API and is on the verified list "
+          f"({total} members); note this checks names, not semantics, and the semantic rules live "
+          f"in tools/audit_dressing.py")
 
 
 def test_no_module_calls_a_scene_helper_that_does_not_exist() -> None:

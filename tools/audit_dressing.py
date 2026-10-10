@@ -145,16 +145,39 @@ def main() -> int:
                         f"{[round(v, 4) for v in authored]} m contains a factor of {ratio:.2f}, "
                         f"which distorts the prop rather than resizing it")
 
-    # 9. fit_scale_from_extent must measure a relative bound.  A world bound includes the parent
-    # box's transform, and that parent is carrying the scale this function is deciding.
+    # 9. The bound API must be the one whose SEMANTICS fit the question.  This is the fault class a
+    # name allowlist cannot catch, and it produced the worst defect of this session: every one of
+    # these calls is a real API, so only reading the reference distinguishes them.  From
+    # https://openusd.org/release/api/class_usd_geom_b_box_cache.html :
+    #
+    #   ComputeWorldBound(prim)                 "in world space" -- includes the prim's own
+    #                                           transform AND every ancestor's.
+    #   ComputeRelativeBound(prim, ancestor)    "in the space of an ancestor prim ... excludes the
+    #                                           local transform at relativeToAncestorPrim".
+    #   ComputeLocalBound(prim)                 includes the prim's own transform, excludes ancestor
+    #                                           transforms, and returns an ORIENTED box.
+    #   ComputeUntransformedBound(prim)         excludes the prim's own transform.
+    #
+    # fit_scale_from_extent measures a prop that is a CHILD of the clearance box whose scale it is
+    # about to set, so an ancestor-including bound measures the fit against itself: reported as
+    # factors of 219.9, 39.5 and 11.1.  A relative bound excludes exactly that ancestor.
     if "ComputeRelativeBound" not in builder:
         problems.append("scene_builder.py measures a fit with no ComputeRelativeBound, so the "
                         "extent would include the parent box's own scale and feed itself")
-    if "ComputeWorldBound" in builder and "fit_scale_from_extent" in builder:
-        head = builder.split("def place_dressing", 1)[0]
-        if "ComputeWorldBound" in head.split("def fit_scale_from_extent", 1)[-1]:
-            problems.append("fit_scale_from_extent still uses ComputeWorldBound, which includes "
-                            "the parent's scale and makes the fit self-referential")
+    fit_body = builder.split("def fit_scale_from_extent", 1)[-1].split("\ndef ", 1)[0]
+    if "ComputeWorldBound" in fit_body:
+        problems.append("fit_scale_from_extent uses ComputeWorldBound, whose bound includes every "
+                        "ancestor transform -- including the parent box's scale, which is what this "
+                        "function is deciding.  Use ComputeRelativeBound.")
+    # environment.py legitimately uses ComputeWorldBound: it asks where the robot's lowest point is
+    # in world z, and the robot is not inside the transform being measured.
+    env_path = os.path.join(_ROOT, "environment.py")
+    if os.path.exists(env_path):
+        env = open(env_path, encoding="utf-8").read()
+        if "ComputeWorldBound" not in env:
+            notes.append("environment.py no longer measures the robot with a world bound; that is "
+                         "not an error, but the comment explaining why it was correct there has "
+                         "probably moved or gone")
 
     print(f"read {', '.join(FILES)}")
     for note in notes:

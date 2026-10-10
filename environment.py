@@ -1383,6 +1383,13 @@ class BAOEnv:
                 path = str(prim.GetPath())
                 if not path.startswith(self.robot_prim_path):
                     continue
+                # ComputeWorldBound is CORRECT here and the choice is deliberate.  It includes the
+                # transform of every ancestor, which is what this needs: the question is where the
+                # robot's lowest mesh point sits in WORLD z, so the whole chain must be included.
+                # The same call was a defect in scene_builder.fit_scale_from_extent, where the
+                # prim being measured was a child of the very box whose scale was being decided --
+                # a world bound there measured the scale against itself.  The difference is not the
+                # API, it is whether the caller is inside the transform it is measuring.
                 bound = cache.ComputeWorldBound(prim)
                 range3d = bound.ComputeAlignedRange()
                 lo = range3d.GetMin()
