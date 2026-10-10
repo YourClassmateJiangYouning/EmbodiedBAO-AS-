@@ -722,6 +722,28 @@ def format_report(report: Dict[str, Any]) -> str:
         lines.append(f"[scene] {surface:<9} {info['how']:<11} -> {info.get('prim', '-')}")
     if report["dressing"]:
         used = sum(1 for item in report["dressing"] if item["used_asset"])
+        failed = [item for item in report["dressing"] if item.get("reference_error")]
         lines.append(f"[scene] dressing: {report['dressing_count']} items, "
                      f"{used} from assets, rest boxes, all non-collidable")
+        # Per item, and in the ALWAYS-printed report rather than behind a switch.  An item whose
+        # prop resolves has its clearance box deactivated, so if the prop then fails to draw the
+        # item is absent from the frame with no fallback to notice -- which means "the preview is
+        # empty" has two opposite causes (the reference failed, or it resolved and nothing is
+        # drawn) that no picture can separate.  This separates them, and it appears in every run
+        # so it cannot be lost to a flag or a grep.
+        for item in report["dressing"]:
+            if item["used_asset"]:
+                detail = item["used_asset"]
+                fit = item.get("fit_scale") or ()
+                if any(abs(float(v) - 1.0) > 1e-9 for v in fit):
+                    detail += f" (fit {tuple(round(float(v), 4) for v in fit)})"
+                outcome = f"RESOLVED {detail}"
+            elif item.get("reference_error"):
+                outcome = f"FAILED {item['reference_error']}"
+            else:
+                outcome = "NO ASSET (drawn as its clearance box)"
+            lines.append(f"[scene]   dressing {item['name']}: {outcome}")
+        if failed:
+            lines.append(f"[scene] dressing: {len(failed)} reference(s) FAILED -- those items are "
+                         f"drawn as their clearance box")
     return "\n".join(lines)

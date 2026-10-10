@@ -71,6 +71,12 @@ def main() -> int:
     parser.add_argument("--height", type=int, default=1024)
     parser.add_argument("--only", default="",
                         help="comma-separated item names to keep; empty means all")
+    parser.add_argument("--report", action="store_true",
+                        help="Print the per-item table and the world bounding box of everything "
+                             "placed, then exit without rendering.  Exists because the first "
+                             "version died on a wrong bounding-box method name AFTER building the "
+                             "buffer, so a run produced neither a table nor an image; the report "
+                             "must not depend on the render succeeding.")
     args = parser.parse_args()
 
     from isaacsim import SimulationApp
@@ -107,6 +113,20 @@ def main() -> int:
             extent = describe(world_extent(box, stage.GetPrimAtPath(path)))
             shown = fixture.get("used_asset") or fixture.get("reference_error") or "-"
             print(f"{fixture['name']:<16} {fixture['mount']:<14} {str(shown)[:32]:<34} {extent}")
+
+        if args.report:
+            # The table above is the whole point of --report, so it is printed BEFORE anything that
+            # can fail.  It answers what no picture could: whether each prop resolved, and the
+            # world box of what was actually drawn -- which is where a size question such as "the
+            # trees are too tall" becomes a number instead of an impression.
+            resolved = sum(1 for f in placed if f.get("used_asset"))
+            failed = [f for f in placed if f.get("reference_error")]
+            no_asset = len(placed) - resolved - len(failed)
+            print()
+            print(f"[dressing] resolved {resolved}, failed {len(failed)}, no asset {no_asset}")
+            for fixture in failed:
+                print(f"[dressing] FAILED {fixture['name']}: {fixture['reference_error']}")
+            return 0
 
         # One dome light: this is a visibility check, not a lighting study.
         UsdLux.DomeLight.Define(stage, "/World/Dome").CreateIntensityAttr().Set(1000.0)
