@@ -1243,6 +1243,73 @@ def test_the_marker_assertion_counts_parts_not_children() -> None:
           f"({part!r} vs {material!r}), and set_marker_slot counts parts")
 
 
+def test_no_scene_floor_is_covered_by_a_dark_material() -> None:
+    """Every textured floor must sample an albedo texture bright enough to be seen.
+
+    This exists because one was not.  stage1.2 used the warehouse's own MI_Floor_01, whose albedo
+    is ColorAlbedo 0.145 grey lerped with Textures/T_Floor_01_D.png -- a texture whose mean
+    luminance is 63 of 255.  The rendered floor band came out at 29.8 with 31.9 % of it near
+    black, against 106.4 for the light baseline, and the scene was the only one that darkened
+    towards the bottom of the frame.  A near-black floor is not a matter of taste: the eye camera
+    looks down a corridor whose floor fills the lower fifth of the image.
+
+    The check follows the material's own indirection rather than trusting a name: an MDL declares
+    the textures it samples, and the albedo one is measured here with Pillow.  Numbers, because
+    the alternative is rendering the scene and looking at it, which is what missed this twice.
+
+    The floor is not required to exist -- stage1.4 keeps the default ground on purpose, which is
+    its outdoor cue -- but a floor material that IS declared has to be bright enough.
+    """
+    import re
+
+    import numpy as np
+    from PIL import Image
+
+    assets = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "isaac")
+    floor_min = float(getattr(sc, "FLOOR_ALBEDO_MIN", 80.0))
+    texture = re.compile(r'texture_2d\(\s*"\./Textures/([^"]+)"')
+
+    # Found by basename rather than by rebuilding the URL's path.  The first version rebuilt it
+    # and reported a real, vendored material as "not vendored" -- a failure for the wrong reason,
+    # which would send the next reader after a missing file instead of a dark one.
+    vendored = {}
+    for folder, _, files in os.walk(assets):
+        for name in files:
+            vendored.setdefault(name, os.path.join(folder, name))
+
+    reported, problems = [], []
+
+    for scene in sc.SCENE_ORDER:
+        url = sc.SCENES[scene]["materials"].get("floor")
+        if not url:
+            continue
+        basename = os.path.basename(url)
+        candidate = vendored.get(basename)
+        check(candidate,
+              f"{scene}'s floor material {basename} is not vendored anywhere under assets/isaac")
+        source = open(candidate, encoding="utf-8", errors="replace").read()
+        names = [n for n in texture.findall(source)
+                 if re.search(r"_D\.png|basecolor|_bc\.png", n, re.I)]
+        check(names, f"{scene}'s floor material {basename} declares no albedo texture, so this "
+                     f"check cannot measure it and must not pass it silently")
+        for name in names:
+            image_path = os.path.join(os.path.dirname(candidate), "Textures", name)
+            check(os.path.exists(image_path),
+                  f"{scene}'s floor samples {name}, which is not vendored at {image_path}")
+            grey = np.asarray(Image.open(image_path).convert("RGB")).astype(float).mean(axis=2)
+            mean, low = float(grey.mean()), float(grey.min())
+            reported.append(f"{scene}:{basename}->{name}={mean:.1f}")
+            if mean < floor_min:
+                problems.append(f"{scene} floor {basename} samples {name}, whose mean luminance "
+                                f"is {mean:.1f} of 255, minimum {low:.1f} (floor {floor_min})")
+
+    check(not problems,
+          "these floors are covered by a material too dark to see, which is how stage1.2 "
+          "rendered its floor at 29.8 with 31.9 % of it near black:\n    "
+          + "\n    ".join(problems))
+    print(f"[ok] every declared floor samples a bright albedo: {reported}")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -1278,6 +1345,7 @@ def main() -> int:
         test_a_declared_size_is_the_size_of_the_prop_it_names,
         test_the_report_says_the_marker_size_and_whether_the_paint_landed,
         test_the_marker_assertion_counts_parts_not_children,
+        test_no_scene_floor_is_covered_by_a_dark_material,
     ]
     failed = 0
     for test in tests:

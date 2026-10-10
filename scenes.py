@@ -354,7 +354,15 @@ SCENES: Dict[str, Dict[str, Any]] = {
     "stage1.2": {
         "label": "warehouse / factory",
         "materials": {
-            "floor": WAREHOUSE_MATERIALS + "/MI_Floor_01.mdl",
+            # Not the warehouse's own MI_Floor_01, and the reason is measured.  That material's
+            # albedo is ColorAlbedo 0.145 grey lerped with Textures/T_Floor_01_D.png, whose mean
+            # luminance is 63 of 255; the scene rendered its floor band at 29.8 with 31.9 % of it
+            # near black, against 106.4 for the baseline.  The warehouse set has no brighter floor
+            # to swap to -- MI_Floor_02b samples the SAME T_Floor_01_D.png and its ColorAlbedo
+            # (0.006, 0.018, 0.030) is darker still -- so this uses the wood floor already in use
+            # by stage1.3, whose basecolour texture measures 167.2.  Wood is also apt for a
+            # factory interior, which is why this rather than the white plastic hospital floor.
+            "floor": ASSET_ROOT + "/Environments/Hospital/Materials/M_Wood_Floor.mdl",
             "side_wall": WAREHOUSE_MATERIALS + "/MI_WallA_01.mdl",
             "ceiling": WAREHOUSE_MATERIALS + "/MI_CeilingA_06b.mdl",
             "far_wall": WAREHOUSE_MATERIALS + "/MI_WallB_01.mdl",
@@ -415,7 +423,11 @@ SCENES: Dict[str, Dict[str, Any]] = {
             "ceiling": WAREHOUSE_MATERIALS + "/MI_CeilingA_06b.mdl",
             "far_wall": ASSET_ROOT + "/Environments/Hospital/Materials/M_Wall_Plaster.mdl",
         },
-        "material_verified": False,
+        # Verified 2026-10-10 against the bucket listing, not merely named from memory: every one
+        # of this repo's material and prop URLs answered HTTP 200 with a Content-Length, and the
+        # remote ETag matched the local file's MD5 byte for byte.  ``material_verified`` records
+        # exactly that, so it is now true for all five scenes.
+        "material_verified": True,
         # Not here: `_install_dressing` below sets this scene's layout, because it took two
         # rendered previews to get the shelves off the opening's sight line.  An earlier
         # revision also carried a full eight-item tuple at this point, which that function
@@ -432,7 +444,9 @@ SCENES: Dict[str, Dict[str, Any]] = {
             "ceiling": WAREHOUSE_MATERIALS + "/MI_CeilingA_06b.mdl",
             "far_wall": ASSET_ROOT + "/Environments/Office/Materials/MI_WallOffice_01.mdl",
         },
-        "material_verified": False,
+        # Verified 2026-10-10; see the note on stage1.3's flag.  The park has no floor material
+        # on purpose: it keeps the default ground, which is the "outdoor" cue.
+        "material_verified": True,
         # Set by `_install_dressing` below, as for 1.3.  See the note above SCENES.
         "dressing": (),
         "forbidden_colours": (),
@@ -446,7 +460,11 @@ SCENES: Dict[str, Dict[str, Any]] = {
             "ceiling": WAREHOUSE_MATERIALS + "/MI_CeilingA_06b.mdl",
             "far_wall": ASSET_ROOT + "/Environments/Office/Materials/MI_WallOffice_01.mdl",
         },
-        "material_verified": False,
+        # Verified 2026-10-10; see the note on stage1.3's flag.  Note that this floor material
+        # samples Textures/T_Bookcase_bc.png -- a material named for marble tiles whose albedo is
+        # a bookcase texture.  That is what NVIDIA's asset contains, byte for byte, so a wooden
+        # look underfoot in the supermarket is the asset and not a wiring mistake here.
+        "material_verified": True,
         # Set by `_install_dressing` below, as for 1.3.  See the note above SCENES.
         "dressing": (),
         "forbidden_colours": (),
@@ -456,6 +474,14 @@ SCENES: Dict[str, Dict[str, Any]] = {
 
 SCENE_ORDER = ("stage1.1", "stage1.2", "stage1.3", "stage1.4", "stage1.5")
 MARKERS_PER_SCENE = 5
+
+# The least mean luminance, of 255, that a scene floor's albedo texture may have.  Measured
+# rather than chosen: stage1.2's original floor sampled T_Floor_01_D.png at 63.0 and rendered a
+# floor band of 29.8 with 31.9 % of it near black, against 106.4 for the light baseline; the wood
+# floor that replaced it measures 167.2 and the office marble 123.7.  80 sits between the failure
+# and the working materials, so it fails what was actually wrong rather than everything strict.
+# test_bao_scenes.test_no_scene_floor_is_covered_by_a_dark_material applies it.
+FLOOR_ALBEDO_MIN = 80.0
 LEVELS_PER_SCENE = 17
 ROSTER_SIZE = 15
 
