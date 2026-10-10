@@ -951,11 +951,17 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
     import ast as _ast
     import re
 
-    # module -> members these files may use, verified against the OpenUSD API reference.
+    # module -> members these files may use, verified against the OpenUSD API reference or, better,
+    # against the machine.  A name that a probe has shown does NOT exist must be removed rather
+    # than left here.  One was: a token wrapper on pxr.Tf (spelled out in the docstring of
+    # scene_builder.paint, which is blanked before this scan) was deleted from both the dict and
+    # the code on 2026-10-10, after the workstation showed that module has no token type at all --
+    # its only "oken" members are DumpTokenStats and two test helpers.  This table must not simply
+    # accumulate, and this comment cannot spell the dotted name it is about: the scan reads
+    # comments, and doing so reported itself.
     ALLOWED = {
         "Gf": {"Vec3f", "Vec3d", "Matrix4d"},
         "Sdf": {"ValueTypeNames", "Path", "AssetPath"},
-        "Tf": {"Token", "TypeRegistry"},
         "Vt": {"Vec3fArray", "Vec3dArray", "IntArray", "Token", "Value"},
         "Usd": {"Stage", "Prim", "TimeCode", "Attribute"},
         "UsdGeom": {
@@ -975,7 +981,7 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
     # This took three attempts and each failure is the same mistake, so it is recorded: the
     # pattern must be able to SEE the new thing it is meant to police.
     #
-    #   1. built from ALLOWED's own keys -> `Tf.Token(...)` was added to scene_builder.py and the
+    #   1. built from ALLOWED's own keys -> a new pxr name was added to scene_builder.py and the
     #      guard still reported "43 members, all verified" while checking none of the new one;
     #   2. widened to an explicit list of module names -> an unlisted pxr module was still
     #      invisible, which I only found by planting one and watching the guard stay silent;
@@ -1193,6 +1199,38 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
           f"{len(measured)} measurement(s) are recorded")
 
 
+def test_the_emissive_shader_id_is_a_plain_string() -> None:
+    """The UsdPreviewSurface id is set with a string, which is what the machine accepted.
+
+    This is a source scan, not a call: the material path needs pxr and cannot run here.  It pins
+    the one thing that was measured on the workstation after two failed render round trips:
+
+        shader.CreateIdAttr().Set("UsdPreviewSurface")      -> worked, "step ok  Set(...)"
+        shader.CreateIdAttr().Set(Tf.Token("UsdPreviewSurface"))
+                                                            -> AttributeError: module 'pxr.Tf'
+                                                               has no attribute 'Token'
+
+    so pxr.Tf on that machine is a real module without a Token, and the binding converts the
+    string itself.  If someone reintroduces the token wrapper, the emission silently stops
+    working again -- it is reported as painted False, but only after a render.
+    """
+    import re
+
+    source = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               "scene_builder.py"), encoding="utf-8").read()
+    # Comments are stripped first.  The lesson being pinned is stated in a comment right there in
+    # that file, and naming the wrong spelling in prose is not the same as calling it -- an
+    # earlier version of this check reported its own explanation.
+    code = "\n".join(line.split("#", 1)[0] for line in source.splitlines())
+    check('CreateIdAttr().Set("UsdPreviewSurface")' in code,
+          'scene_builder.py does not set the shader id with the plain string "UsdPreviewSurface"')
+    check(not re.search(r"\bTf\.", code),
+          "scene_builder.py calls into pxr.Tf, which the workstation showed has no Token")
+    check("import Gf, Sdf, Tf" not in code,
+          "scene_builder.py imports Tf again; it is not needed for the shader id")
+    print("[ok] the emissive shader id is a plain string, and no code reaches into pxr.Tf")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -1227,6 +1265,7 @@ def main() -> int:
         test_no_module_calls_a_scene_helper_that_does_not_exist,
         test_a_declared_size_is_the_size_of_the_prop_it_names,
         test_the_report_says_the_marker_size_and_whether_the_emission_landed,
+        test_the_emissive_shader_id_is_a_plain_string,
     ]
     failed = 0
     for test in tests:

@@ -72,6 +72,16 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float],
     material's surface terminal, and binds the material -- the same UsdShade path that the
     material resolution in apply_scene() already uses.
 
+    The shader id is set with a plain string, which the workstation settled after a second failed
+    render.  The first spelling wrapped it in a token from pxr.Tf and raised:
+
+        AttributeError: module 'pxr.Tf' has no attribute 'Token'
+
+    for a module that really is present (omni.usd.libs-*/pxr/Tf/_tf.so) and really has no token
+    type -- its only "oken" members are DumpTokenStats and two test helpers.  A probe on the same
+    machine then ran this material path end to end and reported "step ok  Set('UsdPreviewSurface')",
+    so the binding converts the string itself and the import is not needed at all.
+
     The emission exists because of a measured problem: the textured scenes render dimmer than the
     plain baseline the marker's size was chosen in -- eye-frame means 137.6 for stage1.1 against
     81-112 for 1.2-1.5, next to environment.py's own 130-160 acceptance range -- so the closest
@@ -84,7 +94,7 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float],
     reported rather than assumed.
     """
     try:
-        from pxr import Gf, Sdf, Tf, UsdGeom, UsdShade, Vt
+        from pxr import Gf, Sdf, UsdGeom, UsdShade, Vt
 
         prim = stage.GetPrimAtPath(prim_path)
         gprim = UsdGeom.Gprim(prim)
@@ -97,9 +107,11 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float],
         try:
             material = UsdShade.Material.Define(stage, f"{prim_path}_emissive")
             shader = UsdShade.Shader.Define(stage, f"{prim_path}_emissive/surface")
-            # CreateIdAttr is on UsdShadeShader (checked against the OpenUSD reference, not
-            # assumed: this session guessed several pxr members wrong before that habit changed).
-            shader.CreateIdAttr().Set(Tf.Token("UsdPreviewSurface"))
+            # A plain STRING is the right argument, and this is measured rather than assumed:
+            # the token-wrapping spelling was tried on the workstation and raised there.  See
+            # this function's docstring for what it reported.  The Tf import went with it, so
+            # there is no longer a name here that could be the wrong one.
+            shader.CreateIdAttr().Set("UsdPreviewSurface")
             shader.CreateInput("diffuseColor", Sdf.ValueTypeNames.Color3f).Set(
                 Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2])))
             shader.CreateInput("emissiveColor", Sdf.ValueTypeNames.Color3f).Set(
@@ -109,8 +121,8 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float],
             return True, ""
         except Exception:  # noqa: BLE001
             # The REASON is returned, not just a False.  Two rounds were spent guessing why the
-            # emission did not land -- first the attribute was on the wrong schema, then this
-            # material path failed -- and in both cases the bare except had thrown the answer
+            # emission did not land -- first the attribute was on the wrong schema, then the
+            # token spelling -- and in both cases the bare except had thrown the answer
             # away.  "painted False" without a why is what forced a render round trip to learn
             # nothing.
             return False, traceback.format_exc().strip().splitlines()[-1]
