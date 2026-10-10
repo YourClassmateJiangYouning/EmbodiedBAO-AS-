@@ -27,6 +27,12 @@ lab_logs/bao_v7_qwen.tgz
 # accident, so they are ignored rather than trusted to be cleaned up in time.
 COMMIT_MSG_*.txt
 
+# Local scratch for examining rendered frames: crop/zoom scripts and the crops they
+# produce.  Committed once by accident, and one of the files in it was a check whose
+# criterion was later found to be wrong -- a misleading tool in the repo is worse than
+# no tool, so these live outside version control unless one is promoted deliberately.
+render_check/
+
 # Word's lock file for an open document: it appears whenever a .docx is open and
 # vanishes when it closes, so committing it would record a transient state as content.
 ~$*.docx
