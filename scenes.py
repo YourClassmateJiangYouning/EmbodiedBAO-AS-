@@ -269,8 +269,11 @@ PROP_MEASUREMENTS = {
     "024_bowl.usd": (0.1612, 0.1615, 0.0550),
     "004_sugar_box.usd": (0.0927, 0.0451, 0.1763),
     "dolly.usd": (0.8504, 0.4407, 1.2594),
-    # Recorded although no scene uses it: see the note on stage1.2's forklift entry for why a
-    # 3.49 m vehicle has no place in a 5 m wide room whose central 3 m must stay clear.
+    # NOT vendored, and this entry is the record of why.  It was fetched, measured here, and then
+    # deleted again: 3.4947 m does not fit a 5 m wide room whose central 3 m has to stay clear for
+    # the robot, so stage1.2's forklift stays the box it has always been.  The number is kept
+    # because it is the evidence for that decision, and a measurement is cheap to keep and
+    # expensive to take twice -- the fetch is one command if a bigger room ever wants it.
     "forklift.usd": (1.2138, 2.1549, 3.4947),
 }
 
