@@ -410,16 +410,20 @@ def fit_scale_from_extent(proxy_prim: Any, declared: Sequence[float]) -> Tuple[f
         return (1.0, 1.0, 1.0)
     lo, hi = rng.GetMin(), rng.GetMax()
     native = (hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2])
-    # declared arrives in the catalogue's frame; the box is in world axes.  sc.to_world_size is the
-    # same swap the rest of the repo uses, so both are compared where they actually are.
-    world = sc.to_world_size(declared)
+    # ``declared`` arrives in the STAGE's frame already, because the caller passes the tuple the
+    # item stores and place_dressing stores a wall item in world order.  An earlier version
+    # converted it again through sc.to_world_size, which for a wall item swapped its height with
+    # its width in the declaration only -- so the prop was then fitted against a declaration
+    # differing from the one the checks use, and the fitted poster came out 3.6x too tall while
+    # the clock was squashed to 22 : 6.7 : 2.2.  Whatever the caller stores is what is fitted to;
+    # no second conversion.
     fitted = []
     for axis in range(3):
         have = float(native[axis])
         if abs(have) < 1e-9:
             fitted.append(1.0)
         else:
-            fitted.append(float(world[axis]) / have)
+            fitted.append(float(declared[axis]) / have)
     return tuple(fitted)  # type: ignore[return-value]
 
 
@@ -516,7 +520,12 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 # mesh is not visible until it is inside a wall.
                 scale = fit_scale_from_extent(proxy_prim, item["size"])
                 if any(abs(s - 1.0) > 1e-9 for s in scale):
-                    world_scale = sc.to_world_size(scale)
+                    # The same mount rule as the clearance box above, for the same reason: a wall
+                    # item's declared tuple is already in world order, so converting it again would
+                    # swap its height with its width in the SCALE while the box kept the right
+                    # order -- two transforms disagreeing about the same prop.
+                    world_scale = (scale if item["mount"] != "floor"
+                                   else sc.to_world_size(scale))
                     UsdGeom.Xformable(proxy_prim).AddScaleOp().Set(
                         Gf.Vec3f(*world_scale))
                 _disable_collision(proxy_prim)
@@ -530,7 +539,18 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
             except Exception as exc:  # noqa: BLE001
                 # A prop that will not load must leave the box, not the scene, broken: the box is
                 # still visible here, which is the correct fallback rather than an empty hole.
-                record["reference_error"] = f"{type(exc).__name__}: {exc}"
+                #
+                # The message is built from more than str(exc), which for USD's ErrorException is
+                # the EMPTY string -- a report reading "FAILED ErrorException: " names neither what
+                # failed nor why, and the type alone is not a diagnosis.  The deepest frame of the
+                # traceback is included because it names the pxr call that raised.
+                detail = str(exc).strip()
+                where = traceback.extract_tb(exc.__traceback__)
+                if where:
+                    frame = where[-1]
+                    detail = (detail + " " if detail else "") + \
+                        f"at {os.path.basename(frame.filename)}:{frame.lineno} {frame.line}"
+                record["reference_error"] = f"{type(exc).__name__}: {detail.strip()}"
         placed.append(record)
     return placed
 
