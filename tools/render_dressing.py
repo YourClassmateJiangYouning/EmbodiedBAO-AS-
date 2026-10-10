@@ -29,6 +29,40 @@ sys.path.insert(0, _ROOT)
 import numpy as np  # noqa: E402
 
 
+def world_extent(box, prim):
+    """The aligned world bounding range of a prim, or None.
+
+    ``ComputeWorldBound``, not ``ComputeWorldBounds``: the plural spelling raises AttributeError,
+    and ``measure_assets.py`` already uses the singular.  The first version of this tool used the
+    plural inside a try/except that reported "bound failed: AttributeError" for all eleven items
+    and then returned before writing any image -- so a wrong method name produced no picture and no
+    sizes, which is the least useful combination.
+    """
+    if not prim or not prim.IsValid():
+        return None
+    try:
+        rng = box.ComputeWorldBound(prim).ComputeAlignedRange()
+        return None if rng.IsEmpty() else rng
+    except Exception:  # noqa: BLE001
+        prototype = prim.GetPrototype()
+        if not prototype or not prototype.IsValid():
+            return None
+        try:
+            rng = box.ComputeWorldBound(prototype).ComputeAlignedRange()
+            return None if rng.IsEmpty() else rng
+        except Exception:  # noqa: BLE001
+            return None
+
+
+def describe(rng) -> str:
+    if rng is None:
+        return "no measurable extent"
+    lo, hi = rng.GetMin(), rng.GetMax()
+    return (f"({hi[0] - lo[0]:.4f}, {hi[1] - lo[1]:.4f}, {hi[2] - lo[2]:.4f}) at "
+            f"({(lo[0] + hi[0]) / 2:.2f}, {(lo[1] + hi[1]) / 2:.2f}, "
+            f"{(lo[2] + hi[2]) / 2:.2f})")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("scene", help="scene whose dressing to render, e.g. stage1.5")
@@ -70,19 +104,7 @@ def main() -> int:
         box = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_])
         for fixture in placed:
             path = f"/World/Dressing/{fixture['name']}"
-            prim = stage.GetPrimAtPath(path)
-            extent = "-"
-            if prim and prim.IsValid():
-                try:
-                    rng = box.ComputeWorldBounds(prim).ComputeAlignedRange()
-                    if not rng.IsEmpty():
-                        lo, hi = rng.GetMin(), rng.GetMax()
-                        extent = (f"({hi[0] - lo[0]:.4f}, {hi[1] - lo[1]:.4f}, "
-                                  f"{hi[2] - lo[2]:.4f}) at "
-                                  f"({(lo[0] + hi[0]) / 2:.2f}, {(lo[1] + hi[1]) / 2:.2f}, "
-                                  f"{(lo[2] + hi[2]) / 2:.2f})")
-                except Exception as error:  # noqa: BLE001
-                    extent = f"bound failed: {type(error).__name__}"
+            extent = describe(world_extent(box, stage.GetPrimAtPath(path)))
             shown = fixture.get("used_asset") or fixture.get("reference_error") or "-"
             print(f"{fixture['name']:<16} {fixture['mount']:<14} {str(shown)[:32]:<34} {extent}")
 
@@ -92,11 +114,8 @@ def main() -> int:
         # Frame the dressing: the union of every drawn box, with margin.
         lows, highs = [], []
         for fixture in placed:
-            prim = stage.GetPrimAtPath(f"/World/Dressing/{fixture['name']}")
-            if not prim or not prim.IsValid():
-                continue
-            rng = box.ComputeWorldBounds(prim).ComputeAlignedRange()
-            if rng.IsEmpty():
+            rng = world_extent(box, stage.GetPrimAtPath(f"/World/Dressing/{fixture['name']}"))
+            if rng is None:
                 continue
             lows.append(np.array(rng.GetMin()))
             highs.append(np.array(rng.GetMax()))

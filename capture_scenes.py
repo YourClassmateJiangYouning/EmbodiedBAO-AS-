@@ -38,6 +38,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import math
 import os
 import struct
 import traceback
@@ -98,6 +99,25 @@ def parse_args() -> argparse.Namespace:
              "the nearest pixel to the authored yellow was 154,161,171.  Checking them needs a "
              "close view aimed at them: --iso_x 9.4 --iso_height 1.4 --iso_z 3.4 "
              "--iso_target 7.99 1.05 1.6.",
+    )
+    parser.add_argument(
+        "--iso_orbit", type=float, nargs="*", default=None,
+        help="Extra camera angles, in degrees around --iso_target, rendered in addition to the "
+             "plain iso view and written as <scene>_slot<N>_orbit<angle>.png.  One camera cannot "
+             "show this room: the dressing sits at |z| >= 1.5 while the eye looks through a 0.570 m "
+             "opening, so the side spaces hold every tree, bench and shrub the eye camera can never "
+             "see.  Orbiting samples each side in one run instead of one guessed viewpoint per "
+             "round trip, which is what several rounds were wasted on.",
+    )
+    parser.add_argument(
+        "--iso_orbit_radius", type=float, default=9.0,
+        help="Distance from --iso_target for the orbit views.  Large enough to stand outside the "
+             "5 m wide room, so the orbit does not put the camera inside a wall.",
+    )
+    parser.add_argument(
+        "--iso_orbit_height", type=float, default=2.2,
+        help="Orbit camera height, as for --iso_height: under the 3 m ceiling or the ceiling is "
+             "all there is to see.",
     )
     return parser.parse_args()
 
@@ -250,6 +270,31 @@ def main() -> int:
                 iso = np.asarray(iso_camera.get_rgb())[:, :, :3]
                 iso_images.append(iso)
                 write_png(os.path.join(args.outdir, f"{args.scene}_slot{slot}_iso.png"), iso)
+
+                # Extra views around the target, because one camera cannot show this room.
+                #
+                # The dressing is deliberately OUT of the walking band (|z| >= 1.5) while the eye
+                # camera looks through a 0.570 m opening, so from the start pose the side spaces --
+                # where every tree, bench and shrub stands -- are not visible at all.  That is a
+                # property of the geometry, not of the camera, and it is why a preview kept coming
+                # back looking empty while the log said 11 items were placed.
+                #
+                # Orbiting the target by full turns samples every side.  Angles are degrees around
+                # the target; each view is written as <scene>_slot<N>_orbit<angle>.png.
+                for angle in getattr(args, "iso_orbit", None) or []:
+                    radians = math.radians(float(angle))
+                    target = tuple(args.iso_target)
+                    position = (target[0] + args.iso_orbit_radius * math.cos(radians),
+                                args.iso_orbit_height,
+                                target[2] + args.iso_orbit_radius * math.sin(radians))
+                    look_from(iso_camera, target=tuple(target), position=position)
+                    for _ in range(3):
+                        env.world.step(render=True)
+                    orbit = np.asarray(iso_camera.get_rgb())[:, :, :3]
+                    name = f"{args.scene}_slot{slot}_orbit{int(float(angle))}.png"
+                    write_png(os.path.join(args.outdir, name), orbit)
+                    print(f"[preview] orbit {angle} deg from "
+                          f"{tuple(round(v, 2) for v in position)}", flush=True)
             # One line per rendered slot, appended to a file this script controls.
             #
             # Not stdout, and that is the point.  A full render reported "painted True" 5 times
