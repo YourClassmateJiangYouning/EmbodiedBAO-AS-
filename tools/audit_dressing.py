@@ -37,7 +37,6 @@ def main() -> int:
     notes = []
 
     builder = read("scene_builder.py")
-    catalogue = read("scenes.py")
 
     # 1. to_world_size applied to a WALL item's size or scale.  Wall sizes are stored in world
     # order already, so every conversion must be guarded by the mount.
@@ -108,6 +107,54 @@ def main() -> int:
             if float(item["size"][1]) > 3.0:
                 problems.append(f"{scene}/{item['name']} is {item['size'][1]:.2f} m tall, above the "
                                 f"3.0 m ceiling")
+
+    # 8. Any declared-to-authored ratio far from 1.  A fit factor is a correction, not a shape: it
+    # exists to make a prop occupy the box it was declared with, and a factor of 39 or 220 means the
+    # prop is being distorted into something that is not the prop.  Those exact numbers appeared on
+    # the lab machine because the extent was measured with a world bound that included the scale the
+    # fit had just applied to the parent box -- a feedback loop that this check would have caught on
+    # the first run.  Ratios are computed per scene from the declared size and the recorded
+    # measurement, so no USD reader is needed.
+    for scene in sc.SCENE_ORDER:
+        for item in sc.SCENES[scene]["dressing"]:
+            asset = item.get("asset")
+            if not asset:
+                continue
+            base = os.path.basename(asset)
+            measured = sc.PROP_MEASUREMENTS.get(base)
+            if not measured:
+                continue
+            factor = float(sc.ASSET_SCALE.get(base, 1.0))
+            room_fit = float(item.get("room_fit", 1.0))
+            # Compared as SETS across the three axes, not axis by axis.  A wall item stores its
+            # depth on slot 0 while the measurement records its width there, so the outer two
+            # numbers legitimately differ by a factor of 20 for a wide framed poster while the prop
+            # is the right size -- exactly the ambiguity test_a_declared_size resolves the same way.
+            # What this check is for is the DISTORTION: sorted(declared) against sorted(authored)
+            # still catches the 219.9 and 39.5 factors, and does not flag a correctly mounted
+            # poster.
+            authored = sorted(float(measured[axis]) * factor * room_fit for axis in range(3))
+            declared = sorted(float(item["size"][axis]) for axis in range(3))
+            for want, have in zip(declared, authored):
+                if have <= 0:
+                    continue
+                ratio = want / have
+                if ratio > 4.0 or ratio < 0.25:
+                    problems.append(
+                        f"{scene}/{item['name']}: declared {declared} m against an authored "
+                        f"{[round(v, 4) for v in authored]} m contains a factor of {ratio:.2f}, "
+                        f"which distorts the prop rather than resizing it")
+
+    # 9. fit_scale_from_extent must measure a relative bound.  A world bound includes the parent
+    # box's transform, and that parent is carrying the scale this function is deciding.
+    if "ComputeRelativeBound" not in builder:
+        problems.append("scene_builder.py measures a fit with no ComputeRelativeBound, so the "
+                        "extent would include the parent box's own scale and feed itself")
+    if "ComputeWorldBound" in builder and "fit_scale_from_extent" in builder:
+        head = builder.split("def place_dressing", 1)[0]
+        if "ComputeWorldBound" in head.split("def fit_scale_from_extent", 1)[-1]:
+            problems.append("fit_scale_from_extent still uses ComputeWorldBound, which includes "
+                            "the parent's scale and makes the fit self-referential")
 
     print(f"read {', '.join(FILES)}")
     for note in notes:

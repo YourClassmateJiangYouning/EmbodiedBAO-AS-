@@ -379,14 +379,17 @@ def prop_asset_for(url: Optional[str]) -> Optional[str]:
 def fit_scale_from_extent(proxy_prim: Any, declared: Sequence[float]) -> Tuple[float, float, float]:
     """Per-axis factor that makes a referenced prop occupy its declared box.
 
-    The factor is computed from the PROP'S OWN world bounding box rather than from
-    scenes.PROP_MEASUREMENTS, and that is the point: a measurement is recorded in the catalogue's
-    (x, height, lateral) order, while _dressing_wall stores (thick, tall, across) because a wall
-    faces along x.  For most assets the two orders agree on the numbers and the difference never
-    shows; for a WIDE wall item they do not -- a 1.092 m framed poster stored as (0.0524, 0.7426,
-    1.092) was compared against its measurement as if 1.092 were the height, and reported as a
-    mismatch while being placed correctly.  The bounding box has no such ambiguity: it is in world
-    axes, and declared is converted into the same axes.
+    The factor is computed from the PROP'S OWN extent rather than from scenes.PROP_MEASUREMENTS,
+    and that is the point of the function: a measurement can be recorded in a frame that differs
+    from the one the item stores -- the framed poster is measured (1.092, 0.7426, 0.0524) but stored
+    (0.0524, 0.7426, 1.092) because a wall faces along x -- and the bounding box has no such
+    ambiguity.  It is measured in the axes the geometry is actually in, and ``declared`` arrives in
+    those same axes.
+
+    The extent is a RELATIVE bound and not a world bound: the prim's parent is the clearance box
+    whose scale this function feeds, so a world bound measured the scale it had just been given and
+    the fit fed itself.  That loop produced factors of 219.9, 39.5 and 11.1, which are shapes, not
+    sizes.
 
     1.0 per axis when the box cannot be measured: the prop is then drawn as authored, and the
     declared-size check is what reports that, rather than a silent guess here.
@@ -397,15 +400,21 @@ def fit_scale_from_extent(proxy_prim: Any, declared: Sequence[float]) -> Tuple[f
         return (1.0, 1.0, 1.0)
     box = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_])
     rng = None
-    try:
-        rng = box.ComputeWorldBound(proxy_prim).ComputeAlignedRange()
-    except Exception:  # noqa: BLE001
-        prototype = proxy_prim.GetPrototype()
-        if prototype and prototype.IsValid():
-            try:
-                rng = box.ComputeWorldBound(prototype).ComputeAlignedRange()
-            except Exception:  # noqa: BLE001
-                rng = None
+    # RELATIVE bound, not world bound.  The proxy prim's parent is the clearance box whose scale
+    # this function is about to set, and a world bound includes the parent's transform -- so the
+    # measurement saw the scale that had just been applied to it.  The result was a feedback loop
+    # visible in the report as absurd factors: 219.9 for the safety railing's height, 39.5 across
+    # the pallet, 11.1 across a curved bench.  A relative bound is expressed in the parent's
+    # coordinate system, so it measures the prop as authored and is independent of the fit.
+    for scope in (proxy_prim, proxy_prim.GetPrototype()):
+        if not scope or not scope.IsValid():
+            continue
+        try:
+            rng = box.ComputeRelativeBound(scope, proxy_prim.GetParent()).ComputeAlignedRange()
+        except Exception:  # noqa: BLE001
+            rng = None
+        if rng is not None and not rng.IsEmpty():
+            break
     if rng is None or rng.IsEmpty():
         return (1.0, 1.0, 1.0)
     lo, hi = rng.GetMin(), rng.GetMax()
