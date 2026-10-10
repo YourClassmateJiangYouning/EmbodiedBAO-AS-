@@ -329,14 +329,18 @@ MOUNT_CLEARANCE_M = 0.001
 # place_dressing, because a factor applied in one hidden place is a factor nobody can audit.
 CM_TO_M = 0.01
 
-# Which vendored props need scaling, keyed by asset basename.  Scale is a property of the ASSET,
-# not of the item that places it: the same packing table is scaled the same way wherever it
-# stands, so it is recorded once here rather than at every call site.  Only assets whose
-# PROP_MEASUREMENTS entry is not already in metres appear.
+# The factor that turns each asset's own measurement into metres, keyed by asset basename.
 #
-# The two values are the same number for a different reason each time, which is worth stating:
-# the packing table and the crates/boxes are centimetre assets; small_KLT is a metre asset whose
-# scale is simply 1.0 and therefore absent from this table.
+# This is NOT what scales the geometry any more.  place_dressing fits every referenced prop to its
+# declared box per axis, so the drawn size is the declared size whichever unit the asset is in, and
+# ASSET_SCALE has exactly one job left: letting the declared-size check compare a declaration with
+# its measurement.  That job is worth keeping, and deleting this as "redundant" would remove the
+# only thing standing between a fit and a lie -- if a declared size were wrong, fitting would
+# quietly squash the prop to the wrong number and look perfect, whereas this makes the mismatch an
+# error with both numbers printed.
+#
+# It is also a property of the ASSET rather than of the item that places it, which is why it is not
+# a parameter on _dressing_floor: the same packing table is centimetre-authored wherever it stands.
 ASSET_SCALE = {
     "SM_HeavyDutyPackingTable_C02_01.usd": CM_TO_M,
     "SM_Crate_A07_Yellow_01.usd": CM_TO_M,

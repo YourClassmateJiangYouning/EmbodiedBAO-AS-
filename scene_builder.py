@@ -365,6 +365,31 @@ def prop_asset_for(url: Optional[str]) -> Optional[str]:
     return index[name]
 
 
+def _fit_scale(item: Dict[str, Any], measured: Optional[Sequence[float]]) -> Tuple[float, float, float]:
+    """Per-axis factor that makes the prop occupy exactly the item's declared box.
+
+    Measured and declared are both in the catalogue's (x, height, lateral) frame, so the ratios
+    are the three factors directly.  1.0 for every axis when the asset has no recorded
+    measurement -- in that case the prop is drawn as authored and the caller has already reported
+    that it has no measurement, which test_bao_scenes fails on.
+
+    The centimetre assets need no special case here: their measurement is 100x the declared size
+    and the ratio is 0.01, which is the same arithmetic that ASSET_SCALE spelled out by hand.  A
+    single mechanism is better than two that can disagree.
+    """
+    if not measured:
+        return (1.0, 1.0, 1.0)
+    fitted = []
+    for axis, (want, have) in enumerate(zip(item["size"], measured)):
+        if not have or abs(float(have)) < 1e-9:
+            # A flat axis (a plane, a thin plate) has no extent to fit; leave it alone rather than
+            # divide by it.
+            fitted.append(1.0)
+            continue
+        fitted.append(float(want) / float(have))
+    return tuple(fitted)  # type: ignore[return-value]
+
+
 def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
     """Place the scene's dressing: a box, or the vendored mesh it names.
 
@@ -422,6 +447,10 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
         # Furniture on a wall remains a bad idea; that is a layout decision, and it belongs to the
         # layout rather than to a condition in this loop.
         local = prop_asset_for(item["asset"]) if item.get("asset") else None
+        # What the asset measures in its own units, or None when nothing measured it.  None is not
+        # a failure here: the item is still drawn as its box, and test_bao_scenes fails the scene
+        # that references an unmeasured prop, so the absence cannot pass unnoticed.
+        measured = sc.PROP_MEASUREMENTS.get(os.path.basename(local)) if local else None
         if local:
             try:
                 # Reference the prop onto an Xform child of the box:
@@ -438,19 +467,30 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 proxy_schema = UsdGeom.Xform.Define(stage, f"{path}/prop")
                 proxy_prim = proxy_schema.GetPrim()
                 proxy_prim.GetReferences().AddReference(local)
-                # An asset authored in centimetres is scaled to the metres this room is built in.
-                # This is not cosmetic: the packing table measures 247.36 in its own units, and a
-                # reference with no scale factor draws it 247 m long -- through the walls and over
-                # the whole corridor.  The factor is looked up per ASSET, because the same prop is
-                # scaled the same way wherever it stands, and it is recorded in the item's report
-                # line so a frame that is the wrong size can be traced to the number that caused it.
-                scale = float(sc.ASSET_SCALE.get(os.path.basename(local), 1.0))
-                if scale != 1.0:
-                    UsdGeom.Xformable(proxy_prim).AddScaleOp().Set(Gf.Vec3f(scale, scale, scale))
+                # The reference is scaled to FIT the declared box, per axis.  Two things make this
+                # necessary rather than tidy:
+                #
+                #  * the library is not in one unit.  Part of it is authored in centimetres with no
+                #    metersPerUnit metadata, so the packing table measures 247.3647 in its own
+                #    units -- 2.47 m of furniture.  Unscaled it draws the length of the room.
+                #  * a prop drawn larger than its declared box sticks out of the volume every
+                #    clearance and occlusion check reasons about, which is clipping by
+                #    construction.  Fitting the prop to the box removes that class of defect: the
+                #    declared size is what is drawn, so what the checks cleared is what is seen.
+                #
+                # Per axis, not uniform, because a prop whose proportions differ from its declared
+                # box would otherwise still overhang one axis.  The cost is that a badly declared
+                # box distorts the prop, which is visible and therefore fixable; an overhanging
+                # mesh is not visible until it is inside a wall.
+                scale = _fit_scale(item, measured)
+                if any(abs(s - 1.0) > 1e-9 for s in scale):
+                    world_scale = sc.to_world_size(scale)
+                    UsdGeom.Xformable(proxy_prim).AddScaleOp().Set(
+                        Gf.Vec3f(*world_scale))
                 _disable_collision(proxy_prim)
                 record["used_asset"] = os.path.basename(local)
                 record["reference"] = local
-                record["asset_scale"] = scale
+                record["fit_scale"] = scale
                 # Hide the clearance box now that there is something real inside it.  Deactivated
                 # rather than deleted, so the volume the fixture checks reason about still exists
                 # on the stage and can be inspected; USD does not draw an inactive prim.
