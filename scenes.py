@@ -919,15 +919,15 @@ def _install_dressing() -> None:
         # fir 6.03 m; declared here at 1.6 m and 1.55 m because the ceiling is 3 m and the first
         # attempt put a 2.91 m sapling in a 16 m corridor, which read as a tree growing through the
         # roof rather than as planting.  room_fit keeps each one's own proportions.
-        _dressing_floor("tree_conifer", (12.4, 0.00, 2.05), (0.6776, 1.6000, 0.6667), DRESSING_GREEN,
+        _dressing_floor("tree_conifer", (12.4, 0.00, 2.05), (1.0164, 2.4000, 1.0001), DRESSING_GREEN,
                         BUCKET_ASSETS + "/Assets/Vegetation/Trees/Chinese_Juniper.usd",
-                        room_fit=0.628877),
-        _dressing_floor("tree_fir", (14.6, 0.00, -2.05), (0.7775, 1.5500, 0.7126), DRESSING_GREEN,
+                        room_fit=0.943315),
+        _dressing_floor("tree_fir", (14.6, 0.00, -2.05), (1.1537, 2.3000, 1.0574), DRESSING_GREEN,
                         BUCKET_ASSETS + "/Assets/Vegetation/Trees/Douglas_Fir.usd",
-                        room_fit=0.257207),
-        _dressing_floor("tree_sapling", (10.8, 0.00, -2.20), (0.9593, 1.7000, 0.9638), DRESSING_WOOD,
+                        room_fit=0.381663),
+        _dressing_floor("tree_sapling", (10.8, 0.00, -2.20), (1.2415, 2.2000, 1.2472), DRESSING_WOOD,
                         BUCKET_ASSETS + "/Assets/Vegetation/Trees/Elm_Sapling.usd",
-                        room_fit=0.550677),
+                        room_fit=0.712641),
     )
 
     # The supermarket: shelving either side, a checkout and produce behind the agent.
