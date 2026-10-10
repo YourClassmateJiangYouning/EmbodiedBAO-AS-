@@ -6,7 +6,7 @@ to look like an everyday place, and the five repeats of a (scene, model, level) 
 five different markers rather than five identical ones.  **Stage 2** is the memory/note
 experiment (``memory_protocol.py``, spec in ``STAGE23_DESIGN.md``).  **Stage 3** is the
 follow-up phases of that same memory experiment -- a second passage back through a narrow
-opening and a wide-then-narrow control -- and ``STAGE23_DESIGN.md`` §10 lists both under
+opening and a wide-then-narrow control -- and ``STAGE23_DESIGN.md`` 搂10 lists both under
 "explicitly not doing".  It is NOT the scene-variant matrix: those ten variants change the
 marker, the far wall, the floor and the prompt, so they are Stage 1 variables, and they
 live in ``STAGE1_SCENE_VARIANTS.md``.
@@ -72,24 +72,6 @@ MARKER_THICKNESS_M = 0.02
 # opening, which is 1.14 m wide, so the marker keeps the property the design relies on: it is an
 # object that would pass through the aperture rather than one that could not.  All ten shapes
 # are derived from SHAPE_HALF_M below, so they scale with it and no shape definition changes.
-
-# How much self-lit colour the marker is given, as a multiplier on its own RGB.  Zero would
-# leave it purely lit by the room, which is where the 47-69 RGB shortfall comes from.
-#
-# This is the one brightening lever that does not touch the lights, and it has to be the one
-# used: the eight interior lights are global, stage1.1 already measures 137.6 against the
-# 130-160 acceptance range in environment.py, and the 660 committed episodes were rendered
-# under exactly those lights.  Raising intensity would push the baseline toward the washed-out
-# signature the same file records (mean 220 with std 22.7) and would invalidate the comparison.
-#
-# displayColor is NOT changed, so the colour a marker is authored with stays the exact palette
-# value the uniqueness check compares numerically; this only adds emission on top of it.
-#
-# The value is a starting point chosen to be visible without saturating: at 0.45 the red marker
-# (0.85, 0.15, 0.12) gains about (0.38, 0.07, 0.05), i.e. roughly +97/+17/+13 out of 255, which
-# is the same order as the 47-69 shortfall being corrected.  It is measured, not admired: rerun
-# the slot-1 eye frame and compare the closest-pixel distance against the authored colour.
-MARKER_EMISSIVE_GAIN = 0.45
 
 # The far wall's inner face, and where the plate sits relative to it.
 #

@@ -87,16 +87,6 @@ def parse_args() -> argparse.Namespace:
              "default existed because a material fetched from its URL arrived without shaders "
              "on a machine whose material-library cache is not writable.",
     )
-    parser.add_argument(
-        "--emissive_gain", type=float, default=None,
-        help="Override scenes.MARKER_EMISSIVE_GAIN for this render only.  The marker's "
-             "self-lit component is authored on the stage as inputs:emissiveColor and the "
-             "material is correctly bound, yet the rendered pixels barely differ from before "
-             "it existed.  Two renders of one slot, `--emissive_gain 0` and `--emissive_gain 4`, "
-             "settle whether the value reaches the renderer at all: if the two frames are "
-             "identical the attribute is being ignored, and if they differ the effect is real "
-             "and merely small.  Guessing between those cost a round trip already.",
-    )
     return parser.parse_args()
 
 
@@ -211,14 +201,6 @@ def main() -> int:
             print(f"unknown scene {args.scene!r}; expected one of {list(scenes.SCENES)}")
             return 1
 
-        if args.emissive_gain is not None:
-            # Applied to the catalogue before the scene is built, and reported, because a
-            # diagnostic that silently changes a value is a diagnostic whose output cannot be
-            # interpreted afterwards.
-            scenes.MARKER_EMISSIVE_GAIN = float(args.emissive_gain)
-            print(f"[preview] MARKER_EMISSIVE_GAIN overridden to "
-                  f"{scenes.MARKER_EMISSIVE_GAIN} for this render", flush=True)
-
         task = {"headless": True, "scene": args.scene, "level": args.level,
                 "image_size": args.width,
                 "use_mdl": not args.flat_paint,
@@ -270,8 +252,7 @@ def main() -> int:
                     f"marker={marker_info.get('shape')}/{marker_info.get('colour')} "
                     f"parts={marker_info.get('parts')} "
                     f"size={marker_info.get('size_m')} "
-                    f"emissive={tuple(round(c, 3) for c in marker_info.get('emissive', ()))} "
-                    f"emission_ok={marker_info.get('painted')} "
+                    f"painted_ok={marker_info.get('painted')} "
                     f"error={marker_info.get('paint_error') or '-'}\n"
                 )
             print(f"[preview] slot {slot}: {scenes.MARKERS[args.scene][slot - 1]}")

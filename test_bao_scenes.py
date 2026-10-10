@@ -318,15 +318,13 @@ def test_the_episode_count_is_what_the_design_says() -> None:
     print("[ok] 5 scenes x 17 levels x 5 markers x 15 models = 6,375 episodes")
 
 
-def test_the_report_says_the_marker_size_and_whether_the_emission_landed() -> None:
-    """The two things that recently changed must be readable from the run log.
+def test_the_report_says_the_marker_size_and_whether_the_paint_landed() -> None:
+    """The size and the paint result must be readable from the run log.
 
-    The marker's size went to 0.90 m and it gained a self-lit component authored through
-    ``emissiveColor`` -- a pxr attribute that cannot be exercised on this machine, so whether it
-    landed is only knowable from the workstation.  If the report does not carry it, the only way
-    to tell a marker that is dim because the emission failed from one that is dim for some other
-    reason is to look at a picture and guess, which is what this session has twice been wrong
-    about.
+    The marker went to 0.90 m, and a paint that fails would otherwise be visible only as a
+    differently coloured marker in a picture -- which is the kind of thing this session has been
+    wrong about twice.  A self-lit component was tried alongside the size change and removed
+    again; the flag it needed is still worth reporting, because paint() can fail on its own.
 
     format_report() is pure, so this needs no stage.
     """
@@ -335,7 +333,7 @@ def test_the_report_says_the_marker_size_and_whether_the_emission_landed() -> No
     report = {
         "scene": "stage1.2", "label": "warehouse", "slot": 2,
         "marker": {"shape": "hexagon", "colour": "c", "parts": 1,
-                   "size_m": sc.MARKER_SIZE_M, "emissive": (0.04, 0.29, 0.40),
+                   "size_m": sc.MARKER_SIZE_M,
                    "painted": True, "paint_error": ""},
         "materials": {}, "dressing": [], "dressing_count": 0,
     }
@@ -344,11 +342,10 @@ def test_the_report_says_the_marker_size_and_whether_the_emission_landed() -> No
     check(f"{sc.MARKER_SIZE_M:.2f} m" in text,
           f"the marker line does not state the size:\n{text}")
     check("painted True" in text,
-          f"the marker line does not say whether painting and emission succeeded:\n{text}")
+          f"the marker line does not say whether painting succeeded:\n{text}")
 
     # And a failure has to be visible AS a failure, WITH its reason.  Two render round trips were
-    # spent on "painted False" alone: first the attribute was on the wrong schema, then the
-    # material path failed, and both times the except had discarded the answer.
+    # spent on "painted False" alone, because the except had discarded the answer.
     report["marker"]["painted"] = False
     report["marker"]["paint_error"] = "AttributeError: 'X' object has no attribute 'Y'"
     failed = scene_builder.format_report(report)
@@ -356,8 +353,8 @@ def test_the_report_says_the_marker_size_and_whether_the_emission_landed() -> No
           "a marker whose paint failed reports the same as one that succeeded")
     check("no attribute 'Y'" in failed,
           f"the failure is reported without its reason, so it cannot be acted on:\n{failed}")
-    print("[ok] the marker report carries its size, whether the emission was authored, and "
-          "the reason when it was not")
+    print("[ok] the marker report carries its size, whether the paint landed, and the reason "
+          "when it did not")
 
 
 def test_every_colour_is_used_at_least_once() -> None:
@@ -1199,50 +1196,20 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
           f"{len(measured)} measurement(s) are recorded")
 
 
-def test_the_emissive_shader_id_is_a_plain_string() -> None:
-    """The UsdPreviewSurface id is set with a string, which is what the machine accepted.
+def test_the_marker_assertion_counts_parts_not_children() -> None:
+    """set_marker_slot must count marker PARTS, not whatever sits under /World/GoalMarker.
 
-    This is a source scan, not a call: the material path needs pxr and cannot run here.  It pins
-    the one thing that was measured on the workstation after two failed render round trips:
-
-        shader.CreateIdAttr().Set("UsdPreviewSurface")      -> worked, "step ok  Set(...)"
-        shader.CreateIdAttr().Set(Tf.Token("UsdPreviewSurface"))
-                                                            -> AttributeError: module 'pxr.Tf'
-                                                               has no attribute 'Token'
-
-    so pxr.Tf on that machine is a real module without a Token, and the binding converts the
-    string itself.  If someone reintroduces the token wrapper, the emission silently stops
-    working again -- it is reported as painted False, but only after a render.
-    """
-    import re
-
-    source = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                               "scene_builder.py"), encoding="utf-8").read()
-    # Comments are stripped first.  The lesson being pinned is stated in a comment right there in
-    # that file, and naming the wrong spelling in prose is not the same as calling it -- an
-    # earlier version of this check reported its own explanation.
-    code = "\n".join(line.split("#", 1)[0] for line in source.splitlines())
-    check('CreateIdAttr().Set("UsdPreviewSurface")' in code,
-          'scene_builder.py does not set the shader id with the plain string "UsdPreviewSurface"')
-    check(not re.search(r"\bTf\.", code),
-          "scene_builder.py calls into pxr.Tf, which the workstation showed has no Token")
-    check("import Gf, Sdf, Tf" not in code,
-          "scene_builder.py imports Tf again; it is not needed for the shader id")
-    print("[ok] the emissive shader id is a plain string, and no code reaches into pxr.Tf")
-
-
-def test_a_marker_part_and_its_material_have_distinguishable_names() -> None:
-    """The marker's material must not look like a marker part.
-
-    environment.set_marker_slot() asserts that exactly one marker is on the far wall before it
-    trusts the scene's uniqueness premise.  It used to do that by counting the children of
-    /World/GoalMarker, and paint() used to put each part's material at "<part path>_emissive" --
-    a SIBLING of the part.  So after the emission was added, the first full render died with
+    The assertion exists to refuse a scene with two markers on the far wall, because two markers
+    means two colours and the uniqueness premise the prompts rest on is void.  It used to do that
+    by counting the path's children, which was the same thing only while the marker was its parts
+    and nothing else.  When a self-lit variant added one material per part at "<part>_emissive",
+    a sibling of the part, the first full render died with
 
         expected 1 marker part(s) on the far wall after replacing it, found 2
 
-    which is exactly the failure the assertion exists to catch, reported about something that was
-    not a second marker.  The two names are now distinguishable and the count is of parts.
+    which is the right failure reported about the wrong thing.  The material is gone again, but
+    the count is now by name prefix and the message names what it found, so the next thing added
+    under that path cannot masquerade as a second marker.
 
     This is a source scan: the geometry and the assertion both need pxr, so the relationship is
     pinned where it is written.
@@ -1251,24 +1218,22 @@ def test_a_marker_part_and_its_material_have_distinguishable_names() -> None:
 
     part = scene_builder.MARKER_PART_PREFIX
     material = scene_builder.MARKER_MATERIAL_PREFIX
+    check(part.startswith("part") and material.startswith("material"),
+          "the marker name constants no longer match the names build_marker writes")
     check(not material.startswith(part),
           f"the material prefix {material!r} starts with the part prefix {part!r}, so a count of "
-          f"parts would include materials again")
-    check(part.startswith("part") and material.startswith("material"),
-          "the marker prefixes no longer match the names build_marker writes")
+          f"parts would include materials")
 
     source = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                "scene_builder.py"), encoding="utf-8").read()
     check('f"{MARKER_ROOT}/part{index}"' in source,
           "build_marker no longer names its parts from MARKER_ROOT and MARKER_PART_PREFIX")
-    check("material_path=f\"{MARKER_ROOT}/material{index}\"" in source,
-          "build_marker no longer passes a material path that is distinguishable from a part")
 
     env_source = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                    "environment.py"), encoding="utf-8").read()
     check("startswith(scene_builder.MARKER_PART_PREFIX)" in env_source,
           "set_marker_slot no longer counts parts by their prefix, so it is counting children "
-          "again and a material will be read as a second marker")
+          "again and anything else under /World/GoalMarker would read as a second marker")
 
     # Every shape has to produce at least one part, or the count would be zero and the assertion
     # would compare 0 against 0 and call that agreement.
@@ -1311,9 +1276,8 @@ def main() -> int:
         test_no_module_asks_pxr_for_something_it_does_not_have,
         test_no_module_calls_a_scene_helper_that_does_not_exist,
         test_a_declared_size_is_the_size_of_the_prop_it_names,
-        test_the_report_says_the_marker_size_and_whether_the_emission_landed,
-        test_the_emissive_shader_id_is_a_plain_string,
-        test_a_marker_part_and_its_material_have_distinguishable_names,
+        test_the_report_says_the_marker_size_and_whether_the_paint_landed,
+        test_the_marker_assertion_counts_parts_not_children,
     ]
     failed = 0
     for test in tests:

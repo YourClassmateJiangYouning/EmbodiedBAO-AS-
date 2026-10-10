@@ -58,52 +58,36 @@ def prim_name(text: Any) -> str:
     )
 
 
-def paint(stage: Any, prim_path: str, rgb: Sequence[float],
-          emissive: Optional[Sequence[float]] = None,
-          material_path: Optional[str] = None) -> Tuple[bool, str]:
-    """Paint a prim with USD's own displayColor, and optionally make it self-lit.
+def paint(stage: Any, prim_path: str, rgb: Sequence[float]) -> Tuple[bool, str]:
+    """Paint a prim with USD's own displayColor, and report whether it worked.
 
     displayColor is the primitive that needs no shader graph, no material and no download: it is
     respected by RTX for unbound geometry, and it holds the exact catalogue colour -- which
-    matters because the marker's colour is the one thing this experiment varies and the uniqueness
-    check compares colours numerically.  Two attempts at building a UsdPreviewSurface by hand
-    failed on the lab machine before it was adopted for the *colour*.
+    matters, because the marker's colour is the one thing this experiment varies and the
+    uniqueness check compares colours numerically.
 
-    ``emissive`` cannot go on the geometry, and that is measured rather than assumed.  An earlier
-    version of this function called CreateEmissiveColorAttr() on the gprim -- UsdGeomGprim has no
-    such attribute -- and the render log showed the consequence plainly:
+    The tuple return carries the reason on failure.  A bare boolean cost two render round trips:
+    the log said only "painted False", which is a fact nobody can act on.
 
-        [scene] marker: hexagon in k (1 mesh part(s), size 0.90 m, emissive (0.45, 0.18, 0.315),
-                                       painted False)
+    A note kept from a self-lit variant that was built, measured, and then removed on 2026-10-10.
+    Two facts about that path are worth keeping even though the code is gone:
 
-    The values were right and nothing was self-lit.  emissiveColor is an INPUT OF A
-    UsdPreviewSurface SHADER, so this builds that shader, connects its surface output to a
-    material's surface terminal, and binds the material -- the same UsdShade path that the
-    material resolution in apply_scene() already uses.
+      * emissiveColor is an input of a SHADER, not an attribute of geometry.  Putting it on the
+        gprim fails, and the failure is quiet: the render log showed "emissive (0.45, 0.18,
+        0.315), painted False" -- the values right and nothing self-lit.
+      * the shader id takes a plain STRING.  Wrapping it in a token raises
+        "module 'pxr.Tf' has no attribute 'Token'" on the lab machine, whose pxr.Tf has no token
+        type at all; the plain string was measured working there.
 
-    The shader id is set with a plain string, which the workstation settled after a second failed
-    render.  The first spelling wrapped it in a token from pxr.Tf and raised:
-
-        AttributeError: module 'pxr.Tf' has no attribute 'Token'
-
-    for a module that really is present (omni.usd.libs-*/pxr/Tf/_tf.so) and really has no token
-    type -- its only "oken" members are DumpTokenStats and two test helpers.  A probe on the same
-    machine then ran this material path end to end and reported "step ok  Set('UsdPreviewSurface')",
-    so the binding converts the string itself and the import is not needed at all.
-
-    The emission exists because of a measured problem: the textured scenes render dimmer than the
-    plain baseline the marker's size was chosen in -- eye-frame means 137.6 for stage1.1 against
-    81-112 for 1.2-1.5, next to environment.py's own 130-160 acceptance range -- so the closest
-    pixel to the authored colour sat 47-69 away in RGB.  The lights are not a lever here: they are
-    global, stage1.1 is already inside the range, and the response exponent is about 0.8, so it
-    overshoots.  A per-prim self-lit term brightens the marker and nothing else.
-
-    Returns whether it worked.  With ``emissive`` given, that answer covers the material too, and
-    False is a real state -- the marker drawn but not self-lit -- which is why the flag is
-    reported rather than assumed.
+    It was removed because it did not earn its keep.  A controlled comparison (emissive gain 0
+    against 4, same slot, same camera) showed the emission did reach the renderer -- the marker's
+    core went from grey (219, 219, 219) to pink (241, 216, 233) at the working gain -- but the
+    change was small at the gain that was actually used, and raising it drove the marker to
+    near-white (246, 240, 243), which would falsify the colour word the prompt names.  The 0.90 m
+    size is the change that mattered, and the marker is painted flat again.
     """
     try:
-        from pxr import Gf, Sdf, UsdGeom, UsdShade, Vt
+        from pxr import Gf, UsdGeom, Vt
 
         prim = stage.GetPrimAtPath(prim_path)
         gprim = UsdGeom.Gprim(prim)
@@ -111,35 +95,7 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float],
             return False, "the prim is not a Gprim"
         gprim.CreateDisplayColorAttr().Set(Vt.Vec3fArray(
             [Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2]))]))
-        if emissive is None:
-            return True, ""
-        try:
-            # The material goes where the CALLER says, and the caller passes a sibling name that
-            # cannot be mistaken for a marker part.  Deriving it from the prim path here produced
-            # "<part>_emissive" as another child of /World/GoalMarker, which set_marker_slot
-            # counted as a second marker and refused to continue over.
-            where = material_path or f"{prim_path}_material"
-            material = UsdShade.Material.Define(stage, where)
-            shader = UsdShade.Shader.Define(stage, f"{where}/surface")
-            # A plain STRING is the right argument, and this is measured rather than assumed:
-            # the token-wrapping spelling was tried on the workstation and raised there.  See
-            # this function's docstring for what it reported.  The Tf import went with it, so
-            # there is no longer a name here that could be the wrong one.
-            shader.CreateIdAttr().Set("UsdPreviewSurface")
-            shader.CreateInput("diffuseColor", Sdf.ValueTypeNames.Color3f).Set(
-                Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2])))
-            shader.CreateInput("emissiveColor", Sdf.ValueTypeNames.Color3f).Set(
-                Gf.Vec3f(float(emissive[0]), float(emissive[1]), float(emissive[2])))
-            material.CreateSurfaceOutput().ConnectToSource(shader.ConnectableAPI(), "surface")
-            UsdShade.MaterialBindingAPI.Apply(prim).Bind(material)
-            return True, ""
-        except Exception:  # noqa: BLE001
-            # The REASON is returned, not just a False.  Two rounds were spent guessing why the
-            # emission did not land -- first the attribute was on the wrong schema, then the
-            # token spelling -- and in both cases the bare except had thrown the answer
-            # away.  "painted False" without a why is what forced a render round trip to learn
-            # nothing.
-            return False, traceback.format_exc().strip().splitlines()[-1]
+        return True, ""
     except Exception:  # noqa: BLE001
         # Reported through the return value, not raised: one attribute that cannot be authored
         # should not stop a scene from being built.
@@ -251,27 +207,21 @@ def build_marker(stage: Any, scene: str, slot: int) -> Dict[str, Any]:
     ``build_marker(stage, "stage1.1", 1)`` reproduces it.  Slot numbering is 1-based to match
     the round numbering in the logs.
 
-    The marker also gets a self-lit component, scaled from its own RGB by
-    scenes.MARKER_EMISSIVE_GAIN.  See paint() for why brightness is handled here rather than by
-    the lights, and the constant for the measurement behind the value.  The report carries
-    whether the emission was actually authored, so a frame that comes back dim can be told
-    apart from a scene where the property never landed.
+    A self-lit component was tried here and removed: see paint() for what it measured and why the
+    0.90 m size is the change that earned its place instead.
 
-    Part names are ``part<N>`` and the material for a part is ``material<N>``, both children of
-    /World/GoalMarker.  The distinction matters and was learned the hard way: paint() used to put
-    the material at ``<part path>_emissive``, which is a SIBLING of the part, so "a child of
-    /World/GoalMarker" stopped being the same set as "a marker part" and set_marker_slot -- whose
-    whole job is to assert there is exactly one marker on the wall -- counted the material as a
-    second marker and refused to continue.  Keeping the two names distinguishable is what lets
-    that assertion stay strict about geometry.
+    Part names are ``part<N>`` and a material for a part, when one exists, is ``material<N>``,
+    both children of /World/GoalMarker.  The distinction matters and was learned the hard way: an
+    earlier paint() put the material at ``<part path>_emissive``, which is a SIBLING of the part,
+    so "a child of /World/GoalMarker" stopped being the same set as "a marker part" and
+    set_marker_slot -- whose whole job is to assert there is exactly one marker on the wall --
+    counted the material as a second marker and refused to continue.
     """
     entries = sc.MARKERS[scene]
     if not 1 <= slot <= len(entries):
         raise ValueError(f"{scene} has {len(entries)} markers, asked for slot {slot}")
     shape, colour_key = entries[slot - 1]
     rgb = sc.COLOURS[colour_key]
-    gain = float(getattr(sc, "MARKER_EMISSIVE_GAIN", 0.0))
-    emissive = tuple(min(1.0, float(channel) * gain) for channel in rgb)
     centre = (sc.MARKER_X_M, sc.MARKER_Y_M, sc.MARKER_Z_M)
     paths = []
     painted = True
@@ -279,8 +229,7 @@ def build_marker(stage: Any, scene: str, slot: int) -> Dict[str, Any]:
     for index, polygon in enumerate(sc.SHAPES[shape]):
         prim = _prism(stage, f"{MARKER_ROOT}/part{index}", polygon, centre,
                       sc.MARKER_THICKNESS_M)
-        ok, why = paint(stage, str(prim.GetPath()), rgb, emissive,
-                        material_path=f"{MARKER_ROOT}/material{index}")
+        ok, why = paint(stage, str(prim.GetPath()), rgb)
         if not ok and not paint_error:
             paint_error = why
         painted = ok and painted
@@ -289,7 +238,7 @@ def build_marker(stage: Any, scene: str, slot: int) -> Dict[str, Any]:
             "rgb": tuple(rgb), "parts": len(paths),
             "part_names": tuple(f"part{index}" for index in range(len(paths))),
             "size_m": float(sc.MARKER_SIZE_M), "painted": painted,
-            "paint_error": paint_error, "emissive": emissive}
+            "paint_error": paint_error}
 
 
 def _bind(stage: Any, prim_path: str, material: Any) -> bool:
@@ -684,18 +633,14 @@ def format_report(report: Dict[str, Any]) -> str:
     """One line per fact, for the run log."""
     lines = [f"[scene] {report['scene']} ({report['label']}) marker slot {report['slot']}"]
     marker = report["marker"]
-    # The size and the paint result are printed because they are the two things that were
-    # recently changed and cannot be checked from the numbers anywhere else in the log: the
-    # marker was enlarged to 0.90 m and given a self-lit component, and "the emission did not
-    # land" is exactly the failure that would otherwise be diagnosed by eye from a dim frame.
+    # The size and the paint result are printed because both changed recently and neither can be
+    # checked from any other number in the log: the marker went to 0.90 m, and "painted False" is
+    # otherwise a failure that has to be diagnosed by eye from a dim frame.
     lines.append(f"[scene] marker: {marker['shape']} in {marker['colour']} "
                  f"({marker['parts']} mesh part(s), size "
-                 f"{marker.get('size_m', 0.0):.2f} m, emissive "
-                 f"{tuple(round(c, 3) for c in marker.get('emissive', ())) or '-'}, "
-                 f"painted {marker.get('painted')}"
+                 f"{marker.get('size_m', 0.0):.2f} m, painted {marker.get('painted')}"
                  # The reason a paint failed, because "painted False" alone cost two render
-                 # round trips: first the attribute was on the wrong schema, then the material
-                 # path failed, and both times the except had discarded the answer.
+                 # round trips: the except had discarded the answer both times.
                  + (f" -- {marker['paint_error']}" if marker.get("paint_error") else "")
                  + ")")
     for surface, info in report["materials"].items():

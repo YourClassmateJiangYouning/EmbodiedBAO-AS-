@@ -1077,14 +1077,19 @@ a 2 m horizontal bar instead of a vertical post.
   input, and dim: the textured scenes' eye frames average 81-112 against `environment.py`'s own
   130-160 acceptance range (stage1.1, the plain baseline, is 137.6 and stays inside it). All ten
   shapes are derived from `SHAPE_HALF_M`, so they scaled together and no shape definition
-  changed. The marker also gets a self-lit component, `scenes.MARKER_EMISSIVE_GAIN` (0.45) times
-  its own RGB, which is the only brightening lever that does not touch the lights — the lights are
-  global, stage1.1 is already in range, and raising them would move toward the washed-out
-  signature (mean 220, std 22.7) that `environment.py` records. The colour is unaffected:
-  `displayColor` is still the exact palette value, so the numeric uniqueness check is unchanged.
-  The 660-episode run that used 0.60 m was a **test**, not a reference this design is required to
-  follow, so nothing is kept in step with it; the size lives in one place and a test pins the two
-  constants equal.
+  changed. The 660-episode run that used 0.60 m was a **test**, not a reference this design is
+  required to follow, so nothing is kept in step with it; the size lives in one place and a test
+  pins the two constants equal.
+* **A self-lit marker was built, measured, and removed.** It was reached by authoring a
+  `UsdPreviewSurface` with an `emissiveColor` input, bound per marker part. Comparing gain 0
+  against gain 4 on the same slot showed it did reach the renderer — the marker's core went from
+  grey (219, 219, 219) to pink (241, 216, 233) — but at the gain that was used the change was
+  small, and raising it drove the marker to near-white (246, 240, 243), which would falsify the
+  colour word the prompt names. The marker is painted flat again and `displayColor` is the exact
+  palette value, so the numeric uniqueness check is unchanged. Two facts from that path are kept
+  in `scene_builder.paint`'s docstring because they cost round trips: `emissiveColor` is a shader
+  input and not a geometry attribute, and the shader id takes a plain string rather than a token
+  (`pxr.Tf` on the lab machine has no token type).
 * **Scene dressing is mostly boxes.** Every one of the 33 dressing items is placed as a box of
   its declared size, and three of them additionally reference a vendored `.usd` mesh:
   `stage1.2`'s `pallets` → `Pallet/pallet.usd`, `stage1.2`'s `klt_bins` →
