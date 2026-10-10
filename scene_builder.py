@@ -427,6 +427,38 @@ def fit_scale_from_extent(proxy_prim: Any, declared: Sequence[float]) -> Tuple[f
     return tuple(fitted)  # type: ignore[return-value]
 
 
+def apply_scale(prim: Any, scale: Sequence[float]) -> bool:
+    """Set a scale on a prim, REUSING an authored xformOp:scale if it has one.
+
+    AddScaleOp() raises when the op already exists:
+
+        Error in 'UsdGeomXformable::AddXformOp' ... : 'The xformOp 'xformOp:scale' already exists
+        in xformOpOrder [[xformOp:translate, xformOp:rotateXYZ, xformOp:scale]]'
+
+    and that is not hypothetical: the packing table and one corrugated carton ship with their own
+    scale op, so referencing them threw while the same asset referenced through a wrapper without
+    that op worked -- the same asset, in the same scene list, behaving differently.  An authored
+    scale is not a reason to refuse to fit: the item is fitted to its declared box, and setting the
+    existing op is how that is expressed when the asset already has one.
+
+    Returns whether a scale was written.
+    """
+    from pxr import Gf, UsdGeom
+
+    xformable = UsdGeom.Xformable(prim)
+    existing = None
+    for op in xformable.GetOrderedXformOps():
+        if op.GetOpType() == UsdGeom.XformOp.TypeScale:
+            existing = op
+            break
+    value = Gf.Vec3f(float(scale[0]), float(scale[1]), float(scale[2]))
+    if existing is not None:
+        existing.Set(value)
+        return True
+    xformable.AddScaleOp().Set(value)
+    return True
+
+
 def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
     """Place the scene's dressing: a box, or the vendored mesh it names.
 
@@ -526,8 +558,7 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                     # order -- two transforms disagreeing about the same prop.
                     world_scale = (scale if item["mount"] != "floor"
                                    else sc.to_world_size(scale))
-                    UsdGeom.Xformable(proxy_prim).AddScaleOp().Set(
-                        Gf.Vec3f(*world_scale))
+                    apply_scale(proxy_prim, world_scale)
                 _disable_collision(proxy_prim)
                 record["used_asset"] = os.path.basename(local)
                 record["reference"] = local
