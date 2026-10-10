@@ -53,3 +53,13 @@ diag_pxr.py
 !assets/isaac/
 assets/isaac/**/.thumbs/
 
+# Everything vendored from OUTSIDE Assets/Isaac: the vegetation and NVIDIA's outdoor environment,
+# which the park needs because assets/isaac contains no plant of any kind.  This exception is easy
+# to forget and its symptom is silent -- the files sit on the machine that fetched them, the
+# catalogue references them, and every render on a fresh clone draws the fallback box instead.  It
+# was in fact forgotten: the park's eleven props came back as "0 from assets" on the lab machine
+# while measuring perfectly well here.  test_bao_assets checks that a referenced asset is vendored,
+# and that check reads the working tree, so it cannot catch a file git was told to ignore.
+!assets/bucket/
+assets/bucket/**/.thumbs/
+
