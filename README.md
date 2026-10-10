@@ -1071,6 +1071,23 @@ a 2 m horizontal bar instead of a vertical post.
   eleven names that still have to be confirmed by the same listing, and
   `test_bao_scenes.py` fails a scene that claims verification while naming a URL outside
   the Isaac asset root. Unconfirmed is not the same as wrong — it is unverified.
+* **The marker is now 0.90 m, and the 660 committed episodes used 0.60 m.** `scenes.MARKER_SIZE_M`
+  went from 0.60 to 0.90 (1.5x, so 1.5x the apparent edge and 2.25x the area) because the
+  rendered frames measured the plate at only 6-12 px of the 512 px input, and dim: the textured
+  scenes' eye frames average 81-112 against `environment.py`'s own 130-160 acceptance range
+  (stage1.1, the plain baseline, is 137.6 and stays inside it). All ten shapes are derived from
+  `SHAPE_HALF_M`, so they scaled together and no shape definition changed. The marker also gets a
+  self-lit component, `scenes.MARKER_EMISSIVE_GAIN` (0.45) times its own RGB, which is the only
+  brightening lever that does not touch the lights — the lights are global, stage1.1 is already
+  in range, and raising them would move the baseline toward the washed-out signature (mean 220,
+  std 22.7) that `environment.py` records.
+  **`environment.GOAL_MARKER_SIZE` deliberately stays at 0.60 m**: it is the default those 660
+  episodes were rendered with, and changing it would have moved them. Instead `capture_scenes.py`
+  passes `goal_marker_height=scenes.MARKER_SIZE_M` through the task dict, which
+  `environment._create_goal_marker` already supports. So the old baseline remains reproducible,
+  but **new episodes are not directly comparable with the committed 660** — a 0.90 m stimulus is
+  a different stimulus. The colour is unaffected: `displayColor` is still the exact palette value,
+  so the numeric uniqueness check is unchanged.
 * **Scene dressing is mostly boxes.** Every one of the 33 dressing items is placed as a box of
   its declared size, and three of them additionally reference a vendored `.usd` mesh:
   `stage1.2`'s `pallets` → `Pallet/pallet.usd`, `stage1.2`'s `klt_bins` →

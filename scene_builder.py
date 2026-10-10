@@ -49,7 +49,8 @@ def prim_name(text: Any) -> str:
     )
 
 
-def paint(stage: Any, prim_path: str, rgb: Sequence[float]) -> bool:
+def paint(stage: Any, prim_path: str, rgb: Sequence[float],
+          emissive: Optional[Sequence[float]] = None) -> bool:
     """Paint a prim with USD's own displayColor.  No shader graph, no material, no download.
 
     Two attempts at building a UsdPreviewSurface by hand both failed on the lab machine: the
@@ -58,6 +59,16 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float]) -> bool:
     primitive that needs neither, it is respected by RTX for unbound geometry, and it holds
     the exact catalogue colour -- which matters because the marker's colour is the one thing
     this experiment varies and the uniqueness check compares colours numerically.
+
+    ``emissive`` adds a constant self-lit component on top, and it exists because of a measured
+    problem rather than a preference.  The textured scenes render dimmer than the plain baseline
+    the marker's size was chosen in -- eye-frame means of 137.6 for stage1.1 against 81-112 for
+    1.2-1.5, against environment.py's own 130-160 acceptance range -- and in the frames the
+    marker's closest pixel sits 47-69 away in RGB from the colour it was authored with.  A
+    self-lit term is the ONLY lever that raises the marker without touching the lights: the
+    lights are global, stage1.1 is already inside the acceptance range, and the 660 committed
+    episodes were rendered with those lights.  displayColor stays exactly the catalogue colour,
+    so the numeric uniqueness check is unaffected; what changes is how bright that colour lands.
 
     Returns whether it worked, so callers can report it rather than assume it.
     """
@@ -70,6 +81,12 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float]) -> bool:
             return False
         gprim.CreateDisplayColorAttr().Set(Vt.Vec3fArray(
             [Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2]))]))
+        if emissive is not None:
+            # emissiveColor is a plain Vec3f, not the array displayColor wants.  Its exception
+            # is NOT swallowed: the caller decides, because a marker that silently lost its
+            # brightness is the failure this parameter was added to fix.
+            gprim.CreateEmissiveColorAttr().Set(
+                Gf.Vec3f(float(emissive[0]), float(emissive[1]), float(emissive[2])))
         return True
     except Exception:  # noqa: BLE001
         return False
@@ -177,21 +194,32 @@ def build_marker(stage: Any, scene: str, slot: int) -> Dict[str, Any]:
     The existing environment builds a red square; that is marker 1 of the baseline scene, so
     ``build_marker(stage, "stage1.1", 1)`` reproduces it.  Slot numbering is 1-based to match
     the round numbering in the logs.
+
+    The marker also gets a self-lit component, scaled from its own RGB by
+    scenes.MARKER_EMISSIVE_GAIN.  See paint() for why brightness is handled here rather than by
+    the lights, and the constant for the measurement behind the value.  The report carries
+    whether the emission was actually authored, so a frame that comes back dim can be told
+    apart from a scene where the property never landed.
     """
     entries = sc.MARKERS[scene]
     if not 1 <= slot <= len(entries):
         raise ValueError(f"{scene} has {len(entries)} markers, asked for slot {slot}")
     shape, colour_key = entries[slot - 1]
     rgb = sc.COLOURS[colour_key]
+    gain = float(getattr(sc, "MARKER_EMISSIVE_GAIN", 0.0))
+    emissive = tuple(min(1.0, float(channel) * gain) for channel in rgb)
     centre = (sc.MARKER_X_M, sc.MARKER_Y_M, sc.MARKER_Z_M)
     paths = []
+    painted = True
     for index, polygon in enumerate(sc.SHAPES[shape]):
         prim = _prism(stage, f"/World/GoalMarker/part{index}", polygon, centre,
                       sc.MARKER_THICKNESS_M)
-        paint(stage, str(prim.GetPath()), rgb)
+        painted = paint(stage, str(prim.GetPath()), rgb, emissive) and painted
         paths.append(prim)
     return {"scene": scene, "slot": slot, "shape": shape, "colour": colour_key,
-            "rgb": tuple(rgb), "parts": len(paths)}
+            "rgb": tuple(rgb), "parts": len(paths),
+            "size_m": float(sc.MARKER_SIZE_M), "painted": painted,
+            "emissive": emissive}
 
 
 def _bind(stage: Any, prim_path: str, material: Any) -> bool:

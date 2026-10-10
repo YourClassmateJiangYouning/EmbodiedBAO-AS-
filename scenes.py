@@ -24,7 +24,7 @@ collision set is untouched) are all statements about numbers, not about pixels.
 
 Why the constraints exist, in one place:
 
-* **A marker is the task.**  0.60 m bounding size, at x = 16.0, z = 0, centre height 1.40 m,
+* **A marker is the task.**  0.90 m bounding size, at x = 16.0, z = 0, centre height 1.40 m,
   on the far wall, for all twenty-five of them, so that the distance cue is the same size in
   every condition.  Only shape and colour change.
 * **At 512 px from the start pose the marker is about 20 px wide**, so a ring or a skinny
@@ -51,10 +51,45 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 # the point of varying the marker is to vary its appearance and nothing else.
 # ---------------------------------------------------------------------------
 
-MARKER_SIZE_M = 0.60
+MARKER_SIZE_M = 0.90
 MARKER_Z_M = 0.0
 MARKER_Y_M = 1.40
 MARKER_THICKNESS_M = 0.02
+
+# 0.90 m rather than 0.60 m, at the request that the marker be legible in frames that measured
+# dimmer than the room the size was chosen in.
+# The history is in environment._create_goal_marker and it is the reason this is a considered
+# change rather than a tweak: 0.30 m was tried and rejected for a different reason (a 0.80 m
+# square became a red field at close range), then adopted at 0.60 m because the marker is the
+# TASK and has to be identifiable from the start pose at the 512 px input -- at 0.30 m it was
+# about 10 px there.  Measured from the actual frames, the plate lands at 13-25 px in a 1024 px
+# frame, i.e. 6-12 px at the 512 px the model receives, and its closest pixel sits 47-69 away in
+# RGB from the authored colour because the textured scenes render dimmer than the plain baseline
+# the 0.60 m was tuned against (eye-frame means: 137.6 for stage1.1, but 81-112 for 1.2-1.5,
+# against environment.py's own 130-160 acceptance range).
+#
+# 0.90 m is 1.5x, so the apparent edge grows 1.5x and the area 2.25x.  It still fits the level 0
+# opening, which is 1.14 m wide, so the marker keeps the property the design relies on: it is an
+# object that would pass through the aperture rather than one that could not.  All ten shapes
+# are derived from SHAPE_HALF_M below, so they scale with it and no shape definition changes.
+
+# How much self-lit colour the marker is given, as a multiplier on its own RGB.  Zero would
+# leave it purely lit by the room, which is where the 47-69 RGB shortfall comes from.
+#
+# This is the one brightening lever that does not touch the lights, and it has to be the one
+# used: the eight interior lights are global, stage1.1 already measures 137.6 against the
+# 130-160 acceptance range in environment.py, and the 660 committed episodes were rendered
+# under exactly those lights.  Raising intensity would push the baseline toward the washed-out
+# signature the same file records (mean 220 with std 22.7) and would invalidate the comparison.
+#
+# displayColor is NOT changed, so the colour a marker is authored with stays the exact palette
+# value the uniqueness check compares numerically; this only adds emission on top of it.
+#
+# The value is a starting point chosen to be visible without saturating: at 0.45 the red marker
+# (0.85, 0.15, 0.12) gains about (0.38, 0.07, 0.05), i.e. roughly +97/+17/+13 out of 255, which
+# is the same order as the 47-69 shortfall being corrected.  It is measured, not admired: rerun
+# the slot-1 eye frame and compare the closest-pixel distance against the authored colour.
+MARKER_EMISSIVE_GAIN = 0.45
 
 # The far wall's inner face, and where the plate sits relative to it.
 #

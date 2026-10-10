@@ -62,15 +62,18 @@ def test_every_marker_names_a_real_shape_and_colour() -> None:
 def test_every_shape_fits_the_marker_bounding_box() -> None:
     """The bounding size is the distance cue, so no shape may exceed it.
 
-    A shape that grew beyond 0.60 m would subtend more pixels at the same distance than the
-    others, which would make the five repeats differ in something other than appearance.
+    A shape that grew past the marker's size would subtend more pixels at the same distance than
+    the others, which would make the five repeats differ in something other than appearance.
+    The figures below were measured at 0.60 m and scale with it, which is why they are written
+    as fractions of the size rather than as millimetres.
 
     Measured as the shape's own extent, not as ``|vertex| <= SHAPE_HALF_M``.  Those differ
     for a shape that is anchored on its centroid rather than on the centre of its bounding
-    box, which the arrow is: its span is -0.30..+0.30 but centred 13.2 mm behind the anchor,
-    so its front tip sits at +0.3132 and the vertex form would reject a shape that is
-    exactly the budgeted 0.60 m across.  The extent is what the distance cue depends on, so
-    the extent is what is checked, and each end is allowed half the budget from the anchor.
+    box, which the arrow is: its span is -0.45..+0.45 at the current size but centred 2.2% of
+    that size behind the anchor, so its front tip sits past +SHAPE_HALF_M and the vertex form
+    would reject a shape that is exactly the budgeted size across.  The extent is what the
+    distance cue depends on, so the extent is what is checked, and each end is allowed half the
+    budget from the anchor.
     """
     for name, polygons in sc.SHAPES.items():
         xs = [p[0] for poly in polygons for p in poly]
@@ -86,31 +89,37 @@ def test_every_shape_fits_the_marker_bounding_box() -> None:
               and max(xs) <= sc.SHAPE_HALF_M + sc.MARKER_CLEARANCE_M + 1e-9,
               f"shape {name!r} spans x {min(xs):+.4f}..{max(xs):+.4f}, outside the "
               f"+/-{sc.SHAPE_HALF_M:.3f} m the marker's geometry allows around its anchor")
-    print("[ok] all 10 shapes stay inside the 0.60 m budget around their anchor")
+    print(f"[ok] all 10 shapes stay inside the {sc.MARKER_SIZE_M:.2f} m budget "
+          f"around their anchor")
 
 
 def test_the_arrow_keeps_its_size_and_its_measured_centroid_offset() -> None:
-    """The arrow's centroid is 13.2 mm behind the marker's centre line.  Pin all of it.
+    """The arrow's centroid is a fixed fraction of the marker's size behind its centre line.
 
     Three constraints on this shape cannot hold together, and the numbers were measured
     rather than argued (see the trade-off table in the commit for this test):
 
-      * the shape's total width must be 0.60 m like the other twenty-four, because the
-        bounding size IS the distance cue;
-      * it must stay inside the +/-0.30 m the marker's geometry allows around its anchor;
+      * the shape's total width must equal the marker's size, like the other twenty-four,
+        because the bounding size IS the distance cue;
+      * it must stay inside the half-size the marker's geometry allows around its anchor;
       * its area centroid should sit on the centre line like the other nine shapes.
 
     A left-to-right arrow whose shaft tail reaches the -x edge and whose head tip reaches
-    the +x edge has a span of exactly 0.60 m, and its centroid then sits 13.23 mm behind
-    the anchor.  Centring that centroid moves the whole shape +x, putting the tip 13.23 mm
-    outside the allowed box; shrinking the shape by 4.22% so that both hold makes it
-    0.5747 m across, i.e. 4.2% narrower than the other markers, which attacks the distance
-    cue this test exists to protect.  The current geometry is therefore the only one of the
-    three options that keeps the size budget intact, and the offset it costs is sub-pixel:
-    0.28 px at the 512 px start pose, where the whole marker is only about 13 px across.
+    the +x edge has a span of exactly the marker's size, and its centroid then sits 2.205% of
+    that size behind the anchor.  Centring that centroid moves the whole shape +x, putting the
+    tip outside the allowed box; shrinking the shape so that both hold makes it about 4% narrower
+    than the other markers, which attacks the distance cue this test exists to protect.  The
+    current geometry is therefore the only one of the three options that keeps the size budget
+    intact, and the offset it costs is sub-pixel: 0.28 px at the 512 px start pose, where the
+    whole marker is only about 13 px across.
 
-    So the offset is accepted and recorded, and this test fails if it grows, if the width
-    stops being exactly 0.60 m, or if the tip leaves the allowed box.
+    The offset was 13.23 mm when the marker was 0.60 m and is 19.84 mm at 0.90 m, i.e. the same
+    2.205% either way, because every shape is derived from SHAPE_HALF_M.  So the check is on the
+    ratio and on the pixel figure, both of which are scale-invariant, rather than on a band of
+    millimetres that only means something at one marker size.
+
+    This test fails if the offset grows as a fraction of the size, if the width stops being
+    exactly the marker's size, or if the tip leaves the allowed box.
     """
     polygons = sc.SHAPES["arrow"]
     xs = [p[0] for poly in polygons for p in poly]
@@ -144,10 +153,25 @@ def test_the_arrow_keeps_its_size_and_its_measured_centroid_offset() -> None:
     cy /= total
 
     check(abs(cy) < 1e-12, f"the arrow's centroid is {cy:+.6f} m off the centre line in y")
-    check(-0.014 < cx < -0.012,
-          f"the arrow's centroid is {cx*1000:+.2f} mm behind the anchor, outside the "
-          f"measured 12.0-14.0 mm band; if this changed, re-derive the three-way trade-off "
-          f"rather than widening this band")
+    # Expressed as a FRACTION of the marker's size, not as a band of millimetres.
+    #
+    # The absolute offset was 13.23 mm when the marker was 0.60 m.  Scaling the marker to 0.90 m
+    # scaled the arrow with it -- every shape is derived from SHAPE_HALF_M -- so the offset
+    # became 19.84 mm, which is exactly 13.23 x 1.5.  Nothing about the shape changed; only the
+    # unit did.  A millimetre band would therefore have failed on a change that did not touch
+    # the geometry, and the way to notice a real change is the ratio:
+    #
+    #     13.23 mm / 0.60 m = 0.02205   and   19.84 mm / 0.90 m = 0.02205
+    #
+    # The sub-pixel property below is scale-invariant too, for the same reason, so this pair of
+    # checks now says "the trade-off is the one that was derived" at any marker size instead of
+    # at one particular size.
+    ratio = cx / sc.MARKER_SIZE_M
+    check(-0.02305 < ratio < -0.02105,
+          f"the arrow's centroid is {ratio:.5f} of the marker's size behind the anchor "
+          f"({cx*1000:+.2f} mm at {sc.MARKER_SIZE_M:.2f} m), outside the derived "
+          f"-0.02205 +/- 0.001; if this changed, re-derive the three-way trade-off rather "
+          f"than widening this band")
     # Sub-pixel at the start pose, which is why it is acceptable at all.
     import math
     distance = sc.MARKER_X_M - 0.5
@@ -158,7 +182,8 @@ def test_the_arrow_keeps_its_size_and_its_measured_centroid_offset() -> None:
           f"start pose, no longer sub-pixel")
 
     check(min(xs) >= -sc.SHAPE_HALF_M - 1e-9,
-          f"the arrow's tail is at {min(xs):+.6f}, outside the allowed -0.30 m")
+          f"the arrow's tail is at {min(xs):+.6f}, outside the allowed "
+          f"{-sc.SHAPE_HALF_M:+.3f} m")
     print(f"[ok] arrow: {width:.4f} m across, centroid {cx*1000:+.2f} mm "
           f"({abs(cx)/mm_per_px:.2f} px at the start pose), tail at {min(xs):+.4f} m")
 
@@ -333,21 +358,49 @@ def test_the_builder_imports_without_a_simulator() -> None:
 def test_the_catalogue_matches_the_environment_it_replaces() -> None:
     """The baseline marker must reproduce the one the frozen environment already builds.
 
+    This used to compare the catalogue's size against environment.GOAL_MARKER_SIZE, on the
+    reasoning that the two must agree.  They no longer do, and that is a decision rather than a
+    drift: GOAL_MARKER_SIZE stays at 0.60 m because it is the default the 660 committed episodes
+    were rendered with, while the catalogue is 0.90 m because the rendered frames measured the
+    marker at 6-12 px of the 512 px input and dimmer than the acceptance range.  Changing the
+    environment's default would have moved the baseline; changing the catalogue alone would
+    have been a silent mismatch.
+
+    What has to agree, therefore, is not the stored default but what gets BUILT.  The
+    environment reads ``goal_marker_height`` from the task dict, and capture_scenes.py --
+    the only harness that renders this catalogue -- passes the catalogue's size down.  This test
+    checks the position, the wall and the colour, and then checks that the harness actually
+    passes that override, because the rest is worth nothing if it does not.
+
     Pin the catalogue against environment.py's own constants, so that changing one without
     the other fails here rather than silently moving the marker on the far wall.
     """
     import environment as env
 
-    check(abs(sc.MARKER_SIZE_M - float(env.GOAL_MARKER_SIZE)) < 1e-9,
-          f"catalogue marker size {sc.MARKER_SIZE_M} vs environment "
-          f"{env.GOAL_MARKER_SIZE}")
     check(abs(sc.MARKER_WALL_X_M - float(env.ROOM_LENGTH_X)) < 1e-9,
           "the catalogue puts the marker on a different wall than the room's far wall")
     check(abs(sc.MARKER_Y_M - 1.40) < 1e-9,
           "the catalogue's marker centre height differs from the environment's 1.40 m")
     check(tuple(sc.COLOURS["r"]) == (0.85, 0.15, 0.12),
           "the red in the palette is not the existing marker's red")
-    print("[ok] the catalogue's baseline marker matches the environment's own constants")
+
+    # The environment can be told the size, and the harness that renders the catalogue must say
+    # so.  Read as an assignment rather than by importing capture_scenes, which builds a
+    # SimulationApp at module scope.
+    import re
+
+    source = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               "capture_scenes.py"), encoding="utf-8").read()
+    match = re.search(r'"goal_marker_height"\s*:\s*float\(scenes\.MARKER_SIZE_M\)', source)
+    check(match is not None,
+          "capture_scenes.py does not pass goal_marker_height=float(scenes.MARKER_SIZE_M) to "
+          "the environment, so the environment would build its own 0.60 m marker before the "
+          "catalogue's 0.90 m one replaces it at the same path")
+    check(hasattr(env.BAOEnv, "_create_goal_marker"),
+          "the environment lost the method that reads goal_marker_height")
+    print(f"[ok] the catalogue's marker matches the environment's wall, height and red, and "
+          f"the harness passes its {sc.MARKER_SIZE_M:.2f} m size through "
+          f"(environment default stays {env.GOAL_MARKER_SIZE:.2f} m for the committed episodes)")
 
 
 def test_the_built_marker_matches_the_environment_plate_exactly() -> None:
