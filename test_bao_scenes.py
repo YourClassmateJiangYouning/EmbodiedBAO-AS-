@@ -1162,8 +1162,13 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
     one -- the two guesses did not even err the same way.
 
     The comparison is against scenes.PROP_MEASUREMENTS, which is the recorded output of
-    tools/measure_assets.py, because no USD reader exists on this machine.  A prop referenced
+    tools/measure_named_props.py, because no USD reader exists on this machine.  A prop referenced
     without a recorded measurement fails here rather than passing unmeasured.
+
+    Every item naming a .usd is checked, not only the floor ones.  This used to skip wall items
+    for the same reason place_dressing did, and that skipped the supermarket's shelf goods -- a
+    mug standing on a shelf is a wall item, so the two checks that were supposed to catch a
+    mismatched declaration were both blind to the newest props.
     """
     measured = sc.PROP_MEASUREMENTS
     problems, checked = [], []
@@ -1171,7 +1176,7 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
     for scene in sc.SCENE_ORDER:
         for item in sc.SCENES[scene]["dressing"]:
             asset = item.get("asset")
-            if not asset or item["mount"] != "floor":
+            if not asset:
                 continue
             name = os.path.basename(asset)
             if not name.endswith(".usd"):

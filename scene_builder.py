@@ -375,14 +375,13 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
     layer or a failed reference degrades to exactly the scene that shipped before this
     function could reference anything -- and the report says which happened.
 
-    The catalogue's ``asset`` is consulted for every item, but a reference is only attempted for
-    FLOOR items, and an earlier version of this docstring said the opposite ("only floor items
-    take a reference") right next to the cabinet that was moved to the floor so it could be
-    referenced.  The reason is that a wall item's box is a picture plate hanging on a wall: the
-    props in this catalogue are furniture, so referencing one there would push a cabinet through
-    the wall for no gain.  Which items end up referenced is therefore a property of the layouts,
-    not a rule in this loop: of 33 items, four are floor items naming an asset, and three of those
-    resolve to a vendored mesh (the fourth names an .mdl and is refused above).
+    The catalogue's ``asset`` is consulted for every item, and any item naming a vendored ``.usd``
+    gets it, floor or wall.  An earlier version referenced floor items only -- the reasoning being
+    that a wall item's box is a picture plate and a referenced cabinet would go through the wall --
+    and that rule was wrong twice over: it kept the supermarket's shelf goods as bare boxes, when
+    a mug standing on a shelf is precisely a wall item, and it made a layout question into a
+    condition in this loop.  Which items are referenced is therefore a property of the layouts:
+    of 37 items, seven name an asset that resolves to a vendored mesh.
 
     The first version referenced whatever ``asset`` named, which for MI_SignB and
     M_TrafficCone was an MDL: USD answered "Cannot determine file format" and the item stayed
@@ -408,7 +407,14 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
 
         record = {"name": item["name"], "mount": item["mount"],
                   "asset": item["asset"], "used_asset": False}
-        local = prop_asset_for(item["asset"]) if item["mount"] == "floor" else None
+        # Any item that names a prop gets one, wall items included.  It used to be floor items
+        # only, on the reasoning that a wall item's box is a picture plate and referencing a
+        # cabinet there would push it through the wall.  But the same rule kept the supermarket's
+        # shelf goods as bare boxes -- a mug and a banana ARE wall items, standing on the shelf --
+        # so the restriction was refusing exactly the references that make a wall look furnished.
+        # Furniture on a wall remains a bad idea; that is a layout decision, and it belongs to the
+        # layout rather than to a condition in this loop.
+        local = prop_asset_for(item["asset"]) if item.get("asset") else None
         if local:
             try:
                 # Reference the prop onto an Xform child of the box:

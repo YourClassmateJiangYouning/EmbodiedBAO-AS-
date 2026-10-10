@@ -256,6 +256,22 @@ PROP_MEASUREMENTS = {
     "plane.usd": (1.0, 0.0, 1.0),
     "sphere.usd": (1.0, 1.0, 1.0),
     "torus.usd": (1.5, 0.5, 1.5),
+    # Measured 2026-10-10 by tools/measure_named_props.py, in the catalogue's
+    # (x, height, lateral) frame.  A declared dressing size has to equal the prop's own size,
+    # because place_dressing references the prop WITHOUT scaling it; the mugs being 9-11 cm tall
+    # is the whole point of recording them rather than writing a round number.
+    "SM_Mug_A2.usd": (0.0923, 0.0910, 0.1271),
+    "SM_Mug_B1.usd": (0.0925, 0.0919, 0.1365),
+    "SM_Mug_C1.usd": (0.0889, 0.1072, 0.1277),
+    "SM_Mug_D1.usd": (0.0888, 0.1101, 0.1276),
+    "011_banana.usd": (0.1972, 0.0741, 0.0386),
+    "005_tomato_soup_can.usd": (0.0677, 0.0677, 0.1019),
+    "024_bowl.usd": (0.1612, 0.1615, 0.0550),
+    "004_sugar_box.usd": (0.0927, 0.0451, 0.1763),
+    "dolly.usd": (0.8504, 0.4407, 1.2594),
+    # Recorded although no scene uses it: see the note on stage1.2's forklift entry for why a
+    # 3.49 m vehicle has no place in a 5 m wide room whose central 3 m must stay clear.
+    "forklift.usd": (1.2138, 2.1549, 3.4947),
 }
 
 
@@ -757,6 +773,32 @@ def _install_dressing() -> None:
         _dressing_floor("produce_bins", (4.6, 0.00, -2.05), (0.9, 0.55, 0.6), DRESSING_YELLOW),
         _dressing_floor("checkout", (6.4, 0.00, 2.10), (0.9, 0.85, 0.7), DRESSING_GREY),
         _dressing_floor("stacked_boxes", (7.4, 0.00, -2.00), (0.7, 0.55, 0.5), DRESSING_BLUE),
+        # Real goods standing on the shelving, which is what furnishes a supermarket rather than
+        # a room with a shelf in it.  The shelf's own `at` height is a CENTRE (1.9 m tall, so its
+        # middle is 0.95 m), so its top face is 0.95 + 0.09 = 1.04 m and these sit on that, each
+        # one raised by half its own measured height.  Sizes are the measured props, because
+        # place_dressing references them without scaling: a mug is 0.09 m tall and is drawn 0.09 m
+        # tall, not as the round number someone would have guessed.
+        _dressing_wall("mug_a2", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.04 + 0.0910 / 2, 1.20),
+                       (0.1271, 0.0910, 0.0923), DRESSING_GREY,
+                       PROP_ROOT + "/Mugs/SM_Mug_A2.usd"),
+        _dressing_wall("mug_b1", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.04 + 0.0919 / 2, 1.46),
+                       (0.1365, 0.0919, 0.0925), DRESSING_GREY,
+                       PROP_ROOT + "/Mugs/SM_Mug_B1.usd"),
+        _dressing_wall("mug_c1", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.04 + 0.1072 / 2, 1.72),
+                       (0.1277, 0.1072, 0.0889), DRESSING_GREY,
+                       PROP_ROOT + "/Mugs/SM_Mug_C1.usd"),
+        # A banana lying along the shelf.  The helper takes (across, tall, thick) and stores
+        # (thick, tall, across), so it swaps the outer two numbers: an argument tuple A becomes the
+        # stored size (A[2], A[1], A[0]).  The stored size has to equal the measured catalogue
+        # tuple (x, height, lateral) = (0.0741, 0.0386, 0.1972) -- 0.1972 long along the shelf,
+        # 0.0741 out from the wall, 0.0386 high -- so the argument tuple is its reverse,
+        # (0.0386, 0.0741, 0.1972).  Three attempts got this wrong, twice by reordering the wrong
+        # pair and once by reasoning about it instead of reading the value back; the declared-size
+        # check caught every one.
+        _dressing_wall("banana", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.04 + 0.0386 / 2, 1.98),
+                       (0.0386, 0.0741, 0.1972), DRESSING_YELLOW,
+                       PROP_ROOT + "/YCB/Axis_Aligned/011_banana.usd"),
     )
 
 
