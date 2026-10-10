@@ -197,39 +197,72 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
 
 ## 7. 场景搭建进度（Stage 1 皮肤；依据 = 代码实测，不是上一版手册）
 
-| 场景 | 材质（代码里的条数） | 陈设 | 状态 |
-| :--- | :--- | :--- | :--- |
-| `stage1.1` 实验室 | **无** | **无** | **正在跑的基线，一个字都不许改** |
-| `stage1.2` 仓库 | **4 条，已核对**（唯一整套借用素材的场景） | 8 件 | 有"未定位深色遮挡"待查 ✗ |
-| `stage1.3` 图书馆 | 4 条，**`material_verified=False`** ✗ | 8 件 | 未渲染验证 |
-| `stage1.4` 公园 | **3 条**，未核对 ✗（**没有地面材质** —— 草地贴图没抓到） | 8 件 | 未渲染验证 |
-| `stage1.5` 超市 | 4 条，未核对 ✗ | 8 件 | 未渲染验证 |
+| 场景 | 材质（代码里的条数） | 陈设 | 接了真实道具 | 状态 |
+| :--- | :--- | :--- | :--- | :--- |
+| `stage1.1` 实验室 | **无** | **0 件** | **0 件** | **正在跑的基线，一个字都不许改** |
+| `stage1.2` 仓库 | 4 条，`material_verified=True` | 11 件 | 9 件 | 已接线，待渲染确认 |
+| `stage1.3` 图书馆 | 4 条，`material_verified=True` | 13 件 | 12 件 | 已接线，待渲染确认 |
+| `stage1.4` 公园 | 3 条，`material_verified=True` | 16 件 | 15 件 | 已接线，待渲染确认 |
+| `stage1.5` 超市 | 4 条，`material_verified=True` | 12 件 | 8 件 | 已接线，待渲染确认 |
 
-- **陈设全部还是方块，不是真道具**：`scene_builder.place_dressing` 明确**不使用** `asset` 字段
-  （`.mdl` 是材质不是 stage 资产，USD 回 "Cannot determine file format"），report 里每件都记 `used_asset=False`。
-  换成真实道具属于 **Stage 1 的场景皮肤工作**（不是 Stage 3）；`.usd` 道具的接引用见
-  `tools/fetch_assets.py` 与 `STAGE1_SCENES.md` §2.2。
+**上表由 `test_bao_scenes.py::test_the_manual_states_the_scene_facts_the_code_holds` 强制与代码一致**，
+所以它不会再漂移。上一版手册在这里错了三处，全部是"文档落后于代码"：陈设数写成各 8 件（实际
+11/13/16/12）、"全部还是方块"（实际 44/52 件已接真实 `.usd`）、"已接 3 件"（实际 44 件）。
+
+- **陈设已从方块换成真实道具**：`scene_builder.place_dressing` **会**使用 `asset` 字段——52 件里
+  44 件接了仓库内的 `.usd`。只有 `.mdl` 会被 `prop_asset_for()` 拒绝（MDL 是材质不是 stage 资产，
+  USD 回 "Cannot determine file format"），以及库里确实没有对应道具的几件保留为盒子。
+  报告逐件打印 `RESOLVED / FAILED / NO ASSET`，所以"这件到底画出来了没有"永远有文字答案。
+- **`fit_scale` 是等比适配**：`fit_scale_from_extent` 返回**同一个因子给三个轴**（各轴比例的最小值，
+  封顶 1.0），道具只被**缩放**、永不被**重塑**，声明盒子是它**待在里面**的界。这是设计，不是权宜：
+  逐轴适配会把比例与盒子不同的资产拉变形（曾把安全护栏拉高 16 倍）。后果是道具可能小于盒子，
+  盒子在引用成功后停用，所以间隙不画出来 —— **房间看到道具，且不穿模**。
+- **适配在舞台上复核**：`place_dressing` 放完后用**新建的** `BBoxCache` 量回每件道具的
+  `drawn_extent`，与 `declared_extent` 一起写进报告；超出声明盒子会记 `fit_error` 并单列告警。
+  清除盒自带 `size` 缩放、道具又自带缩放，二者在层级上复合 —— 这是**运行时事实**，读源码定不了，
+  所以由舞台自己回答，而不是靠以后再去看图。
 - **陈设硬约束**（`test_bao_scenes.py` 强制，以测试为准）：全部 `collides=False`；
-  地面物 **`|z| ≥ 1.5`**、高 ≤1.0 m（>0.6 m 时须 `|z| ≥ 1.8`）；墙挂件 `|z| ≥ 0.9`、伸出 ≤0.20 m、
-  按「(横向, 纵向, 厚度)」声明；每件必须有颜色；**不得用本场景 5 个标志物之一的颜色**。
-  （上一版手册把地面物写成 `|z| ≥ 1.9` ✗，代码与测试都是 1.5。）
+  地面物 **`|z| ≥ 1.5`**（>0.6 m 时须 `|z| ≥ 1.8`）；墙挂件 `|z| ≥ 0.9`、伸出 ≤0.20 m；
+  每件必须有颜色；**不得用本场景 5 个标志物之一的颜色**。
+- **尺寸只有一个框架**：`(x, 高, 横)`，`PROP_MEASUREMENTS` 与每个 `item["size"]` 都是它。
+  墙面项的 `size[0]` 承载墙法向（厚度），所以凸出判据读 `size[0]` 就是读厚度。
+  `_dressing_wall` 曾隐式交换外两项、`place_dressing` 又对已存储的值再换一次，两次抵消后
+  留下"同一组数字在两个顺序里"，六次尝试对齐每次报出不同的正确项 —— 现在只有一个框架、一次转换，
+  `tools/audit_dressing.py` 检查这一点。
 - **布局只存在于一处**：1.1 与 1.2 内联在 `scenes.py` 的 `SCENES` 里；1.3/1.4/1.5 由
   `_install_dressing()`（模块导入时执行）赋值。**不要两处都写** —— 之前两处都有，内联那份是死的，
   改它完全无效。`test_bao_scenes.py` 现在从 AST 检查这一点。
-- 宽墙件要离中线够远，否则会**压住开口投影** ✓（图书馆书架就栽在这 ✓ 现在 1.4 m 宽 @ z=±1.65 ✓）。
-- 素材抓取流程：`python tools/fetch_assets.py --list Environments/Hospital` → `--set …` → `tools/shrink_tree.py`（**一张坏图不能中断整轮**）。
+- 宽墙件要离中线够远，否则会**压住开口投影** ✓（图书馆书架曾栽在这；现在书架是落地货架）。
+- 素材抓取流程：`python tools/fetch_bucket_set.py --long-edge 512 --set <prefix>`（**一张坏图不能中断整轮**）。
+  测量：`tools/measure_named_props.py <名字…>`，输出带资产名，且对厘米制资产打 `DIVIDE BY 100` 警告。
 - **渲染前先确认显存**：实验室那台还有别人的 IsaacLab 占 5.5 GB ✗。
-- **未完成的三件事**：① 11 条材质 URL 待用桶列表核对（上表 ✗ 的三行）；
-  ② `tools/check_marker_uniqueness.py` **不存在**（`STAGE1_SCENES.md` §4 检查②自己承认了），
-  在它出现之前，标志物唯一性只能靠几何/配置层检查 + 看图；
-  ③ **陈设正在从方块换成真实 `.usd` 道具**（进行中）：`scene_builder.prop_asset_for()` 已能把目录里的
-  `asset` 解析为**仓库内**的 `.usd`，`place_dressing()` 会在方块之上加引用。**已接 3 件**（均按实测尺寸 1:1）：
+- **未完成的事**：① 11 条材质 URL 待用桶列表核对；
+  ② `tools/check_marker_uniqueness.py` **不存在**，在它出现之前标志物唯一性只能靠配置层检查；
+  ③ `stage1.4` 的 `park_sign`、`stage1.5` 的 `shelf_left/right`/`price_strip`/`promo_banner`、
+  `stage1.3` 的 `reading_lamp` 仍是纯几何体（库里没有对应道具，或形状不合适）；
+  ④ `shopping_cart_corral_01` 已抓取但**故意未接线**：实测 2.006 × 2.376 × 3.711 m，
+  在 5 m 宽的房间里需要的 `|z|` 区间只有 2 毫米宽，缩到 1.0 m 高虽合法但那是"1 米宽的购物车围栏"，
+  不是围栏 —— 与其硬塞一个只为通过检查的位置，不如不接。
 
-  | 场景 | 陈设 | 道具 | 实测尺寸（catalogue 系） |
-  | :--- | :--- | :--- | :--- |
-  | `stage1.2` | `pallets` | `Pallet/pallet.usd` | (1.2132, 0.1425, 0.8023) |
-  | `stage1.2` | `klt_bins` | `KLT_Bin/small_KLT_visual.usd` | (0.1978, 0.1464, 0.2966) |
-  | `stage1.3` | `cabinet` | `Sektion_Cabinet/sektion_cabinet_instanceable.usd` | (0.6678, 0.7861, 0.7638) |
+### 7.0 这批修复里最有价值的教训（写给下一个人）
+
+**当一个现象有两种相反成因、而图片无法区分时，先建可区分的文本报告，再看图。** 本会话在这上面
+浪费了最多的轮次：引用成功后清除盒会被**停用**，所以"尺寸不对"与"什么都没画"在画面上是**同一个
+样子**。逐项报告（`RESOLVED / FAILED / NO ASSET` + `fit` + `drawn vs declared`）是唯一能分开它们的
+工具，而它连续多轮直接命中病因。
+
+**名字白名单不能替代语义核对。** `test_bao_scenes.py` 里那份 "verified list" 只验证 **API 名字存在**，
+而本会话最严重的缺陷里每个 API 名字都是真的：
+`ComputeWorldBound` 含**祖先变换**（官方文档：world space），而被测 prop 是**正在被缩放的盒子的子节点**，
+于是适配在度量自己 —— 报出 219.9 / 39.5 / 11.1 的拉伸因子；`AddScaleOp` 在已存在 op 时**抛异常**。
+两者都通过了那份"verified list"。语义规则现在在 `tools/audit_dressing.py`，每条 API 的语义依据写在
+调用点旁。
+
+**检查器会被自己的散文绊倒。** 本会话发生了**四次**：docstring 里写出错拼的名字、注释里引用已废除的
+写法、注释里写出要检测的 API 名。凡是扫描文本的检查，都要假设它会读到解释它自己的那段话。
+
+**为代码已不具备的行为辩护的注释比没有注释更糟** —— 它是下一个人重新引入缺陷的路径。
+`tools/audit_dressing.py` 现在扫描四个此类短语。
 
 ### 7.1 道具引用的四条硬事实（2026-10-09 实测，`tools/measure_assets.py`）
 

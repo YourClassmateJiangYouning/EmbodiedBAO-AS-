@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import collections
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -1458,6 +1459,65 @@ def test_no_measurement_is_a_placeholder() -> None:
           f"{len(FLAT_ON_ONE_AXIS)} named flat primitive(s) allowed a zero axis")
 
 
+def test_the_manual_states_the_scene_facts_the_code_holds() -> None:
+    """MANUAL.md's scene table must agree with the catalogue, or fail.
+
+    The manual called itself "依据 = 代码实测，不是上一版手册" and then went stale in three places at
+    once: it said every scene had 8 dressing items (the code had 11, 13, 16, 12), that dressing was
+    "全部还是方块" (44 of 52 items reference a real .usd), and that 3 props were wired (44 were).  A
+    handoff document that contradicts the code is worse than a missing one, because it is read as
+    instruction -- and it is read by whoever comes next, who has no way to know which paragraphs
+    were true when they were written.
+
+    So the numbers are checked rather than promised.  This parses the table out of the manual and
+    compares each row's item count and asset count with the catalogue, so the two cannot drift
+    apart again without a red suite.
+    """
+    manual_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "MANUAL.md")
+    if not os.path.exists(manual_path):
+        check(False, "MANUAL.md is missing, so the scene facts it documents cannot be checked")
+        return
+    rows = {}
+    with open(manual_path, encoding="utf-8") as handle:
+        for line in handle:
+            stripped = line.strip()
+            # A row of the scene table, which begins with the scene's name in backticks.  The first
+            # version tested the RAW line for a leading "| `stage1." and therefore matched nothing:
+            # the row is written with a space after the pipe.  It reported all five scenes missing.
+            if not stripped.startswith("|"):
+                continue
+            cells = [cell.strip() for cell in stripped.strip("|").split("|")]
+            if len(cells) < 5 or not cells[0].startswith("`stage1."):
+                continue
+            # The cell is "`stage1.2` 仓库", so the name is up to the closing backtick.  Stripping
+            # backticks from both ENDS of the cell leaves the rest of the cell attached -- the first
+            # version produced keys like "stage1.2` 仓库" and then reported every scene missing.
+            scene = cells[0][:cells[0].index("`", 1)].lstrip("`")
+            items = re.search(r"(\d+)\s*件", cells[2])
+            assets = re.search(r"(\d+)\s*件", cells[3])
+            if items:
+                rows[scene] = (int(items.group(1)),
+                               int(assets.group(1)) if assets else None)
+
+    problems = []
+    for scene in sc.SCENE_ORDER:
+        if scene not in rows:
+            problems.append(f"{scene} has no row in MANUAL.md's scene table")
+            continue
+        claimed_items, claimed_assets = rows[scene]
+        real_items = len(sc.SCENES[scene]["dressing"])
+        real_assets = sum(1 for item in sc.SCENES[scene]["dressing"] if item.get("asset"))
+        if claimed_items != real_items:
+            problems.append(f"{scene}: MANUAL says {claimed_items} dressing item(s), code has "
+                            f"{real_items}")
+        if claimed_assets is not None and claimed_assets != real_assets:
+            problems.append(f"{scene}: MANUAL says {claimed_assets} item(s) with an asset, code has "
+                            f"{real_assets}")
+    check(not problems,
+          "MANUAL.md contradicts the scene catalogue:\n    " + "\n    ".join(problems))
+    print(f"[ok] MANUAL.md's scene table matches the code for all {len(sc.SCENE_ORDER)} scene(s)")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -1492,6 +1552,7 @@ def main() -> int:
         test_no_module_calls_a_scene_helper_that_does_not_exist,
         test_a_declared_size_is_the_size_of_the_prop_it_names,
         test_no_measurement_is_a_placeholder,
+        test_the_manual_states_the_scene_facts_the_code_holds,
         test_the_report_says_the_marker_size_and_whether_the_paint_landed,
         test_the_marker_assertion_counts_parts_not_children,
         test_no_scene_floor_is_covered_by_a_dark_material,

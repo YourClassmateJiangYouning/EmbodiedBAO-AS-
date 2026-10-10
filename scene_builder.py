@@ -376,39 +376,38 @@ def prop_asset_for(url: Optional[str]) -> Optional[str]:
     return index[name]
 
 
-def fit_scale_from_extent(proxy_prim: Any, declared: Sequence[float]) -> Tuple[float, float, float]:
-    """A UNIFORM factor that fits a referenced prop INSIDE its declared box without distorting it.
+def fill_scale_for_unit_parent(proxy_prim: Any) -> Tuple[float, float, float]:
+    """A UNIFORM factor that scales a referenced prop to fill its clearance box.
 
-    The same factor goes on all three axes, and it is the smallest of the per-axis ratios.  Per-axis
-    fitting is what this function did first, and it was the wrong design: any asset whose proportions
-    differ from its declared box is stretched, so the report filled with factors like
-    (1.0, 16.0075, 0.0624) for the safety railing -- a railing 16 times too tall and 16 times too
-    thin.  Those read as bugs in the measurement logic, and some of them were, but the per-axis fit
-    kept manufacturing them out of correct measurements.  A prop is now scaled, never reshaped, and
-    the declared box is a BOUND: the prop sits inside it and may be smaller.
+    NO ``declared`` ARGUMENT, and its absence is the fix.  This function used to take the declared
+    size and return declared/native, on the belief that it was sizing the prop against the world.
+    It is not: the prop at ``<box>/prop`` is a CHILD of the clearance Cube, and that Cube already
+    carries a scale op of the declared size.  Xform ops compose down the hierarchy, so the drawn
+    size is parent_scale x child_scale x native -- which made the prop come out at roughly
+    ``declared`` SQUARED, an extra multiplication by a number between 0.05 and 3.
 
-    The consequence is deliberate.  A prop that comes out smaller than its declared box leaves a gap
-    inside the box, and the box is inactive once the prop resolves, so the gap is not drawn -- the
-    room sees the prop and no clipping.  Clipping is the failure this project must not have, which is
-    why the fit is a containment rather than an exact match.
+    What this function has to produce is therefore the factor that makes the prop fill ONE unit of
+    its parent's local space, because the parent's own scale turns that one unit into the declared
+    box.  That factor is 1/native: no declaration enters into it.
 
-    The factor is capped at 1.0: an asset larger than its declared box is shrunk to fit, an asset
-    already smaller is left alone rather than enlarged, because enlarging is what made trees out of
-    houseplants earlier in this session.
+    The measurement is the prop's bound relative to its parent, which the reference defines as "the
+    bound of the given prim in the space of an ancestor prim ... excludes the local transform at
+    relativeToAncestorPrim" -- so it is exactly the prop's own size in the parent's local space, with
+    the box's scale excluded.  A RELATIVE bound and not a world bound: a world bound includes the
+    parent's transform, so an earlier version measured the scale it had just been given and fed
+    itself, reporting factors of 219.9, 39.5 and 11.1.
 
-    The extent is computed from the PROP'S OWN relative bound rather than from scenes.PROP_MEASUREMENTS,
-    because a measurement can be recorded in a frame that differs from the one the item stores: the
-    framed poster is measured (1.092, 0.7426, 0.0524) but stored (0.0524, 0.7426, 1.092) since a wall
-    faces along x.  It is a RELATIVE bound and not a world bound, because the prim's parent is the
-    clearance box whose scale this function feeds -- and a world bound includes the parent's
-    transform, so it measured the scale it had just been given and fed itself.  The OpenUSD reference
-    is explicit that the world query is "in world space" while the relative one "excludes the local
-    transform at relativeToAncestorPrim"; the API name of the former is deliberately not written here
-    because tools/audit_dressing.py scans this file for it and would read its own explanation as a
-    call.
+    The factor is UNIFORM -- the smallest of the three -- so the prop is scaled and never reshaped.
+    Per-axis fitting is what this started as, and it stretched any prop whose proportions differ
+    from its declared box.  A uniform factor inside a box that is the prop's declared size means the
+    prop can be smaller than that box on the other axes; the gap is not drawn, because the box is
+    made invisible once a prop resolves.  Containment is the requirement, exact match is not.
+
+    Capped at 1.0: an asset already smaller than its box is left alone rather than enlarged, because
+    enlarging is what turned houseplants into trees earlier in this project.
 
     1.0 when the extent cannot be measured: the prop is then drawn as authored, and the declared-size
-    check is what reports the situation, rather than a silent guess here.
+    check reports that, rather than a silent guess here.
     """
     from pxr import Usd, UsdGeom
 
@@ -416,11 +415,19 @@ def fit_scale_from_extent(proxy_prim: Any, declared: Sequence[float]) -> Tuple[f
         return (1.0, 1.0, 1.0)
     box = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_])
     rng = None
-    for scope in (proxy_prim, proxy_prim.GetPrototype()):
-        if not scope or not scope.IsValid():
+    # The prototype is a ROOT prim, so its bound must be taken relative to ITS parent, the
+    # pseudo-root.  Passing the clearance box as the ancestor -- as this loop did -- asks for the
+    # bound of a prim "in the space of an ancestor" that is not an ancestor, and the reference warns
+    # the result "may be incorrect": the prototype's own-space bound then gets pushed through the
+    # inverse of the box's scale.  The measuring tools in tools/ all use prototype.GetParent().
+    for scope, ancestor in ((proxy_prim, proxy_prim.GetParent()),
+                            (proxy_prim.GetPrototype(),
+                             proxy_prim.GetPrototype().GetParent()
+                             if proxy_prim.GetPrototype() else None)):
+        if not scope or not scope.IsValid() or not ancestor or not ancestor.IsValid():
             continue
         try:
-            rng = box.ComputeRelativeBound(scope, proxy_prim.GetParent()).ComputeAlignedRange()
+            rng = box.ComputeRelativeBound(scope, ancestor).ComputeAlignedRange()
         except Exception:  # noqa: BLE001
             rng = None
         if rng is not None and not rng.IsEmpty():
@@ -429,16 +436,7 @@ def fit_scale_from_extent(proxy_prim: Any, declared: Sequence[float]) -> Tuple[f
         return (1.0, 1.0, 1.0)
     lo, hi = rng.GetMin(), rng.GetMax()
     native = (float(hi[0] - lo[0]), float(hi[1] - lo[1]), float(hi[2] - lo[2]))
-    # ``declared`` arrives in the STAGE's frame already, because the caller passes the tuple the item
-    # stores and place_dressing stores a wall item in world order.  No second conversion: an earlier
-    # version applied the catalogue-to-stage conversion again, swapping a wall item's height with its
-    # width in the declaration only, so the prop was fitted against numbers no check used.
-    ratios = []
-    for axis in range(3):
-        have = native[axis]
-        want = float(declared[axis])
-        if have > 1e-9 and want > 1e-9:
-            ratios.append(want / have)
+    ratios = [1.0 / native[axis] for axis in range(3) if native[axis] > 1e-9]
     if not ratios:
         return (1.0, 1.0, 1.0)
     factor = min(min(ratios), 1.0)
@@ -506,16 +504,27 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
         path = f"/World/Dressing/{item['name']}"
         cube = UsdGeom.Cube.Define(stage, path)
         cube.GetSizeAttr().Set(1.0)
-        # A FLOOR item's size is in the catalogue's frame (x, height, lateral) and is converted to
-        # the stage's (x, lateral, height).  A WALL item's is already in the stage's frame: its slot
-        # 0 is the wall's normal, which is x in both frames, and its other two are the width and
-        # height within the wall plane, where the order changes nothing.  Converting a wall item
-        # again swapped its width into the world's height and vice versa, which is a real error for
-        # a poster: a 1.09 m wide frame became 1.09 m tall.
-        size = item["size"] if item["mount"] != "floor" else sc.to_world_size(item["size"])
-        cube.AddScaleOp().Set(Gf.Vec3f(*size))
+        # ONE frame for every size: the CATALOGUE's (x, height, lateral).  Both mounts store that,
+        # and it is converted here, once, into the stage's (x, lateral, height).  A wall item used to
+        # be exempted on the reasoning that "the order changes nothing" within the wall plane -- it
+        # does: a Cube's scale component 1 lands on world y (lateral) and component 2 on world z
+        # (height), so the poster declared (0.0524, 0.7426, 1.092) was drawn 1.092 m TALL and 0.74 m
+        # wide.  Height and width are interchangeable for what the wall looks like and not at all
+        # interchangeable for the prompt.
+        size = sc.to_world_size(item["size"])
         prim = cube.GetPrim()
-        UsdGeom.Xformable(prim).AddTranslateOp().Set(Gf.Vec3f(*sc.to_world(item["at"])))
+        # TRANSLATE FIRST, THEN SCALE.  AddXformOp documents that each successive call adds an
+        # operator "applied more locally than the preceding", and GetLocalTransformation composes the
+        # ordered list in reverse -- so with scale added first the order is [scale, translate] and the
+        # translation is applied FIRST and then multiplied by the scale.  Every box was therefore
+        # centred at size ⊙ at: the crate declared at x 10.2 with size 0.6015 landed at x 6.14, and
+        # the rack at 5.01 instead of 7.0.  Adding the translate before the scale puts the scale
+        # innermost, which is what "a box of `size` centred at `at`" means.
+        #
+        # The translate is written as Vec3d because AddTranslateOp defaults to PrecisionDouble and
+        # creates a double3 attribute.  Vec3f is right for the scale, whose op defaults to float.
+        UsdGeom.Xformable(prim).AddTranslateOp().Set(Gf.Vec3d(*sc.to_world(item["at"])))
+        cube.AddScaleOp().Set(Gf.Vec3f(*size))
         _disable_collision(prim)
         if item.get("colour"):
             paint(stage, path, item["colour"])   # (ok, why); not reported per dressing item
@@ -564,30 +573,41 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 #    construction.  Fitting the prop to the box removes that class of defect: what
                 #    the checks cleared is what is seen.
                 #
-                # The factor is UNIFORM -- see fit_scale_from_extent, which returns one number for
-                # all three axes and explains why.  The comment here used to argue for reshaping the
-                # prop to its box ("a prop whose proportions differ from its declared box would
-                # otherwise still overhang one axis") and it stayed behind when the code changed.  A
-                # comment that argues for the behaviour the code no longer has is worse than none: it
-                # is how the next person reintroduces the defect.  tools/audit_dressing.py now scans
-                # for that phrasing.
-                scale = fit_scale_from_extent(proxy_prim, item["size"])
+                # The factor is UNIFORM and it carries NO declared size: see
+                # fill_scale_for_unit_parent, which explains that the prop is a child of the box
+                # that already holds the declared scale, so what it must fill is one unit of its
+                # parent's local space.  This call used to pass item["size"] and compute
+                # declared/native, which multiplied the declaration in twice.
+                scale = fill_scale_for_unit_parent(proxy_prim)
                 if any(abs(s - 1.0) > 1e-9 for s in scale):
-                    # The same mount rule as the clearance box above, for the same reason: a wall
-                    # item's declared tuple is already in world order, so converting it again would
-                    # swap its height with its width in the SCALE while the box kept the right
-                    # order -- two transforms disagreeing about the same prop.
-                    world_scale = (scale if item["mount"] != "floor"
-                                   else sc.to_world_size(scale))
-                    apply_scale(proxy_prim, world_scale)
+                    # The scale goes on the prop in the AXES THE PROP LIVES IN, which are the
+                    # stage's: the box's own scale was converted with to_world_size above, so the
+                    # parent's local axes are already (x, lateral, height).  No mount exemption here
+                    # either -- that exemption is what drew every wall item with its height and
+                    # width exchanged.
+                    apply_scale(proxy_prim, scale)
                 _disable_collision(proxy_prim)
                 record["used_asset"] = os.path.basename(local)
                 record["reference"] = local
                 record["fit_scale"] = scale
-                # Hide the clearance box now that there is something real inside it.  Deactivated
-                # rather than deleted, so the volume the fixture checks reason about still exists
-                # on the stage and can be inspected; USD does not draw an inactive prim.
-                prim.SetActive(False)
+                # Hide the clearance box -- but INVISIBLY, not by deactivating it.
+                #
+                # This line used to be prim.SetActive(False), and that was the worst defect in the
+                # scene code: `prim` is the clearance Cube and `proxy_prim`, holding the referenced
+                # mesh, is its CHILD at f"{path}/prop".  Deactivating a prim prevents its descendants
+                # from being composed onto the stage at all -- not merely from being drawn -- so every
+                # item whose prop resolved vanished completely, box and mesh together.  43 of the 44
+                # referenced props were absent from every frame.  The comment beside it claimed the
+                # opposite ("the volume ... still exists on the stage and can be inspected"), and the
+                # on-stage verification below depends on that path existing, so it silently skipped
+                # every item and reported nothing: a check that cannot run looks exactly like a check
+                # that passed.
+                #
+                # MakeInvisible() sets visibility, which is inherited and therefore hides the box,
+                # while leaving the subtree composed and queryable.  The bbox cache excludes invisible
+                # prims from CHILD bound aggregation, and the verification queries the prop directly,
+                # so the prop's own extent is still measurable -- which is the point.
+                UsdGeom.Imageable(prim).MakeInvisible()
             except Exception as exc:  # noqa: BLE001
                 # A prop that will not load must leave the box, not the scene, broken: the box is
                 # still visible here, which is the correct fallback rather than an empty hole.
@@ -633,29 +653,39 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
             continue
         proxy = stage.GetPrimAtPath(f"/World/Dressing/{record['name']}/prop")
         if not proxy or not proxy.IsValid() or root_prim is None or not root_prim.IsValid():
+            # A resolved prop whose prim cannot be found is a defect in itself, and it is what this
+            # block used to do silently: `prim.SetActive(False)` pruned the prop's whole subtree, so
+            # every path here was invalid and every item was skipped without a word.  A check that
+            # cannot run looks exactly like a check that passed, so now it says so.
+            record["fit_error"] = ("resolved prop is not on the stage at "
+                                   f"/World/Dressing/{record['name']}/prop, so its size cannot be "
+                                   f"verified -- was an ancestor deactivated?")
             continue
         try:
             rng = box_cache.ComputeRelativeBound(proxy, root_prim).ComputeAlignedRange()
-        except Exception:  # noqa: BLE001
+        except Exception as exc:  # noqa: BLE001
+            record["fit_error"] = f"could not measure the drawn prop: {type(exc).__name__}: {exc}"
             continue
         if rng.IsEmpty():
+            record["fit_error"] = "the drawn prop has an empty bound, so it has no size on the stage"
             continue
         lo, hi = rng.GetMin(), rng.GetMax()
         drawn = (float(hi[0] - lo[0]), float(hi[1] - lo[1]), float(hi[2] - lo[2]))
         item = next(entry for entry in sc.SCENES[scene]["dressing"]
                     if entry["name"] == record["name"])
-        target = (item["size"] if item["mount"] != "floor"
-                  else sc.to_world_size(item["size"]))
-        # 2 % and a millimetre: the fit is computed from a bound that itself has float error, and a
-        # prop that exactly fills its box must not be reported for a difference in the last bit.
-        overflow = [axis for axis in range(3)
-                    if drawn[axis] > float(target[axis]) * 1.02 + 1e-3]
+        # Both sides in the STAGE's axes: the box's declared size converted once, and the prop
+        # measured in the same space.  Comparing a catalogue tuple against a stage measurement is how
+        # wall items came to be drawn with height and width exchanged while every check passed.
+        target = tuple(float(v) for v in sc.to_world_size(item["size"]))
         record["drawn_extent"] = drawn
-        record["declared_extent"] = tuple(float(v) for v in target)
-        if overflow:
+        record["declared_extent"] = target
+        # 2 % and a millimetre, because the fit is computed from a bound that itself carries float
+        # error and a prop that exactly fills its box must not be reported for the last bit.
+        over = [axis for axis in range(3) if drawn[axis] > target[axis] * 1.02 + 1e-3]
+        if over:
             record["fit_error"] = (
                 f"drawn {tuple(round(v, 4) for v in drawn)} m exceeds declared "
-                f"{tuple(round(float(v), 4) for v in target)} m on axis {overflow}")
+                f"{tuple(round(v, 4) for v in target)} m on axis {over} -- clipping by construction")
     return placed
 
 

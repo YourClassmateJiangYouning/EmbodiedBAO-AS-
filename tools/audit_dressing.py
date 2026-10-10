@@ -21,6 +21,7 @@ from __future__ import annotations
 import ast
 import os
 import sys
+from typing import Any, List
 
 _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _ROOT)
@@ -38,37 +39,140 @@ def main() -> int:
 
     builder = read("scene_builder.py")
 
-    # 1. to_world_size applied to a WALL item's size or scale.  Wall sizes are stored in world
-    # order already, so every conversion must be guarded by the mount.
-    for name, source in (("scene_builder.py", builder),):
-        for lineno, line in enumerate(source.splitlines(), 1):
-            if "to_world_size" not in line:
-                continue
-            window = "\n".join(source.splitlines()[max(0, lineno - 6):lineno + 2])
-            if 'item["mount"] != "floor"' in window or "mount ==" in window:
-                notes.append(f"{name}:{lineno} guarded to_world_size (mount-aware)")
-            else:
-                problems.append(
-                    f"{name}:{lineno} calls to_world_size without a mount guard, so a WALL item's "
-                    f"already-world-order tuple would be swapped again: {line.strip()}")
+    # 1. THE FRAME RULE, restated for the design that replaced it.
+    #
+    # The old rule asserted that a WALL item's size is stored in world order and that every
+    # to_world_size call therefore needs a mount guard.  That premise was wrong -- wall sizes are
+    # stored in the CATALOGUE frame like everything else, and the mount exemption is exactly what
+    # drew every wall item with its height and width exchanged.  So the rule is now the opposite and
+    # simpler: every size in this module is in ONE frame, and the conversion to the stage's frame
+    # happens exactly once, in place_dressing, for both mounts, with no mount condition anywhere.
+    #
+    # Comments and docstrings are stripped before scanning.  This file's checks have now read their
+    # own prose five times -- a docstring naming a misspelt member, a comment quoting a retired
+    # phrase, a comment naming the API it warns about, and twice here -- so prose is removed first
+    # rather than being argued with case by case.
+    def strip_prose(source: str) -> str:
+        """The source with DOCSTRINGS and COMMENTS blanked, and everything else left alone.
 
-    # 2. An except that records only str(exc).
+        Three attempts got this wrong, and the third shows what the rule has to be:
+
+          * a regular expression blanked every string literal, including the one inside
+            ``record["fit_error"]``, so checks looked for that field and reported it missing while it
+            sat in the code;
+          * concatenating or untokenizing token strings lost the whitespace BETWEEN tokens, turning
+            ``def apply_scale`` into ``defapply_scale``;
+          * blanking every STRING token does the first fault by construction, because a dictionary key
+            written ``record["fit_error"]`` IS a string literal.
+
+        A string literal that is a subscript key or a message is CODE; the prose that misleads a
+        text-scanning check is the docstring and the comment.  So only those are blanked: docstrings
+        are located through the AST (a string constant that is a module, class or function body's first
+        statement, or a bare expression statement), and comments through the tokenizer.  Character
+        positions are preserved, so line numbers in the result still refer to the real file.
+        """
+        import io
+        import tokenize
+
+        line_starts = [0]
+        for line in source.splitlines(keepends=True):
+            line_starts.append(line_starts[-1] + len(line))
+
+        def at(line: int, column: int) -> int:
+            """Character offset of a 1-based line and 0-based column."""
+            return line_starts[line - 1] + column
+
+        blanks: List[tuple] = []
+        tree = ast.parse(source)
+
+        def blank_docstrings(node: Any) -> None:
+            body = getattr(node, "body", None)
+            if isinstance(body, list) and body:
+                first = body[0]
+                if isinstance(first, ast.Expr) and isinstance(first.value, ast.Constant) \
+                        and isinstance(first.value.value, str):
+                    blanks.append((at(first.value.lineno, first.value.col_offset),
+                                   at(first.value.end_lineno, first.value.end_col_offset)))
+            for child in ast.walk(node):
+                # Any remaining bare string statement is prose too -- a stray docstring, a commented
+                # block kept as a string.  Subscript keys are never Expr statements, so this cannot
+                # reach the dictionary keys that the previous version blanked by mistake.
+                if isinstance(child, ast.Expr) and isinstance(child.value, ast.Constant) \
+                        and isinstance(child.value.value, str):
+                    blanks.append((at(child.value.lineno, child.value.col_offset),
+                                   at(child.value.end_lineno, child.value.end_col_offset)))
+
+        blank_docstrings(tree)
+        try:
+            for token in tokenize.generate_tokens(io.StringIO(source).readline):
+                if token.type == tokenize.COMMENT:
+                    blanks.append((at(*token.start), at(*token.end)))
+        except tokenize.TokenError:
+            # An unterminated construct still yields the tokens produced before it, which is enough for
+            # a source-text scan; scanning the whole text is better than raising inside a check.
+            return source
+
+        out = list(source)
+        for start, end in blanks:
+            for index in range(start, min(end, len(out))):
+                if out[index] != "\n":
+                    out[index] = " "
+        return "".join(out)
+
+    def function_body(source: str, name: str, stripped: str) -> str:
+        """The prose-stripped source of one TOP-LEVEL function.
+
+        Every earlier slice used string splitting, and every one was wrong in a different way: split
+        on "\\ndef " ran past the end into the next function, "def name" without a newline matched a
+        mention inside a docstring, and "\\ndef " also matches an INDENTED nested function -- this file
+        contains one, and it truncated the slice early so that the checks below read half a function
+        while reporting the other half missing.
+
+        The AST is parsed from the ORIGINAL source, because the stripped text is not valid Python (its
+        string literals are blanked), and the line range it reports is then applied to the stripped
+        text -- the two have identical line numbering by construction.
+        """
+        for node in ast.parse(source).body:
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == name:
+                lines = stripped.splitlines()
+                return "\n".join(lines[node.lineno - 1:node.end_lineno])
+        return ""
+
+    code_only = strip_prose(builder)
+    # Counted as CALLS, not as mentions: `sc.to_world_size(item["size"])` appears twice legitimately
+    # -- once to size the clearance box, once to size the reference the verification compares against
+    # -- and what matters is that both are unconditional and in the same frame.
+    conversion_lines = [lineno for lineno, line in enumerate(code_only.splitlines(), 1)
+                        if "to_world_size" in line]
+    if not conversion_lines:
+        problems.append("scene_builder.py never converts a size with to_world_size, so the stage "
+                        "would receive catalogue-frame sizes with height and lateral exchanged")
+    if "mount" in code_only.split("to_world_size")[0][-120:]:
+        problems.append("scene_builder.py converts a size under a mount condition; wall and floor "
+                        "items share one frame, and exempting a mount is what exchanged a wall "
+                        "item's height with its width")
+
+    # 2. An except that records only str(exc).  Scanned with the prose in place, because the
+    # traceback has to be there in the real body -- but the test is on the CODE, so that a message
+    # that merely mentions the field name cannot satisfy it.
     tree = ast.parse(builder)
     for node in ast.walk(tree):
         if not isinstance(node, ast.ExceptHandler):
             continue
-        body = "".join(ast.dump(statement) for statement in node.body)
+        body = "".join(ast.dump(statement) for statement in node.body
+                       if not (isinstance(statement, ast.Expr)
+                               and isinstance(statement.value, ast.Constant)))
         if "reference_error" in body and "traceback" not in body and "extract_tb" not in body:
             problems.append(
                 f"scene_builder.py:{node.lineno} records an exception without its traceback, so a "
                 f"USD ErrorException -- whose str() is empty -- would report nothing")
 
     # 3. AddScaleOp must not be reached without checking for an authored op.
-    if "def apply_scale" not in builder:
+    if "def apply_scale" not in code_only:
         problems.append("scene_builder.py has no apply_scale helper; an authored xformOp:scale "
                         "would make AddScaleOp raise")
-    elif "AddScaleOp()" in builder:
-        guarded = "GetOrderedXformOps" in builder
+    elif "AddScaleOp()" in code_only:
+        guarded = "GetOrderedXformOps" in code_only
         notes.append(f"AddScaleOp present, GetOrderedXformOps present: {guarded}")
         if not guarded:
             problems.append("AddScaleOp is used without GetOrderedXformOps, so an asset that ships "
@@ -108,28 +212,86 @@ def main() -> int:
                 problems.append(f"{scene}/{item['name']} is {item['size'][1]:.2f} m tall, above the "
                                 f"3.0 m ceiling")
 
-    # 8. The fit must be UNIFORM.  A per-axis factor reshapes a prop whose proportions differ from
-    # its declared box, and that is not a measurement error to be caught -- it is the design being
-    # wrong.  It showed up as (1.0, 16.0075, 0.0624) on the safety railing and (1.0, 2.4425, 0.7788)
-    # on an office chair: a railing 16x too tall, a chair squashed in one axis.  A uniform factor
-    # cannot do that, and an asset larger than its box is shrunk rather than reshaped.
-    if "def fit_scale_from_extent" not in builder:
-        problems.append("scene_builder.py has no fit_scale_from_extent; the fit cannot be checked")
+    # 8. The fit must be UNIFORM and must NOT take the declared size.  Two separate defects lived
+    # here and both are now structural:
+    #
+    #   * a per-axis factor reshapes a prop whose proportions differ from its box.  It reported
+    #     (1.0, 16.0075, 0.0624) for the safety railing -- a railing 16x too tall or 16x too small,
+    #     depending on which reading of the frame you took, and neither is a railing.
+    #   * the factor took `declared` and returned declared/native, but the prop is a CHILD of the
+    #     clearance cube, which already carries a scale op of the declared size.  Xform ops compose
+    #     down the hierarchy, so the drawn size came out as roughly declared SQUARED -- an extra
+    #     multiplication by a number between 0.05 and 3.  The correct factor fills ONE unit of the
+    #     parent's local space, which is 1/native, and the declared size enters nowhere.
+    FIT_NAME = "fill_scale_for_unit_parent"
+    if f"def {FIT_NAME}" not in builder:
+        problems.append(f"scene_builder.py has no {FIT_NAME}; the prop's fit cannot be checked")
         fit_body = ""
     else:
         # Split on the NEXT top-level def, so the slice is this function only.  An earlier version
-        # split on "\ndef " and caught apply_scale's ComputeWorldBound comment below, reporting a
-        # defect in a function that no longer had one.
-        fit_body = builder.split("def fit_scale_from_extent", 1)[1]
-        for marker in ("\ndef ", "\nclass "):
-            if marker in fit_body:
-                fit_body = fit_body.split(marker, 1)[0]
-    if fit_body and "min(ratios)" not in fit_body and "min(min(ratios)" not in fit_body:
-        problems.append("fit_scale_from_extent does not derive a single factor from the per-axis "
-                        "ratios, so it would reshape the prop instead of scaling it")
-    if "fitted.append" in fit_body:
-        problems.append("fit_scale_from_extent builds a per-axis result list, which means the prop "
-                        "is reshaped rather than scaled")
+        # split on "\ndef " and caught apply_scale's comment below, reporting a defect in a function
+        # that no longer had one; a later one split on the wrong marker again.  Slice once, here.
+        # Sliced at the next TOP-LEVEL def: a marker of "\ndef " also matches an indented nested
+        # function, and this file contains one (strip_prose), which truncated the slice early.  A
+        # top-level def is one whose `def` starts at column zero.
+        fit_body = function_body(builder, FIT_NAME, code_only)
+    if fit_body:
+        # `min(ratios)` is a substring of `min(min(ratios)`, so the second test used to be unable to
+        # decide anything.  Test for the two things that matter instead: a single factor, and no
+        # declared size in the formula.
+        if "return (factor, factor, factor)" not in fit_body:
+            problems.append(f"{FIT_NAME} does not return ONE factor for all three axes, so it would "
+                            f"reshape the prop instead of scaling it")
+        if "fitted.append" in fit_body:
+            problems.append(f"{FIT_NAME} builds a per-axis result list, which means the prop is "
+                            f"reshaped rather than scaled")
+        if "declared" in fit_body:
+            problems.append(f"{FIT_NAME} mentions a declared size.  It must not: the prop is a child "
+                            f"of the box that already carries the declared scale, so taking the "
+                            f"declaration here multiplies it in twice")
+        if "1.0 / native" not in fit_body and "1.0/native" not in fit_body:
+            problems.append(f"{FIT_NAME} does not derive its factor from 1/native, which is what "
+                            f"filling one unit of the parent's local space means")
+
+    # 8b. THE PROP MUST SURVIVE THE BOX BEING HIDDEN.  The single worst defect in this file's history
+    # was `prim.SetActive(False)` on the clearance CUBE, whose child is the referenced prop:
+    # deactivation removes a subtree from composition, so 43 resolved props were not drawn at all
+    # while the report printed RESOLVED, and the verification below could never find them.  Hiding an
+    # imageable is inherited and reversible; deactivating is neither.
+    if "def place_dressing" not in builder:
+        problems.append("scene_builder.py has no place_dressing")
+        place_body = ""
+    else:
+        # Sliced to the next top-level def, like the fit above.  This used to run to EOF, covering
+        # classify_surfaces, discover_surfaces, describe_stage, apply_scene and format_report, so its
+        # three presence tests could be satisfied from any later function.
+        place_body = function_body(builder, "place_dressing", code_only)
+    if place_body:
+        if "SetActive(False)" in place_body:
+            problems.append("place_dressing deactivates a prim.  If that prim is the clearance box, "
+                            "its referenced prop is deactivated with it and never drawn -- which is "
+                            "exactly what happened here.  Make the box invisible instead")
+        if "MakeInvisible" not in place_body and "GetVisibilityAttr" not in place_body:
+            problems.append("place_dressing never makes the clearance box invisible, so a resolved "
+                            "prop is drawn inside a solid box and reads as a block")
+        # The prop is a child of the box, so the BOX must be translate-then-scale: AddXformOp adds
+        # each op "more locally" than the last and the list composes in reverse, so scale-first puts
+        # the translation inside the scale and every box centre becomes size * at.
+        translate_at = place_body.find("AddTranslateOp")
+        scale_at = place_body.find("AddScaleOp")
+        if translate_at == -1 or scale_at == -1:
+            problems.append("place_dressing does not author both a translate and a scale for the "
+                            "clearance box")
+        elif translate_at > scale_at:
+            problems.append("place_dressing adds the box's SCALE before its TRANSLATE, so the "
+                            "translation is applied first and then multiplied by the scale: every "
+                            "box centre becomes size * at")
+        if "Gf.Vec3d" not in place_body:
+            problems.append("place_dressing does not use a double-precision vector for the box "
+                            "translate, which AddTranslateOp creates at PrecisionDouble")
+        if 'to_world_size(item' not in place_body:
+            problems.append("place_dressing does not convert the item size with to_world_size, so a "
+                            "wall item's height and width would be exchanged in the drawn box")
 
     # 9. No declared box may be smaller than the prop it names, because the prop is fitted INSIDE
     # the box: a box that cannot hold it means the prop overhangs and clips, which is the failure
@@ -174,7 +336,7 @@ def main() -> int:
     # fit_scale_from_extent measures a prop that is a CHILD of the clearance box whose scale it is
     # about to set, so an ancestor-including bound measures the fit against itself: reported as
     # factors of 219.9, 39.5 and 11.1.  A relative bound excludes exactly that ancestor.
-    if "ComputeRelativeBound" not in builder:
+    if "ComputeRelativeBound" not in code_only:
         problems.append("scene_builder.py measures a fit with no ComputeRelativeBound, so the "
                         "extent would include the parent box's own scale and feed itself")
     # fit_body was extracted once, above, for rule 8.  It was extracted a SECOND time here, and the
@@ -193,16 +355,22 @@ def main() -> int:
     # fact that reading the source cannot settle -- and guessing it is how this session produced its
     # most expensive defects.  The code therefore measures each resolved prop's extent back off the
     # stage with a FRESH BBoxCache and records fit_error when it exceeds its declared box.
-    if "fit_error" not in builder:
+    # The probes are the QUOTED forms, because the prose-stripping blanks string literals and these
+    # names appear as dictionary keys -- record["fit_error"] -- which is a string literal by
+    # definition.  Looking for the bare name reported the field missing while it was in the code.
+    if '"fit_error"' not in code_only:
         problems.append("place_dressing never verifies the drawn size against the declared box, so a "
                         "prop scaled wrongly would be invisible until someone looked at a picture")
-    if "drawn_extent" not in builder:
+    if '"drawn_extent"' not in code_only:
         problems.append("place_dressing does not record what the stage says was drawn, so no report "
                         "can state a prop's actual size")
-    place_body = builder.split("def place_dressing", 1)[-1]
-    # A SECOND BBoxCache, constructed after placement.  Reusing the one that measured the fit would
-    # read cached bounds: the reference states plainly that the cache "does not listen for change
-    # notifications; the user is responsible for clearing the cache when changes occur".
+    # place_body was extracted once, above, and sliced at the next top-level def.  This block used to
+    # assign it AGAIN from the raw source with split("def place_dressing", 1)[-1], which runs to the
+    # end of the file and therefore covered classify_surfaces, discover_surfaces, describe_stage,
+    # apply_scene and format_report as well -- so every check below could be satisfied from any later
+    # function, and the three above it (run on the correctly-sliced body) were contradicted by it.
+    # Two extractions of the same slice is the duplication this project treats as a defect in itself,
+    # and it produced exactly that: checks that pass and fail according to which variable won.
     if place_body.count("BBoxCache(") < 1:
         problems.append("place_dressing does not construct a BBoxCache of its own, so its "
                         "verification would read bounds cached before the props were scaled")
