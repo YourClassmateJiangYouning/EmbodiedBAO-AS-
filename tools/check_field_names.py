@@ -91,6 +91,10 @@ OTHER = {
     "asset", "colour", "mount", "at", "size", "collides", "used_asset", "how", "url",
     "parts", "slot", "scene", "kind", "room_fit", "fit_scale", "reference", "reference_error",
     "part_names", "paint_error", "painted",
+    # Recorded by place_dressing's on-stage verification: what the stage says was drawn, what the
+    # item declared, and the mismatch when the prop does not fit inside its box.  These are the
+    # numbers that replace "look at the picture and guess whether the size is right".
+    "drawn_extent", "declared_extent", "fit_error",
 }
 
 

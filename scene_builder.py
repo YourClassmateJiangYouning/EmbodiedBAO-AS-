@@ -553,21 +553,24 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 proxy_schema = UsdGeom.Xform.Define(stage, f"{path}/prop")
                 proxy_prim = proxy_schema.GetPrim()
                 proxy_prim.GetReferences().AddReference(local)
-                # The reference is scaled to FIT the declared box, per axis.  Two things make this
-                # necessary rather than tidy:
+                # The reference is scaled to FIT the declared box.  Two things make this necessary
+                # rather than tidy:
                 #
                 #  * the library is not in one unit.  Part of it is authored in centimetres with no
                 #    metersPerUnit metadata, so the packing table measures 247.3647 in its own
                 #    units -- 2.47 m of furniture.  Unscaled it draws the length of the room.
                 #  * a prop drawn larger than its declared box sticks out of the volume every
                 #    clearance and occlusion check reasons about, which is clipping by
-                #    construction.  Fitting the prop to the box removes that class of defect: the
-                #    declared size is what is drawn, so what the checks cleared is what is seen.
+                #    construction.  Fitting the prop to the box removes that class of defect: what
+                #    the checks cleared is what is seen.
                 #
-                # Per axis, not uniform, because a prop whose proportions differ from its declared
-                # box would otherwise still overhang one axis.  The cost is that a badly declared
-                # box distorts the prop, which is visible and therefore fixable; an overhanging
-                # mesh is not visible until it is inside a wall.
+                # The factor is UNIFORM -- see fit_scale_from_extent, which returns one number for
+                # all three axes and explains why.  The comment here used to argue for reshaping the
+                # prop to its box ("a prop whose proportions differ from its declared box would
+                # otherwise still overhang one axis") and it stayed behind when the code changed.  A
+                # comment that argues for the behaviour the code no longer has is worse than none: it
+                # is how the next person reintroduces the defect.  tools/audit_dressing.py now scans
+                # for that phrasing.
                 scale = fit_scale_from_extent(proxy_prim, item["size"])
                 if any(abs(s - 1.0) > 1e-9 for s in scale):
                     # The same mount rule as the clearance box above, for the same reason: a wall
@@ -601,6 +604,58 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                         f"at {os.path.basename(frame.filename)}:{frame.lineno} {frame.line}"
                 record["reference_error"] = f"{type(exc).__name__}: {detail.strip()}"
         placed.append(record)
+
+    # ---------------------------------------------------------------------------------------------
+    # VERIFY THE FIT ON THE ASSEMBLED STAGE, and do it here rather than on the lab machine.
+    #
+    # This check exists because of a question I could not answer by reading the code, and which a
+    # report then made urgent: the clearance cube carries a scale of `size`, and the prop under it
+    # carries a scale of its own.  Xform ops COMPOSE down the hierarchy, so if both are applied the
+    # drawn prop is native x size x factor -- and every "fit" factor in the report would then be
+    # describing a size that is not the one on screen.  Reading `Cube.GetSizeAttr().Set(1.0)` and
+    # `GetOrderedXformOps` does not settle it: it depends on how the composed transform resolves at
+    # runtime, which is exactly the kind of thing this project has repeatedly guessed wrong.
+    #
+    # So the code now asks the stage.  A FRESH BBoxCache is constructed after every prop is in place
+    # (the cache does not listen for change notifications, so reusing the earlier one would report
+    # whatever it had cached), each resolved prop's extent is measured relative to the dressing root,
+    # and any prop that does not fit inside its declared box is recorded as fit_error.  A prop that
+    # sticks out of its box is clipping by construction, and a prop drawn at the wrong size is the
+    # defect that has cost the most rounds in this session -- so both are now reported by the stage
+    # itself rather than inferred from a picture later.
+    # ---------------------------------------------------------------------------------------------
+    from pxr import Usd, UsdGeom
+
+    box_cache = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_])
+    root_prim = stage.GetPrimAtPath("/World/Dressing")
+    for record in placed:
+        if not record.get("used_asset"):
+            continue
+        proxy = stage.GetPrimAtPath(f"/World/Dressing/{record['name']}/prop")
+        if not proxy or not proxy.IsValid() or root_prim is None or not root_prim.IsValid():
+            continue
+        try:
+            rng = box_cache.ComputeRelativeBound(proxy, root_prim).ComputeAlignedRange()
+        except Exception:  # noqa: BLE001
+            continue
+        if rng.IsEmpty():
+            continue
+        lo, hi = rng.GetMin(), rng.GetMax()
+        drawn = (float(hi[0] - lo[0]), float(hi[1] - lo[1]), float(hi[2] - lo[2]))
+        item = next(entry for entry in sc.SCENES[scene]["dressing"]
+                    if entry["name"] == record["name"])
+        target = (item["size"] if item["mount"] != "floor"
+                  else sc.to_world_size(item["size"]))
+        # 2 % and a millimetre: the fit is computed from a bound that itself has float error, and a
+        # prop that exactly fills its box must not be reported for a difference in the last bit.
+        overflow = [axis for axis in range(3)
+                    if drawn[axis] > float(target[axis]) * 1.02 + 1e-3]
+        record["drawn_extent"] = drawn
+        record["declared_extent"] = tuple(float(v) for v in target)
+        if overflow:
+            record["fit_error"] = (
+                f"drawn {tuple(round(v, 4) for v in drawn)} m exceeds declared "
+                f"{tuple(round(float(v), 4) for v in target)} m on axis {overflow}")
     return placed
 
 
@@ -813,6 +868,7 @@ def format_report(report: Dict[str, Any]) -> str:
     if report["dressing"]:
         used = sum(1 for item in report["dressing"] if item["used_asset"])
         failed = [item for item in report["dressing"] if item.get("reference_error")]
+        oversized = [item for item in report["dressing"] if item.get("fit_error")]
         lines.append(f"[scene] dressing: {report['dressing_count']} items, "
                      f"{used} from assets, rest boxes, all non-collidable")
         # Per item, and in the ALWAYS-printed report rather than behind a switch.  An item whose
@@ -828,6 +884,16 @@ def format_report(report: Dict[str, Any]) -> str:
                 if any(abs(float(v) - 1.0) > 1e-9 for v in fit):
                     detail += f" (fit {tuple(round(float(v), 4) for v in fit)})"
                 outcome = f"RESOLVED {detail}"
+                # The size the STAGE reports, beside the size the item declared.  A prop drawn
+                # larger than its box clips by construction, and a prop drawn at the wrong scale is
+                # the defect that has cost this session the most rounds, so both are stated as
+                # numbers instead of being left to a picture.
+                if item.get("drawn_extent"):
+                    drawn = tuple(round(float(v), 4) for v in item["drawn_extent"])
+                    declared = tuple(round(float(v), 4) for v in item["declared_extent"])
+                    outcome += f" [drawn {drawn} vs declared {declared}]"
+                if item.get("fit_error"):
+                    outcome += f" FITS BADLY: {item['fit_error']}"
             elif item.get("reference_error"):
                 outcome = f"FAILED {item['reference_error']}"
             else:
@@ -836,4 +902,8 @@ def format_report(report: Dict[str, Any]) -> str:
         if failed:
             lines.append(f"[scene] dressing: {len(failed)} reference(s) FAILED -- those items are "
                          f"drawn as their clearance box")
+        if oversized:
+            lines.append(f"[scene] dressing: {len(oversized)} item(s) are drawn LARGER than their "
+                         f"declared box, which is clipping by construction: "
+                         + ", ".join(item["name"] for item in oversized))
     return "\n".join(lines)

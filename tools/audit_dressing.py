@@ -187,8 +187,43 @@ def main() -> int:
         problems.append("fit_scale_from_extent uses ComputeWorldBound, whose bound includes every "
                         "ancestor transform -- including the parent box's scale, which is what this "
                         "function is deciding.  Use ComputeRelativeBound.")
-    # environment.py legitimately uses ComputeWorldBound: it asks where the robot's lowest point is
-    # in world z, and the robot is not inside the transform being measured.
+    # 10. place_dressing must VERIFY the fit on the assembled stage.  The clearance cube carries a
+    # scale of `size` and the prop under it carries a scale of its own; xform ops compose down the
+    # hierarchy, so whether the drawn prop is native x size x factor or something else is a runtime
+    # fact that reading the source cannot settle -- and guessing it is how this session produced its
+    # most expensive defects.  The code therefore measures each resolved prop's extent back off the
+    # stage with a FRESH BBoxCache and records fit_error when it exceeds its declared box.
+    if "fit_error" not in builder:
+        problems.append("place_dressing never verifies the drawn size against the declared box, so a "
+                        "prop scaled wrongly would be invisible until someone looked at a picture")
+    if "drawn_extent" not in builder:
+        problems.append("place_dressing does not record what the stage says was drawn, so no report "
+                        "can state a prop's actual size")
+    place_body = builder.split("def place_dressing", 1)[-1]
+    # A SECOND BBoxCache, constructed after placement.  Reusing the one that measured the fit would
+    # read cached bounds: the reference states plainly that the cache "does not listen for change
+    # notifications; the user is responsible for clearing the cache when changes occur".
+    if place_body.count("BBoxCache(") < 1:
+        problems.append("place_dressing does not construct a BBoxCache of its own, so its "
+                        "verification would read bounds cached before the props were scaled")
+    if "ComputeRelativeBound" not in place_body:
+        problems.append("place_dressing's verification does not use ComputeRelativeBound, so an "
+                        "ancestor transform would be included in the size it checks")
+    # 11. The stale-comment check.  Every defect fixed in this file left its old argument behind at
+    # least once, and a comment that argues for behaviour the code no longer has is worse than none:
+    # it is how the next person reintroduces the defect.  Only phrases that can be tied to a specific
+    # reversal are listed, so this cannot fire on ordinary prose.
+    STALE = (
+        ("per axis, not uniform", "the fit is uniform now"),
+        ("Fitting the prop to the box removes that class of defect: the\n                #    declared size is what is drawn",
+         "the prop is fitted INSIDE the box and may be smaller, so the declared size is a bound"),
+        ("STORED IN WORLD ORDER", "a wall item is stored in the catalogue frame, depth on slot 0"),
+        ('``frame="wall"`` reverses', "the frame parameter is gone"),
+    )
+    for phrase, why in STALE:
+        if phrase in builder or phrase in read("scenes.py"):
+            problems.append(f"stale comment arguing for superseded behaviour: {phrase!r} -- {why}")
+
     env_path = os.path.join(_ROOT, "environment.py")
     if os.path.exists(env_path):
         env = open(env_path, encoding="utf-8").read()

@@ -1426,6 +1426,38 @@ def test_the_dressing_code_has_none_of_this_session_s_known_faults() -> None:
           f"guarded conversion(s) confirmed)")
 
 
+def test_no_measurement_is_a_placeholder() -> None:
+    """Every number in PROP_MEASUREMENTS must be measured, not invented.
+
+    The table's whole value is that each entry came off a machine with a USD reader.  A zero, a
+    negative, or a suspiciously round number in it is therefore not a small issue -- it silently
+    turns the declared-size check into a check against a guess, which is the failure mode this
+    project keeps paying for.
+
+    One fabricated entry was found here by reading rather than by running: RackLargeEmpty_A1 had
+    (0.0, 0.0, 0.0) with the comment "not measured yet; not wired".  A placeholder in a measurement
+    table is worse than an absent entry, because an absent entry is reported and a placeholder is
+    trusted.  It was removed, and the prop stayed in PROP_MEASUREMENT_PENDING where it belonged.
+
+    Flat shape primitives legitimately measure zero on one axis -- a plane has no thickness -- so
+    those are named explicitly rather than exempted by a rule, which keeps the exemption visible.
+    """
+    FLAT_ON_ONE_AXIS = {"disk.usd", "plane.usd"}
+    problems = []
+    for name, size in sorted(sc.PROP_MEASUREMENTS.items()):
+        if any(v < 0 for v in size):
+            problems.append(f"{name} measures {size}, which contains a negative")
+        if all(v <= 0 for v in size):
+            problems.append(f"{name} measures {size}, which is empty")
+        if any(v == 0 for v in size) and name not in FLAT_ON_ONE_AXIS:
+            problems.append(f"{name} measures {size} with a zero axis but is not a flat primitive; "
+                            f"either it is a placeholder or it belongs in FLAT_ON_ONE_AXIS")
+    check(not problems,
+          "these measurement entries are not measurements:\n    " + "\n    ".join(problems))
+    print(f"[ok] all {len(sc.PROP_MEASUREMENTS)} measurement(s) are recorded values, with "
+          f"{len(FLAT_ON_ONE_AXIS)} named flat primitive(s) allowed a zero axis")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -1459,6 +1491,7 @@ def main() -> int:
         test_no_module_asks_pxr_for_something_it_does_not_have,
         test_no_module_calls_a_scene_helper_that_does_not_exist,
         test_a_declared_size_is_the_size_of_the_prop_it_names,
+        test_no_measurement_is_a_placeholder,
         test_the_report_says_the_marker_size_and_whether_the_paint_landed,
         test_the_marker_assertion_counts_parts_not_children,
         test_no_scene_floor_is_covered_by_a_dark_material,

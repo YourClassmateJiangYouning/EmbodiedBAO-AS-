@@ -321,7 +321,6 @@ PROP_MEASUREMENTS = {
     "safety_railing_01.usd": (2.2261, 1.166, 0.0728),
     "shopping_cart_corral_01.usd": (2.0057, 2.3761, 3.7107),
     "RackSmallEmpty_A1.usd": (108.0188, 301.0001, 199.8097),
-    "RackLargeEmpty_A1.usd": (0.0, 0.0, 0.0),  # not measured yet; not wired
     # Measured 2026-10-10 on the lab machine.  Four of these are centimetre assets and three are
     # metres, IN THE SAME BATCH: the shrubs and the conifer are centimetres while the bench, bin,
     # planter, bollard and block are metres.  Nothing about the folder says which, so each was
@@ -447,8 +446,7 @@ def _dressing_floor(name: str, at: Tuple[float, float, float],
 def _dressing_wall(name: str, mount: str, at: Tuple[float, float, float],
                    size: Tuple[float, float, float], colour: Optional[str] = None,
                    asset: Optional[str] = None,
-                   room_fit: float = 1.0,
-                   frame: str = "catalogue") -> Dict[str, Any]:
+                   room_fit: float = 1.0) -> Dict[str, Any]:
     """A wall-mounted item, standing against a wall.
 
     ``at``'s x is the SURFACE the item is stuck to, and it is used AS the box centre -- so
@@ -464,29 +462,24 @@ def _dressing_wall(name: str, mount: str, at: Tuple[float, float, float],
     inside the wall where it is hidden.
 
     The size is given in the CATALOGUE's frame -- (x, height, lateral) -- the same frame as
-    PROP_MEASUREMENTS and every floor item, and it is stored unchanged.  That is a change: it used
-    to be (across, tall, thick) reversed on the way in, and the reversal could not be reconciled
-    with a measurement table written in one frame for every asset -- for a wide item the two orders
-    give different numbers and one of them has to win.  Keeping one frame everywhere is worth more
-    than a helper that reads a picture, so the frame is now the caller's to state and the default is
-    the catalogue's.
+    PROP_MEASUREMENTS and every floor item, and it is stored unchanged.  It used to be
+    (across, tall, thick) reversed on the way in, and a reversal cannot be reconciled with a
+    measurement table written in one frame for every asset: for a wide item the two orders give
+    different numbers and one of them has to win.  One frame everywhere is worth more than a helper
+    that reads a picture.
 
-    ``frame="wall"`` reverses the first and third components first, for an item whose natural
-    description is (across, tall, thick) -- a picture plate one hangs on a wall.  It is explicit so
-    that a size and a measurement are never compared through an invisible reversal.
+    There was a ``frame="wall"`` parameter to declare a size in (across, tall, thick) instead.  It is
+    gone: no call site used it, and a parameter that switches the meaning of an argument is the
+    mechanism by which an invisible reversal comes back.
     """
     x_thick, tall, across = (float(v) for v in size)
-    if frame == "wall":
-        x_thick, across = across, x_thick
-    elif frame != "catalogue":
-        raise ValueError(f"{name}: unknown size frame {frame!r}, expected 'catalogue' or 'wall'")
     centre_x = float(at[0]) - MOUNT_CLEARANCE_M
-    # STORED IN WORLD ORDER: (x, height, lateral) with x = the wall's normal, i.e. the thickness.
-    # place_dressing must therefore NOT convert this one through to_world_size -- it already is in
-    # the frame the stage wants.  The two extra conversions were the whole of a long confusion: the
-    # helper swapped, then place_dressing swapped again, the two cancelled, and the stored tuple
-    # ended up in the measurement's order while the protrusion check read slot 0 as depth.  Every
-    # check that reads an axis now reads the axis it means.
+    # slot 0 carries the wall's NORMAL depth, so a reader that asks "how far does this protrude" reads
+    # size[0] and gets the thickness.  The other two are the width and height within the wall plane,
+    # where the order is a presentation choice.  place_dressing takes this tuple as already being in
+    # the axes the stage uses and does not convert it; converting a wall item through to_world_size
+    # swapped its width into the world's height, which is a real error for a poster: a 1.09 m wide
+    # frame became 1.09 m tall.
     return {"name": name, "mount": mount,
             "at": (centre_x, float(at[1]), float(at[2])),
             "size": (x_thick, tall, across), "colour": colour or DRESSING_GREY,
