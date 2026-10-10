@@ -22,19 +22,24 @@ _ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _ROOT)
 
 ASSETS = os.path.join(_ROOT, "assets", "isaac")
+# The vegetation and the outdoor furniture are vendored under assets/bucket instead, because they
+# are not under Assets/Isaac in NVIDIA's bucket.  Both roots are searched by basename.
+ASSET_ROOTS = (ASSETS, os.path.join(_ROOT, "assets", "bucket"))
 REPORT = os.path.join(_ROOT, "named_prop_measurements.txt")
 
 
 def find(name: str):
-    """The vendored .usd whose stem matches, preferring the visual layer over colliders."""
+    """The vendored .usd whose stem matches, preferring the callable layer over colliders."""
     hits = []
-    for folder, _dirs, files in os.walk(ASSETS):
-        for candidate in files:
-            if candidate.endswith(".usd") and os.path.splitext(candidate)[0] == name:
-                hits.append(os.path.join(folder, candidate))
+    for root in ASSET_ROOTS:
+        for folder, _dirs, files in os.walk(root):
+            for candidate in files:
+                if candidate.endswith(".usd") and os.path.splitext(candidate)[0] == name:
+                    hits.append(os.path.join(folder, candidate))
     if not hits:
         return None
-    hits.sort(key=lambda p: ("collision" in p, "visual" not in p, len(p)))
+    # `_base` before `_inst`: the inst layer is a proxy whose geometry lives in the base layer.
+    hits.sort(key=lambda p: ("collision" in p, "_inst" in p, "visual" not in p, len(p)))
     return hits[0]
 
 

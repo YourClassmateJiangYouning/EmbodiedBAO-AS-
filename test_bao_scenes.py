@@ -1195,7 +1195,8 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
     """
     measured = sc.PROP_MEASUREMENTS
     scales = getattr(sc, "ASSET_SCALE", {})
-    problems, checked = [], []
+    pending = set(getattr(sc, "PROP_MEASUREMENT_PENDING", ()))
+    problems, checked, waiting = [], [], []
 
     for scene in sc.SCENE_ORDER:
         for item in sc.SCENES[scene]["dressing"]:
@@ -1205,6 +1206,11 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
             name = os.path.basename(asset)
             if not name.endswith(".usd"):
                 # An .mdl is a material and never a reference; test_bao_assets covers those.
+                continue
+            if name not in measured and name in pending:
+                # Wired, waiting for a measurement.  Recorded rather than skipped silently: the
+                # point of PROP_MEASUREMENT_PENDING is that the gap is visible on every run.
+                waiting.append(f"{scene}/{item['name']}->{name}")
                 continue
             if name not in measured:
                 problems.append(f"{scene}/{item['name']} references {name}, which has no "
@@ -1231,6 +1237,13 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
           + "\n    ".join(problems))
     print(f"[ok] {len(checked)} declared size(s) equal the measured prop: {checked}, and "
           f"{len(measured)} measurement(s) are recorded")
+    if waiting:
+        # Loud, on every run, and it does not fail: PROP_MEASUREMENT_PENDING means the prop is
+        # placed with a size chosen by hand and not yet checked against the asset.
+        print(f"[waiting] {len(waiting)} prop(s) are wired but not measured, so their declared "
+              f"sizes are unchecked: {waiting}")
+        print("          run tools/measure_named_props.py on the machine with a USD reader and "
+              "move them into PROP_MEASUREMENTS")
 
 
 def test_the_marker_assertion_counts_parts_not_children() -> None:

@@ -231,6 +231,34 @@ WAREHOUSE_MATERIALS = ASSET_ROOT + "/Environments/Simple_Warehouse/Materials"
 # and a wrapper layer renders as nothing, both of which have been hit here already.
 PROP_ROOT = ASSET_ROOT + "/Props"
 
+# The local root for everything vendored from OUTSIDE Assets/Isaac -- the vegetation and the
+# outdoor furniture, fetched by tools/fetch_bucket_set.py.  A catalogue ``asset`` may name a file
+# under either root and scene_builder._asset_index() searches both, because these assets are not
+# under Assets/Isaac at all and the park had nothing but boxes while only assets/isaac was read.
+#
+# Relative, like the URLs above: this module deliberately does not import os, and the value is only
+# ever used as a prefix that identifies which root an asset belongs to.  scene_builder holds the
+# absolute BUCKET_ASSETS it actually walks.
+BUCKET_ASSETS = "assets/bucket"
+
+# Assets that are wired into a scene but not yet measured on the machine that has a USD reader.
+# This is NOT an exemption from the declared-size check: the check fails any referenced asset that
+# is neither in PROP_MEASUREMENTS nor named here, so a new prop still cannot slip through, and it
+# prints what is pending on every run so the list cannot be forgotten quietly.  The purpose is to
+# let a scene be furnished and committed while the measurement wait is outstanding, instead of
+# either blocking the work or writing invented numbers into a table whose whole value is that it
+# holds measurements.
+PROP_MEASUREMENT_PENDING = (
+    "Barberry.usd",
+    "Goldflame_Spirea.usd",
+    "bench_curved_01.usd",
+    "trashcan_cylinder_01.usd",
+    "planter_round_02.usd",
+    "Chinese_Juniper.usd",
+    "Douglas_Fir.usd",
+    "Elm_Sapling.usd",
+)
+
 # What tools/measure_assets.py measured each vendored mesh to be, in this catalogue's own
 # frame (x, height, lateral).  This is DATA, not a note: a prop's real size is not derivable
 # here (there is no USD reader on the development machine), so it is recorded from the run and
@@ -814,17 +842,55 @@ def _install_dressing() -> None:
     # (This used to be a bare string literal between two statements -- not a docstring, so
     # Python compiled it and threw it away, and it read as though it documented the code.)
     SCENES["stage1.4"]["dressing"] = (
+        # Real vegetation and real park furniture.  These come from two roots that are NOT under
+        # Assets/Isaac: Assets/Vegetation holds the trees and shrubs, and the benches, planters and
+        # bin come from NVIDIA's Rivermark outdoor environment.  That is why the park was the last
+        # scene still made of boxes -- assets/isaac contains no plant of any kind, and
+        # tools/fetch_bucket_set.py exists to reach the rest of the bucket.
+        #
+        # A conifer and a broadleaf shrub as the hedges: a hedge IS a planted shrub, so these are
+        # the honest asset for it rather than a green box.  Declared sizes are the shapes these
+        # species actually take, and place_dressing fits each prop to its declared box, so the
+        # clearance and occlusion checks describe what is drawn.
         _dressing_wall("hedge_left", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.30, 1.50), (1.2, 0.4, 0.16),
-                       DRESSING_GREEN),
+                       DRESSING_GREEN, BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd"),
         _dressing_wall("hedge_right", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.30, -1.50), (1.2, 0.4, 0.16),
-                       DRESSING_GREEN),
+                       DRESSING_GREEN,
+                       BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Goldflame_Spirea.usd"),
         _dressing_wall("park_sign", "far_wall", (FAR_WALL_FACE_X, 2.00, -1.60), (0.6, 0.4, 0.03),
                        DRESSING_CLAY),
-        _dressing_floor("bench_left", (2.4, 0.00, 2.05), (0.9, 0.45, 0.5), DRESSING_WOOD),
-        _dressing_floor("bench_right", (4.8, 0.00, -2.05), (0.9, 0.45, 0.5), DRESSING_WOOD),
-        _dressing_floor("litter_bin", (6.4, 0.00, 2.10), (0.4, 0.70, 0.4), DRESSING_GREEN),
-        _dressing_floor("planter_left", (1.6, 0.00, -2.10), (0.6, 0.40, 0.6), DRESSING_CLAY),
-        _dressing_floor("planter_right", (7.2, 0.00, -2.00), (0.6, 0.40, 0.6), DRESSING_CLAY),
+        _dressing_floor("bench_left", (2.4, 0.00, 2.05), (1.25, 0.85, 0.65), DRESSING_WOOD,
+                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
+                        "dsready_content/nv_content/common_assets/props_general/"
+                        "bench_curved_01/bench_curved_01.usd"),
+        _dressing_floor("bench_right", (4.8, 0.00, -2.05), (1.25, 0.85, 0.65), DRESSING_WOOD,
+                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
+                        "dsready_content/nv_content/common_assets/props_general/"
+                        "bench_curved_01/bench_curved_01.usd"),
+        _dressing_floor("litter_bin", (6.4, 0.00, 2.10), (0.45, 0.75, 0.45), DRESSING_GREEN,
+                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
+                        "dsready_content/nv_content/common_assets/props_general/"
+                        "trashcan_cylinder_01/trashcan_cylinder_01.usd"),
+        _dressing_floor("planter_left", (1.6, 0.00, -2.10), (0.75, 0.55, 0.75), DRESSING_CLAY,
+                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
+                        "dsready_content/nv_content/common_assets/props_general/"
+                        "planter_round_02/planter_round_02.usd"),
+        _dressing_floor("planter_right", (7.2, 0.00, -2.00), (0.75, 0.55, 0.75), DRESSING_CLAY,
+                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
+                        "dsready_content/nv_content/common_assets/props_general/"
+                        "planter_round_02/planter_round_02.usd"),
+        # Three trees along the far wall.  They are the largest thing in any of the five scenes and
+        # they are what makes this read as outdoors rather than as a corridor with a bench.  Each
+        # is a floor item at |z| >= 2.0 so the walking band stays clear, and at x 12-15 so a 3.4 m
+        # canopy cannot block the opening's projection from the start pose.
+        # A two-dimensional name on purpose: the same conifer and the same sapling, declared at the
+        # heights those species reach, so one asset serves two silhouettes.
+        _dressing_floor("tree_conifer", (12.5, 0.00, 2.10), (1.8, 3.40, 1.8), DRESSING_GREEN,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Trees/Chinese_Juniper.usd"),
+        _dressing_floor("tree_fir", (14.8, 0.00, -2.10), (1.5, 3.00, 1.5), DRESSING_GREEN,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Trees/Douglas_Fir.usd"),
+        _dressing_floor("tree_sapling", (11.0, 0.00, -2.20), (1.0, 2.20, 1.0), DRESSING_WOOD,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Trees/Elm_Sapling.usd"),
     )
 
     # The supermarket: shelving either side, a checkout and produce behind the agent.

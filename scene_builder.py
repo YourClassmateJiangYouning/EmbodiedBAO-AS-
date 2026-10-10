@@ -103,6 +103,11 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float]) -> Tuple[bool, str]:
 
 
 LOCAL_ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "isaac")
+# The rest of NVIDIA's public content, vendored by tools/fetch_bucket_set.py.  It is a separate
+# root because these assets are not under Assets/Isaac at all -- the vegetation and the outdoor
+# furniture live at Assets/Vegetation and Assets/Isaac/4.5/Isaac/Environments/Outdoor, and the
+# park could not be furnished from assets/isaac alone.
+BUCKET_ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "bucket")
 
 
 def local_asset_for(url: str) -> Optional[str]:
@@ -286,20 +291,26 @@ def _asset_index() -> Dict[str, str]:
     would render as a plausible but incorrect prop.  That is refused rather than left to walk
     order.  There are no duplicates today; this is here so that adding one is an error and not a
     coincidence.
+
+    Searched roots are assets/isaac (the Isaac 4.5 library) and assets/bucket (the rest of
+    NVIDIA's public content: the vegetation and the outdoor furniture, which are not under
+    Assets/Isaac and therefore could not be furnished from the first root alone).
     """
     global _ASSET_INDEX
     if _ASSET_INDEX is None:
         index: Dict[str, str] = {}
         clashes: Dict[str, List[str]] = {}
-        for root, _dirs, files in os.walk(LOCAL_ASSETS):
-            for name in files:
-                if not name.endswith(".usd"):
-                    continue
-                full = os.path.join(root, name)
-                if name in index:
-                    clashes.setdefault(name, [index[name]]).append(full)
-                else:
-                    index[name] = full
+        roots = [LOCAL_ASSETS] + [p for p in (BUCKET_ASSETS,) if os.path.isdir(p)]
+        for root_dir in roots:
+            for root, _dirs, files in os.walk(root_dir):
+                for name in files:
+                    if not name.endswith((".usd", ".usda", ".usdc")):
+                        continue
+                    full = os.path.join(root, name)
+                    if name in index:
+                        clashes.setdefault(name, [index[name]]).append(full)
+                    else:
+                        index[name] = full
         if clashes:
             raise ValueError(
                 "the vendored assets contain files with the same basename, so a catalogue "
