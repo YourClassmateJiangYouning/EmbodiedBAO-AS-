@@ -27,6 +27,15 @@ def check(condition: bool, message: str) -> None:
         raise Failure(message)
 
 
+# File-name prefixes that are NOT project source.  The two source scans below walk the working
+# tree, and a throwaway probe sitting beside the source is not part of the repo -- diagnosed probes
+# are gitignored precisely so they stay out of it -- yet a stale one failed the whole suite on the
+# lab machine once ("diag_paint.py:120 sb.paint() takes 3..3 positional arguments, 4 given", after
+# paint() lost a parameter).  That was a true statement about a scratch file and a false alarm
+# about the project, so scratch files are excluded by design here.
+SCRATCH_PREFIXES = ("diag_", "probe_", "scratch_", "tmp_", "check_")
+
+
 def test_twenty_five_markers_are_distinct() -> None:
     """25 markers, and no (shape, colour) pair repeats across the whole set."""
     total = 0
@@ -1011,7 +1020,7 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
     offenders = []
     for folder in (root, os.path.join(root, "tools")):
         for name in sorted(os.listdir(folder)):
-            if not name.endswith(".py"):
+            if not name.endswith(".py") or name.startswith(SCRATCH_PREFIXES):
                 continue
             source = open(os.path.join(folder, name), encoding="utf-8").read()
             tree = _ast.parse(source)
@@ -1070,6 +1079,14 @@ def test_no_module_calls_a_scene_helper_that_does_not_exist() -> None:
     this machine, so the attributes and the signatures are available to be inspected.  A call
     with the wrong number of positional arguments is caught too, which is the same fault one
     level down.
+
+    Scratch diagnostics are skipped.  This scans the working tree, so a throwaway probe left beside
+    the source -- and diagnosed probes are deliberately gitignored, so they are not in the repo --
+    was able to fail the whole suite on the lab machine after paint() lost its emissive parameter:
+    "diag_paint.py:120 sb.paint() takes 3..3 positional arguments, 4 given".  That is a true
+    statement about a stale file and a false alarm about the project.  The repo's own modules are
+    what this is for, so the names below are excluded by design rather than by whoever remembers
+    to delete them.
     """
     import ast as _ast
     import inspect
@@ -1083,7 +1100,7 @@ def test_no_module_calls_a_scene_helper_that_does_not_exist() -> None:
     root = os.path.dirname(os.path.abspath(__file__))
     for folder in (root, os.path.join(root, "tools")):
         for name in sorted(os.listdir(folder)):
-            if not name.endswith(".py"):
+            if not name.endswith(".py") or name.startswith(SCRATCH_PREFIXES):
                 continue
             source = open(os.path.join(folder, name), encoding="utf-8").read()
             tree = _ast.parse(source)
