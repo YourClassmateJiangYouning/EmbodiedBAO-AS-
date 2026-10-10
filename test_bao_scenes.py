@@ -1222,14 +1222,20 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
                 problems.append(f"{scene}/{item['name']}: ASSET_SCALE[{name!r}] is {factor}, "
                                 f"which cannot scale anything")
                 continue
-            metres = tuple(v * factor for v in want)
+            room_fit = float(item.get("room_fit", 1.0))
+            if not 0.0 < room_fit <= 1.0:
+                problems.append(f"{scene}/{item['name']}: room_fit is {room_fit}; it is a fraction "
+                                f"of the measured size and must be in (0, 1]")
+                continue
+            metres = tuple(v * factor * room_fit for v in want)
             got = tuple(float(v) for v in item["size"])
             if any(abs(got[i] - metres[i]) > 1e-4 for i in range(3)):
                 problems.append(
                     f"{scene}/{item['name']} declares {got} m, but {name} measures {want} in its "
-                    f"own units x ASSET_SCALE {factor} = {metres} m")
+                    f"own units x ASSET_SCALE {factor} x room_fit {room_fit} = {metres} m")
             else:
-                checked.append(f"{item['name']}->{name}")
+                checked.append(f"{item['name']}->{name}"
+                               + (f" (room_fit {room_fit})" if room_fit != 1.0 else ""))
 
     check(not problems,
           "these declared sizes are not the size of the prop they reference, so the box the "

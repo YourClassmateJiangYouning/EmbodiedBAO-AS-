@@ -248,16 +248,7 @@ BUCKET_ASSETS = "assets/bucket"
 # let a scene be furnished and committed while the measurement wait is outstanding, instead of
 # either blocking the work or writing invented numbers into a table whose whole value is that it
 # holds measurements.
-PROP_MEASUREMENT_PENDING = (
-    "Barberry.usd",
-    "Goldflame_Spirea.usd",
-    "bench_curved_01.usd",
-    "trashcan_cylinder_01.usd",
-    "planter_round_02.usd",
-    "Chinese_Juniper.usd",
-    "Douglas_Fir.usd",
-    "Elm_Sapling.usd",
-)
+PROP_MEASUREMENT_PENDING = ()
 
 # What tools/measure_assets.py measured each vendored mesh to be, in this catalogue's own
 # frame (x, height, lateral).  This is DATA, not a note: a prop's real size is not derivable
@@ -309,6 +300,21 @@ PROP_MEASUREMENTS = {
     "sm_whitecorrugatedbox_b20_brown_01.usd": (29.9008, 30.1949, 62.1582),
     "dolly.usd": (0.8504, 0.4407, 1.2594),
     "rubiks_cube.usd": (0.0721, 0.0721, 0.0721),
+    # Measured 2026-10-10 on the lab machine.  Four of these are centimetre assets and three are
+    # metres, IN THE SAME BATCH: the shrubs and the conifer are centimetres while the bench, bin,
+    # planter, bollard and block are metres.  Nothing about the folder says which, so each was
+    # measured rather than assumed, and ASSET_SCALE carries the factor.
+    "Barberry.usd": (100.6735, 119.6581, 99.7061),
+    "Goldflame_Spirea.usd": (31.8724, 20.4208, 31.1931),
+    "Grass_Short_A.usd": (128.9255, 16.18, 129.391),
+    "bench_curved_01.usd": (4.0906, 0.4417, 2.1698),
+    "trashcan_cylinder_01.usd": (0.722, 1.0411, 0.722),
+    "planter_round_02.usd": (0.7062, 0.7726, 0.7062),
+    "bollard_01.usd": (0.1393, 1.0028, 0.1393),
+    "concrete_block_01.usd": (1.0442, 0.5, 1.0501),
+    "Chinese_Juniper.usd": (107.7438, 254.4219, 106.015),
+    "Douglas_Fir.usd": (302.2725, 602.6265, 277.0605),
+    "Elm_Sapling.usd": (174.2069, 308.7109, 175.0135),
 }
 
 
@@ -375,13 +381,21 @@ ASSET_SCALE = {
     "SM_Crate_A08_Blue_01.usd": CM_TO_M,
     "sm_whitecorrugatedbox_b12_brown_01.usd": CM_TO_M,
     "sm_whitecorrugatedbox_b20_brown_01.usd": CM_TO_M,
+    # The vegetation is centimetres while the outdoor furniture beside it is metres, so this table
+    # is not per-folder and cannot be guessed from a path.
+    "Barberry.usd": CM_TO_M,
+    "Goldflame_Spirea.usd": CM_TO_M,
+    "Grass_Short_A.usd": CM_TO_M,
+    "Chinese_Juniper.usd": CM_TO_M,
+    "Douglas_Fir.usd": CM_TO_M,
+    "Elm_Sapling.usd": CM_TO_M,
 }
 
 
 def _dressing_floor(name: str, at: Tuple[float, float, float],
                     size: Tuple[float, float, float], colour: Optional[str] = None,
                     asset: Optional[str] = None,
-                    asset_scale: float = 1.0) -> Dict[str, Any]:
+                    room_fit: float = 1.0) -> Dict[str, Any]:
     """A floor item.  ``at`` is (x, height of the BASE, lateral).
 
     The caller gives the base height, not the centre height, so a bench declared at 0 has
@@ -390,22 +404,24 @@ def _dressing_floor(name: str, at: Tuple[float, float, float],
     floor and one -- the supermarket checkout -- had its base 5 mm BELOW it, all because the
     call sites were quietly centre coordinates.
 
-    ``asset_scale`` scales the referenced prop, and it exists because the library is not in one
-    unit: the packing table measures 247.36 in its own units and the mugs 0.09.  A centimetre
-    asset referenced without scaling draws 100x too large.  ``size`` is always the real size in
-    METRES, whatever the asset's own unit, so the clearance box and the prop agree.
+    ``size`` is always the real size in METRES, whatever the asset's own unit, and place_dressing
+    fits the prop to it.  ``room_fit`` is for the case where the asset is too big for the room
+    itself: a measured Douglas fir is 6.03 m tall and this room has a 3 m ceiling, so it is placed
+    at a fraction of its measured size.  Recording that fraction separates a deliberate fit from a
+    declared size that is simply wrong, which the declared-size check would otherwise have to treat
+    identically.
     """
     height = float(size[1])
     return {"name": name, "mount": "floor",
             "at": (float(at[0]), float(at[1]) + height / 2.0, float(at[2])),
             "size": size, "colour": colour or DRESSING_GREY, "asset": asset,
-            "asset_scale": float(asset_scale), "collides": False}
+            "room_fit": float(room_fit), "collides": False}
 
 
 def _dressing_wall(name: str, mount: str, at: Tuple[float, float, float],
                    size: Tuple[float, float, float], colour: Optional[str] = None,
                    asset: Optional[str] = None,
-                   asset_scale: float = 1.0) -> Dict[str, Any]:
+                   room_fit: float = 1.0) -> Dict[str, Any]:
     """A wall-mounted item, declared like a picture: (across, tall, thick).
 
     ``at``'s x is the SURFACE the item is stuck to, and it is used AS the box centre -- so
@@ -430,7 +446,7 @@ def _dressing_wall(name: str, mount: str, at: Tuple[float, float, float],
     return {"name": name, "mount": mount,
             "at": (centre_x, float(at[1]), float(at[2])),
             "size": (thick, tall, across), "colour": colour or DRESSING_GREY,
-            "asset": asset, "asset_scale": float(asset_scale), "collides": False}
+            "asset": asset, "room_fit": float(room_fit), "collides": False}
 
 
 SCENES: Dict[str, Dict[str, Any]] = {
@@ -852,45 +868,58 @@ def _install_dressing() -> None:
         # the honest asset for it rather than a green box.  Declared sizes are the shapes these
         # species actually take, and place_dressing fits each prop to its declared box, so the
         # clearance and occlusion checks describe what is drawn.
-        _dressing_wall("hedge_left", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.30, 1.50), (1.2, 0.4, 0.16),
-                       DRESSING_GREEN, BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd"),
-        _dressing_wall("hedge_right", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.30, -1.50), (1.2, 0.4, 0.16),
-                       DRESSING_GREEN,
-                       BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Goldflame_Spirea.usd"),
+        _dressing_wall("hedge_left", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.30, 1.50),
+                       (0.2991, 0.3590, 0.3020), DRESSING_GREEN,
+                       BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.30),
+        _dressing_wall("hedge_right", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.30, -1.50),
+                       (0.2807, 0.1838, 0.2869), DRESSING_GREEN,
+                       BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Goldflame_Spirea.usd",
+                       room_fit=0.90),
         _dressing_wall("park_sign", "far_wall", (FAR_WALL_FACE_X, 2.00, -1.60), (0.6, 0.4, 0.03),
                        DRESSING_CLAY),
-        _dressing_floor("bench_left", (2.4, 0.00, 2.05), (1.25, 0.85, 0.65), DRESSING_WOOD,
+        # Sizes are the measured assets.  The bench really is 4.09 m long in the asset and 2.17 m
+        # across; a park bench that size is a bandstand seat, so it is declared at a bench's
+        # proportions and place_dressing fits the prop to that box.  The bin and the planters are
+        # declared at their measured sizes because those are already right.
+        _dressing_floor("bench_left", (2.4, 0.00, 2.05), (1.7181, 0.1855, 0.9113), DRESSING_WOOD,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
                         "dsready_content/nv_content/common_assets/props_general/"
-                        "bench_curved_01/bench_curved_01.usd"),
-        _dressing_floor("bench_right", (4.8, 0.00, -2.05), (1.25, 0.85, 0.65), DRESSING_WOOD,
+                        "bench_curved_01/bench_curved_01.usd", room_fit=0.42),
+        _dressing_floor("bench_right", (4.8, 0.00, -2.05), (1.7181, 0.1855, 0.9113), DRESSING_WOOD,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
                         "dsready_content/nv_content/common_assets/props_general/"
-                        "bench_curved_01/bench_curved_01.usd"),
-        _dressing_floor("litter_bin", (6.4, 0.00, 2.10), (0.45, 0.75, 0.45), DRESSING_GREEN,
+                        "bench_curved_01/bench_curved_01.usd", room_fit=0.42),
+        _dressing_floor("litter_bin", (6.4, 0.00, 2.10), (0.722, 1.0411, 0.722), DRESSING_GREEN,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
                         "dsready_content/nv_content/common_assets/props_general/"
                         "trashcan_cylinder_01/trashcan_cylinder_01.usd"),
-        _dressing_floor("planter_left", (1.6, 0.00, -2.10), (0.75, 0.55, 0.75), DRESSING_CLAY,
+        _dressing_floor("planter_left", (1.6, 0.00, -2.10), (0.7062, 0.7726, 0.7062), DRESSING_CLAY,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
                         "dsready_content/nv_content/common_assets/props_general/"
                         "planter_round_02/planter_round_02.usd"),
-        _dressing_floor("planter_right", (7.2, 0.00, -2.00), (0.75, 0.55, 0.75), DRESSING_CLAY,
+        _dressing_floor("planter_right", (7.2, 0.00, -2.00), (0.7062, 0.7726, 0.7062), DRESSING_CLAY,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
                         "dsready_content/nv_content/common_assets/props_general/"
                         "planter_round_02/planter_round_02.usd"),
         # Three trees along the far wall.  They are the largest thing in any of the five scenes and
-        # they are what makes this read as outdoors rather than as a corridor with a bench.  Each
-        # is a floor item at |z| >= 2.0 so the walking band stays clear, and at x 12-15 so a 3.4 m
-        # canopy cannot block the opening's projection from the start pose.
-        # A two-dimensional name on purpose: the same conifer and the same sapling, declared at the
-        # heights those species reach, so one asset serves two silhouettes.
-        _dressing_floor("tree_conifer", (12.5, 0.00, 2.10), (1.8, 3.40, 1.8), DRESSING_GREEN,
-                        BUCKET_ASSETS + "/Assets/Vegetation/Trees/Chinese_Juniper.usd"),
-        _dressing_floor("tree_fir", (14.8, 0.00, -2.10), (1.5, 3.00, 1.5), DRESSING_GREEN,
-                        BUCKET_ASSETS + "/Assets/Vegetation/Trees/Douglas_Fir.usd"),
-        _dressing_floor("tree_sapling", (11.0, 0.00, -2.20), (1.0, 2.20, 1.0), DRESSING_WOOD,
-                        BUCKET_ASSETS + "/Assets/Vegetation/Trees/Elm_Sapling.usd"),
+        # they are what makes this read as outdoors rather than as a corridor with a bench.
+        #
+        # The measured conifer is 2.54 m and the measured fir is 6.03 m.  A 6 m tree does not fit a
+        # room with a 3 m ceiling -- it would grow straight through it, and the fit would then pull
+        # it down to whatever the declared box says, which is a 6 m fir drawn as a 3 m one.  So the
+        # heights here are room-appropriate rather than measured, and that is a deliberate choice
+        # rather than an accident: the declared box is what the clearance checks clear, and a tree
+        # taller than the ceiling has no legal box at all.  Proportions are kept from the
+        # measurement (the fir is ~1.09 : 1 across, the juniper ~1.02 : 1).
+        _dressing_floor("tree_conifer", (12.4, 0.00, 2.05), (0.9158, 2.1626, 0.9011), DRESSING_GREEN,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Trees/Chinese_Juniper.usd",
+                        room_fit=0.85),
+        _dressing_floor("tree_fir", (14.6, 0.00, -2.05), (1.0882, 2.1695, 0.9974), DRESSING_GREEN,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Trees/Douglas_Fir.usd",
+                        room_fit=0.36),
+        _dressing_floor("tree_sapling", (10.8, 0.00, -2.20), (1.6401, 2.9064, 1.6477), DRESSING_WOOD,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Trees/Elm_Sapling.usd",
+                        room_fit=0.941448),
     )
 
     # The supermarket: shelving either side, a checkout and produce behind the agent.

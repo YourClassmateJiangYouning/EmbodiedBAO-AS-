@@ -82,9 +82,15 @@ OTHER = {
     # the Stage 1 runner's per-episode summary
     "episodes", "turned_rate", "passed_sideways_count", "first_turn_step_mean",
     "avg_success_steps", "avg_passage_rotation_deg", "resolved_tag",
-    # a Stage 1 dressing item (scenes.py) and a scene material entry (scene_builder.py)
+    # a Stage 1 dressing item (scenes.py) and a scene material entry (scene_builder.py).
+    # room_fit belongs here rather than in RECORD_VARS' schema because it is scene CONFIGURATION,
+    # not a log field: it is the fraction of a measured asset size that a scene deliberately uses
+    # (a measured 6.03 m fir does not fit a 3 m room).  Adding it here is the intended route -- the
+    # alternative, renaming the loop variable so the check stops looking, would trade a false
+    # positive for less coverage of the very objects it is meant to police.
     "asset", "colour", "mount", "at", "size", "collides", "used_asset", "how", "url",
-    "parts", "slot", "scene", "kind",
+    "parts", "slot", "scene", "kind", "room_fit", "fit_scale", "reference", "reference_error",
+    "part_names", "paint_error", "painted",
 }
 
 
