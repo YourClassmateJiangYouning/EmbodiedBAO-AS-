@@ -65,12 +65,18 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float],
     the marker's size was chosen in -- eye-frame means of 137.6 for stage1.1 against 81-112 for
     1.2-1.5, against environment.py's own 130-160 acceptance range -- and in the frames the
     marker's closest pixel sits 47-69 away in RGB from the colour it was authored with.  A
-    self-lit term is the ONLY lever that raises the marker without touching the lights: the
-    lights are global, stage1.1 is already inside the acceptance range, and the 660 committed
-    episodes were rendered with those lights.  displayColor stays exactly the catalogue colour,
-    so the numeric uniqueness check is unaffected; what changes is how bright that colour lands.
+    self-lit term is the ONLY lever that raises the marker without touching the lights: the lights
+    are global, stage1.1 is already inside the range, and raising them heads for the washed-out
+    signature this repo has measured before (mean 220 with std 22.7, and the response exponent is
+    about 0.8, so it overshoots).  displayColor stays exactly the catalogue colour, so the numeric
+    uniqueness check is unaffected; what changes is how bright that colour lands.
 
-    Returns whether it worked, so callers can report it rather than assume it.
+    Returns whether it worked, so callers can report it rather than assume it.  Both the
+    displayColor and the emissive are inside that answer: emissiveColor is a plain Vec3f rather
+    than the array displayColor wants, it is the newer and less-certain of the two calls, and if
+    the attribute cannot be authored the honest result is False -- a marker that silently lost
+    its brightness is precisely the failure this parameter exists to fix.  The build_marker report
+    carries the flag through to the render log.
     """
     try:
         from pxr import Gf, UsdGeom, Vt
@@ -82,11 +88,13 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float],
         gprim.CreateDisplayColorAttr().Set(Vt.Vec3fArray(
             [Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2]))]))
         if emissive is not None:
-            # emissiveColor is a plain Vec3f, not the array displayColor wants.  Its exception
-            # is NOT swallowed: the caller decides, because a marker that silently lost its
-            # brightness is the failure this parameter was added to fix.
-            gprim.CreateEmissiveColorAttr().Set(
-                Gf.Vec3f(float(emissive[0]), float(emissive[1]), float(emissive[2])))
+            try:
+                gprim.CreateEmissiveColorAttr().Set(
+                    Gf.Vec3f(float(emissive[0]), float(emissive[1]), float(emissive[2])))
+            except Exception:  # noqa: BLE001
+                # Reported through the return value, not raised: one missing attribute should
+                # not stop a scene from being built, and the caller records the flag.
+                return False
         return True
     except Exception:  # noqa: BLE001
         return False
@@ -254,21 +262,38 @@ def _disable_collision(prim: Any) -> None:
 
 
 # One directory listing for the whole process.  prop_asset_for() is called once per dressing
-# item, and place_dressing() runs for every scene, so the uncached version walked assets/isaac
-# (about 900 files) 165 times per sweep for three actual lookups.  The tree cannot change while
-# a run is in progress, so the listing is built once and reused.
+# item, and place_dressing() runs for every scene, so the uncached version walked the whole
+# assets/isaac tree once per item.
 _ASSET_INDEX: Optional[Dict[str, str]] = None
 
 
 def _asset_index() -> Dict[str, str]:
-    """basename -> full path for every vendored .usd, built once."""
+    """basename -> full path for every vendored .usd, built once.
+
+    Two files with the same basename would make the lookup silently arbitrary -- whichever the
+    walk happened to reach first -- and the catalogue names assets by basename, so the wrong one
+    would render as a plausible but incorrect prop.  That is refused rather than left to walk
+    order.  There are no duplicates today; this is here so that adding one is an error and not a
+    coincidence.
+    """
     global _ASSET_INDEX
     if _ASSET_INDEX is None:
         index: Dict[str, str] = {}
+        clashes: Dict[str, List[str]] = {}
         for root, _dirs, files in os.walk(LOCAL_ASSETS):
             for name in files:
-                if name.endswith(".usd"):
-                    index.setdefault(name, os.path.join(root, name))
+                if not name.endswith(".usd"):
+                    continue
+                full = os.path.join(root, name)
+                if name in index:
+                    clashes.setdefault(name, [index[name]]).append(full)
+                else:
+                    index[name] = full
+        if clashes:
+            raise ValueError(
+                "the vendored assets contain files with the same basename, so a catalogue "
+                "reference to that name cannot be resolved to one of them: "
+                + "; ".join(f"{name} -> {paths}" for name, paths in sorted(clashes.items())))
         _ASSET_INDEX = index
     return _ASSET_INDEX
 
@@ -339,9 +364,14 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
     layer or a failed reference degrades to exactly the scene that shipped before this
     function could reference anything -- and the report says which happened.
 
-    Only floor items take a reference.  A wall item's box is a picture plate and the props in
-    the library are furniture, so referencing one there would put a cabinet through a wall for
-    no gain.
+    The catalogue's ``asset`` is consulted for every item, but a reference is only attempted for
+    FLOOR items, and an earlier version of this docstring said the opposite ("only floor items
+    take a reference") right next to the cabinet that was moved to the floor so it could be
+    referenced.  The reason is that a wall item's box is a picture plate hanging on a wall: the
+    props in this catalogue are furniture, so referencing one there would push a cabinet through
+    the wall for no gain.  Which items end up referenced is therefore a property of the layouts,
+    not a rule in this loop: of 33 items, four are floor items naming an asset, and three of those
+    resolve to a vendored mesh (the fourth names an .mdl and is refused above).
 
     The first version referenced whatever ``asset`` named, which for MI_SignB and
     M_TrafficCone was an MDL: USD answered "Cannot determine file format" and the item stayed
@@ -389,6 +419,10 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 # size is a fact about the asset, and forcing one onto the other without a
                 # measurement would change what those checks mean.  Calibrating scale from each
                 # asset's extent is a separate step and it needs a renderer.
+                #
+                # This is also why the declared sizes were rewritten from tools/measure_assets.py
+                # output: with no scale factor, a declaration that disagrees with its prop means
+                # the mesh hangs outside the volume the checks reason about.
                 _disable_collision(proxy_prim)
                 record["used_asset"] = os.path.basename(local)
                 record["reference"] = local
@@ -588,8 +622,15 @@ def format_report(report: Dict[str, Any]) -> str:
     """One line per fact, for the run log."""
     lines = [f"[scene] {report['scene']} ({report['label']}) marker slot {report['slot']}"]
     marker = report["marker"]
+    # The size and the paint result are printed because they are the two things that were
+    # recently changed and cannot be checked from the numbers anywhere else in the log: the
+    # marker was enlarged to 0.90 m and given a self-lit component, and "the emission did not
+    # land" is exactly the failure that would otherwise be diagnosed by eye from a dim frame.
     lines.append(f"[scene] marker: {marker['shape']} in {marker['colour']} "
-                 f"({marker['parts']} mesh part(s))")
+                 f"({marker['parts']} mesh part(s), size "
+                 f"{marker.get('size_m', 0.0):.2f} m, emissive "
+                 f"{tuple(round(c, 3) for c in marker.get('emissive', ())) or '-'}, "
+                 f"painted {marker.get('painted')})")
     for surface, info in report["materials"].items():
         # The prim path is printed because without it the log cannot answer the question that
         # matters when a surface looks wrong: which prim did this material actually land on.  In

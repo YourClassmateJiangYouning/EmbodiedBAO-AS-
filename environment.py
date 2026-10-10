@@ -141,10 +141,26 @@ GOAL_MARKER_COLOR = [0.85, 0.15, 0.12]
 # Edge length of the marker square, in metres.  It is the TASK ("reach the red
 # marker on the far wall"), not decoration, so it must be identifiable from the
 # start pose at the 512 px input the sweep uses: at the previous 0.30 m it was
-# only about 10 px there.  0.60 m doubles that, and the old "red field at close
+# only about 10 px there.  0.60 m doubled that, and the old "red field at close
 # range" objection no longer applies because success is scored at x = 8.75, one
 # stride past the wall, so the agent is never scored while near the far wall.
-GOAL_MARKER_SIZE = 0.60
+#
+# 0.90 m as of 2026-10-10, changed together with scenes.MARKER_SIZE_M, which is
+# asserted equal to this value by test_bao_scenes.  Measured from the actual
+# frames at 0.60 m, the plate landed at 13-25 px of a 1024 px frame -- 6-12 px of
+# the 512 px the model is given -- and the textured scenes rendered dimmer than
+# the 0.60 m was tuned against (eye-frame means 81-112 for stages 1.2-1.5 against
+# this file's own 130-160 acceptance range).  0.90 m is 1.5x, so 1.5x the edge
+# and 2.25x the area, and it still fits the 1.14 m level 0 opening, so the marker
+# remains an object that would pass through rather than one that could not.
+#
+# This is the size the environment BUILDS, and the catalogue is pinned to it.  An
+# earlier revision left this at 0.60 and had the preview harness pass
+# goal_marker_height=0.90 instead, on the reasoning that changing it would move
+# the baseline that 660 test episodes were rendered against.  That constraint was
+# wrong: those episodes are a test run, not a reference the design must follow, so
+# the override was removed and there is one source of truth again.
+GOAL_MARKER_SIZE = 0.90
 
 WALL_X = 8.0
 WALL_HEIGHT = 2.0

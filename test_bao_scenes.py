@@ -318,6 +318,41 @@ def test_the_episode_count_is_what_the_design_says() -> None:
     print("[ok] 5 scenes x 17 levels x 5 markers x 15 models = 6,375 episodes")
 
 
+def test_the_report_says_the_marker_size_and_whether_the_emission_landed() -> None:
+    """The two things that recently changed must be readable from the run log.
+
+    The marker's size went to 0.90 m and it gained a self-lit component authored through
+    ``emissiveColor`` -- a pxr attribute that cannot be exercised on this machine, so whether it
+    landed is only knowable from the workstation.  If the report does not carry it, the only way
+    to tell a marker that is dim because the emission failed from one that is dim for some other
+    reason is to look at a picture and guess, which is what this session has twice been wrong
+    about.
+
+    format_report() is pure, so this needs no stage.
+    """
+    import scene_builder
+
+    report = {
+        "scene": "stage1.2", "label": "warehouse", "slot": 2,
+        "marker": {"shape": "hexagon", "colour": "c", "parts": 1,
+                   "size_m": sc.MARKER_SIZE_M, "emissive": (0.04, 0.29, 0.40),
+                   "painted": True},
+        "materials": {}, "dressing": [], "dressing_count": 0,
+    }
+    text = scene_builder.format_report(report)
+    check("marker:" in text, f"the report has no marker line:\n{text}")
+    check(f"{sc.MARKER_SIZE_M:.2f} m" in text,
+          f"the marker line does not state the size:\n{text}")
+    check("painted True" in text,
+          f"the marker line does not say whether painting and emission succeeded:\n{text}")
+
+    # And a failure has to be visible as a failure.
+    report["marker"]["painted"] = False
+    check("painted False" in scene_builder.format_report(report),
+          "a marker whose paint failed reports the same as one that succeeded")
+    print("[ok] the marker report carries its size and whether the emission was authored")
+
+
 def test_every_colour_is_used_at_least_once() -> None:
     """A colour in the palette that no marker uses would be dead weight in the design."""
     used = collections.Counter(colour for scene in sc.SCENE_ORDER
@@ -358,49 +393,31 @@ def test_the_builder_imports_without_a_simulator() -> None:
 def test_the_catalogue_matches_the_environment_it_replaces() -> None:
     """The baseline marker must reproduce the one the frozen environment already builds.
 
-    This used to compare the catalogue's size against environment.GOAL_MARKER_SIZE, on the
-    reasoning that the two must agree.  They no longer do, and that is a decision rather than a
-    drift: GOAL_MARKER_SIZE stays at 0.60 m because it is the default the 660 committed episodes
-    were rendered with, while the catalogue is 0.90 m because the rendered frames measured the
-    marker at 6-12 px of the 512 px input and dimmer than the acceptance range.  Changing the
-    environment's default would have moved the baseline; changing the catalogue alone would
-    have been a silent mismatch.
-
-    What has to agree, therefore, is not the stored default but what gets BUILT.  The
-    environment reads ``goal_marker_height`` from the task dict, and capture_scenes.py --
-    the only harness that renders this catalogue -- passes the catalogue's size down.  This test
-    checks the position, the wall and the colour, and then checks that the harness actually
-    passes that override, because the rest is worth nothing if it does not.
-
     Pin the catalogue against environment.py's own constants, so that changing one without
-    the other fails here rather than silently moving the marker on the far wall.
+    the other fails here rather than silently moving or resizing the marker on the far wall.
+
+    This was briefly weakened to make room for two sources of truth: the size check was dropped
+    and replaced with a check that the preview harness passed an override, because
+    environment.GOAL_MARKER_SIZE had been left at 0.60 m to avoid moving a baseline that 660
+    test episodes had been rendered against.  That reason was wrong -- those episodes are a test
+    run, not a reference later work has to follow -- so both values are 0.90 m now, the override
+    is gone, and the size is pinned again.  One number in one place beats an override plus a test
+    that checks the override.
     """
     import environment as env
 
+    check(abs(sc.MARKER_SIZE_M - float(env.GOAL_MARKER_SIZE)) < 1e-9,
+          f"catalogue marker size {sc.MARKER_SIZE_M} vs environment {env.GOAL_MARKER_SIZE}; "
+          f"the environment builds its own marker at the same /World/GoalMarker path, so these "
+          f"two have to be the same number")
     check(abs(sc.MARKER_WALL_X_M - float(env.ROOM_LENGTH_X)) < 1e-9,
           "the catalogue puts the marker on a different wall than the room's far wall")
     check(abs(sc.MARKER_Y_M - 1.40) < 1e-9,
           "the catalogue's marker centre height differs from the environment's 1.40 m")
     check(tuple(sc.COLOURS["r"]) == (0.85, 0.15, 0.12),
           "the red in the palette is not the existing marker's red")
-
-    # The environment can be told the size, and the harness that renders the catalogue must say
-    # so.  Read as an assignment rather than by importing capture_scenes, which builds a
-    # SimulationApp at module scope.
-    import re
-
-    source = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                               "capture_scenes.py"), encoding="utf-8").read()
-    match = re.search(r'"goal_marker_height"\s*:\s*float\(scenes\.MARKER_SIZE_M\)', source)
-    check(match is not None,
-          "capture_scenes.py does not pass goal_marker_height=float(scenes.MARKER_SIZE_M) to "
-          "the environment, so the environment would build its own 0.60 m marker before the "
-          "catalogue's 0.90 m one replaces it at the same path")
-    check(hasattr(env.BAOEnv, "_create_goal_marker"),
-          "the environment lost the method that reads goal_marker_height")
-    print(f"[ok] the catalogue's marker matches the environment's wall, height and red, and "
-          f"the harness passes its {sc.MARKER_SIZE_M:.2f} m size through "
-          f"(environment default stays {env.GOAL_MARKER_SIZE:.2f} m for the committed episodes)")
+    print(f"[ok] the catalogue's baseline marker matches the environment's own constants "
+          f"(size {sc.MARKER_SIZE_M:.2f} m, wall, height, red)")
 
 
 def test_the_built_marker_matches_the_environment_plate_exactly() -> None:
@@ -1151,6 +1168,7 @@ def main() -> int:
         test_no_module_asks_pxr_for_something_it_does_not_have,
         test_no_module_calls_a_scene_helper_that_does_not_exist,
         test_a_declared_size_is_the_size_of_the_prop_it_names,
+        test_the_report_says_the_marker_size_and_whether_the_emission_landed,
     ]
     failed = 0
     for test in tests:

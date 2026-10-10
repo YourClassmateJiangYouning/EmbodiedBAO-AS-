@@ -205,13 +205,6 @@ def main() -> int:
                 "image_size": args.width,
                 "use_mdl": not args.flat_paint,
                 "hide_robot": bool(args.hide_robot),
-                # The environment builds its own goal marker in __init__, before the catalogue's
-                # marker is defined over it at the same /World/GoalMarker path.  Passing the
-                # catalogue's size here means the two are never briefly different, and it is the
-                # supported override (environment._create_goal_marker reads goal_marker_height
-                # from the task dict) rather than a change to GOAL_MARKER_SIZE, which would move
-                # the baseline the 660 committed episodes were rendered with.
-                "goal_marker_height": float(scenes.MARKER_SIZE_M),
                 "scene_parts": [p.strip() for p in args.parts.split(",") if p.strip()]}
         env = environment.setup_scene(app, task_dict=task)
         print(f"[preview] scene {args.scene} ({scenes.SCENES[args.scene]['label']}) "

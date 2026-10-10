@@ -81,7 +81,7 @@
 | `tools/check_field_names.py`、`tools/check_names.py` | 静态审计：字段名 / 未定义名（后者在 geometry 套件里跑） | 可改 |
 | `tools/fetch_assets.py`、`tools/shrink_textures.py`、`tools/shrink_tree.py` | 素材抓取 / 降采样（**坏图只跳过不中断**） | 可改 |
 | `assets/isaac/` | 随仓库走的素材（**实测 899 文件 / 138.5 MB**：Simple_Warehouse + Hospital + Office） | 只增 |
-| `test_bao_*.py` | 手写测试套件，**实测 9 套件共 159 项全过**：geometry 37 / memory 29 / scenes **26** / integration 20 / memory_runner 17 / persistence 13 / parsing 9 / health 5 / assets 3 | 必须全过 |
+| `test_bao_*.py` | 手写测试套件，**实测 9 套件共 167 项全过**：geometry 37 / scenes **32** / memory 29 / integration 20 / memory_runner 17 / persistence 13 / parsing 9 / health 5 / assets **5** | 必须全过 |
 | `STAGE1_SCENES.md` | Stage 1 场景与 25 标志物的规格（原 `STAGE3_SCENES.md`） | 可改 |
 | `STAGE1_SCENE_VARIANTS.md` | Stage 1 的 10 个单变量变体规格（原 `STAGE3_SCENE_VARIANTS.md`） | 可改 |
 | `STAGE23_DESIGN.md` | Stage 2/3 记忆实验的**唯一权威规格** | 可改 |
@@ -129,7 +129,7 @@ cd ~/EmbodiedBAO-AS- && python3 tools/parse_agent_logs.py --csv logs_reasoning.c
 # 冒烟验收
 cd ~/EmbodiedBAO-AS- && python3 tools/verify_stage1_lab.py --log smoke_1.1.log --model gpt-4o-mini
 
-# 全部测试（9 套件，实测 159 项）
+# 全部测试（9 套件，实测 167 项）
 # ★ 必须用 Isaac 解释器：系统 python3 没有 Pillow，test_bao_persistence 会 FAIL（实测）
 cd ~/EmbodiedBAO-AS- && for s in test_bao_geometry test_bao_integration test_bao_memory test_bao_scenes test_bao_memory_runner test_bao_persistence test_bao_parsing test_bao_health test_bao_assets; do printf '%-28s ' $s; /home/ybh/isaacsim/python.sh $s.py 2>/dev/null | tail -1; done
 
@@ -287,6 +287,51 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
 | 8 | 标志物轮换挂在 `reset()` 上 → 运行器调的是 `reset_scene()` → **一次都没换** | 逻辑要挂在**真正被调用的**入口上；用日志验证而非想当然 |
 | 9 | 路径写错导致误删/误提交（`assets\isaac\Outdoor` vs `assets\isaac\Environments\Outdoor`）→ 仓库一度 574 MB | 删之前 **`Get-ChildItem` 确认路径**，提交前看 `git ls-files` 的体积 |
 | 10 | 降采样被**一张坏图**打断整轮 | 批量处理要**逐文件 try/except** |
+
+### 8.1 第七轮起新增的错（**这些曾只写在 SESSION_RECORD，是本手册的漏项**）
+
+用户在 2026-10-10 指出：错误只记进了 `SESSION_RECORD.md`，`MANUAL.md §8` 长期停在上面那 10 条。
+下面是从 §E / §G4 / §H5 / §I5 / §J3 / §K3 / §L4 汇总进来的部分，**按病根归类**，细节在 SESSION_RECORD 对应小节。
+
+| # | 错 | 真相 | 怎么发现的 |
+| :-: | :--- | :--- | :--- |
+| 11 | 认为"陈设的放置几何"已由测试保证 | 测试比对的是**声明**，不是**放置后**的位置 | 写 STEP 2 审计时逐件算 `at`/`size` |
+| 12 | 用对称性判据去判**非中心对称**形状是否"贴墙" | 43/44 件判为"偏离"，其中 **4 个是误报** | 换成质心判据后 25/25 正确 |
+| 13 | 用**色相窗口**找蓝色墙上的标志物 | 把蓝色远墙本身算成了青色标志物（69025 px） | 打印命中像素数，量级不对 |
+| 14 | 用 `sat>60` 当阈值 | 得到一个 700 px 的"标志物" | 同上 |
+| 15 | 只找 `Assign` 节点做 AST 审计 | 实际是 `AnnAssign` → 得出"全为空"的错误结论 | 改用正确节点类型 |
+| 16 | 手改 `stage1.2` 四个地面件为 y=0.0 | 那些位置本是**中心**，改成 0 把物件从 0.20 m 压到地面 | 后续脚本输出显示 base 为负 |
+| 17 | 写脚本"把中心转成底面"时对 y 减 `height/2` | **helper 已经加了 `height/2`** → 抵消，出现**负底面**（`pallets −0.20`） | 恢复脚本显示 base 全部低于地板 |
+| 18 | 新测试断言 `front ≤ face + clearance` | 方向反了：helper 把**中心**放在墙面，**正面按设计就该凸出半个厚度** → 14 件全部误报 | 看失败列表，全是墙件且规律 |
+| 19 | 认为"量道具的比值"已经回答了问题 | 那个数只说明了**方块 == 声明**，对道具一无所知 | 读回代码发现量的是方块 |
+| 20 | `UsdGeom.BoxCache` | 正确是 **`UsdGeom.BBoxCache`**；构造要 `(time, purposes)`，方法是 `ComputeWorldBound(prim)` | 上机 AttributeError；**改前查了官方文档** |
+| 21 | 桶列表脚本报 "Pallet/Forklift/Food 全部 ABSENT" | **前缀多了前导斜杠**，S3 前缀不匹配任何键，**返回 200 + 0 个 CommonPrefixes 而不报错** | PowerShell 直接请求同一 URL 得 `KeyCount=22`，与 Python 矛盾 |
+| 22 | 用 `delimiter=/` 查"每类有哪些 .usd" | delimiter 只返回子目录，不返回文件 | 去掉后 Pallet 列出 8 个 .usd |
+| 23 | 猜 pxr API 三次（`Prim.GetReferences()` 是否存在、`Define` 返回 schema 还是 prim、同一行反复改） | 正解：`Define` 返回 **schema** → `.GetPrim()` → `prim.GetReferences().AddReference(path)` | 不确定就重写，最后用显式三步 + `except` 兜底 |
+| 24 | 解析 `small_KLT_visual.usd` 时选中 `small_KLT_visual_collision.usd` | 名字已含 `visual` 时应**原样使用** | 打印解析结果 |
+| 25 | 把"**更大的文件**"当作"更好的文件"，把柜子升级到 `sektion_cabinet_visuals.usd` | 该文件**没有 defaultPrim**（`Unresolved reference prim path <defaultPrim>`），**能用的恰是 `_instanceable` 那个** | 上机实测 + USD 警告；`tools/measure_assets.py` |
+| 26 | 差点给 `shelf_left/right` 写 `(1.2132, 0.6678, 0.7638)` | `_dressing_wall` 约定是 **(across, tall, thick)** 且 `thick` 落 x 轴；柜子深 0.6678 → 半深 0.33 超 0.20 上限，**必然违规** | 读测试判据后**全部回退，没有硬推** |
+| 27 | 差点按 `\|z\| ≥ 1.5` 放柜子 | 规矩是**底面高于 0.6 m 的地面件要 `\|z\| ≥ 1.8`**；柜子高 0.7861 → 必须 1.8 | 读 `test_decoration_is_never_collidable_and_stays_off_the_path` |
+| 28 | 表里 `declared` 用**用户坐标系**，道具用**世界坐标系** | 两个坐标系互比 → 表里出现 `(0.6, 0.5, 0.3)` 而源文件是 `(0.6, 0.30, 0.5)` | 对照 `scenes.py` 源码 |
+| 29 | 调 `sc.to_user_size()` | **该函数不存在**（只有 `to_user` 与 `to_world_size`） | 新守卫 `test_no_module_calls_a_scene_helper_that_does_not_exist` |
+| 30 | `measure_props.py` 构造的路径含 `stage1.2` | `.` 是 **SdfPath 的属性分隔符** → 路径非法，只打一条警告就什么都没量 | 上机日志；修法是复用 `scene_builder.prim_name()` |
+| 31 | 我的守卫**本身错了三次**：①取全文所有别名对每行套用 ②把**注释**当代码 ③正则数参数不认**星号解包** | 最终改为**遍历 AST 属性访问**（`Attribute(value=Name('sc'))`），注释/字符串/星号都产生不了这种节点 | 每次误报都打印出被误判的行 |
+| 32 | 把核查用的临时脚本和 PNG 一起提交，**其中含一个已判定给出错误结论的工具** | 把已知会误导人的工具放进仓库，**比不放更糟** | 自己 review 提交内容时发现；已移除并加 `.gitignore` |
+| 33 | 一直以"**保护已跑的 660 集基线**"为由，不肯改 `environment.GOAL_MARKER_SIZE`，还为此加了一套"覆盖机制 + 检查覆盖的测试" | 用户明确说：**那 660 集只是测试，不需要让后续构造与它同步**。于是恢复单一真值来源，删掉覆盖 | 用户指出 |
+
+### 8.2 由上面这些错提炼的规则（**比单条错误更重要**）
+
+| 规则 | 来源 |
+| :--- | :--- |
+| **判据本身要先验证**：任何"检查/审计/阈値"在使用前，先证明它**选中**的是它声称要选的东西 | 12–15、19、31 |
+| **变换的代数要先写完再动手**：谁在什么时刻加/减了多少，逐位验证 | 16–18 |
+| **坐标系要么都换算、要么都不换算**，绝不一边一个 | 28 |
+| **外部服务的"空结果"必须先证伪再当事实**（200 + 空列表既可能是"真没有"，也可能是"查错了"） | 21、22 |
+| **调用前查文档**，尤其本机跑不了的 API；并且给新写的 API 调用加**静态守卫** | 20、23、29 |
+| **自己写的守卫要能抓住它存在的那个 bug**（否则等于装饰） | 14、31 |
+| **"更大的/更完整的文件"不等于"更对的入口"** | 24、25 |
+| **临时脚本与派生图片不入库**；已知会误导的工具绝不入库 | 32 |
+| **不要拿"已经跑过的数据"当作不能改动的理由**——先问它是不是只是测试 | 33 |
 
 ---
 

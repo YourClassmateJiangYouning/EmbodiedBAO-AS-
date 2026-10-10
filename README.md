@@ -840,7 +840,7 @@ is versioned now — do not delete it, and do not regenerate it in place.
 
 ## Verification without Isaac Sim
 
-Everything that can be decided without a renderer runs on plain Python. **159 checks
+Everything that can be decided without a renderer runs on plain Python. **167 checks
 across nine suites**, counted at the time of writing rather than remembered (`grep -c
 '^def test_' test_bao_*.py`):
 
@@ -848,12 +848,12 @@ across nine suites**, counted at the time of writing rather than remembered (`gr
 python test_bao_geometry.py       # 37 checks: ladder, collision gate, routes, colours, prompt
 python test_bao_integration.py    # 20 checks: full protocol, tagged runs, CLI flags, against a mock environment
 python test_bao_memory.py         # 29 checks: the Stage 2 measures and prompts, against an independent model and the real gate
-python test_bao_scenes.py         # 26 checks: the Stage 1 catalogue, all arithmetic, no simulator
+python test_bao_scenes.py         # 32 checks: the Stage 1 catalogue, all arithmetic, no simulator
 python test_bao_memory_runner.py  # 17 checks: the Stage 2 runner end to end against a mock environment and a scripted agent
 python test_bao_persistence.py    # 13 checks: interrupt and corruption safety of every artefact written
 python test_bao_parsing.py        #  9 checks: the reply parser, including shapes once discarded
 python test_bao_health.py         #  5 checks: the runner stops a model whose every call is failing
-python test_bao_assets.py         #  3 checks: every named material exists, `stage1.1` stays bare
+python test_bao_assets.py         #  5 checks: every named material exists, `stage1.1` stays bare
 ```
 
 **Which interpreter, and the one test that depends on it.** Nothing here needs Isaac Sim,
@@ -1071,23 +1071,20 @@ a 2 m horizontal bar instead of a vertical post.
   eleven names that still have to be confirmed by the same listing, and
   `test_bao_scenes.py` fails a scene that claims verification while naming a URL outside
   the Isaac asset root. Unconfirmed is not the same as wrong — it is unverified.
-* **The marker is now 0.90 m, and the 660 committed episodes used 0.60 m.** `scenes.MARKER_SIZE_M`
-  went from 0.60 to 0.90 (1.5x, so 1.5x the apparent edge and 2.25x the area) because the
-  rendered frames measured the plate at only 6-12 px of the 512 px input, and dim: the textured
-  scenes' eye frames average 81-112 against `environment.py`'s own 130-160 acceptance range
-  (stage1.1, the plain baseline, is 137.6 and stays inside it). All ten shapes are derived from
-  `SHAPE_HALF_M`, so they scaled together and no shape definition changed. The marker also gets a
-  self-lit component, `scenes.MARKER_EMISSIVE_GAIN` (0.45) times its own RGB, which is the only
-  brightening lever that does not touch the lights — the lights are global, stage1.1 is already
-  in range, and raising them would move the baseline toward the washed-out signature (mean 220,
-  std 22.7) that `environment.py` records.
-  **`environment.GOAL_MARKER_SIZE` deliberately stays at 0.60 m**: it is the default those 660
-  episodes were rendered with, and changing it would have moved them. Instead `capture_scenes.py`
-  passes `goal_marker_height=scenes.MARKER_SIZE_M` through the task dict, which
-  `environment._create_goal_marker` already supports. So the old baseline remains reproducible,
-  but **new episodes are not directly comparable with the committed 660** — a 0.90 m stimulus is
-  a different stimulus. The colour is unaffected: `displayColor` is still the exact palette value,
-  so the numeric uniqueness check is unchanged.
+* **The marker is 0.90 m, not the 0.60 m of the earlier test run.** `scenes.MARKER_SIZE_M` and
+  `environment.GOAL_MARKER_SIZE` are both 0.90 m (1.5x the size, so 1.5x the apparent edge and
+  2.25x the area), because the rendered frames measured the plate at only 6-12 px of the 512 px
+  input, and dim: the textured scenes' eye frames average 81-112 against `environment.py`'s own
+  130-160 acceptance range (stage1.1, the plain baseline, is 137.6 and stays inside it). All ten
+  shapes are derived from `SHAPE_HALF_M`, so they scaled together and no shape definition
+  changed. The marker also gets a self-lit component, `scenes.MARKER_EMISSIVE_GAIN` (0.45) times
+  its own RGB, which is the only brightening lever that does not touch the lights — the lights are
+  global, stage1.1 is already in range, and raising them would move toward the washed-out
+  signature (mean 220, std 22.7) that `environment.py` records. The colour is unaffected:
+  `displayColor` is still the exact palette value, so the numeric uniqueness check is unchanged.
+  The 660-episode run that used 0.60 m was a **test**, not a reference this design is required to
+  follow, so nothing is kept in step with it; the size lives in one place and a test pins the two
+  constants equal.
 * **Scene dressing is mostly boxes.** Every one of the 33 dressing items is placed as a box of
   its declared size, and three of them additionally reference a vendored `.usd` mesh:
   `stage1.2`'s `pallets` → `Pallet/pallet.usd`, `stage1.2`'s `klt_bins` →

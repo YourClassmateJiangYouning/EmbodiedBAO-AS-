@@ -37,6 +37,9 @@ integration 20 / memory 29 / memory_runner 17 / parsing 9 / persistence 13 / sce
 **未处理、留给用户决定**：
 - `results/` 与 `lab_logs/extracted/results/` 各 346 条 episode，README 已声明二者逐字节相同（`README.md:679`）。是否删除未获授权，未动。
 - `tools/` 下 17 条 ruff 提示（未使用导入等），未动：不在本轮"核心模块"范围。
+  （2026-10-10 复核：全仓库为 **18** 条，多出的一条在 `lab_logs/stage1_reasoning_and_positions.py`，
+  同样不属于本轮改动；**本项目改动的模块 0 条**。用 `ruff check .gitignore` 会额外报
+  21 条 `invalid-syntax`，那是把非 Python 文件当源码解析，不是真提示——我自己踩过一次。）
 
 ---
 

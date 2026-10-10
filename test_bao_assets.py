@@ -108,12 +108,53 @@ def test_the_laboratory_is_still_undecorated() -> None:
     print("[ok] stage1.1 is still plain: no materials and no dressing")
 
 
+def test_a_duplicate_asset_basename_is_refused() -> None:
+    """Two vendored .usd files with the same name must be an error, not a coin toss.
+
+    scene_builder.prop_asset_for() resolves a catalogue asset by BASENAME, and the index is built
+    by walking the tree.  With a plain dict assignment the second file would silently overwrite
+    the first -- or, depending on walk order, the first would win -- and the scene would render a
+    different prop from the one the catalogue named, with nothing in any log to say so.  There are
+    no duplicates in the repository today, which is exactly why this needs a test: the failure
+    only appears when someone adds one.
+
+    Checked on a throwaway tree rather than by adding a duplicate to assets/isaac, and the module
+    state is restored afterwards so later tests see the real index.
+    """
+    import tempfile
+
+    root = tempfile.mkdtemp(prefix="bao_dup_")
+    for sub in ("A", "B"):
+        os.makedirs(os.path.join(root, sub))
+        open(os.path.join(root, sub, "dup.usd"), "w").close()
+
+    original_root = sb.LOCAL_ASSETS
+    original_index = sb._ASSET_INDEX
+    sb.LOCAL_ASSETS = root
+    sb._ASSET_INDEX = None
+    try:
+        raised = None
+        try:
+            sb._asset_index()
+        except ValueError as exc:
+            raised = str(exc)
+        check(raised is not None,
+              "a tree with two files named dup.usd produced an index instead of an error, so a "
+              "catalogue reference to dup.usd would resolve to an arbitrary one of them")
+        check("dup.usd" in raised, f"the error does not name the clashing file: {raised}")
+    finally:
+        sb.LOCAL_ASSETS = original_root
+        sb._ASSET_INDEX = original_index
+    print("[ok] a duplicate asset basename is refused, and the message names the file")
+
+
 def main() -> int:
     tests = [
         test_every_material_is_vendored,
         test_surfaces_do_not_share_a_material,
         test_the_laboratory_is_still_undecorated,
         test_every_named_prop_that_can_be_referenced_is_vendored,
+        test_a_duplicate_asset_basename_is_refused,
     ]
     failures = 0
     for test in tests:
