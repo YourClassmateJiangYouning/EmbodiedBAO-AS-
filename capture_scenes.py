@@ -87,6 +87,18 @@ def parse_args() -> argparse.Namespace:
              "default existed because a material fetched from its URL arrived without shaders "
              "on a machine whose material-library cache is not writable.",
     )
+    parser.add_argument(
+        "--iso_target", type=float, nargs=3, default=(10.0, 1.0, 0.0),
+        metavar=("X", "Y", "Z"),
+        help="World point the external camera looks at, default the far end of the corridor. "
+             "The eye camera cannot see the obstacle-wall dressing at all: it looks through a "
+             "0.570 m opening while those items are required to sit at |z| >= 0.9, so they are "
+             "behind the wall panels from that pose.  Verified for the supermarket's shelf goods, "
+             "which project 8-16 px into the eye frame at x 612..691 and measure wall-grey there -- "
+             "the nearest pixel to the authored yellow was 154,161,171.  Checking them needs a "
+             "close view aimed at them: --iso_x 9.4 --iso_height 1.4 --iso_z 3.4 "
+             "--iso_target 7.99 1.05 1.6.",
+    )
     return parser.parse_args()
 
 
@@ -231,7 +243,7 @@ def main() -> int:
                 # Stand just outside the open end of the corridor, a little above eye height and
                 # a little to one side, looking down it.  Inside the room in both z and y, which
                 # is what the old placement was not.
-                look_from(iso_camera, target=(10.0, 1.0, 0.0),
+                look_from(iso_camera, target=tuple(args.iso_target),
                           position=(args.iso_x, args.iso_height, args.iso_z))
                 for _ in range(3):
                     env.world.step(render=True)
