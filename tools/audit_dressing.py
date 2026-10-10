@@ -108,13 +108,38 @@ def main() -> int:
                 problems.append(f"{scene}/{item['name']} is {item['size'][1]:.2f} m tall, above the "
                                 f"3.0 m ceiling")
 
-    # 8. Any declared-to-authored ratio far from 1.  A fit factor is a correction, not a shape: it
-    # exists to make a prop occupy the box it was declared with, and a factor of 39 or 220 means the
-    # prop is being distorted into something that is not the prop.  Those exact numbers appeared on
-    # the lab machine because the extent was measured with a world bound that included the scale the
-    # fit had just applied to the parent box -- a feedback loop that this check would have caught on
-    # the first run.  Ratios are computed per scene from the declared size and the recorded
-    # measurement, so no USD reader is needed.
+    # 8. The fit must be UNIFORM.  A per-axis factor reshapes a prop whose proportions differ from
+    # its declared box, and that is not a measurement error to be caught -- it is the design being
+    # wrong.  It showed up as (1.0, 16.0075, 0.0624) on the safety railing and (1.0, 2.4425, 0.7788)
+    # on an office chair: a railing 16x too tall, a chair squashed in one axis.  A uniform factor
+    # cannot do that, and an asset larger than its box is shrunk rather than reshaped.
+    if "def fit_scale_from_extent" not in builder:
+        problems.append("scene_builder.py has no fit_scale_from_extent; the fit cannot be checked")
+        fit_body = ""
+    else:
+        # Split on the NEXT top-level def, so the slice is this function only.  An earlier version
+        # split on "\ndef " and caught apply_scale's ComputeWorldBound comment below, reporting a
+        # defect in a function that no longer had one.
+        fit_body = builder.split("def fit_scale_from_extent", 1)[1]
+        for marker in ("\ndef ", "\nclass "):
+            if marker in fit_body:
+                fit_body = fit_body.split(marker, 1)[0]
+    if fit_body and "min(ratios)" not in fit_body and "min(min(ratios)" not in fit_body:
+        problems.append("fit_scale_from_extent does not derive a single factor from the per-axis "
+                        "ratios, so it would reshape the prop instead of scaling it")
+    if "fitted.append" in fit_body:
+        problems.append("fit_scale_from_extent builds a per-axis result list, which means the prop "
+                        "is reshaped rather than scaled")
+
+    # 9. No declared box may be smaller than the prop it names, because the prop is fitted INSIDE
+    # the box: a box that cannot hold it means the prop overhangs and clips, which is the failure
+    # this project must not have.  Compared as sorted sets, for the wall-item frame difference, and
+    # with a tolerance because a box derived from the same measurement differs from it by float
+    # rounding -- an exact comparison reported eleven items whose two lists printed identically.
+    # 5e-5: declared sizes are written to four decimal places by hand, so a box derived from a
+    # measurement can differ from it by half a unit in the last place -- 0.17 written against
+    # 0.1700070 computed.  An exact or 1e-6 comparison reported fifteen items that fit perfectly.
+    TOL = 5e-5
     for scene in sc.SCENE_ORDER:
         for item in sc.SCENES[scene]["dressing"]:
             asset = item.get("asset")
@@ -126,24 +151,12 @@ def main() -> int:
                 continue
             factor = float(sc.ASSET_SCALE.get(base, 1.0))
             room_fit = float(item.get("room_fit", 1.0))
-            # Compared as SETS across the three axes, not axis by axis.  A wall item stores its
-            # depth on slot 0 while the measurement records its width there, so the outer two
-            # numbers legitimately differ by a factor of 20 for a wide framed poster while the prop
-            # is the right size -- exactly the ambiguity test_a_declared_size resolves the same way.
-            # What this check is for is the DISTORTION: sorted(declared) against sorted(authored)
-            # still catches the 219.9 and 39.5 factors, and does not flag a correctly mounted
-            # poster.
-            authored = sorted(float(measured[axis]) * factor * room_fit for axis in range(3))
-            declared = sorted(float(item["size"][axis]) for axis in range(3))
-            for want, have in zip(declared, authored):
-                if have <= 0:
-                    continue
-                ratio = want / have
-                if ratio > 4.0 or ratio < 0.25:
-                    problems.append(
-                        f"{scene}/{item['name']}: declared {declared} m against an authored "
-                        f"{[round(v, 4) for v in authored]} m contains a factor of {ratio:.2f}, "
-                        f"which distorts the prop rather than resizing it")
+            prop = sorted(float(v) * factor * room_fit for v in measured)
+            box = sorted(float(v) for v in item["size"])
+            if any(box[axis] < prop[axis] - TOL for axis in range(3)):
+                problems.append(
+                    f"{scene}/{item['name']}: box {[round(v, 4) for v in box]} m cannot hold the prop "
+                    f"{[round(v, 4) for v in prop]} m, so the prop would overhang and clip")
 
     # 9. The bound API must be the one whose SEMANTICS fit the question.  This is the fault class a
     # name allowlist cannot catch, and it produced the worst defect of this session: every one of
@@ -164,8 +177,13 @@ def main() -> int:
     if "ComputeRelativeBound" not in builder:
         problems.append("scene_builder.py measures a fit with no ComputeRelativeBound, so the "
                         "extent would include the parent box's own scale and feed itself")
-    fit_body = builder.split("def fit_scale_from_extent", 1)[-1].split("\ndef ", 1)[0]
-    if "ComputeWorldBound" in fit_body:
+    # fit_body was extracted once, above, for rule 8.  It was extracted a SECOND time here, and the
+    # duplicate split on "\ndef " rather than on the next top-level def, so it ran past the end of
+    # fit_scale_from_extent into apply_scale and read that function's comment about ComputeWorldBound
+    # as though it were a call -- reporting a defect in a function that no longer had one.  Two
+    # extractions of the same slice is the duplication this project treats as a defect in its own
+    # right, and it produced exactly that: a false report.
+    if fit_body and "ComputeWorldBound" in fit_body:
         problems.append("fit_scale_from_extent uses ComputeWorldBound, whose bound includes every "
                         "ancestor transform -- including the parent box's scale, which is what this "
                         "function is deciding.  Use ComputeRelativeBound.")

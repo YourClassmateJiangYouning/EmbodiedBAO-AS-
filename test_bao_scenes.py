@@ -1243,23 +1243,27 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
                 problems.append(f"{scene}/{item['name']}: room_fit is {room_fit}; it is a fraction "
                                 f"of the measured size and must be in (0, 1]")
                 continue
+            # The check used to demand that the declared box EQUAL the measured prop on every axis.
+            # That requirement is what forced per-axis fitting, and per-axis fitting is what
+            # stretched the safety railing to 16 times its height and a curved bench to 11 times its
+            # width.  The two are one design, so they change together: the prop is now scaled
+            # UNIFORMLY to sit INSIDE its declared box, and what is checked here is that it fits.
+            #
+            # What this still catches is the error it exists for -- a declared box that cannot hold
+            # the prop it names, so the prop would overhang and clip.  The comparison is on SORTED
+            # dimensions because a wall item stores its depth on slot 0 while the measurement records
+            # the width there; for the 1.092 m framed poster those are the same three numbers in two
+            # orders, and an axis-by-axis version reported the correctly mounted poster as wrong.
             metres = tuple(v * factor * room_fit for v in want)
             got = tuple(float(v) for v in item["size"])
-            # Compared as SETS, not axis by axis, and the reason is a genuine ambiguity rather than
-            # convenience.  PROP_MEASUREMENTS records an asset as the measuring tool reported it --
-            # for the framed poster that is (1.092, 0.7426, 0.0524), whose slot 0 is its WIDTH --
-            # while a wall item has to be stored with its slot 0 on the wall's normal, i.e. its
-            # DEPTH, which for that poster is 0.0524.  The same three numbers therefore appear in
-            # two different orders and no axis-by-axis comparison can hold for both.  What this
-            # check can still guarantee is what it is for: the item occupies the size of the prop it
-            # names, so a declared (1.8, 0.3, 0.3) around a 0.3 m prop is still an error, and the
-            # separate protrusion check constrains the depth, which is the axis that actually
-            # matters for whether something hangs into the corridor.
-            if sorted(round(v, 4) for v in got) != sorted(round(v, 4) for v in metres):
+            # Tolerance 5e-5: declared sizes are hand-written to four decimals, so a box can be half a
+            # unit in the last place below the computed prop -- 0.17 against 0.1700070.
+            FITTING_TOL = 5e-5
+            if any(sorted(got)[axis] < sorted(metres)[axis] - FITTING_TOL for axis in range(3)):
                 problems.append(
                     f"{scene}/{item['name']} ({item['mount']}) declares {got} m, but {name} measures "
                     f"{want} in its own units x ASSET_SCALE {factor} x room_fit {room_fit} = "
-                    f"{metres} m -- the three dimensions do not match as a set")
+                    f"{metres} m -- the prop does not fit the box, so it would overhang and clip")
             else:
                 checked.append(f"{item['name']}->{name}"
                                + (f" (room_fit {room_fit})" if room_fit != 1.0 else ""))

@@ -377,22 +377,38 @@ def prop_asset_for(url: Optional[str]) -> Optional[str]:
 
 
 def fit_scale_from_extent(proxy_prim: Any, declared: Sequence[float]) -> Tuple[float, float, float]:
-    """Per-axis factor that makes a referenced prop occupy its declared box.
+    """A UNIFORM factor that fits a referenced prop INSIDE its declared box without distorting it.
 
-    The factor is computed from the PROP'S OWN extent rather than from scenes.PROP_MEASUREMENTS,
-    and that is the point of the function: a measurement can be recorded in a frame that differs
-    from the one the item stores -- the framed poster is measured (1.092, 0.7426, 0.0524) but stored
-    (0.0524, 0.7426, 1.092) because a wall faces along x -- and the bounding box has no such
-    ambiguity.  It is measured in the axes the geometry is actually in, and ``declared`` arrives in
-    those same axes.
+    The same factor goes on all three axes, and it is the smallest of the per-axis ratios.  Per-axis
+    fitting is what this function did first, and it was the wrong design: any asset whose proportions
+    differ from its declared box is stretched, so the report filled with factors like
+    (1.0, 16.0075, 0.0624) for the safety railing -- a railing 16 times too tall and 16 times too
+    thin.  Those read as bugs in the measurement logic, and some of them were, but the per-axis fit
+    kept manufacturing them out of correct measurements.  A prop is now scaled, never reshaped, and
+    the declared box is a BOUND: the prop sits inside it and may be smaller.
 
-    The extent is a RELATIVE bound and not a world bound: the prim's parent is the clearance box
-    whose scale this function feeds, so a world bound measured the scale it had just been given and
-    the fit fed itself.  That loop produced factors of 219.9, 39.5 and 11.1, which are shapes, not
-    sizes.
+    The consequence is deliberate.  A prop that comes out smaller than its declared box leaves a gap
+    inside the box, and the box is inactive once the prop resolves, so the gap is not drawn -- the
+    room sees the prop and no clipping.  Clipping is the failure this project must not have, which is
+    why the fit is a containment rather than an exact match.
 
-    1.0 per axis when the box cannot be measured: the prop is then drawn as authored, and the
-    declared-size check is what reports that, rather than a silent guess here.
+    The factor is capped at 1.0: an asset larger than its declared box is shrunk to fit, an asset
+    already smaller is left alone rather than enlarged, because enlarging is what made trees out of
+    houseplants earlier in this session.
+
+    The extent is computed from the PROP'S OWN relative bound rather than from scenes.PROP_MEASUREMENTS,
+    because a measurement can be recorded in a frame that differs from the one the item stores: the
+    framed poster is measured (1.092, 0.7426, 0.0524) but stored (0.0524, 0.7426, 1.092) since a wall
+    faces along x.  It is a RELATIVE bound and not a world bound, because the prim's parent is the
+    clearance box whose scale this function feeds -- and a world bound includes the parent's
+    transform, so it measured the scale it had just been given and fed itself.  The OpenUSD reference
+    is explicit that the world query is "in world space" while the relative one "excludes the local
+    transform at relativeToAncestorPrim"; the API name of the former is deliberately not written here
+    because tools/audit_dressing.py scans this file for it and would read its own explanation as a
+    call.
+
+    1.0 when the extent cannot be measured: the prop is then drawn as authored, and the declared-size
+    check is what reports the situation, rather than a silent guess here.
     """
     from pxr import Usd, UsdGeom
 
@@ -400,12 +416,6 @@ def fit_scale_from_extent(proxy_prim: Any, declared: Sequence[float]) -> Tuple[f
         return (1.0, 1.0, 1.0)
     box = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_])
     rng = None
-    # RELATIVE bound, not world bound.  The proxy prim's parent is the clearance box whose scale
-    # this function is about to set, and a world bound includes the parent's transform -- so the
-    # measurement saw the scale that had just been applied to it.  The result was a feedback loop
-    # visible in the report as absurd factors: 219.9 for the safety railing's height, 39.5 across
-    # the pallet, 11.1 across a curved bench.  A relative bound is expressed in the parent's
-    # coordinate system, so it measures the prop as authored and is independent of the fit.
     for scope in (proxy_prim, proxy_prim.GetPrototype()):
         if not scope or not scope.IsValid():
             continue
@@ -418,22 +428,21 @@ def fit_scale_from_extent(proxy_prim: Any, declared: Sequence[float]) -> Tuple[f
     if rng is None or rng.IsEmpty():
         return (1.0, 1.0, 1.0)
     lo, hi = rng.GetMin(), rng.GetMax()
-    native = (hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2])
-    # ``declared`` arrives in the STAGE's frame already, because the caller passes the tuple the
-    # item stores and place_dressing stores a wall item in world order.  An earlier version applied
-    # the catalogue-to-stage size conversion a second time, which for a wall item swapped its height
-    # with its width in the declaration only -- so the prop was fitted against a declaration
-    # differing from the one the checks use, and the fitted poster came out 3.6x too tall while the
-    # clock was squashed to 22 : 6.7 : 2.2.  Whatever the caller stores is what is fitted to; no
-    # second conversion.
-    fitted = []
+    native = (float(hi[0] - lo[0]), float(hi[1] - lo[1]), float(hi[2] - lo[2]))
+    # ``declared`` arrives in the STAGE's frame already, because the caller passes the tuple the item
+    # stores and place_dressing stores a wall item in world order.  No second conversion: an earlier
+    # version applied the catalogue-to-stage conversion again, swapping a wall item's height with its
+    # width in the declaration only, so the prop was fitted against numbers no check used.
+    ratios = []
     for axis in range(3):
-        have = float(native[axis])
-        if abs(have) < 1e-9:
-            fitted.append(1.0)
-        else:
-            fitted.append(float(declared[axis]) / have)
-    return tuple(fitted)  # type: ignore[return-value]
+        have = native[axis]
+        want = float(declared[axis])
+        if have > 1e-9 and want > 1e-9:
+            ratios.append(want / have)
+    if not ratios:
+        return (1.0, 1.0, 1.0)
+    factor = min(min(ratios), 1.0)
+    return (factor, factor, factor)
 
 
 def apply_scale(prim: Any, scale: Sequence[float]) -> bool:
