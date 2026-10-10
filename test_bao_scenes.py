@@ -1378,6 +1378,34 @@ def test_no_scene_floor_is_covered_by_a_dark_material() -> None:
     print(f"[ok] every declared floor samples a bright albedo: {reported}")
 
 
+def test_the_dressing_code_has_none_of_this_session_s_known_faults() -> None:
+    """Run tools/audit_dressing.py, whose checks each stand for a defect that happened here.
+
+    The faults it looks for are the ones that cost round trips in this session: a size or scale
+    converted through to_world_size without a mount guard (three separate occurrences, each
+    swapping an item's height with its width), an exception recorded without its traceback (so a
+    USD ErrorException reported nothing at all), a scale op added without checking for an authored
+    one, a wall item whose depth exceeds the 0.20 m cap, a prop wired in without a measurement, and
+    any box taller than the room.
+
+    It is run as a subprocess rather than imported so that a failure inside it reports its own
+    message instead of raising here.  The check was verified to fail by planting a missing mount
+    guard in scene_builder.py and watching it name the line.
+    """
+    import subprocess
+
+    root = os.path.dirname(os.path.abspath(__file__))
+    audit = os.path.join(root, "tools", "audit_dressing.py")
+    check(os.path.exists(audit), "tools/audit_dressing.py is missing, so nothing audits the "
+                                 "dressing code for the faults this session produced")
+    result = subprocess.run([sys.executable, audit], capture_output=True, text=True, cwd=root)
+    check(result.returncode == 0,
+          f"tools/audit_dressing.py reports problems:\n{result.stdout}{result.stderr}")
+    print(f"[ok] the dressing audit found none of the session's known faults "
+          f"({len([line for line in result.stdout.splitlines() if line.strip().startswith('note:')])} "
+          f"guarded conversion(s) confirmed)")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -1414,6 +1442,7 @@ def main() -> int:
         test_the_report_says_the_marker_size_and_whether_the_paint_landed,
         test_the_marker_assertion_counts_parts_not_children,
         test_no_scene_floor_is_covered_by_a_dark_material,
+        test_the_dressing_code_has_none_of_this_session_s_known_faults,
     ]
     failed = 0
     for test in tests:

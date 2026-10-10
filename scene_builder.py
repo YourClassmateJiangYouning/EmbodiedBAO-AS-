@@ -411,12 +411,12 @@ def fit_scale_from_extent(proxy_prim: Any, declared: Sequence[float]) -> Tuple[f
     lo, hi = rng.GetMin(), rng.GetMax()
     native = (hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2])
     # ``declared`` arrives in the STAGE's frame already, because the caller passes the tuple the
-    # item stores and place_dressing stores a wall item in world order.  An earlier version
-    # converted it again through sc.to_world_size, which for a wall item swapped its height with
-    # its width in the declaration only -- so the prop was then fitted against a declaration
-    # differing from the one the checks use, and the fitted poster came out 3.6x too tall while
-    # the clock was squashed to 22 : 6.7 : 2.2.  Whatever the caller stores is what is fitted to;
-    # no second conversion.
+    # item stores and place_dressing stores a wall item in world order.  An earlier version applied
+    # the catalogue-to-stage size conversion a second time, which for a wall item swapped its height
+    # with its width in the declaration only -- so the prop was fitted against a declaration
+    # differing from the one the checks use, and the fitted poster came out 3.6x too tall while the
+    # clock was squashed to 22 : 6.7 : 2.2.  Whatever the caller stores is what is fitted to; no
+    # second conversion.
     fitted = []
     for axis in range(3):
         have = float(native[axis])
