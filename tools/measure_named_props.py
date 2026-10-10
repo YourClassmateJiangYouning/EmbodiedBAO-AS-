@@ -100,8 +100,28 @@ def main() -> int:
             # to_user, not a "to_user_size": scenes.py defines to_user for a point and
             # to_world_size for a size, and the size conversion is the same two-component swap.
             user = tuple(round(v, 4) for v in sc.to_user(measured))
-            say(f"{name}: stage (x,lateral,height) = {stage_size}")
+
+            # metersPerUnit is reported because the first run of this tool did not check it, and
+            # the numbers that came back were impossible: a packing table 247 m long, a
+            # corrugated box 18 m.  They are centimetres.  The warehouse props (pallet 1.21 m,
+            # cabinet 0.67 m) are metres, so the library is NOT consistent and a size copied out
+            # of this tool is meaningless without its unit.
+            per_unit = 1.0
+            try:
+                root = Usd.Stage.Open(path).GetRootLayer()
+                per_unit = float(root.metersPerUnit)
+            except Exception as error:  # noqa: BLE001
+                say(f"    (could not read metersPerUnit: {type(error).__name__}: {error})")
+
+            say(f"{name}: stage (x,lateral,height) = {stage_size}   metersPerUnit={per_unit}")
             say(f"    catalogue (x,height,lateral) = {user}   via {used}")
+            if abs(per_unit - 1.0) > 1e-9:
+                # What the asset measures once it is expressed in the metres the room is built in.
+                metres = tuple(round(v * per_unit, 4) for v in user)
+                say(f"    THIS ASSET IS IN {'CENTIMETRES' if abs(per_unit - 0.01) < 1e-9 else str(per_unit)}; "
+                    f"its size in metres is {metres}")
+                say(f"    a reference must be SCALED by {per_unit} or it draws "
+                    f"{1.0 / per_unit:.0f}x too large")
             say(f"    source: {rel}")
             say(f'    scenes.PROP_MEASUREMENTS["{os.path.basename(path)}"] = {user}')
             say()
