@@ -29,6 +29,14 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import scenes as sc
 
+# Where the marker lives, and the two child-name forms inside it.  environment.set_marker_slot()
+# asserts "exactly one marker on the far wall" by counting the children named part<N>, so the
+# material that paint() binds must NOT also be a child of this path under a part-like name.
+# Facts the assertion depends on, kept next to each other on purpose.
+MARKER_ROOT = "/World/GoalMarker"
+MARKER_PART_PREFIX = "part"
+MARKER_MATERIAL_PREFIX = "material"
+
 
 # ---------------------------------------------------------------------------
 # Materials
@@ -51,7 +59,8 @@ def prim_name(text: Any) -> str:
 
 
 def paint(stage: Any, prim_path: str, rgb: Sequence[float],
-          emissive: Optional[Sequence[float]] = None) -> Tuple[bool, str]:
+          emissive: Optional[Sequence[float]] = None,
+          material_path: Optional[str] = None) -> Tuple[bool, str]:
     """Paint a prim with USD's own displayColor, and optionally make it self-lit.
 
     displayColor is the primitive that needs no shader graph, no material and no download: it is
@@ -105,8 +114,13 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float],
         if emissive is None:
             return True, ""
         try:
-            material = UsdShade.Material.Define(stage, f"{prim_path}_emissive")
-            shader = UsdShade.Shader.Define(stage, f"{prim_path}_emissive/surface")
+            # The material goes where the CALLER says, and the caller passes a sibling name that
+            # cannot be mistaken for a marker part.  Deriving it from the prim path here produced
+            # "<part>_emissive" as another child of /World/GoalMarker, which set_marker_slot
+            # counted as a second marker and refused to continue over.
+            where = material_path or f"{prim_path}_material"
+            material = UsdShade.Material.Define(stage, where)
+            shader = UsdShade.Shader.Define(stage, f"{where}/surface")
             # A plain STRING is the right argument, and this is measured rather than assumed:
             # the token-wrapping spelling was tried on the workstation and raised there.  See
             # this function's docstring for what it reported.  The Tf import went with it, so
@@ -242,6 +256,14 @@ def build_marker(stage: Any, scene: str, slot: int) -> Dict[str, Any]:
     the lights, and the constant for the measurement behind the value.  The report carries
     whether the emission was actually authored, so a frame that comes back dim can be told
     apart from a scene where the property never landed.
+
+    Part names are ``part<N>`` and the material for a part is ``material<N>``, both children of
+    /World/GoalMarker.  The distinction matters and was learned the hard way: paint() used to put
+    the material at ``<part path>_emissive``, which is a SIBLING of the part, so "a child of
+    /World/GoalMarker" stopped being the same set as "a marker part" and set_marker_slot -- whose
+    whole job is to assert there is exactly one marker on the wall -- counted the material as a
+    second marker and refused to continue.  Keeping the two names distinguishable is what lets
+    that assertion stay strict about geometry.
     """
     entries = sc.MARKERS[scene]
     if not 1 <= slot <= len(entries):
@@ -255,15 +277,17 @@ def build_marker(stage: Any, scene: str, slot: int) -> Dict[str, Any]:
     painted = True
     paint_error = ""
     for index, polygon in enumerate(sc.SHAPES[shape]):
-        prim = _prism(stage, f"/World/GoalMarker/part{index}", polygon, centre,
+        prim = _prism(stage, f"{MARKER_ROOT}/part{index}", polygon, centre,
                       sc.MARKER_THICKNESS_M)
-        ok, why = paint(stage, str(prim.GetPath()), rgb, emissive)
+        ok, why = paint(stage, str(prim.GetPath()), rgb, emissive,
+                        material_path=f"{MARKER_ROOT}/material{index}")
         if not ok and not paint_error:
             paint_error = why
         painted = ok and painted
         paths.append(prim)
     return {"scene": scene, "slot": slot, "shape": shape, "colour": colour_key,
             "rgb": tuple(rgb), "parts": len(paths),
+            "part_names": tuple(f"part{index}" for index in range(len(paths))),
             "size_m": float(sc.MARKER_SIZE_M), "painted": painted,
             "paint_error": paint_error, "emissive": emissive}
 

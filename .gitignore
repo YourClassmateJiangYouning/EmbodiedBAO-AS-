@@ -38,6 +38,10 @@ render_check/
 # MANUAL section 8.3 rule 6: a diagnostic is not a deliverable.
 diag_pxr.py
 
+# Output of the sandbox file-permission diagnostic (see MANUAL section 8.3).  Its report and
+# backup files are evidence for one investigation, not project content.
+.acl-report/
+
 # Word's lock file for an open document: it appears whenever a .docx is open and
 # vanishes when it closes, so committing it would record a transient state as content.
 ~$*.docx

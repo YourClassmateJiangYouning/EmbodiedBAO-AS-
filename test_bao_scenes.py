@@ -1231,6 +1231,53 @@ def test_the_emissive_shader_id_is_a_plain_string() -> None:
     print("[ok] the emissive shader id is a plain string, and no code reaches into pxr.Tf")
 
 
+def test_a_marker_part_and_its_material_have_distinguishable_names() -> None:
+    """The marker's material must not look like a marker part.
+
+    environment.set_marker_slot() asserts that exactly one marker is on the far wall before it
+    trusts the scene's uniqueness premise.  It used to do that by counting the children of
+    /World/GoalMarker, and paint() used to put each part's material at "<part path>_emissive" --
+    a SIBLING of the part.  So after the emission was added, the first full render died with
+
+        expected 1 marker part(s) on the far wall after replacing it, found 2
+
+    which is exactly the failure the assertion exists to catch, reported about something that was
+    not a second marker.  The two names are now distinguishable and the count is of parts.
+
+    This is a source scan: the geometry and the assertion both need pxr, so the relationship is
+    pinned where it is written.
+    """
+    import scene_builder
+
+    part = scene_builder.MARKER_PART_PREFIX
+    material = scene_builder.MARKER_MATERIAL_PREFIX
+    check(not material.startswith(part),
+          f"the material prefix {material!r} starts with the part prefix {part!r}, so a count of "
+          f"parts would include materials again")
+    check(part.startswith("part") and material.startswith("material"),
+          "the marker prefixes no longer match the names build_marker writes")
+
+    source = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               "scene_builder.py"), encoding="utf-8").read()
+    check('f"{MARKER_ROOT}/part{index}"' in source,
+          "build_marker no longer names its parts from MARKER_ROOT and MARKER_PART_PREFIX")
+    check("material_path=f\"{MARKER_ROOT}/material{index}\"" in source,
+          "build_marker no longer passes a material path that is distinguishable from a part")
+
+    env_source = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                   "environment.py"), encoding="utf-8").read()
+    check("startswith(scene_builder.MARKER_PART_PREFIX)" in env_source,
+          "set_marker_slot no longer counts parts by their prefix, so it is counting children "
+          "again and a material will be read as a second marker")
+
+    # Every shape has to produce at least one part, or the count would be zero and the assertion
+    # would compare 0 against 0 and call that agreement.
+    empty = [name for name, polygons in sc.SHAPES.items() if not polygons]
+    check(not empty, f"these shapes have no polygons, so they build no marker part: {empty}")
+    print(f"[ok] marker parts and their materials are separately named "
+          f"({part!r} vs {material!r}), and set_marker_slot counts parts")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -1266,6 +1313,7 @@ def main() -> int:
         test_a_declared_size_is_the_size_of_the_prop_it_names,
         test_the_report_says_the_marker_size_and_whether_the_emission_landed,
         test_the_emissive_shader_id_is_a_plain_string,
+        test_a_marker_part_and_its_material_have_distinguishable_names,
     ]
     failed = 0
     for test in tests:

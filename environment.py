@@ -2142,15 +2142,29 @@ class BAOEnv:
 
         expected = len(scene_builder.sc.SHAPES[
             scene_builder.sc.MARKERS[self.scene_name][slot - 1][0]])
-        for prim in list(self.stage.GetPrimAtPath("/World/GoalMarker").GetChildren()):
+        # Remove everything built here last time: the geometry AND the material paint() bound to
+        # it.  Leaving a material behind used to be harmless only because nothing counted it; now
+        # that paint() creates one per part, a stale one would accumulate as another child.
+        for prim in list(self.stage.GetPrimAtPath(scene_builder.MARKER_ROOT).GetChildren()):
             self.stage.RemovePrim(prim.GetPath())
         report = scene_builder.build_marker(self.stage, self.scene_name, slot)
-        left = list(self.stage.GetPrimAtPath("/World/GoalMarker").GetChildren())
-        if len(left) != expected:
+        # Count PARTS, not children.  A marker's material is a child of the same path by design,
+        # so counting children conflated "one marker part" with "one prim under the marker": the
+        # first render after the emission was added died here with "expected 1 ... found 2", and
+        # the message could not even say whether the extra child was geometry or a material.
+        children = list(self.stage.GetPrimAtPath(scene_builder.MARKER_ROOT).GetChildren())
+        parts = [p for p in children
+                 if p.GetName().startswith(scene_builder.MARKER_PART_PREFIX)]
+        others = [p.GetName() for p in children if p not in parts]
+        wrong_kind = [name for name in others
+                      if not name.startswith(scene_builder.MARKER_MATERIAL_PREFIX)]
+        if len(parts) != expected or wrong_kind:
             raise RuntimeError(
                 f"scene {self.scene_name} slot {slot}: expected {expected} marker part(s) on "
-                f"the far wall after replacing it, found {len(left)}.  Two markers means two "
-                f"colours and the uniqueness premise is void; refusing to pretend otherwise."
+                f"the far wall after replacing it, found {len(parts)} "
+                f"{[p.GetName() for p in parts]} (types {[p.GetTypeName() for p in parts]}); "
+                f"other children: {others}; unexpected kinds: {wrong_kind}.  Two markers means "
+                f"two colours and the uniqueness premise is void; refusing to pretend otherwise."
             )
         if self.scene_report is not None:
             self.scene_report["marker"] = report
