@@ -407,6 +407,13 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
 
         record = {"name": item["name"], "mount": item["mount"],
                   "asset": item["asset"], "used_asset": False}
+        # The box is a COLLISION AND CLEARANCE VOLUME, not something to look at.  It used to stay
+        # visible with the prop drawn inside it, which is why every furnished item still read as a
+        # block: the box is exactly the declared size, so wherever a prop resolved there were two
+        # objects on top of each other and the cube's flat faces were the ones facing the camera.
+        # It is now hidden once a prop has resolved, and left visible only when there is no prop --
+        # then it IS the item, and the fallback has to be drawn rather than be an invisible hole in
+        # the scene.
         # Any item that names a prop gets one, wall items included.  It used to be floor items
         # only, on the reasoning that a wall item's box is a picture plate and referencing a
         # cabinet there would push it through the wall.  But the same rule kept the supermarket's
@@ -443,8 +450,13 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 _disable_collision(proxy_prim)
                 record["used_asset"] = os.path.basename(local)
                 record["reference"] = local
+                # Hide the clearance box now that there is something real inside it.  Deactivated
+                # rather than deleted, so the volume the fixture checks reason about still exists
+                # on the stage and can be inspected; USD does not draw an inactive prim.
+                prim.SetActive(False)
             except Exception as exc:  # noqa: BLE001
-                # A prop that will not load must leave the box, not the scene, broken.
+                # A prop that will not load must leave the box, not the scene, broken: the box is
+                # still visible here, which is the correct fallback rather than an empty hole.
                 record["reference_error"] = f"{type(exc).__name__}: {exc}"
         placed.append(record)
     return placed

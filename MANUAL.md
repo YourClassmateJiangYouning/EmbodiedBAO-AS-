@@ -287,6 +287,7 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
 | 8 | 标志物轮换挂在 `reset()` 上 → 运行器调的是 `reset_scene()` → **一次都没换** | 逻辑要挂在**真正被调用的**入口上；用日志验证而非想当然 |
 | 9 | 路径写错导致误删/误提交（`assets\isaac\Outdoor` vs `assets\isaac\Environments\Outdoor`）→ 仓库一度 574 MB | 删之前 **`Get-ChildItem` 确认路径**，提交前看 `git ls-files` 的体积 |
 | 10 | 降采样被**一张坏图**打断整轮 | 批量处理要**逐文件 try/except** |
+| 11 | **改完代码不提交就往下走**，一连多轮（用户反复追问"你根本没有写 commit"）。同源错误还有：在**只有两个提交领先**时就让你 `git push`，而本地还有未提交改动——推的是旧代码，你在另一台机器拉到的东西和我说的话不一致 | **每一轮工作的最后一步固定是 `git add -A && git status --short && git commit`**，提交前必须看到 `git status` 为空；`push` 之前也要确认工作树干净。这一条写在 §8.2 的清单里，不要只靠记忆 |
 
 ### 8.1 第七轮起新增的错（**这些曾只写在 SESSION_RECORD，是本手册的漏项**）
 
@@ -334,6 +335,8 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
 | **不要拿"已经跑过的数据"当作不能改动的理由**——先问它是不是只是测试 | 33 |
 | **守卫必须能看见它要管的新东西**，否则"通过"是假的：我的 pxr 守卫**改了三次**才真正生效（①正则由白名单自己的键拼成 → 新模块被跳过 ②改成显式模块列表 → 仍未列出的模块仍不可见 ③改为"像 pxr 的 `X.Y` 且该 X 在文件模块级未被绑定"）。**每次都要"种一个 bug 进去、看它是否报错"来证明** | 34 |
 | **"我没碰那些文件"这类结论要给出证据**：ruff 报 21 条时我差点以为是自己引入的，真相是**我把 `.gitignore` 当 Python 文件传给了 ruff** | 34 |
+| **每一个工作单元结束时必须提交，且提交前 `git status` 必须为空**。固定动作：`git add -A` → `git status --short`（应为空）→ `git commit -F <信息文件>`。**`push` 之前同样要确认工作树干净**——曾经在本地还有未提交改动时就让你推送，结果远程拿到的是旧代码，与我的说明不符 | 11 |
+| **改动了会被源码扫描的代码后，先跑全套件与 `tools/check_field_names.py` 再提交**；有一次我在 `TOTAL=152 FAILED=1` 的状态下提交，之后不得不 amend | 11 |
 
 ### 8.3 诊断协议（用户反复强调，2026-10-10 再次强化，此为独立小节不得删）
 
