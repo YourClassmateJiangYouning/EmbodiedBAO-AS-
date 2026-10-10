@@ -238,6 +238,24 @@ def main() -> int:
                 iso = np.asarray(iso_camera.get_rgb())[:, :, :3]
                 iso_images.append(iso)
                 write_png(os.path.join(args.outdir, f"{args.scene}_slot{slot}_iso.png"), iso)
+            # One line per rendered slot, appended to a file this script controls.
+            #
+            # Not stdout, and that is the point.  A full render reported "painted True" 5 times
+            # for 25 slot renders, because Kit's stdout loses what the process did not flush
+            # before app.close() -- the same failure this repo hit once already with a
+            # measurement tool.  So whether all 25 rebuilds succeeded could not be established
+            # from the log; a file written and flushed here can be.
+            marker_info = (env.scene_report or {}).get("marker") or {}
+            with open(os.path.join(args.outdir, "slot_report.txt"), "a", encoding="utf-8") as log:
+                log.write(
+                    f"{args.scene} slot={slot} "
+                    f"marker={marker_info.get('shape')}/{marker_info.get('colour')} "
+                    f"parts={marker_info.get('parts')} "
+                    f"size={marker_info.get('size_m')} "
+                    f"emissive={tuple(round(c, 3) for c in marker_info.get('emissive', ()))} "
+                    f"emission_ok={marker_info.get('painted')} "
+                    f"error={marker_info.get('paint_error') or '-'}\n"
+                )
             print(f"[preview] slot {slot}: {scenes.MARKERS[args.scene][slot - 1]}")
 
         write_png(os.path.join(args.outdir, f"{args.scene}_sheet_eye.png"),
