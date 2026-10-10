@@ -101,27 +101,30 @@ def main() -> int:
             # to_world_size for a size, and the size conversion is the same two-component swap.
             user = tuple(round(v, 4) for v in sc.to_user(measured))
 
-            # metersPerUnit is reported because the first run of this tool did not check it, and
-            # the numbers that came back were impossible: a packing table 247 m long, a
-            # corrugated box 18 m.  They are centimetres.  The warehouse props (pallet 1.21 m,
-            # cabinet 0.67 m) are metres, so the library is NOT consistent and a size copied out
-            # of this tool is meaningless without its unit.
+            # metersPerUnit is read so a size is never copied out of here without its unit, because
+            # the library is NOT consistent: the packing table measures 247 and the mugs 0.09.
+            # Only stage metadata is used.  The first attempt read a metersPerUnit attribute off the
+            # root Layer, which does not exist, and the failure was swallowed by a broad except so
+            # every asset silently reported 1.0.  A second attempt reached for a UsdGeom helper the
+            # allowlisted-API guard has not verified, and the guard rejected it -- so the size is
+            # left in whatever unit the asset authored it in, and an implausible number is called
+            # out below instead of being trusted.
             per_unit = 1.0
             try:
-                root = Usd.Stage.Open(path).GetRootLayer()
-                per_unit = float(root.metersPerUnit)
+                reported = Usd.Stage.Open(path).GetMetadata("metersPerUnit")
+                if reported:
+                    per_unit = float(reported)
             except Exception as error:  # noqa: BLE001
-                say(f"    (could not read metersPerUnit: {type(error).__name__}: {error})")
+                say(f"    (stage metadata metersPerUnit unreadable: {type(error).__name__}: {error})")
 
             say(f"{name}: stage (x,lateral,height) = {stage_size}   metersPerUnit={per_unit}")
             say(f"    catalogue (x,height,lateral) = {user}   via {used}")
-            if abs(per_unit - 1.0) > 1e-9:
-                # What the asset measures once it is expressed in the metres the room is built in.
-                metres = tuple(round(v * per_unit, 4) for v in user)
-                say(f"    THIS ASSET IS IN {'CENTIMETRES' if abs(per_unit - 0.01) < 1e-9 else str(per_unit)}; "
-                    f"its size in metres is {metres}")
-                say(f"    a reference must be SCALED by {per_unit} or it draws "
-                    f"{1.0 / per_unit:.0f}x too large")
+            largest = max(user)
+            if largest > 10.0:
+                say(f"    WARNING: {largest:.1f} is not a plausible size in metres for a prop.  "
+                    f"These assets are very likely authored in centimetres with no metersPerUnit "
+                    f"metadata, so DIVIDE BY 100: "
+                    f"{tuple(round(v / 100.0, 4) for v in user)}")
             say(f"    source: {rel}")
             say(f'    scenes.PROP_MEASUREMENTS["{os.path.basename(path)}"] = {user}')
             say()
