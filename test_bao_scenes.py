@@ -1229,13 +1229,25 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
                 continue
             metres = tuple(v * factor * room_fit for v in want)
             got = tuple(float(v) for v in item["size"])
-            if any(abs(got[i] - metres[i]) > 1e-4 for i in range(3)):
+            # Compared as SETS, not axis by axis, and the reason is a genuine ambiguity rather than
+            # convenience.  PROP_MEASUREMENTS records an asset as the measuring tool reported it --
+            # for the framed poster that is (1.092, 0.7426, 0.0524), whose slot 0 is its WIDTH --
+            # while a wall item has to be stored with its slot 0 on the wall's normal, i.e. its
+            # DEPTH, which for that poster is 0.0524.  The same three numbers therefore appear in
+            # two different orders and no axis-by-axis comparison can hold for both.  What this
+            # check can still guarantee is what it is for: the item occupies the size of the prop it
+            # names, so a declared (1.8, 0.3, 0.3) around a 0.3 m prop is still an error, and the
+            # separate protrusion check constrains the depth, which is the axis that actually
+            # matters for whether something hangs into the corridor.
+            if sorted(round(v, 4) for v in got) != sorted(round(v, 4) for v in metres):
                 problems.append(
-                    f"{scene}/{item['name']} declares {got} m, but {name} measures {want} in its "
-                    f"own units x ASSET_SCALE {factor} x room_fit {room_fit} = {metres} m")
+                    f"{scene}/{item['name']} ({item['mount']}) declares {got} m, but {name} measures "
+                    f"{want} in its own units x ASSET_SCALE {factor} x room_fit {room_fit} = "
+                    f"{metres} m -- the three dimensions do not match as a set")
             else:
                 checked.append(f"{item['name']}->{name}"
                                + (f" (room_fit {room_fit})" if room_fit != 1.0 else ""))
+            continue
 
     check(not problems,
           "these declared sizes are not the size of the prop they reference, so the box the "

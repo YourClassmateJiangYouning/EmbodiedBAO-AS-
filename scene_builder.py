@@ -376,28 +376,50 @@ def prop_asset_for(url: Optional[str]) -> Optional[str]:
     return index[name]
 
 
-def _fit_scale(item: Dict[str, Any], measured: Optional[Sequence[float]]) -> Tuple[float, float, float]:
-    """Per-axis factor that makes the prop occupy exactly the item's declared box.
+def fit_scale_from_extent(proxy_prim: Any, declared: Sequence[float]) -> Tuple[float, float, float]:
+    """Per-axis factor that makes a referenced prop occupy its declared box.
 
-    Measured and declared are both in the catalogue's (x, height, lateral) frame, so the ratios
-    are the three factors directly.  1.0 for every axis when the asset has no recorded
-    measurement -- in that case the prop is drawn as authored and the caller has already reported
-    that it has no measurement, which test_bao_scenes fails on.
+    The factor is computed from the PROP'S OWN world bounding box rather than from
+    scenes.PROP_MEASUREMENTS, and that is the point: a measurement is recorded in the catalogue's
+    (x, height, lateral) order, while _dressing_wall stores (thick, tall, across) because a wall
+    faces along x.  For most assets the two orders agree on the numbers and the difference never
+    shows; for a WIDE wall item they do not -- a 1.092 m framed poster stored as (0.0524, 0.7426,
+    1.092) was compared against its measurement as if 1.092 were the height, and reported as a
+    mismatch while being placed correctly.  The bounding box has no such ambiguity: it is in world
+    axes, and declared is converted into the same axes.
 
-    The centimetre assets need no special case here: their measurement is 100x the declared size
-    and the ratio is 0.01, which is the same arithmetic that ASSET_SCALE spelled out by hand.  A
-    single mechanism is better than two that can disagree.
+    1.0 per axis when the box cannot be measured: the prop is then drawn as authored, and the
+    declared-size check is what reports that, rather than a silent guess here.
     """
-    if not measured:
+    from pxr import Usd, UsdGeom
+
+    if not proxy_prim or not proxy_prim.IsValid():
         return (1.0, 1.0, 1.0)
+    box = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_])
+    rng = None
+    try:
+        rng = box.ComputeWorldBound(proxy_prim).ComputeAlignedRange()
+    except Exception:  # noqa: BLE001
+        prototype = proxy_prim.GetPrototype()
+        if prototype and prototype.IsValid():
+            try:
+                rng = box.ComputeWorldBound(prototype).ComputeAlignedRange()
+            except Exception:  # noqa: BLE001
+                rng = None
+    if rng is None or rng.IsEmpty():
+        return (1.0, 1.0, 1.0)
+    lo, hi = rng.GetMin(), rng.GetMax()
+    native = (hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2])
+    # declared arrives in the catalogue's frame; the box is in world axes.  sc.to_world_size is the
+    # same swap the rest of the repo uses, so both are compared where they actually are.
+    world = sc.to_world_size(declared)
     fitted = []
-    for axis, (want, have) in enumerate(zip(item["size"], measured)):
-        if not have or abs(float(have)) < 1e-9:
-            # A flat axis (a plane, a thin plate) has no extent to fit; leave it alone rather than
-            # divide by it.
+    for axis in range(3):
+        have = float(native[axis])
+        if abs(have) < 1e-9:
             fitted.append(1.0)
-            continue
-        fitted.append(float(want) / float(have))
+        else:
+            fitted.append(float(world[axis]) / have)
     return tuple(fitted)  # type: ignore[return-value]
 
 
@@ -430,11 +452,14 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
         path = f"/World/Dressing/{item['name']}"
         cube = UsdGeom.Cube.Define(stage, path)
         cube.GetSizeAttr().Set(1.0)
-        # Position and dimensions are converted from the catalogue's user frame (height second)
-        # to the stage's world frame (height last).  Skipping this put every item at the wrong
-        # height and the wrong sideways offset, several of them outside the 5 m wide room and one
-        # or two across the agent's view.
-        cube.AddScaleOp().Set(Gf.Vec3f(*sc.to_world_size(item["size"])))
+        # A FLOOR item's size is in the catalogue's frame (x, height, lateral) and is converted to
+        # the stage's (x, lateral, height).  A WALL item's is already in the stage's frame: its slot
+        # 0 is the wall's normal, which is x in both frames, and its other two are the width and
+        # height within the wall plane, where the order changes nothing.  Converting a wall item
+        # again swapped its width into the world's height and vice versa, which is a real error for
+        # a poster: a 1.09 m wide frame became 1.09 m tall.
+        size = item["size"] if item["mount"] != "floor" else sc.to_world_size(item["size"])
+        cube.AddScaleOp().Set(Gf.Vec3f(*size))
         prim = cube.GetPrim()
         UsdGeom.Xformable(prim).AddTranslateOp().Set(Gf.Vec3f(*sc.to_world(item["at"])))
         _disable_collision(prim)
@@ -458,10 +483,6 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
         # Furniture on a wall remains a bad idea; that is a layout decision, and it belongs to the
         # layout rather than to a condition in this loop.
         local = prop_asset_for(item["asset"]) if item.get("asset") else None
-        # What the asset measures in its own units, or None when nothing measured it.  None is not
-        # a failure here: the item is still drawn as its box, and test_bao_scenes fails the scene
-        # that references an unmeasured prop, so the absence cannot pass unnoticed.
-        measured = sc.PROP_MEASUREMENTS.get(os.path.basename(local)) if local else None
         if local:
             try:
                 # Reference the prop onto an Xform child of the box:
@@ -493,7 +514,7 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 # box would otherwise still overhang one axis.  The cost is that a badly declared
                 # box distorts the prop, which is visible and therefore fixable; an overhanging
                 # mesh is not visible until it is inside a wall.
-                scale = _fit_scale(item, measured)
+                scale = fit_scale_from_extent(proxy_prim, item["size"])
                 if any(abs(s - 1.0) > 1e-9 for s in scale):
                     world_scale = sc.to_world_size(scale)
                     UsdGeom.Xformable(proxy_prim).AddScaleOp().Set(

@@ -248,7 +248,13 @@ BUCKET_ASSETS = "assets/bucket"
 # let a scene be furnished and committed while the measurement wait is outstanding, instead of
 # either blocking the work or writing invented numbers into a table whose whole value is that it
 # holds measurements.
-PROP_MEASUREMENT_PENDING = ()
+PROP_MEASUREMENT_PENDING = (
+    # Fetched after the measurement batch, so its size is declared from what a 2 m warehouse rack
+    # is rather than from the asset.  place_dressing fits it to that box, so the room sees a rack
+    # of the declared size -- but the number is not yet confirmed against the mesh.
+    "RackSmallEmpty_A1.usd",
+    "RackLargeEmpty_A1.usd",
+)
 
 # What tools/measure_assets.py measured each vendored mesh to be, in this catalogue's own
 # frame (x, height, lateral).  This is DATA, not a note: a prop's real size is not derivable
@@ -300,6 +306,22 @@ PROP_MEASUREMENTS = {
     "sm_whitecorrugatedbox_b20_brown_01.usd": (29.9008, 30.1949, 62.1582),
     "dolly.usd": (0.8504, 0.4407, 1.2594),
     "rubiks_cube.usd": (0.0721, 0.0721, 0.0721),
+    # Measured 2026-10-10, and again NOT all in one unit.  Note the two poster and bench entries:
+    # both report metersPerUnit 0.01, and sign_plaza_fountain_01 reports 1.0 while measuring 16.2
+    # -- so the metadata cannot be trusted and the factor is decided per asset from the numbers.
+    "S_TrafficCone.usd": (0.3357, 0.4628, 0.3339),
+    "SM_Book_01.usd": (0.02, 0.205, 0.145),
+    "SM_Clock_04.usd": (0.045, 0.15, 0.45),
+    "SM_Chair.usd": (0.6001, 0.8772, 0.5993),
+    "SM_Armchair.usd": (0.82, 0.79, 1.04),
+    "FramedPoster.usd": (109.2, 74.2589, 5.2437),
+    "Roxana_DiningBench.usd": (43.3811, 45.3252, 150.0522),
+    "sign_plaza_fountain_01.usd": (16.214, 11.0828, 16.214),
+    "table01.usd": (0.8109, 0.6403, 0.8109),
+    "bench_wrought_iron_02.usd": (1.2955, 0.9895, 0.8583),
+    "trashcan_square_01.usd": (0.5855, 1.0112, 0.7957),
+    "safety_railing_01.usd": (2.2261, 1.166, 0.0728),
+    "shopping_cart_corral_01.usd": (2.0057, 2.3761, 3.7107),
     # Measured 2026-10-10 on the lab machine.  Four of these are centimetre assets and three are
     # metres, IN THE SAME BATCH: the shrubs and the conifer are centimetres while the bench, bin,
     # planter, bollard and block are metres.  Nothing about the folder says which, so each was
@@ -385,6 +407,13 @@ ASSET_SCALE = {
     "Chinese_Juniper.usd": CM_TO_M,
     "Douglas_Fir.usd": CM_TO_M,
     "Elm_Sapling.usd": CM_TO_M,
+    # A centimetre asset whose metadata even says so -- FramedPoster and Roxana_DiningBench both
+    # report metersPerUnit 0.01, while sign_plaza_fountain_01 reports 1.0 and measures 16.2.  The
+    # metadata therefore cannot be trusted either way; these three are centimetres by their
+    # numbers, which is what the measurement is for.
+    "FramedPoster.usd": CM_TO_M,
+    "Roxana_DiningBench.usd": CM_TO_M,
+    "sign_plaza_fountain_01.usd": CM_TO_M,
 }
 
 
@@ -417,8 +446,9 @@ def _dressing_floor(name: str, at: Tuple[float, float, float],
 def _dressing_wall(name: str, mount: str, at: Tuple[float, float, float],
                    size: Tuple[float, float, float], colour: Optional[str] = None,
                    asset: Optional[str] = None,
-                   room_fit: float = 1.0) -> Dict[str, Any]:
-    """A wall-mounted item, declared like a picture: (across, tall, thick).
+                   room_fit: float = 1.0,
+                   frame: str = "catalogue") -> Dict[str, Any]:
+    """A wall-mounted item, standing against a wall.
 
     ``at``'s x is the SURFACE the item is stuck to, and it is used AS the box centre -- so
     writing ``OBSTACLE_WALL_FACE_X`` or ``FAR_WALL_FACE_X`` means "against that face at every
@@ -428,20 +458,37 @@ def _dressing_wall(name: str, mount: str, at: Tuple[float, float, float],
     thicknesses hang at different distances from the wall, which is the opposite of what a
     constant is for.
 
-    The thickness IS moved to the x axis, because a wall faces along x and the first
-    version's call sites wrote (0.5, 0.4, 0.03) -- which put half a metre of plate straight
-    out into the corridor, the same mistake as the duct.  Callers describe the picture; this
-    function decides which way it faces.
-
     ``MOUNT_CLEARANCE_M`` is taken off the front face only, so the item never shares a plane
     with the wall it hangs on (which is what a renderer z-fights over) while its back stays
     inside the wall where it is hidden.
+
+    The size is given in the CATALOGUE's frame -- (x, height, lateral) -- the same frame as
+    PROP_MEASUREMENTS and every floor item, and it is stored unchanged.  That is a change: it used
+    to be (across, tall, thick) reversed on the way in, and the reversal could not be reconciled
+    with a measurement table written in one frame for every asset -- for a wide item the two orders
+    give different numbers and one of them has to win.  Keeping one frame everywhere is worth more
+    than a helper that reads a picture, so the frame is now the caller's to state and the default is
+    the catalogue's.
+
+    ``frame="wall"`` reverses the first and third components first, for an item whose natural
+    description is (across, tall, thick) -- a picture plate one hangs on a wall.  It is explicit so
+    that a size and a measurement are never compared through an invisible reversal.
     """
-    across, tall, thick = (float(v) for v in size)
+    x_thick, tall, across = (float(v) for v in size)
+    if frame == "wall":
+        x_thick, across = across, x_thick
+    elif frame != "catalogue":
+        raise ValueError(f"{name}: unknown size frame {frame!r}, expected 'catalogue' or 'wall'")
     centre_x = float(at[0]) - MOUNT_CLEARANCE_M
+    # STORED IN WORLD ORDER: (x, height, lateral) with x = the wall's normal, i.e. the thickness.
+    # place_dressing must therefore NOT convert this one through to_world_size -- it already is in
+    # the frame the stage wants.  The two extra conversions were the whole of a long confusion: the
+    # helper swapped, then place_dressing swapped again, the two cancelled, and the stored tuple
+    # ended up in the measurement's order while the protrusion check read slot 0 as depth.  Every
+    # check that reads an axis now reads the axis it means.
     return {"name": name, "mount": mount,
             "at": (centre_x, float(at[1]), float(at[2])),
-            "size": (thick, tall, across), "colour": colour or DRESSING_GREY,
+            "size": (x_thick, tall, across), "colour": colour or DRESSING_GREY,
             "asset": asset, "room_fit": float(room_fit), "collides": False}
 
 
@@ -479,14 +526,19 @@ SCENES: Dict[str, Dict[str, Any]] = {
             # The helper turns that into a box centre.  Writing the wall's own centre here
             # is what buried half of every thick item inside it.
             _dressing_wall("sign", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.5, 1.35),
-                           (0.5, 0.4, 0.03),
+                           (0.03, 0.4, 0.5),
                            asset=WAREHOUSE_MATERIALS + "/MI_SignB.mdl"),
-            _dressing_wall("toolboard", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.2, -1.35),
-                           (0.8, 0.6, 0.03)),
-            _dressing_wall("duct", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.6, 1.10),
-                           (0.30, 0.30, 0.30), DRESSING_METAL),
+            # A real rack rather than a painted plate: what a toolboard is.  Its size is the
+            # measured RackSmallEmpty_A1 (2.16 MB, the mesh layer -- RackSmall_A7 is 2.2 kB and
+            # measures nothing, because the geometry lives in the layer it references).
+            _dressing_floor("rack", (7.0, 0.00, -1.85), (0.95, 1.85, 0.75), DRESSING_METAL,
+                            BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
+                            "RackSmallEmpty_A1.usd"),
+            _dressing_floor("rack_tall", (7.0, 0.00, 2.35), (0.95, 1.85, 0.75), DRESSING_METAL,
+                            BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
+                            "RackSmallEmpty_A1.usd"),
             _dressing_wall("bay_sign", "far_wall", (FAR_WALL_FACE_X, 2.15, 1.60),
-                           (0.9, 0.35, 0.03)),
+                           (0.03, 0.35, 0.9)),
             # Floor items are deliberately small and far off the centre line.  The first
             # version put a 1.8 m tall, 1.1 m deep forklift five metres from the camera, and
             # the rendered frame came back with a dead black mass filling one side of it: a
@@ -512,8 +564,9 @@ SCENES: Dict[str, Dict[str, Any]] = {
             _dressing_floor("klt_bins", (4.0, 0.0, -2.00), (0.1978, 0.1464, 0.2966),
                             asset=PROP_ROOT + "/KLT_Bin/small_KLT_visual.usd"),
             _dressing_floor("forklift", (6.2, 0.0, 2.15), (0.9, 0.70, 0.7)),
-            _dressing_floor("traffic_cone", (7.0, 0.0, -1.95), (0.4, 0.70, 0.4),
-                            asset=WAREHOUSE_MATERIALS + "/M_TrafficCone.mdl"),
+            _dressing_floor("traffic_cone", (7.0, 0.0, -1.95), (0.3357, 0.4628, 0.3339),
+                            DRESSING_CLAY, BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/"
+                            "Environments/Simple_Warehouse/Props/S_TrafficCone.usd"),
             # Real warehouse freight: a second pallet, a plastic crate and a corrugated box.
             # These replace nothing -- they are added, because this scene is a warehouse and three
             # boxes standing against the far wall is what a warehouse looks like.  Sizes are the
@@ -816,19 +869,47 @@ def _install_dressing() -> None:
         # the 1.14 m opening's half width (0.57 m) in the start view, which is the projection
         # check that caught the first version's 1.6 m shelves at 1.30 m.
         _dressing_wall("bookshelf_left", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.15, 1.65),
-                       (1.4, 1.9, 0.16), DRESSING_WOOD),
+                       (0.16, 1.9, 1.4), DRESSING_WOOD),
         _dressing_wall("bookshelf_right", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.15, -1.65),
-                       (1.4, 1.9, 0.16), DRESSING_WOOD),
-        _dressing_wall("clock", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.45, -1.70), (0.4, 0.4, 0.03),
-                       DRESSING_LIGHT),
-        _dressing_wall("reading_poster", "far_wall", (FAR_WALL_FACE_X, 2.05, 1.55), (0.7, 0.5, 0.03),
-                       DRESSING_LIGHT),
+                       (0.16, 1.9, 1.4), DRESSING_WOOD),
+        # A real clock face, at its measured size: 0.045 m thick, 0.15 m tall, 0.45 m across the
+        # wall.  Wall-mounted because a clock is thin: the 0.20 m protrusion cap exists because the
+        # warehouse's duct once hung a black slab across the agent's view, and a 45 mm clock is not
+        # that.
+        _dressing_wall("clock", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.45, -1.70),
+                       (0.045, 0.15, 0.45), DRESSING_LIGHT,
+                       BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Office/Props/"
+                       "SM_Clock_04.usd"),
+        # The framed poster measures 1.092 (its width) x 0.7426 (height) x 0.0524 (thickness).
+        # The wall helper takes (across, tall, thick) and STORES (thick, tall, across), because a
+        # wall faces along x: passing the measurement in catalogue order made 1.092 the thickness
+        # and hung half a metre of poster into the corridor.  The measurement order here is
+        # (thick, tall, across) = (0.0524, 0.7426, 1.092), so the arguments are its reverse.
+        _dressing_wall("reading_poster", "far_wall", (FAR_WALL_FACE_X, 2.05, 1.55),
+                       (0.0524, 0.7426, 1.092), DRESSING_LIGHT,
+                       BUCKET_ASSETS + "/Assets/ArchVis/Residential/Decor/Pictures/"
+                       "FramedPoster.usd"),
         _dressing_floor("study_table", (3.0, 0.00, 1.60), (2.4736, 0.9941, 0.7620), DRESSING_WOOD,
                         PROP_ROOT + "/PackingTable/props/SM_HeavyDutyPackingTable_C02_01/"
                         "SM_HeavyDutyPackingTable_C02_01.usd"),
-        _dressing_floor("chair_row", (5.0, 0.00, -2.05), (0.7, 0.50, 0.9), DRESSING_GREY),
+        _dressing_floor("chair_row", (5.0, 0.00, -2.05), (0.6001, 0.8772, 0.5993), DRESSING_GREY,
+                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Office/Props/"
+                        "SM_Chair.usd"),
+        _dressing_floor("armchair", (5.9, 0.00, -1.95), (0.82, 0.79, 1.04), DRESSING_GREY,
+                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Office/Props/"
+                        "SM_Armchair.usd"),
         _dressing_floor("book_cart", (6.6, 0.00, 1.60), (0.8504, 0.4407, 1.2594), DRESSING_METAL,
                         PROP_ROOT + "/Dolly/dolly.usd"),
+        # Two books on the reading table, at their measured size.  A book is 0.02 x 0.205 x 0.145 m,
+        # so on a 1.7 m bookcase it would be sub-pixel -- and 0.205 m is taller than the bookcase's
+        # own shelf depth, so scaling one to fit a shelf would make a cushion rather than a book.
+        # On the table they are the size a book is and they read as books.
+        _dressing_floor("book_a", (2.6, 0.9941, 1.85), (0.02, 0.205, 0.145), DRESSING_CLAY,
+                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Office/Props/"
+                        "SM_Book_01.usd"),
+        _dressing_floor("book_b", (3.2, 0.9941, 1.95), (0.02, 0.205, 0.145), DRESSING_GREEN,
+                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Office/Props/"
+                        "SM_Book_01.usd"),
         _dressing_floor("reading_lamp", (1.8, 0.00, -2.10), (0.3, 0.95, 0.3), DRESSING_METAL),
         # A carton of stock waiting to be shelved, which is what a library cart holds.  Its scale
         # comes from ASSET_SCALE.
@@ -879,7 +960,7 @@ def _install_dressing() -> None:
                         BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
         _dressing_floor("shrub_right", (7.0, 0.00, -1.85), (0.7572, 0.9000, 0.7499), DRESSING_GREEN,
                         BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
-        _dressing_wall("park_sign", "far_wall", (FAR_WALL_FACE_X, 2.00, -1.60), (0.6, 0.4, 0.03),
+        _dressing_wall("park_sign", "far_wall", (FAR_WALL_FACE_X, 2.00, -1.60), (0.03, 0.4, 0.6),
                        DRESSING_CLAY),
         # Sizes are the measured assets.  The bench really is 4.09 m long in the asset and 2.17 m
         # across; a park bench that size is a bandstand seat, so it is declared at a bench's
@@ -932,14 +1013,14 @@ def _install_dressing() -> None:
 
     # The supermarket: shelving either side, a checkout and produce behind the agent.
     SCENES["stage1.5"]["dressing"] = (
-        _dressing_wall("shelf_left", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.05, 1.60), (1.4, 1.9, 0.18),
-                       DRESSING_METAL),
-        _dressing_wall("shelf_right", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.05, -1.60), (1.4, 1.9, 0.18),
-                       DRESSING_METAL),
-        _dressing_wall("price_strip", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.00, 1.60), (1.3, 0.15, 0.03),
-                       DRESSING_YELLOW),
-        _dressing_wall("promo_banner", "far_wall", (FAR_WALL_FACE_X, 2.10, 1.55), (0.9, 0.5, 0.03),
-                       DRESSING_YELLOW),
+        _dressing_wall("shelf_left", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.05, 1.60),
+                       (0.18, 1.9, 1.4), DRESSING_METAL),
+        _dressing_wall("shelf_right", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.05, -1.60),
+                       (0.18, 1.9, 1.4), DRESSING_METAL),
+        _dressing_wall("price_strip", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.00, 1.60),
+                       (0.03, 0.15, 1.3), DRESSING_YELLOW),
+        _dressing_wall("promo_banner", "far_wall", (FAR_WALL_FACE_X, 2.10, 1.55),
+                       (0.03, 0.5, 0.9), DRESSING_YELLOW),
         _dressing_floor("trolley", (2.8, 0.00, 1.60), (0.8504, 0.4407, 1.2594), DRESSING_METAL,
                         PROP_ROOT + "/Dolly/dolly.usd"),
         # A plastic crate used as the produce bin, and a corrugated box for the stack.  Both are
@@ -959,13 +1040,13 @@ def _install_dressing() -> None:
         # place_dressing references them without scaling: a mug is 0.09 m tall and is drawn 0.09 m
         # tall, not as the round number someone would have guessed.
         _dressing_wall("mug_a2", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.04 + 0.0910 / 2, 1.20),
-                       (0.1271, 0.0910, 0.0923), DRESSING_GREY,
+                       (0.0923, 0.0910, 0.1271), DRESSING_GREY,
                        PROP_ROOT + "/Mugs/SM_Mug_A2.usd"),
         _dressing_wall("mug_b1", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.04 + 0.0919 / 2, 1.46),
-                       (0.1365, 0.0919, 0.0925), DRESSING_GREY,
+                       (0.0925, 0.0919, 0.1365), DRESSING_GREY,
                        PROP_ROOT + "/Mugs/SM_Mug_B1.usd"),
         _dressing_wall("mug_c1", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.04 + 0.1072 / 2, 1.72),
-                       (0.1277, 0.1072, 0.0889), DRESSING_GREY,
+                       (0.0889, 0.1072, 0.1277), DRESSING_GREY,
                        PROP_ROOT + "/Mugs/SM_Mug_C1.usd"),
         # A banana lying along the shelf.  The helper takes (across, tall, thick) and stores
         # (thick, tall, across), so it swaps the outer two numbers: an argument tuple A becomes the
@@ -976,7 +1057,7 @@ def _install_dressing() -> None:
         # pair and once by reasoning about it instead of reading the value back; the declared-size
         # check caught every one.
         _dressing_wall("banana", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.04 + 0.0386 / 2, 1.98),
-                       (0.0386, 0.0741, 0.1972), DRESSING_YELLOW,
+                       (0.1972, 0.0741, 0.0386), DRESSING_YELLOW,
                        PROP_ROOT + "/YCB/Axis_Aligned/011_banana.usd"),
     )
 
