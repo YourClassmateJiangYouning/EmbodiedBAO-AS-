@@ -51,35 +51,39 @@ def prim_name(text: Any) -> str:
 
 def paint(stage: Any, prim_path: str, rgb: Sequence[float],
           emissive: Optional[Sequence[float]] = None) -> bool:
-    """Paint a prim with USD's own displayColor.  No shader graph, no material, no download.
+    """Paint a prim with USD's own displayColor, and optionally make it self-lit.
 
-    Two attempts at building a UsdPreviewSurface by hand both failed on the lab machine: the
-    first passed a plain string where the bindings wanted a type token, the second connected
-    an output that had never been created and got "Used null prim".  displayColor is the
-    primitive that needs neither, it is respected by RTX for unbound geometry, and it holds
-    the exact catalogue colour -- which matters because the marker's colour is the one thing
-    this experiment varies and the uniqueness check compares colours numerically.
+    displayColor is the primitive that needs no shader graph, no material and no download: it is
+    respected by RTX for unbound geometry, and it holds the exact catalogue colour -- which
+    matters because the marker's colour is the one thing this experiment varies and the uniqueness
+    check compares colours numerically.  Two attempts at building a UsdPreviewSurface by hand
+    failed on the lab machine before it was adopted for the *colour*.
 
-    ``emissive`` adds a constant self-lit component on top, and it exists because of a measured
-    problem rather than a preference.  The textured scenes render dimmer than the plain baseline
-    the marker's size was chosen in -- eye-frame means of 137.6 for stage1.1 against 81-112 for
-    1.2-1.5, against environment.py's own 130-160 acceptance range -- and in the frames the
-    marker's closest pixel sits 47-69 away in RGB from the colour it was authored with.  A
-    self-lit term is the ONLY lever that raises the marker without touching the lights: the lights
-    are global, stage1.1 is already inside the range, and raising them heads for the washed-out
-    signature this repo has measured before (mean 220 with std 22.7, and the response exponent is
-    about 0.8, so it overshoots).  displayColor stays exactly the catalogue colour, so the numeric
-    uniqueness check is unaffected; what changes is how bright that colour lands.
+    ``emissive`` cannot go on the geometry, and that is measured rather than assumed.  An earlier
+    version of this function called CreateEmissiveColorAttr() on the gprim -- UsdGeomGprim has no
+    such attribute -- and the render log showed the consequence plainly:
 
-    Returns whether it worked, so callers can report it rather than assume it.  Both the
-    displayColor and the emissive are inside that answer: emissiveColor is a plain Vec3f rather
-    than the array displayColor wants, it is the newer and less-certain of the two calls, and if
-    the attribute cannot be authored the honest result is False -- a marker that silently lost
-    its brightness is precisely the failure this parameter exists to fix.  The build_marker report
-    carries the flag through to the render log.
+        [scene] marker: hexagon in k (1 mesh part(s), size 0.90 m, emissive (0.45, 0.18, 0.315),
+                                       painted False)
+
+    The values were right and nothing was self-lit.  emissiveColor is an INPUT OF A
+    UsdPreviewSurface SHADER, so this builds that shader, connects its surface output to a
+    material's surface terminal, and binds the material -- the same UsdShade path that the
+    material resolution in apply_scene() already uses.
+
+    The emission exists because of a measured problem: the textured scenes render dimmer than the
+    plain baseline the marker's size was chosen in -- eye-frame means 137.6 for stage1.1 against
+    81-112 for 1.2-1.5, next to environment.py's own 130-160 acceptance range -- so the closest
+    pixel to the authored colour sat 47-69 away in RGB.  The lights are not a lever here: they are
+    global, stage1.1 is already inside the range, and the response exponent is about 0.8, so it
+    overshoots.  A per-prim self-lit term brightens the marker and nothing else.
+
+    Returns whether it worked.  With ``emissive`` given, that answer covers the material too, and
+    False is a real state -- the marker drawn but not self-lit -- which is why the flag is
+    reported rather than assumed.
     """
     try:
-        from pxr import Gf, UsdGeom, Vt
+        from pxr import Gf, Sdf, Tf, UsdGeom, UsdShade, Vt
 
         prim = stage.GetPrimAtPath(prim_path)
         gprim = UsdGeom.Gprim(prim)
@@ -87,16 +91,25 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float],
             return False
         gprim.CreateDisplayColorAttr().Set(Vt.Vec3fArray(
             [Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2]))]))
-        if emissive is not None:
-            try:
-                gprim.CreateEmissiveColorAttr().Set(
-                    Gf.Vec3f(float(emissive[0]), float(emissive[1]), float(emissive[2])))
-            except Exception:  # noqa: BLE001
-                # Reported through the return value, not raised: one missing attribute should
-                # not stop a scene from being built, and the caller records the flag.
-                return False
+        if emissive is None:
+            return True
+
+        material = UsdShade.Material.Define(stage, f"{prim_path}_emissive")
+        shader = UsdShade.Shader.Define(stage, f"{prim_path}_emissive/surface")
+        # CreateIdAttr is on UsdShadeShader (checked against the OpenUSD reference, not assumed:
+        # an earlier revision of this session guessed three pxr members wrong in a row).
+        shader.CreateIdAttr().Set(Tf.Token("UsdPreviewSurface"))
+        shader.CreateInput("diffuseColor", Sdf.ValueTypeNames.Color3f).Set(
+            Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2])))
+        shader.CreateInput("emissiveColor", Sdf.ValueTypeNames.Color3f).Set(
+            Gf.Vec3f(float(emissive[0]), float(emissive[1]), float(emissive[2])))
+        material.CreateSurfaceOutput().ConnectToSource(shader.ConnectableAPI(), "surface")
+        UsdShade.MaterialBindingAPI.Apply(prim).Bind(material)
         return True
     except Exception:  # noqa: BLE001
+        # Reported through the return value, not raised: one attribute that cannot be authored
+        # should not stop a scene from being built, and the caller records the flag so that a dim
+        # frame can be diagnosed from the log instead of from a picture.
         return False
 
 

@@ -948,6 +948,8 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
     ALLOWED = {
         "Gf": {"Vec3f", "Vec3d", "Matrix4d"},
         "Sdf": {"ValueTypeNames", "Path", "AssetPath"},
+        "Tf": {"Token", "TypeRegistry"},
+        "Vt": {"Vec3fArray", "Vec3dArray", "IntArray", "Token", "Value"},
         "Usd": {"Stage", "Prim", "TimeCode", "Attribute"},
         "UsdGeom": {
             "Cube", "Sphere", "Cylinder", "Cone", "Capsule", "Mesh", "Xform", "Scope",
@@ -961,7 +963,25 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
                        "Joint"},
         "UsdSkel": set(),
     }
-    PATTERN = re.compile(r"\b(" + "|".join(ALLOWED) + r")\.([A-Za-z_][A-Za-z0-9_]*)")
+    # Any name in the pxr style, not only the ones already listed.
+    #
+    # This took three attempts and each failure is the same mistake, so it is recorded: the
+    # pattern must be able to SEE the new thing it is meant to police.
+    #
+    #   1. built from ALLOWED's own keys -> `Tf.Token(...)` was added to scene_builder.py and the
+    #      guard still reported "43 members, all verified" while checking none of the new one;
+    #   2. widened to an explicit list of module names -> an unlisted pxr module was still
+    #      invisible, which I only found by planting one and watching the guard stay silent;
+    #   3. this: any `Name.Name` where the first name looks like a pxr module (one of the
+    #      prefixes pxr uses) AND is never bound at module level in that file.  The second clause
+    #      is what keeps it usable: `sc`, `sb`, `os`, `np` and friends are bound by their imports,
+    #      and no pxr module is, so they are excluded by construction rather than by a hand list.
+    #
+    # (Step 3 also means this docstring cannot spell a module-qualified example: the pattern has
+    # no way to tell prose from code, and naming one here reports it.  It did.)
+    PXR_LIKE = re.compile(r"\b((?:Gf|Sdf|Tf|Pcp|Pxr|Usd|Vt|Kind|Trace|Work|Plug|Ar|CameraUtil)"
+                          r"[A-Za-z0-9_]*)\.[A-Za-z_][A-Za-z0-9_]*")
+    KNOWN_MODULES = set(ALLOWED)
 
     def code_text(source: str) -> list:
         """The source with every string literal blanked out, so prose cannot be mistaken."""
@@ -984,10 +1004,41 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
             if not name.endswith(".py"):
                 continue
             source = open(os.path.join(folder, name), encoding="utf-8").read()
+            tree = _ast.parse(source)
+
+            # Names bound at MODULE level in this file.  These files import pxr inside the
+            # functions that need it, so a pxr module name is never bound here -- which makes
+            # "bound at module level" a sound reason to skip, rather than a hand-kept list:
+            # `sc`, `sb`, `os`, `np` and friends are all bound here, and no pxr module is.
+            bound = set()
+            for node in tree.body:
+                targets = []
+                if isinstance(node, _ast.Assign):
+                    targets = node.targets
+                elif isinstance(node, _ast.AnnAssign):
+                    targets = [node.target]
+                for target in targets:
+                    if isinstance(target, _ast.Name):
+                        bound.add(target.id)
+                if isinstance(node, _ast.Import):
+                    for alias in node.names:
+                        bound.add((alias.asname or alias.name).split(".")[0])
+                elif isinstance(node, _ast.ImportFrom):
+                    for alias in node.names:
+                        bound.add(alias.asname or alias.name)
+
             for number, line in enumerate(code_text(source), start=1):
-                for module, member in PATTERN.findall(line):
-                    if member not in ALLOWED[module]:
-                        offenders.append(f"{name}:{number} {module}.{member}")
+                for module in PXR_LIKE.findall(line):
+                    if module in bound:
+                        continue
+                    if module not in KNOWN_MODULES:
+                        offenders.append(
+                            f"{name}:{number} {module} is used but is not an allowlisted pxr "
+                            f"module, so none of its members are checked")
+                        continue
+                    for member in re.findall(rf"\b{module}\.([A-Za-z_][A-Za-z0-9_]*)", line):
+                        if member not in ALLOWED[module]:
+                            offenders.append(f"{name}:{number} {module}.{member}")
 
     check(not offenders,
           "these pxr members are not in the allowlist of ones this repo uses, so either the "
