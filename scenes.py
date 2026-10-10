@@ -305,8 +305,6 @@ PROP_MEASUREMENTS = {
     # planter, bollard and block are metres.  Nothing about the folder says which, so each was
     # measured rather than assumed, and ASSET_SCALE carries the factor.
     "Barberry.usd": (100.6735, 119.6581, 99.7061),
-    "Goldflame_Spirea.usd": (31.8724, 20.4208, 31.1931),
-    "Grass_Short_A.usd": (128.9255, 16.18, 129.391),
     "bench_curved_01.usd": (4.0906, 0.4417, 2.1698),
     "trashcan_cylinder_01.usd": (0.722, 1.0411, 0.722),
     "planter_round_02.usd": (0.7062, 0.7726, 0.7062),
@@ -384,8 +382,6 @@ ASSET_SCALE = {
     # The vegetation is centimetres while the outdoor furniture beside it is metres, so this table
     # is not per-folder and cannot be guessed from a path.
     "Barberry.usd": CM_TO_M,
-    "Goldflame_Spirea.usd": CM_TO_M,
-    "Grass_Short_A.usd": CM_TO_M,
     "Chinese_Juniper.usd": CM_TO_M,
     "Douglas_Fir.usd": CM_TO_M,
     "Elm_Sapling.usd": CM_TO_M,
@@ -868,13 +864,21 @@ def _install_dressing() -> None:
         # the honest asset for it rather than a green box.  Declared sizes are the shapes these
         # species actually take, and place_dressing fits each prop to its declared box, so the
         # clearance and occlusion checks describe what is drawn.
-        _dressing_wall("hedge_left", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.30, 1.50),
-                       (0.2991, 0.3590, 0.3020), DRESSING_GREEN,
-                       BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.30),
-        _dressing_wall("hedge_right", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.30, -1.50),
-                       (0.2807, 0.1838, 0.2869), DRESSING_GREEN,
-                       BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Goldflame_Spirea.usd",
-                       room_fit=0.90),
+        # Shrubs stand on the FLOOR.  They were wall items at first, which was wrong twice over:
+        # _dressing_wall takes its height as the CENTRE, so both hung 2 m up in mid-air, and a
+        # shrub is a ball, so scaling one to a wall plate's 0.16 m thickness either squashes it or
+        # -- keeping its proportions as room_fit does -- makes it 1.56 m thick and pushes 0.78 m
+        # into the corridor.  A hedge is a planted shrub, and a shrub is a thing in the ground.
+        #
+        # Both are the Barberry.  Goldflame_Spirea measures 0.20 m tall, so reaching a shrub's
+        # 0.90 m would need a room_fit of 4.4 -- an ENLARGEMENT, and room_fit is defined as a
+        # fraction in (0, 1], which the declared-size check enforces.  Enlarging is the opposite of
+        # what this field is for, so a 1.20 m shrub serves both sides rather than stretching a
+        # 20 cm plant into one.
+        _dressing_floor("shrub_left", (7.0, 0.00, 1.85), (0.7572, 0.9000, 0.7499), DRESSING_GREEN,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
+        _dressing_floor("shrub_right", (7.0, 0.00, -1.85), (0.7572, 0.9000, 0.7499), DRESSING_GREEN,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
         _dressing_wall("park_sign", "far_wall", (FAR_WALL_FACE_X, 2.00, -1.60), (0.6, 0.4, 0.03),
                        DRESSING_CLAY),
         # Sizes are the measured assets.  The bench really is 4.09 m long in the asset and 2.17 m
@@ -911,15 +915,19 @@ def _install_dressing() -> None:
         # rather than an accident: the declared box is what the clearance checks clear, and a tree
         # taller than the ceiling has no legal box at all.  Proportions are kept from the
         # measurement (the fir is ~1.09 : 1 across, the juniper ~1.02 : 1).
-        _dressing_floor("tree_conifer", (12.4, 0.00, 2.05), (0.9158, 2.1626, 0.9011), DRESSING_GREEN,
+        # Trees at a corridor's scale, not at a forest's.  The measured conifer is 2.54 m and the
+        # fir 6.03 m; declared here at 1.6 m and 1.55 m because the ceiling is 3 m and the first
+        # attempt put a 2.91 m sapling in a 16 m corridor, which read as a tree growing through the
+        # roof rather than as planting.  room_fit keeps each one's own proportions.
+        _dressing_floor("tree_conifer", (12.4, 0.00, 2.05), (0.6776, 1.6000, 0.6667), DRESSING_GREEN,
                         BUCKET_ASSETS + "/Assets/Vegetation/Trees/Chinese_Juniper.usd",
-                        room_fit=0.85),
-        _dressing_floor("tree_fir", (14.6, 0.00, -2.05), (1.0882, 2.1695, 0.9974), DRESSING_GREEN,
+                        room_fit=0.628877),
+        _dressing_floor("tree_fir", (14.6, 0.00, -2.05), (0.7775, 1.5500, 0.7126), DRESSING_GREEN,
                         BUCKET_ASSETS + "/Assets/Vegetation/Trees/Douglas_Fir.usd",
-                        room_fit=0.36),
-        _dressing_floor("tree_sapling", (10.8, 0.00, -2.20), (1.6401, 2.9064, 1.6477), DRESSING_WOOD,
+                        room_fit=0.257207),
+        _dressing_floor("tree_sapling", (10.8, 0.00, -2.20), (0.9593, 1.7000, 0.9638), DRESSING_WOOD,
                         BUCKET_ASSETS + "/Assets/Vegetation/Trees/Elm_Sapling.usd",
-                        room_fit=0.941448),
+                        room_fit=0.550677),
     )
 
     # The supermarket: shelving either side, a checkout and produce behind the agent.
