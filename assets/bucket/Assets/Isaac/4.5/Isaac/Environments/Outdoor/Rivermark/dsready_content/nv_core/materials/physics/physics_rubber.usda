@@ -1,0 +1,20 @@
+#usda 1.0
+(
+    defaultPrim = "Rubber"
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Material "Rubber" (
+    prepend apiSchemas = ["PhysicsMaterialAPI"]
+)
+{
+    custom string inputs:nonvisual:attributes = "none"
+    string inputs:nonvisual:base = "rubber"
+    string inputs:nonvisual:coating = "none"
+    float physics:density = 1100
+    float physics:dynamicFriction = 0.7
+    float physics:restitution = 0.8
+    float physics:staticFriction = 0.7
+}
+

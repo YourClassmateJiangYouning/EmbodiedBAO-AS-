@@ -1,0 +1,20 @@
+#usda 1.0
+(
+    defaultPrim = "Leather"
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Material "Leather" (
+    prepend apiSchemas = ["PhysicsMaterialAPI"]
+)
+{
+    custom string inputs:nonvisual:attributes = "none"
+    string inputs:nonvisual:base = "leather"
+    string inputs:nonvisual:coating = "none"
+    float physics:density = 800
+    float physics:dynamicFriction = 0.2
+    float physics:restitution = 0.3
+    float physics:staticFriction = 0.2
+}
+
