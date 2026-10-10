@@ -24,6 +24,7 @@ Three rules it must not break, all enforced in ``test_bao_scenes.py``:
 from __future__ import annotations
 
 import os
+import traceback
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import scenes as sc
@@ -50,7 +51,7 @@ def prim_name(text: Any) -> str:
 
 
 def paint(stage: Any, prim_path: str, rgb: Sequence[float],
-          emissive: Optional[Sequence[float]] = None) -> bool:
+          emissive: Optional[Sequence[float]] = None) -> Tuple[bool, str]:
     """Paint a prim with USD's own displayColor, and optionally make it self-lit.
 
     displayColor is the primitive that needs no shader graph, no material and no download: it is
@@ -88,29 +89,35 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float],
         prim = stage.GetPrimAtPath(prim_path)
         gprim = UsdGeom.Gprim(prim)
         if not gprim:
-            return False
+            return False, "the prim is not a Gprim"
         gprim.CreateDisplayColorAttr().Set(Vt.Vec3fArray(
             [Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2]))]))
         if emissive is None:
-            return True
-
-        material = UsdShade.Material.Define(stage, f"{prim_path}_emissive")
-        shader = UsdShade.Shader.Define(stage, f"{prim_path}_emissive/surface")
-        # CreateIdAttr is on UsdShadeShader (checked against the OpenUSD reference, not assumed:
-        # an earlier revision of this session guessed three pxr members wrong in a row).
-        shader.CreateIdAttr().Set(Tf.Token("UsdPreviewSurface"))
-        shader.CreateInput("diffuseColor", Sdf.ValueTypeNames.Color3f).Set(
-            Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2])))
-        shader.CreateInput("emissiveColor", Sdf.ValueTypeNames.Color3f).Set(
-            Gf.Vec3f(float(emissive[0]), float(emissive[1]), float(emissive[2])))
-        material.CreateSurfaceOutput().ConnectToSource(shader.ConnectableAPI(), "surface")
-        UsdShade.MaterialBindingAPI.Apply(prim).Bind(material)
-        return True
+            return True, ""
+        try:
+            material = UsdShade.Material.Define(stage, f"{prim_path}_emissive")
+            shader = UsdShade.Shader.Define(stage, f"{prim_path}_emissive/surface")
+            # CreateIdAttr is on UsdShadeShader (checked against the OpenUSD reference, not
+            # assumed: this session guessed several pxr members wrong before that habit changed).
+            shader.CreateIdAttr().Set(Tf.Token("UsdPreviewSurface"))
+            shader.CreateInput("diffuseColor", Sdf.ValueTypeNames.Color3f).Set(
+                Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2])))
+            shader.CreateInput("emissiveColor", Sdf.ValueTypeNames.Color3f).Set(
+                Gf.Vec3f(float(emissive[0]), float(emissive[1]), float(emissive[2])))
+            material.CreateSurfaceOutput().ConnectToSource(shader.ConnectableAPI(), "surface")
+            UsdShade.MaterialBindingAPI.Apply(prim).Bind(material)
+            return True, ""
+        except Exception:  # noqa: BLE001
+            # The REASON is returned, not just a False.  Two rounds were spent guessing why the
+            # emission did not land -- first the attribute was on the wrong schema, then this
+            # material path failed -- and in both cases the bare except had thrown the answer
+            # away.  "painted False" without a why is what forced a render round trip to learn
+            # nothing.
+            return False, traceback.format_exc().strip().splitlines()[-1]
     except Exception:  # noqa: BLE001
         # Reported through the return value, not raised: one attribute that cannot be authored
-        # should not stop a scene from being built, and the caller records the flag so that a dim
-        # frame can be diagnosed from the log instead of from a picture.
-        return False
+        # should not stop a scene from being built.
+        return False, traceback.format_exc().strip().splitlines()[-1]
 
 
 LOCAL_ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "isaac")
@@ -157,6 +164,8 @@ def resolve_material(stage: Any, url: str, name: str, path: str,
             return material, ("mdl-local" if source != url else "mdl")
     except Exception:  # noqa: BLE001
         pass
+    # Returns (ok, why); ignored here because how the surface was resolved is already reported
+    # by the "fallback-paint" return value.
     paint(stage, surface_prim, fallback_rgb)
     return None, "fallback-paint"
 
@@ -232,15 +241,19 @@ def build_marker(stage: Any, scene: str, slot: int) -> Dict[str, Any]:
     centre = (sc.MARKER_X_M, sc.MARKER_Y_M, sc.MARKER_Z_M)
     paths = []
     painted = True
+    paint_error = ""
     for index, polygon in enumerate(sc.SHAPES[shape]):
         prim = _prism(stage, f"/World/GoalMarker/part{index}", polygon, centre,
                       sc.MARKER_THICKNESS_M)
-        painted = paint(stage, str(prim.GetPath()), rgb, emissive) and painted
+        ok, why = paint(stage, str(prim.GetPath()), rgb, emissive)
+        if not ok and not paint_error:
+            paint_error = why
+        painted = ok and painted
         paths.append(prim)
     return {"scene": scene, "slot": slot, "shape": shape, "colour": colour_key,
             "rgb": tuple(rgb), "parts": len(paths),
             "size_m": float(sc.MARKER_SIZE_M), "painted": painted,
-            "emissive": emissive}
+            "paint_error": paint_error, "emissive": emissive}
 
 
 def _bind(stage: Any, prim_path: str, material: Any) -> bool:
@@ -406,7 +419,7 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
         UsdGeom.Xformable(prim).AddTranslateOp().Set(Gf.Vec3f(*sc.to_world(item["at"])))
         _disable_collision(prim)
         if item.get("colour"):
-            paint(stage, path, item["colour"])
+            paint(stage, path, item["colour"])   # (ok, why); not reported per dressing item
 
         record = {"name": item["name"], "mount": item["mount"],
                   "asset": item["asset"], "used_asset": False}
@@ -610,7 +623,7 @@ def apply_scene(stage: Any, scene: str, slot: int,
         prim_path = prim_paths[0]
         if not use_mdl:
             for path in prim_paths:
-                paint(stage, path, fallbacks.get(surface, (0.6,) * 3))
+                paint(stage, path, fallbacks.get(surface, (0.6,) * 3))   # (ok, why)
             report["materials"][surface] = {"url": url, "how": "flat-paint",
                                             "prim": ", ".join(prim_paths)}
             continue
@@ -643,7 +656,12 @@ def format_report(report: Dict[str, Any]) -> str:
                  f"({marker['parts']} mesh part(s), size "
                  f"{marker.get('size_m', 0.0):.2f} m, emissive "
                  f"{tuple(round(c, 3) for c in marker.get('emissive', ())) or '-'}, "
-                 f"painted {marker.get('painted')})")
+                 f"painted {marker.get('painted')}"
+                 # The reason a paint failed, because "painted False" alone cost two render
+                 # round trips: first the attribute was on the wrong schema, then the material
+                 # path failed, and both times the except had discarded the answer.
+                 + (f" -- {marker['paint_error']}" if marker.get("paint_error") else "")
+                 + ")")
     for surface, info in report["materials"].items():
         # The prim path is printed because without it the log cannot answer the question that
         # matters when a surface looks wrong: which prim did this material actually land on.  In

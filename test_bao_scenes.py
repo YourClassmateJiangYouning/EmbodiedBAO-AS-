@@ -336,7 +336,7 @@ def test_the_report_says_the_marker_size_and_whether_the_emission_landed() -> No
         "scene": "stage1.2", "label": "warehouse", "slot": 2,
         "marker": {"shape": "hexagon", "colour": "c", "parts": 1,
                    "size_m": sc.MARKER_SIZE_M, "emissive": (0.04, 0.29, 0.40),
-                   "painted": True},
+                   "painted": True, "paint_error": ""},
         "materials": {}, "dressing": [], "dressing_count": 0,
     }
     text = scene_builder.format_report(report)
@@ -346,11 +346,18 @@ def test_the_report_says_the_marker_size_and_whether_the_emission_landed() -> No
     check("painted True" in text,
           f"the marker line does not say whether painting and emission succeeded:\n{text}")
 
-    # And a failure has to be visible as a failure.
+    # And a failure has to be visible AS a failure, WITH its reason.  Two render round trips were
+    # spent on "painted False" alone: first the attribute was on the wrong schema, then the
+    # material path failed, and both times the except had discarded the answer.
     report["marker"]["painted"] = False
-    check("painted False" in scene_builder.format_report(report),
+    report["marker"]["paint_error"] = "AttributeError: 'X' object has no attribute 'Y'"
+    failed = scene_builder.format_report(report)
+    check("painted False" in failed,
           "a marker whose paint failed reports the same as one that succeeded")
-    print("[ok] the marker report carries its size and whether the emission was authored")
+    check("no attribute 'Y'" in failed,
+          f"the failure is reported without its reason, so it cannot be acted on:\n{failed}")
+    print("[ok] the marker report carries its size, whether the emission was authored, and "
+          "the reason when it was not")
 
 
 def test_every_colour_is_used_at_least_once() -> None:
