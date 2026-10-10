@@ -119,6 +119,14 @@ def parse_args() -> argparse.Namespace:
         help="Orbit camera height, as for --iso_height: under the 3 m ceiling or the ceiling is "
              "all there is to see.",
     )
+    parser.add_argument(
+        "--dressing_report", action="store_true",
+        help="Print, per dressing item, whether its prop reference resolved, failed, or there was "
+             "no asset -- then exit without rendering.  A resolved prop has its clearance box "
+             "deactivated, so an item that resolves and then fails to draw is simply absent with no "
+             "fallback to see; 'the picture is empty' cannot distinguish that from 'the reference "
+             "failed', and this can.",
+    )
     return parser.parse_args()
 
 
@@ -242,6 +250,39 @@ def main() -> int:
         print(f"[preview] scene {args.scene} ({scenes.SCENES[args.scene]['label']}) "
               f"level {args.level} width "
               f"{environment.LEVEL_CHANNEL_WIDTHS[args.level]:.3f} m")
+
+        if args.dressing_report:
+            # Text only, and it exists because images did not answer the question.  A prop whose
+            # reference resolves has its clearance box DEACTIVATED, so if the prop itself then
+            # fails to draw for any reason the item is simply absent from the frame -- there is no
+            # fallback box to see.  "Nothing in the picture" therefore has two opposite causes and
+            # a picture cannot tell them apart.  place_dressing records which happened per item;
+            # this prints it.
+            report = (env.scene_report or {}).get("dressing") or []
+            print(f"[dressing] {len(report)} item(s) from the scene report")
+            print(f"{'item':<16} {'mount':<14} {'asset':<34} result")
+            print("-" * 92)
+            ok = failed = missing = 0
+            for entry in report:
+                used = entry.get("used_asset")
+                error = entry.get("reference_error")
+                if used:
+                    ok += 1
+                    result = f"RESOLVED {used}"
+                    fit = entry.get("fit_scale") or ()
+                    if any(abs(float(v) - 1.0) > 1e-9 for v in fit):
+                        result += f"  fit={tuple(round(float(v), 4) for v in fit)}"
+                elif error:
+                    failed += 1
+                    result = f"FAILED {error}"
+                else:
+                    missing += 1
+                    result = "NO ASSET (drawn as its clearance box)"
+                print(f"{entry['name']:<16} {entry['mount']:<14} "
+                      f"{str(entry.get('asset') or '-')[-32:]:<34} {result}")
+            print()
+            print(f"[dressing] resolved {ok}, failed {failed}, no asset {missing}")
+            return 0
 
         eye_images, iso_images = [], []
         for slot in slots:
