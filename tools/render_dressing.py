@@ -108,9 +108,23 @@ def main() -> int:
         print(f"{'item':<16} {'mount':<14} {'reference':<34} drawn world box (x,y,z)")
         print("-" * 104)
         box = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_])
+
+        def drawn_prim(fixture: dict) -> str:
+            """The path of what was DRAWN for an item.
+
+            The clearance cube at /World/Dressing/<name> carries the item's declared size, so measuring
+            it reports the declaration read back to itself -- the mistake tools/measure_props.py's own
+            docstring warns about ("it does NOT measure the box.  An earlier version did, and its
+            number was the declaration read back to itself").  When a prop resolved, the thing drawn is
+            its child at .../prop; otherwise the box is the item and is what to measure.
+            """
+            base = f"/World/Dressing/{fixture['name']}"
+            if fixture.get("used_asset"):
+                return f"{base}/prop"
+            return base
+
         for fixture in placed:
-            path = f"/World/Dressing/{fixture['name']}"
-            extent = describe(world_extent(box, stage.GetPrimAtPath(path)))
+            extent = describe(world_extent(box, stage.GetPrimAtPath(drawn_prim(fixture))))
             shown = fixture.get("used_asset") or fixture.get("reference_error") or "-"
             print(f"{fixture['name']:<16} {fixture['mount']:<14} {str(shown)[:32]:<34} {extent}")
 
@@ -121,11 +135,14 @@ def main() -> int:
             # trees are too tall" becomes a number instead of an impression.
             resolved = sum(1 for f in placed if f.get("used_asset"))
             failed = [f for f in placed if f.get("reference_error")]
+            oversized = [f for f in placed if f.get("fit_error")]
             no_asset = len(placed) - resolved - len(failed)
             print()
             print(f"[dressing] resolved {resolved}, failed {len(failed)}, no asset {no_asset}")
             for fixture in failed:
                 print(f"[dressing] FAILED {fixture['name']}: {fixture['reference_error']}")
+            for fixture in oversized:
+                print(f"[dressing] FITS BADLY {fixture['name']}: {fixture['fit_error']}")
             return 0
 
         # One dome light: this is a visibility check, not a lighting study.
@@ -134,7 +151,7 @@ def main() -> int:
         # Frame the dressing: the union of every drawn box, with margin.
         lows, highs = [], []
         for fixture in placed:
-            rng = world_extent(box, stage.GetPrimAtPath(f"/World/Dressing/{fixture['name']}"))
+            rng = world_extent(box, stage.GetPrimAtPath(drawn_prim(fixture)))
             if rng is None:
                 continue
             lows.append(np.array(rng.GetMin()))
@@ -151,10 +168,14 @@ def main() -> int:
 
         from isaacsim.sensors.camera import Camera
 
-        height_above = 2.4 * radius + 0.4
-        camera_position = (centre[0] + radius * 2.2 + 0.3,
-                           height_above,
-                           centre[2] - radius * 1.6)
+        # The world is Z-up, so on this stage y is LATERAL and z is HEIGHT.  This tuple used to put
+        # `height_above` into y and a downward offset into z, which placed the camera sideways and
+        # metres below the dressing -- a plausible reason "frame the dressing" framed nothing.  The
+        # height goes on z, and the camera stands back along x and to one side in y.
+        height_above = float(centre[2]) + 2.4 * radius + 0.4
+        camera_position = (float(centre[0]) - radius * 2.2 - 0.3,
+                           float(centre[1]) + radius * 1.2,
+                           height_above)
         camera = Camera(prim_path="/World/DressingCamera", frequency=20,
                         resolution=(args.width, args.height))
         camera.initialize()

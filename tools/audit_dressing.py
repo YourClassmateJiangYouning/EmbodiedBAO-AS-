@@ -186,10 +186,16 @@ def main() -> int:
         for item in sc.SCENES[scene]["dressing"]:
             if item["mount"] == "floor":
                 continue
-            depth = float(item["size"][0])
-            if depth > 0.20 + 1e-9:
-                problems.append(f"{scene}/{item['name']} stores {depth:.3f} m on its x axis, past "
-                                f"the 0.20 m protrusion cap")
+            # The same arithmetic as test_no_dressing_protrudes_into_the_corridor, and written the
+            # same way on purpose: this check and that test are the same invariant, and they used to
+            # disagree by a factor of two (depth here, half-depth there), so a depth between 0.20 and
+            # 0.40 m would have passed the test and failed the audit depending on which ran first.
+            # _dressing_wall puts the back face on the surface, so the protrusion is the depth less
+            # the clearance.
+            protrusion = float(item["size"][0]) - sc.MOUNT_CLEARANCE_M
+            if protrusion > 0.20 + 1e-9:
+                problems.append(f"{scene}/{item['name']} protrudes {protrusion:.3f} m from the wall, "
+                                f"past the 0.20 m cap")
 
     # 6. Wired props with no measurement and not declared pending.
     pending = set(getattr(sc, "PROP_MEASUREMENT_PENDING", ()))

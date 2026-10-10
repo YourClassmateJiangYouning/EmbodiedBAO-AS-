@@ -473,7 +473,14 @@ def _dressing_wall(name: str, mount: str, at: Tuple[float, float, float],
     mechanism by which an invisible reversal comes back.
     """
     x_thick, tall, across = (float(v) for v in size)
-    centre_x = float(at[0]) - MOUNT_CLEARANCE_M
+    # The box CENTRE is derived from the surface, and the comment at OBSTACLE_WALL_FACE_X has claimed
+    # this since it was written: "the helper derives the centre ... subtracts half the item's
+    # thickness, so its back sits against that face".  It did not -- it subtracted only the 1 mm
+    # clearance, so the centre sat ON the surface and half of every wall item was inside the wall.
+    # On the 0.02 m obstacle wall that means the shelf and the mugs and the banana all poked through
+    # into the destination room, and the physical protrusion into the corridor was size[0]/2 rather
+    # than size[0], which is also why the two protrusion checks disagreed by a factor of two.
+    centre_x = float(at[0]) - MOUNT_CLEARANCE_M - x_thick / 2.0
     # slot 0 carries the wall's NORMAL depth, so a reader that asks "how far does this protrude" reads
     # size[0] and gets the thickness.  The other two are the width and height within the wall plane,
     # where the order is a presentation choice.  place_dressing takes this tuple as already being in

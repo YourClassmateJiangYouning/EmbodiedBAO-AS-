@@ -1361,6 +1361,14 @@ class BAOEnv:
         self.robot_root = XFormPrim(prim_paths_expr=self.robot_prim_path)
         self._robot_ground_offset = self._compute_robot_ground_offset()
         self._set_robot_pose(self._start_pos, ROBOT_START_YAW_DEG)
+        # FIND THE LINKS BEFORE HIDING THE ROBOT.  UsdStage::Traverse() visits "the active, loaded,
+        # defined, non-abstract prims on this stage", and deactivating a prim removes its whole subtree
+        # from that set -- so with hide_robot=True the two lookups below used to walk a stage on which
+        # the robot no longer appeared and silently found nothing.  Hand and head telemetry would then
+        # be absent with no error, which is the failure mode this session keeps meeting: a component
+        # that cannot run looks exactly like one that passed.
+        self._find_hand_prim()
+        self._find_head_camera_link()
         if self.task_dict.get("hide_robot", False):
             for sub_prim in self.stage.Traverse():
                 if str(sub_prim.GetPath()).startswith(self.robot_prim_path):
@@ -1368,8 +1376,6 @@ class BAOEnv:
                         sub_prim.SetActive(False)
                     except Exception:
                         pass
-        self._find_hand_prim()
-        self._find_head_camera_link()
 
     def _compute_robot_ground_offset(self) -> float:
         """Raise the robot so its lowest mesh point sits on the ground (z=0)."""

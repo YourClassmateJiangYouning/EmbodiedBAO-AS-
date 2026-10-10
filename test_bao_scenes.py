@@ -662,14 +662,19 @@ def test_no_dressing_protrudes_into_the_corridor() -> None:
     reached 0.9 m out from the wall towards the robot.  The |z| >= 0.9 rule that was supposed
     to prevent this only constrains where an item sits sideways, not how far it protrudes, so
     it is now constrained too.
+
+    The protrusion is the item's DEPTH less its clearance, because _dressing_wall puts the item's
+    back face on the surface it is given.  This used to test size[0]/2 while the audit tested
+    size[0], so the same invariant had two arithmetics a factor of two apart and would have
+    disagreed for any depth between 0.20 and 0.40 m.
     """
     for scene in sc.SCENE_ORDER:
         for item in sc.SCENES[scene]["dressing"]:
             if item["mount"] == "floor":
                 continue
-            protrusion = float(item["size"][0]) / 2.0
+            protrusion = float(item["size"][0]) - sc.MOUNT_CLEARANCE_M
             check(protrusion <= 0.20,
-                  f"{scene}: {item['name']} protrudes {protrusion:.2f} m from the wall into "
+                  f"{scene}: {item['name']} protrudes {protrusion:.3f} m from the wall into "
                   f"the corridor the agent looks along")
     print("[ok] no wall-mounted dressing protrudes more than 0.20 m into the corridor")
 
