@@ -112,16 +112,16 @@ def main() -> int:
         def drawn_prim(fixture: dict) -> str:
             """The path of what was DRAWN for an item.
 
-            The clearance cube at /World/Dressing/<name> carries the item's declared size, so measuring
-            it reports the declaration read back to itself -- the mistake tools/measure_props.py's own
-            docstring warns about ("it does NOT measure the box.  An earlier version did, and its
-            number was the declaration read back to itself").  When a prop resolved, the thing drawn is
-            its child at .../prop; otherwise the box is the item and is what to measure.
+            When a prop resolved, the thing drawn is /World/Dressing/<name>/prop.  Otherwise the
+            clearance box is the item, and that box is a unit cube under the item's Xform at
+            /World/Dressing/<name>/clearance, carrying the declared size through the Xform's scale.
+            Measuring /World/Dressing/<name> itself used to report the declaration read back to
+            itself -- the mistake tools/measure_props.py's own docstring warns about.
             """
             base = f"/World/Dressing/{fixture['name']}"
             if fixture.get("used_asset"):
                 return f"{base}/prop"
-            return base
+            return f"{base}/clearance"
 
         for fixture in placed:
             extent = describe(world_extent(box, stage.GetPrimAtPath(drawn_prim(fixture))))

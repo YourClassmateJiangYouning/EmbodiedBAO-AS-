@@ -280,21 +280,55 @@ def main() -> int:
         if "MakeInvisible" not in place_body and "GetVisibilityAttr" not in place_body:
             problems.append("place_dressing never makes the clearance box invisible, so a resolved "
                             "prop is drawn inside a solid box and reads as a block")
-        # The prop is a child of the box, so the BOX must be translate-then-scale: AddXformOp adds
-        # each op "more locally" than the last and the list composes in reverse, so scale-first puts
-        # the translation inside the scale and every box centre becomes size * at.
+        # THE STRUCTURE, which is what makes hiding the box safe at all.  Presence tests were not
+        # enough: the state this project actually shipped had MakeInvisible present, applied to a box
+        # that was the prop's PARENT -- and `invisible` is inherited, so the prop was hidden with it
+        # and every frame stayed bare while the report said RESOLVED.  The rule is about the shape of
+        # the prim tree, so it is checked as one.
+        if "/clearance" not in place_body:
+            problems.append("place_dressing does not put the clearance box on its own prim path.  The "
+                            "prop must be a SIBLING of that box, not its child: both SetActive(False) "
+                            "and MakeInvisible() hide a prim's descendants, so a prop under the box "
+                            "cannot be shown while the box is hidden")
+        if "item_xform = UsdGeom.Xform.Define(stage, path)" not in \
+                place_body.replace("\n", " ").replace("  ", " "):
+            problems.append("place_dressing does not define the item's own Xform at `path`.  That "
+                            "Xform is what carries the placement and the declared scale once the box "
+                            "is a sibling of the prop; without it nothing scales the prop to the "
+                            "declared size.  (A check that merely looks for the NAME item_xform "
+                            "passes when the Xform is defined somewhere else, which is why this "
+                            "compares the call.)")
+        # The scale must be on the item, not on the clearance box: a unit cube under a scaled Xform is
+        # the declared volume, and the prop is scaled by the same Xform.
+        for line in place_body.splitlines():
+            if "AddScaleOp" in line and "item" not in line[:line.index("AddScaleOp")]:
+                problems.append(f"place_dressing scales the {line.strip()!r} rather than the item's "
+                                f"Xform; with the box as a sibling of the prop, the declared scale "
+                                f"has to live on the Xform that contains both")
+        if "MakeInvisible()" not in place_body:
+            problems.append("place_dressing does not call MakeInvisible() on the box prim")
+        elif "Imageable(prim)" not in place_body:
+            problems.append("place_dressing makes something invisible that is not the clearance box "
+                            "prim; making the ITEM invisible would hide the prop with it")
+        # The prop must be measured for verification against a space that carries metres, i.e.
+        # relative to the item's Xform -- not to the dressing root, which would include the scale and
+        # report the prop a second time.
+        if 'ComputeRelativeBound(proxy, item_prim_for_measure' not in place_body.replace("\n", " ") \
+                and "item_prim_for_measure" not in place_body:
+            problems.append("place_dressing's verification does not measure the prop relative to the "
+                            "item's Xform, so the declared scale would be counted twice")
+
         translate_at = place_body.find("AddTranslateOp")
         scale_at = place_body.find("AddScaleOp")
         if translate_at == -1 or scale_at == -1:
-            problems.append("place_dressing does not author both a translate and a scale for the "
-                            "clearance box")
+            problems.append("place_dressing does not author both a translate and a scale")
         elif translate_at > scale_at:
-            problems.append("place_dressing adds the box's SCALE before its TRANSLATE, so the "
-                            "translation is applied first and then multiplied by the scale: every "
-                            "box centre becomes size * at")
+            problems.append("place_dressing adds the SCALE before its TRANSLATE, so the translation is "
+                            "applied first and then multiplied by the scale: every item centre becomes "
+                            "size * at")
         if "Gf.Vec3d" not in place_body:
-            problems.append("place_dressing does not use a double-precision vector for the box "
-                            "translate, which AddTranslateOp creates at PrecisionDouble")
+            problems.append("place_dressing does not use a double-precision vector for the translate, "
+                            "which AddTranslateOp creates at PrecisionDouble")
         if 'to_world_size(item' not in place_body:
             problems.append("place_dressing does not convert the item size with to_world_size, so a "
                             "wall item's height and width would be exchanged in the drawn box")

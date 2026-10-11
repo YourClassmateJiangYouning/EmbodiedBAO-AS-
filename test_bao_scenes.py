@@ -1523,6 +1523,50 @@ def test_the_manual_states_the_scene_facts_the_code_holds() -> None:
     print(f"[ok] MANUAL.md's scene table matches the code for all {len(sc.SCENE_ORDER)} scene(s)")
 
 
+def test_the_scene_modules_have_no_undefined_names_or_unused_imports() -> None:
+    """Run ruff's pyflakes rules over the scene modules, if ruff is installed.
+
+    A restructuring left `path` used but never assigned, and it was caught locally only because ruff
+    happened to be run by hand afterwards.  That is the same class of slip as the ones that reached
+    the lab machine, and the difference between catching it here and catching it there is a round trip
+    that costs someone else's time.  So it runs with the suite.
+
+    Skipped with a printed note when ruff is absent, rather than passing silently: a check that cannot
+    run must say so, which is the lesson this whole round is about.
+    """
+    import shutil
+    import subprocess
+
+    root = os.path.dirname(os.path.abspath(__file__))
+    # `python -m ruff` first, because the console script is not always on PATH -- shutil.which()
+    # returned nothing here while the module ran fine, and a check that silently skips itself is the
+    # failure this project keeps meeting.
+    candidates = [[sys.executable, "-m", "ruff"]]
+    if shutil.which("ruff"):
+        candidates.append([shutil.which("ruff")])
+    targets = ["scene_builder.py", "scenes.py", "environment.py", "capture_scenes.py",
+               os.path.join("tools", "audit_dressing.py"),
+               os.path.join("tools", "render_dressing.py"),
+               os.path.join("tools", "prove_audit_fails.py")]
+    result = None
+    for command in candidates:
+        attempt = subprocess.run([*command, "check", "--select", "F,E9", "--output-format", "concise",
+                                  *targets], capture_output=True, text=True, cwd=root)
+        if "No module named" in attempt.stderr or "not recognized" in attempt.stderr:
+            continue
+        result = attempt
+        break
+    if result is None:
+        print("[skip] ruff is not installed, so undefined names and unused imports were NOT checked "
+              "in this run -- install it or this class of error reaches the lab machine again")
+        return
+    check(result.returncode == 0,
+          "ruff reports static errors, and these are the kind that otherwise reach the lab machine:\n"
+          f"{result.stdout}{result.stderr}")
+    print(f"[ok] ruff found no undefined names, unused imports or syntax errors in "
+          f"{len(targets)} module(s)")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -1562,6 +1606,7 @@ def main() -> int:
         test_the_marker_assertion_counts_parts_not_children,
         test_no_scene_floor_is_covered_by_a_dark_material,
         test_the_dressing_code_has_none_of_this_session_s_known_faults,
+        test_the_scene_modules_have_no_undefined_names_or_unused_imports,
     ]
     failed = 0
     for test in tests:

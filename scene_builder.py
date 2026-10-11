@@ -501,8 +501,28 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
 
     placed: List[Dict[str, Any]] = []
     for item in sc.SCENES[scene]["dressing"]:
+        # The item's own prim path.  Restructuring the tree dropped the assignment that used to define
+        # it while the name was still used below, and ruff caught the undefined reference locally --
+        # which is worth noting, because the same class of slip reached the lab machine twice in this
+        # session through paths that no local check read.
         path = f"/World/Dressing/{item['name']}"
-        cube = UsdGeom.Cube.Define(stage, path)
+        # THE BOX AND THE PROP ARE SIBLINGS, NOT PARENT AND CHILD.
+        #
+        # This is the third arrangement tried and the first that can work.  The clearance box has to
+        # stop being drawn once a prop resolves, and BOTH ways of hiding a prim hide its descendants:
+        #
+        #   * SetActive(False) removes the subtree from composition -- the prop stops existing;
+        #   * MakeInvisible() sets visibility, and UsdGeomImageable documents that `invisible` means
+        #     "the prim and all of its DESCENDANTS ... will be invisible", because visibility is an
+        #     inherited property.
+        #
+        # With the prop as a child of the box, every option hides the prop: that is why the frames
+        # stayed bare after the deactivation was replaced with invisibility, and why the report kept
+        # saying RESOLVED while nothing appeared.  Making them siblings removes the interaction
+        # entirely -- the box is hidden, the prop is untouched, and both remain on the stage where the
+        # fixture checks and the on-stage verification can find them.
+        box_path = f"/World/Dressing/{item['name']}/clearance"
+        cube = UsdGeom.Cube.Define(stage, box_path)
         cube.GetSizeAttr().Set(1.0)
         # ONE frame for every size: the CATALOGUE's (x, height, lateral).  Both mounts store that,
         # and it is converted here, once, into the stage's (x, lateral, height).  A wall item used to
@@ -512,23 +532,32 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
         # wide.  Height and width are interchangeable for what the wall looks like and not at all
         # interchangeable for the prompt.
         size = sc.to_world_size(item["size"])
-        prim = cube.GetPrim()
+        # THE ITEM'S XFORM carries the placement and the declared scale, and the clearance box is a
+        # unit cube UNDER it.  The declaration has to live here rather than on the box because the box
+        # can no longer be the prop's ancestor: a Cube scaled by the declared size, with the prop as
+        # its child, cannot be hidden without hiding the prop.  A unit cube under a scaled Xform is
+        # still exactly the declared clearance volume, so every fixture check still reasons about the
+        # declared size, and the prop -- a sibling of the box, under the same scaled Xform -- is
+        # scaled by the declared size exactly as it was before.
+        #
         # TRANSLATE FIRST, THEN SCALE.  AddXformOp documents that each successive call adds an
         # operator "applied more locally than the preceding", and GetLocalTransformation composes the
         # ordered list in reverse -- so with scale added first the order is [scale, translate] and the
-        # translation is applied FIRST and then multiplied by the scale.  Every box was therefore
+        # translation is applied FIRST and then multiplied by the scale.  Every item was therefore
         # centred at size ⊙ at: the crate declared at x 10.2 with size 0.6015 landed at x 6.14, and
         # the rack at 5.01 instead of 7.0.  Adding the translate before the scale puts the scale
         # innermost, which is what "a box of `size` centred at `at`" means.
         #
         # The translate is written as Vec3d because AddTranslateOp defaults to PrecisionDouble and
         # creates a double3 attribute.  Vec3f is right for the scale, whose op defaults to float.
-        UsdGeom.Xformable(prim).AddTranslateOp().Set(Gf.Vec3d(*sc.to_world(item["at"])))
-        cube.AddScaleOp().Set(Gf.Vec3f(*size))
+        item_xform = UsdGeom.Xform.Define(stage, path)
+        item_prim = item_xform.GetPrim()
+        UsdGeom.Xformable(item_prim).AddTranslateOp().Set(Gf.Vec3d(*sc.to_world(item["at"])))
+        item_xform.AddScaleOp().Set(Gf.Vec3f(*size))
+        prim = cube.GetPrim()
         _disable_collision(prim)
         if item.get("colour"):
-            paint(stage, path, item["colour"])   # (ok, why); not reported per dressing item
-
+            paint(stage, box_path, item["colour"])   # (ok, why); not reported per dressing item
         record = {"name": item["name"], "mount": item["mount"],
                   "asset": item["asset"], "used_asset": False}
         # The box is a COLLISION AND CLEARANCE VOLUME, not something to look at.  It used to stay
@@ -548,17 +577,24 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
         local = prop_asset_for(item["asset"]) if item.get("asset") else None
         if local:
             try:
-                # Reference the prop onto an Xform child of the box:
+                # The prop is a SIBLING of the clearance box, under a plain Xform that carries the
+                # item's placement, so that hiding the box cannot reach the prop:
+                #
+                #     /World/Dressing/<name>            Xform, the item
+                #     /World/Dressing/<name>/clearance  Cube, the declared clearance volume
+                #     /World/Dressing/<name>/prop       Xform, the referenced mesh
+                #
+                # The reference is added in the explicit four-step shape --
                 #     UsdGeom.Xform.Define(stage, path) -> schema
                 #     schema.GetPrim()                  -> prim
                 #     prim.GetReferences()              -> UsdReferences metadata
                 #     .AddReference(local_path)         -> the reference itself
-                # Written in that explicit shape because it cannot be exercised on the
-                # development machine (no pxr).  USD's own idiom for this exists as a
-                # convenience call that performs the same four steps; spelling them out keeps
-                # the prim that receives the reference unambiguous, and the except below turns
-                # any mistake here into a recorded message plus the box that was already
-                # built, rather than a stage that fails to assemble mid-sweep.
+                # -- because it cannot be exercised on the development machine (no pxr), and
+                # spelling it out keeps the prim that receives the reference unambiguous.  The
+                # except below turns any mistake here into a recorded message plus the box that was
+                # already built, rather than a stage that fails to assemble mid-sweep.
+                # (The item Xform itself was defined above, because it carries the placement; this
+                # line is kept as the naming of the step rather than a second definition.)
                 proxy_schema = UsdGeom.Xform.Define(stage, f"{path}/prop")
                 proxy_prim = proxy_schema.GetPrim()
                 proxy_prim.GetReferences().AddReference(local)
@@ -581,32 +617,30 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 scale = fill_scale_for_unit_parent(proxy_prim)
                 if any(abs(s - 1.0) > 1e-9 for s in scale):
                     # The scale goes on the prop in the AXES THE PROP LIVES IN, which are the
-                    # stage's: the box's own scale was converted with to_world_size above, so the
-                    # parent's local axes are already (x, lateral, height).  No mount exemption here
-                    # either -- that exemption is what drew every wall item with its height and
-                    # width exchanged.
+                    # stage's: the item Xform above carries the declared size converted with
+                    # to_world_size, so the prop's local axes are already (x, lateral, height).  No
+                    # mount exemption here either -- that exemption is what drew every wall item with
+                    # its height and width exchanged.
                     apply_scale(proxy_prim, scale)
                 _disable_collision(proxy_prim)
                 record["used_asset"] = os.path.basename(local)
                 record["reference"] = local
                 record["fit_scale"] = scale
-                # Hide the clearance box -- but INVISIBLY, not by deactivating it.
+                # Hide ONLY the clearance box.  Getting this wrong is what emptied every frame, and
+                # it took three arrangements to see why:
                 #
-                # This line used to be prim.SetActive(False), and that was the worst defect in the
-                # scene code: `prim` is the clearance Cube and `proxy_prim`, holding the referenced
-                # mesh, is its CHILD at f"{path}/prop".  Deactivating a prim prevents its descendants
-                # from being composed onto the stage at all -- not merely from being drawn -- so every
-                # item whose prop resolved vanished completely, box and mesh together.  43 of the 44
-                # referenced props were absent from every frame.  The comment beside it claimed the
-                # opposite ("the volume ... still exists on the stage and can be inspected"), and the
-                # on-stage verification below depends on that path existing, so it silently skipped
-                # every item and reported nothing: a check that cannot run looks exactly like a check
-                # that passed.
+                #   * `prim.SetActive(False)` removed the box's whole SUBTREE from composition, and
+                #     the prop was then a child of the box, so every resolved prop stopped existing;
+                #   * `MakeInvisible()` on the box looked like the fix, but UsdGeomImageable defines
+                #     `invisible` as hiding "the prim and all of its DESCENDANTS", because visibility
+                #     is an INHERITED property -- so the prop stayed invisible and the frames stayed
+                #     bare.  That is the state the user was looking at while this report said
+                #     RESOLVED fifteen times.
+                #   * making the prop a SIBLING of the box, both under the item's Xform, is the
+                #     arrangement in which hiding the box cannot reach the prop at all.
                 #
-                # MakeInvisible() sets visibility, which is inherited and therefore hides the box,
-                # while leaving the subtree composed and queryable.  The bbox cache excludes invisible
-                # prims from CHILD bound aggregation, and the verification queries the prop directly,
-                # so the prop's own extent is still measurable -- which is the point.
+                # So this call is correct only because of the re-parenting above, and the two belong
+                # together: changing one without the other hides the props again.
                 UsdGeom.Imageable(prim).MakeInvisible()
             except Exception as exc:  # noqa: BLE001
                 # A prop that will not load must leave the box, not the scene, broken: the box is
@@ -647,22 +681,28 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
     from pxr import Usd, UsdGeom
 
     box_cache = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_])
-    root_prim = stage.GetPrimAtPath("/World/Dressing")
     for record in placed:
         if not record.get("used_asset"):
             continue
         proxy = stage.GetPrimAtPath(f"/World/Dressing/{record['name']}/prop")
-        if not proxy or not proxy.IsValid() or root_prim is None or not root_prim.IsValid():
+        if not proxy or not proxy.IsValid():
             # A resolved prop whose prim cannot be found is a defect in itself, and it is what this
-            # block used to do silently: `prim.SetActive(False)` pruned the prop's whole subtree, so
-            # every path here was invalid and every item was skipped without a word.  A check that
-            # cannot run looks exactly like a check that passed, so now it says so.
+            # block used to do silently: the prop sat under a deactivated ancestor, so every path here
+            # was invalid and every item was skipped without a word.  A check that cannot run looks
+            # exactly like a check that passed, so now it says so.  (The prop is also no longer under
+            # the clearance box, which could be hidden by either mechanism and take the prop with it.)
             record["fit_error"] = ("resolved prop is not on the stage at "
                                    f"/World/Dressing/{record['name']}/prop, so its size cannot be "
                                    f"verified -- was an ancestor deactivated?")
             continue
         try:
-            rng = box_cache.ComputeRelativeBound(proxy, root_prim).ComputeAlignedRange()
+            # Relative to the ITEM's Xform, which carries the declared scale: this measures the drawn
+            # size in metres, which is what the declared box is in.  Measuring relative to the
+            # dressing root instead would include that scale and report the prop a second time --
+            # the feedback that reported factors of 219.9 earlier in this project.
+            item_prim_for_measure = stage.GetPrimAtPath(f"/World/Dressing/{record['name']}")
+            rng = box_cache.ComputeRelativeBound(
+                proxy, item_prim_for_measure).ComputeAlignedRange()
         except Exception as exc:  # noqa: BLE001
             record["fit_error"] = f"could not measure the drawn prop: {type(exc).__name__}: {exc}"
             continue
