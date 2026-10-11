@@ -41,28 +41,40 @@ for f in test_bao_*.py; do echo "== $f"; python $f 2>/dev/null | tail -3; done
 
 **任何一步失败，先修它，不要往下走。**
 
-### 第 0.5 步：确认你能不能推送 GitHub（**先回答这个问题，再动代码**）
+### 第 0.5 步：git 状态（**已在这台机器上实测过，按结论执行，不要重新推理**）
 
-远程是 HTTPS：`origin = https://github.com/YourClassmateJiangYouning/EmbodiedBAO-AS-.git`。
-能不能推，取决于这台机器上有没有凭据。**不要猜，跑下面三条**：
+2026-10-11 在 `eai@eai:~/EmbodiedBAO-AS-` 实测结果：
 
-```bash
-git config --get user.name && git config --get user.email   # 身份是否配置
-git ls-remote origin >/dev/null 2>&1 && echo "READ-OK" || echo "READ-FAIL"   # 读权限
-git config --get credential.helper                          # 凭据助手是否存在
+```
+git config --get user.name          -> 空
+git config --get user.email         -> 空
+git ls-remote origin                -> READ-OK    （仓库公开，匿名可读）
+git config --get credential.helper  -> 空
 ```
 
-**然后如实报告你属于哪一种，不要自己想办法绕过：**
+**所以：这台机器能拉取，但没有 git 身份、也没有凭据助手。**
+**在配置身份之前，`git commit` 会失败——先做第一步。**
 
-| 你的情况 | 你应该怎么做 |
+```bash
+# 第一步：配置身份（不需要任何凭据）。用仓库既有的提交者身份，保证历史一致：
+git config user.name  "YourClassmateJiangYouning"
+git config user.email "jiangyongxing910tt@gmail.com"
+git config --get user.name && git config --get user.email   # 确认非空
+```
+
+（上面这两个值取自本仓库既有提交 `git log -1 --format='%an <%ae>'`。若人类要求换一个身份，
+以人类的指示为准。）
+
+**第二步：提交照常做，推送按下面的规则。**
+
+| 情况 | 怎么做 |
 | :--- | :--- |
-| `user.name/email` 有、`READ-OK`、有 `credential.helper` | **可以提交并推送。** 走 §5 的提交流程，然后 `git push origin master` |
-| 有身份、`READ-OK`，但**没有** credential helper | 尝试一次 `git push origin master`（可能是 SSH 转发或已缓存）。**失败就把报错原文贴出来**，不要反复试 |
-| `user.name/email` 缺失 | 先设置：`git config user.name "<名字>"` / `git config user.email "<邮箱>"`，再重跑上面 |
-| `READ-FAIL` | **你无法访问远端。** 那就**只做本地提交**（`git commit` 照常），并在每份报告里附上 `git log --oneline -5`，由人类代推。**不要尝试输入或索取任何凭据。** |
+| 人类已给你配好 PAT / SSH / `gh auth` | `git push origin master`，正常推送 |
+| **没有凭据（当前状态）** | **只做本地提交**（`git commit` 照常）。每份报告末尾附 `git log --oneline -5`，由人类在他自己的机器上 `git push`。**不要尝试输入或索取凭据，不要反复试 `git push`。** |
 
 **绝对不要**把 token、密码、私钥写进任何文件、提交、日志或聊天。`.gitignore` 已屏蔽
-`.git-credentials`/`.netrc`/`*.pem`/`*.key`/`id_rsa*`/`.env` 等，但屏蔽不是许可。
+`.git-credentials`/`.netrc`/`*.pem`/`*.key`/`id_rsa*`/`.env` 等，但屏蔽不是许可：
+公开历史里的 token 只能吊销。
 
 ---
 

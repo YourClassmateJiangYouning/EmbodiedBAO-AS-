@@ -41,6 +41,30 @@
 症状是"实验室机器上 `0 from assets`，而本机测量正常"。**开工前跑一次
 `git ls-files assets | wc -l` 确认是 1185。**
 
+### 远程机器的 git 状态（**已实测，不是推测**）
+
+在 `eai@eai:~/EmbodiedBAO-AS-` 上实测 2026-10-11：
+
+```
+git config --get user.name      -> 空
+git config --get user.email     -> 空
+git ls-remote origin            -> READ-OK      （仓库公开，匿名可读）
+git config --get credential.helper -> 空
+```
+
+**结论**：这台机器**能拉、暂时不能推**，而且**在配置身份之前连提交都不能做**。
+
+- **身份**：两行命令即可解决，不需要任何凭据。
+- **推送**：需要凭据（HTTPS 的 PAT 或 SSH 密钥）。**在没有凭据之前，一律只做本地提交**，
+  并在报告里附 `git log --oneline -5`，由人类代推。
+  - 若人类决定让远程自己推，推荐顺序：① 装 `gh` 并 `gh auth login`；
+    ② 设 `git config --global credential.helper store` 后首次 `git push` 交互输入 PAT
+    （PAT 需 `repo` 权限）；③ 改用 SSH 并部署只读+写的部署密钥。
+  - **任何情况下都不要把 token 写进文件、提交、日志或对话。**
+    `.gitignore` 已屏蔽 `.git-credentials`/`.netrc`/`*.pem`/`*.key`/`id_rsa*`/`.env` 等模式，
+    但**屏蔽不是许可**——公开历史里的 token 只能吊销，不能"改掉"。
+
+
 ---
 
 ## 1. 先做这五件事，做完再动任何代码
