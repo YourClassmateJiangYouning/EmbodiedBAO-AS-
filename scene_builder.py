@@ -681,11 +681,14 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
     from pxr import Usd, UsdGeom
 
     box_cache = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_])
+    # The dressing root, which has no transform: a bound relative to it is a world-space extent, so
+    # the number this block reports is in the same units as the item's declared size.
+    root_prim = stage.GetPrimAtPath("/World/Dressing")
     for record in placed:
         if not record.get("used_asset"):
             continue
         proxy = stage.GetPrimAtPath(f"/World/Dressing/{record['name']}/prop")
-        if not proxy or not proxy.IsValid():
+        if not proxy or not proxy.IsValid() or root_prim is None or not root_prim.IsValid():
             # A resolved prop whose prim cannot be found is a defect in itself, and it is what this
             # block used to do silently: the prop sat under a deactivated ancestor, so every path here
             # was invalid and every item was skipped without a word.  A check that cannot run looks
@@ -696,13 +699,19 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                                    f"verified -- was an ancestor deactivated?")
             continue
         try:
-            # Relative to the ITEM's Xform, which carries the declared scale: this measures the drawn
-            # size in metres, which is what the declared box is in.  Measuring relative to the
-            # dressing root instead would include that scale and report the prop a second time --
-            # the feedback that reported factors of 219.9 earlier in this project.
-            item_prim_for_measure = stage.GetPrimAtPath(f"/World/Dressing/{record['name']}")
-            rng = box_cache.ComputeRelativeBound(
-                proxy, item_prim_for_measure).ComputeAlignedRange()
+            # MEASURED RELATIVE TO THE DRESSING ROOT, and that is a correction.  This used to be
+            # relative to the item's Xform, on the reasoning that the Xform carries the declared
+            # scale and so a relative bound "is in metres".  The reference says otherwise: a relative
+            # bound "excludes the local transform at relativeToAncestorPrim", so measuring against the
+            # Xform excluded the very scale that turns the prop's local size into metres -- and the
+            # numbers came back in the parent's local units, saturating at exactly 1.0 on the
+            # constraining axis of every item (the fountain at (1.0, 1.0, 0.6835), the railing at
+            # (1.0, 0.0327, 0.5238)).  Nothing was wrong with the geometry; the verification was
+            # reading the wrong space, and the three FITS BADLY lines it printed were its own error.
+            #
+            # The dressing root has no transform, so a bound relative to it IS the world-space extent
+            # in metres -- the same units as the declared size, and comparable with it directly.
+            rng = box_cache.ComputeRelativeBound(proxy, root_prim).ComputeAlignedRange()
         except Exception as exc:  # noqa: BLE001
             record["fit_error"] = f"could not measure the drawn prop: {type(exc).__name__}: {exc}"
             continue
@@ -850,7 +859,7 @@ def describe_stage(stage: Any, limit: int = 8) -> List[str]:
 
 def apply_scene(stage: Any, scene: str, slot: int,
                 surfaces: Optional[Dict[str, str]] = None,
-                use_mdl: bool = True,
+                use_mdl: bool = False,
                 parts: Sequence[str] = ("materials", "marker", "dressing")) -> Dict[str, Any]:
     """Put a scene on the stage and report what resolved.
 
@@ -863,6 +872,17 @@ def apply_scene(stage: Any, scene: str, slot: int,
     their shaders and every surface that received one rendered as salt-and-pepper noise -- the
     whole scene came back looking broken.  Flat paint is ugly but correct, and a flat-painted
     room reads as a room; noise does not.  Opt in when the cache is writable.
+
+    THE DEFAULT AND THIS PARAGRAPH DISAGREED, and the paragraph was right.  The signature said
+    ``use_mdl: bool = True`` while the docstring said False, and environment.py also defaulted its
+    task_dict lookup to True -- and capture_scenes passed ``use_mdl=not args.flat_paint``, so a run
+    WITHOUT ``--flat-paint`` built MDL prims on the machine whose cache cannot be written and every
+    surface came back full of noise.  A preview was then read as "the scene is bare" several times
+    when the truth was that the surfaces were unreadable at all.
+
+    All three now agree on the safe default: this signature is False, environment's lookup is False,
+    and capture_scenes drives it from an explicit ``--mdl`` flag rather than from the absence of
+    ``--flat-paint``.  ``--flat-paint`` is kept and is now the default's name for compatibility.
     """
     if scene not in sc.SCENES:
         raise ValueError(f"unknown scene {scene!r}, expected one of {list(sc.SCENES)}")

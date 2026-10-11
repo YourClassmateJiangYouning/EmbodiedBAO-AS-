@@ -83,10 +83,18 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--flat_paint", action="store_true",
-        help="Skip the materials and paint the four surfaces flat.  Materials are the default "
-             "now that the warehouse set is vendored under assets/isaac: the earlier flat "
-             "default existed because a material fetched from its URL arrived without shaders "
-             "on a machine whose material-library cache is not writable.",
+        help="Kept for compatibility; flat paint is now the DEFAULT.  See --mdl to opt in to "
+             "materials, and the note below about which default is the safe one.",
+    )
+    parser.add_argument(
+        "--mdl", action="store_true",
+        help="Use the scene's MDL/材質 materials instead of flat paint.  OFF by default, and that "
+             "default is deliberate: on the lab machine the material library's cache is not "
+             "writable, so MDL prims are created without their shaders and every surface that "
+             "receives one renders as salt-and-pepper noise -- a preview then looks broken and "
+             "cannot be read at all.  This flag used to be inverted (materials unless --flat_paint "
+             "was passed), which meant the noise was the default and several previews were "
+             "misjudged because of it.",
     )
     parser.add_argument(
         "--iso_target", type=float, nargs=3, default=(10.0, 1.0, 0.0),
@@ -269,7 +277,7 @@ def main() -> int:
 
         task = {"headless": True, "scene": args.scene, "level": args.level,
                 "image_size": args.width,
-                "use_mdl": not args.flat_paint,
+                "use_mdl": bool(args.mdl),
                 "hide_robot": bool(args.hide_robot),
                 "scene_parts": [p.strip() for p in args.parts.split(",") if p.strip()]}
         env = environment.setup_scene(app, task_dict=task)

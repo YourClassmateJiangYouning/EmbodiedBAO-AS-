@@ -310,13 +310,18 @@ def main() -> int:
         elif "Imageable(prim)" not in place_body:
             problems.append("place_dressing makes something invisible that is not the clearance box "
                             "prim; making the ITEM invisible would hide the prop with it")
-        # The prop must be measured for verification against a space that carries metres, i.e.
-        # relative to the item's Xform -- not to the dressing root, which would include the scale and
-        # report the prop a second time.
-        if 'ComputeRelativeBound(proxy, item_prim_for_measure' not in place_body.replace("\n", " ") \
-                and "item_prim_for_measure" not in place_body:
+        # The prop must be measured for verification in WORLD units, i.e. relative to the dressing
+        # root, which has no transform.  An earlier version measured it relative to the item's Xform
+        # on the reasoning that "the Xform carries the scale, so a relative bound is in metres" -- but
+        # a relative bound EXCLUDES the transform at that ancestor, so it returned the parent's local
+        # units, saturating at exactly 1.0 on each item's constraining axis and printing three false
+        # FITS BADLY lines about a fountain that was the right size.
+        if "ComputeRelativeBound(proxy, root_prim)" not in place_body.replace("\n", " "):
             problems.append("place_dressing's verification does not measure the prop relative to the "
-                            "item's Xform, so the declared scale would be counted twice")
+                            "DRESSING ROOT.  A relative bound excludes the transform at the prim it is "
+                            "relative to, so measuring against the item's Xform returns the parent's "
+                            "local units rather than metres, and the drawn-vs-declared comparison "
+                            "becomes meaningless")
 
         translate_at = place_body.find("AddTranslateOp")
         scale_at = place_body.find("AddScaleOp")
@@ -464,6 +469,30 @@ def main() -> int:
             notes.append("environment.py no longer measures the robot with a world bound; that is "
                          "not an error, but the comment explaining why it was correct there has "
                          "probably moved or gone")
+
+    # 13. THE SAFE RENDER DEFAULT.  `use_mdl` decides whether the four room surfaces get MDL prims or
+    # flat paint, and on the lab machine the material library's cache is not writable, so MDL surfaces
+    # render as salt-and-pepper noise.  Three places disagreed about the default -- the signature said
+    # True, its own docstring said False, and capture_scenes inverted the meaning of --flat_paint -- so
+    # noise was what a plain run produced, and a preview full of noise was read more than once as "the
+    # scene is bare".  All three are checked here because the failure is invisible in a text report.
+    if "use_mdl: bool = False" not in code_only:
+        problems.append("scene_builder.apply_scene does not default use_mdl to False, so MDL surfaces "
+                        "-- noise on the lab machine -- would be the default again")
+    env_text = open(os.path.join(_ROOT, "environment.py"), encoding="utf-8").read()
+    if 'get("use_mdl", False)' not in env_text:
+        problems.append("environment.py does not default its use_mdl lookup to False, which is the "
+                        "other half of the same default")
+    cap_path = os.path.join(_ROOT, "capture_scenes.py")
+    if os.path.exists(cap_path):
+        cap_text = open(cap_path, encoding="utf-8").read()
+        if "use_mdl\": bool(args.mdl)" not in cap_text:
+            problems.append("capture_scenes.py does not drive use_mdl from an explicit --mdl flag.  "
+                            "Deriving it from the ABSENCE of --flat-paint made materials the silent "
+                            "default and made those runs unreadable")
+        if "not args.flat_paint" in cap_text:
+            problems.append("capture_scenes.py still inverts --flat_paint into use_mdl, which makes "
+                            "materials the silent default again")
 
     print(f"read {', '.join(FILES)}")
     for note in notes:

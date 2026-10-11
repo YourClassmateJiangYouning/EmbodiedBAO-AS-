@@ -2114,7 +2114,7 @@ class BAOEnv:
         parts = tuple(self.task_dict.get("scene_parts") or ("materials", "marker", "dressing"))
         self.scene_report = scene_builder.apply_scene(
             self.stage, scene, slot, surfaces, parts=parts,
-            use_mdl=bool(self.task_dict.get("use_mdl", True)))
+            use_mdl=bool(self.task_dict.get("use_mdl", False)))
         # flush=True because Kit buffers stdout: the lab ran the scene, wrote the PNGs, and
         # the log contained none of the [scene] lines, so the one piece of evidence that says
         # which materials were actually used was being dropped on the floor.
