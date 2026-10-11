@@ -73,54 +73,59 @@ git config --get user.name && git config --get user.email     # 确认非空
 
 （这两个值取自本仓库既有提交 `git log -1 --format='%an <%ae>'`，保证历史作者一致。）
 
-#### 第二步：配置推送凭据（二选一，由人类决定）
+#### 第二步：配置推送凭据（**已在这台机器上配置完成并验证通过**）
 
-**方案 A — SSH 密钥（推荐：私钥不离开这台机器，没有明文 token）**
+2026-10-11 实测通过，**不要再重新生成密钥**，直接使用：
 
-```bash
-# ① 生成密钥（无人值守，空口令）
-ssh-keygen -t ed25519 -C "eai@lab" -f ~/.ssh/id_ed25519 -N ""
-cat ~/.ssh/id_ed25519.pub
+```
+~/.ssh/id_ed25519_bao        专用密钥（ed25519，空口令）
+公钥注释                      embodiedbao-lab
+公钥指纹                      SHA256:E0+S4xlRtYugcyTZFyxStkAD8j8TbnHI/V8o8bwYbPk
+~/.ssh/config                Host github.com -> IdentityFile ~/.ssh/id_ed25519_bao,
+                             IdentitiesOnly yes
+验证结果                      ssh -T git@github.com
+                             -> "Hi YourClassmateJiangYouning! You've successfully authenticated"
 ```
 
-把输出**那一行**（`ssh-ed25519` 开头）交给人类，人类在浏览器里加到
-GitHub → Settings → SSH and GPG keys → New SSH key。然后：
+**注意**：这台机器上还有另一个密钥 `~/.ssh/id_ed25519`，其公钥注释是 **`flahm0104@gmail.com`**
+——**与这个仓库无关**，属于别人留下的东西。**不要使用它、也不要删它**：
+若它注册在别人的 GitHub 账号下，用它推送会把提交挂到别人的账号下，并且让那台机器上多一个
+能写这个仓库的人。`~/.ssh/config` 里的 `IdentitiesOnly yes` 就是为了确保只用 `_bao`。
+
+确认当前状态：
 
 ```bash
-cd ~/EmbodiedBAO-AS-
-git remote set-url origin git@github.com:YourClassmateJiangYouning/EmbodiedBAO-AS-.git
-ssh -T git@github.com        # 出现 "successfully authenticated" 即成功（exit code 1 属正常）
-git push origin master
+ssh -T git@github.com            # 出现 "Hi YourClassmateJiangYouning!" 即正常（exit code 1 属正常）
+cd ~/EmbodiedBAO-AS- && git remote -v      # 应是 git@github.com:YourClassmateJiangYouning/EmbodiedBAO-AS-.git
 ```
 
-**方案 B — Personal Access Token（需 `repo` 权限）**
-
-人类在 GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
-生成一个勾了 `repo` 的 token，把 `ghp_...` 交给你。然后：
+若 `~/.ssh/id_ed25519_bao` 或 `~/.ssh/config` 丢失，按下面重建：
 
 ```bash
-cd ~/EmbodiedBAO-AS-
-git config credential.helper store
-git push https://ghp_xxxxx@github.com/YourClassmateJiangYouning/EmbodiedBAO-AS-.git master
-git remote set-url origin https://github.com/YourClassmateJiangYouning/EmbodiedBAO-AS-.git
-git push origin master
+ssh-keygen -t ed25519 -C "embodiedbao-lab" -f ~/.ssh/id_ed25519_bao -N ""
+cat ~/.ssh/id_ed25519_bao.pub        # 交给人类加到 GitHub -> Settings -> SSH and GPG keys
+cat >> ~/.ssh/config <<'EOF'
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_ed25519_bao
+    IdentitiesOnly yes
+EOF
+chmod 600 ~/.ssh/config
 ```
 
-**代价**：token 会明文落在 `~/.git-credentials`。
-
-#### 两种方案都行的通用规则
+**通用规则（两种方式都适用）**
 
 - **推送前先确认工作树干净**：`git status --short` 必须为空（若有改动，那是还没提交的工作）。
 - 推送成功后**确认远端真的收到了**：`git ls-remote origin master` 的哈希应与
   `git rev-parse master` 相同。**不要只看 `git push` 的退出码。**
 - 每轮工作结束时报告：`git log --oneline -3` 与 `git ls-remote origin master` 的哈希，
-  这样人类能确认拉到的正是你做的那一版。
+  这样人类能确认他拉到的正是你做的那一版。
 - **绝对不要**把 token、密码、私钥写进任何文件、提交、日志或对话。`.gitignore` 已屏蔽
   `.git-credentials`/`.netrc`/`*.pem`/`*.key`/`id_rsa*`/`.env` 等，但屏蔽不是许可：
   公开历史里的 token 只能吊销，不能"改掉"。
-- **若凭据还没配好**：先把工作做完并**本地提交**（`git commit` 照常，不要 `git push`），
-  在报告里明确写"**推送凭据未配置，N 个提交待推**"并附 `git log --oneline -5`。
-  **不要反复重试 `git push`，也不要索取凭据**——人类会来配。
+- **若凭据失效**：先把工作做完并**本地提交**，在报告里明确写"**推送失败，N 个提交待推**"
+  并附 `git log --oneline -5` 与**原始报错全文**。**不要反复重试 `git push`，也不要索取凭据。**
 
 ---
 
