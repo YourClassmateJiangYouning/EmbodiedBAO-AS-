@@ -253,15 +253,20 @@ def main() -> int:
         # top-level def is one whose `def` starts at column zero.
         fit_body = function_body(builder, FIT_NAME, code_only)
     if fit_body:
-        # The factor must be 1/native.  A version of this rule demanded `declared/native` instead,
-        # reasoning that the prop had to fill the DECLARED box rather than one unit of its parent; the
-        # stage disproved it -- with declared/native the conifer was drawn 5.76 m tall for a 2.4 m box,
-        # because the measured bound is already expressed in the item Xform's local units, where one
-        # unit is the declared size (two-point calibration: 109.51 m at scale 1, 219.02 m at scale 2,
-        # for an item Xform scaled to 2.4).  So the rule is: 1/native, read into `factor`.
+        # The factor must be min(DECLARED/native).  This rule has now been wrong in both directions,
+        # which is worth recording: it first demanded declared/native, then demanded 1/native after a
+        # bad version of the latter appeared to work, and the second form shipped and drew 32 of 33
+        # props at a fraction of their declared box (the railing 2.4 mm thick).  What settles it is a
+        # per-item table rather than an argument: with min(declared/native) against the bound measured
+        # relative to the item Xform, drawn_i = native_i x k lands on want_i for every axis of every
+        # item; with min(1/native) it lands on want only on the axis where native is largest.  The
+        # earlier "declared/native drew the conifer 5.76 m tall" result came from feeding this formula
+        # the RAW asset size instead of that bound, which counts the declaration twice.
         if "1.0 / native[axis]" not in fit_body:
-            problems.append(f"{FIT_NAME} does not derive its factor from 1/native, which is the "
-                            f"multiplier that takes the measured bound to the declared box")
+            problems.append(f"{FIT_NAME} does not derive its factor from 1/native.  The bound is "
+                            f"measured relative to the item Xform, whose scale is the declared size, "
+                            f"so the world box is want_i x native_i x k; declared/native counts the "
+                            f"declaration twice and drew the conifer 5.76 m tall in a 2.4 m box")
         # The value has to be READ, not merely computed: a formula that ignores its own ratios is the
         # shipped defect with extra steps, and the first version of this rule accepted exactly that,
         # because `min(ratios)` is a substring of the line that assigns the factor.

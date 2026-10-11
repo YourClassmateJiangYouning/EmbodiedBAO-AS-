@@ -533,3 +533,60 @@ configuration rather than in the scene skin.
 undersampled; whether `--mdl` (which the project keeps off because the material cache is not
 writable) is what a production render would use; and whether the other three scenes show the same
 magnitude.  None of those were measured here.
+
+---
+
+# Third pass: the replacement route, measured, and what it actually supports
+
+The owner chose route (b) -- replace the worst-fitting props with better assets.  This is what
+measuring that route found, and it does not support the replacement it was meant to.
+
+## Every current asset already matches its declared box
+
+For each weak item, the current asset and every candidate were fitted into that item's declared box
+with the uniform factor, and the resulting world box was compared with the declared box
+(`diag_logs/replace2_stage1.*`).  `worst_ratio_dev` is the largest per-axis disagreement:
+
+| item | declared world (m) | current asset | dev | best candidate | dev |
+| :--- | :--- | :--- | ---: | :--- | ---: |
+| `crate` | 0.6015, 0.4018, 0.17 | `SM_Crate_A07_Yellow_01` | **0.000** | `SM_Crate_A07_01_1` (same mesh) | 0.000 |
+| `carton` | 0.299, 0.6216, 0.3019 | `sm_whitecorrugatedbox_b20_brown_01` | **0.000** | `...b04_brown_01` cube | 0.519 |
+| `book_a` | 0.02, 0.145, 0.205 | `SM_Book_01` | **0.000** | `...b04_brown_01` cube | 0.903 |
+| `railing` | 2.2261, 0.0728, 1.166 | `safety_railing_01` | **0.001** | `bike_rack_01` | 0.542 |
+| `bench_left` | 1.7181, 0.9113, 0.1855 | `bench_curved_01` | **0.000** | `Roxana_DiningBench` | 0.897 |
+| `tree_conifer` | 1.0164, 1.0001, 2.4 | `Chinese_Juniper` | **0.000** | `Grass_Short_A` | 0.948 |
+| `shrub_left` | 0.7572, 0.7499, 0.9 | `Barberry` | **0.000** | `Goldflame_Spirea` | 0.461 |
+| `bin_square` | 0.5855, 0.7957, 1.0112 | `trashcan_square_01` | **0.000** | `dumpster_lrg_01` | 0.403 |
+
+Every current asset fits its box exactly; every candidate measured is worse.  Six candidates were
+fetched from the public bucket for this test (`dumpster_lrg_01`, `dumpster_lrg_02`,
+`dumpster_blue_sm_01`, `bike_rack_01`, `concrete_block_02`, `lamppost_single_01`), measured, and
+removed again because none belongs in the project.  Two assets the local library holds cannot be
+used at all: `SM_BooksSet_11_167` references an `SM_BooksSet_11.usd` that is not vendored, and
+`RackLong_A2` references missing cardboards and pallets.
+
+## Why the fill ratios are low, and why that is not an asset defect
+
+With a uniform factor `k = min(1/native)` and a parent scale of `want`, the drawn box is
+`want_i x native_i x k`.  The axis with the largest `native` therefore fills its declaration
+exactly, and every other axis fills `native_i / native_max`.  A box whose proportions are looser
+than the asset's cannot be filled on those axes by ANY uniform multiple -- and forcing it would
+require a per-axis factor, which reshapes the prop and is forbidden.
+
+That is what the "too thin" numbers are: the loose side of a box, not a small prop.  The tight axis
+is at the declared size by construction, so `railing` really is 2.2261 m long and 1.166 m in the
+direction its 1.166 m declaration describes; what reads as 2.4 mm is the box's 0.0728 m thickness
+axis, which the asset's own 0.0728 m measurement fills to `0.0728 x native_thin/native_max`.
+
+Verified for the record after this analysis: all four scenes report `FITS BADLY` 0 times and the
+same fill ratios as before, and the nine suites pass 174 of 174.
+
+## A stale comment removed on the way
+
+`scenes._dressing_wall` carried the claim that "place_dressing takes this tuple as already being in
+the axes the stage uses and does not convert it".  It does convert it -- `to_world_size`, for both
+mounts, which is what `tools/audit_dressing.py` rule 1 asserts and what
+`test_no_dressing_protrudes_into_the_corridor` reads.  The comment was left over from a revision in
+which that helper swapped the outer two components on the way in; it no longer does, so the comment
+now describes the single conversion that exists.  No behaviour changed: the working tree differs from
+the verified commit only in comments, docstrings and one audit message.

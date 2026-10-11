@@ -481,12 +481,16 @@ def _dressing_wall(name: str, mount: str, at: Tuple[float, float, float],
     # into the destination room, and the physical protrusion into the corridor was size[0]/2 rather
     # than size[0], which is also why the two protrusion checks disagreed by a factor of two.
     centre_x = float(at[0]) - MOUNT_CLEARANCE_M - x_thick / 2.0
-    # slot 0 carries the wall's NORMAL depth, so a reader that asks "how far does this protrude" reads
-    # size[0] and gets the thickness.  The other two are the width and height within the wall plane,
-    # where the order is a presentation choice.  place_dressing takes this tuple as already being in
-    # the axes the stage uses and does not convert it; converting a wall item through to_world_size
-    # swapped its width into the world's height, which is a real error for a poster: a 1.09 m wide
-    # frame became 1.09 m tall.
+    # Slot 0 is the wall-normal depth, so a reader that asks "how far does this protrude" reads
+    # size[0] and gets the thickness.  The other two are the height and width within the wall plane.
+    #
+    # The comment that used to sit here said place_dressing "takes this tuple as already being in the
+    # axes the stage uses and does not convert it".  That is false: place_dressing converts every
+    # item's size with ``to_world_size``, floor and wall alike, and rule 1 of tools/audit_dressing.py
+    # asserts that it does and that there is no mount condition around it.  The claim was left over
+    # from a revision in which this helper swapped the outer two components on the way in; it no
+    # longer does, and a comment arguing for behaviour the code does not have is how a frame error
+    # gets reintroduced.
     return {"name": name, "mount": mount,
             "at": (centre_x, float(at[1]), float(at[2])),
             "size": (x_thick, tall, across), "colour": colour or DRESSING_GREY,

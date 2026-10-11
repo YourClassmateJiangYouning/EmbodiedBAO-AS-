@@ -455,15 +455,29 @@ def fit_reference_to_local_unit(proxy_prim: Any
     ratios = [1.0 / native[axis] for axis in range(3) if native[axis] > 1e-9]
     if not ratios:
         return unchanged
-    # The SCALE is 1/native and the declared size does NOT enter it.  That is not a preference, it is
-    # what the stage was measured to do: this bound is already expressed in the item Xform's local
-    # units, where one unit IS the declared size, so filling the box is 1/native and multiplying by
-    # the declaration again is the double count this function carried for one round.
+    # THE FACTOR IS min(1/native), and it is the multiplier that takes this bound to the declared box.
+    # The bound is measured relative to the item Xform, whose scale IS the declared size, so the world
+    # box is `want_i x native_i x k` and k = 1/native lands the largest axis exactly on its declared
+    # size.  Verified by resetting a prop to scale 1 and measuring: `rack` unfitted is
+    # [77.36, 264.70, 600.69] with want [0.7162, 1.3247, 1.9956], and 1/600.69 gives the drawn box the
+    # report prints.
     #
-    # The two-point calibration that settled it, because reading the code did not: on a stage whose
-    # metersPerUnit is 0.01, a referenced juniper under an item Xform scaled to (1.0164, 1.0001, 2.4)
-    # measures 109.51 m across at prop scale 1 and exactly 219.02 m at prop scale 2.  Scale is linear,
-    # the bound is in world metres already, and 1/native lands the prop on the wanted box.
+    # A version of this used min(declared/native) instead, on the reasoning that the factor should
+    # fill the box on every axis.  It drew the conifer 5.76 m tall in a 2.4 m box, because on THIS
+    # bound the declaration is already present once and the ratio counts it twice.
+    #
+    # It is capped at 1.0 so a box larger than its asset does not ENLARGE it, and it is ONE value for
+    # all three axes so the prop is scaled and never reshaped -- a per-axis factor is what produced
+    # the (1.0, 16.0075, 0.0624) railing earlier in this project.
+    #
+    # CONSEQUENCE, recorded because it is what the human sees: with a uniform factor the drawn box is
+    # `want_i x native_i x min(1/native)`, so the axis where native is largest fills exactly and every
+    # other axis fills `native_i / native_max`.  An asset whose own proportions are flatter than its
+    # declared box is therefore drawn flatter than the box -- this is the "too thin" report -- and no
+    # replacement asset fixes it, because the fill is a property of the box, not of the asset
+    # (diag_logs/replace2_stage1.*: every current asset matches its declared box to 0.000 and every
+    # candidate measured is worse).  Filling such a box requires either a smaller declaration or a
+    # per-axis factor, and the latter reshapes the prop.
     factor = min(ratios)
     if factor > 1.0:
         factor = 1.0
