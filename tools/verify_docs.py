@@ -15,7 +15,7 @@ import re
 import subprocess
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DOCS = ("REMOTE_WORKORDER.md", "REMOTE_KICKOFF.md")
+DOCS = ("IMPLEMENTATION_PROTOCOL.md", "REMOTE_WORKORDER.md", "REMOTE_KICKOFF.md")
 
 
 def tracked(pattern: str) -> int:
@@ -55,6 +55,22 @@ def main() -> int:
          "tools/measure_named_props.py is referenced but missing", "measure_named_props.py present"),
         (os.path.exists(os.path.join(ROOT, "tools", "fetch_bucket_set.py")),
          "tools/fetch_bucket_set.py is referenced but missing", "fetch_bucket_set.py present"),
+        # The protocol is the document the human asked for: every instruction and caution they gave,
+        # in one place.  If it loses the directives they actually stated, the next session cannot
+        # follow them, so the presence of each is checked rather than assumed.  These are their words'
+        # substance, not a style preference.
+        ("主人" in text, "the protocol no longer tells the session how to address the human",
+         "addresses the human as instructed"),
+        ("xyz轴" in text or "xyz" in text,
+         "the protocol no longer warns that the XYZ axes must not be confused",
+         "carries the axis warning"),
+        ("穿模" in text, "the protocol no longer forbids clipping",
+         "forbids clipping"),
+        ("不要指使我做事" in text or "先把能做的做完" in text,
+         "the protocol no longer records that the human must not be given work the session can do",
+         "records the do-it-yourself-first rule"),
+        ("全部步骤" in text, "the protocol no longer requires every step to be listed each time",
+         "requires all steps to be listed"),
         # Checking for the CLAIM, not for the words.  An earlier version searched for a Chinese phrase
         # that also appears in the sentence CORRECTING the claim, so the correction tripped the check
         # on its own prose -- the seventh time a text-scanning check in this project has done that.
