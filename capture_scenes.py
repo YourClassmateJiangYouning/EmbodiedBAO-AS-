@@ -145,6 +145,28 @@ def parse_args() -> argparse.Namespace:
              "fallback to see; 'the picture is empty' cannot distinguish that from 'the reference "
              "failed', and this can.",
     )
+    # The three light parameters environment._setup_lights already reads out of task_dict, exposed
+    # here because a diagnostic that cannot change one variable cannot attribute a frame to it.  The
+    # default is None, NOT the light's own value: passing None leaves the key out of task_dict so
+    # environment.py's default is what applies, and this flag can therefore never become a second
+    # source of truth for the exposure the scene was tuned to.
+    parser.add_argument(
+        "--light_intensity", type=float, default=None,
+        help="Intensity for the eight SphereLights at /World/Light_01..08.  Leave unset to use "
+             "environment.py's tuned default (1500).  0 turns them off, which is how the "
+             "high-frequency pattern on flat-painted walls is attributed to lighting or to the "
+             "surfaces: with use_mdl False the four surfaces are a single displayColor each, and a "
+             "solid colour cannot produce a pattern.",
+    )
+    parser.add_argument(
+        "--light_radius", type=float, default=None,
+        help="Radius for the same eight SphereLights.  Unset leaves environment.py's default (1.0).",
+    )
+    parser.add_argument(
+        "--dome_intensity", type=float, default=None,
+        help="Intensity for /World/DomeLight (the ambient fill).  Unset leaves environment.py's "
+             "default (300).",
+    )
     return parser.parse_args()
 
 
@@ -290,6 +312,13 @@ def main() -> int:
                 "use_mdl": bool(args.mdl),
                 "hide_robot": bool(args.hide_robot),
                 "scene_parts": [p.strip() for p in args.parts.split(",") if p.strip()]}
+        # Only the light keys the caller actually gave are added, so an unset flag leaves
+        # environment.py's own default in force instead of shadowing it with a copy.
+        for key, value in (("light_intensity", args.light_intensity),
+                           ("light_radius", args.light_radius),
+                           ("dome_intensity", args.dome_intensity)):
+            if value is not None:
+                task[key] = value
         env = environment.setup_scene(app, task_dict=task)
         # A BUILD STAMP, so a picture can be dated.  A stale directory of previews from an earlier
         # checkout is indistinguishable from a fresh run of the current code, and that ambiguity cost

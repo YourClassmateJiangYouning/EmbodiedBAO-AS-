@@ -156,3 +156,8 @@ v[0-9][0-9]/
 logs_reasoning.csv
 
 
+
+# Derived diagnostics from the dressing/lighting investigation: rendered frames, per-run logs and
+# the stage_tree/report dumps.  Kept on disk for reading, never committed -- the numbers they
+# support are quoted in STAGE1_DRESSING_FINDINGS.md, which is the thing that belongs in the repo.
+diag_logs/

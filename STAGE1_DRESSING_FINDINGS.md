@@ -430,3 +430,106 @@ measured on the stage, and none of them makes a swapped box fill (railing `X90` 
 2.2261 x 0.0381 x 0.0382, `Z90` gives 0.0728 x 0.0728 x 0.6107).  A `declared/native` factor is not
 the fix either: it drew the conifer at 5.76 m in a 2.4 m box.  What the fill column shows is a
 property of the declaration, not of the placing code.
+
+---
+
+# STEP 4 -- where the pattern on flat-painted surfaces comes from
+
+Method: `capture_scenes.py` gained three optional flags (`--light_intensity`, `--light_radius`,
+`--dome_intensity`) that are passed through to `environment._setup_lights` via `task_dict`, the same
+route `capture_views.py --light_intensity` already used.  An unset flag leaves `environment.py`'s own
+default in force, so the flags cannot become a second source of truth for the tuned exposure.
+Four renders of `stage1.4`, one slot, same camera and same scene in every run; then the frames are
+measured with a temporary script (not committed) that reports the mean, the mean absolute
+4-neighbour difference (`hf`), the same after 2/4/8x box downsampling, and the median `std/mean` of
+48x48 patches whose mean is above 20.
+
+**The surfaces are flat paint in every run.**  Each of the four configurations prints
+`[scene] side_wall flat-paint`, `[scene] ceiling flat-paint`, `[scene] far_wall flat-paint`.  The
+`floor` line is absent for `stage1.4` on purpose -- it keeps the default ground, which is its outdoor
+cue.  With `use_mdl False` these are a single `displayColor` each, so the surface itself carries no
+spatial variation whatever.
+
+| render | `--light_intensity` | `--dome_intensity` | eye mean | eye hf | eye hf after 8x | eye patch cv (median) |
+| :--- | ---: | ---: | ---: | ---: | ---: | ---: |
+| `default` | 1500 | 300 | 133.45 | 13.631 | 6.298 | **0.1444** |
+| `nodome` | 1500 | 0 | 132.19 | 13.359 | 6.208 | **0.1461** |
+| `nosphere` | 0 | 300 | **1.91** | 2.259 | 1.044 | (1 patch above 20) |
+| `nodome_nosphere` | 0 | 0 | **0.00** | 0.000 | 0.000 | (none) |
+
+Same runs, external camera: `default` mean 160.58, hf 3.859, patch cv **0.0025**.
+
+**What that establishes.**
+
+  1. **The pattern is structured, not per-pixel dithering.**  In the default eye frame `hf` is 6.298
+     after eight halvings (1024 px -> 8 px), i.e. only about half of it averages away.  A pattern that
+     survived to 8 px is a several-pixel-scale structure, which is what "high-frequency pattern"
+     looked like; per-pixel noise would have gone to near zero.
+  2. **It scales with the lighting, not with the distance to the surfaces.**  The same surfaces from
+     the external camera, with the same lights, have a patch cv of 0.0025 against the eye camera's
+     0.1444 -- a factor of 58.  The eye camera is the near one (0.5 m into a 16 m corridor, looking
+     down it), so the non-uniformity grows with proximity to the lit surface.
+  3. **The dome is not the source.**  Setting `--dome_intensity 0` changes the eye frame by 1.3 in
+     mean and 0.27 in hf, while the external frame's mean falls from 160.58 to 32.23: the dome lights
+     the far view and the ceiling, and removing it leaves the eye frame's pattern at 0.1461.
+  4. **With the eight SphereLights at 0 the eye frame is essentially black** (mean 1.91, and 0.00 with
+     the dome also off), so "does the pattern disappear when the SphereLights are off" cannot be
+     answered by looking: there is no light left to see anything by.  That is a property of this
+     room's exposure -- the corridor is lit entirely by the eight sphere lights plus a 300-intensity
+     dome -- and it means the pattern has to be attributed by varying a light PARAMETER, not by
+     switching lighting off.
+
+**Not yet established.**  Which parameter of the SphereLights produces the structure (radius, count,
+or the per-pixel sampling of an area light near a surface), and whether the same structure appears in
+the other three dressed scenes.  Both are being measured rather than guessed; the runs for
+`--light_radius 0.0`, `--light_radius 4.0` and `--light_intensity 500` are in `diag_logs/lights_r0`,
+`lights_r4`, `lights_dim500`.
+
+## STEP 4 continued -- the pattern is temporal, and it is not the assets
+
+Three further measurements, each aimed at a candidate cause.
+
+**It is temporal, not a texture.**  Render the same pose twice in one run and difference the frames
+(`diag_logs/noise`, `diag_logs/noise.log`):
+
+```
+eye frame 0 vs 1: mean abs diff = 17.470629  max = 224.0
+eye frame 1 vs 2: mean abs diff = 16.035284  max = 204.0
+identical frames: False
+iso frame 0 vs 1: mean abs diff = 12.417139
+iso frame 1 vs 2: mean abs diff =  2.558236
+```
+
+A static scene, a static camera, and consecutive frames that differ by 16-17 levels on average with
+pixels changing by up to 224.  A `displayColor` cannot do that; the renderer is producing a different
+image each time.  In a 60-frame sequence the successive difference alternates between 0.000 and
+11-16 (`diag_logs/converge.log`: frame 21 = 0.000, frame 26 = 11.917, frame 31 = 0.000), so frames
+come back unchanged on some reads and fully different on others.
+
+**It does not converge.**  A static scene must converge to one image if the renderer accumulates.
+It does not (`diag_logs/settle.log`): with a reference taken after the 3 render steps the capture
+path uses, the mean absolute change is still 15.2 after 10 more steps, 14.9 after 20, 15.4 after 40
+and 15.6 after 80.  Turning the temporal reconstruction off (`/rtx/post/dlss/execMode = 0`, which
+already read 0) moved the frame-to-frame difference from 15.079 to 14.435 (`diag_logs/aa.log`).
+
+**It is spread over the whole frame and is not the dressing.**  The change is 12-19 levels in every
+cell of a 4x4 grid, so it is not concentrated on any one surface.  Rendering `stage1.4` with
+`--parts marker,materials` (no dressing at all) removes every MDL error in the log and changes the
+eye frame's patch cv only from 0.1355 to 0.1298, its `hf` only from 11.617 to 11.263.  The eight MDL
+compile failures the runs print -- `bark3`, `TreeBark_10`, `Pine_needles`, `Barberry_Mat`,
+`American_Beech_leaf`, `SimPBR` -- belong to the vegetation props and are visible only when the
+dressing is in the frame; they are real (this machine's material library cache is not writable, which
+is the mechanism the project already recorded) but they are not what puts a pattern on the walls.
+
+**What the pattern is, in one line.**  The four room surfaces are a single flat colour each, and the
+frame still changes by ~15 levels per frame with the lights on, over the whole image, from the near
+camera and not from the far one (patch cv 0.1355 against 0.0028), with the dressing removed, and
+without converging in 80 render steps.  That is an undersampled render of a scene lit by eight 1 m
+sphere lights 2.6 m up with a 300-intensity dome: the per-pixel estimate has not settled.  The two
+knobs that would settle it are samples per pixel and the light setup, and both live in the render
+configuration rather than in the scene skin.
+
+**Not established, and deliberately not guessed.**  The exact render setting whose default leaves it
+undersampled; whether `--mdl` (which the project keeps off because the material cache is not
+writable) is what a production render would use; and whether the other three scenes show the same
+magnitude.  None of those were measured here.
