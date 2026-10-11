@@ -132,7 +132,10 @@ def parse_args() -> argparse.Namespace:
         help="Print the prim tree under /World/Dressing with each prim's active state, inherited "
              "visibility and any displayColor or bound material, then exit without rendering.  Text "
              "only: it settles whether a prop is on the stage and visible, which a frame full of "
-             "lights and noisy surfaces cannot.",
+             "lights and noisy surfaces cannot.  RUN THIS WITHOUT A PIPE: `| grep tree` keeps the "
+             "dressing lines whose item names contain 'tree' (tree_conifer, tree_fir, tree_sapling) "
+             "and hides the [tree] lines this prints, so the output looks like the branch never ran.  "
+             "Kit also buffers stdout, so the file is written and flushed as well.",
     )
     parser.add_argument(
         "--dressing_report", action="store_true",
@@ -312,6 +315,17 @@ def main() -> int:
             # cost a round trip.
             from pxr import UsdGeom, UsdShade
 
+            # Collected in a list AND printed as it goes, then written to a flushed file.  Kit buffers
+            # stdout: a full render once reported five successful paints for twenty-five slot renders
+            # because the process ended before the buffer reached the log.  A diagnostic that can be
+            # lost to a buffer is the same as one that never ran, which is exactly how the previous
+            # --stage_tree invocation was read.
+            tree_lines: list = []
+
+            def emit(line: str) -> None:
+                tree_lines.append(line)
+                print(line, flush=True)
+
             def walk(prim, depth: int) -> None:
                 if depth > 3:
                     return
@@ -325,8 +339,8 @@ def main() -> int:
                     extras.append("displayColor")
                 if bound and bound.GetPrim().IsValid():
                     extras.append(f"material={bound.GetPrim().GetName()}")
-                print(f"[tree] {'  ' * depth}{prim.GetName()} active={prim.IsActive()} "
-                      f"visible={visible} {' '.join(extras) if extras else '-'}")
+                emit(f"[tree] {'  ' * depth}{prim.GetName()} active={prim.IsActive()} "
+                     f"visible={visible} {' '.join(extras) if extras else '-'}")
                 for child in prim.GetChildren():
                     walk(child, depth + 1)
 
@@ -334,10 +348,15 @@ def main() -> int:
             if root and root.IsValid():
                 walk(root, 0)
             else:
-                print("[tree] /World/Dressing does not exist on the stage -- nothing was placed")
+                emit("[tree] /World/Dressing does not exist on the stage -- nothing was placed")
             for light_path in ("/World/DomeLight", "/World/Light_01"):
                 light_prim = env.stage.GetPrimAtPath(light_path)
-                print(f"[tree] {light_path} present={bool(light_prim and light_prim.IsValid())}")
+                emit(f"[tree] {light_path} present={bool(light_prim and light_prim.IsValid())}")
+            # Written and flushed, so the answer survives a buffered or truncated stdout.
+            with open(os.path.join(args.outdir, "stage_tree.txt"), "w", encoding="utf-8") as handle:
+                handle.write("\n".join(tree_lines) + "\n")
+            print(f"[tree] wrote {len(tree_lines)} line(s) to "
+                  f"{os.path.join(args.outdir, 'stage_tree.txt')}", flush=True)
             return 0
 
         if args.dressing_report:
