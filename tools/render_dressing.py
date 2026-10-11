@@ -168,14 +168,18 @@ def main() -> int:
 
         from isaacsim.sensors.camera import Camera
 
-        # The world is Z-up, so on this stage y is LATERAL and z is HEIGHT.  This tuple used to put
-        # `height_above` into y and a downward offset into z, which placed the camera sideways and
-        # metres below the dressing -- a plausible reason "frame the dressing" framed nothing.  The
-        # height goes on z, and the camera stands back along x and to one side in y.
-        height_above = float(centre[2]) + 2.4 * radius + 0.4
+        # THE CAMERA IS IN THE HELPER FRAME (x, lateral, height), NOT THE STAGE FRAME, and this is a
+        # correction of a correction.  I changed this tuple to put `height_above` on z, reasoning that
+        # the stage is Z-up so z must be height.  The stage IS Z-up for geometry, but the camera
+        # helpers here and in capture_scenes take positions in the same (x, lateral, height) order the
+        # rest of this project's authoring uses -- capture_scenes' own --iso_height help text says
+        # "under the 3 m ceiling", and it is passed as the second component.  Two frames again, and
+        # this time I collapsed them in the wrong direction.  The tuple below is back to the helper
+        # frame, with the note here so the next reader does not re-derive it wrong a third time.
+        height_above = 2.4 * radius + 0.4
         camera_position = (float(centre[0]) - radius * 2.2 - 0.3,
-                           float(centre[1]) + radius * 1.2,
-                           height_above)
+                           height_above,
+                           float(centre[2]) - radius * 1.6)
         camera = Camera(prim_path="/World/DressingCamera", frequency=20,
                         resolution=(args.width, args.height))
         camera.initialize()

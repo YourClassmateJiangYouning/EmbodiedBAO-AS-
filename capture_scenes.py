@@ -128,6 +128,13 @@ def parse_args() -> argparse.Namespace:
              "all there is to see.",
     )
     parser.add_argument(
+        "--stage_tree", action="store_true",
+        help="Print the prim tree under /World/Dressing with each prim's active state, inherited "
+             "visibility and any displayColor or bound material, then exit without rendering.  Text "
+             "only: it settles whether a prop is on the stage and visible, which a frame full of "
+             "lights and noisy surfaces cannot.",
+    )
+    parser.add_argument(
         "--dressing_report", action="store_true",
         help="Print, per dressing item, whether its prop reference resolved, failed, or there was "
              "no asset -- then exit without rendering.  A resolved prop has its clearance box made "
@@ -290,6 +297,48 @@ def main() -> int:
         print(f"[preview] scene {args.scene} ({scenes.SCENES[args.scene]['label']}) "
               f"level {args.level} width "
               f"{environment.LEVEL_CHANNEL_WIDTHS[args.level]:.3f} m")
+
+        if args.stage_tree:
+            # TEXT ONLY, and it answers the one question that a picture kept being asked and could not
+            # answer: is the prop actually on the stage, visible, and in front of the camera?  A frame
+            # full of lights and surfaces makes a small prop hard to find even when it is there, and
+            # "I cannot see it" has been read as "it is not drawn" more than once.  This prints the
+            # prim tree under /World/Dressing with each prim's active state, its inherited visibility,
+            # and whether it carries a display color or a bound material -- none of which requires
+            # rendering, so it is cheap to run.
+            #
+            # Imported HERE rather than at module scope: isaacsim.core and pxr are importable only
+            # after SimulationApp has started, which this file's own header documents as the trap that
+            # cost a round trip.
+            from pxr import UsdGeom, UsdShade
+
+            def walk(prim, depth: int) -> None:
+                if depth > 3:
+                    return
+                imageable = UsdGeom.Imageable(prim)
+                visible = imageable.ComputeVisibility() if imageable else "n/a"
+                colour = prim.GetAttribute("primvars:displayColor")
+                bound = UsdShade.MaterialBindingAPI(prim).ComputeBoundMaterial()[0]
+                has_colour = bool(colour and colour.HasAuthoredValue())
+                extras = []
+                if has_colour:
+                    extras.append("displayColor")
+                if bound and bound.GetPrim().IsValid():
+                    extras.append(f"material={bound.GetPrim().GetName()}")
+                print(f"[tree] {'  ' * depth}{prim.GetName()} active={prim.IsActive()} "
+                      f"visible={visible} {' '.join(extras) if extras else '-'}")
+                for child in prim.GetChildren():
+                    walk(child, depth + 1)
+
+            root = env.stage.GetPrimAtPath("/World/Dressing")
+            if root and root.IsValid():
+                walk(root, 0)
+            else:
+                print("[tree] /World/Dressing does not exist on the stage -- nothing was placed")
+            for light_path in ("/World/DomeLight", "/World/Light_01"):
+                light_prim = env.stage.GetPrimAtPath(light_path)
+                print(f"[tree] {light_path} present={bool(light_prim and light_prim.IsValid())}")
+            return 0
 
         if args.dressing_report:
             # Text only, and it exists because images did not answer the question.  An item whose prop
