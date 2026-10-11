@@ -78,3 +78,69 @@ assets/isaac/**/.thumbs/
 !assets/bucket/
 assets/bucket/**/.thumbs/
 
+# =============================================================================================
+# THE LAB MACHINE'S WORKING TREE.  Added 2026-10-11 after `git status --short` there printed more
+# than eighty untracked entries: render logs, one-off probe scripts, diagnostic reports and
+# directories of old previews, accumulated across weeks of work.
+#
+# The reason this matters is not tidiness.  The working instructions for that machine say to finish
+# each round with `git add -A`, and on a tree in that state `git add -A` would sweep all of it into
+# one commit on a PUBLIC repository.  That is how a stray diagnostic, a local path or a credential
+# ends up in a history that cannot be rewritten away.
+#
+# These patterns are deliberately narrow -- only extensions and names with no plausible project
+# content -- because a broad `*.txt` or `*.py` would silently exclude real work instead.  Anything
+# that IS content must be named explicitly in the commit rules, not rely on an ignore pattern.
+#
+# The already-tracked exceptions this must not swallow: requirements.txt, lab_logs/summary.txt,
+# lab_logs/*.csv.  Verified before adding.
+# =============================================================================================
+*.log
+*.log.[0-9]*
+*.pid
+*_report.txt
+*_measurements.txt
+diag_*.py
+bao_probe*.py
+git_head_*.txt
+summary_v*.txt
+# Directories of old previews and previous runs.  Each held a handful of PNGs produced by a camera
+# setting that has since changed; they are evidence for a decision already made, not content.
+preview/
+preview_*/
+prev/
+prev2/
+prev_*/
+scene_preview/
+views/
+all_stage1.*/
+fix_stage1.*/
+p_l0/
+p_m/
+p_norobot/
+park4/
+park_check/
+shelf_check/
+look_down_check/
+probe_emit/
+probe_gain0/
+probe_gain4/
+_old_*/
+_bad_quota/
+pilot.log*
+smoke.log*
+sweep*.log
+cap*.log
+c[0-9].log
+ds_*.log
+prev_narrow*
+sixlvl.log
+run_*.log
+professor_verify.log
+watch.log
+diagnose.log
+lab_measure_*.log
+lab_logs_before_pull/
+fix_stage1.*.log
+
+

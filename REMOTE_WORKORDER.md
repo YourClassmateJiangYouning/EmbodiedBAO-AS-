@@ -215,7 +215,7 @@ ls assets/bucket | head -3         # 必须非空
 
 | # | 错 | 教训 |
 | :-: | :--- | :--- |
-| E1 | **改完不提交就往下走**（连续多轮，用户反复追问） | **每轮最后一步固定是 `git add -A && git status --short && git commit`**；提交前必须看到 `git status` **为空** |
+| E1 | **改完不提交就往下走**（连续多轮，用户反复追问） | **每轮最后一步固定是提交**。**暂存要逐文件列名（`git add <文件…>`），不要用 `-A`** —— 实验室那台机器的工作树里有八十多个未跟踪的日志与旧目录，`-A` 会把它们扫进公开仓库（详见 §5）。提交前用 `git diff --cached --stat` 核对，并确认暂存区之外没有改动 |
 | E2 | 只领先两个提交就让你 `git push`，而本地还有未提交改动 | 你拉到的和我说的话不一致。**push 前确认工作树干净** |
 | E3 | 给用户的命令**加了 `grep`**，把诊断输出过滤掉了（`grep -E 'code stamp|tree'` 匹配到 `tree_conifer/tree_fir/tree_sapling`，而 `[tree]` 行没显示） | **一个结果会被阅读者自己的过滤器藏起来的诊断，注定被误读。** 诊断命令**不要带管道**，或同时写文件 |
 | E4 | 上机前没看 `--help` 就断言参数行为 | 先 `--help`，或**真的调用一次 `parse_args`**（参数解析不依赖 Isaac，可本地验证） |
@@ -357,11 +357,21 @@ python tools/measure_named_props.py <资产名...>
 # 改完必须做，且顺序固定
 python tools/audit_dressing.py            # 必须 no problems found
 python tools/prove_audit_fails.py         # 必须 all 4 planted fault(s) were caught
+python tools/verify_docs.py               # 必须 all hold
 for f in test_bao_*.py; do python $f; done  # 必须 0 失败
-git add -A
-git status --short                        # 必须为空
+git status --short                        # 先看清有哪些改动
+git add <你改的那几个文件>                  # ★ 逐条列名，不要 -A / -u / .
+git diff --cached --stat                  # 确认暂存的正是预期内容
+git status --short                        # 暂存区之外应为空
 git commit -F <消息文件>                   # 多行消息走文件，不要 -m
+git push origin master
+git rev-parse master && git ls-remote origin master   # 两个哈希必须相同
 ```
+
+**为什么不用 `git add -A`**：远程那台机器的 `git status --short` 里有**八十多个未跟踪的日志、
+探针脚本和旧渲染目录**（几周积累）。`.gitignore` 覆盖了大部分但**不是全部**，
+而在这个仓库是公开的前提下，`git add -A` 会把剩下的全部扫进一个提交。
+**判据：`git diff --cached --stat` 里每个文件你都能说出为什么它在里面。**
 
 **提交信息里必须写清**：改了什么、**为什么**、**依据是什么**、以及**哪些结论还没验证**。
 本仓库的历史提交信息是主要的知识载体之一，**不要写"fix bug"**。
