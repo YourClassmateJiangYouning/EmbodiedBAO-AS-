@@ -33,9 +33,55 @@ FAULTS = [
         "cube.AddScaleOp().Set(Gf.Vec3f(*size))",
     ),
     (
-        "the translate added after the scale",
-        "UsdGeom.Xformable(item_prim).AddTranslateOp().Set(Gf.Vec3d(*sc.to_world(item[\"at\"])))",
-        "pass",
+        "the item's translate added after its scale",
+        "        UsdGeom.Xformable(item_prim).AddTranslateOp().Set(Gf.Vec3d(*sc.to_world(item[\"at\"])))\n"
+        "        item_xform.AddScaleOp().Set(Gf.Vec3f(*size))",
+        "        item_xform.AddScaleOp().Set(Gf.Vec3f(*size))\n"
+        "        UsdGeom.Xformable(item_prim).AddTranslateOp().Set(Gf.Vec3d(*sc.to_world(item[\"at\"])))",
+    ),
+    (
+        "the fit multiplies by the declared size again (declared/native), which double counts it",
+        "    ratios = [1.0 / native[axis] for axis in range(3) if native[axis] > 1e-9]",
+        "    want = tuple(float(v) for v in declared)\n"
+        "    ratios = [want[axis] / native[axis] for axis in range(3) if native[axis] > 1e-9]",
+    ),
+    (
+        "the fit is per axis instead of uniform",
+        "    return (offset, (factor, factor, factor))",
+        "    return (offset,\n"
+        "            tuple(want[axis] / native[axis] if native[axis] > 1e-9 else 1.0\n"
+        "                  for axis in range(3)))",
+    ),
+    (
+        "the fit grows the prop when its declared box is larger than the asset",
+        "    if factor > 1.0:\n        factor = 1.0",
+        "    pass",
+    ),
+    (
+        "the prop is not offset onto the anchor, so a face-anchored asset is drawn outward",
+        "    return (offset, (factor, factor, factor))",
+        "    return ((0.0, 0.0, 0.0), (factor, factor, factor))",
+    ),
+    (
+        "the prop's centre left in the asset's own units instead of the parent's",
+        "    offset = tuple(-centre[axis] / native[axis] if native[axis] > 1e-9 else 0.0\n"
+        "                   for axis in range(3))",
+        "    offset = tuple(-centre[axis] if native[axis] > 1e-9 else 0.0\n"
+        "                   for axis in range(3))",
+    ),
+    (
+        "the prop's offset applied AFTER its scale, which multiplies the offset by the fit factor",
+        "                    apply_translate(proxy_prim, offset)\n"
+        "                if any(abs(s - 1.0) > 1e-9 for s in scale):",
+        "                    apply_scale(proxy_prim, scale)\n"
+        "                if any(abs(s - 1.0) > 1e-9 for s in scale):",
+    ),
+    (
+        "the verification compares only the prop's extent, never its position",
+        "        outside = [axis_names[axis] for axis in range(3)\n"
+        "                   if float(lo[axis]) < box_lo[axis] - 1e-3\n"
+        "                   or float(hi[axis]) > box_hi[axis] + 1e-3]",
+        "        outside = []",
     ),
 ]
 

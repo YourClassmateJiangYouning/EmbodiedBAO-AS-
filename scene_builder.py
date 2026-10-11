@@ -376,51 +376,66 @@ def prop_asset_for(url: Optional[str]) -> Optional[str]:
     return index[name]
 
 
-def fill_scale_for_unit_parent(proxy_prim: Any) -> Tuple[float, float, float]:
-    """A UNIFORM factor that scales a referenced prop to fill its clearance box.
+def fit_reference_to_local_unit(proxy_prim: Any
+                                ) -> Tuple[Tuple[float, float, float], Tuple[float, float, float]]:
+    """The offset and the UNIFORM factor that put a referenced prop inside its declared box.
 
-    NO ``declared`` ARGUMENT, and its absence is the fix.  This function used to take the declared
-    size and return declared/native, on the belief that it was sizing the prop against the world.
-    It is not: the prop at ``<box>/prop`` is a CHILD of the clearance Cube, and that Cube already
-    carries a scale op of the declared size.  Xform ops compose down the hierarchy, so the drawn
-    size is parent_scale x child_scale x native -- which made the prop come out at roughly
-    ``declared`` SQUARED, an extra multiplication by a number between 0.05 and 3.
+    TWO TERMS, AND THEY ARE DIFFERENT KINDS OF THING.  The factor makes the prop the size of its box;
+    the offset puts the prop's own centre on the item's anchor.  Both are needed, and for one round
+    this function had only the first -- which drew every prop from the wrong place while every size
+    check stayed green.
 
-    What this function has to produce is therefore the factor that makes the prop fill ONE unit of
-    its parent's local space, because the parent's own scale turns that one unit into the declared
-    box.  That factor is 1/native: no declaration enters into it.
+    THE FACTOR IS ``1/native`` AND THE DECLARED SIZE DOES NOT ENTER IT.  The bound is measured
+    relative to the item Xform, which the reference defines as "the bound of the given prim in the
+    space of an ancestor prim ... excludes the local transform at relativeToAncestorPrim" -- so it is
+    the prop's own size with that Xform's declared scale excluded, expressed in that Xform's local
+    units.  One local unit IS the declared size, so filling the box is ``1/native``.
 
-    The measurement is the prop's bound relative to its parent, which the reference defines as "the
-    bound of the given prim in the space of an ancestor prim ... excludes the local transform at
-    relativeToAncestorPrim" -- so it is exactly the prop's own size in the parent's local space, with
-    the box's scale excluded.  A RELATIVE bound and not a world bound: a world bound includes the
-    parent's transform, so an earlier version measured the scale it had just been given and fed
-    itself, reporting factors of 219.9, 39.5 and 11.1.
+    That was measured rather than argued, because reading it the other way caused a regression: a
+    version that used ``declared/native`` drew the conifer 2.4x too tall (world size 5.76 m for a
+    2.4 m box).  The two-point calibration on the real stage (metersPerUnit 0.01, item Xform scaled to
+    (1.0164, 1.0001, 2.4)): the referenced juniper measures 109.51 m across at prop scale 1 and
+    219.02 m at prop scale 2.  Scale is linear and the measured bound is already in world metres, so
+    the multiplier to world is 1/native and anything more double-counts.
 
-    The factor is UNIFORM -- the smallest of the three -- so the prop is scaled and never reshaped.
-    Per-axis fitting is what this started as, and it stretched any prop whose proportions differ
-    from its declared box.  A uniform factor inside a box that is the prop's declared size means the
-    prop can be smaller than that box on the other axes; the gap is not drawn, because the box is
-    made invisible once a prop resolves.  Containment is the requirement, exact match is not.
+    The factor is then reduced to ONE value for all three axes:
 
-    Capped at 1.0: an asset already smaller than its box is left alone rather than enlarged, because
-    enlarging is what turned houseplants into trees earlier in this project.
+      * the SMALLEST of the three, so the prop always fits its box;
+      * CAPPED at 1.0, so a box larger than the asset does not ENLARGE it (enlarging is what turned
+        houseplants into trees earlier in this project);
+      * UNIFORM, so the prop is scaled and never reshaped.  A per-axis factor is what produced the
+        ``(1.0, 16.0075, 0.0624)`` railing.
 
-    1.0 when the extent cannot be measured: the prop is then drawn as authored, and the declared-size
-    check reports that, rather than a silent guess here.
+    THE OFFSET IS ``-centre/native``, a fraction of the prop's own extent, and it is not visible in
+    any extent.  An extent is ``hi - lo``; it says nothing about where the geometry sits inside its
+    parent.  The vendored assets are not authored on the unit cube and are not even centred on their
+    own origin: measured directly off the assets, ``Chinese_Juniper`` spans z[-2.78, 251.64],
+    ``Barberry`` z[-6.00, 113.65], ``RackSmallEmpty_A1`` z[0.00, 301.00] and ``bench_curved_01``
+    x[0.00, 4.09] -- all anchored at a face, none centred.  Placing such a bound at the item's origin
+    draws the prop from the anchor outward, which is how the conifer reached z = 3.5738 m under a
+    3.0 m ceiling and 25 of the 43 resolved props left their own declared box.  The parent's scale is
+    per-axis and the ops compose as translate-then-scale (``p -> want * (p + offset)``), so the centre
+    must be divided by ``native`` to cancel both the asset's units and that scale; measured, this
+    offset lands the juniper's world box on exactly (1.0164, 1.0001, 2.4) around its anchor.
+
+    Returns ``((1, 1, 1), (1, 1, 1))`` -- no move, no scale -- when the extent cannot be measured:
+    the prop is then drawn as authored and the declared-box check reports that, rather than a silent
+    guess here.
     """
     from pxr import Usd, UsdGeom
 
+    unchanged = ((1.0, 1.0, 1.0), (1.0, 1.0, 1.0))
     if not proxy_prim or not proxy_prim.IsValid():
-        return (1.0, 1.0, 1.0)
+        return unchanged
+    parent = proxy_prim.GetParent()
+    if not parent or not parent.IsValid():
+        return unchanged
     box = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_])
+    # The prop is measured in its PARENT's space, so the ancestor passed here is the parent itself,
+    # which is an ancestor of the prop by construction.  The prototype fallback is for an instanceable
+    # asset, whose bound lives on the prototype; its ancestor is the prototype's own parent.
     rng = None
-    # The prototype is a ROOT prim, so its bound must be taken relative to ITS parent, the
-    # pseudo-root.  Passing the clearance box as the ancestor -- as this loop did -- asks for the
-    # bound of a prim "in the space of an ancestor" that is not an ancestor, and the reference warns
-    # the result "may be incorrect": the prototype's own-space bound then gets pushed through the
-    # inverse of the box's scale.  The measuring tools in tools/ all use prototype.GetParent().
-    for scope, ancestor in ((proxy_prim, proxy_prim.GetParent()),
+    for scope, ancestor in ((proxy_prim, parent),
                             (proxy_prim.GetPrototype(),
                              proxy_prim.GetPrototype().GetParent()
                              if proxy_prim.GetPrototype() else None)):
@@ -433,14 +448,60 @@ def fill_scale_for_unit_parent(proxy_prim: Any) -> Tuple[float, float, float]:
         if rng is not None and not rng.IsEmpty():
             break
     if rng is None or rng.IsEmpty():
-        return (1.0, 1.0, 1.0)
+        return unchanged
     lo, hi = rng.GetMin(), rng.GetMax()
-    native = (float(hi[0] - lo[0]), float(hi[1] - lo[1]), float(hi[2] - lo[2]))
+    native = tuple(float(hi[axis] - lo[axis]) for axis in range(3))
+    centre = tuple(float((hi[axis] + lo[axis]) / 2.0) for axis in range(3))
     ratios = [1.0 / native[axis] for axis in range(3) if native[axis] > 1e-9]
     if not ratios:
-        return (1.0, 1.0, 1.0)
-    factor = min(min(ratios), 1.0)
-    return (factor, factor, factor)
+        return unchanged
+    # The SCALE is 1/native and the declared size does NOT enter it.  That is not a preference, it is
+    # what the stage was measured to do: this bound is already expressed in the item Xform's local
+    # units, where one unit IS the declared size, so filling the box is 1/native and multiplying by
+    # the declaration again is the double count this function carried for one round.
+    #
+    # The two-point calibration that settled it, because reading the code did not: on a stage whose
+    # metersPerUnit is 0.01, a referenced juniper under an item Xform scaled to (1.0164, 1.0001, 2.4)
+    # measures 109.51 m across at prop scale 1 and exactly 219.02 m at prop scale 2.  Scale is linear,
+    # the bound is in world metres already, and 1/native lands the prop on the wanted box.
+    factor = min(ratios)
+    if factor > 1.0:
+        factor = 1.0
+    # THE OFFSET IS WHAT WAS MISSING, and it is expressed as a FRACTION OF THE PROP'S OWN EXTENT
+    # because the prop's ops compose as translate-then-scale: a point p of the prop maps to
+    # `want * (p + offset)`.  Dividing the centre by `native` cancels both the asset's units and the
+    # parent's per-axis scale, so the prop's centre lands on the item's anchor for any asset.  Measured
+    # on the same stage: with this offset the juniper's world box is exactly (1.0164, 1.0001, 2.4)
+    # centred on its anchor; without it the same tree runs from z = 1.174 to z = 3.574 -- through a
+    # 3.0 m ceiling -- while every extent line in the report stays green.
+    offset = tuple(-centre[axis] / native[axis] if native[axis] > 1e-9 else 0.0
+                   for axis in range(3))
+    return (offset, (factor, factor, factor))
+
+
+def apply_translate(prim: Any, offset: Sequence[float]) -> bool:
+    """Set a translate on a prim, REUSING an authored ``xformOp:translate`` if it has one.
+
+    The same guard as apply_scale, for the same reason: AddTranslateOp raises when the op already
+    exists, and a referenced asset that ships its own translate would fail to be placed at all.  The
+    op is created with AddTranslateOp's default PrecisionDouble, so the value is written as Vec3d.
+
+    Returns whether a translate was written.
+    """
+    from pxr import Gf, UsdGeom
+
+    xformable = UsdGeom.Xformable(prim)
+    existing = None
+    for op in xformable.GetOrderedXformOps():
+        if op.GetOpType() == UsdGeom.XformOp.TypeTranslate:
+            existing = op
+            break
+    value = Gf.Vec3d(float(offset[0]), float(offset[1]), float(offset[2]))
+    if existing is not None:
+        existing.Set(value)
+        return True
+    xformable.AddTranslateOp().Set(value)
+    return True
 
 
 def apply_scale(prim: Any, scale: Sequence[float]) -> bool:
@@ -598,8 +659,9 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 proxy_schema = UsdGeom.Xform.Define(stage, f"{path}/prop")
                 proxy_prim = proxy_schema.GetPrim()
                 proxy_prim.GetReferences().AddReference(local)
-                # The reference is scaled to FIT the declared box.  Two things make this necessary
-                # rather than tidy:
+                # The reference is fitted INTO the declared box: scaled to fill it, and shifted so the
+                # prop's own centre sits on the anchor.  Both halves are needed and they are separate
+                # defects:
                 #
                 #  * the library is not in one unit.  Part of it is authored in centimetres with no
                 #    metersPerUnit metadata, so the packing table measures 247.3647 in its own
@@ -608,13 +670,23 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 #    clearance and occlusion check reasons about, which is clipping by
                 #    construction.  Fitting the prop to the box removes that class of defect: what
                 #    the checks cleared is what is seen.
+                #  * a prop whose geometry is anchored at a face rather than at its centre -- the
+                #    trees, the shrubs, the rack and the curved bench all are -- is otherwise placed
+                #    from the anchor outward.  An extent check cannot see this, and the conifer
+                #    reached z = 3.5738 m under a 3.0 m ceiling with every report line green.
                 #
-                # The factor is UNIFORM and it carries NO declared size: see
-                # fill_scale_for_unit_parent, which explains that the prop is a child of the box
-                # that already holds the declared scale, so what it must fill is one unit of its
-                # parent's local space.  This call used to pass item["size"] and compute
-                # declared/native, which multiplied the declaration in twice.
-                scale = fill_scale_for_unit_parent(proxy_prim)
+                # The declared size is what the factor is computed against, because the prop's bound
+                # relative to its parent is measured in the ITEM's local units, where one unit is the
+                # declared size.  See fit_reference_to_local_unit, which carries the measurement and
+                # the arithmetic; this call used to take no declared size and return min(1/native),
+                # which filled the box only on the tightest axis.
+                offset, scale = fit_reference_to_local_unit(proxy_prim)
+                if any(abs(o) > 1e-12 for o in offset):
+                    # The OFFSET FIRST, then the scale: AddXformOp applies each successive op more
+                    # locally, so [translate, scale] means the geometry is moved in the prop's own
+                    # units and the result is then scaled, which is what puts the prop's centre on
+                    # the anchor.  [scale, translate] would translate the unscaled prop out of place.
+                    apply_translate(proxy_prim, offset)
                 if any(abs(s - 1.0) > 1e-9 for s in scale):
                     # The scale goes on the prop in the AXES THE PROP LIVES IN, which are the
                     # stage's: the item Xform above carries the declared size converted with
@@ -626,6 +698,7 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 record["used_asset"] = os.path.basename(local)
                 record["reference"] = local
                 record["fit_scale"] = scale
+                record["fit_offset"] = offset
                 # Hide ONLY the clearance box.  Getting this wrong is what emptied every frame, and
                 # it took three arrangements to see why:
                 #
@@ -663,20 +736,26 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
     # VERIFY THE FIT ON THE ASSEMBLED STAGE, and do it here rather than on the lab machine.
     #
     # This check exists because of a question I could not answer by reading the code, and which a
-    # report then made urgent: the clearance cube carries a scale of `size`, and the prop under it
-    # carries a scale of its own.  Xform ops COMPOSE down the hierarchy, so if both are applied the
-    # drawn prop is native x size x factor -- and every "fit" factor in the report would then be
-    # describing a size that is not the one on screen.  Reading `Cube.GetSizeAttr().Set(1.0)` and
-    # `GetOrderedXformOps` does not settle it: it depends on how the composed transform resolves at
-    # runtime, which is exactly the kind of thing this project has repeatedly guessed wrong.
+    # report then made urgent: the item's Xform carries a scale of `size`, the prop under it carries
+    # a scale and an offset of its own, and Xform ops COMPOSE down the hierarchy.  Reading
+    # GetOrderedXformOps does not settle what the drawn prop measures: it depends on how the composed
+    # transform resolves at runtime, which is exactly the kind of thing this project has repeatedly
+    # guessed wrong.
     #
     # So the code now asks the stage.  A FRESH BBoxCache is constructed after every prop is in place
     # (the cache does not listen for change notifications, so reusing the earlier one would report
-    # whatever it had cached), each resolved prop's extent is measured relative to the dressing root,
-    # and any prop that does not fit inside its declared box is recorded as fit_error.  A prop that
-    # sticks out of its box is clipping by construction, and a prop drawn at the wrong size is the
-    # defect that has cost the most rounds in this session -- so both are now reported by the stage
-    # itself rather than inferred from a picture later.
+    # whatever it had cached) and each resolved prop is measured relative to the dressing root.  Both
+    # questions are asked of that measurement, because they are different defects:
+    #
+    #   * SIZE -- the drawn extent against the declared size.  A prop drawn larger than its box sticks
+    #     out of the volume every clearance check reasons about, which is clipping by construction.
+    #   * POSITION -- the drawn bound against the declared box (`at +/- size/2`).  An extent is
+    #     `hi - lo` and can be perfect while the prop sits half a metre away; measured on the four
+    #     dressed scenes before the offset existed, 25 of 43 props had geometry outside their own
+    #     declared box, including a conifer at z = 3.5738 m under a 3.0 m ceiling, and every line of
+    #     this report was green because only the size was ever compared.
+    #
+    # Both are recorded in fit_error rather than inferred from a picture later.
     # ---------------------------------------------------------------------------------------------
     from pxr import Usd, UsdGeom
 
@@ -728,13 +807,45 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
         target = tuple(float(v) for v in sc.to_world_size(item["size"]))
         record["drawn_extent"] = drawn
         record["declared_extent"] = target
-        # 2 % and a millimetre, because the fit is computed from a bound that itself carries float
-        # error and a prop that exactly fills its box must not be reported for the last bit.
+        # The fraction of the declared box the drawn prop actually fills, per axis.  Recorded because
+        # the containment test below can only say "no larger than"; a uniform fit against a box whose
+        # proportions are not the asset's leaves axes empty, and an empty box is not reported by any
+        # other line.  The worst of the three is the number a reader should look at.
+        record["fill_ratio"] = tuple(round(drawn[axis] / target[axis], 3) if target[axis] else 0.0
+                                     for axis in range(3))
+        # WHERE the prop is, not only how big it is.  An extent is hi - lo and says nothing about
+        # position, so this block used to pass any prop that was the right SIZE anywhere in the room:
+        # measured on this stage, 25 of the 43 resolved props had their geometry outside their own
+        # declared box -- the conifer reached z = 3.5738 m under a 3.0 m ceiling -- while every extent
+        # line stayed green.  The declared box is centred on the item's anchor by construction (see
+        # _dressing_floor and _dressing_wall), so the box is `at +/- size/2` in world axes and the
+        # prop has to be inside it.
+        anchor = tuple(float(v) for v in sc.to_world(item["at"]))
+        box_lo = tuple(anchor[axis] - target[axis] / 2.0 for axis in range(3))
+        box_hi = tuple(anchor[axis] + target[axis] / 2.0 for axis in range(3))
+        record["drawn_box"] = tuple(round(float(lo[axis]), 5) for axis in range(3)) + \
+            tuple(round(float(hi[axis]), 5) for axis in range(3))
+        # 2 % and a millimetre for the SIZE, because the fit is computed from a bound that itself
+        # carries float error and a prop that exactly fills its box must not be reported for the last
+        # bit.  The POSITION tolerance is a millimetre: the offset is exact arithmetic on the same
+        # bound, so anything larger than capture noise means the prop is not where it was declared.
         over = [axis for axis in range(3) if drawn[axis] > target[axis] * 1.02 + 1e-3]
+        axis_names = "xyz"
+        outside = [axis_names[axis] for axis in range(3)
+                   if float(lo[axis]) < box_lo[axis] - 1e-3
+                   or float(hi[axis]) > box_hi[axis] + 1e-3]
+        reasons = []
         if over:
-            record["fit_error"] = (
-                f"drawn {tuple(round(v, 4) for v in drawn)} m exceeds declared "
-                f"{tuple(round(v, 4) for v in target)} m on axis {over} -- clipping by construction")
+            reasons.append(f"drawn {tuple(round(v, 4) for v in drawn)} m exceeds declared "
+                           f"{tuple(round(v, 4) for v in target)} m on axis {over}")
+        if outside:
+            reasons.append(
+                f"its geometry leaves the declared box on axis {outside}: drawn "
+                f"{tuple(round(float(lo[axis]), 4) for axis in range(3))}.."
+                f"{tuple(round(float(hi[axis]), 4) for axis in range(3))} against box "
+                f"{tuple(round(v, 4) for v in box_lo)}..{tuple(round(v, 4) for v in box_hi)}")
+        if reasons:
+            record["fit_error"] = " and ".join(reasons) + " -- clipping by construction"
     return placed
 
 
@@ -959,6 +1070,11 @@ def format_report(report: Dict[str, Any]) -> str:
         used = sum(1 for item in report["dressing"] if item["used_asset"])
         failed = [item for item in report["dressing"] if item.get("reference_error")]
         oversized = [item for item in report["dressing"] if item.get("fit_error")]
+        # Items the stage reports as drawn well inside their box on every axis.  Not an error -- the
+        # clearance checks clear the box, and containment is the requirement -- but it is the
+        # condition the human described as "道具偏细", and it belongs in the always-printed report
+        # because no picture can be trusted to show it.
+        thin: List[tuple] = []
         lines.append(f"[scene] dressing: {report['dressing_count']} items, "
                      f"{used} from assets, rest boxes, all non-collidable")
         # Per item, and in the ALWAYS-printed report rather than behind a switch.  An item whose
@@ -973,6 +1089,12 @@ def format_report(report: Dict[str, Any]) -> str:
                 fit = item.get("fit_scale") or ()
                 if any(abs(float(v) - 1.0) > 1e-9 for v in fit):
                     detail += f" (fit {tuple(round(float(v), 4) for v in fit)})"
+                offset = item.get("fit_offset") or ()
+                # The offset is printed when it is not zero, because it is the half of the fit that
+                # an extent cannot show: it is what puts a face-anchored asset's centre on the
+                # item's anchor instead of drawing the asset from the anchor outward.
+                if any(abs(float(v)) > 1e-12 for v in offset):
+                    detail += f" (offset {tuple(round(float(v), 4) for v in offset)})"
                 outcome = f"RESOLVED {detail}"
                 # The size the STAGE reports, beside the size the item declared.  A prop drawn
                 # larger than its box clips by construction, and a prop drawn at the wrong scale is
@@ -982,8 +1104,28 @@ def format_report(report: Dict[str, Any]) -> str:
                     drawn = tuple(round(float(v), 4) for v in item["drawn_extent"])
                     declared = tuple(round(float(v), 4) for v in item["declared_extent"])
                     outcome += f" [drawn {drawn} vs declared {declared}]"
+                if item.get("drawn_box"):
+                    box = item["drawn_box"]
+                    outcome += (f" [world box {tuple(round(float(v), 4) for v in box[:3])}.."
+                                f"{tuple(round(float(v), 4) for v in box[3:])}]")
                 if item.get("fit_error"):
                     outcome += f" FITS BADLY: {item['fit_error']}"
+                # HOW MUCH OF ITS BOX THE PROP ACTUALLY FILLS, as a number, because a uniform fit
+                # leaves the box empty wherever the asset's proportions differ from the declaration
+                # and the frame shows a prop that is smaller than it was declared.  This is the
+                # criterion the human asked for instead of looking at a picture.  1.000 means the box
+                # is filled on that axis; a low worst ratio means the asset is drawn small (the
+                # railing at 0.033 is 2.4 mm thick where 72.8 mm was declared).
+                fill = item.get("fill_ratio") or ()
+                if fill:
+                    worst = min(float(v) for v in fill)
+                    outcome += f" [fills {tuple(float(v) for v in fill)} of its box]"
+                    # 0.9 rather than 1.0: an asset whose proportions differ slightly from its box
+                    # legitimately fills it to 0.95, and a threshold that fires on those is noise.  A
+                    # prop below 0.9 on every axis is drawn visibly smaller than it was declared, and
+                    # that is the condition the human described as "道具偏细".
+                    if worst < 0.90:
+                        thin.append((item["name"], round(worst, 3)))
             elif item.get("reference_error"):
                 outcome = f"FAILED {item['reference_error']}"
             else:
@@ -993,7 +1135,13 @@ def format_report(report: Dict[str, Any]) -> str:
             lines.append(f"[scene] dressing: {len(failed)} reference(s) FAILED -- those items are "
                          f"drawn as their clearance box")
         if oversized:
-            lines.append(f"[scene] dressing: {len(oversized)} item(s) are drawn LARGER than their "
-                         f"declared box, which is clipping by construction: "
+            lines.append(f"[scene] dressing: {len(oversized)} item(s) are drawn outside their "
+                         f"declared box -- larger than it, or positioned so part of the geometry "
+                         f"leaves it, either of which is clipping by construction: "
                          + ", ".join(item["name"] for item in oversized))
+        if thin:
+            lines.append(f"[scene] dressing: {len(thin)} item(s) are drawn well inside their declared "
+                         f"box on every axis (worst fill ratio first), which is what a uniform fit "
+                         f"does when the box's proportions are not the asset's: "
+                         + ", ".join(f"{name} {ratio}" for name, ratio in sorted(thin, key=lambda t: t[1])))
     return "\n".join(lines)

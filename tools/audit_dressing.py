@@ -218,18 +218,29 @@ def main() -> int:
                 problems.append(f"{scene}/{item['name']} is {item['size'][1]:.2f} m tall, above the "
                                 f"3.0 m ceiling")
 
-    # 8. The fit must be UNIFORM and must NOT take the declared size.  Two separate defects lived
-    # here and both are now structural:
+    # 8. The fit must be computed against the DECLARED size, be UNIFORM, and carry an OFFSET.
     #
+    # This rule used to say the opposite -- "it must NOT take the declared size ... the factor is
+    # 1/native" -- and that rule passed while the defect shipped.  Its premise was that the prop is a
+    # CHILD of the clearance cube, which carries the declared scale; the prop is a SIBLING of the cube
+    # under the item's Xform, and the measurement is taken relative to that Xform, so `native` is in
+    # the item's local units where one unit IS the declared size.  `min(1/native)` therefore fills the
+    # box only on the asset's largest axis, and measured on the four dressed scenes it drew every prop
+    # at 2 %-88 % of its declared box on the other axes (a 9 cm mug at 8.5 mm) while the report stayed
+    # green, because extents obey 1/native x native <= 1 whatever the asset is.
+    #
+    # The three defects that live here, all checked below:
+    #
+    #   * the factor ignores the declared size (what shipped);
     #   * a per-axis factor reshapes a prop whose proportions differ from its box.  It reported
-    #     (1.0, 16.0075, 0.0624) for the safety railing -- a railing 16x too tall or 16x too small,
-    #     depending on which reading of the frame you took, and neither is a railing.
-    #   * the factor took `declared` and returned declared/native, but the prop is a CHILD of the
-    #     clearance cube, which already carries a scale op of the declared size.  Xform ops compose
-    #     down the hierarchy, so the drawn size came out as roughly declared SQUARED -- an extra
-    #     multiplication by a number between 0.05 and 3.  The correct factor fills ONE unit of the
-    #     parent's local space, which is 1/native, and the declared size enters nowhere.
-    FIT_NAME = "fill_scale_for_unit_parent"
+    #     (1.0, 16.0075, 0.0624) for the safety railing -- 16x too tall or 16x too small, depending on
+    #     which reading of the frame you took, and neither is a railing;
+    #   * no offset, so an asset whose geometry is anchored at a face instead of its centre is drawn
+    #     from the item's anchor outward.  Every extent still fits, and it is still clipping: measured
+    #     on the four scenes, 25 of 43 props left their declared box, the conifer reaching
+    #     z = 3.5738 m under a 3.0 m ceiling.
+    FIT_NAME = "fit_reference_to_local_unit"
+    OFFSET_NAME = "apply_translate"
     if f"def {FIT_NAME}" not in builder:
         problems.append(f"scene_builder.py has no {FIT_NAME}; the prop's fit cannot be checked")
         fit_body = ""
@@ -242,22 +253,51 @@ def main() -> int:
         # top-level def is one whose `def` starts at column zero.
         fit_body = function_body(builder, FIT_NAME, code_only)
     if fit_body:
-        # `min(ratios)` is a substring of `min(min(ratios)`, so the second test used to be unable to
-        # decide anything.  Test for the two things that matter instead: a single factor, and no
-        # declared size in the formula.
-        if "return (factor, factor, factor)" not in fit_body:
+        # The factor must be 1/native.  A version of this rule demanded `declared/native` instead,
+        # reasoning that the prop had to fill the DECLARED box rather than one unit of its parent; the
+        # stage disproved it -- with declared/native the conifer was drawn 5.76 m tall for a 2.4 m box,
+        # because the measured bound is already expressed in the item Xform's local units, where one
+        # unit is the declared size (two-point calibration: 109.51 m at scale 1, 219.02 m at scale 2,
+        # for an item Xform scaled to 2.4).  So the rule is: 1/native, read into `factor`.
+        if "1.0 / native[axis]" not in fit_body:
+            problems.append(f"{FIT_NAME} does not derive its factor from 1/native, which is the "
+                            f"multiplier that takes the measured bound to the declared box")
+        # The value has to be READ, not merely computed: a formula that ignores its own ratios is the
+        # shipped defect with extra steps, and the first version of this rule accepted exactly that,
+        # because `min(ratios)` is a substring of the line that assigns the factor.
+        if "factor = min(ratios)" not in fit_body:
+            problems.append(f"{FIT_NAME} does not take the smallest of its three ratios, so the prop "
+                            f"can exceed its declared box on the other axes")
+        if "if factor > 1.0:" not in fit_body or "factor = 1.0" not in fit_body:
+            problems.append(f"{FIT_NAME} does not cap the factor at 1.0, so a declared box larger "
+                            f"than the asset would ENLARGE it -- enlarging is what turned houseplants "
+                            f"into trees in this project")
+        if "return (offset, (factor, factor, factor))" not in fit_body:
             problems.append(f"{FIT_NAME} does not return ONE factor for all three axes, so it would "
                             f"reshape the prop instead of scaling it")
         if "fitted.append" in fit_body:
             problems.append(f"{FIT_NAME} builds a per-axis result list, which means the prop is "
                             f"reshaped rather than scaled")
-        if "declared" in fit_body:
-            problems.append(f"{FIT_NAME} mentions a declared size.  It must not: the prop is a child "
-                            f"of the box that already carries the declared scale, so taking the "
-                            f"declaration here multiplies it in twice")
-        if "1.0 / native" not in fit_body and "1.0/native" not in fit_body:
-            problems.append(f"{FIT_NAME} does not derive its factor from 1/native, which is what "
-                            f"filling one unit of the parent's local space means")
+        if "-centre" not in fit_body:
+            problems.append(f"{FIT_NAME} does not return an offset for the prop's own centre, so a "
+                            f"face-anchored asset is drawn from the item's anchor outward")
+        elif "-centre[axis] / native[axis]" not in fit_body:
+            problems.append(f"{FIT_NAME} returns the centre in the ASSET's units rather than as a "
+                            f"fraction of the parent's box.  The parent's scale is per-axis, so the "
+                            f"raw centre is multiplied by it and the prop lands at "
+                            f"want*(1 + centre) instead of centred -- measured on this stage as a "
+                            f"301-unit rack at z = -299 m")
+    if f"def {OFFSET_NAME}" not in builder:
+        problems.append(f"scene_builder.py has no {OFFSET_NAME}; a prop carrying its own "
+                        f"xformOp:translate would make AddTranslateOp raise")
+        offset_body = ""
+    else:
+        offset_body = function_body(builder, OFFSET_NAME, code_only)
+        # The same guard apply_scale has, for the same reason: AddTranslateOp raises when the op is
+        # already authored, and record["fit_offset"] can only be written if the write succeeded.
+        if "GetOrderedXformOps" not in offset_body:
+            problems.append(f"{OFFSET_NAME} does not check for an authored translate, so an asset "
+                            f"that ships one cannot be placed")
 
     # 8b. THE PROP MUST SURVIVE THE BOX BEING HIDDEN.  The single worst defect in this file's history
     # was `prim.SetActive(False)` on the clearance CUBE, whose child is the referenced prop:
@@ -323,20 +363,61 @@ def main() -> int:
                             "local units rather than metres, and the drawn-vs-declared comparison "
                             "becomes meaningless")
 
-        translate_at = place_body.find("AddTranslateOp")
-        scale_at = place_body.find("AddScaleOp")
-        if translate_at == -1 or scale_at == -1:
-            problems.append("place_dressing does not author both a translate and a scale")
-        elif translate_at > scale_at:
-            problems.append("place_dressing adds the SCALE before its TRANSLATE, so the translation is "
-                            "applied first and then multiplied by the scale: every item centre becomes "
-                            "size * at")
-        if "Gf.Vec3d" not in place_body:
+        # THE OFFSET GOES ON BEFORE THE SCALE, and this is a separate ordering from the item's own
+        # translate/scale below.  The prop's ops are [translate, scale], so the geometry is moved in
+        # the prop's own units and the result is scaled -- which is what puts the prop's centre on the
+        # item's anchor.  Written the other way round, the offset is multiplied by the factor first
+        # and the prop lands somewhere else entirely; both orders produce a plausible extent, which is
+        # why this is checked as an order rather than as a presence.
+        prop_offset_at = place_body.find("apply_translate(proxy_prim")
+        prop_scale_at = place_body.find("apply_scale(proxy_prim")
+        if prop_offset_at == -1:
+            problems.append("place_dressing never applies an offset to the prop, so an asset anchored "
+                            "at a face instead of its centre is drawn from the item's anchor outward")
+        elif prop_scale_at != -1 and prop_offset_at > prop_scale_at:
+            problems.append("place_dressing applies the prop's SCALE before its OFFSET, so the offset "
+                            "is multiplied by the fit factor and the prop is not centred on the anchor")
+        # THE ITEM'S OWN op order: the translate is added before the scale, so the scale is the
+        # INNERMOST op and "a box of `size` centred at `at`" means what it says.  Written the other way
+        # round every item is centred at `size * at` -- the crate declared at x 10.2 landed at x 6.14 --
+        # and the extents are identical either way, which is why this is checked as an order rather
+        # than as a presence.
+        #
+        # The patterns are the ITEM's calls, and that is a correction: this rule used to search for
+        # `apply_translate` and `apply_scale`, which are the PROP's calls, so it was a second copy of
+        # the rule above and could not see the item's order at all.  The fault this rule is supposed to
+        # catch was reported MISSED for exactly that reason -- a check that cannot see the thing it
+        # names looks the same as a check that passed.
+        item_translate_at = place_body.find(".AddTranslateOp")
+        item_scale_at = place_body.find("item_xform.AddScaleOp")
+        if item_translate_at == -1 or item_scale_at == -1:
+            problems.append("place_dressing does not author both a translate and a scale on the item "
+                            "Xform")
+        elif item_translate_at > item_scale_at:
+            problems.append("place_dressing adds the ITEM's SCALE before its TRANSLATE, so the "
+                            "translation is applied first and then multiplied by the scale: every "
+                            "item centre becomes size * at")
+        if "Gf.Vec3d" not in place_body and "Gf.Vec3d" not in offset_body:
             problems.append("place_dressing does not use a double-precision vector for the translate, "
                             "which AddTranslateOp creates at PrecisionDouble")
         if 'to_world_size(item' not in place_body:
             problems.append("place_dressing does not convert the item size with to_world_size, so a "
                             "wall item's height and width would be exchanged in the drawn box")
+        # THE POSITIONAL HALF OF THE VERIFICATION.  The extent test (`drawn > declared`) cannot fail
+        # for a prop fitted with declared/native, because that fit makes the tightest axis exact and
+        # every other axis smaller -- so on its own it is a check that cannot fail, which is the class
+        # of check this project has been burned by.  What CAN fail, and did, is where the geometry
+        # sits: the bound has to be inside `at +/- size/2` in world axes.  Both the recorded box and
+        # the comparison against it are therefore required.
+        if '"drawn_box"' not in place_body:
+            problems.append("place_dressing does not record the drawn prop's world box, so a prop "
+                            "that is the right size in the wrong place cannot be reported")
+        positional = ('float(lo[axis]) < box_lo[axis]' in place_body
+                      and 'float(hi[axis]) > box_hi[axis]' in place_body)
+        if not positional:
+            problems.append("place_dressing compares only the prop's EXTENT with the declared box, "
+                            "not its position.  An extent is hi - lo and says nothing about where the "
+                            "geometry is, so a prop drawn outside its box passes while clipping")
 
     # 9. No declared box may be smaller than the prop it names, because the prop is fitted INSIDE
     # the box: a box that cannot hold it means the prop overhangs and clips, which is the failure

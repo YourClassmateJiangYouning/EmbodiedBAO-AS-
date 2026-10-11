@@ -94,7 +94,14 @@ OTHER = {
     # Recorded by place_dressing's on-stage verification: what the stage says was drawn, what the
     # item declared, and the mismatch when the prop does not fit inside its box.  These are the
     # numbers that replace "look at the picture and guess whether the size is right".
-    "drawn_extent", "declared_extent", "fit_error",
+    #
+    # fit_offset, drawn_box and fill_ratio joined them when the verification grew a POSITION test: an
+    # extent is hi - lo and cannot see where the geometry sits, so 25 of the 43 resolved props were
+    # outside their own declared box -- a conifer at z = 3.5738 m under a 3.0 m ceiling -- while every
+    # extent line stayed green.  fit_offset is the move that puts the prop's centre on the item's
+    # anchor, drawn_box is the prop's world box, and fill_ratio is the fraction of the declared box
+    # the prop fills per axis: the number that names "too thin" without a picture.
+    "drawn_extent", "declared_extent", "fit_error", "fit_offset", "drawn_box", "fill_ratio",
 }
 
 

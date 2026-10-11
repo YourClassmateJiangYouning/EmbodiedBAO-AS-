@@ -345,3 +345,88 @@ external one.
 - No commit has been made yet in this session; this file is the record the human asked for, and the
   raw command outputs it cites are the four `diag_logs/tree_*`, four `diag_logs/report_*`, four
   `diag_logs/probe_props_*` and four `diag_logs/probe_bounds_*` files (`*.log`, git-ignored).
+
+---
+
+# Second pass: what was fixed, and what the remaining "too thin" items actually are
+
+Code state: `git rev-parse --short HEAD` = the commit before this one plus the working-tree changes
+listed in the commit that follows this file.
+
+## FIXED and verified on the stage
+
+**The offset (F6).** `fit_reference_to_local_unit` now returns `((-centre/native), (factor, factor,
+factor))` and `place_dressing` applies the translate BEFORE the scale on the prop, so the prop's own
+centre lands on the item's anchor.  Verified by rebuilding all four scenes and measuring every prop's
+world box against its declared box (`diag_logs/verify_*`, and the `[world box ...]` and
+`[fills ...]` fields now printed by every run):
+
+| scene | props inside their declared box | outside | `fit_error` |
+| :--- | ---: | ---: | ---: |
+| `stage1.2` | 8 | 0 | 0 |
+| `stage1.3` | 12 | 0 | 0 |
+| `stage1.4` | 15 | 0 | 0 |
+| `stage1.5` | 8 | 0 | 0 |
+
+Before this change the same measurement said **25 of 43 props left their box**, the conifer reached
+z = 3.5738 m in a 3.0 m room and the rack 2.9934 m against a declared 1.9956 m.  Now the conifer's
+world box is `0.0 .. 2.4` in z and sits on the floor.
+
+**The scale was left at `1/native` on purpose, and that was measured, not assumed.**  A version that
+used `declared/native` drew the conifer 5.76 m tall for a 2.4 m box.  The two-point calibration on the
+real stage (metersPerUnit 0.01, item Xform scaled to (1.0164, 1.0001, 2.4)): the referenced juniper
+measures 109.51 m across at prop scale 1 and 219.02 m at scale 2.  Scale is linear, the measured bound
+is already in the item's world metres, and `1/native` is the multiplier.
+
+**The audit had a rule that could not see what it named.**  Its second op-order rule searched for the
+PROP's calls (`apply_translate`/`apply_scale`) while claiming to check the ITEM's translate/scale, so
+it was a duplicate of the rule above it and the fault it was supposed to catch was reported MISSED.
+It now searches `.AddTranslateOp` and `item_xform.AddScaleOp`.  `tools/prove_audit_fails.py` grew from
+4 to 11 planted faults, including the two that shipped (the missing offset and the unit of the offset);
+all 11 are now caught.
+
+**A text criterion for "too thin", so it never needs a picture.**  Every resolved prop now prints
+`[fills (x, y, z) of its box]` -- the drawn extent divided by the declared extent, per axis -- and the
+report prints one summary line naming the items whose worst axis is below 0.9.
+
+## The remaining "too thin" items are a declaration problem, and here is the number for every one
+
+`[scene] dressing` lines, `stage1.4` (worst fill ratio first): `railing 0.033`, `bench_left 0.108`,
+`bench_right 0.108`, `tree_conifer 0.417`, `tree_fir 0.46`, `tree_sapling 0.564`, `bin_square 0.579`,
+`picnic_table 0.64`, `bench_iron 0.663`, `fountain 0.684`, `litter_bin 0.694`, `planter_left 0.706`,
+`planter_right 0.706`, `shrub_left 0.833`, `shrub_right 0.833`.
+
+The cause is arithmetic and fully determined: the factor is `min(1/native)` and the parent Xform
+multiplies it by the declared size, so `drawn = measured_native x min(1/native) x want`.  The tight
+axis fills to `want` exactly and **every other axis is `want_axis x (native_min/native_axis)`**.  A box
+whose proportions are not the asset's therefore cannot be filled under a uniform fit.  The fill ratio
+above is exactly `native_min/native_axis` for each item, which is why it is the same number for all
+three axes of a given asset when the box and the asset agree in shape (the mug: 0.716/0.673/0.696 --
+they differ only by the asset's own aspect).
+
+Consequences, so the decision is concrete:
+
+* `railing`: drawn 2.2261 x **0.0024** x 0.6107 m against a declared 2.2261 x 0.0728 x 1.166.  The
+  asset's own measurement is 2.2261 x 1.166 x 0.0728, so the declared box has the railing's HEIGHT
+  where its THICKNESS is and the other way round, which is what leaves 2.4 mm.
+* `bench_left`: drawn 1.7181 x 0.4834 x **0.02** against a declared 1.7181 x 0.9113 x 0.1855.  The
+  asset measures 4.0906 x 2.1698 x 0.4417 (a shallow curved bench: 4.09 m long, 2.17 m across,
+  0.44 m high), so its own proportions are 1 : 0.53 : 0.108 and the thin axis is a property of the
+  asset, not of the fit.
+* `tree_conifer`: drawn 0.4304 x 0.4167 x 2.4 against a declared 1.0164 x 1.0001 x 2.4; the asset is
+  107.74 x 106.02 x 254.42 in its own units, i.e. much narrower than wide, so a 1.02 m-wide box
+  cannot be filled on every axis at once.
+
+`scenes.PROP_MEASUREMENTS` therefore already contains the data needed to decide: for an item that
+should be as wide as it is tall, the declared box has to be `measured x k` for one `k`, not three.
+The two routes are the ones `IMPLEMENTATION_PROTOCOL.md` §7 already names -- (a) restate the declared
+sizes as the measured shape times one factor, or (b) swap in assets whose natural proportions match
+the intended box.  Either changes the declared sizes of most items in four scenes, so it is recorded
+here with the numbers rather than applied unilaterally.
+
+**What was tried and disproved, so it is not tried again.**  A rotation is not the fix: applying
+`rotateXYZ(90,0,0)` (and the other axis-aligned 90-degree rotations) to the existing props was
+measured on the stage, and none of them makes a swapped box fill (railing `X90` gives
+2.2261 x 0.0381 x 0.0382, `Z90` gives 0.0728 x 0.0728 x 0.6107).  A `declared/native` factor is not
+the fix either: it drew the conifer at 5.76 m in a 2.4 m box.  What the fill column shows is a
+property of the declaration, not of the placing code.
