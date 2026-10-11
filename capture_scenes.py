@@ -122,8 +122,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--dressing_report", action="store_true",
         help="Print, per dressing item, whether its prop reference resolved, failed, or there was "
-             "no asset -- then exit without rendering.  A resolved prop has its clearance box "
-             "deactivated, so an item that resolves and then fails to draw is simply absent with no "
+             "no asset -- then exit without rendering.  A resolved prop has its clearance box made "
+             "invisible, so an item that resolves and then fails to draw is simply absent with no "
              "fallback to see; 'the picture is empty' cannot distinguish that from 'the reference "
              "failed', and this can.",
     )
@@ -219,6 +219,32 @@ def _quaternion_from_matrix(matrix: np.ndarray):
     return np.array([w, x, y, z], dtype=float)
 
 
+def build_stamp() -> str:
+    """An identifier for the code that produced a frame: git HEAD plus the key modules' mtimes.
+
+    Written because a stale directory of previews is indistinguishable from a fresh run, and that
+    ambiguity was read as evidence about code the images had never executed.  It goes on stdout and
+    into slot_report.txt, so any frame can be dated against the checkout that made it.
+    """
+    here = os.path.dirname(os.path.abspath(__file__))
+    head = "unknown"
+    try:
+        import subprocess
+
+        head = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=here,
+                              capture_output=True, text=True, timeout=10).stdout.strip() or "unknown"
+    except Exception:  # noqa: BLE001
+        pass
+    parts = []
+    for name in ("scene_builder.py", "scenes.py"):
+        path = os.path.join(here, name)
+        try:
+            parts.append(f"{name}@{int(os.path.getmtime(path))}")
+        except OSError:
+            parts.append(f"{name}@missing")
+    return f"git {head} " + " ".join(parts)
+
+
 def main() -> int:
     args = parse_args()
     os.makedirs(args.outdir, exist_ok=True)
@@ -247,17 +273,25 @@ def main() -> int:
                 "hide_robot": bool(args.hide_robot),
                 "scene_parts": [p.strip() for p in args.parts.split(",") if p.strip()]}
         env = environment.setup_scene(app, task_dict=task)
+        # A BUILD STAMP, so a picture can be dated.  A stale directory of previews from an earlier
+        # checkout is indistinguishable from a fresh run of the current code, and that ambiguity cost
+        # real time: the images were read as evidence about code they had never executed.  The stamp
+        # names git HEAD and the mtime of the two modules that decide what a frame contains.
+        stamp = build_stamp()
+        print(f"[preview] code stamp {stamp}")
         print(f"[preview] scene {args.scene} ({scenes.SCENES[args.scene]['label']}) "
               f"level {args.level} width "
               f"{environment.LEVEL_CHANNEL_WIDTHS[args.level]:.3f} m")
 
         if args.dressing_report:
-            # Text only, and it exists because images did not answer the question.  A prop whose
-            # reference resolves has its clearance box DEACTIVATED, so if the prop itself then
-            # fails to draw for any reason the item is simply absent from the frame -- there is no
-            # fallback box to see.  "Nothing in the picture" therefore has two opposite causes and
-            # a picture cannot tell them apart.  place_dressing records which happened per item;
-            # this prints it.
+            # Text only, and it exists because images did not answer the question.  An item whose prop
+            # resolves has its clearance box made INVISIBLE, so if the prop itself then fails to draw
+            # for any reason the item is absent from the frame with no fallback box to notice --
+            # "nothing in the picture" therefore has two opposite causes and a picture cannot tell
+            # them apart.  place_dressing records which happened per item and this prints it.  (This
+            # comment used to say the box was DEACTIVATED, which is what the code did and what made
+            # every resolved prop invisible; it is kept accurate because it was one of several stale
+            # explanations that made these reports hard to trust.)
             report = (env.scene_report or {}).get("dressing") or []
             print(f"[dressing] {len(report)} item(s) from the scene report")
             print(f"{'item':<16} {'mount':<14} {'asset':<34} result")
@@ -344,13 +378,19 @@ def main() -> int:
             # measurement tool.  So whether all 25 rebuilds succeeded could not be established
             # from the log; a file written and flushed here can be.
             marker_info = (env.scene_report or {}).get("marker") or {}
+            dressing = (env.scene_report or {}).get("dressing") or []
+            resolved = sum(1 for item in dressing if item.get("used_asset"))
+            no_asset = sum(1 for item in dressing
+                           if not item.get("used_asset") and not item.get("reference_error"))
             with open(os.path.join(args.outdir, "slot_report.txt"), "a", encoding="utf-8") as log:
                 log.write(
-                    f"{args.scene} slot={slot} "
+                    f"{args.scene} slot={slot} stamp={stamp} "
                     f"marker={marker_info.get('shape')}/{marker_info.get('colour')} "
                     f"parts={marker_info.get('parts')} "
                     f"size={marker_info.get('size_m')} "
                     f"painted_ok={marker_info.get('painted')} "
+                    f"dressing_resolved={resolved}/{len(dressing)} "
+                    f"dressing_no_asset={no_asset} "
                     f"error={marker_info.get('paint_error') or '-'}\n"
                 )
             print(f"[preview] slot {slot}: {scenes.MARKERS[args.scene][slot - 1]}")

@@ -902,7 +902,7 @@ def format_report(report: Dict[str, Any]) -> str:
         lines.append(f"[scene] dressing: {report['dressing_count']} items, "
                      f"{used} from assets, rest boxes, all non-collidable")
         # Per item, and in the ALWAYS-printed report rather than behind a switch.  An item whose
-        # prop resolves has its clearance box deactivated, so if the prop then fails to draw the
+        # prop resolves has its clearance box made invisible, so if the prop then fails to draw the
         # item is absent from the frame with no fallback to notice -- which means "the preview is
         # empty" has two opposite causes (the reference failed, or it resolved and nothing is
         # drawn) that no picture can separate.  This separates them, and it appears in every run

@@ -393,10 +393,35 @@ def main() -> int:
          "the prop is fitted INSIDE the box and may be smaller, so the declared size is a bound"),
         ("STORED IN WORLD ORDER", "a wall item is stored in the catalogue frame, depth on slot 0"),
         ('``frame="wall"`` reverses', "the frame parameter is gone"),
+        ("clearance box DEACTIVATED", "the box is made invisible now, not deactivated"),
+        ("clearance box DEACTIVATED, so", "the box is made invisible now, not deactivated"),
     )
     for phrase, why in STALE:
         if phrase in builder or phrase in read("scenes.py"):
             problems.append(f"stale comment arguing for superseded behaviour: {phrase!r} -- {why}")
+
+    # 12. THE one stale claim that misled this project four separate times: "a resolved prop has its
+    # clearance box deactivated".  It was true while the box was deactivated, and that deactivation is
+    # what deleted every referenced prop from the stage; the sentence then survived in four files and
+    # each copy made a report read as though props were being drawn when they were not.
+    #
+    # Scanned over the PROSE only -- docstrings and comments -- and for that claim rather than for the
+    # word, because the word also appears legitimately: a comment explaining that the box is made
+    # invisible INSTEAD, and a runtime message asking whether an ancestor was deactivated, are both
+    # correct and were both flagged by the word-based version of this rule.
+    for name in ("scene_builder.py", "scenes.py", "capture_scenes.py",
+                 os.path.join("tools", "render_dressing.py")):
+        path = os.path.join(_ROOT, name)
+        if not os.path.exists(path):
+            continue
+        prose = strip_prose(open(path, encoding="utf-8").read())
+        for lineno, line in enumerate(prose.splitlines(), 1):
+            lowered = line.lower()
+            if "clearance box" in lowered and ("deactivat" in lowered or "inactive" in lowered):
+                problems.append(
+                    f"{name}:{lineno} still says a resolved prop's clearance box is deactivated or "
+                    f"inactive: {line.strip()[:80]!r}.  It is made invisible; the difference is that "
+                    f"deactivation removes the prop with it, which is what emptied every frame")
 
     env_path = os.path.join(_ROOT, "environment.py")
     if os.path.exists(env_path):
