@@ -143,4 +143,16 @@ lab_measure_*.log
 lab_logs_before_pull/
 fix_stage1.*.log
 
+# The versioned run directories (v74, v76, v77, ...) were being ignored one at a time as each was
+# noticed, which meant the newest one was always the one that got committed by accident.  A range is
+# the right shape: they are all directories of old previews.
+v[0-9][0-9]/
+
+# A DERIVED file, ignored for the same reason logs/ and results/ are.  tools/parse_agent_logs.py
+# writes it from the raw model I/O under logs/ with `--csv logs_reasoning.csv`, and logs/ is itself
+# ignored, so committing the CSV would commit an artefact whose input is not in the repository --
+# reproducible from nothing, and stale the moment the logs change.  The manual names it as an EXAMPLE
+# of the tool's output, not as content.
+logs_reasoning.csv
+
 
