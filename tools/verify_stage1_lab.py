@@ -98,7 +98,7 @@ def check_log(report: Report, text: str, model: str) -> None:
 
 def check_results(report: Report, results: str, model: str) -> None:
     print("--- result checks ---")
-    pattern = os.path.join(results, "level*", model, f"*stage1.1*")
+    pattern = os.path.join(results, "level*", model, "*stage1.1*")
     dirs = sorted(glob.glob(pattern))
     report.check("episode directories exist", bool(dirs),
                  f"{len(dirs)} director(y/ies) matching {pattern}")

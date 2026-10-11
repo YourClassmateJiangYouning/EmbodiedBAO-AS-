@@ -15,7 +15,6 @@ than assumed, and reports which Levels a straight frontal walk can clear.
 
 from __future__ import annotations
 
-import math
 import os
 import sys
 
@@ -30,10 +29,6 @@ def main() -> int:
         BODY_CLEARANCE,
         LEVEL_CHANNEL_WIDTHS,
         ROBOT_SHOULDER_WIDTH,
-        ROBOT_START_POS,
-        ROBOT_TORSO_THICKNESS,
-        SUCCESS_X,
-        WALL_THICKNESS,
         WALL_X,
         _check_wall_collision,
     )

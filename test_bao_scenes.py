@@ -1544,10 +1544,12 @@ def test_the_scene_modules_have_no_undefined_names_or_unused_imports() -> None:
     candidates = [[sys.executable, "-m", "ruff"]]
     if shutil.which("ruff"):
         candidates.append([shutil.which("ruff")])
-    targets = ["scene_builder.py", "scenes.py", "environment.py", "capture_scenes.py",
-               os.path.join("tools", "audit_dressing.py"),
-               os.path.join("tools", "render_dressing.py"),
-               os.path.join("tools", "prove_audit_fails.py")]
+    # The WHOLE repository, minus the vendored assets and the ignored scratch directories.  The
+    # earlier version named seven modules by hand, so `tools/` was never checked as a directory and
+    # seventeen unused imports sat in it unnoticed.  A hand-maintained list of files to check is the
+    # same defect as a hand-maintained list of anything: it stops covering what nobody remembered to
+    # add.  Undefined names in the scene modules are what this is for -- one reached the lab machine.
+    targets = ["."]
     result = None
     for command in candidates:
         attempt = subprocess.run([*command, "check", "--select", "F,E9", "--output-format", "concise",
@@ -1563,8 +1565,8 @@ def test_the_scene_modules_have_no_undefined_names_or_unused_imports() -> None:
     check(result.returncode == 0,
           "ruff reports static errors, and these are the kind that otherwise reach the lab machine:\n"
           f"{result.stdout}{result.stderr}")
-    print(f"[ok] ruff found no undefined names, unused imports or syntax errors in "
-          f"{len(targets)} module(s)")
+    print("[ok] ruff found no undefined names, unused imports or syntax errors across the whole "
+          "repository (target '.', which excludes the ignored scratch directories)")
 
 
 def test_the_handoff_documents_state_facts_that_hold() -> None:

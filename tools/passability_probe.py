@@ -42,7 +42,6 @@ def main() -> int:
         SUCCESS_X,
         WALL_THICKNESS,
         WALL_X,
-        _check_wall_collision,
         action_delta,
     )
 

@@ -16,7 +16,6 @@ import sys
 import tarfile
 
 sys.path.insert(0, ".")
-import memory_metrics as mm  # noqa: E402
 
 REASONING = re.compile(r'"reasoning":\s*"((?:[^"\\]|\\.)*)"')
 MIN_LEN = 20

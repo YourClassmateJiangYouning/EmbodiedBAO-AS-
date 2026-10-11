@@ -1,113 +1,206 @@
 # REMOTE_KICKOFF.md — 粘到远程电脑的 DeepSeek Harness 里的启动提示词
 
-> 用法：把下面 `---` 之间的**全部内容**复制，粘贴到远程电脑的 DSH 会话里作为第一条消息。
-> 它是自包含的：不需要这台机器上的任何上下文。
+> 用法：把下面 `---` 之间的**全部内容**复制，粘贴到远程电脑的 DSH 会话里作为**第一条消息**。
+> 它是自包含的，不需要本机的任何上下文。
+>
+> 本文件的**可验证声明**由 `tools/verify_docs.py` 校验（已接入测试套件）。
 
 ---
 
 你在 `~/EmbodiedBAO-AS-` 工作，这是 **EmbodiedBAO** 项目：一个 Isaac Sim 4.5 具身智能基准，
-机器人是 Unitree H1，自变量 A/S = 通道宽度 / 肩宽。Stage 1 是"场景皮肤"：五个场景各一套
-材质与陈设，17 个关卡 × 5 场景 × 25 标志物 = 6375 个 episode。
+机器人是 Unitree H1，自变量 A/S = 通道宽度 / 肩宽。Stage 1 是"场景皮肤"：五个场景各一套材质与
+陈设，17 个关卡 × 5 场景 × 25 标志物 = 6375 个 episode。
 
-**你的任务**：把 Stage 1 五个场景的陈设做到可交付——真实道具、尺寸正确、不穿模、
-不进入机器人行走带，**并且用文本报告证明**，而不是靠看图判断。
+# 你的任务：构建场景
 
-## 第一步（不要跳过，不要改代码）
+把 **Stage 1 五个场景的陈设**做到可交付：**真实道具、尺寸正确、不穿模、不进入机器人行走带**，
+并且**用文本报告证明**，而不是靠看图判断。
+
+**先完整读 `REMOTE_WORKORDER.md`**（主指令：我犯过的全部错误目录、坐标框架、几何常量、
+文本判据、四步工作、硬规矩）。它每节末尾的【依据】说明结论来自代码、官方文档还是实测日志。
+**本文件是开工流程；工作令是知识。**
+
+---
+
+## 第 0 步：环境自检（**全部通过才继续**）
 
 ```bash
 cd ~/EmbodiedBAO-AS- && git pull --ff-only origin master && git log --oneline -3
-cat REMOTE_WORKORDER.md
-```
+git ls-files assets | wc -l        # 必须 1185，否则道具会全部变成 NO ASSET
+ls assets/isaac | head -3          # 必须非空
+ls assets/bucket | head -3         # 必须非空
 
-**`REMOTE_WORKORDER.md` 是主指令**，包含：当前状态、我犯过的**全部错误目录**（按病根归类，
-含症状与代价）、坐标系与几何常量、判断"道具到底画出来没有"的正确方法、以及四步具体工作。
-
-**先完整读完它，再动手。** 它里面每一节末尾的【依据】说明了结论来自代码、官方文档还是实测日志。
-
-## 第二步：确认基线干净
-
-```bash
-cd ~/EmbodiedBAO-AS-
-python tools/audit_dressing.py          # 必须: no problems found
-python tools/prove_audit_fails.py       # 必须: all 4 planted fault(s) were caught
-python tools/check_field_names.py       # 必须: 3 个 ok
-for f in test_bao_*.py; do echo "== $f"; python $f 2>/dev/null | tail -3; done   # 必须: 0 失败，共 173 项
+# 纯 Python 检查，不需要 Isaac Sim
+python tools/audit_dressing.py     # 必须: no problems found
+python tools/prove_audit_fails.py  # 必须: all 4 planted fault(s) were caught
+python tools/verify_docs.py        # 必须: all hold
+python tools/check_field_names.py  # 必须: 3 个 ok
+for f in test_bao_*.py; do echo "== $f"; python $f 2>/dev/null | tail -3; done
+                                   # 必须: 0 失败，合计 174 项
 ```
 
 **任何一步失败，先修它，不要往下走。**
 
-## 第三步：按 REMOTE_WORKORDER.md 的 §4 执行
+### 第 0.5 步：确认你能不能推送 GitHub（**先回答这个问题，再动代码**）
 
-顺序是 **STEP 1 确认结构 → STEP 2 定位光照花纹 → STEP 3 处理道具偏细 → STEP 4 补齐 NO ASSET**。
-每一步都给出了命令、判读表和依据。
-
-## 必须遵守的硬规矩
-
-1. **`stage1.1` 是基线，无材质无陈设，一个字都不许改。**
-2. **一个坐标框架、一次转换。** 项目有目录框架 `(x, 高度, 横向)` 与舞台框架（Z-up）
-   `(x, 横向, 高度)`；**隐式交换是缺陷来源**。相机辅助用的是 `(x, 横向, 高度)`。
-3. **尺寸判据是舞台实测，不是声明值。** 报告里的 `[drawn ... vs declared ...]` 才是事实。
-4. **适配只缩放、不重塑**（等比，取最紧轴，封顶 1.0）。不要引入逐轴缩放。
-5. **接线前必须先测量。** `place_dressing` 会把道具强制适配到声明盒子，
-   所以声明值若是猜的，画出来就是那个猜测。顺序：抓取 → 测量 → 写表 → 声明 → 验证。
-6. **每条新检查都要先证明它会失败**：把故障加进 `tools/prove_audit_fails.py`。
-7. **诊断命令不要加 `grep`/管道**（我曾用 `grep -E 'tree'` 把诊断输出过滤掉，
-   看起来完全像分支没执行）。要看全文，或看它写出的文件。
-8. **每轮最后一步固定是提交**：`git add -A && git status --short`（必须为空）→
-   `git commit -F <消息文件>`。提交信息必须写清**改了什么、为什么、依据是什么、哪些还没验证**。
-9. **不要靠图片判断"道具在不在"**——用 `--dressing_report` 与 `--stage_tree` 的文本。
-10. **不要在检查失败的情况下提交**；**不要留下为旧行为辩护的注释**。
-
-## 判断"画出来没有"的两条文本命令（这是重点）
+远程是 HTTPS：`origin = https://github.com/YourClassmateJiangYouning/EmbodiedBAO-AS-.git`。
+能不能推，取决于这台机器上有没有凭据。**不要猜，跑下面三条**：
 
 ```bash
-# 逐件：解析成功/失败/无资产 + 舞台实测的绘制尺寸
-python capture_scenes.py --scene stage1.4 --level 0 --slots 1 --dressing_report
+git config --get user.name && git config --get user.email   # 身份是否配置
+git ls-remote origin >/dev/null 2>&1 && echo "READ-OK" || echo "READ-FAIL"   # 读权限
+git config --get credential.helper                          # 凭据助手是否存在
+```
 
-# prim 树：每件的 active / 继承可见性 / 是否有 material 或 displayColor
-# ★ 不要加管道 ★
+**然后如实报告你属于哪一种，不要自己想办法绕过：**
+
+| 你的情况 | 你应该怎么做 |
+| :--- | :--- |
+| `user.name/email` 有、`READ-OK`、有 `credential.helper` | **可以提交并推送。** 走 §5 的提交流程，然后 `git push origin master` |
+| 有身份、`READ-OK`，但**没有** credential helper | 尝试一次 `git push origin master`（可能是 SSH 转发或已缓存）。**失败就把报错原文贴出来**，不要反复试 |
+| `user.name/email` 缺失 | 先设置：`git config user.name "<名字>"` / `git config user.email "<邮箱>"`，再重跑上面 |
+| `READ-FAIL` | **你无法访问远端。** 那就**只做本地提交**（`git commit` 照常），并在每份报告里附上 `git log --oneline -5`，由人类代推。**不要尝试输入或索取任何凭据。** |
+
+**绝对不要**把 token、密码、私钥写进任何文件、提交、日志或聊天。`.gitignore` 已屏蔽
+`.git-credentials`/`.netrc`/`*.pem`/`*.key`/`id_rsa*`/`.env` 等，但屏蔽不是许可。
+
+---
+
+## 工作内容（按优先级，每步只做一件，做完报告再前进）
+
+### 任务 1 — 用文本确认 52 件陈设的结构（**不改代码**）
+
+```bash
 python capture_scenes.py --scene stage1.4 --level 0 --slots 1 --stage_tree
 ```
 
-判读表在 `REMOTE_WORKORDER.md` §3。核心事实：**隐藏一个 prim 会连带隐藏它的整个子树**
-（`SetActive(False)` 是组合移除，`MakeInvisible()` 是**继承**属性），所以被引用的道具
-在设计上必须是清除盒的**兄弟**，不能是子节点——这一点曾经让 43 件道具从每一帧里消失，
-而报告逐件打印 `RESOLVED`。
+**不要加管道**（我曾用 `grep -E 'tree'` 把诊断输出过滤掉，看起来完全像分支没执行）。
+把 `[tree]` 输出贴出来。**检查点**：每件已解析的道具都应有
+`<name>/prop active=True visible=inherited`，且带 `material=...` 或 `displayColor`。
 
-## 六个已知未解决问题（不要当成已完成）
+对 `stage1.2` / `stage1.3` / `stage1.5` 各跑一次。
 
-1. 平涂纯色墙面仍出现高频花纹——纯色不可能产生噪点，最可疑是 8 个 `SphereLight`（2.6 m 高，
-   天花板 3.0 m）。**未确认。**
-2. 等比适配导致 `railing` 被画成 2.4 mm 厚、`bench_left` 2 cm、`tree_conifer` 只有 0.43 m 宽。**未修。**
-3. `park_sign`、`reading_lamp`、`shelf_left/right`、`price_strip`、`promo_banner` 仍是纯几何体。**未修。**
+**如果某件 `prop` 不是 `active=True visible=inherited`，停下并报告。**
+判读表在 `REMOTE_WORKORDER.md` §3。
+
+### 任务 2 — 用文本确认尺寸正确
+
+```bash
+python capture_scenes.py --scene stage1.4 --level 0 --slots 1 --dressing_report
+```
+
+**检查点**：每行的 `[drawn (...) vs declared (...)]` 里，`drawn` 的两个非约束轴应接近
+`declared`，且**任何轴都不能超过 `declared`**（超过 = 穿模，会打印 `FITS BADLY`）。
+把有 `FITS BADLY` 或 `FAILED` 的行原样贴出来。
+
+### 任务 3 — 定位"平涂纯色墙面仍有高频花纹"的来源
+
+`use_mdl` 默认 **False**（平涂），四个墙面用 `paint()` 涂纯色：
+floor `(0.55,0.55,0.55)`、side_wall `(0.72,0.73,0.75)`、ceiling `(0.92,0.93,0.95)`、
+far_wall `(0.13,0.42,0.20)`。**纯色不可能产生高频花纹。**
+
+最可疑的是光照：`environment.py` 在 `/World/Light_01..08` 放了 8 个 `SphereLight`，
+高度 2.6 m（天花板 3.0 m）、沿 x 每 2 m 一个。
+
+**做一次对照**（不改默认值）：临时把这 8 个灯的强度设为 0（或只留 `DomeLight`），
+渲染同一机位，比较。**报告两件事**：花纹是否消失；`[scene] <surface> flat-paint -> <prim>`
+四行是否都是 `flat-paint`。
+
+**先拿事实，不要凭猜调光照参数。**
+
+### 任务 4 — 处理"道具偏细"
+
+根因：`fill_scale_for_unit_parent` 取**最紧轴**的比例并封顶 1.0 → **保持比例**的代价是**填不满盒子**。
+
+| 项 | 声明 | 实际绘制 | 视觉 |
+| :--- | :--- | :--- | :--- |
+| `railing` | (2.2261, 0.0728, 1.166) | (2.2261, **0.0024**, 0.6107) | 像一张纸 |
+| `bench_left` | (1.7181, 0.9113, 0.1855) | (1.7181, 0.4834, **0.02**) | 极薄 |
+| `tree_conifer` | (1.0164, 1.0001, 2.4) | (**0.4304**, 0.4167, 2.4) | 细柱 |
+
+**两条路线，选一条并说明理由**：
+- **(a) 按资产实测比例重算声明值**——用 `PROP_MEASUREMENTS` 反算，使最紧轴不再吃紧。
+  **代价**：道具尺寸不再是"现实尺寸"。
+- **(b) 换素材**——找固有比例更接近目标的资产（库里 `props_general` 有 27 个、
+  `props_poles` 有 200 个可检索）。
+
+**不要引入逐轴适配**（会让比例失真）；**不要把封顶从 1.0 放开**（放大曾把 20 cm 的灌木变成 1.2 m）。
+
+### 任务 5 — 补齐仍是盒子的项（**只在库里有合适素材时**）
+
+当前是纯几何体的：`park_sign`（公园）、`reading_lamp`（图书馆）、`shelf_left/right`、
+`price_strip`、`promo_banner`（超市）。没有对应素材就**保留盒子**，并在 README 写明
+"该素材在 NVIDIA 公开素材库中不存在"。
+
+**接线顺序不可颠倒**（`place_dressing` 会把道具**强制适配到声明盒子**，声明值若是猜的，
+画出来就是那个猜测——我曾把 6 m 的冷杉压进 2.9 m 的盒子）：
+
+```bash
+python tools/fetch_bucket_set.py --long-edge 512 --set <bucket 前缀>   # ① 抓取
+python tools/measure_named_props.py <资产名...>                        # ② 测量（★必须先做★）
+#    出现 "DIVIDE BY 100" 警告 = 厘米制资产
+# ③ 实测值写进 scenes.PROP_MEASUREMENTS 与 scenes.ASSET_SCALE
+# ④ 声明值 = 实测(米) × room_fit，room_fit ∈ (0,1]，等比
+# ⑤ 本地全套检查 → 提交
+```
+
+---
+
+## 硬规矩（违反会浪费整轮）
+
+1. **`stage1.1` 是基线（无材质无陈设），一个字都不许改。**
+2. **一个坐标框架、一次转换。** 目录框架 `(x, 高度, 横向)`；舞台框架（Z-up）`(x, 横向, 高度)`；
+   相机辅助用 `(x, 横向, 高度)`。**隐式交换是缺陷来源。**
+3. **尺寸判据是舞台实测**（`[drawn ... vs declared ...]`），不是声明值。
+4. **适配只缩放、不重塑**（等比，取最紧轴，封顶 1.0）。
+5. **接线前必须先测量。**
+6. **每条新检查都要先证明它会失败**：把故障加进 `tools/prove_audit_fails.py`。
+7. **诊断命令不要加 `grep`/管道。**
+8. **每轮最后一步固定是提交**：`git add -A && git status --short`（必须为空）→
+   `git commit -F <消息文件>`。提交信息必须写清**改了什么、为什么、依据是什么、哪些还没验证**。
+9. **不要靠图片判断"道具在不在/尺寸对不对"**——用任务 1、2 的文本命令。
+10. **不要在检查失败的情况下提交；不要留下为旧行为辩护的注释；不要提交任何凭据。**
+
+**最该记住的一句**：**一个无法运行的检查，看起来和一个通过的检查一模一样。**
+
+---
+
+## 六个已知未解决问题（**不要当成已完成**）
+
+1. 平涂纯色墙面仍有高频花纹 —— 纯色不可能产生噪点，最可疑是 8 个 `SphereLight`。**未确认。**
+2. 等比适配导致 `railing` 2.4 mm 厚、`bench_left` 2 cm、`tree_conifer` 0.43 m 宽。**未修。**
+3. 5 件仍是纯几何体（见任务 5）。**未修。**
 4. `--iso_target`（世界框架）与 `--iso_x/--iso_height/--iso_z`（相机辅助框架）在
    `capture_scenes.look_from` 里被当作同一框架使用——`iso_target` 少了 `to_world` 转换。
    默认值恰好合理，所以未产生可见症状。**已知未修。**
 5. `shopping_cart_corral_01` 已抓取但**故意未接线**：实测 2.006 × 2.376 × 3.711 m，
-   在 5 m 宽的房间里需要的 `|z|` 区间只有 2 毫米宽。**已知未接。**
-6. **资产根已全部提交**（实测：`git ls-files assets/isaac` = 1090 个文件，
-   `git ls-files assets/bucket` = 95 个，共 1185 个；工作树干净）。
-   `.gitignore` 用 `assets/*` 屏蔽整个目录，靠 `!assets/isaac/` 与 `!assets/bucket/` 两条**例外**
-   放行——这两条例外曾经缺失过，导致实验室机器上"0 from assets"而本机测量一切正常。
-   仍然请先跑一次 `git ls-files assets | wc -l` 确认你在远程拿到的是 1185，不是 0。
-   （本节先前那条"资产根没有进仓库"的说明是**错的**，已改正。）
+   在 5 m 宽房间里需要的 `|z|` 区间只有 2 毫米宽。**已知未接。**
+6. 资产根**已全部提交**（`git ls-files assets` = 1185）。`.gitignore` 用 `assets/*` 屏蔽整个
+   目录，靠 `!assets/isaac/` 与 `!assets/bucket/` 两条**例外**放行——这两条例外曾经缺失，
+   症状是"实验室机器上 `0 from assets`，而本机测量正常"。
+
+---
 
 ## 报告方式
 
 每完成一步，报告：**做了什么命令 → 输出里的关键行 → 你的判读 → 依据是什么**。
+
 **不要报告"应该没问题了"**；报告**命令与数字**。若某个结论只是推测，明说"未验证"。
+若卡住，贴**原始报错全文**，不要只贴最后一行。
 
 ---
 
-## 附：如果远程机器上还没有仓库
+## 附：如果远程还没有仓库或解释器路径不同
 
 ```bash
 git clone https://github.com/YourClassmateJiangYouning/EmbodiedBAO-AS-.git ~/EmbodiedBAO-AS-
-cd ~/EmbodiedBAO-AS- && git log --oneline -1
+cd ~/EmbodiedBAO-AS- && git log --oneline -1 && git ls-files assets | wc -l   # 1185
 ```
 
-Isaac Sim 的 Python 解释器在本项目里一直用 `/home/ybh/isaacsim/python.sh`。
-**先确认它存在**：`ls -la /home/ybh/isaacsim/python.sh`。
-若路径不同，先找到 Isaac Sim 自带的 `python.sh`，再用它跑所有需要 `pxr`/`isaacsim` 的命令。
-**纯 Python 的检查（`tools/audit_dressing.py`、`tools/prove_audit_fails.py`、`test_bao_*.py`）
-用系统 `python` 即可，不需要 Isaac Sim。**
+Isaac Sim 的解释器本项目一直用 `/home/ybh/isaacsim/python.sh`。**先确认它存在**：
+`ls -la /home/ybh/isaacsim/python.sh`。若不同，先找到 Isaac Sim 自带的 `python.sh`，
+再用它跑所有需要 `pxr`/`isaacsim` 的命令。
+
+**纯 Python 的检查用系统 `python` 即可，不需要 Isaac Sim**：
+`tools/audit_dressing.py`、`tools/prove_audit_fails.py`、`tools/verify_docs.py`、
+`tools/check_field_names.py`、`test_bao_*.py`。

@@ -168,7 +168,7 @@ def report(args, forward, visible, hidden, note: str) -> None:
             f"{100.0 * (~body).mean():.1f}% of pixels, std {scene_std:.1f}"
         )
         print(
-            f"[look_down] readability: "
+            "[look_down] readability: "
             + (
                 "the scene is visible alongside the body, so sizes could be "
                 "compared"

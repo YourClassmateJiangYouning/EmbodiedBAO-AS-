@@ -46,6 +46,21 @@ diag_pxr.py
 # vanishes when it closes, so committing it would record a transient state as content.
 ~$*.docx
 
+# CREDENTIALS.  The remote is HTTPS, so a personal access token can end up in a file, an environment
+# dump or a shell history captured into a log, and this repository is public.  Nothing here was ever
+# committed, but the patterns were absent, which means one careless `git add -A` was all it took.
+# A token that reaches a public history has to be revoked, not rewritten.
+.git-credentials
+.netrc
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+*_token.txt
+*token*.json
+.env
+.env.*
+
 # Stage 1 scene extension: the Isaac material sets the scenes need, vendored so that a clone
 # has them.  The lines above ignore assets/ wholesale; these are the exceptions, and they are
 # deliberately narrow: only the material sets, downscaled by tools/shrink_textures.py -- the

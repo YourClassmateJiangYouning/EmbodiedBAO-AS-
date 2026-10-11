@@ -10,7 +10,6 @@ truth about what shape exists in the scene.
 
 from __future__ import annotations
 
-import math
 import os
 import sys
 
@@ -66,9 +65,11 @@ def main() -> int:
         mesh = UsdGeom.Mesh(prim)
         pts = mesh.GetPointsAttr().Get() if mesh else None
         if not pts:
-            # fall back to the xform's own extent
-            geo = UsdGeom.Boundable(prim)
-            pts = None
+            # A prim with no authored points is not a mesh we can measure; say so rather than
+            # assigning a Boundable that was never used.  The unused assignment was there for a
+            # fallback that was never written, and ruff is right that it is dead.
+            out("  %-18s no authored points" % name)
+            continue
         if pts:
             arr = np.array([[float(p[0]), float(p[1]), float(p[2])] for p in pts])
             spans = arr.max(axis=0) - arr.min(axis=0)
