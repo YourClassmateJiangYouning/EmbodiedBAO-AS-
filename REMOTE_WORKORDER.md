@@ -52,17 +52,25 @@ git ls-remote origin            -> READ-OK      （仓库公开，匿名可读�
 git config --get credential.helper -> 空
 ```
 
-**结论**：这台机器**能拉、暂时不能推**，而且**在配置身份之前连提交都不能做**。
+**结论**：这台机器**能拉，但没有身份、也没有推送凭据**。
 
 - **身份**：两行命令即可解决，不需要任何凭据。
-- **推送**：需要凭据（HTTPS 的 PAT 或 SSH 密钥）。**在没有凭据之前，一律只做本地提交**，
-  并在报告里附 `git log --oneline -5`，由人类代推。
-  - 若人类决定让远程自己推，推荐顺序：① 装 `gh` 并 `gh auth login`；
-    ② 设 `git config --global credential.helper store` 后首次 `git push` 交互输入 PAT
-    （PAT 需 `repo` 权限）；③ 改用 SSH 并部署只读+写的部署密钥。
-  - **任何情况下都不要把 token 写进文件、提交、日志或对话。**
-    `.gitignore` 已屏蔽 `.git-credentials`/`.netrc`/`*.pem`/`*.key`/`id_rsa*`/`.env` 等模式，
-    但**屏蔽不是许可**——公开历史里的 token 只能吊销，不能"改掉"。
+- **推送凭据是必需的，不是可选的**：数据流只有一个方向——**这台机器 → GitHub → 人类的机器**。
+  只有这里产生的提交才带着这里做出的工作；别的机器推送的是它自己的代码。
+  **所以"改成只做本地提交、由人类代推"是错的**——那条路把工作留在了这台机器上，人类拉不到。
+  （本手册先前写过那个错误建议，已改正。）
+  - **推荐 SSH**：`ssh-keygen` 生成密钥 → 人类把公钥加到 GitHub → `git remote set-url origin
+    git@github.com:...`。私钥不离开这台机器，没有明文 token。
+  - 或 **PAT**：`git config credential.helper store`，首推时经 URL 传入 `ghp_...`。
+    代价是 token 明文落在 `~/.git-credentials`。
+- 详细步骤（含确切命令）见 `REMOTE_KICKOFF.md` 第 0.5 步。
+- 推送后**确认远端收到**：`git ls-remote origin master` 的哈希应等于 `git rev-parse master`。
+  **不要只看 `git push` 的退出码。**
+- **任何情况下都不要把 token、密码、私钥写进文件、提交、日志或对话。**
+  `.gitignore` 已屏蔽 `.git-credentials`/`.netrc`/`*.pem`/`*.key`/`id_rsa*`/`.env` 等模式，
+  但**屏蔽不是许可**——公开历史里的 token 只能吊销，不能"改掉"。
+- 凭据尚未配好时：把工作做完并**本地提交**，报告里写明"**推送凭据未配置，N 个提交待推**"，
+  **不要反复重试 `git push`**。
 
 
 ---
