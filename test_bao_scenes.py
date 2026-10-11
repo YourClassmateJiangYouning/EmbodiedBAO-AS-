@@ -1567,6 +1567,30 @@ def test_the_scene_modules_have_no_undefined_names_or_unused_imports() -> None:
           f"{len(targets)} module(s)")
 
 
+def test_the_handoff_documents_state_facts_that_hold() -> None:
+    """Run tools/verify_docs.py, which checks the handoff documents' checkable claims.
+
+    REMOTE_WORKORDER.md and REMOTE_KICKOFF.md are instructions to another machine, and an instruction
+    containing a wrong number is worse than no instruction: the remote session trusts it and acts on
+    it.  One claim was in fact wrong when first written -- that assets/isaac is excluded from the
+    repository, when both asset roots are committed and have been all along -- so the claims are now
+    checked rather than asserted.  The script verifies the asset counts, the test-file count, the
+    presence of every tool the documents tell the reader to run, the stated check total, and the
+    absence of the claim that was wrong.
+    """
+    import subprocess
+
+    root = os.path.dirname(os.path.abspath(__file__))
+    script = os.path.join(root, "tools", "verify_docs.py")
+    check(os.path.exists(script), "tools/verify_docs.py is missing, so the handoff documents' claims "
+                                 "are unchecked")
+    result = subprocess.run([sys.executable, script], capture_output=True, text=True, cwd=root)
+    check(result.returncode == 0,
+          f"the handoff documents contain claims that do not hold:\n{result.stdout}{result.stderr}")
+    print("[ok] the handoff documents' checkable claims all hold "
+          "(asset counts, test count, every tool they name, the check total)")
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
@@ -1607,6 +1631,7 @@ def main() -> int:
         test_no_scene_floor_is_covered_by_a_dark_material,
         test_the_dressing_code_has_none_of_this_session_s_known_faults,
         test_the_scene_modules_have_no_undefined_names_or_unused_imports,
+        test_the_handoff_documents_state_facts_that_hold,
     ]
     failed = 0
     for test in tests:

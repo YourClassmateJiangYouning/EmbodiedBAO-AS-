@@ -68,7 +68,10 @@
 | `protocol.py` | 提示词与动作空间（**9 个**动作，含 `look_down`）。`build_prompt()` 里标志物名词短语会按本回合替换。**侧身角度带（45–135°）的唯一实现在这里** | 谨慎 |
 | `scenes.py` | **Stage 1 场景目录，纯数据**：10 形状 / 10 颜色 / 25 标志物 / 5 场景的材质与陈设 / `describe_marker()` / `to_world`·`to_user` 坐标转换 | 可改，**但不能动 `stage1.1`**（见 §5） |
 | `scene_builder.py` | 把 `scenes.py` 应用到 stage：材质解析（优先用仓库内本地文件）/ 标志物网格 / 陈设 / 表面分类。**返回 report，说明实际解析成了什么** | 可改 |
-| `capture_scenes.py` | 渲染预览。`--scene --level --outdir --slots` | 可改 |
+| `capture_scenes.py` | 渲染预览。`--scene --level --outdir --slots`；另有三个**纯文本**诊断：`--dressing_report`（逐件解析结果与舞台实测绘制尺寸）、`--stage_tree`（prim 树 + active/继承可见性/材质）、`--mdl`（显式开启 MDL，默认平涂）。**诊断不要加管道** | 可改 |
+| `REMOTE_WORKORDER.md` | **给远程电脑上 AI 的工作令**：当前状态、我犯过的全部错误目录（按病根归类、含症状与代价）、坐标框架与几何常量、"道具到底画出来没有"的文本判据、四步具体工作、硬规矩 | 可改 |
+| `REMOTE_KICKOFF.md` | **启动提示词**：整段复制粘贴到远程 DSH 会话的第一条消息 | 可改 |
+| `tools/verify_docs.py` | 校验上面两份交接文档里**可验证的声明**（资产文件数、测试文件数、它们点名的每个工具是否存在、检查总数、以及"资产根没进仓库"这条错误断言是否残留）。由套件调用 | 可改 |
 | `main.py` | 实验入口。**顶部注释写明全部输出结构** | 谨慎 |
 | `experiments.py` | runner：调模型、记 history、写记录。`_append_log()` 写 `logs/{tag}/…_agent.txt`。坏运行会自己停（`_note_episode_health`） | 谨慎 |
 | `ai_agent.py` | 模型客户端与响应解析（`parse_action_json` / `parse_action_text` 取出 action/reasoning/scene_description/confidence；**没有 `parse_response` 这个函数**，手册曾写错） | 谨慎 |
