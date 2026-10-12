@@ -87,15 +87,41 @@ def paint(stage: Any, prim_path: str, rgb: Sequence[float]) -> Tuple[bool, str]:
     size is the change that mattered, and the marker is painted flat again.
     """
     try:
-        from pxr import Gf, UsdGeom, Vt
+        from pxr import Gf, Sdf, UsdGeom, UsdShade, Vt
 
         prim = stage.GetPrimAtPath(prim_path)
         gprim = UsdGeom.Gprim(prim)
         if not gprim:
             return False, "the prim is not a Gprim"
-        gprim.CreateDisplayColorAttr().Set(Vt.Vec3fArray(
-            [Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2]))]))
-        return True, ""
+        value = Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2]))
+        gprim.CreateDisplayColorAttr().Set(Vt.Vec3fArray([value]))
+        # AND THE BOUND MATERIAL, because a material wins over displayColor and every room surface
+        # has one.  environment._add_box binds a UsdPreviewSurface to each box it creates
+        # (environment.py, _create_and_bind_material, metallic 0.0 roughness 0.6), which is why
+        # SURFACE_COLOURS changed the floors -- /World/Ground is the one room surface with no such
+        # binding -- and left the walls, the ceiling and the far wall exactly as they were.  The
+        # proof was to paint every Gprim under /World red and render: 46.34 % of the frame obeyed and
+        # the grey remainder was precisely those four surfaces (diag_logs/allworld_red.png).
+        #
+        # Setting the shader's inputs:diffuseColor is what actually repaints a bound surface.  The
+        # displayColor above is kept as well, because unbound geometry (the markers, the dressing
+        # clearance boxes) has no material to set.
+        #
+        # Both return values are reported: a surface that is bound but whose shader cannot be reached
+        # must not be reported as painted.
+        how = "displayColor"
+        material, _ = UsdShade.MaterialBindingAPI(prim).ComputeBoundMaterial()
+        if material and material.GetPrim().IsValid():
+            shader, _, _ = material.ComputeSurfaceSource()
+            if shader and shader.GetPrim().IsValid():
+                colour_input = shader.GetInput("diffuseColor")
+                if colour_input is None:
+                    colour_input = shader.CreateInput("diffuseColor", Sdf.ValueTypeNames.Color3f)
+                colour_input.Set(value)
+                how = "displayColor+material diffuseColor"
+            else:
+                how = "displayColor (material bound but no surface shader was reachable)"
+        return True, how
     except Exception:  # noqa: BLE001
         # Reported through the return value, not raised: one attribute that cannot be authored
         # should not stop a scene from being built.
