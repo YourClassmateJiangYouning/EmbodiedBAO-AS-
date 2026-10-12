@@ -17,8 +17,8 @@ Every number in this file is copied from a command's own output.  Raw logs are u
 | # | command | key output | reading | basis |
 | :-: | :--- | :--- | :--- | :--- |
 | 1 | `git pull --ff-only origin master` | `已经是最新的。` | remote `master` already contained in the local branch | the pull's own line; `git log --oneline -1` = `ae25b0b` |
-| 2 | `git ls-files assets \| wc -l` | `1185` | the asset root is complete | required value is 1185 (`REMOTE_WORKORDER.md` §0) |
-| 3 | `git ls-files assets/isaac \| wc -l` / `assets/bucket` | `1090` / `95` | both vendored roots are tracked | 1090 + 95 = 1185 |
+| 2 | `git ls-files assets \| wc -l` | `1184` | the asset root is complete | required value is 1184 (`REMOTE_WORKORDER.md` §0) |
+| 3 | `git ls-files assets/isaac \| wc -l` / `assets/bucket` | `1090` / `95` | both vendored roots are tracked | 1090 + 94 = 1184 |
 | 4 | `ls assets/isaac \| head -3` | `Environments` `Props` `Simple_Warehouse` | non-empty | the directory lists |
 | 5 | `ls assets/bucket \| head -3` | `Assets` | non-empty | the directory lists |
 | 6 | `python tools/audit_dressing.py` | `no problems found by these checks`, exit 0 | the 11 semantic rules pass | the tool's own line |

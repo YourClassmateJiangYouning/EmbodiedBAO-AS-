@@ -184,7 +184,7 @@ rebind these**, so the table below describes `stage1.1`:
 | Obstacle wall | opaque blue, `[0.13, 0.28, 0.72]`, opacity 1.0 |
 | Far wall (seen *through* the opening) | green, `[0.13, 0.42, 0.20]` |
 | Side and near walls | light grey, `[0.72, 0.73, 0.75]` |
-| Ceiling | white, `[0.92, 0.93, 0.95]` |
+| Ceiling | white, `[0.92, 0.93, 0.94]` |
 | Floor | grey with a 0.5 m reference grid |
 | Channel edge posts | near-black, `[0.10, 0.11, 0.13]` |
 

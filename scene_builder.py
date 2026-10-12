@@ -592,6 +592,107 @@ UNRESOLVABLE_SHADER_ASSETS = frozenset({
 })
 
 
+def _vendored_texture(basename: str) -> Optional[str]:
+    """The absolute path of a vendored texture, found by BASENAME across both asset roots.
+
+    The textures live in per-environment `Materials/Textures` folders whose layout is not worth
+    hard-coding in a scene declaration, and the project has already been bitten once by a path that
+    was rebuilt by hand instead of looked up: it reported a real, vendored material as missing.
+    """
+    if not basename:
+        return None
+    for root in (LOCAL_ASSETS, os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets",
+                                            "bucket")):
+        for folder, _dirs, files in os.walk(root):
+            if basename in files:
+                return os.path.abspath(os.path.join(folder, basename))
+    return None
+
+
+# How many times a wall texture repeats across, and up, its surface.  A wall is 16 m long and 3 m
+# high and the textures' own UV sets map them once over that, so the repeat is what decides whether
+# the picture reads as a material or as a few large soft shapes.  Chosen from each subject's real
+# size: a corrugated sheet is ~0.6 m, a bookcase bay ~3 m, a wall-covering render ~4 m.
+TEXTURE_REPEAT = {
+    "t_corrugatedboxes_b01_tile01_albedo.png": (26.0, 5.0),
+    "T_Board_bc.png": (8.0, 1.5),
+    "T_Bookcase_bc.png": (5.0, 1.0),
+    "T_Building_02_bc.png": (4.0, 1.0),
+    "T_Cupboard_bc.png": (5.0, 1.0),
+    "T_Building_01_bc.png": (4.0, 1.0),
+    "T_BooksA_bc.png": (5.0, 1.0),
+    "T_Billboard_bc.png": (1.0, 1.0),
+}
+
+
+def bind_texture_material(stage: Any, prim_path: str, name: str,
+                          texture_path: str) -> str:
+    """Bind a UsdPreviewSurface whose diffuseColor is a PNG to every Gprim under `prim_path`.
+
+    WHY A TEXTURE AND NOT A COLOUR.  The owner asked for walls with a pattern rather than a flat
+    tint, and a flat `displayColor` cannot do that.  The material library's MDL route cannot either
+    on this machine -- its cache is not writable, so MDL prims are created without their shaders and
+    every surface renders as noise -- but a UsdPreviewSurface fed by a UsdUVTexture needs no MDL at
+    all.  Measured before this was written: a bookcase texture on both side walls gave a wall-band
+    standard deviation of 18.27 where a flat colour gives about 1.
+
+    Bound to EVERY Gprim and not just the prim itself, because the closest binding wins -- the same
+    trap that made displayColor ineffective on the room surfaces (see paint()).  Returns a one-word
+    summary for the report.
+    """
+    try:
+        from pxr import Sdf, UsdGeom, UsdShade
+
+        stem = prim_name(name)
+        mat = UsdShade.Material.Define(stage, f"/World/Looks/tex_{stem}")
+        shader = UsdShade.Shader.Define(stage, f"/World/Looks/tex_{stem}/Shader")
+        shader.CreateIdAttr("UsdPreviewSurface")
+        shader.CreateInput("roughness", Sdf.ValueTypeNames.Float).Set(0.65)
+        shader.CreateInput("metallic", Sdf.ValueTypeNames.Float).Set(0.0)
+        reader = UsdShade.Shader.Define(stage, f"/World/Looks/tex_{stem}/Reader")
+        reader.CreateIdAttr("UsdUVTexture")
+        reader.CreateInput("file", Sdf.ValueTypeNames.Asset).Set(texture_path)
+        reader.CreateInput("sourceColorSpace", Sdf.ValueTypeNames.Token).Set("sRGB")
+        # The texture is brightened, because a texture carries its OWN albedo and the corridor read
+        # too dark without this: measured with the raw image the side-wall band came back at mean 26
+        # against the 140-200 the flat palette had, which is a dark room rather than a textured one.
+        # The pattern is untouched by a scale -- that is the whole point -- and the factor is a
+        # parmeter of the material, not of the scene, so a scene that wants a dark wall still can.
+        reader.CreateInput("scale", Sdf.ValueTypeNames.Float4).Set((2.2, 2.2, 2.2, 1.0))
+        # TILED, because a wall is 16 m long and the texture's own UV set maps it ONCE over that
+        # length: one repeat of a 512 px panel stretched across 16 m reads as a few large soft
+        # shapes, which is not a pattern.  The repeat is chosen from the subject's real size -- a
+        # 0.6 m corrugated sheet repeats ~26 times, a bookcase bay ~3 m repeats ~5 times -- and is
+        # per texture, because a wall-covering render and a shelving bay are not the same object.
+        u_repeat, v_repeat = TEXTURE_REPEAT.get(os.path.basename(texture_path), (4.0, 1.0))
+        st_reader = UsdShade.Shader.Define(stage, f"/World/Looks/tex_{stem}/ST")
+        st_reader.CreateIdAttr("UsdTransform2d")
+        st_reader.CreateInput("scale", Sdf.ValueTypeNames.Float2).Set(
+            (float(u_repeat), float(v_repeat)))
+        st_reader.ConnectableAPI().CreateOutput("result", Sdf.ValueTypeNames.Float2)
+        reader.CreateInput("st", Sdf.ValueTypeNames.Float2).ConnectToSource(
+            st_reader.ConnectableAPI(), "result")
+        reader.CreateOutput("rgb", Sdf.ValueTypeNames.Float3)
+        shader.CreateInput("diffuseColor", Sdf.ValueTypeNames.Color3f).ConnectToSource(
+            reader.ConnectableAPI(), "rgb")
+        mat.CreateSurfaceOutput().ConnectToSource(shader.ConnectableAPI(), "surface")
+        prim = stage.GetPrimAtPath(prim_path)
+        if not prim or not prim.IsValid():
+            return "prim missing"
+        prefix = str(prim.GetPath())
+        bound = 0
+        for candidate in stage.Traverse():
+            if not str(candidate.GetPath()).startswith(prefix):
+                continue
+            if not candidate.IsA(UsdGeom.Gprim):
+                continue
+            UsdShade.MaterialBindingAPI.Apply(candidate).Bind(mat)
+            bound += 1
+        return f"texture {os.path.basename(texture_path)} on {bound} gprim(s)"
+    except Exception as exc:  # noqa: BLE001
+        return f"texture failed: {type(exc).__name__}: {exc}"
+
+
 def bind_flat_material(stage: Any, prim_path: str, name: str,
                        rgb: Sequence[float]) -> str:
     """Bind a UsdPreviewSurface of one colour to `prim_path` and to every Gprim beneath it.
@@ -806,9 +907,15 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 # A prop whose own shader cannot compile is repainted flat, so it renders in its
                 # declared colour instead of the renderer's fallback.  Recorded in the report, because
                 # "this prop's own materials are broken" is a fact the next reader needs.
-                if os.path.basename(local) in UNRESOLVABLE_SHADER_ASSETS:
-                    how = bind_flat_material(stage, f"{path}/prop", item["name"], item["colour"])
-                    record["flat_material"] = how
+                # EVERY resolving prop gets the declared colour bound as a flat material, not only
+                # the ones whose own shader is broken.  A prop that carries no material at all is
+                # drawn in the renderer's fallback whatever its clearance box says, which is why the
+                # park's benches, railing and litter bin stayed red while their declared colours were
+                # concrete, weathered timber and hedge.  Binding the colour is the only route that
+                # reaches a prop: `paint()` cannot, because a prop is an Xform and not a Gprim, and
+                # the clearance box it can paint is hidden the moment the prop resolves.
+                how = bind_flat_material(stage, f"{path}/prop", item["name"], item["colour"])
+                record["flat_material"] = how
                 record["used_asset"] = os.path.basename(local)
                 record["reference"] = local
                 record["fit_scale"] = scale
@@ -1147,9 +1254,23 @@ def apply_scene(stage: Any, scene: str, slot: int,
             continue
         prim_path = prim_paths[0]
         if not use_mdl:
+            # A TEXTURE if the scene names one for this surface and it is vendored, else the flat
+            # colour.  The owner asked for patterned walls, and a texture needs no MDL, so the
+            # unwritable material cache that made flat paint the safe default does not block it.
+            # The flat colour is still painted first: it is the fallback if the texture is missing, and
+            # it keeps the surface honest if the texture fails to load.
+            texture = (getattr(sc, "SURFACE_TEXTURES", {}) or {}).get(scene, {}).get(surface)
+            local_texture = _vendored_texture(texture) if texture else None
+            how = "flat-paint"
             for path in prim_paths:
                 paint(stage, path, fallbacks.get(surface, (0.6,) * 3))   # (ok, why)
-            report["materials"][surface] = {"url": url, "how": "flat-paint",
+            if local_texture:
+                results = [bind_texture_material(stage, path, f"{surface}_{scene}", local_texture)
+                           for path in prim_paths]
+                how = results[0] if len(set(results)) == 1 else "; ".join(sorted(set(results)))
+            elif texture:
+                how = f"flat-paint (texture {texture} is not vendored)"
+            report["materials"][surface] = {"url": url, "how": how,
                                             "prim": ", ".join(prim_paths)}
             continue
         name = os.path.basename(url).replace(".mdl", "")

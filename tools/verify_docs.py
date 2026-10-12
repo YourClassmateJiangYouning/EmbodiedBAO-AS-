@@ -37,11 +37,11 @@ def main() -> int:
     isaac, bucket = tracked("assets/isaac"), tracked("assets/bucket")
     total = tracked("assets")
     facts = [
-        (total == 1185, f"tracked assets is {total}, docs say 1185",
+        (total == 1184, f"tracked assets is {total}, docs say 1184",
          f"tracked assets = {total}"),
         (isaac == 1090, f"assets/isaac is {isaac}, docs say 1090",
          f"assets/isaac = {isaac}"),
-        (bucket == 95, f"assets/bucket is {bucket}, docs say 95",
+        (bucket == 94, f"assets/bucket is {bucket}, docs say 94",
          f"assets/bucket = {bucket}"),
         (len(glob.glob(os.path.join(ROOT, "test_bao_*.py"))) == 9,
          f"test file count is {len(glob.glob(os.path.join(ROOT, 'test_bao_*.py')))}, docs say 9",

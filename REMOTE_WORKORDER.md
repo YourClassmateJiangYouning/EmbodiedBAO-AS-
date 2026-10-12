@@ -36,10 +36,10 @@
    仍是纯几何体（`NO ASSET`），因为库里没有对应道具。
 
 **资产根的状态（实测，不要听凭印象）**：`assets/isaac` 与 `assets/bucket` **都已提交**，
-分别 1090 与 95 个文件（`git ls-files`）。`.gitignore` 用 `assets/*` 屏蔽整个 `assets/`，
+分别 1090 与 94 个文件（`git ls-files`）。`.gitignore` 用 `assets/*` 屏蔽整个 `assets/`，
 靠 `!assets/isaac/` 与 `!assets/bucket/` 两条**例外**放行——这两条例外曾经缺失，
 症状是"实验室机器上 `0 from assets`，而本机测量正常"。**开工前跑一次
-`git ls-files assets | wc -l` 确认是 1185。**
+`git ls-files assets | wc -l` 确认是 1184。**
 
 ### 远程机器的 git 状态（**已实测，不是推测**）
 
@@ -100,7 +100,7 @@ python tools/check_field_names.py
 **另外先确认资产根完整**——这两个数不对，后面所有 `RESOLVED` 都会变成 `NO ASSET`：
 
 ```bash
-git ls-files assets | wc -l        # 必须是 1185
+git ls-files assets | wc -l        # 必须是 1184
 ls assets/isaac | head -3          # 必须非空
 ls assets/bucket | head -3         # 必须非空
 ```
@@ -295,7 +295,7 @@ python capture_scenes.py --scene stage1.4 --level 0 --slots 1 --stage_tree
 ### STEP 2 — 定位"纯色墙面仍有花纹"的来源
 
 `use_mdl` 现在是 **False**（默认平涂），四个墙面用 `paint()` 涂纯色：
-floor `(0.55,0.55,0.55)`、side_wall `(0.72,0.73,0.75)`、ceiling `(0.92,0.93,0.95)`、
+floor `(0.55,0.55,0.55)`、side_wall `(0.72,0.73,0.75)`、ceiling `(0.92,0.93,0.94)`、
 far_wall `(0.13,0.42,0.20)`。**纯色不可能产生高频花纹。**
 
 最可疑的是光照：`environment.py` 的 `_setup_lights` 在 `/World/Light_01..08` 放了 8 个

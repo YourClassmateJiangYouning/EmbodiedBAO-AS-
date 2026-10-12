@@ -210,6 +210,47 @@ BASELINE_FAR_WALL_COLOUR = (0.13, 0.42, 0.20)
 # strongest channel).  A very dark or very bright far wall would change how easily the 0.90 m
 # marker on it can be seen, and the marker's visibility is the independent variable of the whole
 # study.
+# ---------------------------------------------------------------------------
+# Each scene's surfaces as TEXTURES, because a flat colour is not what was asked for
+# ---------------------------------------------------------------------------
+# The owner asked for patterned walls rather than tints, and for the two wall surfaces to be
+# distinguishable from each other.  These are PNGs already vendored in the repository, bound through
+# a UsdPreviewSurface + UsdUVTexture by scene_builder.bind_texture_material -- no MDL, so the
+# unwritable material cache that forced the flat-paint default does not apply.
+#
+#   * SIDE and FAR are always DIFFERENT images, per scene, so the corridor wall and the end wall
+#     cannot be confused with each other.
+#   * No image is used by two scenes, so the five rooms do not share a wall.
+#   * Each was checked to exist in assets/ by basename before being written here; a scene whose
+#     texture is missing falls back to SURFACE_COLOURS below, and the report says which happened.
+SURFACE_TEXTURES: Dict[str, Dict[str, str]] = {
+    # Each pair was chosen by MEASURING the image first (mean luminance, and the standard deviation
+    # that says how much pattern it carries), because two candidates turned out to be unusable and
+    # one could not be seen until it was on a wall:
+    #
+    #   T_Bookcase_bc.png                  mean 124  std 82   <- strong pattern, bright
+    #   T_Board_bc.png                     mean 154  std 75
+    #   T_Building_01_bc.png               mean 182  std 35
+    #   T_Building_02_bc.png               mean 148  std 52
+    #   T_Cupboard_bc.png                  mean  96  std 86
+    #   T_BooksA_bc.png                    mean  97  std 77
+    #   T_Billboard_bc.png                 mean 122  std 69
+    #   T_Blinds_bc.png                    mean 237  std 18   <- bright but nearly flat
+    #   Tex_Wall_Plaster_basecolor.png     mean 184  std  3   <- REJECTED for a wall: std 3 is a
+    #   T_Carpet_bc.png                    mean  46  std 35      plain colour, not a pattern
+    #
+    # and each image is used ONCE across the five scenes, side walls and far walls always different.
+    "stage1.2": {"side_wall": "t_corrugatedboxes_b01_tile01_albedo.png",   # mean 142 std 29
+                 "far_wall":  "T_Board_bc.png"},                          # mean 154 std 75
+    "stage1.3": {"side_wall": "T_Bookcase_bc.png",                        # mean 124 std 82
+                 "far_wall":  "T_Building_02_bc.png"},                    # mean 148 std 52
+    "stage1.4": {"side_wall": "T_Cupboard_bc.png",                        # mean  96 std 86
+                 "far_wall":  "T_Building_01_bc.png"},                    # mean 182 std 35
+    "stage1.5": {"side_wall": "T_BooksA_bc.png",                          # mean  97 std 77
+                 "far_wall":  "T_Billboard_bc.png"},                      # mean 122 std 69
+}
+# stage1.1 has no entry on purpose: it is the baseline and keeps no materials at all.
+
 SURFACE_COLOURS: Dict[str, Dict[str, Tuple[float, float, float]]] = {
     # bare, tools, no skin at all
     "stage1.1": {"floor": (0.55, 0.55, 0.55), "side_wall": (0.72, 0.73, 0.75),
