@@ -126,8 +126,33 @@ the start pose and the success plane are identical in all five, and
 | `stage1.1` | plain laboratory (**baseline**) | none | none |
 | `stage1.2` | warehouse / factory | 4 | 8 |
 | `stage1.3` | library | 4 | 8 |
-| `stage1.4` | park / outdoor | 3 | 8 |
+| `stage1.4` | park / outdoor | 4 | 8 |
 | `stage1.5` | supermarket | 4 | 8 |
+
+### Dressing that has no asset, and therefore stays a box
+
+Nine items carry no vendored `.usd` and are drawn as their clearance box.  Two of them are inside
+the eye camera's frame, and for both, the asset does not exist in NVIDIA's public library as the
+project has been able to search it:
+
+| Item | Scene | In the eye frame | Why no asset |
+| :--- | :--- | :--- | :--- |
+| `bay_sign` | 1.2 | yes (u=+0.18, v=+0.59) | The only sign-like asset vendored is `sign_plaza_fountain_01`, whose folder has no separate sign layer; `SM_BooksSet_11_167` cannot be loaded at all (it references an `SM_BooksSet_11.usd` that is not vendored). |
+| `forklift` | 1.2 | yes (u=+0.08, v=+0.81) | The public bucket's `props_general` set has no forklift, and no other reachable set was found to contain one. |
+
+The other seven (`sign`, `reading_lamp`, `park_sign`, `shelf_left`, `shelf_right`, `price_strip`,
+`promo_banner`) are outside the eye frame or come from the same two gaps.
+
+**The asset that cannot be loaded**, recorded so it is not fetched again: `SM_BooksSet_11_167.usd`
+is a 167-variant wrapper whose reference `SM_BooksSet_11.usd` is absent; a USD load reports
+`Could not open asset @SM_BooksSet_11.usd@`.  `RackLong_A2.usd` has the same problem with its
+`Cardbox_A3`, `Cardbox_D1` and `Pallet_A1` references.
+
+**Five park assets with broken shaders** are repainted flat by `scene_builder.bind_flat_material`,
+because their MDL modules (`bark3`, `TreeBark_10`, `Pine_needles`, `Barberry_Mat`,
+`American_Beech_leaf`, `SimPBR`) are not vendored and the renderer's fallback made the whole park
+red.  The list lives in `scene_builder.UNRESOLVABLE_SHADER_ASSETS`, one entry per measured
+`MDLC comp error`, and can be emptied again when the modules are vendored.
 
 Each (scene, model, Level) cell runs **five episodes, one per marker**, so the five
 repeats are five conditions rather than five replicates. Every marker is 0.60 m across,

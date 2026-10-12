@@ -614,7 +614,7 @@ def bind_flat_material(stage: Any, prim_path: str, name: str,
     how many prims took it, for the report.
     """
     try:
-        from pxr import Gf, Sdf, Usd, UsdGeom, UsdShade
+        from pxr import Gf, Sdf, UsdGeom, UsdShade
 
         mat = UsdShade.Material.Define(stage, f"/World/Looks/flat_{prim_name(name)}")
         shader = UsdShade.Shader.Define(stage, f"/World/Looks/flat_{prim_name(name)}/Shader")
@@ -627,11 +627,17 @@ def bind_flat_material(stage: Any, prim_path: str, name: str,
         prim = stage.GetPrimAtPath(prim_path)
         if not prim or not prim.IsValid():
             return "prim missing"
+        # stage.Traverse() plus a path test.  That is how environment.py walks the stage, and the
+        # API guard `test_no_module_asks_pxr_for_something_it_does_not_have` refuses the range
+        # iterator this was first written with, because that member is not on the verified list.
+        prefix = str(prim.GetPath())
         bound = 0
-        for child in Usd.PrimRange(prim):
-            if not child.IsA(UsdGeom.Gprim):
+        for candidate in stage.Traverse():
+            if not str(candidate.GetPath()).startswith(prefix):
                 continue
-            UsdShade.MaterialBindingAPI.Apply(child).Bind(mat)
+            if not candidate.IsA(UsdGeom.Gprim):
+                continue
+            UsdShade.MaterialBindingAPI.Apply(candidate).Bind(mat)
             bound += 1
         return f"flat material on {bound} gprim(s)"
     except Exception as exc:  # noqa: BLE001
