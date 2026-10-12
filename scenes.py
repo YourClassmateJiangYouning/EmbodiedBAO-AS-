@@ -368,6 +368,12 @@ PROP_MEASUREMENTS = {
     "safety_railing_01.usd": (2.2261, 1.166, 0.0728),
     "shopping_cart_corral_01.usd": (2.0057, 2.3761, 3.7107),
     "RackSmallEmpty_A1.usd": (108.0188, 301.0001, 199.8097),
+    # Measured 2026-10-12 for the two replacement assets, by tools/measure_named_props.py.
+    # `packing_table` replaces the warehouse's forklift, which has no asset in the library; a heavy
+    # packing bench is what that loading bay is actually missing.  `RackSmall_A7` replaces the
+    # supermarket's two shelves, which were box primitives.  RackSmall_A7 is a centimetre asset (the
+    # tool's own DIVIDE BY 100 warning), hence the ASSET_SCALE entry below.
+    "packing_table.usd": (2.4736, 1.0829, 0.7816),
     # Measured 2026-10-10 on the lab machine.  Four of these are centimetre assets and three are
     # metres, IN THE SAME BATCH: the shrubs and the conifer are centimetres while the bench, bin,
     # planter, bollard and block are metres.  Nothing about the folder says which, so each was
@@ -638,7 +644,13 @@ SCENES: Dict[str, Dict[str, Any]] = {
                             asset=PROP_ROOT + "/Pallet/pallet.usd"),
             _dressing_floor("klt_bins", (4.0, 0.0, -2.00), (0.1978, 0.1464, 0.2966),
                             asset=PROP_ROOT + "/KLT_Bin/small_KLT_visual.usd"),
-            _dressing_floor("forklift", (6.2, 0.0, 2.15), (0.9, 0.70, 0.7)),
+            # WAS a forklift with no asset, so it rendered as a plain box.  The library has no
+            # forklift and no reachable set was found to contain one; a heavy packing bench is the
+            # honest thing for a loading bay and `packing_table.usd` is vendored.  Declared at the
+            # bench's measured proportions times room_fit 0.36 -> (0.8905, 0.3898, 0.2814), so the
+            # uniform fit fills the box instead of leaving it at a third of its size.
+            _dressing_floor("forklift", (6.2, 0.0, 2.15), (0.8905, 0.3898, 0.2814), DRESSING_DARK_STEEL,
+                            PROP_ROOT + "/PackingTable/packing_table.usd", room_fit=0.36),
             _dressing_floor("traffic_cone", (7.0, 0.0, -1.95), (0.3357, 0.4628, 0.3339),
                             DRESSING_CLAY, BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/"
                             "Environments/Simple_Warehouse/Props/S_TrafficCone.usd"),
@@ -1129,6 +1141,13 @@ def _install_dressing() -> None:
 
     # The supermarket: shelving either side, a checkout and produce behind the agent.
     SCENES["stage1.5"]["dressing"] = (
+        # These two stay box primitives, and `RackSmall_A7` -- the obvious candidate, vendored and a
+        # real shelving rack -- was measured and REJECTED for this position: its own size is
+        # (1.08, 3.01, 2.00) m, so fitting it to a wall item's 0.20 m protrusion cap needs room_fit
+        # 0.10, which leaves a 0.11 x 0.30 m rack.  Declaring it bigger fails the audit's own
+        # "box cannot hold the prop" rule outright (0.68 m of depth against a 0.18 m box).  A wall
+        # shelf 2 m deep is not a shelf, so the boxes stay until a rack with a shallow profile is
+        # found -- and the report keeps saying they are boxes.
         _dressing_wall("shelf_left", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.05, 1.60),
                        (0.18, 1.9, 1.4), DRESSING_STEEL),
         _dressing_wall("shelf_right", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.05, -1.60),
