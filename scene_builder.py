@@ -1015,8 +1015,18 @@ def apply_scene(stage: Any, scene: str, slot: int,
     report: Dict[str, Any] = {"scene": scene, "slot": slot, "label": spec["label"],
                               "materials": {}, "marker": None, "dressing": []}
 
-    fallbacks = {"floor": (0.55, 0.55, 0.55), "side_wall": (0.72, 0.73, 0.75),
-                 "ceiling": (0.92, 0.93, 0.95), "far_wall": (0.13, 0.42, 0.20)}
+    # THE SCENE'S OWN FLAT-PAINT PALETTE, not one global fallback.  It used to be a single dict
+    # here for all five scenes, so every preview had the same grey floor, the same blue-grey
+    # corridor and the same dark green end wall no matter what the scene's catalogue said, and the
+    # five scenes were indistinguishable.  The colours now live in `scenes.SURFACE_COLOURS`, per
+    # scene, because they are scene DESIGN and this module is the thing that applies them; the
+    # arithmetic that keeps them distinct from each other and from each scene's markers is written
+    # next to the table.  A scene with no entry keeps the old neutral, so a sixth scene cannot
+    # silently paint itself the wrong colour.
+    neutral = {"floor": (0.55, 0.55, 0.55), "side_wall": (0.72, 0.73, 0.75),
+               "ceiling": (0.92, 0.93, 0.95), "far_wall": (0.13, 0.42, 0.20)}
+    fallbacks = dict(neutral)
+    fallbacks.update(getattr(sc, "SURFACE_COLOURS", {}).get(scene, {}))
     for surface, url in spec["materials"].items():
         if "materials" not in parts:
             report["materials"][surface] = {"url": url, "how": "skipped"}

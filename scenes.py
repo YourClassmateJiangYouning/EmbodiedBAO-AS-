@@ -182,6 +182,53 @@ COLOURS: Dict[str, Tuple[float, float, float]] = {
 BASELINE_FAR_WALL_COLOUR = (0.13, 0.42, 0.20)
 
 # ---------------------------------------------------------------------------
+# Each scene's four surfaces, flat-painted.
+# ---------------------------------------------------------------------------
+# `materials` names the MDL each surface would use, but the previews run with use_mdl=False on
+# purpose (this machine's material library cache is not writable, so MDL prims are created without
+# their shaders and every surface renders as noise).  The colour a viewer actually sees therefore
+# comes from here, and until now it did not: scene_builder held ONE fallback palette for all five
+# scenes -- floor (0.55, 0.55, 0.55), side_wall (0.72, 0.73, 0.75), ceiling (0.92, 0.93, 0.95),
+# far_wall (0.13, 0.42, 0.20) -- so every scene had a grey floor, a blue-grey corridor and the
+# same dark green wall at the far end, and the scenes were indistinguishable from each other
+# however different their catalogues were.
+#
+# The colours are chosen per scene and checked two ways, both by arithmetic:
+#
+#   * the five FLOORS are pairwise distinct.  The smallest distance between any two of them is
+#     0.182 (warehouse vs park), so no two scenes share a floor.
+#   * every surface stays clear of that scene's own five MARKER colours, which are the one thing
+#     this experiment varies and must never be confusable with the room.  The closest any surface
+#     comes to a marker of its own scene is 0.380 (the library's wood floor against its red
+#     marker), and the closest a FAR wall comes is 0.457.  The test
+#     `test_no_dressing_uses_a_marker_colour` polices the same invariant for dressing.
+#
+# stage1.1 is the baseline and its far wall keeps BASELINE_FAR_WALL_COLOUR exactly: it is the
+# scene the earlier runs were collected on, and the green wall is part of what they measured.
+#
+# The far walls deliberately stay in the middle of the brightness range (0.20-0.80 on their
+# strongest channel).  A very dark or very bright far wall would change how easily the 0.90 m
+# marker on it can be seen, and the marker's visibility is the independent variable of the whole
+# study.
+SURFACE_COLOURS: Dict[str, Dict[str, Tuple[float, float, float]]] = {
+    # bare, tools, no skin at all
+    "stage1.1": {"floor": (0.55, 0.55, 0.55), "side_wall": (0.72, 0.73, 0.75),
+                 "ceiling": (0.92, 0.93, 0.95), "far_wall": BASELINE_FAR_WALL_COLOUR},
+    # loading bay: grey power-float concrete, steel-grey racking and a beige partition
+    "stage1.2": {"floor": (0.42, 0.41, 0.39), "side_wall": (0.72, 0.71, 0.66),
+                 "ceiling": (0.90, 0.90, 0.91), "far_wall": (0.62, 0.58, 0.50)},
+    # reading room: dark oak boards, warm plaster and a deep red-brown end wall
+    "stage1.3": {"floor": (0.55, 0.36, 0.22), "side_wall": (0.80, 0.73, 0.60),
+                 "ceiling": (0.94, 0.93, 0.90), "far_wall": (0.45, 0.30, 0.33)},
+    # park: grass, weathered concrete and clipped hedge at the far end
+    "stage1.4": {"floor": (0.33, 0.46, 0.24), "side_wall": (0.60, 0.63, 0.56),
+                 "ceiling": (0.88, 0.90, 0.94), "far_wall": (0.20, 0.44, 0.24)},
+    # supermarket: pale terrazzo, white walls and an orange promotional end wall
+    "stage1.5": {"floor": (0.78, 0.77, 0.74), "side_wall": (0.90, 0.89, 0.87),
+                 "ceiling": (0.95, 0.95, 0.96), "far_wall": (0.80, 0.45, 0.18)},
+}
+
+# ---------------------------------------------------------------------------
 # The 25 markers.  Slot order is the order the five repeats run in.
 # Within a scene the five colours differ; across the set no (shape, colour) repeats.
 # ---------------------------------------------------------------------------
@@ -349,6 +396,29 @@ DRESSING_LIGHT = (0.78, 0.78, 0.80)
 DRESSING_BLUE = (0.20, 0.35, 0.65)
 DRESSING_YELLOW = (0.85, 0.78, 0.30)
 DRESSING_CLAY = (0.62, 0.45, 0.30)
+
+# A DEEPER PALETTE, because seven colours for 52 items left each scene dominated by one or two of
+# them: 1.2 used five distinct colours across eleven items and six of those were the same grey, and
+# the supermarket used four across twelve, so the dressing read as a single material rather than as
+# a warehouse or a shop.  Each one below is checked against EVERY scene's five marker colours, which
+# is the constraint that matters -- a dressing prop the colour of a marker would make the task
+# ambiguous -- and the closest any of them comes to any marker is 0.373 (GRASS_PALE against the
+# warehouse's green).  Two candidates were rejected by that check and are recorded so they are not
+# proposed again: a brick red (0.55, 0.16, 0.16) sits 0.142 from the park's wine marker, and the
+# safety yellow (0.82, 0.72, 0.18) 0.245 from the baseline's lime square.
+DRESSING_STEEL = (0.52, 0.55, 0.58)          # bare galvanised racking
+DRESSING_DARK_STEEL = (0.30, 0.32, 0.35)     # painted machinery, trolleys
+DRESSING_CONCRETE = (0.62, 0.62, 0.60)       # kerbs, bollards, blockwork
+DRESSING_CARD = (0.62, 0.46, 0.30)           # shipping cartons
+DRESSING_CARD_PALE = (0.72, 0.58, 0.42)      # paler cartons, packaging
+DRESSING_WOOD_PALE = (0.58, 0.44, 0.28)      # light timber: tables, shelves, seating
+DRESSING_PLASTIC_BLUE = (0.18, 0.34, 0.58)   # stackable crates and bins
+DRESSING_HEDGE = (0.22, 0.42, 0.20)          # clipped hedge
+DRESSING_GRASS = (0.42, 0.55, 0.28)          # planting and grass
+DRESSING_PAPER = (0.86, 0.84, 0.78)          # posters, notice boards, price cards
+DRESSING_PLASTER = (0.80, 0.76, 0.70)        # painted plaster fittings
+DRESSING_TEAL = (0.15, 0.40, 0.40)           # upholstery
+DRESSING_OLIVE = (0.38, 0.40, 0.22)          # outdoor fabric, foliage in shade
 
 
 # ---------------------------------------------------------------------------
@@ -539,7 +609,7 @@ SCENES: Dict[str, Dict[str, Any]] = {
             _dressing_floor("rack", (7.0, 0.00, -1.85), (0.716165, 1.995631, 1.324738), DRESSING_METAL,
                             BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
                             "RackSmallEmpty_A1.usd", room_fit=0.663),
-            _dressing_floor("rack_tall", (7.0, 0.00, 2.35), (0.716165, 1.995631, 1.324738), DRESSING_METAL,
+            _dressing_floor("rack_tall", (7.0, 0.00, 2.35), (0.716165, 1.995631, 1.324738), DRESSING_STEEL,
                             BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
                             "RackSmallEmpty_A1.usd", room_fit=0.663),
             _dressing_wall("bay_sign", "far_wall", (FAR_WALL_FACE_X, 2.15, 1.60),
@@ -578,10 +648,10 @@ SCENES: Dict[str, Dict[str, Any]] = {
             # measured props; the crate and the box are centimetre assets, hence CM_TO_M.
             _dressing_floor("pallet_stack", (12.0, 0.0, 2.10), (1.2132, 0.1425, 0.8023),
                             asset=PROP_ROOT + "/Pallet/pallet.usd"),
-            _dressing_floor("crate", (10.2, 0.0, 2.05), (0.6015, 0.1700, 0.4018), DRESSING_YELLOW,
+            _dressing_floor("crate", (10.2, 0.0, 2.05), (0.6015, 0.1700, 0.4018), DRESSING_WOOD_PALE,
                             PROP_ROOT + "/PackingTable/props/SM_Crate_A07_Yellow_01/"
                             "SM_Crate_A07_Yellow_01.usd"),
-            _dressing_floor("carton", (13.4, 0.0, -2.10), (0.2990, 0.3019, 0.6216), DRESSING_WOOD,
+            _dressing_floor("carton", (13.4, 0.0, -2.10), (0.2990, 0.3019, 0.6216), DRESSING_CARD,
                             PROP_ROOT + "/PackingTable/props/sm_whitecorrugatedbox_b/"
                             "sm_whitecorrugatedbox_b20_brown_01.usd"),
         ),
@@ -613,6 +683,15 @@ SCENES: Dict[str, Dict[str, Any]] = {
     "stage1.4": {
         "label": "park / outdoor",
         "materials": {
+            # The park had NO floor entry, so /World/Ground was never painted and kept whatever
+            # material it was born with -- which is why stage1.1 (also unpainted) and stage1.4
+            # showed the SAME floor while their catalogues were completely different, and why the
+            # park's grass colour in SURFACE_COLOURS had nothing to land on.  "The default ground is
+            # the park's outdoor cue" was the old note; a park with a grey tiled floor is not an
+            # outdoor cue, it is a missing material.  M_Wood_Floor is the wrong subject for it, so
+            # the park keeps a floor ENTRY naming the ground material and paints
+            # SURFACE_COLOURS["stage1.4"]["floor"] on /World/Ground.
+            "floor": ASSET_ROOT + "/Environments/Hospital/Materials/M_Wood_Floor.mdl",
             "side_wall": ASSET_ROOT + "/Environments/Hospital/Materials/M_Wall_Plaster.mdl",
             "ceiling": WAREHOUSE_MATERIALS + "/MI_CeilingA_06b.mdl",
             "far_wall": ASSET_ROOT + "/Environments/Office/Materials/MI_WallOffice_01.mdl",
@@ -623,7 +702,7 @@ SCENES: Dict[str, Dict[str, Any]] = {
         # Set by `_install_dressing` below, as for 1.3.  See the note above SCENES.
         "dressing": (),
         "forbidden_colours": (),
-        "notes": "The Props library has no vegetation; trees are cylinder + sphere.",
+        "notes": "The Props library has no vegetation in 1.3; 1.4 uses the bucket vegetation. Its floor names a material now -- without one the ground was never painted and matched stage1.1's.",
     },
     "stage1.5": {
         "label": "supermarket",
@@ -881,18 +960,16 @@ def _install_dressing() -> None:
         # would leave it 0.43 m deep, and a shelf that shallow is not a shelf.  Free-standing
         # racking at |z| >= 1.8 keeps the walking band clear and touches no wall, which is what
         # racking does.  room_fit 0.663 brings the 3.01 m height under the ceiling.
-        _dressing_floor("bookshelf_left", (6.4, 0.00, 2.05), (0.716165, 1.995631, 1.324738),
-                        DRESSING_WOOD, BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
+        _dressing_floor("bookshelf_left", (6.4, 0.00, 2.05), (0.716165, 1.995631, 1.324738), DRESSING_WOOD_PALE, BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
                         "RackSmallEmpty_A1.usd", room_fit=0.663),
-        _dressing_floor("bookshelf_right", (6.4, 0.00, -2.05), (0.716165, 1.995631, 1.324738),
-                        DRESSING_WOOD, BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
+        _dressing_floor("bookshelf_right", (6.4, 0.00, -2.05), (0.716165, 1.995631, 1.324738), DRESSING_WOOD_PALE, BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
                         "RackSmallEmpty_A1.usd", room_fit=0.663),
         # A real clock face, at its measured size: 0.045 m thick, 0.15 m tall, 0.45 m across the
         # wall.  Wall-mounted because a clock is thin: the 0.20 m protrusion cap exists because the
         # warehouse's duct once hung a black slab across the agent's view, and a 45 mm clock is not
         # that.
         _dressing_wall("clock", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.45, -1.70),
-                       (0.045, 0.15, 0.45), DRESSING_LIGHT,
+                       (0.045, 0.15, 0.45), DRESSING_DARK_STEEL,
                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Office/Props/"
                        "SM_Clock_04.usd"),
         # The framed poster measures 1.092 (its width) x 0.7426 (height) x 0.0524 (thickness).
@@ -901,34 +978,34 @@ def _install_dressing() -> None:
         # and hung half a metre of poster into the corridor.  The measurement order here is
         # (thick, tall, across) = (0.0524, 0.7426, 1.092), so the arguments are its reverse.
         _dressing_wall("reading_poster", "far_wall", (FAR_WALL_FACE_X, 2.05, 1.55),
-                       (0.0524, 0.7426, 1.092), DRESSING_LIGHT,
+                       (0.0524, 0.7426, 1.092), DRESSING_PAPER,
                        BUCKET_ASSETS + "/Assets/ArchVis/Residential/Decor/Pictures/"
                        "FramedPoster.usd"),
-        _dressing_floor("study_table", (3.0, 0.00, 1.60), (2.4736, 0.9941, 0.7620), DRESSING_WOOD,
+        _dressing_floor("study_table", (3.0, 0.00, 1.60), (2.4736, 0.9941, 0.7620), DRESSING_WOOD_PALE,
                         PROP_ROOT + "/PackingTable/props/SM_HeavyDutyPackingTable_C02_01/"
                         "SM_HeavyDutyPackingTable_C02_01.usd"),
-        _dressing_floor("chair_row", (5.0, 0.00, -2.05), (0.6001, 0.8772, 0.5993), DRESSING_GREY,
+        _dressing_floor("chair_row", (5.0, 0.00, -2.05), (0.6001, 0.8772, 0.5993), DRESSING_WOOD_PALE,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Office/Props/"
                         "SM_Chair.usd"),
-        _dressing_floor("armchair", (5.9, 0.00, -1.95), (0.82, 0.79, 1.04), DRESSING_GREY,
+        _dressing_floor("armchair", (5.9, 0.00, -1.95), (0.82, 0.79, 1.04), DRESSING_TEAL,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Office/Props/"
                         "SM_Armchair.usd"),
-        _dressing_floor("book_cart", (6.6, 0.00, 1.60), (0.8504, 0.4407, 1.2594), DRESSING_METAL,
+        _dressing_floor("book_cart", (6.6, 0.00, 1.60), (0.8504, 0.4407, 1.2594), DRESSING_DARK_STEEL,
                         PROP_ROOT + "/Dolly/dolly.usd"),
         # Two books on the reading table, at their measured size.  A book is 0.02 x 0.205 x 0.145 m,
         # so on a 1.7 m bookcase it would be sub-pixel -- and 0.205 m is taller than the bookcase's
         # own shelf depth, so scaling one to fit a shelf would make a cushion rather than a book.
         # On the table they are the size a book is and they read as books.
-        _dressing_floor("book_a", (2.6, 0.9941, 1.85), (0.02, 0.205, 0.145), DRESSING_CLAY,
+        _dressing_floor("book_a", (2.6, 0.9941, 1.85), (0.02, 0.205, 0.145), DRESSING_PAPER,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Office/Props/"
                         "SM_Book_01.usd"),
-        _dressing_floor("book_b", (3.2, 0.9941, 1.95), (0.02, 0.205, 0.145), DRESSING_GREEN,
+        _dressing_floor("book_b", (3.2, 0.9941, 1.95), (0.02, 0.205, 0.145), DRESSING_PAPER,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Office/Props/"
                         "SM_Book_01.usd"),
-        _dressing_floor("reading_lamp", (1.8, 0.00, -2.10), (0.3, 0.95, 0.3), DRESSING_METAL),
+        _dressing_floor("reading_lamp", (1.8, 0.00, -2.10), (0.3, 0.95, 0.3), DRESSING_DARK_STEEL),
         # A carton of stock waiting to be shelved, which is what a library cart holds.  Its scale
         # comes from ASSET_SCALE.
-        _dressing_floor("stock_carton", (1.8, 0.00, 2.10), (0.2990, 0.3019, 0.6216), DRESSING_WOOD,
+        _dressing_floor("stock_carton", (1.8, 0.00, 2.10), (0.2990, 0.3019, 0.6216), DRESSING_CARD,
                         PROP_ROOT + "/PackingTable/props/sm_whitecorrugatedbox_b/"
                         "sm_whitecorrugatedbox_b20_brown_01.usd"),
         # The cabinet is FLOOR furniture, not a wall item, and that is a decision rather than a
@@ -941,8 +1018,7 @@ def _install_dressing() -> None:
         # |z| is 2.05, not 1.5: the rule is that a floor item whose BASE is above 0.6 m needs
         # |z| >= 1.8, and this is 0.7861 m tall with base 0.  Its lateral half-extent 0.3819
         # then leaves the inner edge at 1.67 m, clear of the 1.14 m opening's half width.
-        _dressing_floor("cabinet", (7.0, 0.00, 2.05), (0.6678, 0.7861, 0.7638),
-                        DRESSING_WOOD,
+        _dressing_floor("cabinet", (7.0, 0.00, 2.05), (0.6678, 0.7861, 0.7638), DRESSING_WOOD_PALE,
                         asset=PROP_ROOT + "/Sektion_Cabinet/sektion_cabinet_instanceable.usd"),
     )
 
@@ -971,23 +1047,23 @@ def _install_dressing() -> None:
         # fraction in (0, 1], which the declared-size check enforces.  Enlarging is the opposite of
         # what this field is for, so a 1.20 m shrub serves both sides rather than stretching a
         # 20 cm plant into one.
-        _dressing_floor("shrub_left", (7.0, 0.00, 1.85), (0.7572, 0.9000, 0.7499), DRESSING_GREEN,
+        _dressing_floor("shrub_left", (7.0, 0.00, 1.85), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
                         BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
-        _dressing_floor("shrub_right", (7.0, 0.00, -1.85), (0.7572, 0.9000, 0.7499), DRESSING_GREEN,
+        _dressing_floor("shrub_right", (7.0, 0.00, -1.85), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
                         BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
         _dressing_wall("park_sign", "far_wall", (FAR_WALL_FACE_X, 2.00, -1.60), (0.03, 0.4, 0.6),
                        DRESSING_CLAY),
         # The park's remaining furniture, all at measured sizes.  Every placement below was computed
         # against the two rules rather than chosen: a floor item needs |z| >= 1.5 and its lateral
         # half-extent must not cross into the walking band, inside a room whose z is +/-2.5.
-        _dressing_floor("picnic_table", (5.5, 0.00, 1.95), (0.8109, 0.6403, 0.8109), DRESSING_WOOD,
+        _dressing_floor("picnic_table", (5.5, 0.00, 1.95), (0.8109, 0.6403, 0.8109), DRESSING_WOOD_PALE,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
                         "dsready_content/nv_content/common_assets/props_general/table01/table01.usd"),
-        _dressing_floor("bench_iron", (9.5, 0.00, -2.05), (1.2955, 0.9895, 0.8583), DRESSING_METAL,
+        _dressing_floor("bench_iron", (9.5, 0.00, -2.05), (1.2955, 0.9895, 0.8583), DRESSING_WOOD_PALE,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
                         "dsready_content/nv_content/common_assets/props_general/"
                         "bench_wrought_iron_02/bench_wrought_iron_02.usd"),
-        _dressing_floor("bin_square", (13.0, 0.00, 1.95), (0.5855, 1.0112, 0.7957), DRESSING_GREEN,
+        _dressing_floor("bin_square", (13.0, 0.00, 1.95), (0.5855, 1.0112, 0.7957), DRESSING_HEDGE,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
                         "dsready_content/nv_content/common_assets/props_general/"
                         "trashcan_square_01/trashcan_square_01.usd"),
@@ -1006,15 +1082,15 @@ def _install_dressing() -> None:
         # across; a park bench that size is a bandstand seat, so it is declared at a bench's
         # proportions and place_dressing fits the prop to that box.  The bin and the planters are
         # declared at their measured sizes because those are already right.
-        _dressing_floor("bench_left", (2.4, 0.00, 2.05), (1.7181, 0.1855, 0.9113), DRESSING_WOOD,
+        _dressing_floor("bench_left", (2.4, 0.00, 2.05), (1.7181, 0.1855, 0.9113), DRESSING_WOOD_PALE,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
                         "dsready_content/nv_content/common_assets/props_general/"
                         "bench_curved_01/bench_curved_01.usd", room_fit=0.42),
-        _dressing_floor("bench_right", (4.8, 0.00, -2.05), (1.7181, 0.1855, 0.9113), DRESSING_WOOD,
+        _dressing_floor("bench_right", (4.8, 0.00, -2.05), (1.7181, 0.1855, 0.9113), DRESSING_WOOD_PALE,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
                         "dsready_content/nv_content/common_assets/props_general/"
                         "bench_curved_01/bench_curved_01.usd", room_fit=0.42),
-        _dressing_floor("litter_bin", (6.4, 0.00, 2.10), (0.722, 1.0411, 0.722), DRESSING_GREEN,
+        _dressing_floor("litter_bin", (6.4, 0.00, 2.10), (0.722, 1.0411, 0.722), DRESSING_CONCRETE,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
                         "dsready_content/nv_content/common_assets/props_general/"
                         "trashcan_cylinder_01/trashcan_cylinder_01.usd"),
@@ -1040,13 +1116,13 @@ def _install_dressing() -> None:
         # fir 6.03 m; declared here at 1.6 m and 1.55 m because the ceiling is 3 m and the first
         # attempt put a 2.91 m sapling in a 16 m corridor, which read as a tree growing through the
         # roof rather than as planting.  room_fit keeps each one's own proportions.
-        _dressing_floor("tree_conifer", (12.4, 0.00, 2.05), (1.0164, 2.4000, 1.0001), DRESSING_GREEN,
+        _dressing_floor("tree_conifer", (12.4, 0.00, 2.05), (1.0164, 2.4000, 1.0001), DRESSING_HEDGE,
                         BUCKET_ASSETS + "/Assets/Vegetation/Trees/Chinese_Juniper.usd",
                         room_fit=0.943315),
-        _dressing_floor("tree_fir", (14.6, 0.00, -2.05), (1.1537, 2.3000, 1.0574), DRESSING_GREEN,
+        _dressing_floor("tree_fir", (14.6, 0.00, -2.05), (1.1537, 2.3000, 1.0574), DRESSING_GRASS,
                         BUCKET_ASSETS + "/Assets/Vegetation/Trees/Douglas_Fir.usd",
                         room_fit=0.381663),
-        _dressing_floor("tree_sapling", (10.8, 0.00, -2.20), (1.2415, 2.2000, 1.2472), DRESSING_WOOD,
+        _dressing_floor("tree_sapling", (10.8, 0.00, -2.20), (1.2415, 2.2000, 1.2472), DRESSING_GRASS,
                         BUCKET_ASSETS + "/Assets/Vegetation/Trees/Elm_Sapling.usd",
                         room_fit=0.712641),
     )
@@ -1054,23 +1130,23 @@ def _install_dressing() -> None:
     # The supermarket: shelving either side, a checkout and produce behind the agent.
     SCENES["stage1.5"]["dressing"] = (
         _dressing_wall("shelf_left", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.05, 1.60),
-                       (0.18, 1.9, 1.4), DRESSING_METAL),
+                       (0.18, 1.9, 1.4), DRESSING_STEEL),
         _dressing_wall("shelf_right", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.05, -1.60),
-                       (0.18, 1.9, 1.4), DRESSING_METAL),
+                       (0.18, 1.9, 1.4), DRESSING_STEEL),
         _dressing_wall("price_strip", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.00, 1.60),
-                       (0.03, 0.15, 1.3), DRESSING_YELLOW),
+                       (0.03, 0.15, 1.3), DRESSING_PAPER),
         _dressing_wall("promo_banner", "far_wall", (FAR_WALL_FACE_X, 2.10, 1.55),
-                       (0.03, 0.5, 0.9), DRESSING_YELLOW),
-        _dressing_floor("trolley", (2.8, 0.00, 1.60), (0.8504, 0.4407, 1.2594), DRESSING_METAL,
+                       (0.03, 0.5, 0.9), DRESSING_PAPER),
+        _dressing_floor("trolley", (2.8, 0.00, 1.60), (0.8504, 0.4407, 1.2594), DRESSING_DARK_STEEL,
                         PROP_ROOT + "/Dolly/dolly.usd"),
         # A plastic crate used as the produce bin, and a corrugated box for the stack.  Both are
         # centimetre assets, so ASSET_SCALE scales them; without that the crate draws 60 m long.
-        _dressing_floor("produce_bins", (4.6, 0.00, -2.05), (0.6051, 0.1703, 0.4051), DRESSING_YELLOW,
+        _dressing_floor("produce_bins", (4.6, 0.00, -2.05), (0.6051, 0.1703, 0.4051), DRESSING_PLASTIC_BLUE,
                         PROP_ROOT + "/PackingTable/props/SM_Crate_A08_Blue_01/SM_Crate_A08_Blue_01.usd"),
-        _dressing_floor("checkout", (6.4, 0.00, 1.90), (2.4736, 0.9941, 0.7620), DRESSING_GREY,
+        _dressing_floor("checkout", (6.4, 0.00, 1.90), (2.4736, 0.9941, 0.7620), DRESSING_STEEL,
                         PROP_ROOT + "/PackingTable/props/SM_HeavyDutyPackingTable_C02_01/"
                         "SM_HeavyDutyPackingTable_C02_01.usd"),
-        _dressing_floor("stacked_boxes", (7.4, 0.00, -2.00), (0.5119, 0.5172, 0.5214), DRESSING_BLUE,
+        _dressing_floor("stacked_boxes", (7.4, 0.00, -2.00), (0.5119, 0.5172, 0.5214), DRESSING_CARD_PALE,
                         PROP_ROOT + "/PackingTable/props/sm_whitecorrugatedbox_b/"
                         "sm_whitecorrugatedbox_b12_brown_01.usd"),
         # Real goods standing on the shelving, which is what furnishes a supermarket rather than
