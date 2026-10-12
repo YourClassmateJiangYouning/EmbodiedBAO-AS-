@@ -651,6 +651,15 @@ def bind_texture_material(stage: Any, prim_path: str, name: str,
         shader.CreateInput("metallic", Sdf.ValueTypeNames.Float).Set(0.0)
         reader = UsdShade.Shader.Define(stage, f"/World/Looks/tex_{stem}/Reader")
         reader.CreateIdAttr("UsdUVTexture")
+        # WRAP MODE, and this is what a wall needs: the default for UsdUVTexture is "useMetadata",
+        # which for these PNGs means CLAMP.  A clamped texture on a surface whose UVs run 0..1 maps
+        # the image once and then smears the edge texel, which reads as a flat colour with a gradient
+        # -- measured, the wall band's pixel-to-pixel grain was 1.68-2.48, i.e. no texture at all,
+        # while the standard deviation I had been quoting (12-22) was only the LIGHTING gradient
+        # across the band.  That is how three rounds of "the walls are textured" were reported on a
+        # measurement that did not measure texture.
+        for wrap in ("wrapS", "wrapT"):
+            reader.CreateInput(wrap, Sdf.ValueTypeNames.Token).Set("repeat")
         reader.CreateInput("file", Sdf.ValueTypeNames.Asset).Set(texture_path)
         reader.CreateInput("sourceColorSpace", Sdf.ValueTypeNames.Token).Set("sRGB")
         # The texture is brightened, because a texture carries its OWN albedo and the corridor read
