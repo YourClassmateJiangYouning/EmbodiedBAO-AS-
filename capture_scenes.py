@@ -163,11 +163,52 @@ def parse_args() -> argparse.Namespace:
         help="Radius for the same eight SphereLights.  Unset leaves environment.py's default (1.0).",
     )
     parser.add_argument(
+        "--frames", type=int, default=32,
+        help="Render this many frames of each pose and average them.  RaytracedLighting does not "
+             "converge for a static scene, so one frame carries 14+ grey levels of per-pixel noise "
+             "even on a flat-painted wall; the noise is zero-mean, so averaging n frames reduces it "
+             "as 1/sqrt(n) (measured on this machine: block std 14.29 at 1 frame, 5.30 at 16, 4.10 "
+             "at 32, 3.19 at 64).  Default 32, about 1.5 s per camera.  --frames 1 reproduces the "
+             "old single-frame preview.",
+    )
+    parser.add_argument(
+        "--raytracing", action="store_true",
+        help="Name Isaac's default RaytracedLighting explicitly.  It IS the default and the mode "
+             "this preview renders in; PathTracing was measured to be cleaner (successive-frame "
+             "jitter 0.22-0.26 against 14.3-15.9) but cannot be selected safely from here, because "
+             "environment.setup_scene() resets /rtx/rendermode and re-applying it after the scene "
+             "exists segfaults the renderer.  The averaging that --frames controls is what makes a "
+             "RaytracedLighting frame legible instead.",
+    )
+    parser.add_argument(
         "--dome_intensity", type=float, default=None,
         help="Intensity for /World/DomeLight (the ambient fill).  Unset leaves environment.py's "
              "default (300).",
     )
     return parser.parse_args()
+
+
+def average_frames(env: Any, camera: Any, frames: int) -> np.ndarray:
+    """The mean of `frames` renders of the CURRENT pose, one frame at a time.
+
+    RaytracedLighting does not converge for a static scene, so a single frame carries per-pixel noise
+    of 14+ grey levels even on a flat-painted wall.  The noise is zero-mean, so averaging n frames
+    reduces it as 1/sqrt(n): measured on this machine, the median 16x16 block standard deviation of a
+    stage1.4 eye frame falls 14.29 (1 frame) -> 8.57 (4) -> 5.30 (16) -> 4.10 (32) -> 3.19 (64).
+    Thirty-two frames is the preview's default, about 1.5 s per camera at 1024x1024.
+
+    A frame is read from `camera` when it is not None (the external camera) and from `env` otherwise
+    (the robot eye camera, which the environment reads through its own annotator).
+    """
+    total = None
+    for _ in range(max(1, int(frames))):
+        env.world.step(render=True)
+        if camera is None:
+            image = np.asarray(env.get_camera_image())[:, :, :3].astype(np.float64)
+        else:
+            image = np.asarray(camera.get_rgb())[:, :, :3].astype(np.float64)
+        total = image if total is None else total + image
+    return total / max(1, int(frames))
 
 
 def write_png(path: str, rgb: np.ndarray) -> None:
@@ -300,6 +341,37 @@ def main() -> int:
     # by the environment, which is why the runner never needed to pass anything.
     app = SimulationApp({"headless": True})
     try:
+        import carb
+
+        # RENDER MODE AND FRAME AVERAGING.
+        #
+        # RaytracedLighting, the default, does not converge for a STATIC scene.  Measured on all
+        # five scenes, two renders of the same pose differ by 14.3-15.9 grey levels on average with
+        # pixels changing by up to 224 (diag_logs/pt_stage1.*), and in a flat-painted wall -- which
+        # is one displayColor and cannot carry a pattern -- every 16x16 block has a standard
+        # deviation of 8-20 levels.  That is what the "high-frequency pattern" was.
+        #
+        # PathTracing removes it (0.22-0.26 for the same measurement) but cannot be switched on
+        # safely from here: environment.setup_scene() resets /rtx/rendermode, and re-applying it
+        # after the scene exists segfaults the renderer (diag_logs/verify_mode.log).  Setting it
+        # before the scene is built is silently discarded (diag_logs/capture_repeat.log).
+        #
+        # So the preview AVERAGES FRAMES instead, which needs no renderer change and works in the
+        # default mode.  The noise is zero-mean, so the mean converges as 1/sqrt(n) and that was
+        # measured rather than assumed (diag_logs/avg_n.log, 16x16 block standard deviation):
+        #
+        #     1 frame 14.29   2 frames 10.81   4 frames 8.57   8 frames 6.67
+        #    16 frames  5.30  32 frames 4.10  64 frames 3.19
+        #
+        # 32 frames is the default: 4.10 against 14.29 for one frame, at about 1.5 s per camera.
+        # --frames 1 reproduces the old single-frame preview.
+        def apply_render_mode() -> None:
+            # Kept for --raytracing: it is the default already, so this only ever NAMES the mode.
+            if args.raytracing:
+                carb.settings.get_settings().set("/rtx/rendermode", "RaytracedLighting")
+
+        apply_render_mode()
+
         import environment
         import scenes
 
@@ -432,7 +504,12 @@ def main() -> int:
             # Reset first, then set the slot explicitly, then read.
             env.reset()
             env.set_marker_slot(slot)
-            eye = np.asarray(env.get_camera_image())[:, :, :3]
+            # Let the renderer draw this pose before reading it, then average: the eye frame used to
+            # be read with NO step at all, and one frame of a non-converging renderer is the noisiest
+            # thing this file can capture.
+            for _ in range(3):
+                env.world.step(render=True)
+            eye = average_frames(env, None, args.frames).astype(np.uint8)
             eye_images.append(eye)
             write_png(os.path.join(args.outdir, f"{args.scene}_slot{slot}_eye.png"), eye)
             iso_camera = getattr(env, "camera", None)
@@ -445,9 +522,7 @@ def main() -> int:
                 # is what the old placement was not.
                 look_from(iso_camera, target=tuple(args.iso_target),
                           position=(args.iso_x, args.iso_height, args.iso_z))
-                for _ in range(3):
-                    env.world.step(render=True)
-                iso = np.asarray(iso_camera.get_rgb())[:, :, :3]
+                iso = average_frames(env, iso_camera, args.frames).astype(np.uint8)
                 iso_images.append(iso)
                 write_png(os.path.join(args.outdir, f"{args.scene}_slot{slot}_iso.png"), iso)
 

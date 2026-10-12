@@ -590,3 +590,85 @@ mounts, which is what `tools/audit_dressing.py` rule 1 asserts and what
 which that helper swapped the outer two components on the way in; it no longer does, so the comment
 now describes the single conversion that exists.  No behaviour changed: the working tree differs from
 the verified commit only in comments, docstrings and one audit message.
+
+---
+
+# STEP 4 closed, and the five previews
+
+## The mechanism, with the number that identifies it
+
+RaytracedLighting -- the mode every previous preview ran in -- does not converge for a STATIC scene.
+Two renders of the same pose differ by 14.3-15.9 grey levels on average, with individual pixels
+changing by up to 224, and in a flat-painted wall (one `displayColor`, which cannot carry a pattern)
+every 16x16 block has a standard deviation of 8-20 levels, so no part of a wall is ever a flat
+colour.  Measured per scene (`diag_logs/pt_stage1.*`):
+
+| scene | RaytracedLighting | PathTracing 1 spp |
+| :--- | ---: | ---: |
+| `stage1.1` | 14.253 | 0.217 |
+| `stage1.2` | 14.365 | 0.232 |
+| `stage1.3` | 15.523 | 0.258 |
+| `stage1.4` | 14.611 | 0.235 |
+| `stage1.5` | 15.884 | 0.242 |
+
+(numbers are the mean absolute difference between successive renders of one pose)
+
+## Why the preview does not simply switch to PathTracing
+
+It was tried, and it cannot be done safely from this file:
+
+  * `environment.setup_scene()` RESETS `/rtx/rendermode`.  Setting the mode, then building the scene,
+    reads back `RaytracedLighting` -- so a setting applied before the scene exists is silently
+    discarded, the preview comes back noisy, and the script still believes it chose a clean mode
+    (`diag_logs/capture_repeat.log`).
+  * Re-applying it AFTER the scene exists segfaults the renderer (`diag_logs/verify_mode.log`:
+    `Fatal Python error: Segmentation fault` in `world.step`).
+
+So the preview AVERAGES FRAMES instead, which needs no renderer change.  The noise is zero-mean, so
+the mean converges as 1/sqrt(n), and that was measured rather than assumed -- median 16x16 block
+standard deviation of a `stage1.4` eye frame (`diag_logs/avg_n.log`):
+
+```
+ 1 frame 14.29   2 frames 10.81   4 frames 8.57   8 frames 6.67
+16 frames 5.30  32 frames 4.10  64 frames 3.19
+```
+
+`--frames` defaults to 32 (about 1.5 s per camera at 1024x1024); `--frames 1` reproduces the old
+single-frame preview.  The eye frame also used to be read with NO render step at all, which is the
+noisiest possible read; it now settles and averages.
+
+## The previews, and what changed in them
+
+Five scenes rendered at `--level 0 --slots 1` into `scene_preview/`, code stamp `git 55adda2`.  The
+same measurement on the delivered images:
+
+| image | 16x16 block std (median) | before |
+| :--- | ---: | ---: |
+| `stage1.4_slot1_eye.png` | **4.11** | 13.86 |
+| `stage1.2_slot1_eye.png` | **4.03** | -- |
+| `stage1.5_slot1_eye.png` | **4.18** | -- |
+
+and the flat-block floor (the 1st percentile) went from 9.76 to 2.32, so the walls are now close to
+uniform.
+
+**One new thing the legible images show, recorded and NOT explained.**  The park's dressing renders
+RED in `stage1.4_slot1_eye.png` (the railing, the litter bin, the curved benches), while `scenes.py`
+declares DRESSING_METAL `(0.55, 0.57, 0.6)`, DRESSING_GREEN `(0.22, 0.40, 0.18)` and DRESSING_WOOD
+`(0.35, 0.24, 0.16)`.  A stage-side probe confirms the declared colour IS authored on each item's
+clearance box and that several props (`picnic_table`, `bench_iron`, `bin_square`, `railing`,
+`bench_left/right`, `litter_bin`) carry **no** `displayColor` and no bound material anywhere under
+`/prop` (`diag_logs/colour_stage1.4.log`) -- so nothing in the catalogue decides what those props are
+drawn in.  The two attempts to measure the drawn colour directly (isolate a prop, difference it
+against an empty room) failed, one on a masking mistake and one on a renderer crash, so the colour a
+material-less prop falls back to is **unverified**.  What IS verified is that the declared dressing
+colours reach only the clearance box, which is invisible whenever a prop resolves.
+
+## The external camera does not show the dressing
+
+`stage1.*_slot1_iso.png` is a wash: the external camera stands at (-2.0, 2.2, 1.2) looking down 18 m
+of corridor, so the near side wall fills the frame and the room is a small pale rectangle in the
+middle.  The site's own comment says the eye camera cannot see the dressing either -- it looks
+through a 0.570 m opening at items required to sit at |z| >= 0.9 -- and that is why `--iso_orbit`
+exists.  Four alternative poses were measured (`diag_logs/iso2.log`, `iso3.log`); none framed the
+dressing usefully, and the search was stopped rather than continued, so the delivered external views
+are the default ones and are known to be uninformative.  The eye views are the ones to read.
