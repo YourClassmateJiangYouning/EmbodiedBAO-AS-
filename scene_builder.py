@@ -576,6 +576,68 @@ def apply_scale(prim: Any, scale: Sequence[float]) -> bool:
     return True
 
 
+# Assets whose OWN shaders cannot compile on this machine, so they are repainted flat.
+#
+# Each name here was measured, not guessed: a render that uses the asset prints
+# "MDLC comp error: C120 could not find module ..." naming a module that is absent from both asset
+# roots.  The five below are the park's plants (stage1.4) and they are the reason its dressing
+# rendered entirely red while every other scene's props came up correctly.  A name is added to this
+# set only with that log line as the evidence, and removed only when the module is vendored.
+UNRESOLVABLE_SHADER_ASSETS = frozenset({
+    "Chinese_Juniper.usd",      # ::.::materials::Pine_needles, bark3
+    "Douglas_Fir.usd",          # ::.::materials::TreeBark_10
+    "Elm_Sapling.usd",          # ::.::materials::American_Beech_leaf, bark3
+    "Barberry.usd",             # ::.::materials::Barberry_Mat
+    "Goldflame_Spirea.usd",     # ::.::materials::SimPBR
+})
+
+
+def bind_flat_material(stage: Any, prim_path: str, name: str,
+                       rgb: Sequence[float]) -> str:
+    """Bind a UsdPreviewSurface of one colour to `prim_path` and to every Gprim beneath it.
+
+    WHY THIS EXISTS.  Several vendored assets reference MDL shader modules that were never vendored
+    with them, so the shader fails to compile and the renderer falls back to its own default -- which
+    is what made the whole park red.  A stage1.4 render prints eight of these, one per plant:
+
+        MDLC comp error: C120 could not find module '::.::materials::bark3'
+        ... TreeBark_10 ... Pine_needles ... Barberry_Mat ... American_Beech_leaf ... SimPBR
+
+    and scanning the assets themselves finds Bark_10.mdl, TreeBark_10.mdl, Barberry_Mat.mdl and
+    Pine_needles.mdl absent from both asset roots.  A UsdPreviewSurface needs no MDL and no textures,
+    so it cannot fail that way, and the same route already renders the working props (`dolly` and
+    `011_banana` come up with OmniPBR).
+
+    BOUND TO EVERY GPRIM, not just the root.  Binding at the root alone loses to the bindings
+    authored deeper inside the referenced asset, which is the same trap as displayColor: the closest
+    binding wins.  Binding each Gprim directly is the strongest form.  Returns a one-word summary of
+    how many prims took it, for the report.
+    """
+    try:
+        from pxr import Gf, Sdf, Usd, UsdGeom, UsdShade
+
+        mat = UsdShade.Material.Define(stage, f"/World/Looks/flat_{prim_name(name)}")
+        shader = UsdShade.Shader.Define(stage, f"/World/Looks/flat_{prim_name(name)}/Shader")
+        shader.CreateIdAttr("UsdPreviewSurface")
+        value = Gf.Vec3f(float(rgb[0]), float(rgb[1]), float(rgb[2]))
+        shader.CreateInput("diffuseColor", Sdf.ValueTypeNames.Color3f).Set(value)
+        shader.CreateInput("roughness", Sdf.ValueTypeNames.Float).Set(0.7)
+        shader.CreateInput("metallic", Sdf.ValueTypeNames.Float).Set(0.0)
+        mat.CreateSurfaceOutput().ConnectToSource(shader.ConnectableAPI(), "surface")
+        prim = stage.GetPrimAtPath(prim_path)
+        if not prim or not prim.IsValid():
+            return "prim missing"
+        bound = 0
+        for child in Usd.PrimRange(prim):
+            if not child.IsA(UsdGeom.Gprim):
+                continue
+            UsdShade.MaterialBindingAPI.Apply(child).Bind(mat)
+            bound += 1
+        return f"flat material on {bound} gprim(s)"
+    except Exception as exc:  # noqa: BLE001
+        return f"flat material failed: {type(exc).__name__}: {exc}"
+
+
 def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
     """Place the scene's dressing: a box, or the vendored mesh it names.
 
@@ -735,6 +797,12 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                     # its height and width exchanged.
                     apply_scale(proxy_prim, scale)
                 _disable_collision(proxy_prim)
+                # A prop whose own shader cannot compile is repainted flat, so it renders in its
+                # declared colour instead of the renderer's fallback.  Recorded in the report, because
+                # "this prop's own materials are broken" is a fact the next reader needs.
+                if os.path.basename(local) in UNRESOLVABLE_SHADER_ASSETS:
+                    how = bind_flat_material(stage, f"{path}/prop", item["name"], item["colour"])
+                    record["flat_material"] = how
                 record["used_asset"] = os.path.basename(local)
                 record["reference"] = local
                 record["fit_scale"] = scale
