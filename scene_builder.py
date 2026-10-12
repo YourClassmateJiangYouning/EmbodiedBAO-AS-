@@ -1283,6 +1283,34 @@ def apply_scene(stage: Any, scene: str, slot: int,
         report["materials"][surface] = {"url": url, "how": how,
                                         "prim": ", ".join(prim_paths)}
 
+    # THE OBSTACLE WALL'S PANELS, which are not one of the four classified surfaces.  They are found
+    # by prim NAME rather than by geometry, because they are the only prims environment creates with
+    # "WallPanel" in the path and classifying them by shape would be guesswork.  They are the surface
+    # an eye-camera frame is mostly made of, so leaving them out is what kept every corridor blue.
+    if "materials" in parts:
+        from pxr import UsdGeom   # local, like the other passes in this function
+
+        panel_texture = (getattr(sc, "SURFACE_TEXTURES_PANELS", {}) or {}).get(scene)
+        panel_colour = (getattr(sc, "SURFACE_COLOUR_PANELS", {}) or {}).get(scene)
+        local_panel_texture = _vendored_texture(panel_texture) if panel_texture else None
+        panel_paths = [str(prim.GetPath()) for prim in stage.Traverse()
+                       if "WallPanel" in prim.GetName() and prim.IsA(UsdGeom.Gprim)]
+        if panel_paths:
+            if panel_colour:
+                for path in panel_paths:
+                    paint(stage, path, panel_colour)   # (ok, why)
+            how = "flat colour"
+            if local_panel_texture:
+                outcomes = [bind_texture_material(stage, path, f"wall_panel_{scene}",
+                                                  local_panel_texture) for path in panel_paths]
+                how = outcomes[0] if len(set(outcomes)) == 1 else "; ".join(sorted(set(outcomes)))
+            elif panel_texture:
+                how = f"flat colour (texture {panel_texture} is not vendored)"
+            report["materials"]["wall_panel"] = {"url": panel_texture or "-", "how": how,
+                                                 "prim": ", ".join(sorted(panel_paths))}
+        else:
+            report["materials"]["wall_panel"] = {"url": panel_texture or "-",
+                                                 "how": "no WallPanel prim found", "prim": "-"}
     report["marker"] = build_marker(stage, scene, slot)
     report["parts"] = list(parts)
     report["dressing"] = place_dressing(stage, scene) if "dressing" in parts else []

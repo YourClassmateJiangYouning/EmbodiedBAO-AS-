@@ -249,6 +249,28 @@ SURFACE_TEXTURES: Dict[str, Dict[str, str]] = {
     "stage1.5": {"side_wall": "T_BooksA_bc.png",                          # mean  97 std 77
                  "far_wall":  "T_Billboard_bc.png"},                      # mean 122 std 69
 }
+# THE OBSTACLE WALL -- the panels that form the passage, including the two flanking the opening.
+# These are the surfaces an eye-camera frame is mostly made of, and they are NOT the side walls: they
+# are built by environment._create_wall with `material=("WallPanelMaterial_i", WALL_COLOR)` where
+# WALL_COLOR is [0.13, 0.28, 0.72], a saturated blue.  Until this table existed, apply_scene never
+# touched them, so every scene's corridor was blue however its side walls were textured -- which is
+# exactly what the owner reported twice, and it was a real gap rather than a viewing problem.
+#
+# A separate texture from both the side walls and the far wall, so the passage, the corridor walls
+# and the end wall are three different surfaces to look at.
+SURFACE_TEXTURES_PANELS: Dict[str, str] = {
+    "stage1.2": "T_ElectricRoom_bc.png",     # mean 139 std 31   plant-room cladding
+    "stage1.3": "T_FileCabinet_bc.png",      # mean 123 std 42   card-catalogue panels
+    "stage1.4": "T_Building_03_bc.png",      # mean 152 std 35   stonework
+    "stage1.5": "T_DoorD_bc.png",            # mean 214 std 32   bright shopfront
+}
+# and the flat colour each panel falls back to when its texture is missing.
+SURFACE_COLOUR_PANELS: Dict[str, Tuple[float, float, float]] = {
+    "stage1.2": (0.34, 0.33, 0.31),
+    "stage1.3": (0.42, 0.34, 0.26),
+    "stage1.4": (0.36, 0.37, 0.34),
+    "stage1.5": (0.74, 0.74, 0.72),
+}
 # stage1.1 has no entry on purpose: it is the baseline and keeps no materials at all.
 
 SURFACE_COLOURS: Dict[str, Dict[str, Tuple[float, float, float]]] = {
