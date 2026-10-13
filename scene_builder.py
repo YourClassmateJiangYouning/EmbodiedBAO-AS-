@@ -686,6 +686,9 @@ TEXTURE_METRES_PER_REPEAT = {
     "t_corrugatedboxes_b01_tile01_albedo.png": 1.5,
     # grass is fine-grained, so a larger repeat reads as a lawn rather than as noise
     "grassdistance_basecolor.png": 3.0,
+    # the terrain set's general ground image: the greenest and brightest ground texture
+    # vendored (measured greenness +14.0, mean 132.3), used for the lawn and the passage
+    "default_texture.png": 3.0,
     "Tex_CeilingTile2x2_basecolor.png": 1.2,
     "Tex_Hospital_Floor_basecolor.png": 1.5,
     "Tex_Wood_Floor_basecolor.png": 2.0,

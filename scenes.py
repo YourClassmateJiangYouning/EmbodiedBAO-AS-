@@ -264,7 +264,7 @@ SURFACE_TEXTURES: Dict[str, Dict[str, str]] = {
                  # (nv_core/.../terrain_with_grass_adv/grassdistance_basecolor.png), fetched for
                  # this.  It is a tileable ground texture rather than an object atlas, which is what
                  # a floor needs.
-                 "floor":     "grassdistance_basecolor.png"},
+                 "floor":     "default_texture.png"},
     # `T_BooksA_bc` was here for stage1.5 and the owner called the result "过分花哨", correctly: these
     # `T_*_bc` images are OBJECT ATLASES -- T_BooksA_bc is a photograph of whole shelves of products --
     # so tiling one covers a wall in a chaotic collage of tiny objects.  A wall needs a tileable
@@ -289,7 +289,7 @@ SURFACE_TEXTURES: Dict[str, Dict[str, str]] = {
 SURFACE_TEXTURES_PANELS: Dict[str, str] = {
     "stage1.2": "T_ElectricRoom_bc.png",     # mean 139 std 31   plant-room cladding
     "stage1.3": "T_FileCabinet_bc.png",      # mean 123 std 42   card-catalogue panels
-    "stage1.4": "grassdistance_basecolor.png",  # planting over the passage
+    "stage1.4": "default_texture.png",           # planting over the passage, lighter
     "stage1.5": "T_DoorD_bc.png",            # mean 214 std 32   bright shopfront
 }
 # and the flat colour each panel falls back to when its texture is missing.
