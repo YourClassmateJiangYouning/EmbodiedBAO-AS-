@@ -657,14 +657,23 @@ def _vendored_texture(basename: str) -> Optional[str]:
 # intends.  A texture carries its OWN albedo, so a lightened palette cannot lighten a textured
 # surface -- this is the handle that can.
 TEXTURE_BRIGHTNESS = {
-    "grassdistance_basecolor.png": 1.10,
+    "grassdistance_basecolor.png": 1.15,
+    "T_Sky_Blue.png": 1.0,
+    "T_Sky_Clouds_M.png": 1.0,
     "Tex_Wood_Floor_basecolor.png": 1.20,
+    "T_Building_01_bc.png": 1.0,
     "Tex_CeilingTile2x2_basecolor.png": 1.15,
 }
 
 
 TEXTURE_ROUGHNESS = {
-    "grassdistance_basecolor.png": 0.95,
+    # EVERY floor is matte.  A glossy floor reflects the far-wall marker, and a reflected
+    # marker is a false reading for whatever model is judging the scene -- the owner's point.
+    "grassdistance_basecolor.png": 0.98,
+    "Tex_Wood_Floor_basecolor.png": 0.95,
+    "Tex_Hospital_Floor_basecolor.png": 0.95,
+    "T_Sky_Blue.png": 0.90,
+    "T_Sky_Clouds_M.png": 0.90,
     "Tex_Hospital_Floor_basecolor.png": 0.85,
     "T_Carpet_bc.png": 0.95,
 }
@@ -680,6 +689,12 @@ TEXTURE_METRES_PER_REPEAT = {
     "Tex_CeilingTile2x2_basecolor.png": 1.2,
     "Tex_Hospital_Floor_basecolor.png": 1.5,
     "Tex_Wood_Floor_basecolor.png": 2.0,
+    # a sky image must NOT tile visibly: one copy across the wall, and 1.0 brightness so the
+    # sky keeps its own colour
+    "T_Sky_Blue.png": 16.0,
+    "T_Sky_Clouds_M.png": 16.0,
+    "T_Building_01_bc.png": 4.0,
+    "grassdistance_basecolor.png": 3.0,
     "Tex_CeilingTile2x2_basecolor.png": 1.5,
     "T_Board_bc.png": 1.2,
     "T_Bookcase_bc.png": 1.5,
@@ -851,6 +866,10 @@ def bind_texture_material(stage: Any, prim_path: str, name: str,
             if not candidate.IsA(UsdGeom.Gprim):
                 continue
             api = UsdShade.MaterialBindingAPI.Apply(candidate)
+            for child in candidate.GetChildren():
+                if child.IsA(UsdGeom.Mesh):
+                    UsdShade.MaterialBindingAPI.Apply(child).Bind(mat)
+                    bound += 1
             try:
                 # STRONGER THAN DESCENDANTS: the park's props carry their own materials bound deeper
                 # inside the referenced asset, and the closest binding wins.  Binding the prop root
@@ -1515,6 +1534,31 @@ def apply_scene(stage: Any, scene: str, slot: int,
         else:
             report["materials"]["wall_panel"] = {"url": panel_texture or "-",
                                                  "how": "no WallPanel prim found", "prim": "-"}
+    # A MATTE FLOOR EVEN WHEN IT IS NOT TEXTURED.  environment binds its own material to /World/Ground
+    # (metallic 0.0, roughness 0.6), and 0.6 is glossy enough to reflect the far-wall marker -- the
+    # owner's "反光显示的标志物会影响模型判断".  A textured floor gets its roughness from
+    # TEXTURE_ROUGHNESS; this covers the rest, and the ceiling too, which is what the eye camera sees
+    # most of.
+    if "materials" in parts:
+        from pxr import Sdf, UsdShade
+        matte = {"floor": 0.95, "ceiling": 0.92}
+        found = discover_surfaces(stage)
+        for surface, rough in matte.items():
+            path = found.get(surface)
+            if path:
+                prim = stage.GetPrimAtPath(path)
+                material, _ = UsdShade.MaterialBindingAPI(prim).ComputeBoundMaterial()
+                if not (material and material.GetPrim().IsValid()):
+                    continue
+                shader, _, _ = material.ComputeSurfaceSource()
+                if not (shader and shader.GetPrim().IsValid()):
+                    continue
+                value = shader.GetInput("roughness")
+                if value is None:
+                    value = shader.CreateInput("roughness", Sdf.ValueTypeNames.Float)
+                value.Set(float(rough))
+                report["materials"].setdefault(surface, {})
+                report["materials"][surface]["roughness"] = float(rough)
     report["marker"] = build_marker(stage, scene, slot)
     report["parts"] = list(parts)
     report["dressing"] = place_dressing(stage, scene) if "dressing" in parts else []
@@ -1605,6 +1649,8 @@ def format_report(report: Dict[str, Any]) -> str:
                         thin.append((item["name"], round(worst, 3)))
             elif item.get("reference_error"):
                 outcome = f"FAILED {item['reference_error']}"
+            elif item.get("flat_material") is not None:
+                outcome = f"RESOLVED {item.get('used_asset', '')} [{item['flat_material']}]"
             elif item.get("built_parts"):
                 # No asset, so the item is BUILT rather than referenced: a sign board with an inset
                 # panel, and its clearance cube is hidden.  Reporting this as "NO ASSET (drawn as its

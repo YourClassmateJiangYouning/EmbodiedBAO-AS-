@@ -244,15 +244,22 @@ SURFACE_TEXTURES: Dict[str, Dict[str, str]] = {
     # corrugated profile IS a fine repeating line pattern and averages out at corridor distance.  It
     # is replaced by a real tileable material with a structure large enough to survive -- the ceiling
     # tile grid, whose cell is a whole panel rather than a rib.
-    "stage1.2": {"side_wall": "Tex_CeilingTile2x2_basecolor.png",          # panel grid, 1.5 m cells
+    # 1.2: the ceiling tile was still too regular and read as plain from the corridor.  This is a
+    # building-facade image with real structure in it.
+    "stage1.2": {"side_wall": "T_Building_01_bc.png",                      # panelled facade
                  "far_wall":  "T_Board_bc.png"},                          # boarded partition
     "stage1.3": {"side_wall": "T_Bookcase_bc.png",                        # shelf-lined reading room
                  "far_wall":  "T_Building_02_bc.png"},                    # stone end wall
     # 1.4: the side wall was also an OBJECT ATLAS (`T_Cupboard_bc`) and showed large black cabinet
     # shapes at random sizes.  Replaced by a tileable wood-grain material, which is what a park's
     # boarded fence actually is.
-    "stage1.4": {"side_wall": "Tex_Wood_Floor_basecolor.png",               # boarded fence, 2 m bays
-                 "far_wall":  "T_Building_01_bc.png",                     # brickwork
+    # 1.4 IS A PARK, so it becomes an outdoor sky box: both walls are sky images from the vendored
+    # Hospital/Office texture sets (there is no outdoor sky in the bucket), and the passage is covered
+    # in planting.  No leaf or vine texture is vendored anywhere in either asset root -- the flowering
+    # shrubs carry MDL-only materials with no PNGs -- so the passage uses the fetched grass ground
+    # texture, which is a real green vegetation image and reads as a planted wall.
+    "stage1.4": {"side_wall": "T_Sky_Blue.png",                            # open sky
+                 "far_wall":  "T_Sky_Clouds_M.png",                       # sky with cloud
                  # THE LAWN, from the bucket's own terrain-with-grass material
                  # (nv_core/.../terrain_with_grass_adv/grassdistance_basecolor.png), fetched for
                  # this.  It is a tileable ground texture rather than an object atlas, which is what
@@ -282,7 +289,7 @@ SURFACE_TEXTURES: Dict[str, Dict[str, str]] = {
 SURFACE_TEXTURES_PANELS: Dict[str, str] = {
     "stage1.2": "T_ElectricRoom_bc.png",     # mean 139 std 31   plant-room cladding
     "stage1.3": "T_FileCabinet_bc.png",      # mean 123 std 42   card-catalogue panels
-    "stage1.4": "T_Building_03_bc.png",      # mean 152 std 35   stonework
+    "stage1.4": "grassdistance_basecolor.png",  # planting over the passage
     "stage1.5": "T_DoorD_bc.png",            # mean 214 std 32   bright shopfront
 }
 # and the flat colour each panel falls back to when its texture is missing.
