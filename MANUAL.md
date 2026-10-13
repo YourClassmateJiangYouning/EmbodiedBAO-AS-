@@ -205,7 +205,7 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
 | `stage1.1` 实验室 | **无** | **0 件** | **0 件** | **正在跑的基线，一个字都不许改** |
 | `stage1.2` 仓库 | 4 条，`material_verified=True` | 11 件 | 10 件 | 已接线，待渲染确认 |
 | `stage1.3` 图书馆 | 4 条，`material_verified=True` | 12 件 | 12 件 | 已接线，待渲染确认 |
-| `stage1.4` 公园 | 4 条，`material_verified=True` | 20 件 | 19 件 | 已接线，待渲染确认 |
+| `stage1.4` 公园 | 4 条，`material_verified=True` | 31 件 | 30 件 | 已接线，待渲染确认 |
 | `stage1.5` 超市 | 4 条，`material_verified=True` | 12 件 | 10 件 | 已接线，待渲染确认 |
 
 **上表由 `test_bao_scenes.py::test_the_manual_states_the_scene_facts_the_code_holds` 强制与代码一致**，

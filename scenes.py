@@ -240,11 +240,18 @@ SURFACE_TEXTURES: Dict[str, Dict[str, str]] = {
     #   T_Carpet_bc.png                    mean  46  std 35      plain colour, not a pattern
     #
     # and each image is used ONCE across the five scenes, side walls and far walls always different.
-    "stage1.2": {"side_wall": "t_corrugatedboxes_b01_tile01_albedo.png",   # corrugated metal
+    # 1.2: the corrugated atlas read as a plain colour however its repeat was set, because a
+    # corrugated profile IS a fine repeating line pattern and averages out at corridor distance.  It
+    # is replaced by a real tileable material with a structure large enough to survive -- the ceiling
+    # tile grid, whose cell is a whole panel rather than a rib.
+    "stage1.2": {"side_wall": "Tex_CeilingTile2x2_basecolor.png",          # panel grid, 1.5 m cells
                  "far_wall":  "T_Board_bc.png"},                          # boarded partition
     "stage1.3": {"side_wall": "T_Bookcase_bc.png",                        # shelf-lined reading room
                  "far_wall":  "T_Building_02_bc.png"},                    # stone end wall
-    "stage1.4": {"side_wall": "T_Cupboard_bc.png",                        # weathered panelling
+    # 1.4: the side wall was also an OBJECT ATLAS (`T_Cupboard_bc`) and showed large black cabinet
+    # shapes at random sizes.  Replaced by a tileable wood-grain material, which is what a park's
+    # boarded fence actually is.
+    "stage1.4": {"side_wall": "Tex_Wood_Floor_basecolor.png",               # boarded fence, 2 m bays
                  "far_wall":  "T_Building_01_bc.png",                     # brickwork
                  # THE LAWN, from the bucket's own terrain-with-grass material
                  # (nv_core/.../terrain_with_grass_adv/grassdistance_basecolor.png), fetched for
@@ -257,8 +264,11 @@ SURFACE_TEXTURES: Dict[str, Dict[str, str]] = {
     # MATERIAL texture, and the Simple_Warehouse set has real ones (`Tex_*`): plaster, wood grain,
     # ceiling tile, checkered, hospital floor.  stage1.5 gets the ceiling tile, which is a calm grid
     # and reads as a shop's wall/ceiling finish.
-    "stage1.5": {"side_wall": "Tex_CeilingTile2x2_basecolor.png",          # calm tile grid
-                 "far_wall":  "Tex_Hospital_Floor_basecolor.png"},         # pale shop floor finish
+    # 1.5 REVERTED, on the owner's report that the calm replacement was worse than what it replaced:
+    # the ceiling tile and hospital floor are so regular that the supermarket read as bare.  These are
+    # the atlas images that were there before, restored.
+    "stage1.5": {"side_wall": "T_BooksA_bc.png",
+                 "far_wall":  "T_Billboard_bc.png"},
 }
 # THE OBSTACLE WALL -- the panels that form the passage, including the two flanking the opening.
 # These are the surfaces an eye-camera frame is mostly made of, and they are NOT the side walls: they
@@ -448,6 +458,7 @@ PROP_MEASUREMENTS = {
     # supermarket's two shelves, which were box primitives.  RackSmall_A7 is a centimetre asset (the
     # tool's own DIVIDE BY 100 warning), hence the ASSET_SCALE entry below.
     "packing_table.usd": (2.4736, 1.0829, 0.7816),
+    "Goldflame_Spirea.usd": (31.8724, 20.4208, 31.1931),
     "RackSmall_A7.usd": (108.0188, 301.0001, 199.8097),
     # Measured 2026-10-10 on the lab machine.  Four of these are centimetre assets and three are
     # metres, IN THE SAME BATCH: the shrubs and the conifer are centimetres while the bench, bin,
@@ -494,7 +505,8 @@ DRESSING_CARD = (0.62, 0.46, 0.30)           # shipping cartons
 DRESSING_CARD_PALE = (0.72, 0.58, 0.42)      # paler cartons, packaging
 DRESSING_WOOD_PALE = (0.58, 0.44, 0.28)      # light timber: tables, shelves, seating
 DRESSING_PLASTIC_BLUE = (0.18, 0.34, 0.58)   # stackable crates and bins
-DRESSING_HEDGE = (0.22, 0.42, 0.20)          # clipped hedge
+DRESSING_HEDGE = (0.32, 0.54, 0.26)          # clipped hedge (lightened)
+DRESSING_FLOWER = (0.68, 0.50, 0.62)         # flowering shrub, pale mauve
 DRESSING_GRASS = (0.42, 0.55, 0.28)          # planting and grass
 DRESSING_PAPER = (0.86, 0.84, 0.78)          # posters, notice boards, price cards
 DRESSING_PLASTER = (0.80, 0.76, 0.70)        # painted plaster fittings
@@ -566,6 +578,7 @@ ASSET_SCALE = {
     "sign_plaza_fountain_01.usd": CM_TO_M,
     "RackSmallEmpty_A1.usd": CM_TO_M,
     "RackSmall_A7.usd": CM_TO_M,
+    "Goldflame_Spirea.usd": CM_TO_M,
 }
 
 
@@ -1157,6 +1170,34 @@ def _install_dressing() -> None:
                         BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
         _dressing_floor("shrub_d", (12.4, 0.00, -2.05), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
                         BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
+        # EIGHT MORE, to the owner's "增加到 14 个": a planted park reads by density, and four of the
+        # six were hidden behind the obstacle wall from this camera.  All at |z| 2.05-2.15, outside the
+        # walking band, alternating sides so the two walls both look planted.
+        _dressing_floor("shrub_e", (2.2, 0.00, -2.10), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
+        _dressing_floor("shrub_f", (4.2, 0.00, 2.10), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
+        _dressing_floor("shrub_g", (6.2, 0.00, -2.10), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
+        _dressing_floor("shrub_h", (8.2, 0.00, 2.10), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
+        _dressing_floor("shrub_i", (9.6, 0.00, -2.10), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
+        _dressing_floor("shrub_j", (11.0, 0.00, 2.10), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
+        _dressing_floor("shrub_k", (13.0, 0.00, -2.10), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
+        _dressing_floor("shrub_l", (14.2, 0.00, 2.10), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
+        # FLOWERS: `Goldflame_Spirea` is the one flowering shrub vendored and it measures 0.20 m tall,
+        # so it is used at ITS OWN size as low flowering ground cover rather than stretched -- room_fit
+        # is a fraction in (0,1] and enlarging is the opposite of what it is for.
+        _dressing_floor("flowers_a", (3.0, 0.00, -2.15), (0.3187, 0.2042, 0.3119), DRESSING_FLOWER,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Goldflame_Spirea.usd"),
+        _dressing_floor("flowers_b", (7.2, 0.00, 2.15), (0.3187, 0.2042, 0.3119), DRESSING_FLOWER,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Goldflame_Spirea.usd"),
+        _dressing_floor("flowers_c", (12.0, 0.00, -2.15), (0.3187, 0.2042, 0.3119), DRESSING_FLOWER,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Goldflame_Spirea.usd"),
         _dressing_wall("park_sign", "far_wall", (FAR_WALL_FACE_X, 2.00, -1.60), (0.03, 0.4, 0.6),
                        DRESSING_CLAY),
         # The park's remaining furniture, all at measured sizes.  Every placement below was computed

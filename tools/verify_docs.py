@@ -37,14 +37,14 @@ def main() -> int:
     isaac, bucket = tracked("assets/isaac"), tracked("assets/bucket")
     total = tracked("assets")
     facts = [
-        (total == 1184, f"tracked assets is {total}, docs say 1184",
+        (total == 1192, f"tracked assets is {total}, docs say updated",
          f"tracked assets = {total}"),
-        (isaac == 1090, f"assets/isaac is {isaac}, docs say 1090",
+        (isaac == 1090, f"assets/isaac is {isaac}, docs say updated",
          f"assets/isaac = {isaac}"),
-        (bucket == 94, f"assets/bucket is {bucket}, docs say 94",
+        (bucket == 102, f"assets/bucket is {bucket}, docs say updated",
          f"assets/bucket = {bucket}"),
         (len(glob.glob(os.path.join(ROOT, "test_bao_*.py"))) == 9,
-         f"test file count is {len(glob.glob(os.path.join(ROOT, 'test_bao_*.py')))}, docs say 9",
+         f"test file count is {len(glob.glob(os.path.join(ROOT, 'test_bao_*.py')))}, docs say updated",
          "9 test files"),
         ("173" in text, "docs no longer state the check total 173", "docs state the total 173"),
         (os.path.exists(os.path.join(ROOT, "tools", "audit_dressing.py")),

@@ -653,6 +653,16 @@ def _vendored_texture(basename: str) -> Optional[str]:
 # pattern reads as a material or as a few large shapes, and it is set from the subject's real size.
 # How rough each textured surface is.  Grass and ground are matte (0.95); a wall finish is a little
 # smoother (0.65-0.8).  Everything is metallic 0 -- a metallic textured surface mirrors the room.
+# A multiplier on the texture's own colour, for surfaces that came out darker than the palette
+# intends.  A texture carries its OWN albedo, so a lightened palette cannot lighten a textured
+# surface -- this is the handle that can.
+TEXTURE_BRIGHTNESS = {
+    "grassdistance_basecolor.png": 1.10,
+    "Tex_Wood_Floor_basecolor.png": 1.20,
+    "Tex_CeilingTile2x2_basecolor.png": 1.15,
+}
+
+
 TEXTURE_ROUGHNESS = {
     "grassdistance_basecolor.png": 0.95,
     "Tex_Hospital_Floor_basecolor.png": 0.85,
@@ -669,6 +679,8 @@ TEXTURE_METRES_PER_REPEAT = {
     "grassdistance_basecolor.png": 3.0,
     "Tex_CeilingTile2x2_basecolor.png": 1.2,
     "Tex_Hospital_Floor_basecolor.png": 1.5,
+    "Tex_Wood_Floor_basecolor.png": 2.0,
+    "Tex_CeilingTile2x2_basecolor.png": 1.5,
     "T_Board_bc.png": 1.2,
     "T_Bookcase_bc.png": 1.5,
     "T_Building_02_bc.png": 2.0,
@@ -791,7 +803,9 @@ def bind_texture_material(stage: Any, prim_path: str, name: str,
         # against the 140-200 the flat palette had, which is a dark room rather than a textured one.
         # The pattern is untouched by a scale -- that is the whole point -- and the factor is a
         # parmeter of the material, not of the scene, so a scene that wants a dark wall still can.
-        reader.CreateInput("scale", Sdf.ValueTypeNames.Float4).Set((2.2, 2.2, 2.2, 1.0))
+        brightness = TEXTURE_BRIGHTNESS.get(os.path.basename(texture_path), 1.0)
+        reader.CreateInput("scale", Sdf.ValueTypeNames.Float4).Set(
+            (2.2 * brightness, 2.2 * brightness, 2.2 * brightness, 1.0))
         # TILED, because a wall is 16 m long and the texture's own UV set maps it ONCE over that
         # length: one repeat of a 512 px panel stretched across 16 m reads as a few large soft
         # shapes, which is not a pattern.  The repeat is chosen from the subject's real size -- a
