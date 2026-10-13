@@ -1649,8 +1649,6 @@ def format_report(report: Dict[str, Any]) -> str:
                         thin.append((item["name"], round(worst, 3)))
             elif item.get("reference_error"):
                 outcome = f"FAILED {item['reference_error']}"
-            elif item.get("flat_material") is not None:
-                outcome = f"RESOLVED {item.get('used_asset', '')} [{item['flat_material']}]"
             elif item.get("built_parts"):
                 # No asset, so the item is BUILT rather than referenced: a sign board with an inset
                 # panel, and its clearance cube is hidden.  Reporting this as "NO ASSET (drawn as its
@@ -1661,6 +1659,11 @@ def format_report(report: Dict[str, Any]) -> str:
                            f"clearance box hidden)")
             else:
                 outcome = "NO ASSET (drawn as its clearance box)"
+            # The prop-colour result is APPENDED after the chain, not one of its branches: a prop
+            # with a fill ratio takes the `fill` branch and would never reach a flat_material branch,
+            # which is why the suffix did not appear the first time it was added.
+            if item.get("flat_material"):
+                outcome += f" [colour: {item['flat_material']}]"
             lines.append(f"[scene]   dressing {item['name']}: {outcome}")
         if failed:
             lines.append(f"[scene] dressing: {len(failed)} reference(s) FAILED -- those items are "
