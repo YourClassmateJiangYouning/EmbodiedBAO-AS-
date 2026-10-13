@@ -206,7 +206,7 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
 | `stage1.2` 仓库 | 4 条，`material_verified=True` | 11 件 | 10 件 | 已接线，待渲染确认 |
 | `stage1.3` 图书馆 | 4 条，`material_verified=True` | 13 件 | 12 件 | 已接线，待渲染确认 |
 | `stage1.4` 公园 | 3 条，`material_verified=True` | 16 件 | 15 件 | 已接线，待渲染确认 |
-| `stage1.5` 超市 | 4 条，`material_verified=True` | 12 件 | 8 件 | 已接线，待渲染确认 |
+| `stage1.5` 超市 | 4 条，`material_verified=True` | 12 件 | 10 件 | 已接线，待渲染确认 |
 
 **上表由 `test_bao_scenes.py::test_the_manual_states_the_scene_facts_the_code_holds` 强制与代码一致**，
 所以它不会再漂移。上一版手册在这里错了三处，全部是"文档落后于代码"：陈设数写成各 8 件（实际

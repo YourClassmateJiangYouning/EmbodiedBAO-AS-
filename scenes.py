@@ -437,6 +437,7 @@ PROP_MEASUREMENTS = {
     # supermarket's two shelves, which were box primitives.  RackSmall_A7 is a centimetre asset (the
     # tool's own DIVIDE BY 100 warning), hence the ASSET_SCALE entry below.
     "packing_table.usd": (2.4736, 1.0829, 0.7816),
+    "RackSmall_A7.usd": (108.0188, 301.0001, 199.8097),
     # Measured 2026-10-10 on the lab machine.  Four of these are centimetre assets and three are
     # metres, IN THE SAME BATCH: the shrubs and the conifer are centimetres while the bench, bin,
     # planter, bollard and block are metres.  Nothing about the folder says which, so each was
@@ -553,6 +554,7 @@ ASSET_SCALE = {
     "Roxana_DiningBench.usd": CM_TO_M,
     "sign_plaza_fountain_01.usd": CM_TO_M,
     "RackSmallEmpty_A1.usd": CM_TO_M,
+    "RackSmall_A7.usd": CM_TO_M,
 }
 
 
@@ -1211,10 +1213,22 @@ def _install_dressing() -> None:
         # "box cannot hold the prop" rule outright (0.68 m of depth against a 0.18 m box).  A wall
         # shelf 2 m deep is not a shelf, so the boxes stay until a rack with a shallow profile is
         # found -- and the report keeps saying they are boxes.
-        _dressing_wall("shelf_left", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.05, 1.60),
-                       (0.18, 1.9, 1.4), DRESSING_STEEL),
-        _dressing_wall("shelf_right", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.05, -1.60),
-                       (0.18, 1.9, 1.4), DRESSING_STEEL),
+        # WERE wall-mounted box primitives, and could not stay that way: every shallow candidate is
+        # deeper than the 0.20 m protrusion cap on its own thinnest axis (RackSmall_A7 measures 2.00 m
+        # deep; the corrugated cartons 0.30 m), so the audit refused each substitution with
+        # "protrudes ... past the 0.20 m cap" or "box cannot hold the prop".  The owner approved
+        # moving them to the FLOOR, which has no protrusion cap, so they are now real racks.
+        #
+        # RackSmall_A7 measures (1.0802, 3.01, 1.9981) m -- a centimetre asset -- and is declared at
+        # room_fit 0.63 for a 1.896 m tall rack, the same fraction its sibling RackSmallEmpty_A1 uses
+        # in the warehouse.  Both stand at |z| 1.95, outside the |z| >= 1.5 line the walking band
+        # requires, in the clear stretch between the checkout and the boxes.
+        _dressing_floor("shelf_left", (8.9, 0.0, 1.95), (0.6805, 1.8963, 1.2588), DRESSING_STEEL,
+                        BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/RackSmall_A7.usd",
+                        room_fit=0.63),
+        _dressing_floor("shelf_right", (8.9, 0.0, -1.95), (0.6805, 1.8963, 1.2588), DRESSING_STEEL,
+                        BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/RackSmall_A7.usd",
+                        room_fit=0.63),
         _dressing_wall("price_strip", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.00, 1.60),
                        (0.03, 0.15, 1.3), DRESSING_PAPER),
         _dressing_wall("promo_banner", "far_wall", (FAR_WALL_FACE_X, 2.10, 1.55),
