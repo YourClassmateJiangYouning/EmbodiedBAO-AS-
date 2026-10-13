@@ -459,7 +459,7 @@ def build_prompt(
     position = state.get("position")
     if isinstance(position, (list, tuple)) and len(position) >= 3:
         lines.append(
-            f"- position (x, y, z): "
+            "- position (x, y, z): "
             f"[{float(position[0]):.3f}, {float(position[1]):.3f}, "
             f"{float(position[2]):.3f}]"
         )
@@ -497,18 +497,18 @@ def build_prompt(
     camera_yaw = state.get("camera_yaw")
     if camera_yaw is not None:
         lines.append(
-            f"- head camera sideways offset from straight ahead (degrees): "
+            "- head camera sideways offset from straight ahead (degrees): "
             f"{float(camera_yaw):.1f} (0 = looking straight ahead down your "
-            f"walking direction; +30 = the glance to your left you just asked "
-            f"for, which clears on your next action)"
+            "walking direction; +30 = the glance to your left you just asked "
+            "for, which clears on your next action)"
         )
     camera_pitch = state.get("camera_pitch")
     if camera_pitch is not None:
         lines.append(
-            f"- head camera extra downward pitch (degrees): "
+            "- head camera extra downward pitch (degrees): "
             f"{float(camera_pitch):.1f} (0 = your usual view; +45 = the glance "
-            f"down at your own body you just asked for, which clears on your "
-            f"next action)"
+            "down at your own body you just asked for, which clears on your "
+            "next action)"
         )
     lines.append(f"- step limit for this episode: {int(max_steps)}")
     parts.append("\n".join(lines))

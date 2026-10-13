@@ -672,46 +672,47 @@ TEXTURE_BRIGHTNESS = {
 TEXTURE_ROUGHNESS = {
     # EVERY floor is matte.  A glossy floor reflects the far-wall marker, and a reflected
     # marker is a false reading for whatever model is judging the scene -- the owner's point.
+    # One entry per texture: this dict had Tex_Hospital_Floor twice (0.95 and 0.85) because two
+    # edits each added it, and the later silently won.
     "grassdistance_basecolor.png": 0.98,
+    "default_texture.png": 0.98,
     "Tex_Wood_Floor_basecolor.png": 0.95,
     "Tex_Hospital_Floor_basecolor.png": 0.95,
+    "T_Carpet_bc.png": 0.95,
     "T_Sky_Blue.png": 0.90,
     "T_Sky_Clouds_M.png": 0.90,
-    "Tex_Hospital_Floor_basecolor.png": 0.85,
-    "T_Carpet_bc.png": 0.95,
 }
 
 
 TEXTURE_METRES_PER_REPEAT = {
-    # 1.5 m rather than 0.6: at 0.6 the corrugated ribs repeated 26 times across a 16 m wall, which is
-    # finer than the eye resolves at this distance and averaged back to a plain colour -- the owner's
-    # "1.2 的侧墙似乎还是纯色".
+    # One entry per texture.  This dict had grassdistance, Tex_CeilingTile2x2 and T_Building_01 twice
+    # each, from edits made in different rounds; the later silently won every time, so the earlier
+    # number was dead text that still looked authoritative.
+    #
+    # 1.5 m rather than 0.6 for the corrugated sheet: at 0.6 the ribs repeated 26 times across a 16 m
+    # wall, which is finer than the eye resolves at this distance and averaged back to a plain colour
+    # -- the owner's "1.2 的侧墙似乎还是纯色".
     "t_corrugatedboxes_b01_tile01_albedo.png": 1.5,
-    # grass is fine-grained, so a larger repeat reads as a lawn rather than as noise
+    # ground images tile large, so the pattern reads as a surface rather than as noise
     "grassdistance_basecolor.png": 3.0,
-    # the terrain set's general ground image: the greenest and brightest ground texture
-    # vendored (measured greenness +14.0, mean 132.3), used for the lawn and the passage
     "default_texture.png": 3.0,
-    "Tex_CeilingTile2x2_basecolor.png": 1.2,
-    "Tex_Hospital_Floor_basecolor.png": 1.5,
-    "Tex_Wood_Floor_basecolor.png": 2.0,
     # a sky image must NOT tile visibly: one copy across the wall
     "T_Sky_Blue.png": 16.0,
     "T_Sky_Clouds_M.png": 16.0,
-    "T_Building_01_bc.png": 4.0,
-    "grassdistance_basecolor.png": 3.0,
-    "Tex_CeilingTile2x2_basecolor.png": 1.5,
     "T_Board_bc.png": 1.2,
     "T_Bookcase_bc.png": 1.5,
-    "T_Building_02_bc.png": 2.0,
-    "T_Cupboard_bc.png": 1.5,
     "T_Building_01_bc.png": 2.0,
+    "T_Building_02_bc.png": 2.0,
+    "T_Building_03_bc.png": 2.0,
+    "T_Cupboard_bc.png": 1.5,
     "T_BooksA_bc.png": 1.5,
     "T_Billboard_bc.png": 3.0,
     "T_ElectricRoom_bc.png": 1.5,
     "T_FileCabinet_bc.png": 1.2,
-    "T_Building_03_bc.png": 2.0,
     "T_DoorD_bc.png": 2.0,
+    "Tex_CeilingTile2x2_basecolor.png": 1.5,
+    "Tex_Hospital_Floor_basecolor.png": 1.5,
+    "Tex_Wood_Floor_basecolor.png": 2.0,
 }
 
 
@@ -1218,7 +1219,7 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
             # the clearance box, which could be hidden by either mechanism and take the prop with it.)
             record["fit_error"] = ("resolved prop is not on the stage at "
                                    f"/World/Dressing/{record['name']}/prop, so its size cannot be "
-                                   f"verified -- was an ancestor deactivated?")
+                                   "verified -- was an ancestor deactivated?")
             continue
         try:
             # MEASURED RELATIVE TO THE DRESSING ROOT, and that is a correction.  This used to be
@@ -1671,7 +1672,7 @@ def format_report(report: Dict[str, Any]) -> str:
                 # two it is, because that sentence is what a reader uses to decide whether an object
                 # in the frame is real.
                 outcome = (f"NO ASSET (built as a plate: {len(item['built_parts'])} part(s), "
-                           f"clearance box hidden)")
+                           "clearance box hidden)")
             else:
                 outcome = "NO ASSET (drawn as its clearance box)"
             # The prop-colour result is APPENDED after the chain, not one of its branches: a prop
@@ -1682,15 +1683,15 @@ def format_report(report: Dict[str, Any]) -> str:
             lines.append(f"[scene]   dressing {item['name']}: {outcome}")
         if failed:
             lines.append(f"[scene] dressing: {len(failed)} reference(s) FAILED -- those items are "
-                         f"drawn as their clearance box")
+                         "drawn as their clearance box")
         if oversized:
             lines.append(f"[scene] dressing: {len(oversized)} item(s) are drawn outside their "
-                         f"declared box -- larger than it, or positioned so part of the geometry "
-                         f"leaves it, either of which is clipping by construction: "
+                         "declared box -- larger than it, or positioned so part of the geometry "
+                         "leaves it, either of which is clipping by construction: "
                          + ", ".join(item["name"] for item in oversized))
         if thin:
             lines.append(f"[scene] dressing: {len(thin)} item(s) are drawn well inside their declared "
-                         f"box on every axis (worst fill ratio first), which is what a uniform fit "
-                         f"does when the box's proportions are not the asset's: "
+                         "box on every axis (worst fill ratio first), which is what a uniform fit "
+                         "does when the box's proportions are not the asset's: "
                          + ", ".join(f"{name} {ratio}" for name, ratio in sorted(thin, key=lambda t: t[1])))
     return "\n".join(lines)

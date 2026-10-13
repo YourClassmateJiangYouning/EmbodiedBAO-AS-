@@ -195,7 +195,7 @@ def encode_image(image: Any) -> str:
                     print(
                         f"[ai_agent] BAO_IMAGE_SIZE={side} exceeds the camera's "
                         f"{image.size[0]}px; upsampling adds no detail. Raise the "
-                        f"camera resolution instead.",
+                        "camera resolution instead.",
                         flush=True,
                     )
                 image = image.resize((side, side), Image.LANCZOS)

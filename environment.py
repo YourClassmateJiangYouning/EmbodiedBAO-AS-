@@ -1412,7 +1412,7 @@ class BAOEnv:
             if math.isfinite(max_z):
                 self._robot_measured_height = float(max_z - min_z)
                 print(
-                    f"[BAOEnv] ROBOT HEIGHT (measured) = "
+                    "[BAOEnv] ROBOT HEIGHT (measured) = "
                     f"{self._robot_measured_height:.3f} m | "
                     f"ground offset = {offset:.4f} m | "
                     f"authored ROBOT_HEAD_HEIGHT = {ROBOT_HEAD_HEIGHT:.3f} m | "
@@ -2124,14 +2124,14 @@ class BAOEnv:
                 print(f"[scene] stage box: {line}")
             raise RuntimeError(
                 f"scene {scene}: discover_surfaces found none of our surfaces; refusing to "
-                f"run a scene whose materials went nowhere.  The stage's largest boxes are "
-                f"printed above."
+                "run a scene whose materials went nowhere.  The stage's largest boxes are "
+                "printed above."
             )
         missing = [name for name, info in self.scene_report["materials"].items()
                    if info.get("how") == "no-surface-given"]
         if missing:
             print(f"[scene] WARNING: no prim found for {missing}; those surfaces keep the "
-                  f"baseline colour.  Scene is applied, but not in full.")
+                  "baseline colour.  Scene is applied, but not in full.")
             # The ceiling has failed classification in every render so far, and there was no way
             # to see why without running the simulator by hand.  The stage's largest boxes say
             # what the ceiling actually looks like to the classifier -- its extent, its height,
@@ -2177,7 +2177,7 @@ class BAOEnv:
                 f"the far wall after replacing it, found {len(parts)} "
                 f"{[p.GetName() for p in parts]} (types {[p.GetTypeName() for p in parts]}); "
                 f"other children: {others}; unexpected kinds: {wrong_kind}.  Two markers means "
-                f"two colours and the uniqueness premise is void; refusing to pretend otherwise."
+                "two colours and the uniqueness premise is void; refusing to pretend otherwise."
             )
         if self.scene_report is not None:
             self.scene_report["marker"] = report

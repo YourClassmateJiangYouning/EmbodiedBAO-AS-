@@ -391,7 +391,7 @@ def analyze_model(
                 print(
                     f"[analysis] WARNING: no {model} results tagged with the "
                     f"current protocol ({PROTOCOL_TAG}); using {selected_tag!r}. "
-                    f"Run main.py with a fresh tag before comparing."
+                    "Run main.py with a fresh tag before comparing."
                 )
             older = sorted(
                 {

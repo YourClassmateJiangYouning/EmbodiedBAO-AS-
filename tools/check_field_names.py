@@ -102,6 +102,12 @@ OTHER = {
     # anchor, drawn_box is the prop's world box, and fill_ratio is the fraction of the declared box
     # the prop fills per axis: the number that names "too thin" without a picture.
     "drawn_extent", "declared_extent", "fit_error", "fit_offset", "drawn_box", "fill_ratio",
+    # `built_parts` and `flat_material` joined when asset-less items stopped being clearance cubes and
+    # asset-owned props started being repainted.  built_parts lists the geometry an item was BUILT
+    # from (a sign body plus an inset panel), and flat_material records the outcome of binding the
+    # declared colour onto a resolved prop -- the field that finally said "flat material on 0
+    # gprim(s)" and located five rounds of the props staying red.
+    "built_parts", "flat_material", "built_part_error",
 }
 
 

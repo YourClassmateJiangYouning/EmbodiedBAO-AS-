@@ -100,7 +100,7 @@ def test_every_shape_fits_the_marker_bounding_box() -> None:
               f"shape {name!r} spans x {min(xs):+.4f}..{max(xs):+.4f}, outside the "
               f"+/-{sc.SHAPE_HALF_M:.3f} m the marker's geometry allows around its anchor")
     print(f"[ok] all 10 shapes stay inside the {sc.MARKER_SIZE_M:.2f} m budget "
-          f"around their anchor")
+          "around their anchor")
 
 
 def test_the_arrow_keeps_its_size_and_its_measured_centroid_offset() -> None:
@@ -137,7 +137,7 @@ def test_the_arrow_keeps_its_size_and_its_measured_centroid_offset() -> None:
     width = max(xs) - min(xs)
     check(abs(width - sc.MARKER_SIZE_M) < 1e-12,
           f"the arrow is {width:.6f} m across, not the {sc.MARKER_SIZE_M} m the other "
-          f"markers use; a narrower arrow subtends fewer pixels at the same distance")
+          "markers use; a narrower arrow subtends fewer pixels at the same distance")
 
     # Area centroid of the union of its polygons -- shaft plus head, area weighted.
     total = 0.0
@@ -180,8 +180,8 @@ def test_the_arrow_keeps_its_size_and_its_measured_centroid_offset() -> None:
     check(-0.02305 < ratio < -0.02105,
           f"the arrow's centroid is {ratio:.5f} of the marker's size behind the anchor "
           f"({cx*1000:+.2f} mm at {sc.MARKER_SIZE_M:.2f} m), outside the derived "
-          f"-0.02205 +/- 0.001; if this changed, re-derive the three-way trade-off rather "
-          f"than widening this band")
+          "-0.02205 +/- 0.001; if this changed, re-derive the three-way trade-off rather "
+          "than widening this band")
     # Sub-pixel at the start pose, which is why it is acceptable at all.
     import math
     distance = sc.MARKER_X_M - 0.5
@@ -189,7 +189,7 @@ def test_the_arrow_keeps_its_size_and_its_measured_centroid_offset() -> None:
     mm_per_px = (2.0 * distance * math.tan(math.radians(fov / 2.0))) / 512.0
     check(abs(cx) / mm_per_px < 0.5,
           f"the arrow's {abs(cx)*1000:.2f} mm offset is {abs(cx)/mm_per_px:.2f} px at the "
-          f"start pose, no longer sub-pixel")
+          "start pose, no longer sub-pixel")
 
     check(min(xs) >= -sc.SHAPE_HALF_M - 1e-9,
           f"the arrow's tail is at {min(xs):+.6f}, outside the allowed "
@@ -246,7 +246,7 @@ def test_no_dressing_occludes_the_opening_or_the_marker() -> None:
             marker = sc.screen_bounds(*sc.marker_box())
             if marker and sc.rectangles_overlap(bounds, marker):
                 raise Failure(f"{scene}: {item['name']} overlaps the marker in the start view")
-    print(f"[ok] no dressing overlaps the opening or the marker "
+    print("[ok] no dressing overlaps the opening or the marker "
           f"({checked} item x width pairs projected)")
 
 
@@ -267,14 +267,14 @@ def test_decoration_is_never_collidable_and_stays_off_the_path() -> None:
             z = abs(float(item["at"][2]))
             if item["mount"] == "floor":
                 check(z >= 1.5, f"{scene}: floor item {item['name']} sits at |z| {z:.2f}, "
-                                f"inside the band the robot walks")
+                                "inside the band the robot walks")
                 check(item["at"][1] <= 0.6 or z >= 1.8,
                       f"{scene}: floor item {item['name']} is {item['at'][1]:.2f} m up at "
                       f"|z| {z:.2f}; tall items belong outside |z| 1.8")
             elif item["mount"] == "obstacle_wall":
                 check(z >= 0.9, f"{scene}: obstacle-wall item {item['name']} sits at "
                                 f"|z| {z:.2f}, inside the widest opening's half width plus "
-                                f"the margin")
+                                "the margin")
             else:
                 check(item["mount"] == "far_wall",
                       f"{scene}: {item['name']} has an unknown mount {item['mount']!r}")
@@ -315,7 +315,7 @@ def test_materials_are_marked_as_verified_or_not() -> None:
             for surface, url in spec["materials"].items():
                 check(url.startswith(sc.ASSET_ROOT),
                       f"{scene}: {surface} claims to be verified but {url} is not under "
-                      f"the Isaac asset root")
+                      "the Isaac asset root")
         else:
             check(spec["materials"], f"{scene} claims unverified materials but has none")
     print("[ok] every material URL says whether it was read off the bucket listing")
@@ -422,15 +422,15 @@ def test_the_catalogue_matches_the_environment_it_replaces() -> None:
 
     check(abs(sc.MARKER_SIZE_M - float(env.GOAL_MARKER_SIZE)) < 1e-9,
           f"catalogue marker size {sc.MARKER_SIZE_M} vs environment {env.GOAL_MARKER_SIZE}; "
-          f"the environment builds its own marker at the same /World/GoalMarker path, so these "
-          f"two have to be the same number")
+          "the environment builds its own marker at the same /World/GoalMarker path, so these "
+          "two have to be the same number")
     check(abs(sc.MARKER_WALL_X_M - float(env.ROOM_LENGTH_X)) < 1e-9,
           "the catalogue puts the marker on a different wall than the room's far wall")
     check(abs(sc.MARKER_Y_M - 1.40) < 1e-9,
           "the catalogue's marker centre height differs from the environment's 1.40 m")
     check(tuple(sc.COLOURS["r"]) == (0.85, 0.15, 0.12),
           "the red in the palette is not the existing marker's red")
-    print(f"[ok] the catalogue's baseline marker matches the environment's own constants "
+    print("[ok] the catalogue's baseline marker matches the environment's own constants "
           f"(size {sc.MARKER_SIZE_M:.2f} m, wall, height, red)")
 
 
@@ -472,7 +472,7 @@ def test_the_built_marker_matches_the_environment_plate_exactly() -> None:
         f"the catalogue's plate spans x {cat_x[0]:.4f}..{cat_x[1]:.4f} but the "
         f"environment's spans {env_x[0]:.4f}..{env_x[1]:.4f}; the far wall's inner face "
         f"is at {env.ROOM_LENGTH_X}, so a plate centred on the wall plane is half buried "
-        f"in it and its visible face is 0.02 m too far away",
+        "in it and its visible face is 0.02 m too far away",
     )
 
     # The wall's inner face, from the environment's own room construction.
@@ -675,7 +675,7 @@ def test_no_dressing_protrudes_into_the_corridor() -> None:
             protrusion = float(item["size"][0]) - sc.MOUNT_CLEARANCE_M
             check(protrusion <= 0.20,
                   f"{scene}: {item['name']} protrudes {protrusion:.3f} m from the wall into "
-                  f"the corridor the agent looks along")
+                  "the corridor the agent looks along")
     print("[ok] no wall-mounted dressing protrudes more than 0.20 m into the corridor")
 
 
@@ -726,7 +726,7 @@ def test_every_colour_word_names_its_own_rgb() -> None:
         "k": ("pink", (1.00, 0.40, 0.70)),
     }
     check(set(expected) == set(sc.COLOURS),
-          f"the palette and this table name different colours: "
+          "the palette and this table name different colours: "
           f"{sorted(set(expected) ^ set(sc.COLOURS))}")
     for key, (word, rgb) in expected.items():
         check(sc.COLOUR_NAMES[key] == word,
@@ -763,7 +763,7 @@ def test_no_prompt_ever_names_a_colour_the_palette_does_not_use() -> None:
             first = sc.describe_marker(scene, slot).split()[0]
             check(first in allowed,
                   f"{scene} slot {slot}: the prompt would say {first!r}, which is not a "
-                  f"colour in this palette")
+                  "colour in this palette")
     print(f"[ok] all 25 prompts use one of the {len(allowed)} palette colour words")
 
 
@@ -817,7 +817,7 @@ def test_each_scene_declares_its_dressing_exactly_once() -> None:
         if scene in installed:
             check(inline == 0,
                   f"{scene} has {inline} inline dressing items AND is assigned by "
-                  f"_install_dressing, so the inline list is dead configuration")
+                  "_install_dressing, so the inline list is dead configuration")
         else:
             check(inline == live,
                   f"{scene} is not assigned by _install_dressing, so its {live} live items "
@@ -879,10 +879,10 @@ def test_dressing_stands_on_the_floor_and_hangs_on_its_wall() -> None:
                 detached_wall.append((scene, item["name"], round(gap, 4)))
 
     check(not buried_floor,
-          f"these floor items have their base below the floor plane: "
+          "these floor items have their base below the floor plane: "
           f"{[(s, n, round(b * 1000, 1)) for s, n, b in buried_floor]}")
     check(not detached_wall,
-          f"these wall items float in front of their wall by this many metres: "
+          "these wall items float in front of their wall by this many metres: "
           f"{detached_wall}")
     print(f"[ok] all {count} dressing items stand on the floor and hang on their wall "
           f"(obstacle face {obstacle_face}, far face {far_face}; deepest back face "
@@ -1095,7 +1095,7 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
                     if module not in KNOWN_MODULES:
                         offenders.append(
                             f"{name}:{number} {module} is used but is not an allowlisted pxr "
-                            f"module, so none of its members are checked")
+                            "module, so none of its members are checked")
                         continue
                     for member in re.findall(rf"\b{module}\.([A-Za-z_][A-Za-z0-9_]*)", line):
                         if member not in ALLOWED[module]:
@@ -1106,9 +1106,9 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
           "name is misspelt or a new API is being used without checking the docs:\n    "
           + "\n    ".join(sorted(set(offenders))))
     total = sum(len(v) for v in ALLOWED.values())
-    print(f"[ok] every pxr member used in the repo EXISTS in the API and is on the verified list "
+    print("[ok] every pxr member used in the repo EXISTS in the API and is on the verified list "
           f"({total} members); note this checks names, not semantics, and the semantic rules live "
-          f"in tools/audit_dressing.py")
+          "in tools/audit_dressing.py")
 
 
 def test_no_module_calls_a_scene_helper_that_does_not_exist() -> None:
@@ -1258,18 +1258,18 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
                 continue
             if name not in measured:
                 problems.append(f"{scene}/{item['name']} references {name}, which has no "
-                                f"recorded measurement")
+                                "recorded measurement")
                 continue
             want = measured[name]
             factor = float(scales.get(name, 1.0))
             if factor <= 0:
                 problems.append(f"{scene}/{item['name']}: ASSET_SCALE[{name!r}] is {factor}, "
-                                f"which cannot scale anything")
+                                "which cannot scale anything")
                 continue
             room_fit = float(item.get("room_fit", 1.0))
             if not 0.0 < room_fit <= 1.0:
                 problems.append(f"{scene}/{item['name']}: room_fit is {room_fit}; it is a fraction "
-                                f"of the measured size and must be in (0, 1]")
+                                "of the measured size and must be in (0, 1]")
                 continue
             # The check used to demand that the declared box EQUAL the measured prop on every axis.
             # That requirement is what forced per-axis fitting, and per-axis fitting is what
@@ -1338,7 +1338,7 @@ def test_the_marker_assertion_counts_parts_not_children() -> None:
           "the marker name constants no longer match the names build_marker writes")
     check(not material.startswith(part),
           f"the material prefix {material!r} starts with the part prefix {part!r}, so a count of "
-          f"parts would include materials")
+          "parts would include materials")
 
     source = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                "scene_builder.py"), encoding="utf-8").read()
@@ -1355,7 +1355,7 @@ def test_the_marker_assertion_counts_parts_not_children() -> None:
     # would compare 0 against 0 and call that agreement.
     empty = [name for name, polygons in sc.SHAPES.items() if not polygons]
     check(not empty, f"these shapes have no polygons, so they build no marker part: {empty}")
-    print(f"[ok] marker parts and their materials are separately named "
+    print("[ok] marker parts and their materials are separately named "
           f"({part!r} vs {material!r}), and set_marker_slot counts parts")
 
 
@@ -1387,7 +1387,7 @@ def test_every_prompt_names_the_marker_that_is_on_the_wall() -> None:
                     failures.append(f"{scene}/{slot}: the prompt never says {want!r}")
                 if pr.MARKER_PHRASE in text:
                     failures.append(f"{scene}/{slot}: the frozen phrase {pr.MARKER_PHRASE!r} survived, "
-                                    f"so the prompt names a marker that is not on the wall")
+                                    "so the prompt names a marker that is not on the wall")
                 pairs.add((scene,) + sc.MARKERS[scene][slot - 1])
     finally:
         pr.set_marker_descriptor(original)
@@ -1397,7 +1397,7 @@ def test_every_prompt_names_the_marker_that_is_on_the_wall() -> None:
     # the same object, or a scene effect would be confounded with a marker effect.
     combos = [(shape, colour) for scene in sc.SCENE_ORDER for shape, colour in sc.MARKERS[scene]]
     check(len(set(combos)) == len(combos),
-          f"these (shape, colour) pairs are used by more than one scene: "
+          "these (shape, colour) pairs are used by more than one scene: "
           f"{[c for c in combos if combos.count(c) > 1]}")
 
     # And inside a scene the five must differ in shape AND colour, so a colour misjudgement cannot be
@@ -1409,9 +1409,9 @@ def test_every_prompt_names_the_marker_that_is_on_the_wall() -> None:
               f"{scene} reuses a shape across its five markers: {shapes}")
         check(len(set(colours)) == len(colours),
               f"{scene} reuses a colour across its five markers: {colours}")
-    print(f"[ok] all 25 (scene, slot) prompts name the marker that is on the wall, the frozen phrase "
-          f"never survives, all 25 (shape, colour) pairs are distinct, and each scene's five differ in "
-          f"shape and in colour")
+    print("[ok] all 25 (scene, slot) prompts name the marker that is on the wall, the frozen phrase "
+          "never survives, all 25 (shape, colour) pairs are distinct, and each scene's five differ in "
+          "shape and in colour")
 
 
 def test_no_scene_floor_is_covered_by_a_dark_material() -> None:
@@ -1462,7 +1462,7 @@ def test_no_scene_floor_is_covered_by_a_dark_material() -> None:
         names = [n for n in texture.findall(source)
                  if re.search(r"_D\.png|basecolor|_bc\.png", n, re.I)]
         check(names, f"{scene}'s floor material {basename} declares no albedo texture, so this "
-                     f"check cannot measure it and must not pass it silently")
+                     "check cannot measure it and must not pass it silently")
         for name in names:
             image_path = os.path.join(os.path.dirname(candidate), "Textures", name)
             check(os.path.exists(image_path),
@@ -1504,9 +1504,9 @@ def test_the_dressing_code_has_none_of_this_session_s_known_faults() -> None:
     result = subprocess.run([sys.executable, audit], capture_output=True, text=True, cwd=root)
     check(result.returncode == 0,
           f"tools/audit_dressing.py reports problems:\n{result.stdout}{result.stderr}")
-    print(f"[ok] the dressing audit found none of the session's known faults "
+    print("[ok] the dressing audit found none of the session's known faults "
           f"({len([line for line in result.stdout.splitlines() if line.strip().startswith('note:')])} "
-          f"guarded conversion(s) confirmed)")
+          "guarded conversion(s) confirmed)")
 
 
 def test_no_measurement_is_a_placeholder() -> None:
@@ -1534,7 +1534,7 @@ def test_no_measurement_is_a_placeholder() -> None:
             problems.append(f"{name} measures {size}, which is empty")
         if any(v == 0 for v in size) and name not in FLAT_ON_ONE_AXIS:
             problems.append(f"{name} measures {size} with a zero axis but is not a flat primitive; "
-                            f"either it is a placeholder or it belongs in FLAT_ON_ONE_AXIS")
+                            "either it is a placeholder or it belongs in FLAT_ON_ONE_AXIS")
     check(not problems,
           "these measurement entries are not measurements:\n    " + "\n    ".join(problems))
     print(f"[ok] all {len(sc.PROP_MEASUREMENTS)} measurement(s) are recorded values, with "

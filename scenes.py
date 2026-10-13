@@ -466,7 +466,6 @@ PROP_MEASUREMENTS = {
     # tool's own DIVIDE BY 100 warning), hence the ASSET_SCALE entry below.
     "packing_table.usd": (2.4736, 1.0829, 0.7816),
     "Goldflame_Spirea.usd": (31.8724, 20.4208, 31.1931),
-    "Roxana_DiningBench.usd": (43.3811, 45.3252, 150.0522),
     "RackSmall_A7.usd": (108.0188, 301.0001, 199.8097),
     # Measured 2026-10-10 on the lab machine.  Four of these are centimetre assets and three are
     # metres, IN THE SAME BATCH: the shrubs and the conifer are centimetres while the bench, bin,
@@ -587,7 +586,6 @@ ASSET_SCALE = {
     "RackSmallEmpty_A1.usd": CM_TO_M,
     "RackSmall_A7.usd": CM_TO_M,
     "Goldflame_Spirea.usd": CM_TO_M,
-    "Roxana_DiningBench.usd": CM_TO_M,
 }
 
 
