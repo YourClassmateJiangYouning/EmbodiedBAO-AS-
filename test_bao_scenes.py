@@ -1359,6 +1359,61 @@ def test_the_marker_assertion_counts_parts_not_children() -> None:
           f"({part!r} vs {material!r}), and set_marker_slot counts parts")
 
 
+def test_every_prompt_names_the_marker_that_is_on_the_wall() -> None:
+    """The prompt must not describe a marker the scene does not have.
+
+    The whole comparison rests on this: every prompt is the frozen Stage 1 text with ONE noun phrase
+    swapped (`protocol._name_marker`), so a run whose prompt said "the red marker" while a cyan disc
+    hung on the wall would measure obedience to a false statement instead of the aperture judgement
+    being studied.  The substitution is silent -- `str.replace` does nothing when the phrase is absent
+    -- so a template edit that removed the phrase, or a scene whose slot has no marker, would produce a
+    confidently wrong prompt with no error anywhere.
+
+    Checked for all 25 (scene, slot) combinations, which is the whole grid this stage runs.
+    """
+    import protocol as pr
+
+    failures = []
+    pairs = set()
+    original = pr.MARKER_DESCRIPTOR
+    try:
+        for scene in sc.SCENE_ORDER:
+            for slot in range(1, len(sc.MARKERS[scene]) + 1):
+                descriptor = sc.describe_marker(scene, slot)
+                pr.set_marker_descriptor(descriptor)
+                text = pr.build_prompt(max_steps=30)
+                want = "the " + descriptor
+                if want not in text:
+                    failures.append(f"{scene}/{slot}: the prompt never says {want!r}")
+                if pr.MARKER_PHRASE in text:
+                    failures.append(f"{scene}/{slot}: the frozen phrase {pr.MARKER_PHRASE!r} survived, "
+                                    f"so the prompt names a marker that is not on the wall")
+                pairs.add((scene,) + sc.MARKERS[scene][slot - 1])
+    finally:
+        pr.set_marker_descriptor(original)
+    check(not failures, "prompts do not match their markers: " + "; ".join(failures))
+
+    # All 25 (shape, colour) pairs distinct: two runs that differ only in scene must not be asked for
+    # the same object, or a scene effect would be confounded with a marker effect.
+    combos = [(shape, colour) for scene in sc.SCENE_ORDER for shape, colour in sc.MARKERS[scene]]
+    check(len(set(combos)) == len(combos),
+          f"these (shape, colour) pairs are used by more than one scene: "
+          f"{[c for c in combos if combos.count(c) > 1]}")
+
+    # And inside a scene the five must differ in shape AND colour, so a colour misjudgement cannot be
+    # rescued only by the shape (or the reverse).
+    for scene in sc.SCENE_ORDER:
+        shapes = [shape for shape, _ in sc.MARKERS[scene]]
+        colours = [colour for _, colour in sc.MARKERS[scene]]
+        check(len(set(shapes)) == len(shapes),
+              f"{scene} reuses a shape across its five markers: {shapes}")
+        check(len(set(colours)) == len(colours),
+              f"{scene} reuses a colour across its five markers: {colours}")
+    print(f"[ok] all 25 (scene, slot) prompts name the marker that is on the wall, the frozen phrase "
+          f"never survives, all 25 (shape, colour) pairs are distinct, and each scene's five differ in "
+          f"shape and in colour")
+
+
 def test_no_scene_floor_is_covered_by_a_dark_material() -> None:
     """Every textured floor must sample an albedo texture bright enough to be seen.
 
@@ -1652,6 +1707,7 @@ def main() -> int:
         test_the_manual_states_the_scene_facts_the_code_holds,
         test_the_report_says_the_marker_size_and_whether_the_paint_landed,
         test_the_marker_assertion_counts_parts_not_children,
+        test_every_prompt_names_the_marker_that_is_on_the_wall,
         test_no_scene_floor_is_covered_by_a_dark_material,
         test_the_dressing_code_has_none_of_this_session_s_known_faults,
         test_the_scene_modules_have_no_undefined_names_or_unused_imports,
