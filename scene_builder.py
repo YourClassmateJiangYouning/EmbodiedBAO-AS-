@@ -651,8 +651,24 @@ def _vendored_texture(basename: str) -> Optional[str]:
 # size: a corrugated sheet is ~0.6 m, a bookcase bay ~3 m, a wall-covering render ~4 m.
 # How many METRES one repeat of each texture covers.  This is the number that decides whether a
 # pattern reads as a material or as a few large shapes, and it is set from the subject's real size.
+# How rough each textured surface is.  Grass and ground are matte (0.95); a wall finish is a little
+# smoother (0.65-0.8).  Everything is metallic 0 -- a metallic textured surface mirrors the room.
+TEXTURE_ROUGHNESS = {
+    "grassdistance_basecolor.png": 0.95,
+    "Tex_Hospital_Floor_basecolor.png": 0.85,
+    "T_Carpet_bc.png": 0.95,
+}
+
+
 TEXTURE_METRES_PER_REPEAT = {
-    "t_corrugatedboxes_b01_tile01_albedo.png": 0.6,
+    # 1.5 m rather than 0.6: at 0.6 the corrugated ribs repeated 26 times across a 16 m wall, which is
+    # finer than the eye resolves at this distance and averaged back to a plain colour -- the owner's
+    # "1.2 的侧墙似乎还是纯色".
+    "t_corrugatedboxes_b01_tile01_albedo.png": 1.5,
+    # grass is fine-grained, so a larger repeat reads as a lawn rather than as noise
+    "grassdistance_basecolor.png": 3.0,
+    "Tex_CeilingTile2x2_basecolor.png": 1.2,
+    "Tex_Hospital_Floor_basecolor.png": 1.5,
     "T_Board_bc.png": 1.2,
     "T_Bookcase_bc.png": 1.5,
     "T_Building_02_bc.png": 2.0,
@@ -751,7 +767,11 @@ def bind_texture_material(stage: Any, prim_path: str, name: str,
         mat = UsdShade.Material.Define(stage, f"/World/Looks/tex_{stem}")
         shader = UsdShade.Shader.Define(stage, f"/World/Looks/tex_{stem}/Shader")
         shader.CreateIdAttr("UsdPreviewSurface")
-        shader.CreateInput("roughness", Sdf.ValueTypeNames.Float).Set(0.65)
+        # ROUGHNESS AND METALLIC PER SURFACE.  Grass is not glossy and the owner reported the park's
+        # floor "还是反光地面"; a lawn needs a matte surface, and the metallic input must be 0 or the
+        # ground reflects the room like polished stone.
+        rough = TEXTURE_ROUGHNESS.get(os.path.basename(texture_path), 0.65)
+        shader.CreateInput("roughness", Sdf.ValueTypeNames.Float).Set(float(rough))
         shader.CreateInput("metallic", Sdf.ValueTypeNames.Float).Set(0.0)
         reader = UsdShade.Shader.Define(stage, f"/World/Looks/tex_{stem}/Reader")
         reader.CreateIdAttr("UsdUVTexture")

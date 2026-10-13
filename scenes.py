@@ -240,14 +240,25 @@ SURFACE_TEXTURES: Dict[str, Dict[str, str]] = {
     #   T_Carpet_bc.png                    mean  46  std 35      plain colour, not a pattern
     #
     # and each image is used ONCE across the five scenes, side walls and far walls always different.
-    "stage1.2": {"side_wall": "t_corrugatedboxes_b01_tile01_albedo.png",   # mean 142 std 29
-                 "far_wall":  "T_Board_bc.png"},                          # mean 154 std 75
-    "stage1.3": {"side_wall": "T_Bookcase_bc.png",                        # mean 124 std 82
-                 "far_wall":  "T_Building_02_bc.png"},                    # mean 148 std 52
-    "stage1.4": {"side_wall": "T_Cupboard_bc.png",                        # mean  96 std 86
-                 "far_wall":  "T_Building_01_bc.png"},                    # mean 182 std 35
-    "stage1.5": {"side_wall": "T_BooksA_bc.png",                          # mean  97 std 77
-                 "far_wall":  "T_Billboard_bc.png"},                      # mean 122 std 69
+    "stage1.2": {"side_wall": "t_corrugatedboxes_b01_tile01_albedo.png",   # corrugated metal
+                 "far_wall":  "T_Board_bc.png"},                          # boarded partition
+    "stage1.3": {"side_wall": "T_Bookcase_bc.png",                        # shelf-lined reading room
+                 "far_wall":  "T_Building_02_bc.png"},                    # stone end wall
+    "stage1.4": {"side_wall": "T_Cupboard_bc.png",                        # weathered panelling
+                 "far_wall":  "T_Building_01_bc.png",                     # brickwork
+                 # THE LAWN, from the bucket's own terrain-with-grass material
+                 # (nv_core/.../terrain_with_grass_adv/grassdistance_basecolor.png), fetched for
+                 # this.  It is a tileable ground texture rather than an object atlas, which is what
+                 # a floor needs.
+                 "floor":     "grassdistance_basecolor.png"},
+    # `T_BooksA_bc` was here for stage1.5 and the owner called the result "过分花哨", correctly: these
+    # `T_*_bc` images are OBJECT ATLASES -- T_BooksA_bc is a photograph of whole shelves of products --
+    # so tiling one covers a wall in a chaotic collage of tiny objects.  A wall needs a tileable
+    # MATERIAL texture, and the Simple_Warehouse set has real ones (`Tex_*`): plaster, wood grain,
+    # ceiling tile, checkered, hospital floor.  stage1.5 gets the ceiling tile, which is a calm grid
+    # and reads as a shop's wall/ceiling finish.
+    "stage1.5": {"side_wall": "Tex_CeilingTile2x2_basecolor.png",          # calm tile grid
+                 "far_wall":  "Tex_Hospital_Floor_basecolor.png"},         # pale shop floor finish
 }
 # THE OBSTACLE WALL -- the panels that form the passage, including the two flanking the opening.
 # These are the surfaces an eye-camera frame is mostly made of, and they are NOT the side walls: they

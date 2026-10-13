@@ -1,0 +1,290 @@
+mdl 1.3;
+
+import ::math::*;
+import ::state::*;
+import ::tex::*;
+import ::anno::*;
+using .::OmniUe4Function import *;
+using .::OmniUe4Base import *;
+
+export annotation sampler_color();
+export annotation sampler_normal();
+export annotation sampler_grayscale();
+export annotation sampler_alpha();
+export annotation sampler_masks();
+export annotation sampler_distancefield();
+export annotation dither_masked_off();
+export annotation world_space_normal();
+
+export material terrain_base(
+	float WorldSpaceUVMult = 5000.0,
+	float Set1Tile = 2.5,
+	uniform texture_2d Set1SuperNormal = texture_2d("../../drivable_surfaces/general/road/road_base/set1supernormal.TGA",::tex::gamma_linear)
+	[[sampler_color()]],
+	float Set2Tile = 4.0,
+	uniform texture_2d Set2SuperNormal = texture_2d("../../drivable_surfaces/general/road/road_base/set1supernormal.TGA",::tex::gamma_linear)
+	[[sampler_color()]],
+	float Set1Set2BlendNoiseTile = 1.0,
+	uniform texture_2d Set1Set2BlendNoise = texture_2d("../../drivable_surfaces/general/road/road_base/t_noise_d.png",::tex::gamma_srgb)
+	[[sampler_color()]],
+	float NormalConvert = 1.0,
+	float NormalAmount = 0.2,
+	float Puddle_NormalAmount = 0.0,
+	float Puddle_NoiseTile = 0.5,
+	uniform texture_2d PuddleNoise = texture_2d("../../drivable_surfaces/general/road/road_base/t_noise01.png",::tex::gamma_srgb)
+	[[sampler_color()]],
+	float Puddle_NoiseBlend = 1.0,
+	float Terrain_Set1Tile = 5.0,
+	uniform texture_2d Terrain_Set1SuperNormal = texture_2d("./terrain_base/grassdead_normal.TGA",::tex::gamma_srgb)
+	[[sampler_color()]],
+	float Terrain_Set2Tile = 2.5,
+	uniform texture_2d Terrain_Set2SuperNormal = texture_2d("./terrain_base/grass_normal.TGA",::tex::gamma_srgb)
+	[[sampler_color()]],
+	float Terrain_NoiseTile = 4.0,
+	uniform texture_2d TerrainNoise = texture_2d("./terrain_base/terrain_blend_noise.TGA",::tex::gamma_srgb)
+	[[sampler_color()]],
+	float Terrain_Edge1ParamA = 2.061228036880493,
+	float Terrain_Edge1ParamB = 0.09909400343895,
+	float Terrain_Edge1ParamC = -0.108556002378464,
+	float Terrain_Edge1Width = 1.0,
+	int VertexColorCoordinateIndex = 1,
+	float Terrain_Set3Tile = 6.309484004974365,
+	uniform texture_2d Terrain_Set3SuperNormal = texture_2d("./terrain_base/dark_normal.TGA",::tex::gamma_srgb)
+	[[sampler_color()]],
+	float Terrain_Edge2ParamA = 0.647574007511139,
+	float Terrain_Edge2ParamB = 3.697367906570435,
+	float Terrain_Edge2ParamC = -0.042270001024008,
+	float Terrain_Edge2Width = 1.0,
+	float Terrain_NormalConvert = 1.0,
+	float Terrain_Edge0ParamA = 0.336418986320496,
+	float Terrain_Edge0ParamB = 19.704376220703125,
+	float Terrain_Edge0ParamC = 0.005729999858886,
+	float Terrain_Edge0Width = 1.0,
+	uniform texture_2d Set1SuperAlbedo = texture_2d("../../drivable_surfaces/general/road/road_base/set1superalbedo.TGA",::tex::gamma_srgb)
+	[[sampler_color()]],
+	uniform texture_2d Set2SuperAlbedo = texture_2d("../../drivable_surfaces/general/road/road_base/set1superalbedo.TGA",::tex::gamma_srgb)
+	[[sampler_color()]],
+	float AlbedoMult = 2.0,
+	float Puddle_AlbedoMult = 1.0,
+	uniform texture_2d Terrain_Set1SuperAlbedo = texture_2d("./terrain_base/grassdead_basecolor.TGA",::tex::gamma_srgb)
+	[[sampler_color()]],
+	uniform texture_2d Terrain_Set2SuperAlbedo = texture_2d("./terrain_base/grass_basecolor.TGA",::tex::gamma_srgb)
+	[[sampler_color()]],
+	uniform texture_2d Terrain_Set3SuperAlbedo = texture_2d("./terrain_base/dark_basecolor.TGA",::tex::gamma_srgb)
+	[[sampler_color()]],
+	uniform texture_2d Terrain_GlobalAlbedo = texture_2d("./terrain_base/white.png",::tex::gamma_srgb)
+	[[sampler_color()]],
+	float Terrain_Edge3ParamA = 0.243763998150826,
+	float Terrain_Edge3ParamB = 1.786692976951599,
+	float Terrain_Edge3ParamC = 0.033920001238585,
+	float Terrain_Edge3Width = 0.961905002593994,
+	float SpecularPow_Order1 = 1.0,
+	float SpecularMult_Order2 = 1.0,
+	float Puddle_SpecularPow_Order1 = 2.0,
+	float Puddle_SpecularMult_Order2 = 0.32,
+	float RoughnessPow_Order1 = 1.5,
+	float RoughnessMult_Order2 = 1.0,
+	float RoughnessOffset_Order3 = -0.085716,
+	float Puddle_RoughnessPow_Order1 = 1.0,
+	float Puddle_RoughnessMult_Order2 = 1.0,
+	float Puddle_RoughnessOffset_Order3 = -1.0)
+ = 
+	let {
+	float3 WorldPositionOffset_mdl = float3(0.0,0.0,0.0);
+	float2 CustomizedUV0_mdl = float2(state::texture_coordinate(0).x,1.0-state::texture_coordinate(0).y);
+
+	float3 Local0 = ((state::transform_point(state::coordinate_internal,state::coordinate_world,state::position())*state::meters_per_scene_unit()*100.0) / WorldSpaceUVMult);
+	float2 Local1 = (float2(Local0.x,Local0.y) * Set1Tile);
+	float4 Local2 = tex::lookup_float4(Set1SuperNormal,float2(Local1.x,1.0-Local1.y),tex::wrap_repeat,tex::wrap_repeat);
+	float2 Local3 = (float2(Local0.x,Local0.y) * Set2Tile);
+	float4 Local4 = tex::lookup_float4(Set2SuperNormal,float2(Local3.x,1.0-Local3.y),tex::wrap_repeat,tex::wrap_repeat);
+	float2 Local5 = (float2(Local0.x,Local0.y) * Set1Set2BlendNoiseTile);
+	float4 Local6 = tex::lookup_float4(Set1Set2BlendNoise,float2(Local5.x,1.0-Local5.y),tex::wrap_repeat,tex::wrap_repeat);
+	float3 Local7 = math::lerp(float3(Local2.x,Local2.y,Local2.z),float3(Local4.x,Local4.y,Local4.z),Local6.x);
+	float3 Local8 = (Local7 * 2.0);
+	float3 Local9 = (Local8 - 1.0);
+	float3 Local10 = math::lerp(Local7,Local9,NormalConvert);
+	float3 Local11 = math::lerp(float3(0.0,0.0,1.0),Local10,NormalAmount);
+	float3 Local12 = math::lerp(float3(0.0,0.0,1.0),Local10,Puddle_NormalAmount);
+	float2 Local13 = (float2(Local0.x,Local0.y) * Puddle_NoiseTile);
+	float4 Local14 = tex::lookup_float4(PuddleNoise,float2(Local13.x,1.0-Local13.y),tex::wrap_repeat,tex::wrap_repeat);
+	float Local15 = (Local14.x * Puddle_NoiseBlend);
+	float3 Local16 = math::lerp(Local11,Local12,Local15);
+	float2 Local17 = (float2(Local0.x,Local0.y) * Terrain_Set1Tile);
+	float4 Local18 = tex::lookup_float4(Terrain_Set1SuperNormal,float2(Local17.x,1.0-Local17.y),tex::wrap_repeat,tex::wrap_repeat);
+	float2 Local19 = (float2(Local0.x,Local0.y) * Terrain_Set2Tile);
+	float4 Local20 = tex::lookup_float4(Terrain_Set2SuperNormal,float2(Local19.x,1.0-Local19.y),tex::wrap_repeat,tex::wrap_repeat);
+	float2 Local21 = (float2(Local0.x,Local0.y) * Terrain_NoiseTile);
+	float4 Local22 = tex::lookup_float4(TerrainNoise,float2(Local21.x,1.0-Local21.y),tex::wrap_repeat,tex::wrap_repeat);
+	float Local23 = (1.0 - Local22.x);
+	float Local24 = (Local23 * Terrain_Edge1ParamA);
+	float Local25 = (1.0 + Terrain_Edge1ParamB);
+	float Local26 = (Terrain_Edge1ParamA * -1.0);
+	float Local27 = (Local26 + 0.0);
+	float Local28 = math::min(Local25,Local27);
+	float Local29 = math::max(Local25,Local27);
+	float Local30 = (Local25 - Local27);
+	float Local31 = (1.0 - Terrain_Edge1ParamC);
+	float Local32 = (Local30 / Local31);
+	float Local33 = math::min(1.0,Terrain_Edge1ParamC);
+	float Local34 = math::max(1.0,Terrain_Edge1ParamC);
+	float Local35 = (1.0 - Terrain_Edge1Width);
+	float Local36 = (1.0 - Local35);
+	float Local37 = (Local31 / Local36);
+	float Local38 = (::vertex_color_from_coordinate(VertexColorCoordinateIndex).x - Local35);
+	float Local39 = (Local37 * Local38);
+	float Local40 = (Local39 + Terrain_Edge1ParamC);
+	float Local41 = math::min(math::max(Local40,Local33),Local34);
+	float Local42 = math::pow(Local41,1.5);
+	float Local43 = (Local42 - Terrain_Edge1ParamC);
+	float Local44 = (Local32 * Local43);
+	float Local45 = (Local44 + Local27);
+	float Local46 = math::min(math::max(Local45,Local28),Local29);
+	float Local47 = (Local24 + Local46);
+	float Local48 = math::min(math::max(Local47,0.0),1.0);
+	float3 Local49 = math::lerp(float3(Local18.x,Local18.y,Local18.z),float3(Local20.x,Local20.y,Local20.z),Local48);
+	float2 Local50 = (float2(Local0.x,Local0.y) * Terrain_Set3Tile);
+	float4 Local51 = tex::lookup_float4(Terrain_Set3SuperNormal,float2(Local50.x,1.0-Local50.y),tex::wrap_repeat,tex::wrap_repeat);
+	float Local52 = (Local23 * Terrain_Edge2ParamA);
+	float Local53 = (1.0 + Terrain_Edge2ParamB);
+	float Local54 = (Terrain_Edge2ParamA * -1.0);
+	float Local55 = (Local54 + 0.0);
+	float Local56 = math::min(Local53,Local55);
+	float Local57 = math::max(Local53,Local55);
+	float Local58 = (Local53 - Local55);
+	float Local59 = (1.0 - Terrain_Edge2ParamC);
+	float Local60 = (Local58 / Local59);
+	float Local61 = math::min(1.0,Terrain_Edge2ParamC);
+	float Local62 = math::max(1.0,Terrain_Edge2ParamC);
+	float Local63 = (1.0 - Terrain_Edge2Width);
+	float Local64 = (1.0 - Local63);
+	float Local65 = (Local59 / Local64);
+	float Local66 = (::vertex_color_from_coordinate(VertexColorCoordinateIndex).z - Local63);
+	float Local67 = (Local65 * Local66);
+	float Local68 = (Local67 + Terrain_Edge2ParamC);
+	float Local69 = math::min(math::max(Local68,Local61),Local62);
+	float Local70 = math::pow(Local69,1.5);
+	float Local71 = (Local70 - Terrain_Edge2ParamC);
+	float Local72 = (Local60 * Local71);
+	float Local73 = (Local72 + Local55);
+	float Local74 = math::min(math::max(Local73,Local56),Local57);
+	float Local75 = (Local52 + Local74);
+	float Local76 = math::min(math::max(Local75,0.0),1.0);
+	float3 Local77 = math::lerp(Local49,float3(Local51.x,Local51.y,Local51.z),Local76);
+	float3 Local78 = (Local77 * 2.0);
+	float3 Local79 = (Local78 - 1.0);
+	float3 Local80 = math::lerp(Local77,Local79,Terrain_NormalConvert);
+	float Local81 = (Local23 * Terrain_Edge0ParamA);
+	float Local82 = (1.0 + Terrain_Edge0ParamB);
+	float Local83 = (Terrain_Edge0ParamA * -1.0);
+	float Local84 = (Local83 + 0.0);
+	float Local85 = math::min(Local82,Local84);
+	float Local86 = math::max(Local82,Local84);
+	float Local87 = (Local82 - Local84);
+	float Local88 = (1.0 - Terrain_Edge0ParamC);
+	float Local89 = (Local87 / Local88);
+	float Local90 = math::min(1.0,Terrain_Edge0ParamC);
+	float Local91 = math::max(1.0,Terrain_Edge0ParamC);
+	float Local92 = (1.0 - Terrain_Edge0Width);
+	float Local93 = (1.0 - Local92);
+	float Local94 = (Local88 / Local93);
+	float Local95 = (::vertex_color_from_coordinate(VertexColorCoordinateIndex).x - Local92);
+	float Local96 = (Local94 * Local95);
+	float Local97 = (Local96 + Terrain_Edge0ParamC);
+	float Local98 = math::min(math::max(Local97,Local90),Local91);
+	float Local99 = math::pow(Local98,1.5);
+	float Local100 = (Local99 - Terrain_Edge0ParamC);
+	float Local101 = (Local89 * Local100);
+	float Local102 = (Local101 + Local84);
+	float Local103 = math::min(math::max(Local102,Local85),Local86);
+	float Local104 = (Local81 + Local103);
+	float Local105 = math::min(math::max(Local104,0.0),1.0);
+	float3 Local106 = math::lerp(Local16,Local80,Local105);
+
+	float Local106a = Local106.x * Local106.x + Local106.y * Local106.y + Local106.z * Local106.z;
+	float Local106b = math::pow(Local106a, 0.5);
+	float3 Normal_mdl = Local106 / Local106b;
+
+	float4 Local107 = tex::lookup_float4(Set1SuperAlbedo,float2(Local1.x,1.0-Local1.y),tex::wrap_repeat,tex::wrap_repeat);
+	float4 Local108 = tex::lookup_float4(Set2SuperAlbedo,float2(Local3.x,1.0-Local3.y),tex::wrap_repeat,tex::wrap_repeat);
+	float3 Local109 = math::lerp(float3(float2(Local107.x,Local107.y).x,float2(Local107.x,Local107.y).y,Local107.z),float3(float2(Local108.x,Local108.y).x,float2(Local108.x,Local108.y).y,Local108.z),Local6.x);
+	float3 Local110 = (Local109 * AlbedoMult);
+	float3 Local111 = math::min(math::max(Local110,float3(0.0,0.0,0.0)),float3(1.0,1.0,1.0));
+	float3 Local112 = (Local109 * Puddle_AlbedoMult);
+	float3 Local113 = math::min(math::max(Local112,float3(0.0,0.0,0.0)),float3(1.0,1.0,1.0));
+	float3 Local114 = math::lerp(Local111,Local113,Local15);
+	float4 Local115 = tex::lookup_float4(Terrain_Set1SuperAlbedo,float2(Local17.x,1.0-Local17.y),tex::wrap_repeat,tex::wrap_repeat);
+	float4 Local116 = tex::lookup_float4(Terrain_Set2SuperAlbedo,float2(Local19.x,1.0-Local19.y),tex::wrap_repeat,tex::wrap_repeat);
+	float3 Local117 = math::lerp(float3(Local115.x,Local115.y,Local115.z),float3(Local116.x,Local116.y,Local116.z),Local48);
+	float4 Local118 = tex::lookup_float4(Terrain_Set3SuperAlbedo,float2(Local50.x,1.0-Local50.y),tex::wrap_repeat,tex::wrap_repeat);
+	float3 Local119 = math::lerp(Local117,float3(Local118.x,Local118.y,Local118.z),Local76);
+	float3 Local120 = math::lerp(Local114,Local119,Local105);
+	float4 Local121 = tex::lookup_float4(Terrain_GlobalAlbedo,float2(CustomizedUV0_mdl.x,1.0-CustomizedUV0_mdl.y),tex::wrap_repeat,tex::wrap_repeat);
+	float Local122 = (Local23 * Terrain_Edge3ParamA);
+	float Local123 = (1.0 + Terrain_Edge3ParamB);
+	float Local124 = (Terrain_Edge3ParamA * -1.0);
+	float Local125 = (Local124 + 0.0);
+	float Local126 = math::min(Local123,Local125);
+	float Local127 = math::max(Local123,Local125);
+	float Local128 = (Local123 - Local125);
+	float Local129 = (1.0 - Terrain_Edge3ParamC);
+	float Local130 = (Local128 / Local129);
+	float Local131 = math::min(1.0,Terrain_Edge3ParamC);
+	float Local132 = math::max(1.0,Terrain_Edge3ParamC);
+	float Local133 = (1.0 - Terrain_Edge3Width);
+	float Local134 = (1.0 - Local133);
+	float Local135 = (Local129 / Local134);
+	float Local136 = (::vertex_color_from_coordinate(VertexColorCoordinateIndex).y - Local133);
+	float Local137 = (Local135 * Local136);
+	float Local138 = (Local137 + Terrain_Edge3ParamC);
+	float Local139 = math::min(math::max(Local138,Local131),Local132);
+	float Local140 = math::pow(Local139,1.5);
+	float Local141 = (Local140 - Terrain_Edge3ParamC);
+	float Local142 = (Local130 * Local141);
+	float Local143 = (Local142 + Local125);
+	float Local144 = math::min(math::max(Local143,Local126),Local127);
+	float Local145 = (Local122 + Local144);
+	float Local146 = math::min(math::max(Local145,0.0),1.0);
+	float3 Local147 = math::lerp(Local120,float3(Local121.x,Local121.y,Local121.z),Local146);
+	float Local148 = math::lerp(0.0,0.0,Local146);
+	float Local149 = math::lerp(Local107.w,Local108.w,Local6.x);
+	float Local150 = math::pow(Local149,SpecularPow_Order1);
+	float Local151 = (Local150 * SpecularMult_Order2);
+	float Local152 = math::pow(Local149,Puddle_SpecularPow_Order1);
+	float Local153 = (Local152 * Puddle_SpecularMult_Order2);
+	float Local154 = math::lerp(Local151,Local153,Local15);
+	float Local155 = math::lerp(Local115.w,Local116.w,Local48);
+	float Local156 = math::lerp(Local155,Local118.w,Local76);
+	float Local157 = math::lerp(Local154,Local156,Local105);
+	float Local158 = math::lerp(Local157,0.0,Local146);
+	float Local159 = math::lerp(Local2.w,Local4.w,Local6.x);
+	float Local160 = math::pow(Local159,RoughnessPow_Order1);
+	float Local161 = (Local160 * RoughnessMult_Order2);
+	float Local162 = (Local161 + RoughnessOffset_Order3);
+	float Local163 = math::pow(Local159,Puddle_RoughnessPow_Order1);
+	float Local164 = (Local163 * Puddle_RoughnessMult_Order2);
+	float Local165 = (Local164 + Puddle_RoughnessOffset_Order3);
+	float Local166 = math::lerp(Local162,Local165,Local15);
+	float Local167 = math::lerp(Local18.w,Local20.w,Local48);
+	float Local168 = math::lerp(Local167,Local51.w,Local76);
+	float Local169 = math::lerp(Local166,Local168,Local105);
+	float Local170 = math::lerp(Local169,1.0,Local146);
+
+	float3 EmissiveColor_mdl = float3(0.0,0.0,0.0);
+	float OpacityMask_mdl = 1.0;
+	float3 BaseColor_mdl = Local147;
+	float Metallic_mdl = Local148;
+	float Specular_mdl = Local158;
+	float Roughness_mdl = Local170;
+
+	} in
+		::OmniUe4Base(
+			base_color: BaseColor_mdl,
+			metallic: Metallic_mdl,
+			roughness: Roughness_mdl,
+			specular: Specular_mdl,
+			normal: Normal_mdl,
+			opacity: OpacityMask_mdl,
+			emissive_color: EmissiveColor_mdl,
+			displacement: WorldPositionOffset_mdl,
+			two_sided: false);
