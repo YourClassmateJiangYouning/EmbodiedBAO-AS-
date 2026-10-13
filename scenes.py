@@ -466,6 +466,7 @@ PROP_MEASUREMENTS = {
     # tool's own DIVIDE BY 100 warning), hence the ASSET_SCALE entry below.
     "packing_table.usd": (2.4736, 1.0829, 0.7816),
     "Goldflame_Spirea.usd": (31.8724, 20.4208, 31.1931),
+    "Roxana_DiningBench.usd": (43.3811, 45.3252, 150.0522),
     "RackSmall_A7.usd": (108.0188, 301.0001, 199.8097),
     # Measured 2026-10-10 on the lab machine.  Four of these are centimetre assets and three are
     # metres, IN THE SAME BATCH: the shrubs and the conifer are centimetres while the bench, bin,
@@ -586,6 +587,7 @@ ASSET_SCALE = {
     "RackSmallEmpty_A1.usd": CM_TO_M,
     "RackSmall_A7.usd": CM_TO_M,
     "Goldflame_Spirea.usd": CM_TO_M,
+    "Roxana_DiningBench.usd": CM_TO_M,
 }
 
 
@@ -1210,13 +1212,10 @@ def _install_dressing() -> None:
         # The park's remaining furniture, all at measured sizes.  Every placement below was computed
         # against the two rules rather than chosen: a floor item needs |z| >= 1.5 and its lateral
         # half-extent must not cross into the walking band, inside a room whose z is +/-2.5.
-        _dressing_floor("picnic_table", (5.5, 0.00, 1.95), (0.8109, 0.6403, 0.8109), DRESSING_WOOD_PALE,
-                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
-                        "dsready_content/nv_content/common_assets/props_general/table01/table01.usd"),
-        _dressing_floor("bench_iron", (9.5, 0.00, -2.05), (1.2955, 0.9895, 0.8583), DRESSING_WOOD_PALE,
-                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
-                        "dsready_content/nv_content/common_assets/props_general/"
-                        "bench_wrought_iron_02/bench_wrought_iron_02.usd"),
+        _dressing_floor("picnic_table", (5.5, 0.00, 1.95), (1.7315, 0.7580, 0.5471), DRESSING_WOOD_PALE,
+                        PROP_ROOT + "/PackingTable/packing_table.usd", room_fit=0.70),
+        _dressing_floor("bench_iron", (9.5, 0.00, -2.05), (0.4338, 0.4533, 1.5005), DRESSING_WOOD_PALE,
+                        BUCKET_ASSETS + "/ArchVis/Residential/Furniture/Outdoors/Roxana/Roxana_DiningBench.usd"),
         _dressing_floor("bin_square", (13.0, 0.00, 1.95), (0.5855, 1.0112, 0.7957), DRESSING_HEDGE,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
                         "dsready_content/nv_content/common_assets/props_general/"
@@ -1236,14 +1235,10 @@ def _install_dressing() -> None:
         # across; a park bench that size is a bandstand seat, so it is declared at a bench's
         # proportions and place_dressing fits the prop to that box.  The bin and the planters are
         # declared at their measured sizes because those are already right.
-        _dressing_floor("bench_left", (2.4, 0.00, 2.05), (1.7181, 0.1855, 0.9113), DRESSING_WOOD_PALE,
-                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
-                        "dsready_content/nv_content/common_assets/props_general/"
-                        "bench_curved_01/bench_curved_01.usd", room_fit=0.42),
-        _dressing_floor("bench_right", (4.8, 0.00, -2.05), (1.7181, 0.1855, 0.9113), DRESSING_WOOD_PALE,
-                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
-                        "dsready_content/nv_content/common_assets/props_general/"
-                        "bench_curved_01/bench_curved_01.usd", room_fit=0.42),
+        _dressing_floor("bench_left", (2.4, 0.00, 2.05), (0.4338, 0.4533, 1.5005), DRESSING_WOOD_PALE,
+                        BUCKET_ASSETS + "/ArchVis/Residential/Furniture/Outdoors/Roxana/Roxana_DiningBench.usd"),
+        _dressing_floor("bench_right", (2.4, 0.00, -2.05), (0.4338, 0.4533, 1.5005), DRESSING_WOOD_PALE,
+                        BUCKET_ASSETS + "/ArchVis/Residential/Furniture/Outdoors/Roxana/Roxana_DiningBench.usd"),
         _dressing_floor("litter_bin", (6.4, 0.00, 2.10), (0.722, 1.0411, 0.722), DRESSING_CONCRETE,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
                         "dsready_content/nv_content/common_assets/props_general/"
