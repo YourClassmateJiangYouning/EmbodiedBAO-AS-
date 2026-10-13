@@ -720,10 +720,16 @@ def test_every_colour_word_names_its_own_rgb() -> None:
         "l": ("lime", (0.85, 0.95, 0.10)),
         "c": ("cyan", (0.10, 0.65, 0.90)),
         "p": ("purple", (0.55, 0.15, 0.75)),
-        "g": ("green", (0.20, 0.85, 0.25)),
+        "g": ("green", (0.10, 0.50, 0.14)),
         "w": ("wine", (0.55, 0.05, 0.25)),
         "t": ("teal", (0.05, 0.80, 0.70)),
         "k": ("pink", (1.00, 0.40, 0.70)),
+        # BLACK, added deliberately as an 11th colour (the owner asked for it on stage1.5's fifth
+        # marker).  The docstring of the companion test below names "black" as an example of a STALE
+        # word that must fail -- and it did fail here, correctly, until this line existed.  The
+        # difference is that this is a real colour with a real RGB, added on purpose, rather than a
+        # label left over from an earlier draft.
+        "x": ("black", (0.05, 0.05, 0.05)),
     }
     check(set(expected) == set(sc.COLOURS),
           "the palette and this table name different colours: "
@@ -754,7 +760,7 @@ def test_no_prompt_ever_names_a_colour_the_palette_does_not_use() -> None:
     "lime green" -- has to fail here even if its own RGB happens to be plausible.
     """
     allowed = {"red", "magenta", "orange", "lime", "cyan", "purple", "green",
-               "wine", "teal", "pink"}
+               "wine", "teal", "pink", "black"}
     words = set(sc.COLOUR_NAMES.values())
     check(words == allowed,
           f"the colour words are {sorted(words)}, expected exactly {sorted(allowed)}")

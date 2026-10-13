@@ -104,7 +104,9 @@ FOCAL_LENGTH_MM = 13.36
 SENSOR_WIDTH_MM = 20.955
 
 # ---------------------------------------------------------------------------
-# Ten shapes, ten colours, built from primitives only.  No textures: a textured
+# Ten shapes, ELEVEN colours, built from primitives only.  Black joined the palette when the
+# owner asked for it on stage1.5's fifth marker; the ten originals are unchanged apart from a
+# darkened green.  No textures: a textured
 # marker would vary in colour across its surface and make the uniqueness check --
 # which compares colours -- unreliable, and it would need an asset download.
 # ---------------------------------------------------------------------------
@@ -171,10 +173,14 @@ COLOURS: Dict[str, Tuple[float, float, float]] = {
     "l": (0.85, 0.95, 0.10),   # lime
     "c": (0.10, 0.65, 0.90),   # cyan blue
     "p": (0.55, 0.15, 0.75),   # purple
-    "g": (0.20, 0.85, 0.25),   # bright green
+    "g": (0.10, 0.50, 0.14),   # green, darkened: the owner read the bright version as too light
     "w": (0.55, 0.05, 0.25),   # wine
     "t": (0.05, 0.80, 0.70),   # teal
-    "k": (1.00, 0.40, 0.70),   # pink
+    "k": (1.00, 0.40, 0.70),   # pink    # BLACK, added for stage1.5's fifth marker on the owner's report that lime was unclear there.
+    # No existing key was unused at the time, so this is a new one rather than a reuse.  It is the
+    # darkest colour in the palette and it sits on the supermarket's billboard far wall (image mean
+    # 122), so its contrast comes from being far below the wall rather than far above it.
+    "x": (0.05, 0.05, 0.05),
 }
 
 # The scene's existing far-wall colour: a green marker on it would be invisible, which is
@@ -327,14 +333,14 @@ SURFACE_COLOURS: Dict[str, Dict[str, Tuple[float, float, float]]] = {
 MARKERS: Dict[str, Tuple[Tuple[str, str], ...]] = {
     "stage1.1": (("square", "r"), ("triangle", "m"), ("disc", "c"),
                  ("cross", "o"), ("bars3", "l")),
-    "stage1.2": (("diamond", "r"), ("hexagon", "c"), ("arrow", "l"),
+    "stage1.2": (("diamond", "r"), ("hexagon", "c"), ("arrow", "p"),
                  ("bars2", "g"), ("triangle_down", "m")),
     "stage1.3": (("triangle_down", "r"), ("cross", "c"), ("square", "p"),
                  ("hexagon", "m"), ("arrow", "t")),
     "stage1.4": (("disc", "r"), ("bars3", "m"), ("triangle", "o"),
                  ("diamond", "p"), ("bars2", "w")),
     "stage1.5": (("hexagon", "k"), ("arrow", "w"), ("bars3", "t"),
-                 ("disc", "p"), ("bars2", "l")),
+                 ("disc", "p"), ("bars2", "x")),
 }
 
 # ---------------------------------------------------------------------------
@@ -1003,6 +1009,7 @@ COLOUR_NAMES: Dict[str, str] = {
     "w": "wine",
     "t": "teal",
     "k": "pink",
+    "x": "black",
 }
 
 
