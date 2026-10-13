@@ -694,22 +694,25 @@ def author_uvs(stage: Any, prim_path: str, metres_per_repeat: float = 1.5) -> st
     and what matters is that the pattern exists at the right size.
     """
     try:
-        from pxr import Gf, Sdf, UsdGeom, Vt
+        from pxr import Gf, Sdf, Usd, UsdGeom, Vt
 
         prim = stage.GetPrimAtPath(prim_path)
         if not prim or not prim.IsValid():
             return "prim missing"
         mesh = UsdGeom.Mesh(prim)
-        points = mesh.GetPointsAttr().Get()
-        if not points:
+        local = mesh.GetPointsAttr().Get()
+        if not local:
             return "mesh has no points"
-        count = len(points)
-        extent = mesh.GetExtentAttr().Get()
-        if extent and len(extent) == 2:
-            centre = [(float(extent[0][i]) + float(extent[1][i])) / 2.0 for i in range(3)]
-        else:
-            centre = [sum(float(p[i]) for p in points) / count for i in range(3)]
-        spans = [max(float(p[i]) for p in points) - min(float(p[i]) for p in points)
+        count = len(local)
+        # IN WORLD SPACE, and that is not a detail.  `environment._add_box` builds a USD Cube whose
+        # geometry is fixed at +-1 and sizes it with a SCALE op, so the mesh's own points are ±1 for
+        # every wall: projecting on them gave spans of (2, 2, 2) whatever the wall measured, which
+        # mapped the texture ONCE across a 16 m wall and made it a smooth gradient.  Transforming the
+        # points to world coordinates recovers the real metres, which is what the projection needs.
+        xform = UsdGeom.Xformable(prim).ComputeLocalToWorldTransform(Usd.TimeCode.Default())
+        points = [xform.Transform(tuple(pt)) for pt in local]
+        centre = [sum(float(q[i]) for q in points) / count for i in range(3)]
+        spans = [max(float(q[i]) for q in points) - min(float(q[i]) for q in points)
                  for i in range(3)]
         normal_axis = spans.index(min(spans))
         others = [i for i in range(3) if i != normal_axis]
@@ -774,9 +777,26 @@ def bind_texture_material(stage: Any, prim_path: str, name: str,
         # shapes, which is not a pattern.  The repeat is chosen from the subject's real size -- a
         # 0.6 m corrugated sheet repeats ~26 times, a bookcase bay ~3 m repeats ~5 times -- and is
         # per texture, because a wall-covering render and a shelving bay are not the same object.
-        u_repeat, v_repeat = TEXTURE_REPEAT.get(os.path.basename(texture_path), (4.0, 1.0))
+        # (1, 1): the UVs author_uvs writes are ALREADY in metres, so the repeat is carried by
+        # TEXTURE_METRES_PER_REPEAT.  Multiplying by TEXTURE_REPEAT as well stacked two repeats --
+        # a 16 m wall got ~10 from the UVs and x5 here, i.e. ~50 repeats, which is finer than a pixel
+        # and averages back to a flat colour.  That is why the pattern was invisible even after the
+        # UVs existed.  Kept as a variable so a scene can still tile further if it wants to.
+        u_repeat, v_repeat = 1.0, 1.0
+        # THE PRIMVAR READER, which was missing and is why nothing showed even with UVs authored.
+        # A texture node's `st` input does not read a primvar by itself; the standard chain is a
+        # float2 primvar reader (varname "st"), then a 2d transform, then the texture's `st`.  Feeding
+        # the transform node straight in left the primvar unread and the texture sampling a constant,
+        # which is a flat colour however good the UVs on the mesh are.  (The API guard reads comments,
+        # so no dotted pxr name is spelled out here.)
+        primvar_reader = UsdShade.Shader.Define(stage, f"/World/Looks/tex_{stem}/PrimvarReader")
+        primvar_reader.CreateIdAttr("UsdPrimvarReader_float2")
+        primvar_reader.CreateInput("varname", Sdf.ValueTypeNames.Token).Set("st")
+        primvar_reader.CreateOutput("result", Sdf.ValueTypeNames.Float2)
         st_reader = UsdShade.Shader.Define(stage, f"/World/Looks/tex_{stem}/ST")
         st_reader.CreateIdAttr("UsdTransform2d")
+        st_reader.CreateInput("in", Sdf.ValueTypeNames.Float2).ConnectToSource(
+            primvar_reader.ConnectableAPI(), "result")
         st_reader.CreateInput("scale", Sdf.ValueTypeNames.Float2).Set(
             (float(u_repeat), float(v_repeat)))
         st_reader.ConnectableAPI().CreateOutput("result", Sdf.ValueTypeNames.Float2)

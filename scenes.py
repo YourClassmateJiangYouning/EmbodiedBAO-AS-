@@ -1133,6 +1133,19 @@ def _install_dressing() -> None:
                         BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
         _dressing_floor("shrub_right", (7.0, 0.00, -1.85), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
                         BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
+        # FOUR MORE, on the owner's note that the park should read as a park.  No grass TEXTURE is
+        # vendored (only `Grass_Short_A.usd`, which measured worse than the assets already in use),
+        # so the lawn is the painted grass-green floor and the planting is what carries the reading.
+        # All four sit at |z| 2.05, outside the |z| >= 1.5 walking band, and use the same vendored
+        # Barberry as the two above, at the size that shrub already measured.
+        _dressing_floor("shrub_a", (3.2, 0.00, 2.05), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
+        _dressing_floor("shrub_b", (5.4, 0.00, -2.05), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
+        _dressing_floor("shrub_c", (10.4, 0.00, 2.05), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
+        _dressing_floor("shrub_d", (12.4, 0.00, -2.05), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
+                        BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
         _dressing_wall("park_sign", "far_wall", (FAR_WALL_FACE_X, 2.00, -1.60), (0.03, 0.4, 0.6),
                        DRESSING_CLAY),
         # The park's remaining furniture, all at measured sizes.  Every placement below was computed

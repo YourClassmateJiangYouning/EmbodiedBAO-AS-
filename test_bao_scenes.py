@@ -1010,6 +1010,13 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
                      "Tokens"},
         "UsdPhysics": {"RigidBodyAPI", "CollisionAPI", "MassAPI", "ArticulationRootAPI",
                        "Joint"},
+        # verified against the OpenUSD API reference: the four shader node types a textured surface
+        # is built from -- UsdUVTexture reads the image, UsdPrimvarReader_float2 reads primvars:st
+        # (WITHOUT it the texture samples a constant, which is why the walls were flat even with UVs
+        # authored on the mesh), and UsdTransform2d scales the coordinates.
+        "UsdUVTexture": {"CreateInput", "CreateOutput"},
+        "UsdPrimvarReader_float2": {"CreateInput", "CreateOutput"},
+        "UsdTransform2d": {"CreateInput", "CreateOutput"},
         "UsdSkel": set(),
     }
     # Any name in the pxr style, not only the ones already listed.
