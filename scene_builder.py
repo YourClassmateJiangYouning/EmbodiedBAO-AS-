@@ -653,9 +653,12 @@ def _vendored_texture(basename: str) -> Optional[str]:
 # pattern reads as a material or as a few large shapes, and it is set from the subject's real size.
 # How rough each textured surface is.  Grass and ground are matte (0.95); a wall finish is a little
 # smoother (0.65-0.8).  Everything is metallic 0 -- a metallic textured surface mirrors the room.
-# A multiplier on the texture's own colour, for surfaces that came out darker than the palette
-# intends.  A texture carries its OWN albedo, so a lightened palette cannot lighten a textured
-# surface -- this is the handle that can.
+# A multiplier on the texture's own colour.  IT DOES NOT WORK, and that is measured, not suspected:
+# the floor was rendered at 1.10, 0.85 and 0.60 (i.e. 2.42x, 1.87x and 1.32x overall) and came back at
+# exactly (49, 46, 33) every time, so this renderer does not honour `UsdUVTexture`'s `inputs:scale`.
+# An earlier commit credited this handle with lightening the lawn; the change came from elsewhere and
+# that claim was wrong.  The dict is kept so the observation is not lost, but nothing should rely on
+# it.  To tint a textured surface, the `diffuseColor` needs a constant multiply node instead.
 TEXTURE_BRIGHTNESS = {
     "grassdistance_basecolor.png": 1.15,
     "T_Sky_Blue.png": 1.55,
@@ -692,8 +695,7 @@ TEXTURE_METRES_PER_REPEAT = {
     "Tex_CeilingTile2x2_basecolor.png": 1.2,
     "Tex_Hospital_Floor_basecolor.png": 1.5,
     "Tex_Wood_Floor_basecolor.png": 2.0,
-    # a sky image must NOT tile visibly: one copy across the wall, and 1.0 brightness so the
-    # sky keeps its own colour
+    # a sky image must NOT tile visibly: one copy across the wall
     "T_Sky_Blue.png": 16.0,
     "T_Sky_Clouds_M.png": 16.0,
     "T_Building_01_bc.png": 4.0,
@@ -713,16 +715,10 @@ TEXTURE_METRES_PER_REPEAT = {
 }
 
 
-TEXTURE_REPEAT = {
-    "t_corrugatedboxes_b01_tile01_albedo.png": (26.0, 5.0),
-    "T_Board_bc.png": (8.0, 1.5),
-    "T_Bookcase_bc.png": (5.0, 1.0),
-    "T_Building_02_bc.png": (4.0, 1.0),
-    "T_Cupboard_bc.png": (5.0, 1.0),
-    "T_Building_01_bc.png": (4.0, 1.0),
-    "T_BooksA_bc.png": (5.0, 1.0),
-    "T_Billboard_bc.png": (1.0, 1.0),
-}
+# TEXTURE_REPEAT lived here.  It multiplied the UVs a second time on top of the metre-based
+# repeat that author_uvs bakes in, which stacked ~10 x 5 repeats on a 16 m wall -- finer than a
+# pixel, and it averaged back to a flat colour.  The multiply was set to (1, 1) to fix that and
+# the dict then had no reader, so it is deleted rather than left looking like a live knob.
 
 
 def author_uvs(stage: Any, prim_path: str, metres_per_repeat: float = 1.5) -> str:

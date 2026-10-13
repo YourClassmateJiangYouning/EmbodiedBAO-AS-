@@ -143,6 +143,19 @@ project has been able to search it:
 The other seven (`sign`, `reading_lamp`, `park_sign`, `shelf_left`, `shelf_right`, `price_strip`,
 `promo_banner`) are outside the eye frame or come from the same two gaps.
 
+### Known limitations of the scene dressing, measured
+
+These are recorded rather than fixed, because each was shown to be a property of the assets rather
+than of this code:
+
+| Limitation | What was measured |
+| :--- | :--- |
+| The park's `railing`, `litter_bin`, `bin_square`, `fountain` and two `planter`s render in the renderer's fallback colour, not their declared colour. | Every one is a **Rivermark** asset whose material is authored INSIDE a shared prim instance prototype (`/__Prototype_6`, measured). An instance proxy is read-only, so no scene-side authoring reaches it. Four mechanisms were tried and all failed: an added binding, `strongerThanDescendants`, binding the prototype itself, and clearing the asset's own relation. |
+| The park's benches and table DID take their colour, but only after the assets were changed. | Swapping them to the non-instanced `Roxana_DiningBench.usd` and `packing_table.usd` moved the frame's red-pixel fraction from 1.76 % to 0.80 %. There is no non-Rivermark railing, bin, fountain or planter in either asset root. |
+| `scene_builder.TEXTURE_BRIGHTNESS` has no effect. | The floor rendered at 1.10, 0.85 and 0.60 came back at exactly `(49, 46, 33)` every time: this renderer does not honour `UsdUVTexture`'s `inputs:scale`. |
+| There is no lawn texture in the library. | The bucket's `island_grass` material ships a USD and no texture; `terrain_with_grass_adv` has only two ground images, and the greener of them (`default_texture.png`) is what the lawn uses. |
+| The park's passage is planted with a ground texture, not a vine. | Neither asset root contains any leaf, ivy, vine or foliage texture, and the flowering shrubs carry MDL-only materials with no PNGs at all. |
+
 **The asset that cannot be loaded**, recorded so it is not fetched again: `SM_BooksSet_11_167.usd`
 is a 167-variant wrapper whose reference `SM_BooksSet_11.usd` is absent; a USD load reports
 `Could not open asset @SM_BooksSet_11.usd@`.  `RackLong_A2.usd` has the same problem with its

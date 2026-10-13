@@ -330,7 +330,15 @@ def main() -> int:
         # that was the prop's PARENT -- and `invisible` is inherited, so the prop was hidden with it
         # and every frame stayed bare while the report said RESOLVED.  The rule is about the shape of
         # the prim tree, so it is checked as one.
-        if "/clearance" not in place_body:
+        # THE ASSIGNMENT, not the substring.  This rule used to ask only whether "/clearance" appeared
+        # anywhere in place_dressing, and that quietly stopped working: a later change added a SECOND
+        # use of the clearance path inside the same function (the plate pass hides the box), so the
+        # string was present even when the box_path assignment itself had been broken to the item's own
+        # path.  prove_audit_fails.py caught it -- "1 fault(s) were not caught" -- which is what that
+        # tool exists for.  Built from parts because the expected literal contains both quote styles.
+        expected_box_assign = ('box_path = f"/World/Dressing/{item'
+                               + "['name']" + '}/clearance"')
+        if expected_box_assign not in place_body:
             problems.append("place_dressing does not put the clearance box on its own prim path.  The "
                             "prop must be a SIBLING of that box, not its child: both SetActive(False) "
                             "and MakeInvisible() hide a prim's descendants, so a prop under the box "
