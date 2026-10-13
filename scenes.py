@@ -176,11 +176,21 @@ COLOURS: Dict[str, Tuple[float, float, float]] = {
     "g": (0.10, 0.50, 0.14),   # green, darkened: the owner read the bright version as too light
     "w": (0.55, 0.05, 0.25),   # wine
     "t": (0.05, 0.80, 0.70),   # teal
-    "k": (1.00, 0.40, 0.70),   # pink    # BLACK, added for stage1.5's fifth marker on the owner's report that lime was unclear there.
-    # No existing key was unused at the time, so this is a new one rather than a reuse.  It is the
-    # darkest colour in the palette and it sits on the supermarket's billboard far wall (image mean
-    # 122), so its contrast comes from being far below the wall rather than far above it.
-    "x": (0.05, 0.05, 0.05),
+    "k": (1.00, 0.40, 0.70),   # pink    # MINT, a light green, for stage1.5's fifth marker.  The owner asked for "浅绿色" (light green);
+    # the word is MINT and not the two-word phrase "light green" because this palette names every
+    # colour with ONE word, and `test_no_prompt_ever_names_a_colour_the_palette_does_not_use` reads
+    # the phrase a word at a time and rejected "light" as a colour it does not know -- correctly, as
+    # that check exists to catch stale labels reaching the prompt.  describe_marker builds
+    # "<colour> <shape>", so a two-word colour would also make the noun phrase ambiguous to split.
+    #
+    # This key was first added as BLACK and is REPURPOSED rather than a twelfth colour being
+    # introduced: black was also unclear to the owner on that wall, and `x` is used by exactly one
+    # marker in the whole grid, so changing its value and its word touches nothing else.
+    #
+    # (0.55, 0.90, 0.55) is a light green -- hue 120 degrees, value 0.90 -- brighter and paler than
+    # the palette's "green" (0.10, 0.50, 0.14) and far less yellow than "lime" (0.85, 0.95, 0.10),
+    # which is what the owner first reported as unclear on this wall.
+    "x": (0.55, 0.90, 0.55),
 }
 
 # The scene's existing far-wall colour: a green marker on it would be invisible, which is
@@ -1009,7 +1019,7 @@ COLOUR_NAMES: Dict[str, str] = {
     "w": "wine",
     "t": "teal",
     "k": "pink",
-    "x": "black",
+    "x": "mint",
 }
 
 
