@@ -1564,8 +1564,16 @@ def apply_scene(stage: Any, scene: str, slot: int,
                 if value is None:
                     value = shader.CreateInput("roughness", Sdf.ValueTypeNames.Float)
                 value.Set(float(rough))
-                report["materials"].setdefault(surface, {})
-                report["materials"][surface]["roughness"] = float(rough)
+                # WITH a complete entry, not an empty one.  This used to be
+                # `setdefault(surface, {})` followed by only `["roughness"]`, which left a materials
+                # entry with no "how" key; format_report prints info['how'] for every entry, so the
+                # report CRASHED with KeyError: 'how' on any scene that has no materials of its own --
+                # stage1.1, the baseline.  Its marker sheet was therefore never written and stayed
+                # stale on disk, which is how this was noticed.
+                entry = report["materials"].setdefault(
+                    surface, {"url": "-", "how": "flat colour (no material named)",
+                              "prim": path})
+                entry["roughness"] = float(rough)
     report["marker"] = build_marker(stage, scene, slot)
     report["parts"] = list(parts)
     report["dressing"] = place_dressing(stage, scene) if "dressing" in parts else []
