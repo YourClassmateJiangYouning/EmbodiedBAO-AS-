@@ -272,6 +272,42 @@ def build_marker(stage: Any, scene: str, slot: int) -> Dict[str, Any]:
             "paint_error": paint_error}
 
 
+def build_plate(stage: Any, name: str, item: Dict[str, Any]) -> Dict[str, Any]:
+    """Give an asset-less WALL item real geometry: a sign board with an inset panel.
+
+    WHY THIS EXISTS.  Five items on the four dressed scenes name no vendored `.usd`, so each was
+    merely its own clearance cube -- an anonymous box.  Four of the five are flat boards mounted on a
+    wall, which is the one case where "no asset" does not have to mean "no object": the board IS a
+    rectangle, and building one out of two extruded polygons costs a handful of vertices and needs no
+    asset at all.  The owner asked for this rather than deletion, because deleting them would leave
+    the scenes short of the dressing their catalogues describe.
+
+    Two parts, and the second is what stops it reading as a cube: a body in the item's declared
+    colour, and a smaller inset in a lighter shade of the same colour, so the surface has the frame
+    and panel of a real notice board.
+
+    Returns the part paths it created, for the report.
+    """
+    height = float(item["size"][1])
+    width = float(item["size"][2])
+    thickness = float(item["size"][0])
+    at = item["at"]
+    rgb = item["colour"]
+    parts = []
+    # the body
+    body = ((-width / 2.0, -height / 2.0), (width / 2.0, -height / 2.0),
+            (width / 2.0, height / 2.0), (-width / 2.0, height / 2.0))
+    parts.append(_prism(stage, f"/World/Dressing/{name}/plate", body, at, thickness))
+    # an inset panel, proud of the body by a third of its thickness
+    inset = ((-width * 0.34, -height * 0.30), (width * 0.34, -height * 0.30),
+             (width * 0.34, height * 0.30), (-width * 0.34, height * 0.30))
+    parts.append(_prism(stage, f"/World/Dressing/{name}/panel", inset, at,
+                        thickness * 1.6))
+    paint(stage, f"/World/Dressing/{name}/plate", rgb)                  # (ok, why)
+    paint(stage, f"/World/Dressing/{name}/panel", tuple(min(1.0, float(c) * 1.9) for c in rgb))
+    return {"parts": [str(part.GetPath()) for part in parts]}
+
+
 def _bind(stage: Any, prim_path: str, material: Any) -> bool:
     try:
         from pxr import UsdShade
@@ -960,6 +996,29 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                     detail = (detail + " " if detail else "") + \
                         f"at {os.path.basename(frame.filename)}:{frame.lineno} {frame.line}"
                 record["reference_error"] = f"{type(exc).__name__}: {detail.strip()}"
+        # AN ASSET-LESS WALL ITEM GETS REAL GEOMETRY.  Four of the five are flat boards, so a sign
+        # body plus an inset panel is what they are; building that needs no asset and stops them
+        # being anonymous cubes while keeping the dressing their catalogues describe.
+        # `asset is None` is not enough: stage1.2's `sign` carries a URL to an MDL MATERIAL
+        # (MI_SignB.mdl) in its asset field, so it looks furnished and is not -- a cataloguing bug.
+        # Anything that is not a .usd path cannot be referenced as a prop, so it counts as asset-less.
+        nominal_asset = str(record.get("asset") or "")
+        if (not record.get("used_asset") and item["mount"] != "floor"
+                and not nominal_asset.endswith(".usd")):
+            from pxr import UsdGeom
+            try:
+                made = build_plate(stage, item["name"], item)
+                record["built_parts"] = made["parts"]
+                # AND HIDE THE CLEARANCE CUBE, which is the cube the owner keeps seeing.  It is left
+                # visible only when there is no prop, because then it IS the item -- but now the item
+                # has real geometry, so leaving the cube visible would draw a box around the board
+                # and the board would be the thing nobody notices.  Same call the resolving path uses.
+                box = stage.GetPrimAtPath(f"{path}/clearance")
+                if box and box.IsValid():
+                    UsdGeom.Imageable(box).MakeInvisible()
+                    record["clearance_hidden"] = True
+            except Exception as exc:  # noqa: BLE001
+                record["built_part_error"] = f"{type(exc).__name__}: {exc}"
         placed.append(record)
 
     # ---------------------------------------------------------------------------------------------
@@ -1410,6 +1469,14 @@ def format_report(report: Dict[str, Any]) -> str:
                         thin.append((item["name"], round(worst, 3)))
             elif item.get("reference_error"):
                 outcome = f"FAILED {item['reference_error']}"
+            elif item.get("built_parts"):
+                # No asset, so the item is BUILT rather than referenced: a sign board with an inset
+                # panel, and its clearance cube is hidden.  Reporting this as "NO ASSET (drawn as its
+                # clearance box)" was true before and is false now -- the line has to say which of the
+                # two it is, because that sentence is what a reader uses to decide whether an object
+                # in the frame is real.
+                outcome = (f"NO ASSET (built as a plate: {len(item['built_parts'])} part(s), "
+                           f"clearance box hidden)")
             else:
                 outcome = "NO ASSET (drawn as its clearance box)"
             lines.append(f"[scene]   dressing {item['name']}: {outcome}")

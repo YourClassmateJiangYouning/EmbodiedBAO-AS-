@@ -1079,7 +1079,12 @@ def _install_dressing() -> None:
         _dressing_floor("book_b", (3.2, 0.9941, 1.95), (0.02, 0.205, 0.145), DRESSING_PAPER,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Office/Props/"
                         "SM_Book_01.usd"),
-        _dressing_floor("reading_lamp", (1.8, 0.00, -2.10), (0.3, 0.95, 0.3), DRESSING_DARK_STEEL),
+        # `reading_lamp` was here: a floor item with no asset, so it was drawn as its clearance box.
+        # It is DELETED rather than built, on the owner's instruction that asset-less items go.  A
+        # plate is only honest for the wall-mounted boards (their shape IS a rectangle); a floor
+        # standard lamp is not a rectangle, so building one would be inventing furniture, and a cube
+        # in the corner is worse than no lamp.  It projected to v=-3.36, i.e. outside the eye frame,
+        # so nothing visible is lost.  Item count 13 -> 12.
         # A carton of stock waiting to be shelved, which is what a library cart holds.  Its scale
         # comes from ASSET_SCALE.
         _dressing_floor("stock_carton", (1.8, 0.00, 2.10), (0.2990, 0.3019, 0.6216), DRESSING_CARD,
