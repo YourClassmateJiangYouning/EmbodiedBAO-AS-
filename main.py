@@ -522,6 +522,14 @@ def save_episodes_csv(
         "collision",
         "step_success",
         "llm_response_time_ms",
+        # The model's own words, so the CSV carries them as well as the per-step JSON.  These were
+        # recorded nowhere before: `reasoning` was captured, fed back into the next prompt and then
+        # dropped, and the verbatim reply was discarded outright.
+        "reasoning",
+        "response",
+        "feedback",
+        "confidence",
+        "scene_description",
     )
 
     buffer = io.StringIO()

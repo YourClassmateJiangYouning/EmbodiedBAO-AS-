@@ -108,6 +108,10 @@ OTHER = {
     # declared colour onto a resolved prop -- the field that finally said "flat material on 0
     # gprim(s)" and located five rounds of the props staying red.
     "built_parts", "flat_material", "built_part_error",
+    # The model's own words in the per-step record.  `reasoning` was already parsed and used to build
+    # the next prompt but was never written; `response` is the reply verbatim; `feedback` is the
+    # environment's answer to the action.
+    "reasoning", "response", "feedback", "confidence", "scene_description",
 }
 
 

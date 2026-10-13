@@ -328,9 +328,9 @@ class AgentAdapter:
                 history=self.history,
             )
         latency_ms = (time.perf_counter() - t0) * 1000.0
-        action_name, raw_text, reasoning = self._normalize(raw)
+        action_name, raw_text, reasoning, confidence, scene_description = self._normalize(raw)
         self._append_log(prompt, raw_text)
-        return action_name, raw_text, reasoning, latency_ms
+        return action_name, raw_text, reasoning, confidence, scene_description, latency_ms
 
     def record(
         self,
@@ -374,36 +374,53 @@ class AgentAdapter:
             return "random baseline: no note"
         return str(get_text(prompt) or "")
 
-    def _normalize(self, raw: Any) -> Tuple[Optional[str], str, str]:
-        """Return ``(action_name, raw_text, reasoning)`` for a model reply."""
+    def _normalize(self, raw: Any) -> Tuple[Optional[str], str, str, float, str]:
+        """Return ``(action_name, raw_text, reasoning, confidence, scene_description)``.
+
+        The last two were PARSEd by ai_agent and then dropped here for the whole life of the
+        experiment: the parser returns ``{"action", "confidence", "reasoning", "scene_description"}``
+        and this method unpacked three of them.  Confidence is the model's own reported certainty and
+        scene_description is what it says it sees -- both primary evidence, and neither cost anything
+        to keep because they were already in hand.
+        """
         if isinstance(raw, str):
             # ai_agent owns the prose/``Choice: [n]`` fallback parser; this module used
             # to carry a byte-identical second copy, so a fix to one of them would
             # silently apply to only one of the two reply paths.
             from ai_agent import parse_action_text
 
-            return parse_action_text(raw), raw, ""
+            return parse_action_text(raw), raw, "", 0.0, ""
         if raw is None:
-            return None, "", ""
+            return None, "", "", 0.0, ""
         if isinstance(raw, dict):
             name = raw.get("action")
             if name not in ACTIONS:
                 name = None
+            try:
+                confidence = float(raw.get("confidence") or 0.0)
+            except (TypeError, ValueError):
+                confidence = 0.0
             return (
                 name,
                 json.dumps(raw, ensure_ascii=False),
                 str(raw.get("reasoning") or ""),
+                confidence,
+                str(raw.get("scene_description") or raw.get("scene") or ""),
             )
         raw_text = str(getattr(raw, "text", "") or raw)
         reasoning = str(getattr(raw, "reasoning", "") or "")
         if hasattr(raw, "action_choice"):
             index = int(getattr(raw, "action_choice"))
             name = ACTIONS[index - 1] if 1 <= index <= len(ACTIONS) else None
-            return name, raw_text, reasoning
+            return (name, raw_text, reasoning,
+                    float(getattr(raw, "confidence", 0.0) or 0.0),
+                    str(getattr(raw, "scene_description", "") or ""))
         name = getattr(raw, "action", None) or getattr(raw, "name", None)
         if name is None:
             name = str(raw).strip().lower()
-        return (name if name in ACTIONS else None), raw_text, reasoning
+        return ((name if name in ACTIONS else None), raw_text, reasoning,
+                float(getattr(raw, "confidence", 0.0) or 0.0),
+                str(getattr(raw, "scene_description", "") or ""))
 
     def _append_log(self, prompt: str, raw_text: str) -> None:
         if not self.log_file:
@@ -713,7 +730,21 @@ class BAOExperimentRunner:
                 max_steps=self.max_steps,
                 move_step=state.get("move_step"),
             )
-            action_name, _raw, reasoning, latency_ms = agent.query(prompt, rgb, state)
+            # `raw_text`, not `_raw`: the underscore said "unused" and it was, for the whole
+            # life of this experiment.  The reply is now recorded verbatim in the step record.
+            # BOTH ARITIES, because index 3 MEANS DIFFERENT THINGS in them: the old four-tuple was
+            # `(action, raw, reasoning, LATENCY)` and the new six-tuple is
+            # `(action, raw, reasoning, CONFIDENCE, SCENE, LATENCY)`.  A test double written against
+            # the old shape would otherwise have its latency silently read as a confidence.
+            # test_bao_integration's `test_invalid_action_is_recorded` failed exactly this way, which
+            # is how the ambiguity was noticed; it is handled rather than papered over by editing the
+            # stub, so any other caller of the old interface keeps working.
+            _reply = agent.query(prompt, rgb, state)
+            if len(_reply) >= 6:
+                action_name, raw_text, reasoning, confidence, scene_description, latency_ms = _reply
+            else:
+                action_name, raw_text, reasoning, latency_ms = _reply
+                confidence, scene_description = 0.0, ""
             total_llm_time_ms += latency_ms
 
             action_legal = False
@@ -783,6 +814,17 @@ class BAOExperimentRunner:
                     "collision": bool(collision),
                     "step_success": bool(passed),
                     "llm_response_time_ms": round(latency_ms, 3),
+                    # THE MODEL'S OWN WORDS, which were being discarded.  `reasoning` was already
+                    # captured and fed back into the next prompt, but the per-step record kept only
+                    # eight numeric fields, so the experiment's primary evidence -- why the model did
+                    # what it did -- existed only in logs/{tag}/*_agent.txt and nowhere in results/.
+                    # `response` is the reply VERBATIM, before parsing, so a malformed or refused
+                    # reply stays inspectable instead of being reduced to "invalid".
+                    "reasoning": reasoning or "",
+                    "response": raw_text or "",
+                    "feedback": feedback or "",
+                    "confidence": float(confidence or 0.0),
+                    "scene_description": scene_description or "",
                 }
             )
             action_sequence.append(action_taken)
