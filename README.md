@@ -444,7 +444,7 @@ Either threshold classifies a model:
 | `environment.py` | Isaac Sim scene, kinematics, analytic collision gate, success test, marker rotation |
 | `protocol.py` | single source of truth for the action space, the unified prompt, and the sideways yaw band |
 | `experiments.py` | episode loop, Level ladder, record shaping, checkpoints |
-| `scenes.py` | **Stage 1 scene catalogue as pure data**: the five scenes, their materials and dressing, the ten shapes, the eleven colours and the twenty-five markers. No Isaac Sim, no pxr |
+| `scenes.py` | **Stage 1 scene catalogue as pure data**: the five scenes, their materials and dressing, the ten shapes, the ten colours and the twenty-five markers. No Isaac Sim, no pxr |
 | `scene_builder.py` | applies a catalogued scene to a live USD stage: material resolution (vendored local copy first), marker meshes, dressing, surface classification. Reports what actually resolved |
 | `capture_scenes.py` | render one scene so it can be looked at: eye view and external view per marker slot |
 | `ai_agent.py` | unified OpenAI-compatible MLLM client + `random` baseline |

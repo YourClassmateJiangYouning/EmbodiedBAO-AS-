@@ -724,16 +724,6 @@ def test_every_colour_word_names_its_own_rgb() -> None:
         "w": ("wine", (0.55, 0.05, 0.25)),
         "t": ("teal", (0.05, 0.80, 0.70)),
         "k": ("pink", (1.00, 0.40, 0.70)),
-        # MINT, a light green, the 11th colour, for stage1.5's fifth marker.  One word, because this
-        # palette names every colour with one word and the companion test reads a phrase a word at a
-        # time.  The key first held BLACK; it was repurposed rather than a 12th colour added, because
-        # black was also unclear there and `x` is used by exactly one marker.
-        #
-        # The docstring of the companion test below names "black" as an example of a STALE word that
-        # must fail -- and it did fail here, correctly, when this key was introduced.  The distinction
-        # that matters: an entry here is a real colour with a real RGB, added on purpose, not a label
-        # left over from an earlier draft.
-        "x": ("mint", (0.55, 0.90, 0.55)),
     }
     check(set(expected) == set(sc.COLOURS),
           "the palette and this table name different colours: "
@@ -764,7 +754,7 @@ def test_no_prompt_ever_names_a_colour_the_palette_does_not_use() -> None:
     "lime green" -- has to fail here even if its own RGB happens to be plausible.
     """
     allowed = {"red", "magenta", "orange", "lime", "cyan", "purple", "green",
-               "wine", "teal", "pink", "mint"}
+               "wine", "teal", "pink"}
     words = set(sc.COLOUR_NAMES.values())
     check(words == allowed,
           f"the colour words are {sorted(words)}, expected exactly {sorted(allowed)}")

@@ -104,9 +104,8 @@ FOCAL_LENGTH_MM = 13.36
 SENSOR_WIDTH_MM = 20.955
 
 # ---------------------------------------------------------------------------
-# Ten shapes, ELEVEN colours, built from primitives only.  Black joined the palette when the
-# owner asked for it on stage1.5's fifth marker; the ten originals are unchanged apart from a
-# darkened green.  No textures: a textured
+# Ten shapes, ten colours, built from primitives only.  The green is darkened from its first value
+# at the owner's request; no colour has been added.  No textures: a textured
 # marker would vary in colour across its surface and make the uniqueness check --
 # which compares colours -- unreliable, and it would need an asset download.
 # ---------------------------------------------------------------------------
@@ -176,21 +175,10 @@ COLOURS: Dict[str, Tuple[float, float, float]] = {
     "g": (0.10, 0.50, 0.14),   # green, darkened: the owner read the bright version as too light
     "w": (0.55, 0.05, 0.25),   # wine
     "t": (0.05, 0.80, 0.70),   # teal
-    "k": (1.00, 0.40, 0.70),   # pink    # MINT, a light green, for stage1.5's fifth marker.  The owner asked for "浅绿色" (light green);
-    # the word is MINT and not the two-word phrase "light green" because this palette names every
-    # colour with ONE word, and `test_no_prompt_ever_names_a_colour_the_palette_does_not_use` reads
-    # the phrase a word at a time and rejected "light" as a colour it does not know -- correctly, as
-    # that check exists to catch stale labels reaching the prompt.  describe_marker builds
-    # "<colour> <shape>", so a two-word colour would also make the noun phrase ambiguous to split.
-    #
-    # This key was first added as BLACK and is REPURPOSED rather than a twelfth colour being
-    # introduced: black was also unclear to the owner on that wall, and `x` is used by exactly one
-    # marker in the whole grid, so changing its value and its word touches nothing else.
-    #
-    # (0.55, 0.90, 0.55) is a light green -- hue 120 degrees, value 0.90 -- brighter and paler than
-    # the palette's "green" (0.10, 0.50, 0.14) and far less yellow than "lime" (0.85, 0.95, 0.10),
-    # which is what the owner first reported as unclear on this wall.
-    "x": (0.55, 0.90, 0.55),
+    "k": (1.00, 0.40, 0.70),   # pink    # There is no eleventh colour.  `x` existed briefly as black, then as a light green
+    # called mint, and is now REMOVED: stage1.5's fifth marker uses the palette's existing
+    # dark green with a solid shape instead, so the palette is the original ten again and
+    # nothing needs an extra key.
 }
 
 # The scene's existing far-wall colour: a green marker on it would be invisible, which is
@@ -350,7 +338,7 @@ MARKERS: Dict[str, Tuple[Tuple[str, str], ...]] = {
     "stage1.4": (("disc", "r"), ("bars3", "m"), ("triangle", "o"),
                  ("diamond", "p"), ("bars2", "w")),
     "stage1.5": (("hexagon", "k"), ("arrow", "w"), ("bars3", "t"),
-                 ("disc", "p"), ("bars2", "x")),
+                 ("disc", "p"), ("square", "g")),
 }
 
 # ---------------------------------------------------------------------------
@@ -1019,7 +1007,6 @@ COLOUR_NAMES: Dict[str, str] = {
     "w": "wine",
     "t": "teal",
     "k": "pink",
-    "x": "mint",
 }
 
 
