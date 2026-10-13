@@ -788,7 +788,7 @@ def bind_texture_material(stage: Any, prim_path: str, name: str,
     summary for the report.
     """
     try:
-        from pxr import Sdf, UsdGeom, UsdShade
+        from pxr import Sdf, Usd, UsdGeom, UsdShade
 
         stem = prim_name(name)
         mat = UsdShade.Material.Define(stage, f"/World/Looks/tex_{stem}")
