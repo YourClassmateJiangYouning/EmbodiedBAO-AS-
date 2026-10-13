@@ -658,8 +658,8 @@ def _vendored_texture(basename: str) -> Optional[str]:
 # surface -- this is the handle that can.
 TEXTURE_BRIGHTNESS = {
     "grassdistance_basecolor.png": 1.15,
-    "T_Sky_Blue.png": 1.0,
-    "T_Sky_Clouds_M.png": 1.0,
+    "T_Sky_Blue.png": 1.55,
+    "T_Sky_Clouds_M.png": 1.35,
     "Tex_Wood_Floor_basecolor.png": 1.20,
     "T_Building_01_bc.png": 1.0,
     "Tex_CeilingTile2x2_basecolor.png": 1.15,
@@ -860,7 +860,11 @@ def bind_texture_material(stage: Any, prim_path: str, name: str,
             return "prim missing"
         prefix = str(prim.GetPath())
         bound = 0
-        for candidate in stage.Traverse():
+        # INSTANCE PROXIES, or the traversal finds nothing at all.  These props are instanced, so
+        # their meshes live in prim instance prototypes; a plain traversal does not descend into
+        # those, and the binding loop was therefore iterating an empty set -- reported honestly as
+        # "flat material on 0 gprim(s)" once the result was printed.
+        for candidate in stage.Traverse(Usd.TraverseInstanceProxies()):
             if not str(candidate.GetPath()).startswith(prefix):
                 continue
             if not candidate.IsA(UsdGeom.Gprim):
@@ -907,7 +911,7 @@ def bind_flat_material(stage: Any, prim_path: str, name: str,
     how many prims took it, for the report.
     """
     try:
-        from pxr import Gf, Sdf, UsdGeom, UsdShade
+        from pxr import Gf, Sdf, Usd, UsdGeom, UsdShade
 
         mat = UsdShade.Material.Define(stage, f"/World/Looks/flat_{prim_name(name)}")
         shader = UsdShade.Shader.Define(stage, f"/World/Looks/flat_{prim_name(name)}/Shader")
@@ -925,7 +929,11 @@ def bind_flat_material(stage: Any, prim_path: str, name: str,
         # iterator this was first written with, because that member is not on the verified list.
         prefix = str(prim.GetPath())
         bound = 0
-        for candidate in stage.Traverse():
+        # INSTANCE PROXIES.  Measured on this scene: a plain traversal sees 4 prims under
+        # /World/Dressing/railing/prop and the proxy traversal sees 10, so the meshes ARE in prim
+        # instance prototypes and a plain traversal never reaches them.  That is why this loop
+        # reported "flat material on 0 gprim(s)" and the props kept their own colour for five rounds.
+        for candidate in stage.Traverse(Usd.TraverseInstanceProxies()):
             if not str(candidate.GetPath()).startswith(prefix):
                 continue
             if not candidate.IsA(UsdGeom.Gprim):

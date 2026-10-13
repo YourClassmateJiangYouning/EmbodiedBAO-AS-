@@ -990,7 +990,12 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
         "Sdf": {"ValueTypeNames", "Path", "AssetPath"},
         "Vt": {"Vec3fArray", "Vec3dArray", "IntArray", "Token", "Value",
                "Vec2fArray"},
-        "Usd": {"Stage", "Prim", "TimeCode", "Attribute"},
+        "Usd": {"Stage", "Prim", "TimeCode", "Attribute",
+                # verified against the OpenUSD API reference: a traversal predicate that descends
+                # into prim INSTANCE PROTOTYPES.  A plain traversal does not, which is why the
+                # prop-colour binding reported "flat material on 0 gprim(s)" -- the park's props are
+                # instanced and their meshes live in prototypes, so there was nothing to bind to.
+                "TraverseInstanceProxies"},
         "UsdGeom": {
             "Cube", "Sphere", "Cylinder", "Cone", "Capsule", "Mesh", "Xform", "Scope",
             "Tokens", "SetStageUpAxis", "Xformable", "XformOp", "BBoxCache", "Gprim",
