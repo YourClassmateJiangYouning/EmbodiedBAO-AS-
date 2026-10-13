@@ -649,6 +649,24 @@ def _vendored_texture(basename: str) -> Optional[str]:
 # high and the textures' own UV sets map them once over that, so the repeat is what decides whether
 # the picture reads as a material or as a few large soft shapes.  Chosen from each subject's real
 # size: a corrugated sheet is ~0.6 m, a bookcase bay ~3 m, a wall-covering render ~4 m.
+# How many METRES one repeat of each texture covers.  This is the number that decides whether a
+# pattern reads as a material or as a few large shapes, and it is set from the subject's real size.
+TEXTURE_METRES_PER_REPEAT = {
+    "t_corrugatedboxes_b01_tile01_albedo.png": 0.6,
+    "T_Board_bc.png": 1.2,
+    "T_Bookcase_bc.png": 1.5,
+    "T_Building_02_bc.png": 2.0,
+    "T_Cupboard_bc.png": 1.5,
+    "T_Building_01_bc.png": 2.0,
+    "T_BooksA_bc.png": 1.5,
+    "T_Billboard_bc.png": 3.0,
+    "T_ElectricRoom_bc.png": 1.5,
+    "T_FileCabinet_bc.png": 1.2,
+    "T_Building_03_bc.png": 2.0,
+    "T_DoorD_bc.png": 2.0,
+}
+
+
 TEXTURE_REPEAT = {
     "t_corrugatedboxes_b01_tile01_albedo.png": (26.0, 5.0),
     "T_Board_bc.png": (8.0, 1.5),
@@ -659,6 +677,53 @@ TEXTURE_REPEAT = {
     "T_BooksA_bc.png": (5.0, 1.0),
     "T_Billboard_bc.png": (1.0, 1.0),
 }
+
+
+def author_uvs(stage: Any, prim_path: str, metres_per_repeat: float = 1.5) -> str:
+    """Give a Mesh UV coordinates, without which a texture cannot show.
+
+    THE ROOT CAUSE OF THREE ROUNDS OF "the walls are flat".  The room's surfaces are Meshes built by
+    environment._add_box and they carry NO primvars at all -- measured, `primvars=[]` on
+    /World/room_side_left, room_side_right, room_far, WallPanel_0 and Ground.  A texture on a mesh
+    with no texture coordinates samples ONE texel and paints the whole surface with it, which is a
+    flat colour however large the image is.  That is what the owner kept reporting while the report
+    line said a texture had been bound.
+
+    The projection is planar per axis: a point's offset from the mesh centre divided by
+    `metres_per_repeat` becomes (u, v).  Crude, and enough -- the walls are axis-aligned rectangles
+    and what matters is that the pattern exists at the right size.
+    """
+    try:
+        from pxr import Gf, Sdf, UsdGeom, Vt
+
+        prim = stage.GetPrimAtPath(prim_path)
+        if not prim or not prim.IsValid():
+            return "prim missing"
+        mesh = UsdGeom.Mesh(prim)
+        points = mesh.GetPointsAttr().Get()
+        if not points:
+            return "mesh has no points"
+        count = len(points)
+        extent = mesh.GetExtentAttr().Get()
+        if extent and len(extent) == 2:
+            centre = [(float(extent[0][i]) + float(extent[1][i])) / 2.0 for i in range(3)]
+        else:
+            centre = [sum(float(p[i]) for p in points) / count for i in range(3)]
+        spans = [max(float(p[i]) for p in points) - min(float(p[i]) for p in points)
+                 for i in range(3)]
+        normal_axis = spans.index(min(spans))
+        others = [i for i in range(3) if i != normal_axis]
+        uv = []
+        for pt in points:
+            u = (float(pt[others[0]]) - centre[others[0]]) / metres_per_repeat
+            v = (float(pt[others[1]]) - centre[others[1]]) / metres_per_repeat
+            uv.append(Gf.Vec2f(u, v))
+        primvar = UsdGeom.PrimvarsAPI(prim).CreatePrimvar(
+            "st", Sdf.ValueTypeNames.TexCoord2fArray, UsdGeom.Tokens.vertex)
+        primvar.Set(Vt.Vec2fArray(uv))
+        return f"uv on {count} point(s), repeat {metres_per_repeat} m"
+    except Exception as exc:  # noqa: BLE001
+        return f"uv failed: {type(exc).__name__}: {exc}"
 
 
 def bind_texture_material(stage: Any, prim_path: str, name: str,
@@ -731,7 +796,16 @@ def bind_texture_material(stage: Any, prim_path: str, name: str,
                 continue
             if not candidate.IsA(UsdGeom.Gprim):
                 continue
-            UsdShade.MaterialBindingAPI.Apply(candidate).Bind(mat)
+            api = UsdShade.MaterialBindingAPI.Apply(candidate)
+            try:
+                # STRONGER THAN DESCENDANTS: the park's props carry their own materials bound deeper
+                # inside the referenced asset, and the closest binding wins.  Binding the prop root
+                # alone changed the frame's red fraction by 1.96 % -> 2.09 %, i.e. not at all; this is
+                # the declaration that overrides a deeper binding, and it is now on the allowlist with
+                # the OpenUSD docs as its source.
+                api.Bind(mat, bindingStrength=UsdShade.Tokens.strongerThanDescendants)
+            except Exception:  # noqa: BLE001
+                api.Bind(mat)
             bound += 1
         return f"texture {os.path.basename(texture_path)} on {bound} gprim(s)"
     except Exception as exc:  # noqa: BLE001
@@ -1333,8 +1407,13 @@ def apply_scene(stage: Any, scene: str, slot: int,
             for path in prim_paths:
                 paint(stage, path, fallbacks.get(surface, (0.6,) * 3))   # (ok, why)
             if local_texture:
+                # UVs FIRST: a mesh with no texture coordinates paints the whole surface with one
+                # texel, which is a flat colour however large the image is.
+                uvs = [author_uvs(stage, path, TEXTURE_METRES_PER_REPEAT.get(
+                    os.path.basename(local_texture), 1.5)) for path in prim_paths]
                 results = [bind_texture_material(stage, path, f"{surface}_{scene}", local_texture)
                            for path in prim_paths]
+                results = [f"{r} ({u})" for r, u in zip(results, uvs)]
                 how = results[0] if len(set(results)) == 1 else "; ".join(sorted(set(results)))
             elif texture:
                 how = f"flat-paint (texture {texture} is not vendored)"
@@ -1369,8 +1448,11 @@ def apply_scene(stage: Any, scene: str, slot: int,
                     paint(stage, path, panel_colour)   # (ok, why)
             how = "flat colour"
             if local_panel_texture:
+                panel_uvs = [author_uvs(stage, path, TEXTURE_METRES_PER_REPEAT.get(
+                    os.path.basename(local_panel_texture), 1.5)) for path in panel_paths]
                 outcomes = [bind_texture_material(stage, path, f"wall_panel_{scene}",
                                                   local_panel_texture) for path in panel_paths]
+                outcomes = [f"{o} ({u})" for o, u in zip(outcomes, panel_uvs)]
                 how = outcomes[0] if len(set(outcomes)) == 1 else "; ".join(sorted(set(outcomes)))
             elif panel_texture:
                 how = f"flat colour (texture {panel_texture} is not vendored)"

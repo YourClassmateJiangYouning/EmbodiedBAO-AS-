@@ -986,18 +986,28 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
     # accumulate, and this comment cannot spell the dotted name it is about: the scan reads
     # comments, and doing so reported itself.
     ALLOWED = {
-        "Gf": {"Vec3f", "Vec3d", "Matrix4d"},
+        "Gf": {"Vec3f", "Vec3d", "Matrix4d", "Vec2f", "Vec4f"},
         "Sdf": {"ValueTypeNames", "Path", "AssetPath"},
-        "Vt": {"Vec3fArray", "Vec3dArray", "IntArray", "Token", "Value"},
+        "Vt": {"Vec3fArray", "Vec3dArray", "IntArray", "Token", "Value",
+               "Vec2fArray"},
         "Usd": {"Stage", "Prim", "TimeCode", "Attribute"},
         "UsdGeom": {
             "Cube", "Sphere", "Cylinder", "Cone", "Capsule", "Mesh", "Xform", "Scope",
             "Tokens", "SetStageUpAxis", "Xformable", "XformOp", "BBoxCache", "Gprim",
             "Imageable", "Boundable", "Camera", "GetStageUpAxis",
+            # verified against the OpenUSD API reference: the primvar authoring API,
+            # needed to give a Mesh UV coordinates at all (measured: every room
+            # surface is a Mesh with primvars=[] and no UVs).
+            "PrimvarsAPI",
         },
         "UsdLux": {"SphereLight", "DomeLight", "DiskLight", "RectLight"},
         "UsdShade": {"Material", "Shader", "ConnectableAPI", "Input", "Output",
-                     "MaterialBindingAPI"},
+                     "MaterialBindingAPI",
+                     # verified against the OpenUSD API reference and the UsdShade
+                     # binding-strength documentation: Tokens carries the binding
+                     # strengths, and strongerThanDescendants is the one that wins
+                     # over a material bound deeper inside a referenced asset.
+                     "Tokens"},
         "UsdPhysics": {"RigidBodyAPI", "CollisionAPI", "MassAPI", "ArticulationRootAPI",
                        "Joint"},
         "UsdSkel": set(),
