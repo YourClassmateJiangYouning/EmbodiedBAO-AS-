@@ -1,6 +1,6 @@
 {
   "_comment": "Final model roster for the EmbodiedBAO A/S threshold experiment. Every entry was verified against the gateway with a text+image request carrying a solid red 64x64 PNG; 'ok' means the model both accepted the image and named its colour. probe_latency_s is a single 64x64 probe, NOT an average and NOT a predictor of sweep cost: the real per-step latency at 512 px with the full prompt and history is what matters, and it can differ by more than an order of magnitude from the probe (deepseek-v4.1-flash probes at 3.5 s but was measured at 30-86 s per real call).",
-  "_sweep_order": "The list order IS the sweep order: run_all_models.sh reads this file top to bottom. The Qwen group is first because it is the fastest to run and the researcher asked for it first; the rest follow in their existing order rather than by probe_latency_s, which would put deepseek-v4.1-flash early despite it being the slowest model on the roster in practice.",
+  "_sweep_order": "The list order IS the sweep order: run_all_models.sh reads this file top to bottom. The order is LOW PRICE TO HIGH as the owner supplied it, recorded per entry as `price_rank` (1 = cheapest). Every entry was verified by a real request through tools/check_model.py -- 'answered, sees colour, and returns a valid action' -- not by a name listing, because this gateway serves some of these models under two names with opposite results: `qwen3-vl-8b-instruct` answers 'Orange' to a solid red frame while `Qwen/Qwen3-VL-8B-Instruct` passes, and the same split holds for the 30B-A3B. The unprefixed spellings are recorded in `excluded`.",
   "endpoint": "http://35.220.164.252:3888/v1",
   "image_size": 512,
   "episodes_per_level": 5,
@@ -27,59 +27,21 @@
   "levels_note": "17 widths: A/S = 2.0 down to 0.9 in steps of 0.1 (the reference series), then 0.8, 0.7, 0.6, 0.5, 0.4. 0.4 (0.228 m) is the narrowest passable level; the body's smallest projected width is its 0.220 m thickness, i.e. A/S 0.386, so anything below that cannot be passed at any torso angle (tools/ladder_proposal.py). 17 x 5 = 85 scored episodes per model.",
   "models": [
     {
-      "runner": "qwen3-vl-235b-a22b-instruct",
-      "label": "Qwen3-VL 235B A22B",
+      "runner": "Qwen/Qwen3-VL-8B-Instruct",
+      "label": "Qwen3-VL 8B",
       "group": "qwen",
       "origin": "CN",
-      "probe_latency_s": 1.0,
+      "price_rank": 1,
+      "probe_latency_s": null,
       "verified": "ok"
     },
     {
-      "runner": "qwen3-vl-32b-instruct",
-      "label": "Qwen3-VL 32B",
+      "runner": "Qwen/Qwen3-VL-30B-A3B-Instruct",
+      "label": "Qwen3-VL 30B A3B",
       "group": "qwen",
       "origin": "CN",
-      "probe_latency_s": 1.1,
-      "verified": "ok"
-    },
-    {
-      "runner": "qwen-vl-max",
-      "label": "Qwen-VL-Max",
-      "group": "qwen",
-      "origin": "CN",
-      "probe_latency_s": 9.2,
-      "verified": "ok"
-    },
-    {
-      "runner": "gemini-2.5-pro",
-      "label": "Gemini 2.5 Pro",
-      "group": "reference",
-      "origin": "US",
-      "probe_latency_s": 4.7,
-      "verified": "ok"
-    },
-    {
-      "runner": "gemini-2.5-flash",
-      "label": "Gemini 2.5 Flash",
-      "group": "reference",
-      "origin": "US",
-      "probe_latency_s": 3.0,
-      "verified": "ok"
-    },
-    {
-      "runner": "gpt-4.1",
-      "label": "GPT-4.1",
-      "group": "reference",
-      "origin": "US",
-      "probe_latency_s": 18.5,
-      "verified": "ok"
-    },
-    {
-      "runner": "gpt-4o",
-      "label": "GPT-4o",
-      "group": "reference",
-      "origin": "US",
-      "probe_latency_s": 2.8,
+      "price_rank": 2,
+      "probe_latency_s": null,
       "verified": "ok"
     },
     {
@@ -87,71 +49,117 @@
       "label": "GPT-4o mini",
       "group": "reference",
       "origin": "US",
+      "price_rank": 3,
       "probe_latency_s": 1.4,
       "verified": "ok"
     },
     {
-      "runner": "claude-sonnet-4-6",
-      "label": "Claude Sonnet 4.6",
-      "group": "reference",
-      "origin": "US",
-      "probe_latency_s": 2.7,
-      "verified": "ok",
-      "note": "Substituted for claude-sonnet-4-5-20250929, which this account cannot reach: see excluded. Same family and tier, so the roster's model-class spread is unchanged. It also has an explicit claude-sonnet-4-6-thinking sibling on the gateway, which is the pair needed to check whether extended thinking is on -- the plain id is the non-deliberating route, and unlike glm there is no parameter whose effect we have to trust."
-    },
-    {
-      "runner": "kimi/kimi-k2.5",
-      "label": "Kimi K2.5",
-      "group": "moonshot",
-      "origin": "CN",
-      "probe_latency_s": 5.0,
-      "verified": "ok",
-      "note": "Chosen over kimi-k2.6 and kimi-k2.7-code on measurement: all three return legal JSON for the real action prompt and prose for the note call, but kimi/kimi-k2.5 is fastest on both paths (5.0 s action, 7.7 s note) and needs NO per-model request override, unlike deepseek-v4.1-flash and glm-4.6v. The bare name kimi-k2.5, every moonshot-v1-* and every moonshotai/* or Pro/moonshotai/* route returns HTTP 500 (no channel), and kimi-k2-thinking has no vision at all: it answered 'Unknown' to a solid red image, the same failure that excluded deepseek-v4-pro and MiniMax-M3. Of 15 Kimi/Moonshot names the gateway lists, three are usable."
-    },
-    {
-      "runner": "deepseek-v4.1-flash",
-      "label": "DeepSeek V4.1 Flash",
+      "runner": "deepseek-v4-flash-vision-exp",
+      "label": "DeepSeek V4 Flash (vision exp)",
       "group": "deepseek",
       "origin": "CN",
-      "probe_latency_s": 3.5,
-      "verified": "ok",
-      "note": "The only DeepSeek on this gateway that can actually see. deepseek-v4-pro answered 'Unknown.' and deepseek-v4-flash answered 'Orange' to a solid red image. Slowest model on the roster in practice: 30-86 s per real call, so run it last."
+      "price_rank": 4,
+      "probe_latency_s": null,
+      "verified": "ok"
     },
     {
       "runner": "glm-4.6v",
       "label": "GLM-4.6V",
       "group": "glm",
       "origin": "CN",
+      "price_rank": 5,
       "probe_latency_s": 2.2,
-      "verified": "ok",
-      "note": "Chosen over glm-4.5v (newer, 2.2s vs 4.7s, both 6/6 on a stability retest). glm-5v-turbo was excluded: 5/6 with a timeout at 24.5s average."
+      "verified": "ok"
+    },
+    {
+      "runner": "mimo-v2.6-pro",
+      "label": "MiMo v2.6 Pro",
+      "group": "xiaomi",
+      "origin": "CN",
+      "price_rank": 6,
+      "probe_latency_s": null,
+      "verified": "ok"
+    },
+    {
+      "runner": "gemini-2.5-flash",
+      "label": "Gemini 2.5 Flash",
+      "group": "reference",
+      "origin": "US",
+      "price_rank": 7,
+      "probe_latency_s": 3.0,
+      "verified": "ok"
     },
     {
       "runner": "grok-4.3",
       "label": "Grok 4.3",
       "group": "xai",
       "origin": "US",
+      "price_rank": 8,
       "probe_latency_s": 1.7,
-      "verified": "ok",
-      "note": "The Mistral replacement: every mistralai/* route returns HTTP 500 (no channel), so that vendor is unavailable. Fully verified at the experiment's own frame size, not a 64 px probe: 5/5 on a solid red 512 px image at 1.7 s, legal JSON for the real action prompt in 4.6 s, prose for the note call in 3.0 s. The NEWER grok-4.5, 4.6 and 4.7 also work but cost 24-41 s per action call, so 4.3 is the pick. The x-ai/* routes (x-ai/grok-4, x-ai/grok-4-fast, x-ai/grok-2-vision-1212, x-ai/grok-3) all return HTTP 500; only the bare grok-* names have channels."
+      "verified": "ok"
     },
     {
-      "runner": "doubao-seed-2-0-pro-260215",
-      "label": "Doubao Seed 2.0 Pro",
-      "group": "bytedance",
+      "runner": "kimi-k2.6",
+      "label": "Kimi K2.6",
+      "group": "moonshot",
       "origin": "CN",
-      "probe_latency_s": 4.9,
-      "verified": "ok",
-      "note": "ByteDance, replacing MiniMax, whose vision is genuinely unreliable: four independent runs of the solid-red check scored 2/5, 4/5, 3/5 and 3/5, answering Orange, Brown, Black and Green. Doubao scored 5/5 on both the 64 px and the 512 px image at 4.9 s. Its action and note calls were NOT verifiable in the same session: the gateway began refusing roughly two calls in three with HTTP 503 in 0.1 s, for every model including ones that had just passed, so that storm is throttling and not a model property. Re-run tools/probe_families.py on this model before the sweep. doubao-seed-2-1-pro-260628 also sees 5/5 but took 180 s on one action call, which is too slow to use; doubao-1-5-* return HTTP 500; doubao-seedream-* and doubao-seedance-* are image and video generators."
+      "price_rank": 9,
+      "probe_latency_s": null,
+      "verified": "ok"
     },
     {
-      "runner": "mimo-v2.5",
-      "label": "MiMo v2.5",
-      "group": "xiaomi",
+      "runner": "kimi/kimi-k2.6",
+      "label": "Kimi K2.6 (prefixed route)",
+      "group": "moonshot",
       "origin": "CN",
-      "probe_latency_s": 5.7,
-      "verified": "ok",
-      "note": "Xiaomi. Verified on all three paths: 5/5 on the solid-red check, legal JSON for the real action prompt in 3.6 s, prose for the note call in 10.1 s (276 characters). Needs reasoning_effort='none' in MODEL_REQUEST_PARAMS, the same override deepseek-v4.1-flash needs -- without it the reply carries no content at all. mimo-v2.6-pro scored only 3/5 on vision, mimo-v2.6-flash 3/5 with the override and 0/5 without, and xiaomi/mimo-v2-pro has no channel (HTTP 500)."
+      "price_rank": 10,
+      "probe_latency_s": null,
+      "verified": "ok"
+    },
+    {
+      "runner": "claude-haiku-4-5-20251001",
+      "label": "Claude Haiku 4.5",
+      "group": "reference",
+      "origin": "US",
+      "price_rank": 11,
+      "probe_latency_s": null,
+      "verified": "ok"
+    },
+    {
+      "runner": "grok-4.5",
+      "label": "Grok 4.5",
+      "group": "xai",
+      "origin": "US",
+      "price_rank": 12,
+      "probe_latency_s": null,
+      "verified": "ok"
+    },
+    {
+      "runner": "gpt-4.1",
+      "label": "GPT-4.1",
+      "group": "reference",
+      "origin": "US",
+      "price_rank": 13,
+      "probe_latency_s": 18.5,
+      "verified": "ok"
+    },
+    {
+      "runner": "gemini-2.5-pro",
+      "label": "Gemini 2.5 Pro",
+      "group": "reference",
+      "origin": "US",
+      "price_rank": 14,
+      "probe_latency_s": 4.7,
+      "verified": "ok"
+    },
+    {
+      "runner": "gpt-4o",
+      "label": "GPT-4o",
+      "group": "reference",
+      "origin": "US",
+      "price_rank": 15,
+      "probe_latency_s": 2.8,
+      "verified": "ok"
     }
   ],
   "excluded": [
@@ -274,24 +282,14 @@
     {
       "model": "deepseek-v4.1-flash",
       "reason": "TIMEOUT on the pre-sweep probe, 2026-10-13; may be transient -- retest before treating as final"
-    }
-  ],
-  "verified_candidates": [
-    {
-      "runner": "qwen3-vl-plus",
-      "note": "probe PASSED 2026-10-13: answered, sees colour, valid action"
     },
     {
-      "runner": "deepseek-v4-flash-vision-exp",
-      "note": "probe PASSED 2026-10-13: answered, sees colour, valid action"
+      "model": "qwen3-vl-8b-instruct",
+      "reason": "NO-VISION - answered 'Orange' to a solid red frame. The SAME model under the prefixed spelling Qwen/Qwen3-VL-8B-Instruct passes; this gateway serves both and only one works."
     },
     {
-      "runner": "glm-4.5v",
-      "note": "probe PASSED 2026-10-13: answered, sees colour, valid action"
-    },
-    {
-      "runner": "glm-5v-turbo",
-      "note": "probe PASSED but already excluded as too slow (5/6 stable, 24.5 s average); a single probe cannot see slowness"
+      "model": "qwen3-vl-30b-a3b-instruct",
+      "reason": "NO-VISION - answered 'Orange' to a solid red frame. The prefixed spelling Qwen/Qwen3-VL-30B-A3B-Instruct passes; only one of the two routes works."
     }
   ]
 }
