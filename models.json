@@ -27,6 +27,30 @@
   "levels_note": "17 widths: A/S = 2.0 down to 0.9 in steps of 0.1 (the reference series), then 0.8, 0.7, 0.6, 0.5, 0.4. 0.4 (0.228 m) is the narrowest passable level; the body's smallest projected width is its 0.220 m thickness, i.e. A/S 0.386, so anything below that cannot be passed at any torso angle (tools/ladder_proposal.py). 17 x 5 = 85 scored episodes per model.",
   "models": [
     {
+      "runner": "qwen3-vl-235b-a22b-instruct",
+      "label": "Qwen3-VL 235B A22B",
+      "group": "qwen",
+      "origin": "CN",
+      "probe_latency_s": 1.0,
+      "verified": "ok"
+    },
+    {
+      "runner": "qwen3-vl-32b-instruct",
+      "label": "Qwen3-VL 32B",
+      "group": "qwen",
+      "origin": "CN",
+      "probe_latency_s": 1.1,
+      "verified": "ok"
+    },
+    {
+      "runner": "qwen-vl-max",
+      "label": "Qwen-VL-Max",
+      "group": "qwen",
+      "origin": "CN",
+      "probe_latency_s": 9.2,
+      "verified": "ok"
+    },
+    {
       "runner": "gemini-2.5-pro",
       "label": "Gemini 2.5 Pro",
       "group": "reference",
@@ -85,6 +109,15 @@
       "note": "Chosen over kimi-k2.6 and kimi-k2.7-code on measurement: all three return legal JSON for the real action prompt and prose for the note call, but kimi/kimi-k2.5 is fastest on both paths (5.0 s action, 7.7 s note) and needs NO per-model request override, unlike deepseek-v4.1-flash and glm-4.6v. The bare name kimi-k2.5, every moonshot-v1-* and every moonshotai/* or Pro/moonshotai/* route returns HTTP 500 (no channel), and kimi-k2-thinking has no vision at all: it answered 'Unknown' to a solid red image, the same failure that excluded deepseek-v4-pro and MiniMax-M3. Of 15 Kimi/Moonshot names the gateway lists, three are usable."
     },
     {
+      "runner": "deepseek-v4.1-flash",
+      "label": "DeepSeek V4.1 Flash",
+      "group": "deepseek",
+      "origin": "CN",
+      "probe_latency_s": 3.5,
+      "verified": "ok",
+      "note": "The only DeepSeek on this gateway that can actually see. deepseek-v4-pro answered 'Unknown.' and deepseek-v4-flash answered 'Orange' to a solid red image. Slowest model on the roster in practice: 30-86 s per real call, so run it last."
+    },
+    {
       "runner": "glm-4.6v",
       "label": "GLM-4.6V",
       "group": "glm",
@@ -112,28 +145,13 @@
       "note": "ByteDance, replacing MiniMax, whose vision is genuinely unreliable: four independent runs of the solid-red check scored 2/5, 4/5, 3/5 and 3/5, answering Orange, Brown, Black and Green. Doubao scored 5/5 on both the 64 px and the 512 px image at 4.9 s. Its action and note calls were NOT verifiable in the same session: the gateway began refusing roughly two calls in three with HTTP 503 in 0.1 s, for every model including ones that had just passed, so that storm is throttling and not a model property. Re-run tools/probe_families.py on this model before the sweep. doubao-seed-2-1-pro-260628 also sees 5/5 but took 180 s on one action call, which is too slow to use; doubao-1-5-* return HTTP 500; doubao-seedream-* and doubao-seedance-* are image and video generators."
     },
     {
-      "runner": "qwen3-vl-plus",
-      "label": "Qwen3-VL Plus",
-      "group": "qwen",
+      "runner": "mimo-v2.5",
+      "label": "MiMo v2.5",
+      "group": "xiaomi",
       "origin": "CN",
-      "probe_latency_s": null,
-      "verified": "ok"
-    },
-    {
-      "runner": "deepseek-v4-flash-vision-exp",
-      "label": "DeepSeek V4 Flash (vision exp)",
-      "group": "deepseek",
-      "origin": "CN",
-      "probe_latency_s": null,
-      "verified": "ok"
-    },
-    {
-      "runner": "glm-4.5v",
-      "label": "GLM-4.5V",
-      "group": "glm",
-      "origin": "CN",
-      "probe_latency_s": null,
-      "verified": "ok"
+      "probe_latency_s": 5.7,
+      "verified": "ok",
+      "note": "Xiaomi. Verified on all three paths: 5/5 on the solid-red check, legal JSON for the real action prompt in 3.6 s, prose for the note call in 10.1 s (276 characters). Needs reasoning_effort='none' in MODEL_REQUEST_PARAMS, the same override deepseek-v4.1-flash needs -- without it the reply carries no content at all. mimo-v2.6-pro scored only 3/5 on vision, mimo-v2.6-flash 3/5 with the override and 0/5 without, and xiaomi/mimo-v2-pro has no channel (HTTP 500)."
     }
   ],
   "excluded": [
@@ -239,23 +257,41 @@
     },
     {
       "model": "qwen3-vl-235b-a22b-instruct",
-      "reason": "NO-VISION - answered 'Orange' to a solid red frame (real request, check_model.py)"
+      "reason": "NO-VISION - answered 'Orange' to a solid red frame (real request, tools/check_model.py, 2026-10-13)"
     },
     {
       "model": "qwen3-vl-32b-instruct",
-      "reason": "NO-VISION - answered 'Orange' to a solid red frame (real request, check_model.py)"
+      "reason": "NO-VISION - answered 'Orange' to a solid red frame (real request, tools/check_model.py, 2026-10-13)"
     },
     {
       "model": "qwen-vl-max",
-      "reason": "NO-VISION - answered 'Orange' to a solid red frame (real request, check_model.py)"
+      "reason": "NO-VISION - answered 'Orange' to a solid red frame (real request, tools/check_model.py, 2026-10-13)"
     },
     {
       "model": "mimo-v2.5",
-      "reason": "NO-VISION - answered 'Orange' to a solid red frame (real request, check_model.py)"
+      "reason": "NO-VISION - answered 'Orange' to a solid red frame (real request, tools/check_model.py, 2026-10-13)"
     },
     {
       "model": "deepseek-v4.1-flash",
-      "reason": "TIMEOUT on the pre-sweep probe (check_model.py).  A single timeout can be transient; re-run tools/check_model.py --model deepseek-v4.1-flash before treating this as final."
+      "reason": "TIMEOUT on the pre-sweep probe, 2026-10-13; may be transient -- retest before treating as final"
+    }
+  ],
+  "verified_candidates": [
+    {
+      "runner": "qwen3-vl-plus",
+      "note": "probe PASSED 2026-10-13: answered, sees colour, valid action"
+    },
+    {
+      "runner": "deepseek-v4-flash-vision-exp",
+      "note": "probe PASSED 2026-10-13: answered, sees colour, valid action"
+    },
+    {
+      "runner": "glm-4.5v",
+      "note": "probe PASSED 2026-10-13: answered, sees colour, valid action"
+    },
+    {
+      "runner": "glm-5v-turbo",
+      "note": "probe PASSED but already excluded as too slow (5/6 stable, 24.5 s average); a single probe cannot see slowness"
     }
   ]
 }
