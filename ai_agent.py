@@ -103,15 +103,25 @@ OPENAI_DEFAULT_BASE_URL = "https://api.openai.com/v1"
 #   1,224 tokens with reasoning_effort="none" (n=2, real prompt + 512 px frame).
 #   Without it a 60-episode run is ~43 h; see the probe's table for the variants.
 MODEL_REQUEST_PARAMS: Dict[str, Dict[str, Any]] = {
-    "deepseek-v4.1-flash": {"reasoning_effort": "none"},
     # glm-4.6v honours the Zhipu spelling: 12.9 s / 1,595 tokens at the default,
     # 6.4 s / 1,397 tokens with thinking disabled (n=4 each, same probe).
     "glm-4.6v": {"thinking": {"type": "disabled"}},
-    # Xiaomi MiMo, same OpenAI spelling as deepseek.  Measured on the solid-red check and
-    # on the real action prompt: without it the reply carries no content at all (0/5 on
-    # the colour check), with it 5/5 and legal JSON in 3.6 s.
-    "mimo-v2.5": {"reasoning_effort": "none"},
+    # Qwen3-VL-8B: measured 2026-10-15 with tools/probe_reasoning.py, stage 2 (the real action
+    # prompt, 512 px frame), n=1 per variant.  The default took 8.5 s and every reasoning_effort
+    # value took 3.7-4.5 s, with the reply still parsing to a legal action (1/1).  TOKENS WERE FLAT
+    # AT ~1400 IN EVERY VARIANT, so this is not "turning thinking off" -- there is no long
+    # deliberation to turn off.  It tunes latency only, and the entry is here because the latency
+    # effect was consistent across four independent values of the same knob.
+    "Qwen/Qwen3-VL-8B-Instruct": {"reasoning_effort": "none"},
+    # Qwen3-VL-30B-A3B: the same probe says NOTHING here.  Baseline 13.6 s / 1447 tokens;
+    # reasoning_effort="none" 14.1 s / 1448 tokens, i.e. no better than the default, and every other
+    # variant landed inside the same 6.5-14.6 s / 1396-1448 token band.  With n=1 that spread is
+    # noise, so no parameter is recorded -- adding one would be cargo cult, not a measurement.
 }
+# DELETED from this table 2026-10-15: "deepseek-v4.1-flash" and "mimo-v2.5".  Neither is on the
+# roster any more -- the owner replaced both -- so their overrides served nothing while still looking
+# like tested knowledge.  Their replacements (deepseek-v4-flash-vision-exp, mimo-v2.6-pro) have NOT
+# been probed and therefore have no entry: run tools/probe_reasoning.py on a model before adding one.
 
 
 def request_params_for(model_name: str) -> Dict[str, Any]:
