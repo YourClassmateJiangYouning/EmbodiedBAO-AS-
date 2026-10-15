@@ -106,13 +106,24 @@ MODEL_REQUEST_PARAMS: Dict[str, Dict[str, Any]] = {
     # glm-4.6v honours the Zhipu spelling: 12.9 s / 1,595 tokens at the default,
     # 6.4 s / 1,397 tokens with thinking disabled (n=4 each, same probe).
     "glm-4.6v": {"thinking": {"type": "disabled"}},
-    # Qwen3-VL-8B: measured 2026-10-15 with tools/probe_reasoning.py, stage 2 (the real action
-    # prompt, 512 px frame), n=1 per variant.  The default took 8.5 s and every reasoning_effort
-    # value took 3.7-4.5 s, with the reply still parsing to a legal action (1/1).  TOKENS WERE FLAT
-    # AT ~1400 IN EVERY VARIANT, so this is not "turning thinking off" -- there is no long
-    # deliberation to turn off.  It tunes latency only, and the entry is here because the latency
-    # effect was consistent across four independent values of the same knob.
-    "Qwen/Qwen3-VL-8B-Instruct": {"reasoning_effort": "none"},
+    # Qwen/Qwen3-VL-8B-Instruct: an entry {"reasoning_effort": "none"} was added here on 2026-10-15 and
+    # then REMOVED the same day, because of what it did to the results rather than what it did to the
+    # model.  The measurement (tools/probe_reasoning.py, stage 2, n=1) was: default 8.5 s, every
+    # reasoning_effort value 3.7-4.5 s, reply still legal JSON -- and TOKENS FLAT AT ~1400 IN EVERY
+    # VARIANT, so there was no long deliberation to turn off and the knob bought latency, nothing else.
+    #
+    # The reason it had to go: this map feeds `effective_tag`, so changing a model's request parameters
+    # changes its results DIRECTORY.  Adding it split that model across two tags --
+    #     ...-v7-state-axes-stage1.1 .. stage1.4          (default, run 06:18-06:28)
+    #     ...-v7-state-axes-stage1.5-effortnone           (with the knob, run 12:45 onward)
+    # -- so four Levels of one model were measured under one configuration and the fifth under another,
+    # and the Levels stopped being comparable.  The safety property that the tag includes the request
+    # parameters is exactly what makes an unnecessary parameter expensive: it does not merely fail to
+    # help, it invalidates the runs on the other side of the change.
+    #
+    # Rule this leaves behind: a parameter is only worth adding when it changes the MEASUREMENT
+    # (tokens), not only the clock, because adding it discards comparability with everything already
+    # collected under the old tag.
     # Qwen3-VL-30B-A3B: the same probe says NOTHING here.  Baseline 13.6 s / 1447 tokens;
     # reasoning_effort="none" 14.1 s / 1448 tokens, i.e. no better than the default, and every other
     # variant landed inside the same 6.5-14.6 s / 1396-1448 token band.  With n=1 that spread is
