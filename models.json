@@ -1,6 +1,6 @@
 {
   "_comment": "Final model roster for the EmbodiedBAO A/S threshold experiment. Every entry was verified against the gateway with a text+image request carrying a solid red 64x64 PNG; 'ok' means the model both accepted the image and named its colour. probe_latency_s is a single 64x64 probe, NOT an average and NOT a predictor of sweep cost: the real per-step latency at 512 px with the full prompt and history is what matters, and it can differ by more than an order of magnitude from the probe (deepseek-v4.1-flash probes at 3.5 s but was measured at 30-86 s per real call).",
-  "_sweep_order": "The list order IS the sweep order: run_all_models.sh reads this file top to bottom. The order is LOW PRICE TO HIGH as the owner supplied it, recorded per entry as `price_rank` (1 = cheapest). Every entry was verified by a real request through tools/check_model.py -- 'answered, sees colour, and returns a valid action' -- not by a name listing, because this gateway serves some of these models under two names with opposite results: `qwen3-vl-8b-instruct` answers 'Orange' to a solid red frame while `Qwen/Qwen3-VL-8B-Instruct` passes, and the same split holds for the 30B-A3B. The unprefixed spellings are recorded in `excluded`.",
+  "_sweep_order": "The list order IS the sweep order: run_all_models.sh reads this file top to bottom. The order is LOW PRICE TO HIGH as the owner supplied it, recorded per entry as `price_rank` (1 = cheapest). Every entry was verified by a real request through tools/check_model.py -- 'answered, sees colour, and returns a valid action'.",
   "endpoint": "http://35.220.164.252:3888/v1",
   "image_size": 512,
   "episodes_per_level": 5,
@@ -264,18 +264,6 @@
       "reason": "5/6 stable, 24.5s average - too slow"
     },
     {
-      "model": "qwen3-vl-235b-a22b-instruct",
-      "reason": "NO-VISION - answered 'Orange' to a solid red frame (real request, tools/check_model.py, 2026-10-13)"
-    },
-    {
-      "model": "qwen3-vl-32b-instruct",
-      "reason": "NO-VISION - answered 'Orange' to a solid red frame (real request, tools/check_model.py, 2026-10-13)"
-    },
-    {
-      "model": "qwen-vl-max",
-      "reason": "NO-VISION - answered 'Orange' to a solid red frame (real request, tools/check_model.py, 2026-10-13)"
-    },
-    {
       "model": "mimo-v2.5",
       "reason": "NO-VISION - answered 'Orange' to a solid red frame (real request, tools/check_model.py, 2026-10-13)"
     },
@@ -285,11 +273,23 @@
     },
     {
       "model": "qwen3-vl-8b-instruct",
-      "reason": "NO-VISION - answered 'Orange' to a solid red frame. The SAME model under the prefixed spelling Qwen/Qwen3-VL-8B-Instruct passes; this gateway serves both and only one works."
+      "reason": "STALE SPELLING, not the owner's model name.  The gateway's /v1/models does not list it; the real name is Qwen/Qwen3-VL-8B-Instruct.  Testing this spelling measures a fallback route, not the model."
     },
     {
       "model": "qwen3-vl-30b-a3b-instruct",
-      "reason": "NO-VISION - answered 'Orange' to a solid red frame. The prefixed spelling Qwen/Qwen3-VL-30B-A3B-Instruct passes; only one of the two routes works."
+      "reason": "STALE SPELLING, not the owner's model name; the real name is Qwen/Qwen3-VL-30B-A3B-Instruct."
+    },
+    {
+      "model": "qwen3-vl-32b-instruct",
+      "reason": "STALE SPELLING; the gateway lists Qwen/Qwen3-VL-32B-Instruct, which PASSED a real request 2026-10-15."
+    },
+    {
+      "model": "qwen3-vl-235b-a22b-instruct",
+      "reason": "STALE SPELLING and no such model on the gateway: the largest Qwen3-VL listed is 32B."
+    },
+    {
+      "model": "qwen-vl-max",
+      "reason": "STALE SPELLING: the gateway's only qwen-vl entry is qwen-vl-ocr-2025-11-20."
     }
   ]
 }
