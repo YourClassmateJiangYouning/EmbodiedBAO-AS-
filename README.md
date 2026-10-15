@@ -124,24 +124,20 @@ the start pose and the success plane are identical in all five, and
 | Scene | Place | Materials | Dressing |
 | :--- | :--- | ---: | ---: |
 | `stage1.1` | plain laboratory (**baseline**) | none | none |
-| `stage1.2` | warehouse / factory | 4 | 8 |
-| `stage1.3` | library | 4 | 8 |
-| `stage1.4` | park / outdoor | 4 | 8 |
-| `stage1.5` | supermarket | 4 | 8 |
+| `stage1.2` | warehouse / factory | 4 | 11 |
+| `stage1.3` | library | 4 | 12 |
+| `stage1.4` | park / outdoor | 4 | 31 |
+| `stage1.5` | supermarket | 4 | 12 |
 
 ### Dressing that has no asset, and therefore stays a box
 
-Nine items carry no vendored `.usd` and are drawn as their clearance box.  Two of them are inside
-the eye camera's frame, and for both, the asset does not exist in NVIDIA's public library as the
-project has been able to search it:
-
-| Item | Scene | In the eye frame | Why no asset |
-| :--- | :--- | :--- | :--- |
-| `bay_sign` | 1.2 | yes (u=+0.18, v=+0.59) | The only sign-like asset vendored is `sign_plaza_fountain_01`, whose folder has no separate sign layer; `SM_BooksSet_11_167` cannot be loaded at all (it references an `SM_BooksSet_11.usd` that is not vendored). |
-| `forklift` | 1.2 | yes (u=+0.08, v=+0.81) | The public bucket's `props_general` set has no forklift, and no other reachable set was found to contain one. |
-
-The other seven (`sign`, `reading_lamp`, `park_sign`, `shelf_left`, `shelf_right`, `price_strip`,
-`promo_banner`) are outside the eye frame or come from the same two gaps.
+Five of the 66 dressing items carry no vendored `.usd` and are drawn as their clearance box. Four
+name no asset at all — `bay_sign` (1.2), `park_sign` (1.4), `price_strip` (1.5) and `promo_banner`
+(1.5) — and one, `sign` (1.2), names an `.mdl` material rather than a stage asset (USD answers
+"Cannot determine file format"). Of these, only `bay_sign` is inside the eye camera's frame
+(u=+0.18, v=+0.59); the only sign-like asset vendored is `sign_plaza_fountain_01`, whose folder has
+no separate sign layer, and `SM_BooksSet_11_167` cannot be loaded at all (it references an
+`SM_BooksSet_11.usd` that is not vendored).
 
 ### Known limitations of the scene dressing, measured
 
@@ -168,7 +164,7 @@ red.  The list lives in `scene_builder.UNRESOLVABLE_SHADER_ASSETS`, one entry pe
 `MDLC comp error`, and can be emptied again when the modules are vendored.
 
 Each (scene, model, Level) cell runs **five episodes, one per marker**, so the five
-repeats are five conditions rather than five replicates. Every marker is 0.60 m across,
+repeats are five conditions rather than five replicates. Every marker is 0.90 m across,
 at `x = 16.0`, `z = 0`, centre 1.40 m, on the far wall — only its **shape and colour**
 change, so the distance cue is the same size in every condition. Twenty-five markers
 means no (shape, colour) pair repeats, and within a scene the five colours differ.
@@ -465,8 +461,9 @@ Either threshold classifies a model:
 | `test_bao_parsing.py` | the model reply parser, including the reply shapes that used to be discarded |
 | `test_bao_health.py` | the runner's self-defence: it must stop a model whose every call is failing |
 | `models.json` | the model roster: which models are tested, and why the others were excluded |
-| `run_all_models.sh` | sweep the roster sequentially, resuming each model by tag. `SCENE=` picks the scene |
-| `run_all_models_memory.sh` | the same sweep for Stage 2: the roster, six runs each, model-scoped tags |
+| `run_parallel_sweep.sh` | **the live dispatcher**: one job per (model, scene) through `xargs -P`, resuming by tag. `PARALLEL` is a machine-wide worker budget (default 3, hard cap 4) and a `flock` lock allows only one dispatcher at a time |
+| `run_all_models.sh` | the older sequential loop over the roster, resuming each model by tag. `SCENE=` picks the scene. It has no worker cap and no dispatcher lock, so prefer `run_parallel_sweep.sh` |
+| `run_all_models_memory.sh` | the same loop for Stage 2: the roster, six runs each, model-scoped tags |
 | `status.sh`, `watch.sh`, `stop.sh` | what is running now, a live line per finished Level, and a precise stop by recorded PID |
 | `verify_professor_machine.sh` | one-shot machine check: suites, passability, Isaac probe, scripted Level-5 run, rendered views |
 | `download.py` | fetch the H1 USD asset if `assets/` is empty |
@@ -515,34 +512,42 @@ run tag, so two scenes cannot write into one directory.
 
 ```bash
 export BOYUE_API_KEY='...'
-ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_all_models.sh 2>&1 | tee sweep.log
+# machine-wide worker budget: PARALLEL Isaac instances in TOTAL (default 3, hard cap 4)
+PARALLEL=3 ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_parallel_sweep.sh gpt-4o-mini glm-4.6v
 
-# one scene skin: SCENE selects it, and it goes into each model's tag
-SCENE=stage1.2 ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_all_models.sh 2>&1 | tee sweep_1.2.log
+# a scene skin, and any subset of the roster: SCENES and the model arguments select them
+SCENES=stage1.2 ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_parallel_sweep.sh gpt-4o-mini
 ```
 
-`models.json` is the single definition of the roster: the script reads it, gives
-each model its own protocol-versioned tag, and runs **17 Levels × 5 episodes × 30
-steps** per model — 85 episodes, up to 2,550 model calls — with `--resume`, so a second
-invocation continues instead of starting over. It refuses to start if the interpreter
-cannot import `isaacsim` — rather than failing 15 times and looking like a finished
-sweep — and it exits non-zero if any model did.
+**`PARALLEL` is a budget for the WHOLE machine, not for one invocation.** Each Isaac worker holds
+16-19 GB resident, so at most four fit on the 125 GB box (`4 x ~19 = ~76 GB`); the script refuses
+`PARALLEL > 4`. Because a second dispatcher would multiply the worker count, it also takes a `flock`
+lock and refuses to start while another dispatcher is alive. To run more models, pass them to the
+**same** dispatcher.
+
+`models.json` is the single definition of the roster and its sweep order.
+`run_all_models.sh` walks that file sequentially; `run_parallel_sweep.sh` takes the models as
+arguments and defaults to `gpt-4o-mini glm-4.6v`. Either way a model gets its own protocol-versioned
+tag and runs **17 Levels × 5 episodes × 30 steps** — 85 episodes, up to 2,550 model calls — with
+`--resume`, so a second invocation continues instead of starting over. `main.py`'s preflight refuses
+to start if the interpreter cannot import `isaacsim`, rather than failing 15 times and looking like a
+finished sweep.
 
 The **five scenes multiply this by five**: 6,375 episodes over the roster. The measured
 figures are in `STAGE1_SCENES.md` §0 (≈97,800 calls, ≈$231, ≈5.7 days serial), derived
 from the v7 run's own 15.34 calls/episode and the gateway's billed
 $0.002362/call — neither is an estimate.
 
-Budget **days, not hours**. Run it inside `tmux` or `nohup`, because a dropped SSH
-session would kill the sweep. Every episode is written as it is scored, so an
-interruption costs at most the episode in flight. Afterwards:
+Budget **days, not hours**. `run_parallel_sweep.sh` detaches itself with `setsid`, so a dropped SSH
+session does not kill it; `run_all_models.sh` still needs `tmux` or `nohup`. Every episode is written
+as it is scored, so an interruption costs at most the episode in flight. Afterwards:
 
 ```bash
 python analysis.py                     # every model found under results/
 python analysis.py --tag gemini-v1     # one exact run
 ```
 
-**Run this before every sweep**, because `run_all_models.sh`'s own preflight
+**Run this before every sweep**, because `main.py`'s own preflight
 cannot cover it:
 
 ```bash
@@ -610,13 +615,16 @@ export BOYUE_API_KEY='...'
 ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_all_models_memory.sh 2>&1 | tee memory_sweep.log
 ```
 
+This loop is sequential — one Isaac worker at a time — and holds no dispatcher lock, so it is part of
+the same machine budget: do not start it while a `run_parallel_sweep.sh` dispatcher is alive.
+
 The frame size defaults to 512 px, as in the threshold sweep, and the runner sets it
 through the variable the client reads (`BAO_IMAGE_SIZE`); `--image_size 0` keeps the
 camera's native resolution, which is about five times slower per step and not
 comparable with Stage 1. Watch a sweep with (17 rounds = a finished run):
 
 ```bash
-python -c "import glob, json, os; [print('%-34s %3d completed' % (os.path.basename(os.path.dirname(p)) if p.endswith('checkpoint.json') else os.path.basename(p)[11:-5], len(json.load(open(p)).get('completed', [])))) for p in sorted(glob.glob('results/memory/*/*/checkpoint.json') + glob.glob('results/*/checkpoint_*.json'))]"
+python -c "import glob, json, os; [print('%-34s %3d completed' % (os.path.basename(os.path.dirname(p)) if p.endswith('checkpoint.json') else os.path.basename(p)[11:-5], len(json.load(open(p)).get('completed', [])))) for p in sorted(glob.glob('results/memory/*/*/checkpoint.json') + glob.glob('results/memory/*/*/*/checkpoint.json') + glob.glob('results/*/checkpoint_*.json') + glob.glob('results/*/*/checkpoint_*.json'))]"
 ```
 
 Read the results per attempt rather than through the log: each attempt is written to
@@ -706,44 +714,48 @@ before analysing anything on this side.
 
 ### Start it so a dropped SSH session cannot kill it
 
-`tmux` is documented above; the `nohup` form is the same idea for a
-non-interactive session. Single line, so it can be pasted whole:
+`run_parallel_sweep.sh` detaches itself with `setsid`, so it survives a dropped SSH session without
+`tmux` or `nohup`. Single line, so it can be pasted whole:
 
 ```bash
-cd ~/EmbodiedBAO-AS- && export BOYUE_API_KEY='sk-...' && nohup bash -c 'ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_all_models.sh' > sweep.log 2>&1 & echo $! > sweep.pid
+cd ~/EmbodiedBAO-AS- && export BOYUE_API_KEY='sk-...' && PARALLEL=3 ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_parallel_sweep.sh gpt-4o-mini glm-4.6v
 ```
 
-`$!` is the PID of the `nohup`'d shell — that is what belongs in `sweep.pid`, and it
-is *not* the same number bash prints as the job id in its own `[1] 12345` line. That
-line is the wrapper subshell, and stopping the sweep by job id, or by excluding that
-job id from a wider kill, has already killed the wrong thing here once.
+`PARALLEL` is the number of Isaac workers for the **whole machine**, not per invocation: each worker
+holds 16-19 GB resident, the cap is 4, and the script's `flock` lock allows only one dispatcher at a
+time. It records its own PID in `logs/parallel/.dispatcher.pid`; that is the PID `bash stop.sh` uses,
+and it is *not* the same number bash prints as the job id in its own `[1] 12345` line. Stopping the
+sweep by job id, or by excluding that job id from a wider kill, has already killed the wrong thing
+here once.
 
-**Never use `pkill -f isaac`, `pkill -f main.py` or `pkill -f python.sh` on that
-machine.** It is shared: one such command takes out somebody else's simulation, and
-Isaac Sim does not survive losing its process group politely. Kill by the recorded
-PID, and only after checking what it is:
+**Never use `pkill -f isaac`, `pkill -f main.py`, `pkill -f python.sh` or any other name pattern on
+that machine.** It is shared: one such command takes out somebody else's simulation, and a pattern
+also matches the caller's own command line — which has killed the operator's own shell here three
+times. Kill by the recorded PID, and only after checking what it is:
 
 ```bash
-cat sweep.pid && ps -o pid,ppid,etime,cmd -p "$(cat sweep.pid)"
+cat logs/parallel/.dispatcher.pid && ps -o pid,ppid,etime,cmd -p "$(cat logs/parallel/.dispatcher.pid)"
 ```
 
-Only one Isaac Sim instance can run at a time on that box, so two sweeps in
-parallel do not go twice as fast — they collide.
+`bash stop.sh` reads that PID and signals the dispatcher's whole process group first, then the
+runners; killing only the workers leaves the dispatcher's `xargs` feeder free to start the next job.
 
 ### Is it still running, and where is it?
 
 ```bash
-pgrep -af 'run_all_models'          # the sweep loop itself is alive
-pgrep -af 'main.py'                 # the model process inside it is alive
-tail -n 20 sweep.log                # which model it is on right now
+pgrep -af 'run_parallel_sweep'      # the dispatcher itself is alive
+pgrep -af 'main.py'                 # its Isaac workers, one per (model, scene) job
+ls -t logs/parallel/*.log | head    # the per-job logs, newest first
+tail -n 20 logs/parallel/<model>_<scene>.log   # which Level that job is on right now
 ```
 
 Per-model progress, read from the checkpoints `--resume` uses (a finished model
 reports **85** = 17 Levels x 5 episodes; duplicates in the list are separate tags and
-are listed by tag, not by model):
+are listed by tag, not by model). A model whose name contains a slash keeps that slash in the
+checkpoint path (`results/kimi/kimi-k2.6/checkpoint_*.json`), so both glob depths are needed:
 
 ```bash
-python3 -c "import json,glob,os; [print(os.path.basename(p)[11:-5], len(json.load(open(p))['completed'])) for p in sorted(glob.glob('results/*/checkpoint_*.json'))]"
+python3 -c "import json,glob,os; [print(os.path.basename(p)[11:-5], len(json.load(open(p))['completed'])) for p in sorted(glob.glob('results/*/checkpoint_*.json') + glob.glob('results/*/*/checkpoint_*.json'))]"
 ```
 
 Is the newest record recent, and is what it recorded real? A record that is old, or
@@ -813,7 +825,7 @@ mkdir -p lab_logs/extracted && tar xzf bao_results_*.tgz -C lab_logs/extracted &
 | :--- | :--- | :--- |
 | `import environment` before `SimulationApp` | the script builds nothing and **exits 0** | `environment._HAS_ISAAC_SIM` latches to `False` for the life of the process; pinned by the AST check in `test_bao_geometry.py`, which is why that suite must pass before a sweep |
 | Killing by job id | the new sweep loop dies, the old one keeps running | `[1] 12345` is the wrapper subshell, not the script; use the PID you recorded |
-| `pkill -f isaac` | someone else's simulation dies | shared machine, one Isaac instance at a time |
+| `pkill -f isaac` | someone else's simulation dies | shared machine; each Isaac worker holds 16-19 GB, so at most 4 run at once (machine-wide `PARALLEL`, one dispatcher) |
 | a model listed by `/v1/models` but with no channel | 30 identical fallback steps, `passed=false`, `end_reason=max_steps` at the start position | run `tools/verify_models.py` *before* the sweep; measured twice, about four hours each |
 | relative paths | a `--tag` run cannot see the other's checkpoint | always `cd ~/EmbodiedBAO-AS-` first; `--resume` keys on `results/{model}/checkpoint_{tag}.json` |
 | deleting "stale" files next to a diagnostic | good records gone | print the file list, read it, *then* delete; this has already destroyed three usable deepseek episodes |
@@ -866,7 +878,7 @@ python lab_logs/verify_optimal_steps.py
 python lab_logs/make_figures.py
 ```
 
-The first line is the 35 + 19 + 13 offline checks; the rest rebuild the episode
+The first line is the 37 + 20 + 13 offline checks; the rest rebuild the episode
 table, the statistics and the figures from inside the archive. Re-running them
 leaves `git status --short` clean, which is what makes this repository reproducible
 rather than merely archived.
@@ -883,7 +895,7 @@ is versioned now — do not delete it, and do not regenerate it in place.
 
 ## Verification without Isaac Sim
 
-Everything that can be decided without a renderer runs on plain Python. **167 checks
+Everything that can be decided without a renderer runs on plain Python. **175 checks
 across nine suites**, counted at the time of writing rather than remembered (`grep -c
 '^def test_' test_bao_*.py`):
 
@@ -891,7 +903,7 @@ across nine suites**, counted at the time of writing rather than remembered (`gr
 python test_bao_geometry.py       # 37 checks: ladder, collision gate, routes, colours, prompt
 python test_bao_integration.py    # 20 checks: full protocol, tagged runs, CLI flags, against a mock environment
 python test_bao_memory.py         # 29 checks: the Stage 2 measures and prompts, against an independent model and the real gate
-python test_bao_scenes.py         # 32 checks: the Stage 1 catalogue, all arithmetic, no simulator
+python test_bao_scenes.py         # 40 checks: the Stage 1 catalogue, all arithmetic, no simulator
 python test_bao_memory_runner.py  # 17 checks: the Stage 2 runner end to end against a mock environment and a scripted agent
 python test_bao_persistence.py    # 13 checks: interrupt and corruption safety of every artefact written
 python test_bao_parsing.py        #  9 checks: the reply parser, including shapes once discarded
@@ -921,7 +933,7 @@ The scene suite is the one that keeps the skins honest, and every one of its che
 arithmetic — no rendered frame is inspected:
 
 * twenty-five markers, no (shape, colour) pair repeated, five distinct colours per scene;
-* every shape inside the 0.60 m bounding box, and no in-plane part thinner than a fifth
+* every shape inside the 0.90 m bounding box, and no in-plane part thinner than a fifth
   of it, because the marker is about 20 px from the start pose;
 * no dressing item overlaps the opening or the marker in **any** of the 17 start views
   (544 item × width projections), and no wall item protrudes more than 0.20 m;
@@ -1108,12 +1120,13 @@ a 2 m horizontal bar instead of a vertical post.
   than by the image, and **this has not been isolated by a controlled A/B test**:
   doing so (same model and prompt at 512 vs 1024) is the measurement that would
   settle whether the resolution can be raised without cost.
-* **Eleven material URLs are unconfirmed.** `scenes.py` marks a scene's materials
-  `material_verified` when the name was read off NVIDIA's public bucket listing. Only
-  `stage1.2` (the warehouse) is: `stage1.3` (4), `stage1.4` (3) and `stage1.5` (4) carry
-  eleven names that still have to be confirmed by the same listing, and
-  `test_bao_scenes.py` fails a scene that claims verification while naming a URL outside
-  the Isaac asset root. Unconfirmed is not the same as wrong — it is unverified.
+* **Every scene's materials are marked verified.** `scenes.py` sets `material_verified = True`
+  for all five scenes: `stage1.1` (the baseline) names no materials, and `stage1.2`–`stage1.5`
+  each name four. `stage1.3`–`stage1.5` were verified on 2026-10-10 against the bucket listing —
+  every material URL answered HTTP 200 with a `Content-Length` and the remote ETag matched the
+  local file's MD5 byte for byte (the note on `stage1.3`'s flag records exactly that) — and
+  `test_bao_scenes.py` fails a scene that claims verification while naming a URL outside the
+  Isaac asset root.
 * **The marker is 0.90 m, not the 0.60 m of the earlier test run.** `scenes.MARKER_SIZE_M` and
   `environment.GOAL_MARKER_SIZE` are both 0.90 m (1.5x the size, so 1.5x the apparent edge and
   2.25x the area), because the rendered frames measured the plate at only 6-12 px of the 512 px
@@ -1133,19 +1146,20 @@ a 2 m horizontal bar instead of a vertical post.
   in `scene_builder.paint`'s docstring because they cost round trips: `emissiveColor` is a shader
   input and not a geometry attribute, and the shader id takes a plain string rather than a token
   (`pxr.Tf` on the lab machine has no token type).
-* **Scene dressing is mostly boxes.** Every one of the 33 dressing items is placed as a box of
-  its declared size, and three of them additionally reference a vendored `.usd` mesh:
-  `stage1.2`'s `pallets` → `Pallet/pallet.usd`, `stage1.2`'s `klt_bins` →
-  `KLT_Bin/small_KLT_visual.usd`, and `stage1.3`'s `cabinet` →
-  `Sektion_Cabinet/sektion_cabinet_instanceable.usd`. Those three declare the mesh's **measured**
-  size (recorded in `scenes.PROP_MEASUREMENTS`, produced by `tools/measure_assets.py`) rather than
-  a guess, because the box is what the occlusion and walking-band checks are computed against.
-  The other 30 are boxes: the `asset` field on two of them names an `.mdl`, which is a material
-  rather than a stage asset (USD answers "Cannot determine file format"), and the rest name no
-  asset at all. The report says `used_asset: false` for every item that did not reference one, so
-  nothing has to be guessed later. Note that `sektion_cabinet_visuals.usd` looks like the better
-  file by size but **cannot be referenced** — USD reports `Unresolved reference prim path
-  <defaultPrim>` — and `mac_n_cheese_centered.usd` is missing its sublayer `mac_n_cheese.usd`.
+* **Scene dressing is mostly real meshes.** The five scenes hold 66 dressing items between them
+  (0 / 11 / 12 / 31 / 12), and 61 of the 66 reference a vendored `.usd` — for example `stage1.2`'s
+  `pallets` → `assets/isaac/Props/Pallet/pallet.usd`, `stage1.2`'s `klt_bins` →
+  `assets/isaac/Props/KLT_Bin/small_KLT_visual.usd`, and `stage1.3`'s `cabinet` →
+  `assets/isaac/Props/Sektion_Cabinet/sektion_cabinet_instanceable.usd`. Each item also declares the
+  clearance box the occlusion and walking-band checks are computed against, and those three declare
+  the mesh's **measured** size (recorded in `scenes.PROP_MEASUREMENTS`, produced by
+  `tools/measure_assets.py`) rather than a guess. The five that reference no `.usd` are drawn as
+  that box: the `asset` field on one of them names an `.mdl`, which is a material rather than a
+  stage asset (USD answers "Cannot determine file format"), and the other four name no asset at all.
+  The report says `used_asset: false` for every item that did not reference one, so nothing has to
+  be guessed later. Note that `sektion_cabinet_visuals.usd` looks like the better file by size but
+  **cannot be referenced** — USD reports `Unresolved reference prim path <defaultPrim>` — and
+  `mac_n_cheese_centered.usd` is missing its sublayer `mac_n_cheese.usd`.
 * **No marker-uniqueness check exists.** `STAGE1_SCENES.md` §4 lists, as check ②, that a
   marker must be the only object of its colour in its frame, and that this should be
   automated. `tools/check_marker_uniqueness.py` **does not exist**; the document says so

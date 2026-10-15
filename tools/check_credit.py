@@ -128,7 +128,11 @@ def main() -> int:
     timeout = float(os.environ.get("BAO_LLM_TIMEOUT", "60"))
 
     print(f"endpoint : {base_url}")
-    print(f"key      : {key[:8]}...{key[-4:]}  ({len(key)} chars)")
+    # No part of the key is printed.  It used to print the first 8 and last 4 characters, and this
+    # output is appended to log files by the calling scripts, so the key ended up in the repository's
+    # logs -- which is how the operator's key leaked once already.  The LENGTH is enough to tell two
+    # keys apart in a transcript without revealing anything about either.
+    print(f"key      <redacted, {len(key)} chars>")
     print()
     print(f"{'model':<36} {'state':<10} {'secs':>6}  detail")
     print("-" * 100)

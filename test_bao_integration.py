@@ -103,7 +103,15 @@ class FakeBAOEnv:
     def get_a_s_ratio(self) -> float:
         return a_s_ratio(self._channel_width)
 
-    def reset_scene(self) -> np.ndarray:
+    def reset_scene(self, episode_id: Optional[int] = None) -> np.ndarray:
+        # The real environment takes the episode index so the marker slot is a pure function of it
+        # rather than a process-local reset counter (which drifted under --resume).  The mock mirrors
+        # that interface, and records the slot, so the contract test can see it in the record.
+        if episode_id is None:
+            self._current_marker_slot = 1
+        else:
+            self._current_marker_slot = int(episode_id) % 5 + 1
+        self._robot_ground_offset = 1.0442
         self._position = ROBOT_START.copy()
         self._yaw = 0.0
         self._camera_yaw = 0.0

@@ -13,6 +13,11 @@ image input and reachability together.  The candidates are grouped by role:
     CN-?         domestic models whose image support is unknown
 
     python tools/verify_models.py --out analysis/model_verify.json
+
+Exit status is part of the contract: 1 when NO candidate is usable, 0 when at
+least one is.  The script used to return 0 unconditionally, so `$?` could not
+tell "six models answered" from "every candidate failed" -- and the roster is
+the one thing this script exists to judge.
 """
 
 from __future__ import annotations
@@ -158,6 +163,28 @@ def probe(base_url: str, api_key: str, model: str, timeout: float) -> Dict[str, 
         }
 
 
+def usable_groups(results: List[Dict[str, object]]) -> Dict[str, List[str]]:
+    """The candidates that passed, grouped, from probe results.
+
+    Split out of main() so the exit-status rule below can be exercised without a gateway call.
+    """
+    usable: Dict[str, List[str]] = {}
+    for result in results:
+        if result.get("state") == "OK":
+            usable.setdefault(str(result.get("group")), []).append(str(result.get("model")))
+    return usable
+
+
+def exit_status(usable: Dict[str, List[str]]) -> int:
+    """1 when the roster is wholly unusable, 0 as soon as one candidate works.
+
+    Only 0-vs-nonzero is signalled, not "some failed": a sweep is meant to run when at least one
+    model can serve it, and a partial roster is the normal case (text-only models are in the list
+    on purpose, to be measured rather than assumed).
+    """
+    return 0 if any(usable.values()) else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Verify gateway model usability.")
     parser.add_argument("--base-url", default=None)
@@ -189,17 +216,15 @@ def main() -> int:
     print("-" * 112)
 
     results: List[Dict[str, object]] = []
-    usable: Dict[str, List[str]] = {}
     for group, model in CANDIDATES:
         result = probe(base_url, api_key, model, args.timeout)
         results.append({"group": group, "model": model, **result})
-        if result["state"] == "OK":
-            usable.setdefault(group, []).append(model)
         print(
             f"{group:<12} {model:<36} {result['state']:<10} "
             f"{result['seconds']:>7.1f}  {result['detail']}"
         )
 
+    usable = usable_groups(results)
     print("-" * 112)
     for group in ("MIRRORBENCH", "CN-NEW", "CN-?"):
         names = usable.get(group, [])
@@ -218,7 +243,13 @@ def main() -> int:
         with open(out_path, "w", encoding="utf-8") as handle:
             json.dump(report, handle, indent=2)
         print(f"wrote {out_path}")
-    return 0
+
+    status = exit_status(usable)
+    if status:
+        print()
+        print("NO USABLE CANDIDATE - every model in the list failed.  A sweep run from this")
+        print("roster would produce episodes that are failures for a reason outside the model.")
+    return status
 
 
 if __name__ == "__main__":

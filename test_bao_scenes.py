@@ -10,6 +10,7 @@ Run from the repository root:  python test_bao_scenes.py
 
 from __future__ import annotations
 
+import ast
 import collections
 import os
 import re
@@ -1208,11 +1209,13 @@ def test_no_module_calls_a_scene_helper_that_does_not_exist() -> None:
 def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
     """A floor item that references a mesh declares that mesh's real size.
 
-    place_dressing references the prop at its own scale, on top of a box of the declared size.
-    So if the two disagree, one of two things is silently true and neither is visible from the
-    catalogue: the mesh hangs outside the volume the occlusion and walking-band checks were
-    computed for, or the box is drawn around a much smaller object and every "the dressing is
-    clear of the opening" conclusion is about a box rather than about the thing in it.
+    place_dressing normalises the referenced prop to one local unit on EVERY axis (k_i = 1/native_i)
+    and the item Xform above it carries the declared size, so the drawn extent equals the declared
+    size on every axis.  A declaration that disagrees with the measured asset therefore draws the
+    wrong thing, and one of two failures is silently true and neither is visible from the catalogue:
+    the mesh hangs outside the volume the occlusion and walking-band checks were computed for, or the
+    box is drawn around a much smaller (or larger) object and every "the dressing is clear of the
+    opening" conclusion is about a box rather than about the thing in it.
 
     Both directions were found by measuring on the workstation:
 
@@ -1271,35 +1274,95 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
                 problems.append(f"{scene}/{item['name']}: room_fit is {room_fit}; it is a fraction "
                                 "of the measured size and must be in (0, 1]")
                 continue
-            # The check used to demand that the declared box EQUAL the measured prop on every axis.
-            # That requirement is what forced per-axis fitting, and per-axis fitting is what
-            # stretched the safety railing to 16 times its height and a curved bench to 11 times its
-            # width.  The two are one design, so they change together: the prop is now scaled
-            # UNIFORMLY to sit INSIDE its declared box, and what is checked here is that it fits.
+            # The check used to demand, then merely PERMIT, less than equality: the prop was fitted
+            # INSIDE its box, so any box at least as large as the prop passed while the prop was
+            # actually drawn at a fraction of it.  That is what let the shipped fit -- one factor,
+            # min(1/native), capped at 1.0 -- draw a 9.2 cm mug 8.5 mm thick with this test green.  The
+            # fit is per axis now (k_i = 1/native_i) and the item Xform carries the declared size, so
+            # the drawn extent equals the declared one on every axis and this comparison is an
+            # EQUALITY.
             #
-            # What this still catches is the error it exists for -- a declared box that cannot hold
-            # the prop it names, so the prop would overhang and clip.  The comparison is on SORTED
-            # dimensions because a wall item stores its depth on slot 0 while the measurement records
-            # the width there; for the 1.092 m framed poster those are the same three numbers in two
-            # orders, and an axis-by-axis version reported the correctly mounted poster as wrong.
+            # The comparison is on SORTED dimensions because a wall item stores its depth on slot 0
+            # while the measurement records the width there; for the 1.092 m framed poster those are
+            # the same three numbers in two orders, and an axis-by-axis version reported the correctly
+            # mounted poster as wrong.
             metres = tuple(v * factor * room_fit for v in want)
             got = tuple(float(v) for v in item["size"])
-            # Tolerance 5e-5: declared sizes are hand-written to four decimals, so a box can be half a
-            # unit in the last place below the computed prop -- 0.17 against 0.1700070.
+            # Tolerance 5e-5: declared sizes are hand-written to four decimals, so a box can differ
+            # from the computed prop by half a unit in the last place -- 0.17 against 0.1700070.
             FITTING_TOL = 5e-5
-            if any(sorted(got)[axis] < sorted(metres)[axis] - FITTING_TOL for axis in range(3)):
+            if any(abs(sorted(got)[axis] - sorted(metres)[axis]) > FITTING_TOL for axis in range(3)):
                 problems.append(
                     f"{scene}/{item['name']} ({item['mount']}) declares {got} m, but {name} measures "
                     f"{want} in its own units x ASSET_SCALE {factor} x room_fit {room_fit} = "
-                    f"{metres} m -- the prop does not fit the box, so it would overhang and clip")
+                    f"{metres} m -- the declaration and the measurement disagree, so the drawn prop "
+                    f"would not be the declared size")
             else:
                 checked.append(f"{item['name']}->{name}"
                                + (f" (room_fit {room_fit})" if room_fit != 1.0 else ""))
             continue
 
+    # THE FIT ITSELF, read from the source because no USD reader exists here.  The catalogue
+    # comparison above cannot see the fit: the shipped run drew every prop at a fraction of its
+    # declared box and that comparison stayed green, because a fit that collapses its three ratios
+    # with min() and caps the result at 1.0 still "fits" a box.  The property that makes the drawn
+    # extent the declared one is structural -- one factor PER AXIS, k_i = 1/native_i, with no min()
+    # and no cap -- so it is read off scene_builder.py here, and this test fails if a uniform factor is
+    # reintroduced.
+    builder = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "scene_builder.py"),
+                   encoding="utf-8").read()
+    fit = next((node for node in ast.parse(builder).body
+                if isinstance(node, ast.FunctionDef)
+                and node.name == "fit_reference_to_local_unit"), None)
+    if fit is None:
+        problems.append("scene_builder.py has no fit_reference_to_local_unit, so no referenced prop "
+                        "is fitted to its declared box")
+    else:
+        bindings = {target.id: node.value
+                    for node in ast.walk(fit)
+                    if isinstance(node, ast.Assign)
+                    for target in node.targets
+                    if isinstance(target, ast.Name)}
+        returned = next((node.value for node in ast.walk(fit)
+                         if isinstance(node, ast.Return) and isinstance(node.value, ast.Tuple)
+                         and len(node.value.elts) == 2), None)
+        if returned is None:
+            problems.append("fit_reference_to_local_unit does not return an (offset, scale) pair, so "
+                            "the drawn size cannot be traced to the declared one")
+        else:
+            scale = returned.elts[1]
+            scale = bindings.get(scale.id, scale) if isinstance(scale, ast.Name) else scale
+            if isinstance(scale, ast.Call) and getattr(scale.func, "id", "") == "tuple" \
+                    and scale.args:
+                scale = scale.args[0]
+            per_axis = (isinstance(scale, (ast.ListComp, ast.GeneratorExp))
+                        and any(isinstance(gen.iter, ast.Call)
+                                and getattr(gen.iter.func, "id", "") == "range"
+                                and [getattr(arg, "value", None) for arg in gen.iter.args] == [3]
+                                for gen in scale.generators)
+                        and any(isinstance(inner, ast.BinOp) and isinstance(inner.op, ast.Div)
+                                and isinstance(inner.right, ast.Subscript)
+                                and getattr(inner.right.value, "id", "") == "native"
+                                for inner in ast.walk(scale)))
+            if not per_axis:
+                problems.append("fit_reference_to_local_unit does not return one scale per axis "
+                                "divided by the measured bound `native[axis]`, so the drawn extent "
+                                "would not equal the declared one on every axis")
+            if any(isinstance(node, ast.Call) and getattr(node.func, "id", "") == "min"
+                   for node in ast.walk(fit)):
+                problems.append("fit_reference_to_local_unit uses min() over its ratios, which fills "
+                                "only the axis whose `native` is largest")
+            if any(isinstance(node, ast.Compare)
+                   and any(isinstance(comp, ast.Constant) and comp.value == 1.0
+                           for comp in [node.left] + list(node.comparators))
+                   for node in ast.walk(fit)):
+                problems.append("fit_reference_to_local_unit caps its factor at 1.0, which pins it to "
+                                "1 for every sub-metre asset and draws the prop at want_i x native_i "
+                                "= want_i^2")
+
     check(not problems,
-          "these declared sizes are not the size of the prop they reference, so the box the "
-          "fixture checks use is not the thing that will be drawn:\n    "
+          "these declared sizes, or the fit that draws them, are not the size of the prop they "
+          "reference, so the box the fixture checks use is not the thing that will be drawn:\n    "
           + "\n    ".join(problems))
     print(f"[ok] {len(checked)} declared size(s) equal the measured prop: {checked}, and "
           f"{len(measured)} measurement(s) are recorded")

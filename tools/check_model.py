@@ -142,7 +142,12 @@ def main() -> int:
 
     print(f"endpoint {base_url}")
     print(f"model    {model}")
-    print(f"key      {key[:8]}...{key[-4:]}")
+    # NEVER print any part of the key.  This line used to print the first 8 and last 4 characters
+    # (`key {key[:8]}...{key[-4:]}`), and callers redirect this output into logs/
+    # (logs/queue_mimo_gemini.log, logs/STATUS.txt); the operator's key has leaked from this
+    # repository once already.  Length plus presence is enough to confirm the right variable was
+    # picked up, and cannot be reversed into the key.
+    print(f"key      <redacted, {len(key)} chars>")
     print()
 
     failures = []

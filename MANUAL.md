@@ -39,9 +39,9 @@
 | 每回合结果（通过/转角/首次转身步/碰撞） | `results/level{N}/{model}/{tag}/episode_{id:03d}.json` | **只有行为，没有思考** |
 | 每一步行为（动作/位置/旋转/耗时） | `results/level{N}/{model}/{tag}/episode_{id:03d}_steps.json` | **只有行为，没有思考** |
 | 档位汇总 | `results/level{N}/{model}/{tag}/summary_{tag}.json` | 通过率、侧身率、平均转角等 |
-| 扁平 CSV（分析用） | `results/{model}/level{N}_{tag}_{时间戳}.csv` | 20 列行为数据 |
+| 扁平 CSV（分析用） | `results/{model}/level{N}_{tag}_{时间戳}.csv` | 25 列行为数据（12 episode 列 + 13 step 列，`main.py:save_episodes_csv`） |
 | 断点续跑状态 | `results/{model}/checkpoint_{tag}.json` | |
-| 运行时间线 | `sweep_*.log`、`logs/STATUS.txt`、`run_progress.txt` | |
+| 运行时间线 | `logs/parallel/<model>_<scene>.log`（并行调度器每个作业一个，`run_parallel_sweep.sh`）、`run_progress.txt` | |
 | 生效参数 | `logs/{tag}/args.json` | |
 | **场景实际绑到了哪个 prim** | **`logs/{tag}/args.json` 旁边的 scene report**（`scene_builder.format_report`） | 场景材质/标志物/陈设各自实际解析成了什么；"这次真的用了 vendored 贴图还是退化成了纯色"只能从这里读 |
 | **Stage 2 回合记录** | `results/memory/{model}/{tag}/` | 与 Stage 1 分开的前缀：`analysis.py` 只找 `results/level*`，所以永远不会把 Stage 2 记录当阈值集 |
@@ -83,8 +83,8 @@
 | `tools/verify_stage1_lab.py` | 冒烟验收：标志物轮换 / 提示词命名 / 额度 / 坏回复 / traceback | 可改 |
 | `tools/check_field_names.py`、`tools/check_names.py` | 静态审计：字段名 / 未定义名（后者在 geometry 套件里跑） | 可改 |
 | `tools/fetch_assets.py`、`tools/shrink_textures.py`、`tools/shrink_tree.py` | 素材抓取 / 降采样（**坏图只跳过不中断**） | 可改 |
-| `assets/isaac/` | 随仓库走的素材（**实测 899 文件 / 138.5 MB**：Simple_Warehouse + Hospital + Office） | 只增 |
-| `test_bao_*.py` | 手写测试套件，**实测 9 套件共 167 项全过**：geometry 37 / scenes **32** / memory 29 / integration 20 / memory_runner 17 / persistence 13 / parsing 9 / health 5 / assets **5** | 必须全过 |
+| `assets/isaac/` | 随仓库走的素材（**实测 1090 文件 / 约 218 MB**：`git ls-files assets/isaac` 的行数；Simple_Warehouse + Hospital + Office） | 只增 |
+| `test_bao_*.py` | 手写测试套件，**实测 9 套件共 175 项全过**：geometry 37 / scenes **40** / memory 29 / integration 20 / memory_runner 17 / persistence 13 / parsing 9 / health 5 / assets **5** | 必须全过 |
 | `STAGE1_SCENES.md` | Stage 1 场景与 25 标志物的规格（原 `STAGE3_SCENES.md`） | 可改 |
 | `STAGE1_SCENE_VARIANTS.md` | Stage 1 的 10 个单变量变体规格（原 `STAGE3_SCENE_VARIANTS.md`） | 可改 |
 | `STAGE23_DESIGN.md` | Stage 2/3 记忆实验的**唯一权威规格** | 可改 |
@@ -100,9 +100,12 @@
 3. **给的命令必须可直接复制**：单行、无 `<占位符>`（用户会照抄，`kill <93233>` 那次就是教训）。
 4. **模型原话是实验结论的一部分**，不是"定性补充"：推理文本是结果变量。
 5. **不能动正在跑的场景**：`main.py` 每换一个模型就重读 `scenes.py` → 改 `stage1.1` 会让 15 个模型内部不一致。
-6. **停 sweep 用 `bash stop.sh`，不要用 `pkill -f 'main.py --model'`。** 外层 `run_all_models.sh` 是循环，
-   子进程一死它就拉起下一个模型（豆包就是这么起来的）。要精确匹配就先杀循环本身
-   （`pkill -f 'run_all_models.sh'`）。**任何情况下不要用 `pkill -f isaac`**：共享机器，别人也在跑。
+6. **停 sweep 只用 `bash stop.sh`，不要用任何 `pkill -f …`。** 现在的调度器是
+   `run_parallel_sweep.sh`：它用 `xargs -P` 持续投喂下一个作业，只杀 worker 会让 feeder 立刻起下一个
+   （豆包就是这么起来的）。`stop.sh` 先读调度器写下的 PID（`logs/parallel/.dispatcher.pid`），
+   再信号它的整个进程组（`setsid` 会话，含 xargs feeder 与所有 worker），所以**先停调度器、再收 worker**。
+   **名字模式一律禁止**：`pkill -f …` 的模式会匹配到操作者自己的命令行，2026-10-15 已因此杀掉自己的
+   shell 三次。**任何情况下不要用 `pkill -f isaac`**：共享机器，别人也在跑。
    删除/移动前先打印文件列表。
 7. **PDF 里不能有中文**（matplotlib 无 CJK 字形）；中文只进 Markdown/docx。
 8. **`stage1.1` 就是"原实验室、无遮挡"的基线**，用户当它是在跑的那一轮，不要装修它。
@@ -132,10 +135,10 @@ cd ~/EmbodiedBAO-AS- && bash status.sh
 cd ~/EmbodiedBAO-AS- && bash watch.sh
 
 # 只看到哪一档（最简）
-cd ~/EmbodiedBAO-AS- && grep -E 'pass_rate=' sweep_1.1.log | tail -20
+cd ~/EmbodiedBAO-AS- && grep -E 'pass_rate=' logs/parallel/*.log | tail -20
 
 # 确认标志物轮换 + 提示词同步（必须出现 5 行、颜色各不相同）
-cd ~/EmbodiedBAO-AS- && grep -c 'prompt now says' sweep_1.1.log; grep -m6 'prompt now says' sweep_1.1.log
+cd ~/EmbodiedBAO-AS- && grep -c 'prompt now says' logs/parallel/*.log; grep -m6 'prompt now says' logs/parallel/*.log
 
 # ★ 思考过程统计（每模型：提到自己标志物颜色/形状/开口的比例 + 原文例子）
 cd ~/EmbodiedBAO-AS- && python3 tools/parse_agent_logs.py --csv logs_reasoning.csv | tail -60
@@ -143,14 +146,14 @@ cd ~/EmbodiedBAO-AS- && python3 tools/parse_agent_logs.py --csv logs_reasoning.c
 # 冒烟验收
 cd ~/EmbodiedBAO-AS- && python3 tools/verify_stage1_lab.py --log smoke_1.1.log --model gpt-4o-mini
 
-# 全部测试（9 套件，实测 167 项）
+# 全部测试（9 套件，实测 175 项）
 # ★ 必须用 Isaac 解释器：系统 python3 没有 Pillow，test_bao_persistence 会 FAIL（实测）
 cd ~/EmbodiedBAO-AS- && for s in test_bao_geometry test_bao_integration test_bao_memory test_bao_scenes test_bao_memory_runner test_bao_persistence test_bao_parsing test_bao_health test_bao_assets; do printf '%-28s ' $s; /home/ybh/isaacsim/python.sh $s.py 2>/dev/null | tail -1; done
 
 # 渲染预览（会再起一个 Isaac，注意显存）
 cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh capture_scenes.py --scene stage1.2 --level 10 --outdir prev_1.2 --slots 1,2,3,4,5
 
-# 停（精确，别用 pkill -f 'main.py --model'）
+# 停（精确：stop.sh 按 logs/parallel/.dispatcher.pid 停调度器及其进程组；别用任何 pkill -f）
 cd ~/EmbodiedBAO-AS- && bash stop.sh
 
 # Stage 2（记忆实验）：便宜的先跑，不花钱的那条不需要 key
@@ -203,8 +206,8 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
 > `$0.0025`（10-07 21:13 首次 403 quota），22:06 起 key 变成 401 Invalid token。
 > **公开仓库里的 key 必须视为已泄露**：删掉这一行不能把它从 git 历史里去掉，任何人 clone 都能翻出来。
 > 正确处理是**换 key**，并且从此只用环境变量。仓库里其他脚本、日志、`results/` 一律不得出现明文 key。
-名单在 `models.json`：qwen3-vl-235b / qwen3-vl-32b / qwen-vl-max / gemini-2.5-pro / gemini-2.5-flash / gpt-4.1 / gpt-4o / gpt-4o-mini / claude-sonnet-4-6 / kimi-k2.5 / deepseek-v4.1-flash / glm-4.6v / grok-4.3 / doubao-seed-2-0-pro-260215 / mimo-v2.5。
-`mimo-v2.5` 需要 `reasoning_effort="none"`（已写入 `ai_agent.py` 的 `MODEL_REQUEST_PARAMS`）。
+名单在 `models.json` 的 15 个 `runner`（**列表顺序即 sweep 顺序**）：Qwen/Qwen3-VL-8B-Instruct / Qwen/Qwen3-VL-30B-A3B-Instruct / gpt-4o-mini / deepseek-v4-flash-vision-exp / glm-4.6v / mimo-v2.6-pro / gemini-2.5-flash / grok-4.3 / kimi-k2.6 / kimi/kimi-k2.6 / claude-haiku-4-5-20251001 / grok-4.5 / gpt-4.1 / gemini-2.5-pro / gpt-4o。
+`ai_agent.MODEL_REQUEST_PARAMS` 只有**一条**：`glm-4.6v` 的 `thinking={"type":"disabled"}`。`mimo-v2.5` 与 `deepseek-v4.1-flash` 已于 2026-10-15 从该表**删除**（两者都已不在 roster，见 `ai_agent.py` 里 "DELETED from this table 2026-10-15" 的注释）。
 **已排除**：MiniMax 全系（认色不稳）、Mistral 全系（HTTP 500）、Meta 全系（500）、kimi-k2-thinking（无视觉）、doubao-seed-2-1-pro（180 s 超时）。
 
 ---
@@ -250,11 +253,13 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
 - 素材抓取流程：`python tools/fetch_bucket_set.py --long-edge 512 --set <prefix>`（**一张坏图不能中断整轮**）。
   测量：`tools/measure_named_props.py <名字…>`，输出带资产名，且对厘米制资产打 `DIVIDE BY 100` 警告。
 - **渲染前先确认显存**：实验室那台还有别人的 IsaacLab 占 5.5 GB ✗。
-- **未完成的事**：① 11 条材质 URL 待用桶列表核对；
-  ② `tools/check_marker_uniqueness.py` **不存在**，在它出现之前标志物唯一性只能靠配置层检查；
-  ③ `stage1.4` 的 `park_sign`、`stage1.5` 的 `shelf_left/right`/`price_strip`/`promo_banner`、
-  `stage1.3` 的 `reading_lamp` 仍是纯几何体（库里没有对应道具，或形状不合适）；
-  ④ `shopping_cart_corral_01` 已抓取但**故意未接线**：实测 2.006 × 2.376 × 3.711 m，
+- **未完成的事**：① `tools/check_marker_uniqueness.py` **不存在**，在它出现之前标志物唯一性只能靠配置层检查
+  （材质已核对完毕：5 个场景全部 `material_verified=True`，`stage1.2`–`stage1.5` 各 4 条）；
+  ② 仍有 5 件陈设没有可用的 vendored `.usd`，按声明盒子绘制：`stage1.2` 的 `sign`（`asset` 指向一个 `.mdl`
+  材质而不是 stage 资产）与 `bay_sign`、`stage1.4` 的 `park_sign`、`stage1.5` 的
+  `price_strip`/`promo_banner`（后四件 `asset` 为空；`stage1.5` 的 `shelf_left/right` 已接
+  `RackSmall_A7.usd`，`reading_lamp` 已从目录移除）；
+  ③ `shopping_cart_corral_01` 已抓取但**故意未接线**：实测 2.006 × 2.376 × 3.711 m，
   在 5 m 宽的房间里需要的 `|z|` 区间只有 2 毫米宽，缩到 1.0 m 高虽合法但那是"1 米宽的购物车围栏"，
   不是围栏 —— 与其硬塞一个只为通过检查的位置，不如不接。
 
@@ -432,7 +437,6 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
 
 | 规则 | 落地方式 |
 | :--- | :--- |
-| **测试套件本身也是 Isaac 实例，必须计入全机预算** | `test_bao_geometry` 等套件会启动 Isaac。在 4 个 worker 跑着的时候再跑套件 = 5–8 个实例。**要跑套件就把 sweep 降到 `PARALLEL=2`，或等 sweep 空档** |
 | **判断进程存活必须在"能看见宿主机"的 shell 里做** | 沙箱（`/proc` 只有个位数 PID）里的 `kill -0` 失败**不代表进程已死**。先 `ls /proc \| grep -c '^[0-9]*$'`，数量级是几百才说明看得见宿主 |
 | **显式空参数要拒绝，不要回落默认值** | `SCENES=""` 已改为**直接报错退出**，不再静默变成全部场景（见 44） |
 | **`setsid` 是启动长任务的正确方式** | 但理由**只是 SSH 会断**，不是"沙箱回收"——后者是我编的（见 45）。脚本现在自己 `exec setsid` 自脱离 |
@@ -544,7 +548,7 @@ curl -s -m 30 -o /tmp/gw.json -w "HTTP %{http_code}\n" -X POST http://35.220.164
 **新增测试套件**：`test_bao_parsing.py`（9 项）、`test_bao_health.py`（5 项）、`tools/check_tags.py`。
 当时九个套件共 **151 项全过**：geometry 37 / integration 20 / persistence 13 / memory 29 /
 memory_runner 17 / scenes 18 / assets 3 / parsing 9 / health 5。
-（**当前值是 159 项，scenes 已增至 26** —— 见 §2 与 §10，那里的数字以代码为准。）
+（**当前值是 175 项，scenes 已增至 40** —— 见 §2 与 §10，那里的数字以代码为准。）
 
 **审计工具的一处修正**：`tools/check_field_names.py` 把同义词表的**键**（`move_forward`、`walk`…）
 当成"协议里不存在的动作名"报错。已加豁免：字典的键、其值是合法动作名，那是别名表不是动作引用。
@@ -580,7 +584,7 @@ memory_runner 17 / scenes 18 / assets 3 / parsing 9 / health 5。
 - 1.3 图书馆 → `M_Wood_Floor` / `MI_WallOffice_01` / `MI_CeilingA_06b` / `M_Wall_Plaster` ✓
 - 1.4 公园 → `M_Wall_Plaster` / `MI_WallOffice_01` / `MI_CeilingA_06b` + **地面纯色** ✗（没抓到草地贴图 ✓ 待补 ✓）
 - 1.5 超市 → `MI_FloorMarbleTiles_03` / `MI_WallA_01` / `MI_CeilingA_06b` / `MI_WallOffice_01` ✓
-- 素材 `assets/isaac` = **136 MB / 880 文件**（当时实测；**现在实测 899 文件 / 138.5 MB**）✓（Simple_Warehouse + Hospital + Office ✓ 随仓库走 ✓ 克隆即可渲染 ✓）
+- 素材 `assets/isaac` = **1090 文件 / 约 218 MB**（`git ls-files assets/isaac | wc -l`；旧版手册的文件数与体积已过时）✓（Simple_Warehouse + Hospital + Office ✓ 随仓库走 ✓ 克隆即可渲染 ✓）
 - 宽墙件必须离中线够远 ✓ 否则**压住开口投影** ✗（图书馆书架 1.6 m @ z=1.30 → 内边缘 0.50 m < 开口半宽 0.57 m ✗ 被抓 ✓ 现改 1.4 m @ z=±1.65 ✓）
 
 **④ 新增/修好的工具** ✓
@@ -615,7 +619,7 @@ memory_runner 17 / scenes 18 / assets 3 / parsing 9 / health 5。
 | `ai_agent.parse_response` 取出 action/reasoning | **没有这个函数**。实际是 `parse_action_json` / `parse_action_text` | `grep 'def parse_' ai_agent.py` |
 | 陈设地面物 `\|z\| ≥ 1.9` | **`\|z\| ≥ 1.5`**（>0.6 m 高时须 `\|z\| ≥ 1.8`） | `test_bao_scenes.py` 的断言 |
 | `test_bao_scenes.py` 18 项、合计 151 项 | **scenes 26 项，9 套件合计 159 项**（`grep -c '^def test_' test_bao_*.py` 求和） | 实测跑完九个套件 |
-| 素材 136 MB / 880 文件 | **138.5 MB / 899 文件** | `Get-ChildItem -Recurse assets/isaac` |
+| 素材体积 136 MB / 旧版手册的文件数 | **1090 文件 / 约 218 MB**（跟踪内容合计 218,372,611 B） | `git ls-files assets/isaac` 的行数、`du -sh assets/isaac` |
 | A/S 0.9 需 5 次转身（75°） | **4 次（60°）**。45° 需 0.5586 m > 0.513 m 过不去；60° 需 0.4755 m 能过 | `memory_metrics.min_turns(0.513)==4`；`lab_logs/verify_optimal_steps.py` BFS 实测 15 步 |
 | 垂直 FOV ≈52° | **47.6°**（水平 76.2°；焦距 13.36 mm / 传感器 20.955 mm） | `scenes.VERTICAL_FOV_DEG` |
 | 动作 8 个 | **9 个**（含 `look_down`） | `protocol.ACTIONS` |

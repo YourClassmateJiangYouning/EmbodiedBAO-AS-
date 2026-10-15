@@ -14,11 +14,39 @@ import datetime
 import glob
 import json
 import os
+import re
 import time
+
+# The scene is the ONLY component of a run tag that can be recovered from the tag itself, because it is
+# the only component whose spelling is fixed.  `run_tag` is composed as
+# "<base>-<PROTOCOL_TAG>-<scene>-<request-param-suffix>" (main.py:compose_run_tag), so the LAST
+# hyphen-separated field is the request-parameter suffix whenever the model has one -- splitting on "-"
+# and taking the last field printed "nothinking" as the scene of
+# "full_glm-4.6v-v7-state-axes-stage1.5-nothinking", whose real scene is "stage1.5".  A stage scene is
+# always one of stage1.1..stage1.5, so match that explicitly instead.
+STAGE_SCENE_RE = re.compile(r"stage1\.[1-5]")
+# Fields an episode record may carry the scene in.  Checked, in order, BEFORE the tag, so a record that
+# states its scene is believed over anything inferred from text.
+SCENE_FIELDS = ("scene", "scene_name", "scene_id")
 
 
 def stamp() -> str:
     return datetime.datetime.now().strftime("%H:%M:%S")
+
+
+def scene_of(record: dict, tag: str = "") -> str:
+    """The scene of an episode, or "?" when it cannot be determined.
+
+    Preference order: a scene field on the record, then the explicit ``stage1.N`` in the run tag.  "?"
+    is returned only when neither yields a stage scene -- e.g. the pre-scene tags such as
+    "gemini-2.5-pro-v7-state-axes", which genuinely name no scene.
+    """
+    for field in SCENE_FIELDS:
+        value = record.get(field)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    match = STAGE_SCENE_RE.search(tag)
+    return match.group(0) if match else "?"
 
 
 def episode_files():
@@ -38,7 +66,7 @@ def describe(path: str) -> str:
     except Exception as exc:  # a record being written right now can be half-flushed
         return f"(unreadable: {type(exc).__name__})"
     tag = str(d.get("run_tag") or "")
-    scene = tag.split("-")[-1] if tag else "?"
+    scene = scene_of(d, tag)
     model = str(d.get("model_name") or "?")
     passed = "PASS" if d.get("passed") else "fail"
     sideways = "sideways" if d.get("passed_sideways") else "-"

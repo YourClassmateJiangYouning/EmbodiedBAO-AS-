@@ -824,6 +824,10 @@ class BAOEnv:
         self.scene_name = str(self.task_dict.get("scene") or "")
         self.scene_report: Optional[Dict[str, Any]] = None
         self._episode_index = 0
+        # The marker slot actually used for the current episode, so the runner can record it.  The
+        # slot was never stored anywhere a reader could see it (only printed to the agent log), so
+        # the marker<->episode pairing could not be audited from results/ at all.
+        self._current_marker_slot = 0
         if self.scene_name:
             self._apply_scene(self.scene_name, slot=1)
         else:
@@ -1376,6 +1380,26 @@ class BAOEnv:
                         sub_prim.SetActive(False)
                     except Exception:
                         pass
+
+    def _report_robot_placement(self) -> None:
+        """Print where the robot actually stands, WITHOUT changing the placement.
+
+        This must run AFTER the pose has been written, so the number means something: ``residual``
+        is the lift that would still be needed, and a correct placement leaves it at ~0.0000.
+        Measuring before the pose is written is exactly what produced the 1.0442 / 0.0000
+        alternation described in ``reset_scene`` -- the previous episode's leftover pose was read
+        back as if it were a calibration.  Nothing here is assigned to ``_robot_ground_offset``.
+        """
+        residual = self._compute_robot_ground_offset()
+        print(
+            "[BAOEnv] robot placement: residual lift = %+.4f m "
+            "(authored calibration %.4f m, measured height %.3f m)"
+            % (
+                float(residual),
+                float(self._robot_ground_offset),
+                float(getattr(self, "_robot_measured_height", float("nan"))),
+            )
+        )
 
     def _compute_robot_ground_offset(self) -> float:
         """Raise the robot so its lowest mesh point sits on the ground (z=0)."""
@@ -2042,14 +2066,28 @@ class BAOEnv:
     # Public environment interface
     # ------------------------------------------------------------------
 
-    def reset_scene(self) -> np.ndarray:
-        """Reset the robot to the start pose and return the first RGB frame."""
+    def reset_scene(self, episode_id: Optional[int] = None) -> np.ndarray:
+        """Reset the robot to the start pose and return the first RGB frame.
+
+        ``episode_id`` selects the marker: slot ``episode_id % 5 + 1``.  PASS IT.  The slot used to
+        be advanced by a counter inside this method, which counts RESETS, not episodes -- so an
+        episode skipped by ``--resume`` never advanced it and the marker mapping shifted for the
+        rest of the run.  Measured 2026-10-15: 5 of 350 completed cells ended up reusing markers
+        (one level came out as slots [1, 2, 3, 1, 2] instead of [1, 2, 3, 4, 5]).  A pure function
+        of the episode index cannot drift under resume.  With no argument the old counter
+        behaviour is kept for the callers that have no episode index (the smoke test, ``reset()``).
+
+        The ground offset is deliberately NOT re-measured here, and that is a fix.  It used to be,
+        and the measurement was taken at whatever pose the PREVIOUS episode had left behind:
+        ``world.reset()`` does not restore ``/World/H1``, because the robot is added with
+        ``add_reference_to_stage`` and is not a member of ``world.scene``.  Since the offset is
+        ``-min_z``, writing that measurement back made the lift alternate 1.0442 / 0.0000 every
+        episode -- every second episode ran with the robot 1.0442 m BELOW the floor.  Introduced by
+        8a681b6 (2026-09-21), whose stated purpose was only to print the measured height.  The
+        offset is measured once, at the authored pose, in ``_load_robot``, and stays there; where
+        the robot actually ended up is verified afterwards by ``_report_robot_placement()``.
+        """
         self.world.reset()
-        # The authored USD bounds are only meaningful once the physics/app has
-        # settled, and world.reset() re-applies the reference pose.  Re-measure
-        # here so the reported height is the real one rather than whatever the
-        # half-initialised stage showed at construction time.
-        self._robot_ground_offset = self._compute_robot_ground_offset()
         if self.task_dict.get("hide_robot", False):
             for sub_prim in self.stage.Traverse():
                 if str(sub_prim.GetPath()).startswith(self.robot_prim_path):
@@ -2064,13 +2102,22 @@ class BAOEnv:
         # one marker swap -- every episode's prompt named the frozen "red marker" while four of
         # the five markers on the wall were another colour entirely.
         if getattr(self, "scene_name", ""):
-            self._episode_index += 1
-            self.set_marker_slot((self._episode_index - 1) % 5 + 1)
+            if episode_id is None:
+                self._episode_index += 1
+                slot = (self._episode_index - 1) % 5 + 1
+            else:
+                # A pure function of the episode index, so --resume cannot shift it.  The
+                # counter is kept in step only so the no-argument path stays consistent.
+                self._episode_index = int(episode_id) + 1
+                slot = int(episode_id) % 5 + 1
+            self.set_marker_slot(slot)
+            self._current_marker_slot = int(slot)
         self.camera.initialize()
         if self.eye_camera is not None:
             self.eye_camera.initialize()
         self._init_robot_controller()
         self._set_robot_pose(self._start_pos, ROBOT_START_YAW_DEG)
+        self._report_robot_placement()
         self._camera_yaw_offset = 0.0
         self._camera_pitch_offset = 0.0
         if self._articulation is not None:

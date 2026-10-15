@@ -231,6 +231,36 @@ def _env_passed(env: Any) -> bool:
     return False
 
 
+def _env_marker_slot(env: Any) -> Optional[int]:
+    """The marker slot the environment actually used for the current episode.
+
+    Recorded per episode because it used to exist only as a line in the (gitignored) agent log, so
+    nothing reading results/ could tell which marker an episode had used -- which is how five
+    levels came to reuse markers under --resume without anyone noticing.
+    """
+    slot = getattr(env, "_current_marker_slot", None)
+    try:
+        slot = int(slot)
+    except (TypeError, ValueError):
+        return None
+    return slot if slot > 0 else None
+
+
+def _env_ground_offset(env: Any) -> Optional[float]:
+    """The lift the environment wrote into the robot's z, for the record.
+
+    Half of all episodes on 2026-10-15 ran with this value at 0.0000 (the robot 1.0442 m below the
+    floor) because reset_scene re-measured it at the previous episode's leftover pose.  It was not
+    stored anywhere, so the condition could not be seen from results/: recorded now.
+    """
+    value = getattr(env, "_robot_ground_offset", None)
+    try:
+        value = float(value)
+    except (TypeError, ValueError):
+        return None
+    return value if value == value else None
+
+
 def _env_collision(env: Any) -> bool:
     checker = getattr(env, "check_collision_with_wall", None)
     if not callable(checker):
@@ -691,7 +721,7 @@ class BAOExperimentRunner:
         # it when an episode turns out to have been unusable end to end.
         self.history = history
 
-        self.env.reset_scene()
+        self.env.reset_scene(episode_id=episode_id)
         steps: List[Dict[str, Any]] = []
         action_sequence: List[str] = []
         wall_collision_count = 0
@@ -851,6 +881,15 @@ class BAOExperimentRunner:
             "a_s_ratio": float(ratio),
             "passed": bool(passed),
             "passed_sideways": bool(passed_sideways),
+            # Two fields added because their absence made two defects unauditable.  The marker slot
+            # was only ever printed to the (gitignored) agent log, so a reader of results/ could not
+            # see which of the scene's five markers an episode actually used -- which is how five
+            # levels silently reused markers under --resume.  The ground offset was likewise
+            # invisible, so it could not be discovered that every second episode ran with the robot
+            # 1.0442 m below the floor.  Both are recorded now, and both are checked by
+            # test_bao_geometry so they cannot quietly stop being recorded.
+            "marker_slot": _env_marker_slot(self.env),
+            "robot_ground_offset": _env_ground_offset(self.env),
             "passage_rotation_deg": (
                 None if passage_rotation_deg is None else float(passage_rotation_deg)
             ),

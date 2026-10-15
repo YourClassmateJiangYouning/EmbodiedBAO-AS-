@@ -52,7 +52,13 @@ STATE_HINT = (
 
 
 def fingerprint(key: str) -> str:
-    return f"{key[:7]}...{key[-4:]} ({len(key)} chars)" if len(key) > 14 else "(short key)"
+    """A label for one key that reveals nothing about it.
+
+    This used to return the first 7 and last 4 characters, and callers write the result into log
+    files, so the key was recoverable from the repository's logs.  Only the length is reported now;
+    it still distinguishes two keys in a transcript, which is all a fingerprint is for.
+    """
+    return f"<redacted, {len(key)} chars>" if len(key) > 14 else "(short key)"
 
 
 def request_json(base_url: str, key: str, path: str, timeout: float = 20.0):

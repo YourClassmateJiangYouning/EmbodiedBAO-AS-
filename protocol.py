@@ -474,8 +474,12 @@ def build_prompt(
         # to fix the "width" by rotating its torso to 90 degrees.  The opening's
         # width, its distance and the body's width stay hidden either way.
         lines.append(
-            "  x is how far forward you have walked from where you started, and "
-            "changes only when you use forward/backward; y is always 0; z is how "
+            # "from where you started" was wrong: the environment reports the ABSOLUTE forward
+            # coordinate and the robot starts at x = 0.5, so at the first step the number already
+            # reads 0.5 rather than 0.  The sentence's purpose is to say which AXIS moves when, not
+            # to invite the model to compute a distance, so it now says that without the false claim.
+            "  x is your forward position along the walkway, and changes only "
+            "when you use forward/backward; y is always 0; z is how "
             "far to the left (negative) or right (positive) of the line you "
             "started on you are, and changes only when you use left/right"
         )

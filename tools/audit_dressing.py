@@ -218,27 +218,29 @@ def main() -> int:
                 problems.append(f"{scene}/{item['name']} is {item['size'][1]:.2f} m tall, above the "
                                 f"3.0 m ceiling")
 
-    # 8. The fit must be computed against the DECLARED size, be UNIFORM, and carry an OFFSET.
+    # 8. The fit must normalise EVERY AXIS -- k_i = 1/native_i -- and carry an OFFSET.
     #
-    # This rule used to say the opposite -- "it must NOT take the declared size ... the factor is
-    # 1/native" -- and that rule passed while the defect shipped.  Its premise was that the prop is a
-    # CHILD of the clearance cube, which carries the declared scale; the prop is a SIBLING of the cube
-    # under the item's Xform, and the measurement is taken relative to that Xform, so `native` is in
-    # the item's local units where one unit IS the declared size.  `min(1/native)` therefore fills the
-    # box only on the asset's largest axis, and measured on the four dressed scenes it drew every prop
-    # at 2 %-88 % of its declared box on the other axes (a 9 cm mug at 8.5 mm) while the report stayed
-    # green, because extents obey 1/native x native <= 1 whatever the asset is.
+    # This rule has been wrong in both directions, and its own history is why its checks are now
+    # STRUCTURAL rather than textual.  It first demanded declared/native, then demanded the uniform
+    # `min(1/native)` after a version of the latter appeared to work -- and that second form shipped
+    # and drew 32 of 33 props at a fraction of their declared box (the railing 2.4 mm thick, a 9.2 cm
+    # mug 8.5 mm).  Its premise was that the prop is a CHILD of the clearance cube, which carries the
+    # declared scale; the prop is a SIBLING of the cube under the item's Xform, and the measurement is
+    # taken relative to that Xform.  So `native` is the asset's own extent in ITS units while the item
+    # Xform's scale is the declared size, the drawn extent is `want_i x native_i x k_i`, and:
     #
-    # The three defects that live here, all checked below:
+    #   * ONE factor for all three axes fills at most one axis.  `min(1/native)` fills the axis whose
+    #     `native` is largest and leaves every other axis at `native_i / native_max` of its box --
+    #     measured on the four dressed scenes at 2 %-88 %, a 9.2 cm mug drawn 8.5 mm thick and a
+    #     14.25 cm pallet drawn 1.7 cm thick;
+    #   * the `1.0` cap is a second, independent defect: every sub-metre asset has `native_i < 1`, so
+    #     the cap pins `k` to 1 and the prop is drawn at `want_i x native_i = want_i^2`;
+    #   * a fit with no offset draws a face-anchored asset from the item's anchor outward.  Every
+    #     extent can still fit and it is still clipping: measured on the four scenes, 25 of 43 props
+    #     left their declared box, the conifer reaching z = 3.5738 m under a 3.0 m ceiling.
     #
-    #   * the factor ignores the declared size (what shipped);
-    #   * a per-axis factor reshapes a prop whose proportions differ from its box.  It reported
-    #     (1.0, 16.0075, 0.0624) for the safety railing -- 16x too tall or 16x too small, depending on
-    #     which reading of the frame you took, and neither is a railing;
-    #   * no offset, so an asset whose geometry is anchored at a face instead of its centre is drawn
-    #     from the item's anchor outward.  Every extent still fits, and it is still clipping: measured
-    #     on the four scenes, 25 of 43 props left their declared box, the conifer reaching
-    #     z = 3.5738 m under a 3.0 m ceiling.
+    # `k_i = 1/native_i` is NOT a reshape: it normalises the asset to one local unit per axis, and the
+    # item Xform then draws the declared box exactly.  That is what the checks below read the AST for.
     FIT_NAME = "fit_reference_to_local_unit"
     OFFSET_NAME = "apply_translate"
     if f"def {FIT_NAME}" not in builder:
@@ -253,45 +255,106 @@ def main() -> int:
         # top-level def is one whose `def` starts at column zero.
         fit_body = function_body(builder, FIT_NAME, code_only)
     if fit_body:
-        # The factor must be min(DECLARED/native).  This rule has now been wrong in both directions,
-        # which is worth recording: it first demanded declared/native, then demanded 1/native after a
-        # bad version of the latter appeared to work, and the second form shipped and drew 32 of 33
-        # props at a fraction of their declared box (the railing 2.4 mm thick).  What settles it is a
-        # per-item table rather than an argument: with min(declared/native) against the bound measured
-        # relative to the item Xform, drawn_i = native_i x k lands on want_i for every axis of every
-        # item; with min(1/native) it lands on want only on the axis where native is largest.  The
-        # earlier "declared/native drew the conifer 5.76 m tall" result came from feeding this formula
-        # the RAW asset size instead of that bound, which counts the declaration twice.
-        if "1.0 / native[axis]" not in fit_body:
-            problems.append(f"{FIT_NAME} does not derive its factor from 1/native.  The bound is "
-                            f"measured relative to the item Xform, whose scale is the declared size, "
-                            f"so the world box is want_i x native_i x k; declared/native counts the "
-                            f"declaration twice and drew the conifer 5.76 m tall in a 2.4 m box")
-        # The value has to be READ, not merely computed: a formula that ignores its own ratios is the
-        # shipped defect with extra steps, and the first version of this rule accepted exactly that,
-        # because `min(ratios)` is a substring of the line that assigns the factor.
-        if "factor = min(ratios)" not in fit_body:
-            problems.append(f"{FIT_NAME} does not take the smallest of its three ratios, so the prop "
-                            f"can exceed its declared box on the other axes")
-        if "if factor > 1.0:" not in fit_body or "factor = 1.0" not in fit_body:
-            problems.append(f"{FIT_NAME} does not cap the factor at 1.0, so a declared box larger "
-                            f"than the asset would ENLARGE it -- enlarging is what turned houseplants "
-                            f"into trees in this project")
-        if "return (offset, (factor, factor, factor))" not in fit_body:
-            problems.append(f"{FIT_NAME} does not return ONE factor for all three axes, so it would "
-                            f"reshape the prop instead of scaling it")
-        if "fitted.append" in fit_body:
-            problems.append(f"{FIT_NAME} builds a per-axis result list, which means the prop is "
-                            f"reshaped rather than scaled")
-        if "-centre" not in fit_body:
-            problems.append(f"{FIT_NAME} does not return an offset for the prop's own centre, so a "
-                            f"face-anchored asset is drawn from the item's anchor outward")
-        elif "-centre[axis] / native[axis]" not in fit_body:
-            problems.append(f"{FIT_NAME} returns the centre in the ASSET's units rather than as a "
-                            f"fraction of the parent's box.  The parent's scale is per-axis, so the "
-                            f"raw centre is multiplied by it and the prop lands at "
-                            f"want*(1 + centre) instead of centred -- measured on this stage as a "
-                            f"301-unit rack at z = -299 m")
+        # THE FIT MUST BE PER AXIS: k_i = 1/native_i.  This rule has now been wrong in both
+        # directions, which is worth recording: it first demanded declared/native, then demanded
+        # 1/native after a bad version of the latter appeared to work, and the second form shipped and
+        # drew 32 of 33 props at a fraction of their declared box (the railing 2.4 mm thick).  What
+        # settles it is the composition rather than an argument: the item Xform already carries the
+        # DECLARED size as its scale and the prop's bound is measured relative to that Xform, so the
+        # drawn extent is `want_i x native_i x k_i`, and only a factor PER AXIS, k_i = 1/native_i,
+        # lands it on `want_i` for every axis of every item.  A single `min()` over the three ratios
+        # fills only the axis whose `native` is largest; a `1.0` cap pins `k` to 1 for every sub-metre
+        # asset and draws it at `want_i x native_i = want_i^2`.  Those are the two halves of the defect
+        # that shipped, measured as a 9.2 cm mug drawn 8.5 mm and a 14.25 cm pallet drawn 1.7 cm.
+        #
+        # THE CHECKS BELOW READ THE AST, NOT THE TEXT.  A substring test is what let this defect ship
+        # twice: the old rule was satisfied by `1.0 / native[axis]` appearing in a list that a single
+        # `min()` then collapsed onto one axis, and by `factor = min(ratios)` appearing while the
+        # per-axis form was nowhere in the function.  So the rule now requires a division by
+        # `native[axis]` that is consumed per axis, requires the value RETURNED to be that per-axis
+        # result, and forbids both `min()` and any comparison against `1.0`.
+        fit_node = next((node for node in ast.parse(builder).body
+                         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+                         and node.name == FIT_NAME), None)
+        bindings = {target.id: node.value
+                    for node in ast.walk(fit_node) if fit_node is not None
+                    if isinstance(node, ast.Assign)
+                    for target in node.targets
+                    if isinstance(target, ast.Name)}
+        returned = None
+        for node in ast.walk(fit_node) if fit_node is not None else ():
+            if isinstance(node, ast.Return) and isinstance(node.value, ast.Tuple) \
+                    and len(node.value.elts) == 2:
+                returned = node.value
+                break
+
+        def per_axis(node: Any) -> bool:
+            """Whether `node` is a result built per axis: three components, or a comprehension."""
+            if isinstance(node, ast.Name):
+                node = bindings.get(node.id, node)
+            if isinstance(node, ast.Call) and getattr(node.func, "id", "") == "tuple" and node.args:
+                node = node.args[0]
+            if isinstance(node, (ast.Tuple, ast.List)):
+                # Three DIFFERENT components: a uniform `(factor, factor, factor)` is three entries
+                # but only one axis of information, which is the shipped defect.
+                return len(node.elts) == 3 and len({ast.dump(elt) for elt in node.elts}) > 1
+            if isinstance(node, (ast.ListComp, ast.GeneratorExp, ast.SetComp)):
+                return any(isinstance(gen.iter, ast.Call)
+                           and getattr(gen.iter.func, "id", "") == "range"
+                           and [getattr(arg, "value", None) for arg in gen.iter.args] == [3]
+                           for gen in node.generators)
+            return False
+
+        def divides_by_native(node: Any) -> bool:
+            return any(isinstance(inner, ast.BinOp) and isinstance(inner.op, ast.Div)
+                       and isinstance(inner.right, ast.Subscript)
+                       and getattr(inner.right.value, "id", "") == "native"
+                       for inner in ast.walk(node))
+
+        def multiplies_by_centre(node: Any) -> bool:
+            return any(isinstance(inner, ast.BinOp) and isinstance(inner.op, ast.Mult)
+                       and any(isinstance(side, ast.Subscript)
+                               and getattr(side.value, "id", "") == "centre"
+                               for side in (inner.left, inner.right))
+                       for inner in ast.walk(node))
+
+        if fit_node is None:
+            problems.append(f"scene_builder.py has no top-level def {FIT_NAME} for this rule to read")
+        elif returned is None:
+            problems.append(f"{FIT_NAME} does not return an (offset, scale) pair, so the shape of the "
+                            f"fit cannot be checked")
+        else:
+            scale_expr = bindings.get(returned.elts[1].id, returned.elts[1]) \
+                if isinstance(returned.elts[1], ast.Name) else returned.elts[1]
+            offset_expr = bindings.get(returned.elts[0].id, returned.elts[0]) \
+                if isinstance(returned.elts[0], ast.Name) else returned.elts[0]
+            if not divides_by_native(scale_expr):
+                problems.append(f"{FIT_NAME} does not normalise each axis by dividing the measured "
+                                f"bound `native[axis]`, so the drawn extent is not put on the declared "
+                                f"size")
+            if not per_axis(scale_expr):
+                problems.append(f"{FIT_NAME} does not return a scale built PER AXIS over the three "
+                                f"axes, so one value is being reused and the prop can fill at most one "
+                                f"axis of its declared box")
+            if any(isinstance(node, ast.Call) and getattr(node.func, "id", "") == "min"
+                   for node in ast.walk(fit_node)):
+                problems.append(f"{FIT_NAME} collapses its ratios with min(), which fills only the "
+                                f"axis whose `native` is largest; every axis must be normalised by its "
+                                f"own extent")
+            if any(isinstance(node, ast.Compare)
+                   and any(isinstance(comp, ast.Constant) and comp.value == 1.0
+                           for comp in [node.left] + list(node.comparators))
+                   for node in ast.walk(fit_node)):
+                problems.append(f"{FIT_NAME} compares against 1.0, which is the cap that pins the "
+                                f"factor to 1 for every sub-metre asset and draws it at "
+                                f"want_i x native_i = want_i^2; the per-axis fit must have no cap")
+            if not multiplies_by_centre(offset_expr):
+                problems.append(f"{FIT_NAME} does not return an offset that multiplies the prop's own "
+                                f"centre by the per-axis scale, so a face-anchored asset is drawn from "
+                                f"the item's anchor outward")
+            if not per_axis(offset_expr):
+                problems.append(f"{FIT_NAME} does not build its offset per axis over the three axes, "
+                                f"so the centre cannot be cancelled on every axis")
     if f"def {OFFSET_NAME}" not in builder:
         problems.append(f"scene_builder.py has no {OFFSET_NAME}; a prop carrying its own "
                         f"xformOp:translate would make AddTranslateOp raise")
@@ -417,9 +480,9 @@ def main() -> int:
             problems.append("place_dressing does not convert the item size with to_world_size, so a "
                             "wall item's height and width would be exchanged in the drawn box")
         # THE POSITIONAL HALF OF THE VERIFICATION.  The extent test (`drawn > declared`) cannot fail
-        # for a prop fitted with declared/native, because that fit makes the tightest axis exact and
-        # every other axis smaller -- so on its own it is a check that cannot fail, which is the class
-        # of check this project has been burned by.  What CAN fail, and did, is where the geometry
+        # for a prop fitted per axis, because that fit lands every extent on its declared size by
+        # construction -- so on its own it is a check that cannot fail, which is the class of check
+        # this project has been burned by.  What CAN fail, and did, is where the geometry
         # sits: the bound has to be inside `at +/- size/2` in world axes.  Both the recorded box and
         # the comparison against it are therefore required.
         if '"drawn_box"' not in place_body:
@@ -432,9 +495,11 @@ def main() -> int:
                             "not its position.  An extent is hi - lo and says nothing about where the "
                             "geometry is, so a prop drawn outside its box passes while clipping")
 
-    # 9. No declared box may be smaller than the prop it names, because the prop is fitted INSIDE
-    # the box: a box that cannot hold it means the prop overhangs and clips, which is the failure
-    # this project must not have.  Compared as sorted sets, for the wall-item frame difference, and
+    # 9. No declared box may be smaller than the prop it names, because the fit lands the drawn extent
+    # ON the declared size on every axis (`k_i = 1/native_i`): a box that cannot hold the prop it names
+    # means the asset's own measurement disagrees with the declaration and the prop overhangs and
+    # clips, which is the failure this project must not have.  Compared as sorted sets, for the
+    # wall-item frame difference, and
     # with a tolerance because a box derived from the same measurement differs from it by float
     # rounding -- an exact comparison reported eleven items whose two lists printed identically.
     # 5e-5: declared sizes are written to four decimal places by hand, so a box derived from a
@@ -521,9 +586,8 @@ def main() -> int:
     # it is how the next person reintroduces the defect.  Only phrases that can be tied to a specific
     # reversal are listed, so this cannot fire on ordinary prose.
     STALE = (
-        ("per axis, not uniform", "the fit is uniform now"),
-        ("Fitting the prop to the box removes that class of defect: the\n                #    declared size is what is drawn",
-         "the prop is fitted INSIDE the box and may be smaller, so the declared size is a bound"),
+        ("the fit is uniform", "the fit is per axis now, k_i = 1/native_i"),
+        ("per axis, not uniform", "the per-axis fit is the required one now"),
         ("STORED IN WORLD ORDER", "a wall item is stored in the catalogue frame, depth on slot 0"),
         ('``frame="wall"`` reverses', "the frame parameter is gone"),
         ("clearance box DEACTIVATED", "the box is made invisible now, not deactivated"),

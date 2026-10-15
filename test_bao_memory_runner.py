@@ -679,11 +679,27 @@ def test_the_default_tag_is_model_scoped() -> None:
             memory_protocol.PROTOCOL_TAG in stem,
             f"{stem} does not carry the Stage 2 protocol version",
         )
+    # The guard follows the SHIPPED parameter map instead of naming models.  It used to hard-code
+    # `deepseek-v4.1-flash` (and `glm-4.6v`); `deepseek-v4.1-flash` was removed from the roster and
+    # from ai_agent.MODEL_REQUEST_PARAMS, so this line raised KeyError and the whole suite could not
+    # run.  What the check is for has not changed: a per-model request parameter must show up in that
+    # model's tag, or two different configurations would share a results directory.
+    from ai_agent import request_params_for
+
+    carriers = [model for model in roster if request_params_for(model)]
     check(
-        stems["deepseek-v4.1-flash"].endswith("effortnone")
-        and stems["glm-4.6v"].endswith("nothinking"),
-        "the per-model request parameters are missing from the tags",
+        bool(carriers),
+        "no roster model carries request parameters, so this check would prove nothing",
     )
+    for model in carriers:
+        stem = stems[model]
+        check(
+            stem.endswith("nothinking")
+            or stem.endswith("effortnone")
+            or stem.endswith("effort")
+            or "-params" in stem,
+            f"{model} carries request parameters but its tag {stem!r} does not show them",
+        )
 
     explicit = memory_experiment.MemoryExperimentRunner(
         env=MockEnvironment(),
@@ -703,9 +719,11 @@ def test_the_default_tag_is_model_scoped() -> None:
         len({memory_experiment.default_tag_for_model(model) for model in roster}) == len(roster),
         "two models share a tag",
     )
+    # The example must be a model the roster actually contains: naming a removed one raised KeyError
+    # here too, and a diagnostic that cannot be printed is worse than no diagnostic.
     print(
         f"[ok] the {len(roster)} roster models get {len(set(stems.values()))} distinct tags, each "
-        f"carrying the model name and the protocol (e.g. {stems['deepseek-v4.1-flash']})"
+        f"carrying the model name and the protocol (e.g. {stems[roster[0]]})"
     )
 
 
