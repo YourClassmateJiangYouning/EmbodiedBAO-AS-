@@ -758,18 +758,40 @@ def test_run_tag_carries_the_protocol_version() -> None:
             request_params_suffix(name) == "",
             f"clearing the parameters for {name} did not clear the tag suffix",
         )
+        # And an override must reach the tag too -- but exercised on a model with NO shipped entry,
+        # because ai_agent.request_params_for MERGES the override into the shipped map
+        # (`params.update(extra)`).  Adding reasoning_effort to a model that already carries another
+        # knob yields TWO knobs, and request_params_suffix then returns a hash (-params<sha1>) rather
+        # than the readable -effort form: correct behaviour, but it would test the hash instead of the
+        # knob.  `deliberating[0]` above is the right model for the clear-the-entry check, which needs
+        # a SHIPPED entry; this check needs the opposite, so it uses a model that has none.
+        plain_name = "gpt-4o"
+        check(
+            not request_params_for(plain_name),
+            f"{plain_name} is meant to have no shipped request parameters",
+        )
         _os.environ["BAO_MODEL_PARAMS"] = json.dumps(
-            {name: {"reasoning_effort": "medium"}}
+            {plain_name: {"reasoning_effort": "medium"}}
         )
         check(
-            request_params_suffix(name).endswith("-effortmedium"),
+            request_params_suffix(plain_name).endswith("-effortmedium"),
             "an overriding reasoning_effort did not reach the tag",
         )
+        # Invalid JSON must be IGNORED, leaving the shipped configuration untouched.  The check this
+        # replaced compared request_params_suffix(name) with itself whenever the model's effort was not
+        # "none", which is a tautology and proved nothing; comparing against the suffix computed with
+        # no override at all is what actually shows the invalid value was dropped.
+        _os.environ.pop("BAO_MODEL_PARAMS", None)
+        shipped_suffix = request_params_suffix(name)
         _os.environ["BAO_MODEL_PARAMS"] = "{not json"
         check(
-            request_params_suffix(name)
-            == ("-effortnone" if request_params_for(name).get("reasoning_effort") == "none" else request_params_suffix(name)),
-            "invalid BAO_MODEL_PARAMS was not ignored",
+            request_params_for(name) == dict(MODEL_REQUEST_PARAMS.get(name, {})),
+            f"invalid BAO_MODEL_PARAMS was not ignored: {name}'s configuration changed",
+        )
+        check(
+            request_params_suffix(name) == shipped_suffix,
+            f"invalid BAO_MODEL_PARAMS changed {name}'s tag suffix "
+            f"({shipped_suffix!r} -> {request_params_suffix(name)!r})",
         )
 
         # And when the configuration cannot be resolved at all, the suffix must say

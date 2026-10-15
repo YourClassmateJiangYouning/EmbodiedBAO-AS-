@@ -17,6 +17,36 @@
 set -u
 cd "$(dirname "$0")"
 
+# START IT DETACHED, so a dying caller cannot take the sweep with it.
+#
+# A sweep runs for hours and the thing that started it does not live that long: an SSH session ends,
+# a terminal closes, a supervisor is torn down.  setsid puts the script in its own session with no
+# controlling terminal, which is what survives that.  Detaching here means the caller does not have to
+# remember -- the original operator practice was `setsid nohup ... &`, and a shell function that
+# forgets it is a sweep that dies at an arbitrary point with no error anywhere.
+#
+# Re-exec once, guarded by an environment variable so the second run cannot loop.
+#
+# WHAT THIS COMMENT USED TO CLAIM, AND WHY IT WAS WRONG: it said dispatchers started this way "died
+# within 10-20 minutes while workers kept running as orphans", citing 2026-10-15.  That was my
+# misreading: I checked `kill -0 <pid>` from inside a sandboxed shell whose PID namespace did not
+# contain the dispatcher, read the inevitable failure as "the process is dead", and wrote the
+# mechanism down.  The dispatcher in question (pid 2208586, started 13:14) was alive the whole time --
+# 23 minutes later it was still dispatching, with its four workers in its own session.  Every
+# dispatcher that actually stopped that day was stopped by an explicit kill of mine, or by the kernel
+# OOM killer during the 12:52-13:02 over-subscription.  Detaching is still worth doing, for the SSH
+# reason above, but nothing about sandbox teardown was ever observed.
+if [ "${BAO_SWEEP_DETACHED:-0}" != "1" ]; then
+    export BAO_SWEEP_DETACHED=1
+    # Absolute path: setsid searches PATH for a bare name, so "./run_parallel_sweep.sh" style
+    # self-exec fails with "No such file or directory" even though the file is right there.
+    SELF="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
+    if command -v setsid >/dev/null 2>&1; then
+        exec setsid "$SELF" "$@"
+    fi
+    echo "warning: setsid not found; running in the caller's session, which an SSH drop would kill" >&2
+fi
+
 ISAAC_PY="${ISAAC_PY:-/home/ybh/isaacsim/python.sh}"
 # WORKER BUDGET -- READ THIS BEFORE RAISING IT.
 #
@@ -31,11 +61,28 @@ ISAAC_PY="${ISAAC_PY:-/home/ybh/isaacsim/python.sh}"
 # The arithmetic that matters: 4 x ~19 GB = ~76 GB, which leaves room for the OS on a 125 GB box.
 # 8 x ~19 GB = ~152 GB, which does not.  So the cap is 4 and the lock below enforces one dispatcher.
 MAX_PARALLEL=4
-PARALLEL="${PARALLEL:-4}"
+# DEFAULT 3, not 4, and MAX 4.  The cap is what the arithmetic allows
+# (4 x ~19 GB = ~76 GB of 125 GB), but xargs starts a replacement the moment a worker EXITS, and a
+# worker that has just exited has not necessarily had its pages reclaimed yet.  In that overlap window
+# 4 new + 1 lingering is 5 x ~19 GB = ~95 GB, which measured close enough to the edge on 2026-10-15
+# that the dispatcher was killed and the lock left behind.  Three leaves ~19 GB of headroom for the
+# overlap.  Raise to 4 with PARALLEL=4 if the machine is otherwise idle and the logs show memory
+# plateauing well below the total.
+PARALLEL="${PARALLEL:-3}"
 EPISODES="${EPISODES:-5}"
 MAX_STEPS="${MAX_STEPS:-30}"
 TAG_PREFIX="${TAG_PREFIX:-full}"
 SCENES=(${SCENES:-stage1.1 stage1.2 stage1.3 stage1.4 stage1.5})
+
+# `SCENES=""` used to fall through ${SCENES:-...}, which treats empty as unset, so "no scenes" silently
+# became "all five scenes".  On 2026-10-15 I used SCENES="" to test this script safely and it launched
+# five real gpt-4o-mini jobs instead -- a completed model, so pure waste, and it overwrote the running
+# dispatcher's lock file.  An explicitly empty list is a mistake; refuse it rather than reinterpret it.
+if [ "${SCENES+set}" = "set" ] && [ "${#SCENES[@]}" -eq 0 ]; then
+    echo "SCENES is set but empty.  Name the scenes explicitly, e.g. SCENES=\"stage1.5\"," >&2
+    echo "or unset it to use all five.  Refusing to guess." >&2
+    exit 1
+fi
 
 if [ -z "${BOYUE_API_KEY:-}${TAOTOKEN_API_KEY:-}${OPENAI_API_KEY:-}" ]; then
     echo "no API key in the environment (BOYUE_API_KEY / TAOTOKEN_API_KEY / OPENAI_API_KEY)" >&2

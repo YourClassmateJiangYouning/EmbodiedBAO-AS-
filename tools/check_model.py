@@ -1,8 +1,19 @@
 """Connectivity and suitability check for one model, before a long sweep.
 
-A model is only usable for this benchmark if it passes three separate gates, and
+A model is only usable for this benchmark if it passes four separate gates, and
 they fail independently, so checking only the first is not enough:
 
+  0. the NAME is one the gateway actually serves, checked verbatim against
+     `/v1/models`.  This gate exists because the other three cannot see the
+     problem it catches: the gateway does NOT reject an unknown model name.  It
+     either returns 503, or silently routes the request to a fallback that
+     answers plausibly and cannot see the image -- so a typo, or a name copied
+     from a stale list inside this repository, presents as "the model is blind".
+     That is exactly what happened on 2026-10-15: `qwen3-vl-8b-instruct` (from
+     tools/verify_models.py's candidate list) answered "Orange" to a solid red
+     frame while the same model under its real spelling,
+     `Qwen/Qwen3-VL-8B-Instruct`, passed every gate.  The wrong name was mine;
+     the model was never broken.  This gate costs one GET and no model call.
   1. the route answers at all;
   2. it can SEE -- the experiment sends a camera frame every step, and
      deepseek-v4-flash and deepseek-v4-pro both accept images while answering
@@ -53,6 +64,22 @@ def solid_png(size: int, rgb) -> str:
     png += chunk(b"IDAT", zlib.compress(raw))
     png += chunk(b"IEND", b"")
     return "data:image/png;base64," + base64.b64encode(png).decode("ascii")
+
+
+def listed_models(base_url: str, key: str, timeout: float):
+    """Every model id the gateway advertises, or None when the list is unreadable.
+
+    None is deliberately distinct from an empty set: "could not ask" must not be
+    reported as "the name is not served".
+    """
+    request = urllib.request.Request(base_url.rstrip("/") + "/models")
+    request.add_header("Authorization", f"Bearer {key}")
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            data = json.loads(response.read().decode("utf-8"))
+        return {m.get("id") for m in (data.get("data") or []) if m.get("id")}
+    except Exception:  # noqa: BLE001
+        return None
 
 
 def post(base_url: str, key: str, body: dict, timeout: float) -> tuple:
@@ -119,6 +146,34 @@ def main() -> int:
     print()
 
     failures = []
+
+    # ---- gate 0: is this a name the gateway actually serves? --------------
+    # Checked FIRST, because it is free and because the other three gates cannot
+    # distinguish "blind model" from "name the gateway does not serve".
+    print("gate 0 - advertised name (verbatim, against /v1/models)")
+    ids = listed_models(base_url, key, timeout)
+    if ids is None:
+        print("  could not read /v1/models; this gate is skipped, not passed")
+    elif model in ids:
+        print(f"  listed verbatim, among {len(ids)} advertised models")
+    else:
+        stem = model.split("/")[-1].lower()
+        near = sorted(
+            i for i in ids
+            if i.lower() == model.lower() or stem in i.lower() or model.lower() in i.lower()
+        )[:8]
+        print(f"  NOT ADVERTISED: {model!r} is not among the {len(ids)} models /v1/models lists")
+        if near:
+            print("  the gateway does list names close to it:")
+            for name in near:
+                print(f"    {name}")
+        print()
+        print("Refusing to spend a model call on an unadvertised name.")
+        print("The gateway does not reject an unknown model: it either returns 503 or silently")
+        print("routes to a fallback that cannot see the image, which then looks like a blind")
+        print("model rather than a wrong name.  Use a spelling from the list above.")
+        return 2
+    print()
 
     # ---- gate 1: does it answer at all ------------------------------------
     print("gate 1 - reachable")
