@@ -598,9 +598,26 @@ def fit_reference_to_local_unit(proxy_prim: Any
     # (diag_logs/replace2_stage1.*: every current asset matches its declared box to 0.000 and every
     # candidate measured is worse).  Filling such a box requires either a smaller declaration or a
     # per-axis factor, and the latter reshapes the prop.
-    factor = min(ratios)
-    if factor > 1.0:
-        factor = 1.0
+    # ONE FACTOR PER AXIS: k_i = 1/native_i.  No min() over the ratios and no 1.0 cap.
+    #
+    # WHY min() WAS WRONG.  k = min(1/native) lands only the largest-native axis on its declared size;
+    # every other axis is drawn at native_i/native_max of its box.  Each current asset matches its
+    # declared box to 0.000, so native_i/declared_i is the SAME constant on all three axes -- measured
+    # on 2026-10-16 with tools/probe_prop_bound.py across all 33 referenced assets: 1.0000 for the
+    # metre assets, ~100 for the centimetre ones, 150.8 / 262.0 / 729.6 for the room_fit ones.  A
+    # uniform factor therefore cannot fill the box, which is the "everything too thin" defect: a
+    # 14.25 cm pallet drawn 1.7 cm, a 9.2 cm mug 8.5 mm, a 2.47 m packing table with a 23 cm top.
+    #
+    # WHY THE 1.0 CAP WAS ALSO WRONG.  For a sub-metre asset every native_i < 1, so 1/native_i > 1 and
+    # the cap pinned k to 1, drawing the prop at want_i x native_i = want_i^2.
+    #
+    # WHY IT IS SAFE NOW.  Dividing per axis is exact whenever `native` is linear in the prop's scale,
+    # and the probe measured that for 33 of 33 assets: bound(scale=2) = 2 x bound(scale=1) on every
+    # axis.  The three that were NOT linear -- SM_Mug_A2, B1 and C1, whose bound jumped 200x instead of
+    # 2x -- were deleted on 2026-10-16, and that deletion is what makes this change possible.  An
+    # earlier per-axis attempt was reverted (bfd5be7) because of exactly those three.
+    scale = tuple(1.0 / native[axis] if native[axis] > 1e-9 else 1.0
+                  for axis in range(3))
     # THE OFFSET IS WHAT WAS MISSING, and it is expressed as a FRACTION OF THE PROP'S OWN EXTENT
     # because the prop's ops compose as translate-then-scale: a point p of the prop maps to
     # `want * (p + offset)`.  Dividing the centre by `native` cancels both the asset's units and the
@@ -608,9 +625,19 @@ def fit_reference_to_local_unit(proxy_prim: Any
     # on the same stage: with this offset the juniper's world box is exactly (1.0164, 1.0001, 2.4)
     # centred on its anchor; without it the same tree runs from z = 1.174 to z = 3.574 -- through a
     # 3.0 m ceiling -- while every extent line in the report stays green.
-    offset = tuple(-centre[axis] / native[axis] if native[axis] > 1e-9 else 0.0
-                   for axis in range(3))
-    return (offset, (factor, factor, factor))
+    # THE OFFSET IS THE PROP'S OWN CENTRE TIMES THE SAME PER-AXIS FACTOR.  The prop's ops compose as
+    # translate-then-scale, so a point p maps to `scale_i * p_i + offset_i` locally and the item
+    # Xform's declared scale then takes that to world; subtracting `scale_i * centre_i` lands the
+    # prop's centre on the item's anchor for any asset, in any unit.  Measured on the same stage: with
+    # this offset the juniper's world box is exactly (1.0164, 1.0001, 2.4) centred on its anchor;
+    # without it the same tree runs from z = 1.174 to z = 3.574 -- through a 3.0 m ceiling -- while
+    # every extent line in the report stays green.
+    #
+    # This is written as `-scale_i * centre_i` rather than the algebraically identical
+    # `-centre_i / native_i` so the offset visibly rides on the same factor as the scale: one factor,
+    # used twice, instead of two expressions that have to be kept in step by hand.
+    offset = tuple(-scale[axis] * centre[axis] for axis in range(3))
+    return (offset, scale)
 
 
 def apply_translate(prim: Any, offset: Sequence[float]) -> bool:

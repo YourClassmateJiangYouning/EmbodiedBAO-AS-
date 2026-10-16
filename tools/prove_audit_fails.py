@@ -49,34 +49,41 @@ FAULTS = [
         "        UsdGeom.Xformable(item_prim).AddTranslateOp().Set(Gf.Vec3d(*sc.to_world(item[\"at\"])))",
     ),
     (
-        "the fit multiplies by the declared size again (declared/native), which double counts it",
-        "    ratios = [1.0 / native[axis] for axis in range(3) if native[axis] > 1e-9]",
-        "    want = tuple(float(v) for v in declared)\n"
-        "    ratios = [want[axis] / native[axis] for axis in range(3) if native[axis] > 1e-9]",
+        "the fit takes a MIN over the ratios again, so only the largest-native axis reaches its "
+        "declared box (what shipped: a 14.25 cm pallet drawn 1.7 cm thick)",
+        "    scale = tuple(1.0 / native[axis] if native[axis] > 1e-9 else 1.0\n"
+        "                  for axis in range(3))",
+        "    factor = min(1.0 / native[axis] for axis in range(3) if native[axis] > 1e-9)\n"
+        "    scale = (factor, factor, factor)",
     ),
     (
-        "the fit is per axis instead of uniform",
-        "    return (offset, (factor, factor, factor))",
-        "    return (offset,\n"
-        "            tuple(want[axis] / native[axis] if native[axis] > 1e-9 else 1.0\n"
-        "                  for axis in range(3)))",
+        "the fit caps the factor at 1.0 again, which draws a sub-metre asset at want^2 "
+        "(what shipped: a 9.2 cm mug drawn 8.5 mm)",
+        "    return (offset, scale)",
+        "    scale = tuple(s if s <= 1.0 else 1.0 for s in scale)\n"
+        "    return (offset, scale)",
     ),
     (
-        "the fit grows the prop when its declared box is larger than the asset",
-        "    if factor > 1.0:\n        factor = 1.0",
-        "    pass",
+        "the per-axis normalisation is dropped, so the prop is drawn at its own natural size "
+        "instead of filling its declared box",
+        "    scale = tuple(1.0 / native[axis] if native[axis] > 1e-9 else 1.0\n"
+        "                  for axis in range(3))",
+        "    scale = (1.0, 1.0, 1.0)",
     ),
     (
-        "the prop is not offset onto the anchor, so a face-anchored asset is drawn outward",
-        "    return (offset, (factor, factor, factor))",
-        "    return ((0.0, 0.0, 0.0), (factor, factor, factor))",
+        "the offset is no longer multiplied by the per-axis scale, so a face-anchored prop is "
+        "drawn off its anchor",
+        "    offset = tuple(-scale[axis] * centre[axis] for axis in range(3))",
+        "    offset = tuple(-centre[axis] for axis in range(3))",
     ),
     (
-        "the prop's centre left in the asset's own units instead of the parent's",
-        "    offset = tuple(-centre[axis] / native[axis] if native[axis] > 1e-9 else 0.0\n"
-        "                   for axis in range(3))",
-        "    offset = tuple(-centre[axis] if native[axis] > 1e-9 else 0.0\n"
-        "                   for axis in range(3))",
+        "the bound is normalised against the largest extent, keeping the proportions but leaving "
+        "every axis short of its declared box",
+        "    scale = tuple(1.0 / native[axis] if native[axis] > 1e-9 else 1.0\n"
+        "                  for axis in range(3))",
+        "    _big = max(native[axis] for axis in range(3) if native[axis] > 1e-9)\n"
+        "    factor = 1.0 / _big\n"
+        "    scale = (factor, factor, factor)",
     ),
     (
         "the prop's offset applied AFTER its scale, which multiplies the offset by the fit factor",
