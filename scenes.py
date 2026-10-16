@@ -403,12 +403,13 @@ PROP_MEASUREMENT_PENDING = (
 # equal the measured x.  The declared-size check therefore prints a warning for these instead of
 # failing, and the plan is a rotation in place_dressing.
 #
-# Measuring which items this applies to, across all 66: only `reading_poster` is materially
-# affected.  `fountain` (0.1621 x 0.1108 x 0.1621), `mug_a2` and `mug_b1` are near-cubic and their
-# slot 0 is already within 4 mm of their thinnest axis, so declaring the measured order would
-# satisfy every rule without a rotation; `banana` is long-and-thin with its thinnest axis on slot 2
-# exactly like the poster, but its long axis is only 0.1972 m -- inside the 0.20 m protrusion cap --
-# so it is legal in either order.  That is why the printed warning lists one item and not five.
+# Measuring which items this applies to, across all 63: only `reading_poster` is materially
+# affected.  `fountain` (0.1621 x 0.1108 x 0.1621) is near-cubic and its slot 0 is already within
+# 4 mm of its thinnest axis, so declaring the measured order would satisfy every rule without a
+# rotation; `banana` is long-and-thin with its thinnest axis on slot 2 exactly like the poster, but
+# its long axis is only 0.1972 m -- inside the 0.20 m protrusion cap -- so it is legal in either
+# order.  That is why the printed warning lists one item and not three.  The two mugs this note used
+# to name are gone from the catalogue (see the stage1.5 note in _install_dressing).
 PROP_NEEDS_ROTATION = ("FramedPoster.usd",)
 
 # What tools/measure_assets.py measured each vendored mesh to be, in this catalogue's own
@@ -1357,21 +1358,21 @@ def _install_dressing() -> None:
         _dressing_floor("stacked_boxes", (7.4, 0.00, -2.00), (0.5119, 0.5172, 0.5214), DRESSING_CARD_PALE,
                         PROP_ROOT + "/PackingTable/props/sm_whitecorrugatedbox_b/"
                         "sm_whitecorrugatedbox_b12_brown_01.usd"),
-        # Real goods standing on the shelving, which is what furnishes a supermarket rather than
-        # a room with a shelf in it.  The shelf's own `at` height is a CENTRE (1.9 m tall, so its
-        # middle is 0.95 m), so its top face is 0.95 + 0.09 = 1.04 m and these sit on that, each
-        # one raised by half its own measured height.  Sizes are the measured props, because
-        # place_dressing references them without scaling: a mug is 0.09 m tall and is drawn 0.09 m
-        # tall, not as the round number someone would have guessed.
-        _dressing_wall("mug_a2", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.04 + 0.0910 / 2, 1.20),
-                       (0.0923, 0.0910, 0.1271), DRESSING_GREY,
-                       PROP_ROOT + "/Mugs/SM_Mug_A2.usd"),
-        _dressing_wall("mug_b1", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.04 + 0.0919 / 2, 1.46),
-                       (0.0925, 0.0919, 0.1365), DRESSING_GREY,
-                       PROP_ROOT + "/Mugs/SM_Mug_B1.usd"),
-        _dressing_wall("mug_c1", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.04 + 0.1072 / 2, 1.72),
-                       (0.0889, 0.1072, 0.1277), DRESSING_GREY,
-                       PROP_ROOT + "/Mugs/SM_Mug_C1.usd"),
+        # THE THREE MUGS ARE DELETED, and the reason is a measured defect rather than taste.  They
+        # were the only props the fit cannot draw correctly: their meshes' own world size equals their
+        # declared box (0.0923 m across for SM_Mug_A2), so the factor should be 1.0, yet every route
+        # through ``ComputeRelativeBound`` puts them out by a factor of 100 -- the uniform factor
+        # draws them 8.5 mm across where a mug is 92 mm, and a per-axis ``1/native_i`` draws them 9.2
+        # METRES across, which is what got that attempt reverted as ``bfd5be7``.  Neither is a scene.
+        # See ``fit_reference_to_local_unit`` for the numbers and ``tools/probe_fit_space.py`` for the
+        # space comparison; the defect is in the measurement, not in these three assets.
+        #
+        # Deleting them costs almost nothing on screen: at 8.5 mm they were sub-pixel in every eye
+        # frame, which is exactly why the defect went unnoticed for so long.  The shelf goods that are
+        # visible -- the banana below -- stay.
+        #
+        # The other three items that used to stand here are in PROP_MEASUREMENTS (SM_Mug_A2, B1, D1)
+        # and remain measured; nothing references them now.
         # A banana lying along the shelf.  The helper takes (across, tall, thick) and stores
         # (thick, tall, across), so it swaps the outer two numbers: an argument tuple A becomes the
         # stored size (A[2], A[1], A[0]).  The stored size has to equal the measured catalogue
