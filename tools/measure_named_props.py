@@ -5,7 +5,7 @@ when what is wanted is four lines to paste.  This measures the props named on th
 and prints the source lines to write.
 
     ISAAC_PY=/home/ybh/isaacsim/python.sh
-    $ISAAC_PY -u tools/measure_named_props.py SM_Mug_A2 011_banana forklift
+    $ISAAC_PY -u tools/measure_named_props.py SM_Mug_A2 011_banana packing_table
 
 The measurement follows tools/measure_assets.py exactly -- reference the asset into a fresh
 in-memory stage, bound it, fall back to the prototype when the root is instanceable, and convert

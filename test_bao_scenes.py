@@ -282,7 +282,7 @@ def test_decoration_is_never_collidable_and_stays_off_the_path() -> None:
 
     The walkway test is on the item's INNER EDGE, ``|z| - size[2]/2``, not on its anchor.  Anchors
     were all that was checked, and an anchor at |z| 1.60 with a 1.26 m lateral extent -- the library
-    cart and the supermarket trolley are both exactly that -- puts real geometry at |z| 0.97, inside
+    cart and the supermarket flat_cart are both exactly that -- puts real geometry at |z| 0.97, inside
     the 1.5 m band the robot walks through.  The declared clearance box is what the occlusion and
     walking-band checks are *for*, so measuring it by its centre was measuring the wrong number.
 

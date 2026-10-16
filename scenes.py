@@ -736,10 +736,10 @@ SCENES: Dict[str, Dict[str, Any]] = {
             # file is a thin wrapper that references this layer, so measuring it through the reference
             # returns the mesh's size rather than nothing -- which is exactly why tools/measure_assets.py
             # recorded it, and why the declaration passes the per-axis check.
-            _dressing_floor("rack", (7.0, 0.00, -1.85), (0.716165, 1.995631, 1.324738), DRESSING_METAL,
+            _dressing_floor("rack", (7.0, 0.00, -1.8376), (0.716165, 1.995631, 1.324738), DRESSING_METAL,
                             BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
                             "RackSmallEmpty_A1.usd", room_fit=0.663),
-            _dressing_floor("rack_tall", (7.0, 0.00, 2.35), (0.716165, 1.995631, 1.324738), DRESSING_STEEL,
+            _dressing_floor("rack_tall", (7.0, 0.00, 1.8376), (0.716165, 1.995631, 1.324738), DRESSING_STEEL,
                             BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
                             "RackSmallEmpty_A1.usd", room_fit=0.663),
             _dressing_wall("bay_sign", "far_wall", (FAR_WALL_FACE_X, 2.15, 1.60),
@@ -773,7 +773,7 @@ SCENES: Dict[str, Dict[str, Any]] = {
             # honest thing for a loading bay and `packing_table.usd` is vendored.  Declared at the
             # bench's measured proportions times room_fit 0.36 -> (0.8905, 0.3898, 0.2814), so the
             # uniform fit fills the box instead of leaving it at a third of its size.
-            _dressing_floor("forklift", (6.2, 0.0, 2.15), (0.8905, 0.3898, 0.2814), DRESSING_DARK_STEEL,
+            _dressing_floor("packing_bench", (6.2, 0.0, 2.15), (0.8905, 0.3898, 0.2814), DRESSING_DARK_STEEL,
                             PROP_ROOT + "/PackingTable/packing_table.usd", room_fit=0.36),
             _dressing_floor("traffic_cone", (7.55, 0.0, -1.95), (0.3357, 0.4628, 0.3339),
                             DRESSING_CLAY, BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/"
@@ -782,7 +782,7 @@ SCENES: Dict[str, Dict[str, Any]] = {
             # These replace nothing -- they are added, because this scene is a warehouse and three
             # boxes standing against the far wall is what a warehouse looks like.  Sizes are the
             # measured props; the crate and the box are centimetre assets, hence CM_TO_M.
-            _dressing_floor("pallet_stack", (12.0, 0.0, 2.04), (1.2132, 0.1425, 0.8023),
+            _dressing_floor("pallet", (12.0, 0.0, 2.04), (1.2132, 0.1425, 0.8023),
                             asset=PROP_ROOT + "/Pallet/pallet.usd"),
             _dressing_floor("crate", (10.2, 0.0, 2.05), (0.6015, 0.1700, 0.4018), DRESSING_WOOD_PALE,
                             PROP_ROOT + "/PackingTable/props/SM_Crate_A07_Yellow_01/"
@@ -1096,9 +1096,9 @@ def _install_dressing() -> None:
         # would leave it 0.43 m deep, and a shelf that shallow is not a shelf.  Free-standing
         # racking at |z| >= 1.8 keeps the walking band clear and touches no wall, which is what
         # racking does.  room_fit 0.663 brings the 3.01 m height under the ceiling.
-        _dressing_floor("bookshelf_left", (6.4, 0.00, 2.05), (0.716165, 1.995631, 1.324738), DRESSING_WOOD_PALE, BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
+        _dressing_floor("bookshelf_left", (6.4, 0.00, 1.8376), (0.716165, 1.995631, 1.324738), DRESSING_WOOD_PALE, BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
                         "RackSmallEmpty_A1.usd", room_fit=0.663),
-        _dressing_floor("bookshelf_right", (6.4, 0.00, -2.05), (0.716165, 1.995631, 1.324738), DRESSING_WOOD_PALE, BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
+        _dressing_floor("bookshelf_right", (6.4, 0.00, -1.8376), (0.716165, 1.995631, 1.324738), DRESSING_WOOD_PALE, BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
                         "RackSmallEmpty_A1.usd", room_fit=0.663),
         # A real clock face, at its measured size: 0.045 m thick, 0.15 m tall, 0.45 m across the
         # wall.  Wall-mounted because a clock is thin: the 0.20 m protrusion cap exists because the
@@ -1135,7 +1135,7 @@ def _install_dressing() -> None:
         _dressing_floor("study_table", (3.0, 0.00, 1.90), (2.4736, 0.9941, 0.7620), DRESSING_WOOD_PALE,
                         PROP_ROOT + "/PackingTable/props/SM_HeavyDutyPackingTable_C02_01/"
                         "SM_HeavyDutyPackingTable_C02_01.usd"),
-        _dressing_floor("chair_row", (5.0, 0.00, -2.05), (0.6001, 0.8772, 0.5993), DRESSING_WOOD_PALE,
+        _dressing_floor("chair", (5.0, 0.00, -2.05), (0.6001, 0.8772, 0.5993), DRESSING_WOOD_PALE,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Office/Props/"
                         "SM_Chair.usd"),
         _dressing_floor("armchair", (5.9, 0.00, -1.95), (0.82, 0.79, 1.04), DRESSING_TEAL,
@@ -1255,7 +1255,7 @@ def _install_dressing() -> None:
         # half-extent must not cross into the walking band, inside a room whose z is +/-2.5.
         _dressing_floor("picnic_table", (5.5, 0.00, 1.95), (1.7315, 0.7580, 0.5471), DRESSING_WOOD_PALE,
                         PROP_ROOT + "/PackingTable/packing_table.usd", room_fit=0.70),
-        _dressing_floor("bench_iron", (9.5, 0.00, -2.05), (0.4338, 0.4533, 1.5005), DRESSING_WOOD_PALE,
+        _dressing_floor("bench_iron", (9.5, 0.00, -1.7497), (0.4338, 0.4533, 1.5005), DRESSING_WOOD_PALE,
                         BUCKET_ASSETS + "/ArchVis/Residential/Furniture/Outdoors/Roxana/Roxana_DiningBench.usd"),
         _dressing_floor("bin_square", (13.0, 0.00, 1.95), (0.5855, 1.0112, 0.7957), DRESSING_HEDGE,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
@@ -1276,9 +1276,9 @@ def _install_dressing() -> None:
         # across; a park bench that size is a bandstand seat, so it is declared at a bench's
         # proportions and place_dressing fits the prop to that box.  The bin and the planters are
         # declared at their measured sizes because those are already right.
-        _dressing_floor("bench_left", (2.4, 0.00, 2.05), (0.4338, 0.4533, 1.5005), DRESSING_WOOD_PALE,
+        _dressing_floor("bench_left", (2.4, 0.00, 1.7497), (0.4338, 0.4533, 1.5005), DRESSING_WOOD_PALE,
                         BUCKET_ASSETS + "/ArchVis/Residential/Furniture/Outdoors/Roxana/Roxana_DiningBench.usd"),
-        _dressing_floor("bench_right", (2.4, 0.00, -2.05), (0.4338, 0.4533, 1.5005), DRESSING_WOOD_PALE,
+        _dressing_floor("bench_right", (2.4, 0.00, -1.7497), (0.4338, 0.4533, 1.5005), DRESSING_WOOD_PALE,
                         BUCKET_ASSETS + "/ArchVis/Residential/Furniture/Outdoors/Roxana/Roxana_DiningBench.usd"),
         _dressing_floor("litter_bin", (6.4, 0.00, 2.10), (0.722, 1.0411, 0.722), DRESSING_CONCRETE,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Outdoor/Rivermark/"
@@ -1306,13 +1306,13 @@ def _install_dressing() -> None:
         # fir 6.03 m; declared here at 1.6 m and 1.55 m because the ceiling is 3 m and the first
         # attempt put a 2.91 m sapling in a 16 m corridor, which read as a tree growing through the
         # roof rather than as planting.  room_fit keeps each one's own proportions.
-        _dressing_floor("tree_conifer", (12.4, 0.00, 2.05), (1.0164, 2.4000, 1.0001), DRESSING_HEDGE,
+        _dressing_floor("tree_conifer", (12.4, 0.00, 1.9999), (1.0164, 2.4000, 1.0001), DRESSING_HEDGE,
                         BUCKET_ASSETS + "/Assets/Vegetation/Trees/Chinese_Juniper.usd",
                         room_fit=0.943315),
-        _dressing_floor("tree_fir", (14.6, 0.00, -2.05), (1.1537, 2.3000, 1.0574), DRESSING_GRASS,
+        _dressing_floor("tree_fir", (14.6, 0.00, -1.9713), (1.1537, 2.3000, 1.0574), DRESSING_GRASS,
                         BUCKET_ASSETS + "/Assets/Vegetation/Trees/Douglas_Fir.usd",
                         room_fit=0.381663),
-        _dressing_floor("tree_sapling", (10.8, 0.00, -2.20), (1.2415, 2.2000, 1.2472), DRESSING_GRASS,
+        _dressing_floor("tree_sapling", (10.8, 0.00, -1.8764), (1.2415, 2.2000, 1.2472), DRESSING_GRASS,
                         BUCKET_ASSETS + "/Assets/Vegetation/Trees/Elm_Sapling.usd",
                         room_fit=0.712641),
     )
@@ -1334,19 +1334,26 @@ def _install_dressing() -> None:
         #
         # RackSmall_A7 measures (1.0802, 3.01, 1.9981) m -- a centimetre asset -- and is declared at
         # room_fit 0.63 for a 1.896 m tall rack, the same fraction its sibling RackSmallEmpty_A1 uses
-        # in the warehouse.  Both stand at |z| 1.95, outside the |z| >= 1.5 line the walking band
-        # requires, in the clear stretch between the checkout and the boxes.
-        _dressing_floor("shelf_left", (8.9, 0.0, 1.95), (0.6805, 1.8963, 1.2588), DRESSING_STEEL,
+          # in the warehouse.  Both stand at |z| 1.8706, FLUSH AGAINST THE SIDE WALL, because that is
+          # the only centre a 1.2588 m lateral extent allows without pushing 0.0794 m of shelf through
+          # it (measured 2026-10-16, SCENE_SIZE_AUDIT.md section 4).  This comment used to claim they
+          # sit "outside the |z| >= 1.5 line the walking band requires"; that was read off the ANCHOR.
+          # From the INNER edge it is false: 1.8706 - 1.2588/2 = 1.2412, i.e. 0.2588 m inside the band.
+          # For an item this wide the two rules cannot both hold -- clearing the wall needs |z| <=
+          # 1.8706, clearing the band needs |z| >= 2.1294 -- so the wall wins: a prop crossing a wall is
+          # a geometry error, one inside the band is only a narrower corridor.  Nothing collides either
+          # way; every dressing item is declared collides=False.
+        _dressing_floor("shelf_left", (8.9, 0.0, 1.8706), (0.6805, 1.8963, 1.2588), DRESSING_STEEL,
                         BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/RackSmall_A7.usd",
                         room_fit=0.63),
-        _dressing_floor("shelf_right", (8.9, 0.0, -1.95), (0.6805, 1.8963, 1.2588), DRESSING_STEEL,
+        _dressing_floor("shelf_right", (8.9, 0.0, -1.8706), (0.6805, 1.8963, 1.2588), DRESSING_STEEL,
                         BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/RackSmall_A7.usd",
                         room_fit=0.63),
         _dressing_wall("price_strip", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.00, 1.60),
                        (0.03, 0.15, 1.3), DRESSING_PAPER),
         _dressing_wall("promo_banner", "far_wall", (FAR_WALL_FACE_X, 2.10, 1.55),
                        (0.03, 0.5, 0.9), DRESSING_PAPER),
-        _dressing_floor("trolley", (2.8, 0.00, 1.60), (0.8504, 0.4407, 1.2594), DRESSING_DARK_STEEL,
+        _dressing_floor("flat_cart", (2.8, 0.00, 1.60), (0.8504, 0.4407, 1.2594), DRESSING_DARK_STEEL,
                         PROP_ROOT + "/Dolly/dolly.usd"),
         # A plastic crate used as the produce bin, and a corrugated box for the stack.  Both are
         # centimetre assets, so ASSET_SCALE scales them; without that the crate draws 60 m long.
@@ -1373,14 +1380,15 @@ def _install_dressing() -> None:
         #
         # The other three items that used to stand here are in PROP_MEASUREMENTS (SM_Mug_A2, B1, D1)
         # and remain measured; nothing references them now.
-        # A banana lying along the shelf.  The helper takes (across, tall, thick) and stores
-        # (thick, tall, across), so it swaps the outer two numbers: an argument tuple A becomes the
-        # stored size (A[2], A[1], A[0]).  The stored size has to equal the measured catalogue
-        # tuple (x, height, lateral) = (0.0741, 0.0386, 0.1972) -- 0.1972 long along the shelf,
-        # 0.0741 out from the wall, 0.0386 high -- so the argument tuple is its reverse,
-        # (0.0386, 0.0741, 0.1972).  Three attempts got this wrong, twice by reordering the wrong
-        # pair and once by reasoning about it instead of reading the value back; the declared-size
-        # check caught every one.
+        # A banana against the obstacle wall.  `_dressing_wall` stores `size` UNCHANGED in the
+        # catalogue frame (x, height, lateral); the old (across, tall, thick) reversal and the
+        # `frame="wall"` switch that went with it are gone -- see the helper's docstring.  So this
+        # tuple IS the declared world box, and for a wall item slot 0 is the DEPTH along the wall
+        # normal rather than the measured length.  The asset measures (0.0741, 0.0386, 0.1972) m as
+        # (x, height, lateral); declaring (0.1972, 0.0741, 0.0386) puts the 0.1972 m length ALONG the
+        # wall (room x) and holds the 0.0386 m thickness out of the corridor, which is what makes a
+        # wall item hang flat.  That departure from the measured order is the same exception
+        # PROP_NEEDS_ROTATION records for the poster.
         _dressing_wall("banana", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.04 + 0.0386 / 2, 1.98),
                        (0.1972, 0.0741, 0.0386), DRESSING_YELLOW,
                        PROP_ROOT + "/YCB/Axis_Aligned/011_banana.usd"),
