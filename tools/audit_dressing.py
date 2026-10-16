@@ -388,6 +388,29 @@ def main() -> int:
         if "MakeInvisible" not in place_body and "GetVisibilityAttr" not in place_body:
             problems.append("place_dressing never makes the clearance box invisible, so a resolved "
                             "prop is drawn inside a solid box and reads as a block")
+        # THE OP ORDER IS THE TRANSFORM, NOT A STYLE CHOICE, AND IT HAS TO BE FORCED.
+        #
+        # [translate, scale] evaluates as p*scale + offset, which is what the fit's offset
+        # (-scale*centre, expressed in the item's own units) assumes.  [scale, translate] evaluates as
+        # scale*(p + offset): the offset is scaled as well, so the prop's centre never reaches the
+        # anchor.  Appending the two calls in the right sequence is NOT enough on its own, because
+        # something may already have put a scale op on the prim -- _rescale_and_measure writes one
+        # while it probes, and if it leaves it behind then apply_translate appends the translate AFTER
+        # it and the order flips silently.
+        #
+        # That is not hypothetical: on 2026-10-16 every prop's local box became [0, 1] instead of
+        # [-0.5, +0.5] in its own units, lifting each prop by 0.5 * (1 - scale) * height from the
+        # anchor.  For the metre assets (scale ~ 0.9) that is 3% and invisible; for the centimetre
+        # assets (scale ~ 0.003) it is half the object, which is how the warehouse racks and the
+        # library shelves came to float with their bases a metre above the floor.  The check below is
+        # what would have caught it, so it is asserted rather than trusted.
+        _t_at = place_body.find("_ordered.append(_translate_op)")
+        _s_at = place_body.find("_ordered.append(_scale_op)")
+        if "SetXformOpOrder" not in place_body or _t_at < 0 or _s_at < 0 or _t_at > _s_at:
+            problems.append(
+                "place_dressing does not force the prop's xformOpOrder to [translate, scale].  "
+                "[scale, translate] evaluates as scale*(p + offset), which scales the offset too and "
+                "lifts the prop by 0.5*(1-scale)*height off its anchor")
         # THE STRUCTURE, which is what makes hiding the box safe at all.  Presence tests were not
         # enough: the state this project actually shipped had MakeInvisible present, applied to a box
         # that was the prop's PARENT -- and `invisible` is inherited, so the prop was hidden with it

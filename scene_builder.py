@@ -188,22 +188,50 @@ def resolve_material(stage: Any, url: str, name: str, path: str,
 # ---------------------------------------------------------------------------
 
 
+def prism_points(polygon: Sequence[Sequence[float]],
+                 centre: Sequence[float],
+                 thickness: float) -> Tuple[List[Tuple[float, float, float]],
+                                            List[Tuple[float, float, float]]]:
+    """World-space (front, back) vertices of one polygon extruded along x.
+
+    The polygon is given in the marker plane's own coordinates and, as
+    ``scenes.SHAPES`` documents, ``(px, py)`` is ``(sideways, height)``.  The wall
+    is the far wall, a plane of constant x, so its in-plane axes are world y
+    (lateral) and world z (height): the FIRST coordinate must land in world y and
+    the SECOND in world z.
+
+    It used to be the other way round -- px into world z and py into world y -- a
+    transpose of the documented frame.  A transposed "downward-pointing triangle"
+    (apex at py = -half) is drawn with its apex 0.45 m to the SIDE at centre height,
+    so the object rendered on the wall did not match the phrase the prompt used to
+    ask for it.  Extracted from :func:`_prism` and kept pure so the mapping can be
+    checked without USD.
+    """
+    cx, cy, cz = sc.to_world(centre)
+    half = float(thickness) / 2.0
+    front = [
+        (cx - half, cy + float(px), cz + float(py)) for px, py in polygon
+    ]
+    back = [
+        (cx + half, cy + float(px), cz + float(py)) for px, py in polygon
+    ]
+    return front, back
+
+
 def _prism(stage: Any, path: str, polygon: Sequence[Sequence[float]],
            centre: Sequence[float], thickness: float) -> Any:
     """One polygon extruded along x, standing in the plane of the far wall.
 
-    The polygon is given in USER coordinates -- (px, py) is (sideways, height) -- and every point
-    is converted to the stage's WORLD frame before it becomes geometry.  Without that conversion
-    the plate lands at height zero and 1.40 m sideways instead of 1.40 m up the wall, which is
-    why no marker could be seen on the far wall in any render.
+    The polygon is given in USER coordinates -- (px, py) is (sideways, height) --
+    and every point is converted to the stage's WORLD frame before it becomes
+    geometry.  Without that conversion the plate lands at height zero and 1.40 m
+    sideways instead of 1.40 m up the wall, which is why no marker could be seen on
+    the far wall in any render.  The mapping itself lives in :func:`prism_points`.
     """
     from pxr import Gf, UsdGeom, Vt
 
-    cx, cy, cz = sc.to_world(centre)
-    half = thickness / 2.0
-    front = [Gf.Vec3f(cx - half, cy + float(py), cz + float(px)) for px, py in polygon]
-    back = [Gf.Vec3f(cx + half, cy + float(py), cz + float(px)) for px, py in polygon]
-    points = front + back
+    front, back = prism_points(polygon, centre, thickness)
+    points = [Gf.Vec3f(*p) for p in front + back]
     count = len(polygon)
     counts = [count, count] + [4] * count
     indices: List[int] = list(range(count)) + [count + i for i in range(count)]
@@ -217,7 +245,7 @@ def _prism(stage: Any, path: str, polygon: Sequence[Sequence[float]],
     mesh.CreateSubdivisionSchemeAttr("none")
     # Two-sided, because the marker is a flat plate seen from one direction and the winding of a
     # face decides whether the renderer culls it.  The polygons come from SHAPES with whatever
-    # winding reads naturally in (px, py), and those coordinates map to (z, y): with the camera on
+    # winding reads naturally in (px, py), and those coordinates map to (y, z): with the camera on
     # the -x side, a polygon that is counter-clockwise as drawn is clockwise as seen, so the front
     # face can end up back-facing and be invisible.  That is one explanation for the marker
     # missing from every preview.  doubleSided removes the question entirely; a marker that is a
@@ -303,9 +331,16 @@ def build_plate(stage: Any, name: str, item: Dict[str, Any]) -> Dict[str, Any]:
              (width * 0.34, height * 0.30), (-width * 0.34, height * 0.30))
     parts.append(_prism(stage, f"/World/Dressing/{name}/panel", inset, at,
                         thickness * 1.6))
-    paint(stage, f"/World/Dressing/{name}/plate", rgb)                  # (ok, why)
-    paint(stage, f"/World/Dressing/{name}/panel", tuple(min(1.0, float(c) * 1.9) for c in rgb))
-    return {"parts": [str(part.GetPath()) for part in parts]}
+    plate_ok, plate_why = paint(stage, f"/World/Dressing/{name}/plate", rgb)
+    panel_ok, panel_why = paint(
+        stage, f"/World/Dressing/{name}/panel",
+        tuple(min(1.0, float(c) * 1.9) for c in rgb),
+    )
+    return {
+        "parts": [str(part.GetPath()) for part in parts],
+        "painted": bool(plate_ok and panel_ok),
+        "paint_error": "" if plate_ok and panel_ok else (plate_why or panel_why),
+    }
 
 
 def _bind(stage: Any, prim_path: str, material: Any) -> bool:
@@ -441,17 +476,38 @@ def prop_asset_for(url: Optional[str]) -> Optional[str]:
 def _rescale_and_measure(proxy_prim: Any, parent: Any, factor: float) -> Any:
     """Measure the prop's bound relative to ``parent`` with its own scale multiplied by ``factor``.
 
-    Returns the native tuple, or None when the prim or the measurement is unusable.  The prop's scale
-    is RESTORED before returning, so this is a read-only probe of the stage.
+    Returns the native tuple, or None when the prim or the measurement is unusable.
+
+    IT HAS TO LEAVE THE STAGE EXACTLY AS IT FOUND IT, AND IT USED NOT TO.  This docstring claimed the
+    scale was "RESTORED, so this is a read-only probe", but a prop that ships NO scale op has nothing
+    to restore: ``apply_scale`` CREATES one, and that new op was left behind in the prim's
+    xformOpOrder.  That one stale op broke every prop's placement, because the ORDER of the ops is
+    what decides where the offset is applied:
+
+        before the guard ran:  []          -> apply_translate -> [translate] -> apply_scale
+                               -> [translate, scale] -> p*scale + offset, the prop's centre on the
+                                  anchor, the offset expressed in the item's own units.
+        after  the guard ran:  [scale]     -> apply_translate -> [scale, translate]
+                               -> scale*(p + offset), WRONG: the offset is scaled too, so the prop's
+                                  centre ends up half its own height above the anchor.
+
+    Measured on 2026-10-16: the warehouse rack's world box moved from z 0.0000..1.9956 to
+    0.9945..2.9901, a lift of 0.5 * (1 - scale) * height.  That is invisible for a metre asset
+    (scale ~ 0.9 -> 3%) and half the object for a centimetre asset (scale ~ 0.003 -> 50%), which is
+    exactly why only the scenes with racks and shelves looked wrong.  The guard arrived in 5c28b63
+    and this is the defect it introduced.
+
+    So the removal below is the fix, not tidiness: if the probe created the op, the op goes.
     """
     from pxr import Gf, Usd, UsdGeom
 
     xformable = UsdGeom.Xformable(proxy_prim)
-    saved = None
+    saved_op = None
     for op in xformable.GetOrderedXformOps():
         if op.GetOpType() == UsdGeom.XformOp.TypeScale:
-            saved = op.Get()
+            saved_op = op
             break
+    saved = saved_op.Get() if saved_op is not None else None
     base = saved if saved is not None else Gf.Vec3f(1.0, 1.0, 1.0)
     base = (float(base[0]), float(base[1]), float(base[2]))
     try:
@@ -466,17 +522,31 @@ def _rescale_and_measure(proxy_prim: Any, parent: Any, factor: float) -> Any:
     except Exception:  # noqa: BLE001
         return None
     finally:
-        # ALWAYS put the prop back, even on the failure path: this function is a probe, and a probe
-        # that leaves the stage changed is worse than no probe.
+        # ALWAYS put the prop back, even on the failure path: a probe that leaves the stage changed is
+        # worse than no probe -- and leaving the op ORDER changed is precisely what this did.
         try:
-            apply_scale(proxy_prim, base)
+            if saved_op is None:
+                # The probe created this op, so removing it restores the op order the offset's
+                # placement depends on.  Setting it back to 1.0 would NOT be enough: the op would
+                # still sit in the list, and [scale, translate] is a different transform from
+                # [translate, scale] even when the scale is the identity.
+                for op in list(xformable.GetOrderedXformOps()):
+                    if op.GetOpType() == UsdGeom.XformOp.TypeScale:
+                        xformable.RemoveXformOp(op)
+            else:
+                saved_op.Set(Gf.Vec3f(base[0], base[1], base[2]))
         except Exception:  # noqa: BLE001
             pass
 
 
 # Assets whose BOUND is not linear in the prop's own scale, found at placement time.  Empty is the
 # only healthy value; anything in it means the per-axis fit below cannot be trusted for that asset.
+# Read by test_bao_scenes.test_bound_linearity_is_actually_audited, so it is not write-only, and by
+# nothing else (it records a fault rather than changing behaviour).
 NON_LINEAR_BOUND_ASSETS: set = set()
+# How many times the linearity probe could not measure its doubled bound, i.e. the
+# guard above could not run.  Should be 0; asserted by the same test.
+NON_LINEAR_BOUND_UNMEASURED = 0
 
 
 def bound_is_linear(proxy_prim: Any, parent: Any, native: Any) -> bool:
@@ -497,7 +567,17 @@ def bound_is_linear(proxy_prim: Any, parent: Any, native: Any) -> bool:
     """
     doubled = _rescale_and_measure(proxy_prim, parent, 2.0)
     if doubled is None:
-        return True  # unmeasurable is not the same as broken; do not refuse on a failed probe
+        # Fail-open, but not silently: an unmeasurable bound means the guard could
+        # not check the thing it exists for.  Returning True here contradicts the
+        # "refuse the fit" intent unless the reader is told, so say so.
+        global NON_LINEAR_BOUND_UNMEASURED
+        NON_LINEAR_BOUND_UNMEASURED += 1
+        print(
+            "[scene_builder] WARNING: the linearity probe could not measure the "
+            "doubled bound, so the per-axis fit for this asset is UNVERIFIED "
+            f"(unmeasurable probe #{NON_LINEAR_BOUND_UNMEASURED})"
+        )
+        return True
     for axis in range(3):
         if native[axis] > 1e-9:
             if abs(doubled[axis] / native[axis] - 2.0) > 0.02:
@@ -1298,11 +1378,42 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 except Exception as _exc:  # noqa: BLE001
                     record["native_extent_error"] = f"{type(_exc).__name__}: {_exc}"
                 if any(abs(o) > 1e-12 for o in offset):
-                    # The OFFSET FIRST, then the scale: AddXformOp applies each successive op more
-                    # locally, so [translate, scale] means the geometry is moved in the prop's own
-                    # units and the result is then scaled, which is what puts the prop's centre on
-                    # the anchor.  [scale, translate] would translate the unscaled prop out of place.
+                    # The OFFSET FIRST, then the scale, AND THEN THE ORDER IS FORCED.
+                    #
+                    # The order is not a style choice, it is the transform.  With the ops listed as
+                    # [translate, scale], USD applies the scale first and the translate afterwards, so
+                    # a point p lands at `p * scale + offset` -- which is what the offset above
+                    # assumes, because it is `-scale * centre`, expressed in the item's own units.
+                    # With [scale, translate] the same two ops mean `scale * (p + offset)`: the offset
+                    # is scaled as well, so the prop's centre does not reach the anchor.
+                    #
+                    # Appending the ops in this order is NOT enough on its own, because something can
+                    # already have put a scale op on the prim: `_rescale_and_measure` measures the
+                    # bound a second time by writing one, and if it leaves it behind then
+                    # apply_translate appends the translate AFTER it and the order silently flips.
+                    # Measured on 2026-10-16: every prop's local box became [0, 1] instead of
+                    # [-0.5, +0.5] in its own units, which lifted each one by 0.5 * (1 - scale) *
+                    # height from the anchor -- half an object for the centimetre assets (the racks,
+                    # the shelves: world box z 0.0000..1.9956 became 0.9945..2.9901) and 3% for the
+                    # metre assets, which is why only some scenes looked wrong.
+                    #
+                    # So the order is set explicitly below, whatever any probe left on the prim.
+                    _xformable = UsdGeom.Xformable(proxy_prim)
+                    _translate_op = None
+                    _scale_op = None
+                    for _op in _xformable.GetOrderedXformOps():
+                        if _op.GetOpType() == UsdGeom.XformOp.TypeTranslate:
+                            _translate_op = _op
+                        elif _op.GetOpType() == UsdGeom.XformOp.TypeScale:
+                            _scale_op = _op
                     apply_translate(proxy_prim, offset)
+                else:
+                    _xformable = UsdGeom.Xformable(proxy_prim)
+                    _translate_op = None
+                    _scale_op = None
+                    for _op in _xformable.GetOrderedXformOps():
+                        if _op.GetOpType() == UsdGeom.XformOp.TypeScale:
+                            _scale_op = _op
                 if any(abs(s - 1.0) > 1e-9 for s in scale):
                     # The scale goes on the prop in the AXES THE PROP LIVES IN, which are the
                     # stage's: the item Xform above carries the declared size converted with
@@ -1310,6 +1421,25 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                     # mount exemption here either -- that exemption is what drew every wall item with
                     # its height and width exchanged.
                     apply_scale(proxy_prim, scale)
+                # Force [translate, scale] -- see the block above.  Re-read the ops because
+                # apply_translate/apply_scale may have just created one of them.
+                _xformable = UsdGeom.Xformable(proxy_prim)
+                _ordered = []
+                _translate_op = None
+                _scale_op = None
+                for _op in _xformable.GetOrderedXformOps():
+                    if _op.GetOpType() == UsdGeom.XformOp.TypeTranslate:
+                        _translate_op = _op
+                    elif _op.GetOpType() == UsdGeom.XformOp.TypeScale:
+                        _scale_op = _op
+                    else:
+                        _ordered.append(_op)
+                if _translate_op is not None:
+                    _ordered.append(_translate_op)
+                if _scale_op is not None:
+                    _ordered.append(_scale_op)
+                if _ordered:
+                    _xformable.SetXformOpOrder(_ordered)
                 _disable_collision(proxy_prim)
                 # A prop whose own shader cannot compile is repainted flat, so it renders in its
                 # declared colour instead of the renderer's fallback.  Recorded in the report, because
@@ -1692,8 +1822,15 @@ def apply_scene(stage: Any, scene: str, slot: int,
             texture = (getattr(sc, "SURFACE_TEXTURES", {}) or {}).get(scene, {}).get(surface)
             local_texture = _vendored_texture(texture) if texture else None
             how = "flat-paint"
-            for path in prim_paths:
-                paint(stage, path, fallbacks.get(surface, (0.6,) * 3))   # (ok, why)
+            flat_paint = [
+                paint(stage, path, fallbacks.get(surface, (0.6,) * 3))
+                for path in prim_paths
+            ]
+            if not all(ok for ok, _ in flat_paint):
+                how = (
+                    "flat-paint (paint FAILED on "
+                    f"{sum(1 for ok, _ in flat_paint if not ok)} prim(s))"
+                )
             if local_texture:
                 # UVs FIRST: a mesh with no texture coordinates paints the whole surface with one
                 # texel, which is a flat colour however large the image is.
@@ -1713,10 +1850,22 @@ def apply_scene(stage: Any, scene: str, slot: int,
             stage, url, name, f"/World/Looks/{surface}_{prim_name(scene)}",
             prim_path, fallbacks.get(surface, (0.6,) * 3))
         if material is not None:
-            for path in prim_paths:
-                _bind(stage, path, material)
-        report["materials"][surface] = {"url": url, "how": how,
-                                        "prim": ", ".join(prim_paths)}
+            # CONSUME the result: _bind catches every exception and returns False, so
+            # discarding it let the report claim "mdl" for a surface the material was
+            # never bound to -- a report is evidence, and it was asserting success.
+            bound = [_bind(stage, path, material) for path in prim_paths]
+        else:
+            bound = []
+        report["materials"][surface] = {
+            "url": url,
+            "how": how,
+            "prim": ", ".join(prim_paths),
+            "bound": (all(bound) if material is not None else None),
+        }
+        if material is not None and not all(bound):
+            report["materials"][surface]["how"] = (
+                f"{how} (BIND FAILED on {sum(1 for ok in bound if not ok)} prim(s))"
+            )
 
     # THE OBSTACLE WALL'S PANELS, which are not one of the four classified surfaces.  They are found
     # by prim NAME rather than by geometry, because they are the only prims environment creates with
@@ -1731,10 +1880,14 @@ def apply_scene(stage: Any, scene: str, slot: int,
         panel_paths = [str(prim.GetPath()) for prim in stage.Traverse()
                        if "WallPanel" in prim.GetName() and prim.IsA(UsdGeom.Gprim)]
         if panel_paths:
+            panel_paint_ok = True
             if panel_colour:
-                for path in panel_paths:
-                    paint(stage, path, panel_colour)   # (ok, why)
-            how = "flat colour"
+                panel_paint_ok = all(
+                    ok for ok, _ in (
+                        paint(stage, path, panel_colour) for path in panel_paths
+                    )
+                )
+            how = "flat colour" if panel_paint_ok else "flat colour (paint FAILED)"
             if local_panel_texture:
                 panel_uvs = [author_uvs(stage, path, TEXTURE_METRES_PER_REPEAT.get(
                     os.path.basename(local_panel_texture), 1.5)) for path in panel_paths]

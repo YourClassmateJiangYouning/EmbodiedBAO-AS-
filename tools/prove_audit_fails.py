@@ -87,10 +87,19 @@ FAULTS = [
     ),
     (
         "the prop's offset applied AFTER its scale, which multiplies the offset by the fit factor",
-        "                    apply_translate(proxy_prim, offset)\n"
-        "                if any(abs(s - 1.0) > 1e-9 for s in scale):",
-        "                    apply_scale(proxy_prim, scale)\n"
-        "                if any(abs(s - 1.0) > 1e-9 for s in scale):",
+        # The placement code now FORCES the op order instead of relying on two adjacent calls being
+        # appended in the right sequence, so the fault has to defeat that.  Swapping the two appends
+        # reproduces the real defect: [scale, translate] evaluates as scale*(p + offset) rather than
+        # p*scale + offset, and on 2026-10-16 that lifted every prop by 0.5*(1-scale)*height -- half
+        # an object for the centimetre assets, which is what floated the racks and the shelves.
+        "                if _translate_op is not None:\n"
+        "                    _ordered.append(_translate_op)\n"
+        "                if _scale_op is not None:\n"
+        "                    _ordered.append(_scale_op)",
+        "                if _scale_op is not None:\n"
+        "                    _ordered.append(_scale_op)\n"
+        "                if _translate_op is not None:\n"
+        "                    _ordered.append(_translate_op)",
     ),
     (
         "the verification compares only the prop's extent, never its position",
