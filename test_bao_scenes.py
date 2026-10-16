@@ -353,6 +353,7 @@ def test_decoration_is_never_collidable_and_stays_off_the_path() -> None:
 # rather than a rule because the relation is not derivable from the catalogue -- `at.y` is an absolute
 # anchor, and "which item am I standing on" is decided by the layout, not by the data.
 DECLARED_BOX_OVERLAP_ALLOWED = frozenset({
+    ("stage1.5", "shelf_left", "banana"),
     ("stage1.3", "study_table", "book_a"),
     ("stage1.3", "study_table", "book_b"),
 })

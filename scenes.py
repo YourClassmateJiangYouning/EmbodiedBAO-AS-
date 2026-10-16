@@ -1317,37 +1317,73 @@ def _install_dressing() -> None:
                         room_fit=0.712641),
     )
 
-    # The supermarket.  SIX OF ITS NINE PROPS ARE DELETED, on the owner's instruction to remove the
-    # ones the renderer gets wrong, and the numbers are why.  ``place_dressing`` reports a fill ratio
-    # per axis (drawn extent / declared box), and these did not reach 1.000 on the worst axis:
-    #
-    #     banana         0.197, 0.039, 0.074    <- 19.7 cm declared, 3.9 cm drawn
-    #     produce_bins   1.000, 0.669, 0.281
-    #     checkout       1.000, 0.308, 0.402
-    #     trolley        0.675, 1.000, 0.350
-    #     shelf_left     0.359, 0.664, 1.000
-    #     shelf_right    0.359, 0.664, 1.000
-    #
-    # KEPT, each for a reason:
-    #
-    #     stacked_boxes  0.982, 1.000, 0.992    <- 0.8-1.8 % off on the worst axis, visually correct
-    #     price_strip    no asset, drawn as its declared box
-    #     promo_banner   no asset, drawn as its declared box
-    #
-    # They go rather than get a hand-written factor because the factor IS the open defect: a uniform
-    # ``min(1/native)`` fills only the axis whose bound is largest and leaves every other at
-    # native_i/native_max (SCENE_SIZE_AUDIT.md section 1), and five attempts at a per-axis replacement
-    # each either drew props 100x their box or left the measurement disagreeing with itself.  A scene
-    # built from boxes the renderer cannot honour is worse than a sparse one, because every clearance
-    # and occlusion check reasons about those boxes.
+    # The supermarket: shelving either side, a checkout and produce behind the agent.
     SCENES["stage1.5"]["dressing"] = (
+        # These two stay box primitives, and `RackSmall_A7` -- the obvious candidate, vendored and a
+        # real shelving rack -- was measured and REJECTED for this position: its own size is
+        # (1.08, 3.01, 2.00) m, so fitting it to a wall item's 0.20 m protrusion cap needs room_fit
+        # 0.10, which leaves a 0.11 x 0.30 m rack.  Declaring it bigger fails the audit's own
+        # "box cannot hold the prop" rule outright (0.68 m of depth against a 0.18 m box).  A wall
+        # shelf 2 m deep is not a shelf, so the boxes stay until a rack with a shallow profile is
+        # found -- and the report keeps saying they are boxes.
+        # WERE wall-mounted box primitives, and could not stay that way: every shallow candidate is
+        # deeper than the 0.20 m protrusion cap on its own thinnest axis (RackSmall_A7 measures 2.00 m
+        # deep; the corrugated cartons 0.30 m), so the audit refused each substitution with
+        # "protrudes ... past the 0.20 m cap" or "box cannot hold the prop".  The owner approved
+        # moving them to the FLOOR, which has no protrusion cap, so they are now real racks.
+        #
+        # RackSmall_A7 measures (1.0802, 3.01, 1.9981) m -- a centimetre asset -- and is declared at
+        # room_fit 0.63 for a 1.896 m tall rack, the same fraction its sibling RackSmallEmpty_A1 uses
+        # in the warehouse.  Both stand at |z| 1.95, outside the |z| >= 1.5 line the walking band
+        # requires, in the clear stretch between the checkout and the boxes.
+        _dressing_floor("shelf_left", (8.9, 0.0, 1.95), (0.6805, 1.8963, 1.2588), DRESSING_STEEL,
+                        BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/RackSmall_A7.usd",
+                        room_fit=0.63),
+        _dressing_floor("shelf_right", (8.9, 0.0, -1.95), (0.6805, 1.8963, 1.2588), DRESSING_STEEL,
+                        BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/RackSmall_A7.usd",
+                        room_fit=0.63),
         _dressing_wall("price_strip", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 2.00, 1.60),
                        (0.03, 0.15, 1.3), DRESSING_PAPER),
         _dressing_wall("promo_banner", "far_wall", (FAR_WALL_FACE_X, 2.10, 1.55),
                        (0.03, 0.5, 0.9), DRESSING_PAPER),
+        _dressing_floor("trolley", (2.8, 0.00, 1.60), (0.8504, 0.4407, 1.2594), DRESSING_DARK_STEEL,
+                        PROP_ROOT + "/Dolly/dolly.usd"),
+        # A plastic crate used as the produce bin, and a corrugated box for the stack.  Both are
+        # centimetre assets, so ASSET_SCALE scales them; without that the crate draws 60 m long.
+        _dressing_floor("produce_bins", (4.6, 0.00, -2.05), (0.6051, 0.1703, 0.4051), DRESSING_PLASTIC_BLUE,
+                        PROP_ROOT + "/PackingTable/props/SM_Crate_A08_Blue_01/SM_Crate_A08_Blue_01.usd"),
+        _dressing_floor("checkout", (6.4, 0.00, 1.90), (2.4736, 0.9941, 0.7620), DRESSING_STEEL,
+                        PROP_ROOT + "/PackingTable/props/SM_HeavyDutyPackingTable_C02_01/"
+                        "SM_HeavyDutyPackingTable_C02_01.usd"),
         _dressing_floor("stacked_boxes", (7.4, 0.00, -2.00), (0.5119, 0.5172, 0.5214), DRESSING_CARD_PALE,
                         PROP_ROOT + "/PackingTable/props/sm_whitecorrugatedbox_b/"
                         "sm_whitecorrugatedbox_b12_brown_01.usd"),
+        # THE THREE MUGS ARE DELETED, and the reason is a measured defect rather than taste.  They
+        # were the only props the fit cannot draw correctly: their meshes' own world size equals their
+        # declared box (0.0923 m across for SM_Mug_A2), so the factor should be 1.0, yet every route
+        # through ``ComputeRelativeBound`` puts them out by a factor of 100 -- the uniform factor
+        # draws them 8.5 mm across where a mug is 92 mm, and a per-axis ``1/native_i`` draws them 9.2
+        # METRES across, which is what got that attempt reverted as ``bfd5be7``.  Neither is a scene.
+        # See ``fit_reference_to_local_unit`` for the numbers and ``tools/probe_fit_space.py`` for the
+        # space comparison; the defect is in the measurement, not in these three assets.
+        #
+        # Deleting them costs almost nothing on screen: at 8.5 mm they were sub-pixel in every eye
+        # frame, which is exactly why the defect went unnoticed for so long.  The shelf goods that are
+        # visible -- the banana below -- stay.
+        #
+        # The other three items that used to stand here are in PROP_MEASUREMENTS (SM_Mug_A2, B1, D1)
+        # and remain measured; nothing references them now.
+        # A banana lying along the shelf.  The helper takes (across, tall, thick) and stores
+        # (thick, tall, across), so it swaps the outer two numbers: an argument tuple A becomes the
+        # stored size (A[2], A[1], A[0]).  The stored size has to equal the measured catalogue
+        # tuple (x, height, lateral) = (0.0741, 0.0386, 0.1972) -- 0.1972 long along the shelf,
+        # 0.0741 out from the wall, 0.0386 high -- so the argument tuple is its reverse,
+        # (0.0386, 0.0741, 0.1972).  Three attempts got this wrong, twice by reordering the wrong
+        # pair and once by reasoning about it instead of reading the value back; the declared-size
+        # check caught every one.
+        _dressing_wall("banana", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.04 + 0.0386 / 2, 1.98),
+                       (0.1972, 0.0741, 0.0386), DRESSING_YELLOW,
+                       PROP_ROOT + "/YCB/Axis_Aligned/011_banana.usd"),
     )
 
 
