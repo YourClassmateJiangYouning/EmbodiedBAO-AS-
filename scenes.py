@@ -439,12 +439,19 @@ PROP_MEASUREMENTS = {
     "torus.usd": (1.5, 0.5, 1.5),
     # Measured 2026-10-10 by tools/measure_named_props.py, in the catalogue's
     # (x, height, lateral) frame.  A declared dressing size has to equal the prop's own size,
-    # because place_dressing references the prop WITHOUT scaling it; the mugs being 9-11 cm tall
-    # is the whole point of recording them rather than writing a round number.
-    "SM_Mug_A2.usd": (0.0923, 0.0910, 0.1271),
-    "SM_Mug_B1.usd": (0.0925, 0.0919, 0.1365),
-    "SM_Mug_C1.usd": (0.0889, 0.1072, 0.1277),
-    "SM_Mug_D1.usd": (0.0888, 0.1101, 0.1276),
+    # because place_dressing references the prop WITHOUT scaling it.
+    #
+    # THE FOUR SM_Mug_* ENTRIES WERE REMOVED ON 2026-10-16, deliberately, and they must not come back.
+    # They were the only assets in this table whose BOUND is not linear in the prop's scale:
+    # tools/probe_prop_bound.py measured bound(scale=2)/bound(scale=1) = 200 on every axis instead of
+    # 2, because the bound disagrees with the mesh by about 10.8x -- bound 0.008521 m across against a
+    # mesh that measures 0.0923 m.  That non-linearity is what drew a 9.2 cm mug 9.2 METRES across and
+    # made an earlier per-axis fit unreleasable (bfd5be7).  Their scenes entries went first; these
+    # measurements follow, so that nothing can reference them by accident.  Re-adding an entry here is
+    # safe only once the bound agrees with the mesh again.  The measured numbers are kept below so the
+    # measurement itself is not lost:
+    #   SM_Mug_A2.usd (0.0923, 0.0910, 0.1271)     SM_Mug_B1.usd (0.0925, 0.0919, 0.1365)
+    #   SM_Mug_C1.usd (0.0889, 0.1072, 0.1277)     SM_Mug_D1.usd (0.0888, 0.1101, 0.1276)
     "011_banana.usd": (0.1972, 0.0741, 0.0386),
     "005_tomato_soup_can.usd": (0.0677, 0.0677, 0.1019),
     "024_bowl.usd": (0.1612, 0.1615, 0.0550),
@@ -1378,8 +1385,8 @@ def _install_dressing() -> None:
         # frame, which is exactly why the defect went unnoticed for so long.  The shelf goods that are
         # visible -- the banana below -- stay.
         #
-        # The other three items that used to stand here are in PROP_MEASUREMENTS (SM_Mug_A2, B1, D1)
-        # and remain measured; nothing references them now.
+        # Their four measurements were removed from PROP_MEASUREMENTS on 2026-10-16 as well, so that
+        # nothing can put them back by accident; the numbers are kept in the comment there.
         # A banana against the obstacle wall.  `_dressing_wall` stores `size` UNCHANGED in the
         # catalogue frame (x, height, lateral); the old (across, tall, thick) reversal and the
         # `frame="wall"` switch that went with it are gone -- see the helper's docstring.  So this

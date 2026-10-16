@@ -270,7 +270,8 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
   `scene_builder.fit_reference_to_local_unit` 的文档和 `tools/probe_fit_space.py`。
   删除的代价几乎为零：8.5 mm 在每个 eye 帧里都是亚像素，这也正是这个缺陷长期没被发现的原因。
   它们此前站在 `obstacle_wall` 的 1.20/1.46/1.72 m 处，与 `shelf_left`（x=8.9）相距 0.96 m，
-  本就不在货架上方。`PROP_MEASUREMENTS` 里 `SM_Mug_A2/B1/D1` 三条测量值保留。
+  本就不在货架上方。`PROP_MEASUREMENTS` 里那四条测量值也已一并移除（数值保留在注释里），
+  以免任何人再把它们放回场景——它们的包围盒与网格相差约 10.8 倍，是唯一不满足线性性的资产。
 
 ### 7.0 这批修复里最有价值的教训（写给下一个人）
 
