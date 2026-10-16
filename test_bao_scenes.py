@@ -1129,7 +1129,12 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
     # accumulate, and this comment cannot spell the dotted name it is about: the scan reads
     # comments, and doing so reported itself.
     ALLOWED = {
-        "Gf": {"Vec3f", "Vec3d", "Matrix4d", "Vec2f", "Vec4f"},
+        "Gf": {"Vec3f", "Vec3d", "Matrix4d", "Vec2f", "Vec4f",
+               # AddOrientOp().Set() takes a float quaternion, and the framed poster needs an
+               # orientation rather than Euler angles: the turn that maps its measured axes onto the
+               # declared frame is a -120 degree rotation about (1,1,1), whose XYZ Euler decomposition
+               # is degenerate, so it is written as the quaternion (0.5, -0.5, -0.5, -0.5).
+               "Quatf"},
         "Sdf": {"ValueTypeNames", "Path", "AssetPath"},
         "Vt": {"Vec3fArray", "Vec3dArray", "IntArray", "Token", "Value",
                "Vec2fArray"},

@@ -412,6 +412,25 @@ PROP_MEASUREMENT_PENDING = (
 # to name are gone from the catalogue (see the stage1.5 note in _install_dressing).
 PROP_NEEDS_ROTATION = ("FramedPoster.usd",)
 
+
+def needs_rotation(asset: Optional[str]) -> bool:
+    """Does this asset have to be turned before it can hang flat on a wall?
+
+    True only for the assets in PROP_NEEDS_ROTATION -- those whose THINNEST axis is not their local x.
+    ``place_dressing`` references a prop with translate and scale and never a rotation, so an asset's
+    local x lands on the room's x; a wall item whose thin axis is local y would therefore stand its
+    full length out into the corridor instead of lying flat against the wall.  That is the framed
+    poster exactly: it measures 1.092 m along local x and 0.0524 m along local y.
+
+    ``asset`` may be a bare file name or a full path; both resolve.  Matching on the suffix rather than
+    on ``os.path.basename`` keeps this module free of an os import it does not otherwise need.
+    """
+    if not asset:
+        return False
+    text = str(asset)
+    return any(text == name or text.endswith("/" + name)
+               for name in PROP_NEEDS_ROTATION)
+
 # What tools/measure_assets.py measured each vendored mesh to be, in this catalogue's own
 # frame (x, height, lateral).  This is DATA, not a note: a prop's real size is not derivable
 # here (there is no USD reader on the development machine), so it is recorded from the run and

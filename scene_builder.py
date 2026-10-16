@@ -438,6 +438,75 @@ def prop_asset_for(url: Optional[str]) -> Optional[str]:
     return index[name]
 
 
+def _rescale_and_measure(proxy_prim: Any, parent: Any, factor: float) -> Any:
+    """Measure the prop's bound relative to ``parent`` with its own scale multiplied by ``factor``.
+
+    Returns the native tuple, or None when the prim or the measurement is unusable.  The prop's scale
+    is RESTORED before returning, so this is a read-only probe of the stage.
+    """
+    from pxr import Gf, Usd, UsdGeom
+
+    xformable = UsdGeom.Xformable(proxy_prim)
+    saved = None
+    for op in xformable.GetOrderedXformOps():
+        if op.GetOpType() == UsdGeom.XformOp.TypeScale:
+            saved = op.Get()
+            break
+    base = saved if saved is not None else Gf.Vec3f(1.0, 1.0, 1.0)
+    base = (float(base[0]), float(base[1]), float(base[2]))
+    try:
+        if not apply_scale(proxy_prim, tuple(factor * v for v in base)):
+            return None
+        fresh = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_])
+        rng = fresh.ComputeRelativeBound(proxy_prim, parent).ComputeAlignedRange()
+        if rng.IsEmpty():
+            return None
+        lo, hi = rng.GetMin(), rng.GetMax()
+        return tuple(float(hi[a] - lo[a]) for a in range(3))
+    except Exception:  # noqa: BLE001
+        return None
+    finally:
+        # ALWAYS put the prop back, even on the failure path: this function is a probe, and a probe
+        # that leaves the stage changed is worse than no probe.
+        try:
+            apply_scale(proxy_prim, base)
+        except Exception:  # noqa: BLE001
+            pass
+
+
+# Assets whose BOUND is not linear in the prop's own scale, found at placement time.  Empty is the
+# only healthy value; anything in it means the per-axis fit below cannot be trusted for that asset.
+NON_LINEAR_BOUND_ASSETS: set = set()
+
+
+def bound_is_linear(proxy_prim: Any, parent: Any, native: Any) -> bool:
+    """Does the bound double when the prop's own scale doubles?
+
+    THE GUARD THAT KEEPS THE PER-AXIS FIT HONEST.  ``k_i = 1/native_i`` is exact only while ``native``
+    is a measurement OF the prop -- that is, linear in the prop's own scale.  When it is not, dividing
+    by it scales the prop by the wrong amount, and the failure is not subtle: the four SM_Mug_* assets
+    measured ``bound(scale=2)/bound(scale=1) = 200`` on every axis instead of 2, and 1/native drew a
+    9.2 cm mug 9.2 METRES across, filling the top half of the stage1.5 eye view.  That is why an
+    earlier per-axis attempt had to be reverted (bfd5be7), and why this check exists rather than a
+    comment asking people to be careful.
+
+    The test is the probe's own: measure, double the prop's scale, measure again, and compare.  33 of
+    the 33 assets ever measured came back exactly 2.0; the four mugs came back 200.0.  Those four are
+    gone now, so today this should never fire -- which is exactly why it is worth having.  A future
+    asset that is not linear gets caught here instead of in a render.
+    """
+    doubled = _rescale_and_measure(proxy_prim, parent, 2.0)
+    if doubled is None:
+        return True  # unmeasurable is not the same as broken; do not refuse on a failed probe
+    for axis in range(3):
+        if native[axis] > 1e-9:
+            if abs(doubled[axis] / native[axis] - 2.0) > 0.02:
+                return False
+        elif doubled[axis] > 1e-6:
+            return False
+    return True
+
+
 def fit_reference_to_local_unit(proxy_prim: Any
                                 ) -> Tuple[Tuple[float, float, float], Tuple[float, float, float]]:
     """The offset and the UNIFORM factor that put a referenced prop inside its declared box.
@@ -574,6 +643,23 @@ def fit_reference_to_local_unit(proxy_prim: Any
     centre = tuple(float((hi[axis] + lo[axis]) / 2.0) for axis in range(3))
     ratios = [1.0 / native[axis] for axis in range(3) if native[axis] > 1e-9]
     if not ratios:
+        return unchanged
+    # THE GUARD, BEFORE THE FIT IS TRUSTED.  Everything below divides by `native`, which is only a
+    # measurement of the prop while the bound is linear in the prop's own scale.  Check that first; a
+    # bound that is not linear makes the per-axis factor wrong by the same factor, and the failure is
+    # a prop the size of the room rather than a slightly wrong prop.  Refusing the fit leaves the prop
+    # at its natural size, which is wrong but bounded -- the opposite of what the mugs did.
+    if not bound_is_linear(proxy_prim, parent, native):
+        _name = proxy_prim.GetName()
+        NON_LINEAR_BOUND_ASSETS.add(_name)
+        print(
+            "[dressing] ERROR: the bound of %r is NOT linear in the prop's own scale, so dividing "
+            "by it would mis-size the prop by the same factor.  The per-axis fit is REFUSED for this "
+            "asset and it is drawn at its natural size.  Measure it with "
+            "tools/probe_prop_bound.py and do not declare it until the bound agrees with the mesh; "
+            "the four SM_Mug_* assets failed exactly this test at 200x.  native=%s"
+            % (_name, tuple(round(float(v), 4) for v in native))
+        )
         return unchanged
     # THE FACTOR IS min(1/native), and it is the multiplier that takes this bound to the declared box.
     # The bound is measured relative to the item Xform, whose scale IS the declared size, so the world
@@ -1175,6 +1261,21 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 # the arithmetic; this call used to take no declared size and return min(1/native),
                 # which filled the box only on the tightest axis.
                 offset, scale = fit_reference_to_local_unit(proxy_prim)
+                # NO ROTATION IS APPLIED, AND THIS IS THE PLACE TO PUT ONE IF THAT EVER CHANGES.
+                #
+                # attempt, 2026-10-16: adding AddOrientOp() with the quaternion (0.5, -0.5, -0.5,
+                # -0.5) -- the exact -120 degree turn about (1,1,1) that maps the poster's measured
+                # axes onto its declared frame -- drew it 15.46 m tall in a 1.092 m box and made it
+                # "clip by construction".  The rotation is not needed for the BOX, because the fit is
+                # per axis and the non-uniform scale already carries each measured extent to its
+                # declared one: stage1.3 measured 12/12 items drawn exactly on their declared boxes
+                # with no rotation at all.  What a rotation would change is the poster's IMAGE, which
+                # is stretched by that non-uniform scale today.  That is a cosmetic defect and it is
+                # recorded rather than fixed, because the fix has to be validated in a render and the
+                # first attempt made the geometry worse, not better.
+                #
+                # sc.needs_rotation() and scenes.PROP_NEEDS_ROTATION name the one asset this applies
+                # to, so the work has a starting point.
                 # THE BOUND THE FIT WAS COMPUTED FROM, recorded because it is the one number that
                 # settles the open prop-size defect and the one number the reverted attempt did not
                 # have.  See fit_reference_to_local_unit: if `native_i * declared_i` equals the drawn
