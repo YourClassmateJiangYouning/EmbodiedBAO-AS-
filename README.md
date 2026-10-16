@@ -131,7 +131,7 @@ the start pose and the success plane are identical in all five, and
 
 ### Dressing that has no asset, and therefore stays a box
 
-Four of the 63 dressing items carry no vendored `.usd` and are drawn as their clearance box. Three
+Four of the 57 dressing items carry no vendored `.usd` and are drawn as their clearance box. Three
 name no asset at all — `bay_sign` (1.2), `park_sign` (1.4), and `price_strip`/`promo_banner` (1.5,
 two items) — and the fourth, `sign` (1.2), names an `.mdl` material rather than a stage asset (USD
 answers "Cannot determine file format"). Of these, only `bay_sign` is inside the eye camera's frame
@@ -1151,8 +1151,8 @@ a 2 m horizontal bar instead of a vertical post.
   in `scene_builder.paint`'s docstring because they cost round trips: `emissiveColor` is a shader
   input and not a geometry attribute, and the shader id takes a plain string rather than a token
   (`pxr.Tf` on the lab machine has no token type).
-* **Scene dressing is mostly real meshes.** The five scenes hold 63 dressing items between them
-  (0 / 11 / 12 / 31 / 9), and 59 of the 63 reference a vendored `.usd` — for example `stage1.2`'s
+* **Scene dressing is mostly real meshes.** The five scenes hold 57 dressing items between them
+  (0 / 11 / 12 / 31 / 3), and 53 of the 57 reference a vendored `.usd` — for example `stage1.2`'s
   `pallets` → `assets/isaac/Props/Pallet/pallet.usd`, `stage1.2`'s `klt_bins` →
   `assets/isaac/Props/KLT_Bin/small_KLT_visual.usd`, and `stage1.3`'s `cabinet` →
   `assets/isaac/Props/Sektion_Cabinet/sektion_cabinet_instanceable.usd`. Each item also declares the
@@ -1162,9 +1162,12 @@ a 2 m horizontal bar instead of a vertical post.
   that box: the `asset` field on one of them (`stage1.2`'s `sign`) names an `.mdl`, which is a
   material rather than a stage asset (USD answers "Cannot determine file format"), and the other
   three — `bay_sign`, `park_sign`, `price_strip` and `promo_banner` — name no asset at all, and
-  the last two are separate items, which is how four names make three boxes. `stage1.5`'s three
-  `SM_Mug_A*` items were deleted on 2026-10-16 (see MANUAL section 7, item 4), which is why that
-  scene has 9 items and not 12.
+  the last two are separate items, which is how four names make three boxes. `stage1.5` lost nine of
+  its twelve items on 2026-10-16: three `SM_Mug_A*` because no fit can draw them (MANUAL section 7,
+  item 4), and six more whose `place_dressing` fill ratio was below half on at least one axis
+  (`banana` 0.039, `produce_bins` 0.281, `checkout` 0.308, `trolley` 0.35, `shelf_left`/`shelf_right`
+  0.359 — item 5). That is why the scene holds 3 items and not 12; `stacked_boxes` (off by 1.8 % on
+  its worst axis) and the two asset-less wall plates were kept.
   The report says `used_asset: false` for every item that did not reference one, so nothing has to
   be guessed later. Note that `sektion_cabinet_visuals.usd` looks like the better file by size but
   **cannot be referenced** — USD reports `Unresolved reference prim path <defaultPrim>` — and

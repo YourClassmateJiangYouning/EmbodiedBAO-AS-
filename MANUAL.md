@@ -220,7 +220,7 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
 | `stage1.2` 仓库 | 4 条，`material_verified=True` | 11 件 | 10 件 | 已接线，待渲染确认 |
 | `stage1.3` 图书馆 | 4 条，`material_verified=True` | 12 件 | 12 件 | 已接线，待渲染确认 |
 | `stage1.4` 公园 | 4 条，`material_verified=True` | 31 件 | 30 件 | 已接线，待渲染确认 |
-| `stage1.5` 超市 | 4 条，`material_verified=True` | 9 件 | 7 件 | 已接线，待渲染确认（三个 `SM_Mug_A*` 已删，见 §7 ④） |
+| `stage1.5` 超市 | 4 条，`material_verified=True` | 3 件 | 1 件 | 已接线，待渲染确认（六个渲染错误的道具已删，见 §7 ④） |
 
 **上表由 `test_bao_scenes.py::test_the_manual_states_the_scene_facts_the_code_holds` 强制与代码一致**，
 所以它不会再漂移。上一版手册在这里错了三处，全部是"文档落后于代码"：陈设数写成各 8 件（实际
@@ -271,6 +271,14 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
   删除的代价几乎为零：8.5 mm 在每个 eye 帧里都是亚像素，这也正是这个缺陷长期没被发现的原因。
   它们此前站在 `obstacle_wall` 的 1.20/1.46/1.72 m 处，与 `shelf_left`（x=8.9）相距 0.96 m，
   本就不在货架上方。`PROP_MEASUREMENTS` 里 `SM_Mug_A2/B1/D1` 三条测量值保留。
+  ⑤ **`stage1.5` 另外六个"渲染出问题"的道具也删了**（2026-10-16，主人指示：画不对的才删、正常的别动）。
+  判据是**报告自己给出的 fill**（画出来 ÷ 声明盒），删的是最差轴 < 0.5 的：
+  `banana`(0.039)、`produce_bins`(0.281)、`checkout`(0.308)、`trolley`(0.35)、
+  `shelf_left`/`shelf_right`(0.359)。**保留** `stacked_boxes`（0.982/1.000/0.992，最差轴只差 1.8%，
+  画面正确）与两个无资产的墙板 `price_strip`/`promo_banner`（按声明盒绘制）。
+  于是 `stage1.5` 从 12 件降到 **3 件**，全仓库陈设从 66 件降到 **57 件**（其中 53 件有资产）。
+  这条判据是**量的**不是猜的：`diag_logs/all_fills.txt` 有五场景全量 fill 表。
+  为什么不给它们手工因子：因子本身就是那个未解缺陷，见 §7 ② 与 `scene_builder.fit_reference_to_local_unit`。
 
 ### 7.0 这批修复里最有价值的教训（写给下一个人）
 
