@@ -113,15 +113,38 @@ class ProtocolCheckpoint:
         self.path = path
         self.completed: set[str] = set()
         self.recovered_from: Optional[str] = None
-        if resume and os.path.exists(path):
-            try:
-                data = load_json_file(path)
-                self.completed = set(str(item) for item in data.get("completed", []))
-            except Exception as exc:
-                # Never silently forget collected data.  Resetting to an empty
-                # set here used to make the run restart and overwrite episodes
-                # that were still intact on disk; recover them instead.
-                self.completed = self._recover(exc)
+        if resume:
+            if os.path.exists(path):
+                try:
+                    data = load_json_file(path)
+                    self.completed = set(str(item) for item in data.get("completed", []))
+                except Exception as exc:
+                    # Never silently forget collected data.  Resetting to an empty
+                    # set here used to make the run restart and overwrite episodes
+                    # that were still intact on disk; recover them instead.
+                    self.completed = self._recover(exc)
+            else:
+                # A MISSING checkpoint is also a checkpoint that cannot be read, and the docstring
+                # above promises a rebuild in exactly that case -- but the old `os.path.exists(path)`
+                # guard kept this branch from ever running, so a lost checkpoint silently re-ran and
+                # OVERWROTE episodes that had already been paid for.  Observed on 2026-10-15: a tag
+                # under results/ holding 12 episode records and no checkpoint file at all.  There is
+                # nothing to quarantine here, so rebuild directly from the records on disk.
+                print(
+                    f"[checkpoint] no checkpoint file at {path}; "
+                    "rebuilding completion state from the episode records"
+                )
+                self.completed = self._rebuild_from_episodes()
+                if self.completed:
+                    print(
+                        f"[checkpoint] rebuilt {len(self.completed)} completed unit(s) "
+                        "from the episode records already on disk"
+                    )
+                else:
+                    print(
+                        "[checkpoint] no completed episode could be recovered from disk; "
+                        "every episode of this tag will be re-run"
+                    )
 
     def _recover(self, exc: Exception) -> set:
         """Quarantine an unreadable checkpoint and rebuild its state."""
@@ -632,6 +655,14 @@ class BAOExperimentRunner:
             # summary of a finished Level is the summary of its last episode.
             self._save_summary(level, all_episodes)
             self._note_episode_health(episode)
+
+        # The loop above writes the summary after every episode, which covers an interrupted Level.
+        # It does NOT cover a Level whose every episode was already complete: --resume `continue`s
+        # past them, so the loop body never runs and the summary is never written.  A missing or
+        # stale summary_{tag}.json therefore stayed missing or stale, and the manual calls the
+        # summary the metric source.  Writing it once more here is the same file with the same
+        # content in the normal case, so it is safe to do unconditionally.
+        self._save_summary(level, all_episodes)
 
         return all_episodes
 

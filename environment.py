@@ -148,7 +148,9 @@ GOAL_MARKER_COLOR = [0.85, 0.15, 0.12]
 # 0.90 m as of 2026-10-10, changed together with scenes.MARKER_SIZE_M, which is
 # asserted equal to this value by test_bao_scenes.  Measured from the actual
 # frames at 0.60 m, the plate landed at 13-25 px of a 1024 px frame -- 6-12 px of
-# the 512 px the model is given -- and the textured scenes rendered dimmer than
+# the 512 px the model was given at the time, which is the framing the 0.90 m was
+# chosen against; both experiments now send the full 1024 px -- and the textured
+# scenes rendered dimmer than
 # the 0.60 m was tuned against (eye-frame means 81-112 for stages 1.2-1.5 against
 # this file's own 130-160 acceptance range).  0.90 m is 1.5x, so 1.5x the edge
 # and 2.25x the area, and it still fits the 1.14 m level 0 opening, so the marker
@@ -165,9 +167,17 @@ GOAL_MARKER_SIZE = 0.90
 WALL_X = 8.0
 WALL_HEIGHT = 2.0
 WALL_THICKNESS = 0.02
-CHANNEL_WIDTH = 0.90  # Level 0 default; every Level overrides this
-CHANNEL_HALF_WIDTH = CHANNEL_WIDTH / 2.0
-PANEL_WIDTH = (ROOM_WIDTH_Z - CHANNEL_WIDTH) / 2.0
+# The default channel is Level 0's, and it is DERIVED rather than written down.  This said
+# `CHANNEL_WIDTH = 0.90  # Level 0 default`, and 0.90 is not Level 0: LEVEL_CHANNEL_WIDTHS[0] is
+# 0.57 * 2.0 = 1.14 m, and 0.90 is Level 2 (A/S 1.6).  So any path that took the default built an
+# opening 0.24 m -- 21% -- narrower than the level it claimed to be, and PANEL_WIDTH was 2.05
+# instead of 1.93 with it.  The paths are _panel_boxes(None), _check_wall_collision(None),
+# channel_edge_post_boxes(None), BAOEnv's task_dict fallback, capture_views.py's fallback and
+# tools/project_probe.py.  A comment cannot keep two constants equal; a reference can, so the
+# default is now read off the ladder and the drift is impossible by construction.
+CHANNEL_WIDTH: float = 0.0          # set from LEVEL_CHANNEL_WIDTHS[0] below, once the ladder exists
+CHANNEL_HALF_WIDTH: float = 0.0     # ditto
+PANEL_WIDTH: float = 0.0            # ditto
 
 # With a 0.75 m adult step, the obstacle is exactly ten forward translations
 # from the start: 0.5 + 10 * 0.75 = 8.0 m.
@@ -208,12 +218,29 @@ SUCCESS_X = 8.75
 # end that cannot be passed without rotating.  A/S = 1.0 (level 10) is the exact
 # geometric limit: shoulder and channel are equal, so an aligned body just fits.
 #
-# Levels 11-16 all require rotating, and they are not a continuum: the projection of
-# the body rises to 0.611 m at 21.1 degrees before it falls, so 1 and 2 turns are never
-# the best answer and only 45, 60, 75 and 90 degrees are ever useful.  That makes four
-# plateaus below A/S 1.0 -- 0.9 and 0.85 need 60 degrees, 0.8 to 0.65 need 75, and 0.6
-# to 0.4 need 90 -- with the A/S value inside a plateau controlling only how much slack
-# the body has.  Slack is what a threshold measure resolves, so the levels are kept.
+# Levels 11-16 all require rotating.  The angles below were CORRECTED on 2026-10-15 (the previous
+# text described the wrong model, see the note at the end of this block).
+#
+# What the gate actually enforces: the body box (0.22 m thick, 0.57 m across) is tested against two
+# PANELS THAT ARE ONLY WALL_THICKNESS = 0.02 m THICK, so the binding quantity is the body's chord
+# inside that 0.02 m slab, not its projected silhouette.  Computed directly from the two rectangles
+# (rotating the body box, clipping it to the slab, measuring its lateral extent), the minimum torso
+# angle that clears is:
+#
+#     A/S 1.00 -> 0 deg (aligned body just fits)
+#     A/S 0.90 -> 28.0    0.85 -> 29.5    0.80 -> 31.5    0.70 -> 36.5
+#     A/S 0.65 -> 39.5    0.60 -> 43.5    0.50 -> 54.5    0.40 -> 79.5
+#
+# On the 15-degree action grid that is 30 deg at A/S 0.90 (TWO turns, not four) and 45 deg from
+# A/S 0.60 downward.  The plateaus a threshold measure can resolve are therefore 30 / 45 / 60 / 75 /
+# 90, not the 45 / 60 / 75 / 90 the earlier text claimed -- and "1 and 2 turns are never the best
+# answer" is false: at A/S 0.90 two turns are exactly enough.
+#
+# The superseded text described the SILHOUETTE model, 0.57|cos t| + 0.22|sin t| <= A, which is the
+# right model for a long tunnel but not for a 2 cm plate, and it is what produced 60/75/90.  The
+# measured pass/fail thresholds are unaffected -- they are empirical -- but any geometric EXPLANATION
+# of them must use the chord numbers above.  Note that memory_metrics.needed_width (Stage 2) still
+# uses the silhouette model and has NOT been reconciled with this.
 #
 # 0.4 (0.228 m) is the narrowest level we run: the body's smallest projected width is
 # its 0.220 m thickness, so anything below A/S 0.386 cannot be passed at ANY torso
@@ -289,6 +316,13 @@ LEVEL_CHANNEL_WIDTHS: Dict[int, float] = {
     level: round(ROBOT_SHOULDER_WIDTH * ratio, 6)
     for level, ratio in enumerate(_APERTURE_RATIOS)
 }
+
+# Now that the ladder exists, the bare default is Level 0 -- the widest rung, which is what "the
+# default level" means everywhere else (main.py's --level default is 0).  See the note at WALL_X for
+# what the old literal 0.90 did.
+CHANNEL_WIDTH = LEVEL_CHANNEL_WIDTHS[0]
+CHANNEL_HALF_WIDTH = CHANNEL_WIDTH / 2.0
+PANEL_WIDTH = (ROOM_WIDTH_Z - CHANNEL_WIDTH) / 2.0
 
 # Yaw band that counts as "sideways" (body rotated so the narrow torso
 # dimension faces the channel).  Defined in protocol.py and re-exported here: the
@@ -1048,32 +1082,34 @@ class BAOEnv:
         growth should have been most informative.  It was then 0.30 m, trading a
         small far-end mark for edges that stay visible throughout the approach.
 
-        It is 0.60 m now, because the prompt makes this marker the TASK ("reach
-        the red marker on the far wall") rather than a decoration, so it has to be
-        identifiable from the start pose at the 512 px input the sweep uses: at
-        0.30 m it was about 10 px there.  The old objection -- a red field at
-        close range -- no longer applies, because success is scored at x = 8.75,
-        one stride past the wall, so the agent is never scored while standing 2 m
-        from the far wall.
+        It is 0.30 m no longer: the plate was 0.60 m for a while and is 0.90 m now,
+        because the prompt makes this marker the TASK ("reach the red marker on the
+        far wall") rather than a decoration, so it has to be identifiable from the
+        start pose: at 0.30 m it was about 20 px of the 1024 px frame the sweeps
+        send.  The old objection -- a red field at close range -- no longer applies,
+        because success is scored at x = 8.75, one stride past the wall, so the
+        agent is never scored while standing 2 m from the far wall.  The rendered
+        plate measures 13-25 px at the start pose (it renders dimmer than this
+        arithmetic and the textured scenes dimmer still), which is why it is 0.90 m.
 
-        Apparent edge at 1024 px and a 52 degree vertical field of view:
+        Apparent edge at 1024 px with the camera's real vertical field of view
+        (2*atan((20.955*9/16)/(2*13.36)) = 47.6 degrees; this line used to say
+        52, which is why the table below sits a few per cent off the recomputed
+        value).  At the current 0.90 m the recomputed series is:
 
-            agent x=0.5  ->  20 px     (at 0.30 m; doubled to ~40 px at 0.60 m)
-            agent x=4.0  ->  26 px
-            agent x=7.0  ->  34 px     (approaching the obstacle)
-            agent x=8.75 ->  43 px     (at the goal plane; the rows above follow
-                                        ~315 / distance-to-the-far-wall, and
-                                        16 - 8.75 = 7.25 m gives 43 px)
-            agent x=11.0 ->  63 px     (the old goal plane, kept as measured)
-            agent x=14.0 -> 158 px     (close, edges still clear)
+            agent x=0.5  ->  67 px     (the start pose)
+            agent x=4.0  ->  87 px
+            agent x=7.0  -> 116 px     (approaching the obstacle)
+            agent x=8.75 -> 144 px     (at the goal plane, 16 - 8.75 = 7.25 m)
+            agent x=11.0 -> 209 px     (the old goal plane)
+            agent x=14.0 -> 522 px     (close; edges still clear)
 
-        The figures in that table were measured at 0.30 m; the marker is now
-        0.60 m, so they double (about 40 px at the start pose at 1024, i.e. 20 px
-        at the 512 px sweep input, and 86 px at the goal plane).  Centred at
-        1.40 m it spans 1.10 m to 1.70 m, still inside the 0.0 to 2.0 m opening.
+        The rows above are recomputed at the current 0.90 m size and the real
+        47.6 degree vertical field of view.  Centred at
+        1.40 m it spans 0.95 m to 1.85 m, still inside the 0.0 to 2.0 m opening.
         The camera sits at 1.68 m, so from the start (15.5 m away) the mark is
-        1.0 degree below the optical axis while the frame's lower edge is 11
-        degrees below it at a 52 degree vertical field of view -- comfortably
+        1.0 degree below the optical axis while the frame's lower edge is 23.8
+        degrees below it at that 47.6 degree vertical field of view -- comfortably
         inside the frame, and inside the opening, so it is visible through the
         channel from the very start, which is what makes it usable during the
         approach.
