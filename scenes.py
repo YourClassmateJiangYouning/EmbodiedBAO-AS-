@@ -725,8 +725,16 @@ SCENES: Dict[str, Dict[str, Any]] = {
                            (0.03, 0.4, 0.5),
                            asset=WAREHOUSE_MATERIALS + "/MI_SignB.mdl"),
             # A real rack rather than a painted plate: what a toolboard is.  Its size is the
-            # measured RackSmallEmpty_A1 (2.16 MB, the mesh layer -- RackSmall_A7 is 2.2 kB and
-            # measures nothing, because the geometry lives in the layer it references).
+            # measured RackSmallEmpty_A1 (2.16 MB, the mesh layer).
+            #
+            # This comment used to add that "RackSmall_A7 is 2.2 kB and measures nothing, because
+            # the geometry lives in the layer it references" -- and that contradicted the table this
+            # very declaration is checked against, where RackSmall_A7.usd carries the SAME measurement
+            # as RackSmallEmpty_A1 (108.0188, 301.0001, 199.8097) and is what stage1.5's two shelves
+            # are declared from.  Both statements cannot be true.  What is actually the case: the 2.2 kB
+            # file is a thin wrapper that references this layer, so measuring it through the reference
+            # returns the mesh's size rather than nothing -- which is exactly why tools/measure_assets.py
+            # recorded it, and why the declaration passes the per-axis check.
             _dressing_floor("rack", (7.0, 0.00, -1.85), (0.716165, 1.995631, 1.324738), DRESSING_METAL,
                             BUCKET_ASSETS + "/Assets/ArchVis/Industrial/Shelves/"
                             "RackSmallEmpty_A1.usd", room_fit=0.663),
