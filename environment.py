@@ -429,7 +429,17 @@ def _forward_vector(yaw_rad: float) -> np.ndarray:
 # way to make a narrow channel passable; it simply no longer changes where
 # ``forward`` goes.
 HEADING_FORWARD = np.array([1.0, 0.0, 0.0], dtype=float)
-HEADING_RIGHT = np.array([0.0, 0.0, 1.0], dtype=float)
+# The user frame is (x forward, y up, z lateral).  It is LEFT-handed, because _user_to_isaac_pos
+# transposes two axes (user (x,y,z) -> isaac (x,z,y), determinant -1).  In it, a positive yaw about
+# +y turns the facing from +x toward -z, i.e. toward the body's LEFT, which is why "right" must be
+# the NEGATIVE z here.
+#
+# This sign was +z until 2026-10-16 and that made the word "right" move the robot to its physical
+# left.  Demonstrated with a render, not by argument: reset the bare baseline, execute "right" three
+# times, and the passage that is dead ahead moves to the RIGHT of the image, because the camera at
+# z=+1.5 sees the opening at z=0 off to its -z side.  The same mirroring applied to look_left and
+# look_right, whose gaze went the wrong way -- and the gaze is the agent's only way to explore.
+HEADING_RIGHT = np.array([0.0, 0.0, -1.0], dtype=float)
 
 _HEADING_DELTAS: Dict[str, np.ndarray] = {
     "forward": HEADING_FORWARD,
@@ -2471,10 +2481,15 @@ class BAOEnv:
             if action == "look_down":
                 self._camera_pitch_offset = CAMERA_PITCH_STEP_DEG
             else:
+                # Sign flipped 2026-10-16 with HEADING_RIGHT.  _forward_vector(t) is
+                # [cos t, 0, -sin t], so a POSITIVE camera yaw points the gaze toward -z, which is the
+                # body's right.  "look_left" therefore has to use the negative step.  Before the flip
+                # a request to glance left looked right, and the gaze is the only way the agent can
+                # inspect the scene from anywhere but straight ahead.
                 self._camera_yaw_offset = (
-                    CAMERA_TURN_STEP_DEG
+                    -CAMERA_TURN_STEP_DEG
                     if action == "look_left"
-                    else -CAMERA_TURN_STEP_DEG
+                    else CAMERA_TURN_STEP_DEG
                 )
             return True, "executed", None
 

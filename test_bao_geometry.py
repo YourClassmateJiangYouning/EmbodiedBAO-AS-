@@ -58,6 +58,7 @@ from environment import (
     _check_room_boundary,
     _check_wall_collision,
     _translation_path_is_clear,
+    _user_to_isaac_pos,
     action_delta,
     a_s_ratio,
     level_channel_width,
@@ -597,13 +598,22 @@ def test_walking_frame_is_fixed() -> None:
         np.allclose(action_delta("backward", MOVE_STEP), [-MOVE_STEP, 0, 0]),
         "backward is not the reverse of the walking direction",
     )
+    # "The walker's right-hand side" is a PHYSICAL fact about the body, not the sign of a constant,
+    # so it is checked with a cross product rather than restated.  The user frame is (x forward, y up,
+    # z lateral) and is left-handed (_user_to_isaac_pos transposes two axes), so the test is done in
+    # Isaac coordinates, where z is up and the frame is right-handed: right = forward x up = x x z =
+    # -y.  These two assertions replaced `action_delta("right") == [0, 0, +MOVE_STEP]`, which was true
+    # of the shipped sign but only asserted the convention back at itself -- it passed for as long as
+    # "right" moved the walker to its LEFT, which a render confirmed on 2026-10-16.
+    _fwd_isaac = _user_to_isaac_pos(action_delta("forward", MOVE_STEP))
+    _right_isaac = _user_to_isaac_pos(action_delta("right", MOVE_STEP))
     check(
-        np.allclose(action_delta("right", MOVE_STEP), [0, 0, MOVE_STEP]),
-        "right is not the walker's right-hand side",
+        np.allclose(np.cross(_fwd_isaac, np.array([0.0, 0.0, 1.0])), _right_isaac),
+        "right does not point to the walker's right-hand side",
     )
     check(
-        np.allclose(action_delta("left", MOVE_STEP), [0, 0, -MOVE_STEP]),
-        "left is not the walker's left-hand side",
+        np.allclose(action_delta("left", MOVE_STEP), -action_delta("right", MOVE_STEP)),
+        "left is not the opposite of right",
     )
     for action in ("turn_left", "turn_right", "look_left", "look_right", "nonsense"):
         check(

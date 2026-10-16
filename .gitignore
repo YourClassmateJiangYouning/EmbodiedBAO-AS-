@@ -161,3 +161,6 @@ logs_reasoning.csv
 # the stage_tree/report dumps.  Kept on disk for reading, never committed -- the numbers they
 # support are quoted in STAGE1_DRESSING_FINDINGS.md, which is the thing that belongs in the repo.
 diag_logs/
+
+# One-off diagnostics (see the left/right proof in the HEADING_RIGHT comment)
+_lr_test.py

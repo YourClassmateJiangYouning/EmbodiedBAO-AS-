@@ -480,7 +480,7 @@ def build_prompt(
             # to invite the model to compute a distance, so it now says that without the false claim.
             "  x is your forward position along the walkway, and changes only "
             "when you use forward/backward; y is always 0; z is how "
-            "far to the left (negative) or right (positive) of the line you "
+            "far to the right (negative) or left (positive) of the line you "
             "started on you are, and changes only when you use left/right"
         )
     yaw = state.get("torso_rotation")
