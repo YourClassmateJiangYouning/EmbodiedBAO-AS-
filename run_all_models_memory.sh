@@ -105,7 +105,7 @@ for model in "${MODELS[@]}"; do
         --model "$model" \
         --runs 1-6 \
         --tag "$stem" \
-        --image_size 512 \
+        --image_size 1024 \
         --max_steps 30 \
         $HEADLESS_FLAG \
         --resume

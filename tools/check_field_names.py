@@ -102,6 +102,12 @@ OTHER = {
     # anchor, drawn_box is the prop's world box, and fill_ratio is the fraction of the declared box
     # the prop fills per axis: the number that names "too thin" without a picture.
     "drawn_extent", "declared_extent", "fit_error", "fit_offset", "drawn_box", "fill_ratio",
+    # `native_extent` is the bound the fit divided by, printed beside the drawn extent because the two
+    # together are what settle the prop-size defect that is still open: `native_i * declared_i ==
+    # drawn_i` means the bound is the proxy's unscaled extent (and a per-axis factor is the fix), while
+    # `native_i == drawn_i` means the bound is already scaled.  The reverted attempt at that fix had
+    # every number except this one, which is why it was reverted.
+    "native_extent", "native_extent_error",
     # `built_parts` and `flat_material` joined when asset-less items stopped being clearance cubes and
     # asset-owned props started being repainted.  built_parts lists the geometry an item was BUILT
     # from (a sign body plus an inset panel), and flat_material records the outcome of binding the

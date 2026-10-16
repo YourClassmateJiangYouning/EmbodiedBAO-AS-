@@ -65,14 +65,14 @@ from memory_protocol import (
 DEFAULT_RESULTS_ROOT = "results"
 DEFAULT_LOGS_ROOT = "logs"
 
-# The frame size the model is given, in pixels.  Stage 2 fixes this at 512 to match
+# The frame size the model is given, in pixels.  Stage 2 fixes this at 1024 to match
 # the threshold sweep, and it is not merely a cost setting: the two experiments are
 # compared, so a probe run at another resolution would not be the same measurement.
 # It reaches the client through the environment variable ``main.py`` also uses,
 # because that is where ``ai_agent.encode_image`` reads it; nothing else in the
-# runner can set it, and a run that silently kept the camera's native 1024 would
-# cost about five times as much per step.
-IMAGE_SIZE_PX = 512
+# runner can set it.  The camera renders 1024 natively, so this is the resolution the
+# sweeps run at and ``--image_size 0`` is the only way to ask for something else.
+IMAGE_SIZE_PX = 1024
 
 
 class BudgetExhausted(RuntimeError):
@@ -787,7 +787,8 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         default=IMAGE_SIZE_PX,
         help=(
             "downscale the frame to this many pixels before sending it; "
-            "0 keeps the camera's native resolution (the threshold sweep used 512)"
+            "0 keeps the camera's native resolution, which is 1024 and is what the "
+            "threshold sweep sends"
         ),
     )
     parser.add_argument("--headless", action="store_true")

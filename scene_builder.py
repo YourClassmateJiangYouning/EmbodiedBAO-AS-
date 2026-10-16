@@ -447,6 +447,34 @@ def fit_reference_to_local_unit(proxy_prim: Any
     this function had only the first -- which drew every prop from the wrong place while every size
     check stayed green.
 
+    STILL OPEN, AND THE REASON THIS IS A UNIFORM FACTOR.  ``min(1/native)`` fills only the axis whose
+    native bound is largest; every other axis is drawn at ``native_i / native_max`` of its declared
+    box.  Measured across the four dressed scenes: 34 of the 61 resolved props fill less than half of
+    at least one axis, and the absolute results are absurd -- a 9.2 cm mug drawn 8.5 mm, a 14.25 cm
+    pallet 1.7 cm thick, a 2.47 m packing table with a 23 cm top.  ``SCENE_SIZE_AUDIT.md`` §1 has the
+    full table, and the fix looks like one line: make the factor per axis, ``k_i = 1/native_i``.
+
+    That was tried, on 2026-10-16, and reverted the same night (commit ``bfd5be7``).  It is exact for
+    the assets whose bound and whose scaled reference live in the same space -- the log of that run
+    shows ``shelf_left``, ``shelf_right`` and ``checkout`` drawn exactly on their declared boxes -- and
+    it is off by two orders of magnitude for the instanced ones:
+
+        mug_a2  fit (10.83, 7.87, 10.99)  drawn (9.230, 12.710, 9.100)  declared (0.092, 0.127, 0.091)
+        banana  fit (5.07, 25.87, 13.50)
+
+    a 9.2 cm mug drawn 9.2 METRES across, filling the top half of the stage1.5 eye view.  The signature
+    is a PROXY bound: ``ComputeRelativeBound`` returns the reference's own extent for some assets and
+    the prototype's unscaled extent for others, and dividing by an unscaled extent scales the prop
+    twice.  Which asset is which cannot be read off the fit -- it needs the USD stage -- so this
+    function deliberately does not guess, and the defect stays visible instead of being replaced by a
+    worse one.
+
+    WHAT WOULD SETTLE IT, and nothing here can: for each asset, print ``native`` and the drawn extent
+    in the same log line and see whether ``native_i * want_i == drawn_i`` (proxy bound, needs the
+    per-axis factor) or ``native_i == drawn_i`` (already scaled, needs ``1/native_i`` for every axis).
+    The log line already carries ``[drawn ... vs declared ...]`` and ``fill_ratio``; what is missing is
+    the ``native`` tuple, which is why this note is here rather than a formula.
+
     THE FACTOR IS ``1/native`` AND THE DECLARED SIZE DOES NOT ENTER IT.  The bound is measured
     relative to the item Xform, which the reference defines as "the bound of the given prim in the
     space of an ancestor prim ... excludes the local transform at relativeToAncestorPrim" -- so it is
@@ -1090,6 +1118,27 @@ def place_dressing(stage: Any, scene: str) -> List[Dict[str, Any]]:
                 # the arithmetic; this call used to take no declared size and return min(1/native),
                 # which filled the box only on the tightest axis.
                 offset, scale = fit_reference_to_local_unit(proxy_prim)
+                # THE BOUND THE FIT WAS COMPUTED FROM, recorded because it is the one number that
+                # settles the open prop-size defect and the one number the reverted attempt did not
+                # have.  See fit_reference_to_local_unit: if `native_i * declared_i` equals the drawn
+                # extent then `native` is the proxy/unscaled bound and the per-axis factor is the fix;
+                # if `native_i` is already the drawn extent then the bound is scaled and the uniform
+                # factor is closer to right.  `fit_reference_to_local_unit` does not return it, so it
+                # is recomputed here from the same proxy the fit measured -- and only for the record,
+                # so a failure here can never change what is placed.
+                try:
+                    from pxr import Usd as _Usd, UsdGeom as _UsdGeom
+
+                    _parent = proxy_prim.GetParent()
+                    _cache = _UsdGeom.BBoxCache(_Usd.TimeCode.Default(), [_UsdGeom.Tokens.default_])
+                    _rng = _cache.ComputeRelativeBound(
+                        proxy_prim, _parent).ComputeAlignedRange()
+                    if not _rng.IsEmpty():
+                        _lo, _hi = _rng.GetMin(), _rng.GetMax()
+                        record["native_extent"] = tuple(
+                            round(float(_hi[a] - _lo[a]), 6) for a in range(3))
+                except Exception as _exc:  # noqa: BLE001
+                    record["native_extent_error"] = f"{type(_exc).__name__}: {_exc}"
                 if any(abs(o) > 1e-12 for o in offset):
                     # The OFFSET FIRST, then the scale: AddXformOp applies each successive op more
                     # locally, so [translate, scale] means the geometry is moved in the prop's own
@@ -1641,6 +1690,13 @@ def format_report(report: Dict[str, Any]) -> str:
                     drawn = tuple(round(float(v), 4) for v in item["drawn_extent"])
                     declared = tuple(round(float(v), 4) for v in item["declared_extent"])
                     outcome += f" [drawn {drawn} vs declared {declared}]"
+                    # The bound the fit divided by.  Printed next to the drawn extent because the two
+                    # together are what decide the open defect: see fit_reference_to_local_unit.
+                    if item.get("native_extent"):
+                        native = tuple(round(float(v), 4) for v in item["native_extent"])
+                        outcome += f" [native {native}]"
+                    elif item.get("native_extent_error"):
+                        outcome += f" [native UNMEASURED: {item['native_extent_error']}]"
                 if item.get("drawn_box"):
                     box = item["drawn_box"]
                     outcome += (f" [world box {tuple(round(float(v), 4) for v in box[:3])}.."

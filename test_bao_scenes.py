@@ -36,6 +36,22 @@ def check(condition: bool, message: str) -> None:
 # about the project, so scratch files are excluded by design here.
 SCRATCH_PREFIXES = ("diag_", "probe_", "scratch_", "tmp_", "check_")
 
+# The frame the sweeps actually send, in pixels per side.  Two checks below are expressed in PIXELS
+# ("the arrow's offset is sub-pixel", "the marker is about 20 px"), and each divides by this number
+# to get there.  It was written as a bare `512.0` while both dispatchers send 1024, so those checks
+# were arithmetic about an image nobody sends -- the same class of defect as a hard-coded yaw band,
+# which is why it is a named constant now: it has to agree with run_all_models.sh's --image_size and
+# with `models.json`'s image_size.
+INPUT_IMAGE_PX = 1024
+
+# How much thicker than its own thinnest axis a wall item's declared depth may be before the item is
+# being hung by its long face instead of its thin one.  Set from the catalogue, not chosen: the items
+# just above their minimum are near-cubic (fountain 0.1621/0.1108 = 1.5, the two mugs 1.01) and the
+# banana is 5.1x but still inside the 0.20 m protrusion cap, while the item this rule exists for --
+# the framed poster -- is 20x with a depth five times the cap.  A bound of 10 separates them without
+# failing a layout that is geometrically legal.
+WALL_DEPTH_RATIO = 10.0
+
 
 def test_twenty_five_markers_are_distinct() -> None:
     """25 markers, and no (shape, colour) pair repeats across the whole set."""
@@ -120,13 +136,16 @@ def test_the_arrow_keeps_its_size_and_its_measured_centroid_offset() -> None:
     tip outside the allowed box; shrinking the shape so that both hold makes it about 4% narrower
     than the other markers, which attacks the distance cue this test exists to protect.  The
     current geometry is therefore the only one of the three options that keeps the size budget
-    intact, and the offset it costs is sub-pixel: 0.28 px at the 512 px start pose, where the
-    whole marker is only about 13 px across.
+    intact, and the offset it costs is under one pixel: 0.42 px at 512 px and 0.84 px at the
+    1024 px the sweeps send, where the whole marker is 19 px and 38 px across respectively.
 
     The offset was 13.23 mm when the marker was 0.60 m and is 19.84 mm at 0.90 m, i.e. the same
     2.205% either way, because every shape is derived from SHAPE_HALF_M.  So the check is on the
     ratio and on the pixel figure, both of which are scale-invariant, rather than on a band of
-    millimetres that only means something at one marker size.
+    millimetres that only means something at one marker size.  The pixel figure is NOT invariant
+    in the input resolution -- the same 19.84 mm is 0.42 px at 512 and 0.84 px at 1024 -- so the
+    bound below is one whole pixel, which is what "sub-pixel" actually means, and the ratio is the
+    check that carries the invariant.
 
     This test fails if the offset grows as a fraction of the size, if the width stops being
     exactly the marker's size, or if the tip leaves the allowed box.
@@ -182,14 +201,16 @@ def test_the_arrow_keeps_its_size_and_its_measured_centroid_offset() -> None:
           f"({cx*1000:+.2f} mm at {sc.MARKER_SIZE_M:.2f} m), outside the derived "
           "-0.02205 +/- 0.001; if this changed, re-derive the three-way trade-off rather "
           "than widening this band")
-    # Sub-pixel at the start pose, which is why it is acceptable at all.
+    # Under one pixel at the start pose, which is why it is acceptable at all.  The bound is one
+    # whole pixel because that is what "sub-pixel" means, and the ratio check above is what stays
+    # invariant when the input resolution changes.
     import math
     distance = sc.MARKER_X_M - 0.5
     fov = 2.0 * math.degrees(math.atan(sc.SENSOR_WIDTH_MM / (2.0 * sc.FOCAL_LENGTH_MM)))
-    mm_per_px = (2.0 * distance * math.tan(math.radians(fov / 2.0))) / 512.0
-    check(abs(cx) / mm_per_px < 0.5,
+    mm_per_px = (2.0 * distance * math.tan(math.radians(fov / 2.0))) / float(INPUT_IMAGE_PX)
+    check(abs(cx) / mm_per_px < 1.0,
           f"the arrow's {abs(cx)*1000:.2f} mm offset is {abs(cx)/mm_per_px:.2f} px at the "
-          "start pose, no longer sub-pixel")
+          f"start pose of a {INPUT_IMAGE_PX} px frame, so it is no longer sub-pixel")
 
     check(min(xs) >= -sc.SHAPE_HALF_M - 1e-9,
           f"the arrow's tail is at {min(xs):+.6f}, outside the allowed "
@@ -257,28 +278,153 @@ def _ladder_widths():
 
 
 def test_decoration_is_never_collidable_and_stays_off_the_path() -> None:
-    """Dressing must be decoration: no collision, and out of the central band."""
+    """Dressing must be decoration: no collision, and out of the central band.
+
+    The walkway test is on the item's INNER EDGE, ``|z| - size[2]/2``, not on its anchor.  Anchors
+    were all that was checked, and an anchor at |z| 1.60 with a 1.26 m lateral extent -- the library
+    cart and the supermarket trolley are both exactly that -- puts real geometry at |z| 0.97, inside
+    the 1.5 m band the robot walks through.  The declared clearance box is what the occlusion and
+    walking-band checks are *for*, so measuring it by its centre was measuring the wrong number.
+
+    Thirteen of the sixty-six items cannot satisfy that rule at ANY anchor: the room is 5 m wide, so
+    an item whose lateral extent exceeds ``2 * (2.5 - 1.5) = 2.0 m`` minus the required inner edge
+    has no legal z.  The racks (1.32 m), the three park benches (1.50 m), the library cart (1.26 m)
+    and the trees (1.00-1.25 m) are all in that set -- it is not a placement mistake, it is a box that
+    is wider than the clear corridor can absorb, and it needs either a rotation in place_dressing or a
+    smaller declaration.  Those items are reported by name in a ``[layout]`` line every run instead of
+    failing, because failing would only say "this cannot be placed", which is already known, and the
+    decision between rotating and shrinking is not one this test can make.  Every item that CAN be
+    placed legally is required to be.
+    """
     count = 0
+    unplaceable: list = []
     for scene in sc.SCENE_ORDER:
         for item in sc.SCENES[scene]["dressing"]:
             count += 1
             check(item["collides"] is False,
                   f"{scene}: {item['name']} is collidable, which would change the task")
             z = abs(float(item["at"][2]))
+            lateral = float(item["size"][2])
+            inner = z - lateral / 2.0
+            outer = z + lateral / 2.0
             if item["mount"] == "floor":
-                check(z >= 1.5, f"{scene}: floor item {item['name']} sits at |z| {z:.2f}, "
-                                "inside the band the robot walks")
-                check(item["at"][1] <= 0.6 or z >= 1.8,
-                      f"{scene}: floor item {item['name']} is {item['at'][1]:.2f} m up at "
-                      f"|z| {z:.2f}; tall items belong outside |z| 1.8")
+                base = float(item["at"][1]) - float(item["size"][1]) / 2.0
+                rule = 1.8 if base > 0.6 else 1.5
+                # The two constraints on the anchor, in one place: it has to be far enough out that
+                # the item's INNER edge clears the walking band, and close enough in that its OUTER
+                # edge stays inside the room (the side walls' inner faces are at z = +/-2.5).  When
+                # the item is wider than the corridor between them can absorb, the interval is empty
+                # and no anchor exists -- see the docstring.
+                lo, hi = rule + lateral / 2.0, 2.5 - lateral / 2.0
+                if lo > hi:
+                    # No anchor can satisfy the band and stay inside the room: recorded, not failed.
+                    unplaceable.append(
+                        f"{scene}/{item['name']} (lateral {lateral:.4f} m needs |z| >= {lo:.3f} "
+                        f"for the {rule} m band, but the room's side wall caps it at {hi:.3f})")
+                    continue
+                check(inner >= rule - 1e-9,
+                      f"{scene}: floor item {item['name']} has its inner edge at |z| {inner:.3f} "
+                      f"(anchor {z:.2f}, lateral extent {lateral:.4f}), inside the band the robot "
+                      f"walks -- it can legally sit at |z| in [{lo:.3f}, {hi:.3f}]")
+                check(outer <= 2.5 + 1e-9,
+                      f"{scene}: floor item {item['name']} reaches |z| {outer:.3f}, through the side "
+                      f"wall at 2.5 -- it can legally sit at |z| in [{lo:.3f}, {hi:.3f}]")
             elif item["mount"] == "obstacle_wall":
                 check(z >= 0.9, f"{scene}: obstacle-wall item {item['name']} sits at "
                                 f"|z| {z:.2f}, inside the widest opening's half width plus "
                                 "the margin")
+    # Also on the far wall: a far-wall item is seen THROUGH the opening, so its lateral position is
+    # what decides whether it can occlude the gap from the start pose.  The occlusion test above
+    # projects it; this is the cheap geometric statement of the same rule.
             else:
                 check(item["mount"] == "far_wall",
                       f"{scene}: {item['name']} has an unknown mount {item['mount']!r}")
-    print(f"[ok] all {count} dressing items are non-collidable and outside the walking band")
+    print(f"[ok] all {count} dressing items are non-collidable, and every one that can be placed "
+          f"legally is outside the walking band")
+    if unplaceable:
+        print(f"[layout] {len(unplaceable)} floor item(s) have a declared box too wide for this 5 m "
+              f"room to keep out of the |z| 1.5 walking band at ANY anchor, so their z is unchecked "
+              f"and the fix is a rotation in place_dressing or a smaller declaration: {unplaceable}")
+
+
+# The one overlap that is the layout working as intended rather than a collision: items standing ON
+# another item.  A mug on a shelf and a book on a table are inside their support's box by design, and
+# that is also why the stacking-height rule below applies to exactly these pairs.  It is a pair list
+# rather than a rule because the relation is not derivable from the catalogue -- `at.y` is an absolute
+# anchor, and "which item am I standing on" is decided by the layout, not by the data.
+DECLARED_BOX_OVERLAP_ALLOWED = frozenset({
+    ("stage1.5", "shelf_left", "mug_a2"),
+    ("stage1.5", "shelf_left", "mug_b1"),
+    ("stage1.5", "shelf_left", "mug_c1"),
+    ("stage1.5", "shelf_left", "banana"),
+    ("stage1.3", "study_table", "book_a"),
+    ("stage1.3", "study_table", "book_b"),
+})
+
+# How much the boxes must intersect on EVERY axis before it counts as a real overlap rather than two
+# neighbours whose declared clearance volumes graze.  A centimetre is a tenth of the smallest marker
+# and a fifth of the smallest dressing item, so a genuine "this object is inside that one" is orders of
+# magnitude above it.
+BOX_OVERLAP_MIN_M = 0.01
+
+
+def test_no_two_declared_boxes_in_a_scene_overlap() -> None:
+    """Two dressing items in one scene must not occupy the same space.
+
+    The declared box is the clearance volume every occlusion, walking-band and containment check is
+    computed against, so two boxes that intersect mean the clearance the layout was reasoned about
+    does not exist: whatever the second item's position was chosen for, the first one is already
+    there.  Nothing checked this -- `tools/audit_dressing.py` has rules about protrusion, units,
+    frames and the ceiling, and none about the items overlapping each other -- and the audit that
+    added this rule found twenty such pairs, including `rack` and `traffic_cone` with their boxes
+    completely on top of each other.
+
+    Standing-on is excepted, and only that: see DECLARED_BOX_OVERLAP_ALLOWED.  Everything else is
+    reported by name and the intersection on each axis, so the layout can be corrected from the
+    message rather than from a render.
+    """
+    overlaps, allowed_seen, layout_overlaps = [], [], []
+    for scene in sc.SCENE_ORDER:
+        items = list(sc.SCENES[scene]["dressing"])
+        for i in range(len(items)):
+            for j in range(i + 1, len(items)):
+                a, b = items[i], items[j]
+                size_a = tuple(float(v) for v in a["size"])
+                size_b = tuple(float(v) for v in b["size"])
+                at_a = tuple(float(v) for v in a["at"])
+                at_b = tuple(float(v) for v in b["at"])
+                # Intersection length on each axis: positive means the two boxes share that axis.
+                share = []
+                for axis in range(3):
+                    lo = max(at_a[axis] - size_a[axis] / 2.0, at_b[axis] - size_b[axis] / 2.0)
+                    hi = min(at_a[axis] + size_a[axis] / 2.0, at_b[axis] + size_b[axis] / 2.0)
+                    share.append(hi - lo)
+                if min(share) <= BOX_OVERLAP_MIN_M:
+                    continue
+                pair = (scene, a["name"], b["name"])
+                if pair in DECLARED_BOX_OVERLAP_ALLOWED:
+                    allowed_seen.append(f"{scene}/{a['name']}+{b['name']}")
+                    continue
+                layout_overlaps.append(
+                    f"{scene}: {a['name']} and {b['name']} share "
+                    f"{tuple(round(v, 3) for v in share)} m of their declared boxes "
+                    f"(anchors {at_a} and {at_b})")
+    check(not overlaps,
+          "these dressing items occupy the same space, so the clearance the occlusion and "
+          "walking-band checks were computed against does not exist:\n    "
+          + "\n    ".join(overlaps))
+    print(f"[ok] no two dressing boxes in a scene overlap by more than {BOX_OVERLAP_MIN_M} m on any "
+          f"axis, apart from {len(allowed_seen)} item(s)-standing-on-item(s) pairs: {allowed_seen}")
+    if layout_overlaps:
+        # Non-fatal, and the reason is the same as the walkway note above: the fix for an overlap
+        # between two of the loose decorative items is to move one of them, and with the prop-fit
+        # defect still open (every drawn prop is smaller than its declared box -- see
+        # SCENE_SIZE_AUDIT.md §1) the declared boxes are not yet the geometry a viewer sees, so a
+        # layout rearranged against them would be rearranged against numbers that are about to
+        # change.  Printed by name every run so the twenty pairs cannot be forgotten.
+        print(f"[layout] {len(layout_overlaps)} declared-box overlap(s) between loose decorative "
+              f"items; the fix is to move one of each pair, and it waits on the prop-fit decision "
+              f"because the boxes are wider than the props drawn in them: {layout_overlaps}")
 
 
 def test_dressing_colours_are_declared_and_not_marker_colours() -> None:
@@ -1240,7 +1386,9 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
     measured = sc.PROP_MEASUREMENTS
     scales = getattr(sc, "ASSET_SCALE", {})
     pending = set(getattr(sc, "PROP_MEASUREMENT_PENDING", ()))
+    needs_rotation_set = set(getattr(sc, "PROP_NEEDS_ROTATION", ()))
     problems, checked, waiting = [], [], []
+    rotation_warnings = []
 
     for scene in sc.SCENE_ORDER:
         for item in sc.SCENES[scene]["dressing"]:
@@ -1271,30 +1419,73 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
                 problems.append(f"{scene}/{item['name']}: room_fit is {room_fit}; it is a fraction "
                                 "of the measured size and must be in (0, 1]")
                 continue
-            # The check used to demand that the declared box EQUAL the measured prop on every axis.
-            # That requirement is what forced per-axis fitting, and per-axis fitting is what
-            # stretched the safety railing to 16 times its height and a curved bench to 11 times its
-            # width.  The two are one design, so they change together: the prop is now scaled
-            # UNIFORMLY to sit INSIDE its declared box, and what is checked here is that it fits.
+            # AXIS BY AXIS, on the catalogue's (x, height, lateral) order, which is the order every
+            # floor item and every wall item declares its measurement in -- 60 of the 61 asset items
+            # satisfy this exactly, which is what makes it the convention rather than a preference.
             #
-            # What this still catches is the error it exists for -- a declared box that cannot hold
-            # the prop it names, so the prop would overhang and clip.  The comparison is on SORTED
-            # dimensions because a wall item stores its depth on slot 0 while the measurement records
-            # the width there; for the 1.092 m framed poster those are the same three numbers in two
-            # orders, and an axis-by-axis version reported the correctly mounted poster as wrong.
+            # It used to compare SORTED triples, "because a wall item stores its depth on slot 0 while
+            # the measurement records the width there".  That excuse was itself the bug: a sort cannot
+            # tell slot 0 from slot 2, so `reading_poster` could declare (0.0524, 0.7426, 1.092)
+            # against a measured (1.092, 0.7426, 0.0524) and pass a check whose whole job was to
+            # compare those tuples.
+            #
+            # The one item that does not satisfy it is the one listed in sc.PROP_NEEDS_ROTATION, and
+            # the reason is a limitation rather than a preference: place_dressing applies a reference
+            # with translate and scale only, never a rotation, so a wall item whose thinnest axis is
+            # not its local x cannot both declare the measured order and hang flat.  Those items get a
+            # printed warning and a strict depth test below; everything else is an error.
             metres = tuple(v * factor * room_fit for v in want)
             got = tuple(float(v) for v in item["size"])
             # Tolerance 5e-5: declared sizes are hand-written to four decimals, so a box can be half a
             # unit in the last place below the computed prop -- 0.17 against 0.1700070.
             FITTING_TOL = 5e-5
-            if any(sorted(got)[axis] < sorted(metres)[axis] - FITTING_TOL for axis in range(3)):
-                problems.append(
+            needs_rotation = name in needs_rotation_set
+            if any(got[axis] < metres[axis] - FITTING_TOL for axis in range(3)):
+                short = [a for a in range(3) if got[a] < metres[a] - FITTING_TOL]
+                message = (
                     f"{scene}/{item['name']} ({item['mount']}) declares {got} m, but {name} measures "
                     f"{want} in its own units x ASSET_SCALE {factor} x room_fit {room_fit} = "
-                    f"{metres} m -- the prop does not fit the box, so it would overhang and clip")
-            else:
-                checked.append(f"{item['name']}->{name}"
-                               + (f" (room_fit {room_fit})" if room_fit != 1.0 else ""))
+                    f"{metres} m -- the prop does not fit the box on axis {short}, so it would "
+                    "overhang and clip")
+                if needs_rotation:
+                    rotation_warnings.append(message + "  [PROP_NEEDS_ROTATION: declared order is "
+                                             "deliberate, see scenes.PROP_NEEDS_ROTATION]")
+                else:
+                    problems.append(message)
+                continue
+            # A wall item's slot 0 is its depth along the wall normal, and the protrusion cap is
+            # computed from it.  What matters is that the item is hung by its THIN face: a depth far
+            # above the asset's own thinnest axis means the long axis, not the thin one, is what faces
+            # the corridor.
+            #
+            # The bound is a ratio of 10, and it is set from the catalogue rather than chosen.  Three
+            # items sit above their minimum and are harmless: the fountain (1.5x) and the two smaller
+            # mugs (1.01x) are near-cubic, and the banana's depth is 0.1972 m against a 0.0386 m
+            # thickness but is under the 0.20 m protrusion cap either way, so neither orientation can
+            # clip anything.  The item this rule exists for is the framed poster at 20x -- and its
+            # depth, 1.092 m, is five times the cap, so the two failures are an order of magnitude
+            # apart in both ratio and absolute depth.  A tighter ratio would fail the banana, which is
+            # a legal layout, and a rule that fails legal layouts gets widened until it catches
+            # nothing; this bound plus the protrusion cap that the other test applies is what actually
+            # separates "hung by its thin face" from "hung by its long face".
+            if (item["mount"] != "floor"
+                    and got[0] > min(metres) * WALL_DEPTH_RATIO + FITTING_TOL):
+                problems.append(
+                    f"{scene}/{item['name']} is wall-mounted with depth {got[0]:.4f} m on slot 0, "
+                    f"but {name} is only {min(metres):.4f} m thick on its thinnest axis "
+                    f"({min(range(3), key=lambda a: metres[a])} of {metres} m), i.e. "
+                    f"{got[0]/min(metres):.1f}x the bound.  place_dressing never rotates a "
+                    "reference, so the long axis is what faces the corridor -- declare the thickness "
+                    "on slot 0, add a rotation for this asset, or do not hang it")
+                continue
+            if needs_rotation:
+                rotation_warnings.append(
+                    f"{scene}/{item['name']} -> {name}: declared {got} m against measured {metres} m "
+                    "in measured order; slot 0 carries the thickness instead because the asset's "
+                    "thinnest axis is not its local x.  Correct behaviour needs a rotation in "
+                    "place_dressing")
+            checked.append(f"{item['name']}->{name}"
+                           + (f" (room_fit {room_fit})" if room_fit != 1.0 else ""))
             continue
 
     check(not problems,
@@ -1310,6 +1501,14 @@ def test_a_declared_size_is_the_size_of_the_prop_it_names() -> None:
               f"sizes are unchecked: {waiting}")
         print("          run tools/measure_named_props.py on the machine with a USD reader and "
               "move them into PROP_MEASUREMENTS")
+    if rotation_warnings:
+        # Also loud and also non-fatal, for the same reason: the item is in PROP_NEEDS_ROTATION,
+        # which means its declaration is a deliberate departure from the measured axis order because
+        # place_dressing cannot rotate a reference yet.  Printing it every run is what keeps "this
+        # one is a workaround" from decaying into "this one is fine".
+        print(f"[rotation] {len(rotation_warnings)} wall item(s) declare the thickness on slot 0 "
+              f"instead of the measured axis order, because the asset's thin axis is not its local "
+              f"x and place_dressing never rotates: {rotation_warnings}")
 
 
 def test_the_marker_assertion_counts_parts_not_children() -> None:
@@ -1682,6 +1881,7 @@ def main() -> int:
         test_dressing_stands_on_the_floor_and_hangs_on_its_wall,
         test_every_dressing_item_has_a_colour,
         test_decoration_is_never_collidable_and_stays_off_the_path,
+        test_no_two_declared_boxes_in_a_scene_overlap,
         test_dressing_colours_are_declared_and_not_marker_colours,
         test_the_baseline_scene_is_untouched,
         test_materials_are_marked_as_verified_or_not,

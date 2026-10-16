@@ -84,7 +84,7 @@
 | `tools/check_field_names.py`、`tools/check_names.py` | 静态审计：字段名 / 未定义名（后者在 geometry 套件里跑） | 可改 |
 | `tools/fetch_assets.py`、`tools/shrink_textures.py`、`tools/shrink_tree.py` | 素材抓取 / 降采样（**坏图只跳过不中断**） | 可改 |
 | `assets/isaac/` | 随仓库走的素材（**实测 1090 文件 / 约 218 MB**：`git ls-files assets/isaac` 的行数；Simple_Warehouse + Hospital + Office） | 只增 |
-| `test_bao_*.py` | 手写测试套件，**实测 9 套件共 175 项全过**：geometry 37 / scenes **40** / memory 29 / integration 20 / memory_runner 17 / persistence 13 / parsing 9 / health 5 / assets **5** | 必须全过 |
+| `test_bao_*.py` | 手写测试套件，**实测 9 套件共 176 项全过**：geometry 37 / scenes **41** / memory 29 / integration 20 / memory_runner 17 / persistence 13 / parsing 9 / health 5 / assets **5** | 必须全过 |
 | `STAGE1_SCENES.md` | Stage 1 场景与 25 标志物的规格（原 `STAGE3_SCENES.md`） | 可改 |
 | `STAGE1_SCENE_VARIANTS.md` | Stage 1 的 10 个单变量变体规格（原 `STAGE3_SCENE_VARIANTS.md`） | 可改 |
 | `STAGE23_DESIGN.md` | Stage 2/3 记忆实验的**唯一权威规格** | 可改 |
@@ -146,7 +146,7 @@ cd ~/EmbodiedBAO-AS- && python3 tools/parse_agent_logs.py --csv logs_reasoning.c
 # 冒烟验收
 cd ~/EmbodiedBAO-AS- && python3 tools/verify_stage1_lab.py --log smoke_1.1.log --model gpt-4o-mini
 
-# 全部测试（9 套件，实测 175 项）
+# 全部测试（9 套件，实测 176 项）
 # ★ 必须用 Isaac 解释器：系统 python3 没有 Pillow，test_bao_persistence 会 FAIL（实测）
 cd ~/EmbodiedBAO-AS- && for s in test_bao_geometry test_bao_integration test_bao_memory test_bao_scenes test_bao_memory_runner test_bao_persistence test_bao_parsing test_bao_health test_bao_assets; do printf '%-28s ' $s; /home/ybh/isaacsim/python.sh $s.py 2>/dev/null | tail -1; done
 
@@ -310,7 +310,7 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
 | 标志物是否在绿远墙上 | **25/25 在**。收紧色相窗后 **24/25** 的 x 中心落在 501–514，紧贴图像中轴 **512**；唯一例外 `stage1.3_slot1` 被书架等场景物体污染。宽 13–25 px、高 21–31 px，与 0.60 m / 15.48 m 下预期（≈25 px）吻合 |
 | **颜色 bug 端到端验证** | `stage1.4` slot5、`stage1.5` slot2 实测**酒红**；`stage1.5` slot1 实测**亮粉**（修复前提示词会说 white/black） |
 | 颜色 vs 声明 | 25 个中 **23 个通道顺序完全一致**；另 2 个是我的采样窗混入背景，收紧后亦正确 |
-| 图像尺寸 | **渲染 1024×1024**，送模型前降采样到 **512**（`BAO_IMAGE_SIZE`） |
+| 图像尺寸 | **渲染 1024×1024**；当时的实拍是送模型前降采样到 **512**（`BAO_IMAGE_SIZE`）。**2026-10-16 起两个实验都用 1024**（原生，不再降采样），见 `models.json` 的 `image_size` |
 
 **两个现象已量化，都不是分辨率问题**：
 
@@ -548,7 +548,7 @@ curl -s -m 30 -o /tmp/gw.json -w "HTTP %{http_code}\n" -X POST http://35.220.164
 **新增测试套件**：`test_bao_parsing.py`（9 项）、`test_bao_health.py`（5 项）、`tools/check_tags.py`。
 当时九个套件共 **151 项全过**：geometry 37 / integration 20 / persistence 13 / memory 29 /
 memory_runner 17 / scenes 18 / assets 3 / parsing 9 / health 5。
-（**当前值是 175 项，scenes 已增至 40** —— 见 §2 与 §10，那里的数字以代码为准。）
+（**当前值是 176 项，scenes 已增至 41** —— 见 §2 与 §10，那里的数字以代码为准。）
 
 **审计工具的一处修正**：`tools/check_field_names.py` 把同义词表的**键**（`move_forward`、`walk`…）
 当成"协议里不存在的动作名"报错。已加豁免：字典的键、其值是合法动作名，那是别名表不是动作引用。

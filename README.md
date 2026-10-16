@@ -479,9 +479,9 @@ Either threshold classifies a model:
 Requires Isaac Sim. Use its bundled Python:
 
 ```bash
-$ISAACSIM_ROOT/python.sh main.py --model gemini-2.5-pro --all-levels --image_size 512
+$ISAACSIM_ROOT/python.sh main.py --model gemini-2.5-pro --all-levels --image_size 1024
 # Windows
-%ISAACSIM_ROOT%\python.bat main.py --model gemini-2.5-pro --all-levels --image_size 512
+%ISAACSIM_ROOT%\python.bat main.py --model gemini-2.5-pro --all-levels --image_size 1024
 ```
 
 Common invocations:
@@ -491,7 +491,7 @@ Common invocations:
 python main.py --model gemini-2.5-pro --level 0 --episodes 2
 
 # the baseline scene, every Level
-python main.py --model gemini-2.5-pro --all-levels --image_size 512
+python main.py --model gemini-2.5-pro --all-levels --image_size 1024
 
 # a scene skin: stage1.2 is the warehouse
 python main.py --model gemini-2.5-pro --all-levels --scene stage1.2 --tag wh1 --resume
@@ -500,7 +500,7 @@ python main.py --model gemini-2.5-pro --all-levels --scene stage1.2 --tag wh1 --
 python main.py --model random --level 0 --episodes 2
 
 # resume a run whose tag is already recorded
-python main.py --model gemini-2.5-pro --all-levels --image_size 512 --tag gemini-v1 --resume
+python main.py --model gemini-2.5-pro --all-levels --image_size 1024 --tag gemini-v1 --resume
 ```
 
 `--scene` is empty by default, which is the **frozen baseline** `stage1.1`: no materials
@@ -618,10 +618,12 @@ ISAAC_PY=/home/ybh/isaacsim/python.sh bash run_all_models_memory.sh 2>&1 | tee m
 This loop is sequential — one Isaac worker at a time — and holds no dispatcher lock, so it is part of
 the same machine budget: do not start it while a `run_parallel_sweep.sh` dispatcher is alive.
 
-The frame size defaults to 512 px, as in the threshold sweep, and the runner sets it
-through the variable the client reads (`BAO_IMAGE_SIZE`); `--image_size 0` keeps the
-camera's native resolution, which is about five times slower per step and not
-comparable with Stage 1. Watch a sweep with (17 rounds = a finished run):
+The frame size is 1024 px — the camera's native resolution — in both experiments, so
+Stage 1 and Stage 2 are measured on the same input. The runner sets it through the
+variable the client reads (`BAO_IMAGE_SIZE`), and that value is recorded in
+`logs/{tag}/args.json`; `--image_size 0` keeps the camera's native resolution, which
+is the same 1024 here. A smaller value is a different measurement and is not
+comparable with either archived dataset. Watch a sweep with (17 rounds = a finished run):
 
 ```bash
 python -c "import glob, json, os; [print('%-34s %3d completed' % (os.path.basename(os.path.dirname(p)) if p.endswith('checkpoint.json') else os.path.basename(p)[11:-5], len(json.load(open(p)).get('completed', [])))) for p in sorted(glob.glob('results/memory/*/*/checkpoint.json') + glob.glob('results/memory/*/*/*/checkpoint.json') + glob.glob('results/*/checkpoint_*.json') + glob.glob('results/*/*/checkpoint_*.json'))]"
@@ -680,7 +682,7 @@ palette and 8 pt lettering as the Stage 1 figures.
 
 | Flag | Purpose |
 | :--- | :--- |
-| `--image_size N` | downscale the camera frame to N×N before sending it. Latency was ~32 s per step at 1024 and ~6 s at 512. |
+| `--image_size N` | downscale the camera frame to N×N before sending it. Both sweeps pass `1024`, which is the camera's native size, so nothing is resampled; a smaller value is a different measurement. Latency was ~32 s per step at 1024 and ~6 s at 512. `main.py` requires a positive value; only `memory_experiment.py` accepts `0` for "native". |
 | `--llm_timeout S` | per-request timeout (default 90 s; 60 s lost 9 of 30 steps to timeouts) |
 | `--eye_height M` / `--eye_pitch D` | move the head camera without editing code |
 | `--start_x M` / `--move_step M` | start distance and translation step; the two must move together or the route will not fit the budget |
@@ -895,7 +897,7 @@ is versioned now — do not delete it, and do not regenerate it in place.
 
 ## Verification without Isaac Sim
 
-Everything that can be decided without a renderer runs on plain Python. **175 checks
+Everything that can be decided without a renderer runs on plain Python. **176 checks
 across nine suites**, counted at the time of writing rather than remembered (`grep -c
 '^def test_' test_bao_*.py`):
 
@@ -903,7 +905,7 @@ across nine suites**, counted at the time of writing rather than remembered (`gr
 python test_bao_geometry.py       # 37 checks: ladder, collision gate, routes, colours, prompt
 python test_bao_integration.py    # 20 checks: full protocol, tagged runs, CLI flags, against a mock environment
 python test_bao_memory.py         # 29 checks: the Stage 2 measures and prompts, against an independent model and the real gate
-python test_bao_scenes.py         # 40 checks: the Stage 1 catalogue, all arithmetic, no simulator
+python test_bao_scenes.py         # 41 checks: the Stage 1 catalogue, all arithmetic, no simulator
 python test_bao_memory_runner.py  # 17 checks: the Stage 2 runner end to end against a mock environment and a scripted agent
 python test_bao_persistence.py    # 13 checks: interrupt and corruption safety of every artefact written
 python test_bao_parsing.py        #  9 checks: the reply parser, including shapes once discarded
@@ -1036,9 +1038,12 @@ python capture_views.py --level 0 --outdir views
 
 Some models spend most of a call thinking before they answer, and that is the whole
 cost of a sweep. `tools/probe_reasoning.py` measures that with the real prompt and a
-512 px frame, because the gateway answers **HTTP 200 for every unknown parameter**,
+frame, because the gateway answers **HTTP 200 for every unknown parameter**,
 so a key being accepted proves nothing — only the token count and the latency show
-whether it had an effect:
+whether it had an effect. The numbers below were taken on a 512 px frame, which is
+the framing the knobs were chosen under; the sweeps now send the camera's native
+1024 px, so re-running the probe is what would confirm the same split at the
+resolution actually in use:
 
 | model | default | with thinking off | knob |
 | :--- | :--- | :--- | :--- |

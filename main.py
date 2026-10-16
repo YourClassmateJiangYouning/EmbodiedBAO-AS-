@@ -64,7 +64,8 @@ def request_params_suffix(model: str) -> str:
     """A short tag suffix describing the request parameters for one model.
 
     Request parameters change what the model DOES, so they have to show up in the
-    results path: measured on the real prompt and a 512 px frame, deepseek-v4.1-flash
+    results path: measured on the real prompt and a 512 px frame (that probe predates
+    the switch to the camera's native 1024), deepseek-v4.1-flash
     spends about 12,800 tokens per call at its default reasoning setting and about
     1,230 with ``reasoning_effort: "none"``.  Without this suffix a run with
     thinking disabled and one with it on would share a directory, and --resume

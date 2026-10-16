@@ -570,22 +570,27 @@ def test_an_invalid_reply_is_recorded_rather_than_crashing_the_round() -> None:
 
 
 def test_the_frame_size_is_set_for_the_client() -> None:
-    """512 px reaches the client through the variable it reads.
+    """The configured frame size reaches the client through the variable it reads.
 
-    Stage 2 fixes the frame size to compare against the threshold sweep, and the
-    only thing that reads it is ``ai_agent.encode_image``, through
-    ``BAO_IMAGE_SIZE``.  A runner that never set it would send the camera's native
-    1024 and cost about five times as much per step.
+    Stage 2 fixes the frame size so it compares against the threshold sweep, and the only thing that
+    reads it is ``ai_agent.encode_image``, through ``BAO_IMAGE_SIZE``.  Both experiments now send the
+    camera's native 1024 (see models.json's image_size and run_all_models.sh's --image_size), so the
+    expected value is ``memory_experiment.IMAGE_SIZE_PX`` rather than a literal 512: what this test
+    exists to prove is that the runner SETS the variable, and a hard-coded number stopped proving
+    that the moment the two experiments agreed on a different size.
     """
     fresh_workspace()
+    expected = str(memory_experiment.IMAGE_SIZE_PX)
     saved = os.environ.pop("BAO_IMAGE_SIZE", None)
     try:
         runner = make_runner([1])
         check(
-            os.environ.get("BAO_IMAGE_SIZE") == "512",
-            f"BAO_IMAGE_SIZE is {os.environ.get('BAO_IMAGE_SIZE')!r} after construction",
+            os.environ.get("BAO_IMAGE_SIZE") == expected,
+            f"BAO_IMAGE_SIZE is {os.environ.get('BAO_IMAGE_SIZE')!r} after construction, "
+            f"expected {expected!r}",
         )
-        check(runner.image_size == 512, f"the runner reports image_size {runner.image_size}")
+        check(runner.image_size == memory_experiment.IMAGE_SIZE_PX,
+              f"the runner reports image_size {runner.image_size}")
         other = memory_experiment.MemoryExperimentRunner(
             env=MockEnvironment(),
             model="fake-model",

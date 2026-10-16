@@ -122,7 +122,7 @@ for model in "${MODELS[@]}"; do
         --all-levels \
         --episodes 5 \
         --max_steps 30 \
-        --image_size 512 \
+        --image_size 1024 \
         --tag "$tag" \
         ${SCENE:+--scene "$SCENE"} \
         $HEADLESS_FLAG \

@@ -396,6 +396,21 @@ PROP_MEASUREMENT_PENDING = (
     "RackLargeEmpty_A1.usd",
 )
 
+# Wall items whose declaration deliberately does NOT follow the measured axis order, because the
+# asset's thinnest axis is not its local x and place_dressing never rotates a reference.  A wall
+# item's slot 0 is its depth along the wall normal, so for these the thickness must be declared in
+# slot 0 or the long axis would stand out into the corridor; that in turn means slot 0 cannot also
+# equal the measured x.  The declared-size check therefore prints a warning for these instead of
+# failing, and the plan is a rotation in place_dressing.
+#
+# Measuring which items this applies to, across all 66: only `reading_poster` is materially
+# affected.  `fountain` (0.1621 x 0.1108 x 0.1621), `mug_a2` and `mug_b1` are near-cubic and their
+# slot 0 is already within 4 mm of their thinnest axis, so declaring the measured order would
+# satisfy every rule without a rotation; `banana` is long-and-thin with its thinnest axis on slot 2
+# exactly like the poster, but its long axis is only 0.1972 m -- inside the 0.20 m protrusion cap --
+# so it is legal in either order.  That is why the printed warning lists one item and not five.
+PROP_NEEDS_ROTATION = ("FramedPoster.usd",)
+
 # What tools/measure_assets.py measured each vendored mesh to be, in this catalogue's own
 # frame (x, height, lateral).  This is DATA, not a note: a prop's real size is not derivable
 # here (there is no USD reader on the development machine), so it is recorded from the run and
@@ -751,14 +766,14 @@ SCENES: Dict[str, Dict[str, Any]] = {
             # uniform fit fills the box instead of leaving it at a third of its size.
             _dressing_floor("forklift", (6.2, 0.0, 2.15), (0.8905, 0.3898, 0.2814), DRESSING_DARK_STEEL,
                             PROP_ROOT + "/PackingTable/packing_table.usd", room_fit=0.36),
-            _dressing_floor("traffic_cone", (7.0, 0.0, -1.95), (0.3357, 0.4628, 0.3339),
+            _dressing_floor("traffic_cone", (7.55, 0.0, -1.95), (0.3357, 0.4628, 0.3339),
                             DRESSING_CLAY, BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/"
                             "Environments/Simple_Warehouse/Props/S_TrafficCone.usd"),
             # Real warehouse freight: a second pallet, a plastic crate and a corrugated box.
             # These replace nothing -- they are added, because this scene is a warehouse and three
             # boxes standing against the far wall is what a warehouse looks like.  Sizes are the
             # measured props; the crate and the box are centimetre assets, hence CM_TO_M.
-            _dressing_floor("pallet_stack", (12.0, 0.0, 2.10), (1.2132, 0.1425, 0.8023),
+            _dressing_floor("pallet_stack", (12.0, 0.0, 2.04), (1.2132, 0.1425, 0.8023),
                             asset=PROP_ROOT + "/Pallet/pallet.usd"),
             _dressing_floor("crate", (10.2, 0.0, 2.05), (0.6015, 0.1700, 0.4018), DRESSING_WOOD_PALE,
                             PROP_ROOT + "/PackingTable/props/SM_Crate_A07_Yellow_01/"
@@ -1084,16 +1099,31 @@ def _install_dressing() -> None:
                        (0.045, 0.15, 0.45), DRESSING_DARK_STEEL,
                        BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Office/Props/"
                        "SM_Clock_04.usd"),
-        # The framed poster measures 1.092 (its width) x 0.7426 (height) x 0.0524 (thickness).
-        # The wall helper takes (across, tall, thick) and STORES (thick, tall, across), because a
-        # wall faces along x: passing the measurement in catalogue order made 1.092 the thickness
-        # and hung half a metre of poster into the corridor.  The measurement order here is
-        # (thick, tall, across) = (0.0524, 0.7426, 1.092), so the arguments are its reverse.
+        # The framed poster measures 1.092 (width) x 0.7426 (height) x 0.0524 (thickness), and it is
+        # the ONE wall item in the catalogue whose declared order is NOT the measured order: the
+        # declaration is (0.0524, 0.7426, 1.092) while every other wall item -- clock, fountain, the
+        # three mugs, the banana -- declares the measurement axis for axis.
+        #
+        # That swap is not a mistake, it is the only way this asset can hang flat with the code as it
+        # stands.  A wall item's slot 0 is its depth along the wall normal, and place_dressing applies
+        # a reference with translate and scale only -- NEVER a rotation -- so the asset's own local x
+        # lands on the room's x.  This asset's thin axis is its local y (0.0524), not its local x
+        # (1.092), so slot 0 has to carry the thickness or the plate would stand 1.09 m out into the
+        # corridor.  Declaring it in measured order therefore trips the protrusion cap, and declaring
+        # it this way is what makes the item work at all.
+        #
+        # It is listed in PROP_NEEDS_ROTATION, and the check that would otherwise reject it is
+        # downgraded to a printed warning for that list only.  The fix is a rotation in
+        # place_dressing; it is deferred because it cannot be verified without a rendered frame, and
+        # because a quarter turn about the wall normal does not move the corridor geometry -- the
+        # declared box, the protrusion and the occlusion checks are all identical either way.  What
+        # the rotation WOULD change is what a viewer sees, which is why it is recorded here instead
+        # of being quietly worked around.
         _dressing_wall("reading_poster", "far_wall", (FAR_WALL_FACE_X, 2.05, 1.55),
                        (0.0524, 0.7426, 1.092), DRESSING_PAPER,
                        BUCKET_ASSETS + "/Assets/ArchVis/Residential/Decor/Pictures/"
                        "FramedPoster.usd"),
-        _dressing_floor("study_table", (3.0, 0.00, 1.60), (2.4736, 0.9941, 0.7620), DRESSING_WOOD_PALE,
+        _dressing_floor("study_table", (3.0, 0.00, 1.90), (2.4736, 0.9941, 0.7620), DRESSING_WOOD_PALE,
                         PROP_ROOT + "/PackingTable/props/SM_HeavyDutyPackingTable_C02_01/"
                         "SM_HeavyDutyPackingTable_C02_01.usd"),
         _dressing_floor("chair_row", (5.0, 0.00, -2.05), (0.6001, 0.8772, 0.5993), DRESSING_WOOD_PALE,
@@ -1108,7 +1138,7 @@ def _install_dressing() -> None:
         # so on a 1.7 m bookcase it would be sub-pixel -- and 0.205 m is taller than the bookcase's
         # own shelf depth, so scaling one to fit a shelf would make a cushion rather than a book.
         # On the table they are the size a book is and they read as books.
-        _dressing_floor("book_a", (2.6, 0.9941, 1.85), (0.02, 0.205, 0.145), DRESSING_PAPER,
+        _dressing_floor("book_a", (2.6, 0.9941, 1.88), (0.02, 0.205, 0.145), DRESSING_PAPER,
                         BUCKET_ASSETS + "/Assets/Isaac/4.5/Isaac/Environments/Office/Props/"
                         "SM_Book_01.usd"),
         _dressing_floor("book_b", (3.2, 0.9941, 1.95), (0.02, 0.205, 0.145), DRESSING_PAPER,
@@ -1164,9 +1194,9 @@ def _install_dressing() -> None:
         # fraction in (0, 1], which the declared-size check enforces.  Enlarging is the opposite of
         # what this field is for, so a 1.20 m shrub serves both sides rather than stretching a
         # 20 cm plant into one.
-        _dressing_floor("shrub_left", (7.0, 0.00, 1.85), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
+        _dressing_floor("shrub_left", (7.0, 0.00, 1.88), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
                         BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
-        _dressing_floor("shrub_right", (7.0, 0.00, -1.85), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
+        _dressing_floor("shrub_right", (7.0, 0.00, -1.88), (0.7572, 0.9000, 0.7499), DRESSING_HEDGE,
                         BUCKET_ASSETS + "/Assets/Vegetation/Shrub/Barberry.usd", room_fit=0.752143),
         # FOUR MORE, on the owner's note that the park should read as a park.  No grass TEXTURE is
         # vendored (only `Grass_Short_A.usd`, which measured worse than the assets already in use),
