@@ -469,11 +469,41 @@ def fit_reference_to_local_unit(proxy_prim: Any
     function deliberately does not guess, and the defect stays visible instead of being replaced by a
     worse one.
 
-    WHAT WOULD SETTLE IT, and nothing here can: for each asset, print ``native`` and the drawn extent
-    in the same log line and see whether ``native_i * want_i == drawn_i`` (proxy bound, needs the
-    per-axis factor) or ``native_i == drawn_i`` (already scaled, needs ``1/native_i`` for every axis).
-    The log line already carries ``[drawn ... vs declared ...]`` and ``fill_ratio``; what is missing is
-    the ``native`` tuple, which is why this note is here rather than a formula.
+    MEASURED ON THIS MACHINE 2026-10-16, AND IT IS ALMOST SOLVED.  ``tools/probe_prop_fit.py`` runs
+    the real ``place_dressing`` for every scene on a fresh in-memory stage and reads each resolved
+    prop's extent back off the stage in metres.  Results, per candidate formula:
+
+      * ``min(1/native)`` -- what ships -- leaves 34 of 61 props below half of at least one axis: a
+        14.25 cm pallet drawn 1.7 cm thick, a safety railing 2.4 mm, a clock face at 9:1 where the
+        asset is 3:1, a 2.47 m packing table with a 23 cm top.
+      * ``1/native_i`` PER AXIS -- **58 of 61 props fill their declared box to 1.000 on all three
+        axes.**  This is the correct formula, and it was rejected once for the wrong reason.
+      * ``declared_i / native_i`` -- wrong: it draws the conifer 5.76 m in a 2.4 m box, because on
+        this bound the declaration is already counted once.
+
+    THE THREE THAT DO NOT WORK WITH THE PER-AXIS FACTOR are stage1.5's ``mug_a2``/``b1``/``c1``
+    (``SM_Mug_A*.usd``).  Their measured ``native`` equals their DECLARED box to three decimals
+    (mug_a2 native (0.09232, 0.12712, 0.09097) against declared (0.0923, 0.1271, 0.0910)), so
+    ``1/native_i`` is ~10.8, and the drawn extent then comes out exactly 100x the declared box:
+
+        mug_a2  declared (0.0923, 0.1271, 0.091)   drawn (9.23, 12.71, 9.1)   fill 100.0
+
+    which is the 9.2 m mug that got the per-axis factor reverted as ``bfd5be7``.  The other 58 assets
+    are centimetre-authored (``RackSmall_A7`` reports (108.02, 199.81, 301.00)) and behave; these
+    three are metre-authored yet their bound comes back in the same numeric range as a centimetre
+    asset's, so the geometry and the parent's scale are in different spaces for this asset class
+    only.  Two things were checked and are NOT the cause: the prop's authored ``xformOp:rotateXYZ``
+    (moving the fit's scale op to the end of the order changed nothing), and the item Xform's scale
+    (it is written correctly as (0.0923, 0.1271, 0.091)).
+
+    SO THE REMAINING WORK IS ONE OF TWO THINGS, and it needs this machine to decide:
+      (a) find what makes these three assets' bound come back unscaled relative to the rest, and
+          normalise it in this function; or
+      (b) declare the three mugs at the size the current uniform fit draws them at, which is
+          (0.0008519, 0.0016157, 0.0008278) m -- 0.9 mm -- and then no mug is visible at all.
+    Neither is done here.  A per-axis factor that leaves three props 100x their box is not an
+    improvement on a uniform factor that leaves 34 props too small, which is why the uniform factor
+    is still what ships.
 
     THE FACTOR IS ``1/native`` AND THE DECLARED SIZE DOES NOT ENTER IT.  The bound is measured
     relative to the item Xform, which the reference defines as "the bound of the given prim in the
