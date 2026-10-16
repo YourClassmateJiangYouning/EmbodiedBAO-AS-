@@ -432,11 +432,41 @@ def main() -> int:
             )
 
             # 2. Elevated three-quarter view from behind-right of the robot.
+            #
+            #    THE HEIGHT WAS WRONG AND IT MADE THIS VIEW USELESS.  It used to sit at y = 3.2, which
+            #    is ABOVE ROOM_WALL_HEIGHT = 3.0, so the camera was outside the room looking at its
+            #    roof: iso.png showed the outside of the obstacle wall with the opening in it, and the
+            #    statistics said so before the image did (std 28.9 against the eye camera's 40-49).
+            #    Anything placed here has to stay inside x 0..ROOM_LENGTH_X, y 0..ROOM_WALL_HEIGHT and
+            #    z +-ROOM_WIDTH_Z/2, or it photographs the box the scene is inside.
             capture(
                 "iso",
-                [environment.WALL_X - 4.0, 3.2, 2.2],
+                [environment.WALL_X - 4.0, 2.2, 2.2],
                 [environment.WALL_X, 0.9, 0.0],
             )
+
+            # 3. THE HEIGHT VIEW -- NOT SOLVED, AND THE REASON IS GEOMETRIC.
+            #
+            #    A camera has to answer "is the robot the right height?".  It cannot do it from inside
+            #    this room: the robot stands 0.5 m from the back edge and the obstacle wall is 8 m
+            #    further on, so no position and no target frames both the robot and the 2 m wall inside
+            #    the 76 degree field -- searched exhaustively over eye positions inside
+            #    x 0..16, y 0.2..2.95, z +-2.45 and targets along the corridor, and every combination
+            #    pushed at least one of the four reference points past 38 degrees off axis.
+            #
+            #    A level side view was tried instead, and it fails for a second geometric reason: the
+            #    room is only 5 m wide and the robot is on its centreline, so a camera far enough away
+            #    to frame a 1.8 m robot (2.3 m) is 0.2 m from the side wall and renders that wall.
+            #    Measured: side.png came out with the interior as a small tilted panel on a field of
+            #    grey.  It is removed rather than left in the output looking authoritative.
+            #
+            #    What IS usable today is front.png, from 3 m in front of the wall at 1.3 m: the
+            #    corridor, the ceiling light, both side walls, the opening and its two panels all read
+            #    correctly.  The robot is between that camera and the wall, so its height can be judged
+            #    there once the framing question above is settled -- the robot is simply small in a
+            #    16 m room.  A camera INSIDE the room at the robot's own x, aimed along +z with a
+            #    narrower field, is the obvious next attempt; it needs a render to check, and the
+            #    statistics in this script (`std`, `unique_colors`) are how to tell whether it worked.
 
             # 3. Wall face-on from the robot's side, showing the opening.
             capture(
