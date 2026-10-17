@@ -38,7 +38,7 @@ import io
 import json
 import math
 import os
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 
@@ -253,6 +253,12 @@ def summarize_level(level: int, episodes: Sequence[Dict[str, Any]]) -> Dict[str,
         "excluded_no_valid_call": len(excluded),
         "pass_rate": float(np.mean(passed)),
         "passed_count": int(sum(passed)),
+        # 95% Wilson intervals beside every rate.  With five episodes per Level a point estimate is
+        # worth very little on its own: a 3/5 Level and a 1/5 Level overlap heavily, and quoting the
+        # first as "60%" invites a comparison the sample cannot support.  These are what make the
+        # number readable, and they cost three lines of arithmetic.
+        "pass_rate_ci": wilson_interval(int(sum(passed)), len(passed)),
+        "sideways_rate_ci": wilson_interval(int(sum(sideways)), len(sideways)),
         "sideways_rate": float(np.mean(sideways)),
         "passed_sideways_count": int(sum(sideways)),
         "turned_rate": float(
@@ -374,6 +380,71 @@ def _wide_background(
             and float(summary["a_s_ratio"]) >= WIDE_A_S
         ],
         count_key,
+    )
+
+
+def wilson_interval(
+    count: int, total: int, z: float = 1.959963984540054
+) -> Optional[Tuple[float, float]]:
+    """Wilson score interval for a proportion, or None when there is nothing to estimate.
+
+    Wilson rather than the textbook normal approximation, because these are SMALL samples with rates
+    near 0 or 1 -- exactly where the normal interval produces bounds outside [0, 1] and collapses to
+    zero width at a Level with 0 of 5.  A Level of five episodes cannot support a rate quoted to one
+    decimal place, and the interval is what says so instead of leaving the reader to guess.
+    """
+    if total <= 0:
+        return None
+    proportion = count / total
+    denominator = 1.0 + z * z / total
+    centre = (proportion + z * z / (2.0 * total)) / denominator
+    half = (z / denominator) * math.sqrt(
+        proportion * (1.0 - proportion) / total + z * z / (4.0 * total * total)
+    )
+    return (max(0.0, centre - half), min(1.0, centre + half))
+
+
+def bootstrap_threshold_ci(
+    episodes_by_level: Dict[int, Sequence[Dict[str, Any]]],
+    threshold_fn: Callable[[Dict[int, Dict[str, Any]]], Optional[float]],
+    resamples: int = 2000,
+    seed: int = 20261017,
+) -> Optional[Tuple[float, float]]:
+    """Percentile bootstrap interval for the threshold the ladder search reports.
+
+    The threshold is NOT a smooth function of the data: it is the widest rung that survives a
+    significance test, so it jumps between rungs and there is no closed-form interval for it.  Resampling
+    episodes WITHIN each Level -- the Level sizes stay fixed and only which episodes are drawn varies --
+    and re-running the whole search gives the sampling distribution of that choice.  The 2.5/97.5
+    percentiles then say how far the headline A/S could move on a different draw of the same experiment,
+    which is the number a reader actually needs in order to judge a difference between two models.
+
+    Returns None when fewer than two Levels have data, or when more than a quarter of the resamples
+    found no threshold at all -- the interval is then meaningless rather than merely wide, and printing
+    one would be worse than printing nothing.
+    """
+    levels = sorted(int(level) for level, eps in episodes_by_level.items() if len(eps) >= 2)
+    if len(levels) < 2:
+        return None
+    rng = np.random.default_rng(seed)
+    values: List[float] = []
+    missing = 0
+    for _ in range(resamples):
+        resampled: Dict[int, Dict[str, Any]] = {}
+        for level in levels:
+            eps = episodes_by_level[level]
+            picks = rng.integers(0, len(eps), size=len(eps))
+            resampled[level] = summarize_level(level, [eps[int(i)] for i in picks])
+        found = threshold_fn(resampled)
+        if found is None:
+            missing += 1
+        else:
+            values.append(float(found))
+    if not values or missing > resamples // 4:
+        return None
+    return (
+        float(np.percentile(values, 2.5)),
+        float(np.percentile(values, 97.5)),
     )
 
 
@@ -681,6 +752,15 @@ def analyze_model(
 
     threshold = sideways_threshold(per_level)
     turned = turned_threshold(per_level)
+    # HOW MUCH WOULD THAT NUMBER MOVE on a different draw?  Both thresholds are the MAXIMUM over a
+    # discrete ladder, so they need an interval as much as any rate does -- more, in fact, because a
+    # single extra sideways pass on one rung at the edge of significance moves the headline outright.
+    # The bootstrap is on the raw episodes in `loaded`, not on the summaries, because the search is a
+    # function of the sample rather than of four numbers.
+    sideways_seed = sorted(int(level) for level in levels if len(loaded[int(level)]) >= 2)
+    bootstrap_input = {level: loaded[level] for level in sideways_seed}
+    sideways_ci = bootstrap_threshold_ci(bootstrap_input, sideways_threshold)
+    turned_ci = bootstrap_threshold_ci(bootstrap_input, turned_threshold)
     every_episode = [ep for level in levels for ep in loaded[int(level)]]
     # Episodes whose every call failed are not a measurement of the model; see
     # episode_had_no_valid_call.  Reported, never scored.
@@ -700,6 +780,11 @@ def analyze_model(
         "excluded_no_valid_call": excluded_no_valid_call,
         "sideways_threshold": threshold,
         "turned_threshold": turned,
+        # The 95% percentile-bootstrap intervals for the two thresholds above.  None means the
+        # interval could not be estimated honestly (too few Levels, or most resamples found no
+        # threshold at all) -- printed as "n/a" rather than as a reassuring narrow range.
+        "sideways_threshold_ci": sideways_ci,
+        "turned_threshold_ci": turned_ci,
         # The model's own wide-Level behaviour, which the thresholds above are tested
         # against; reported so a reader can see the noise floor the rule removes.
         "sideways_background_rate": (
