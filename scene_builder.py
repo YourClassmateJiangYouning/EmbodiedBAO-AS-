@@ -1939,6 +1939,37 @@ def apply_scene(stage: Any, scene: str, slot: int,
     report["parts"] = list(parts)
     report["dressing"] = place_dressing(stage, scene) if "dressing" in parts else []
     report["dressing_count"] = len(report["dressing"])
+    # material_verified IS CHECKED HERE, NOT MERELY DECLARED.  Every scene in scenes.py sets
+    # material_verified: True, and until now NOTHING READ IT -- the only consumer was a test asserting
+    # the flag it had just been handed.  So a scene whose surfaces silently failed to bind still
+    # claimed to be verified, and the claim was evidence of nothing.
+    #
+    # The declared value is now compared with what actually happened to the surfaces, and the result
+    # is recorded under its own key.  It is NOT silently overwritten: a mismatch is a real
+    # disagreement between the catalogue and the render, and both halves of it are worth keeping.
+    if "materials" in parts:
+        declared = spec.get("material_verified")
+        bound_ok, bound_failed, unbound = 0, 0, 0
+        for _surface, outcome in (report.get("materials") or {}).items():
+            if not isinstance(outcome, dict) or outcome.get("how") == "skipped":
+                continue
+            bound = outcome.get("bound")
+            if bound is None:
+                unbound += 1          # flat paint or texture: no MDL to bind, so not a failure
+            elif bound:
+                bound_ok += 1
+            else:
+                bound_failed += 1
+        report["material_verified_declared"] = declared
+        report["material_verified_actual"] = (
+            bound_failed == 0 and (bound_ok + unbound) > 0
+        )
+        report["material_bind_failures"] = bound_failed
+        if declared is True and report["material_verified_actual"] is False:
+            report.setdefault("problems", []).append(
+                f"{scene}: scenes.py declares material_verified=True but "
+                f"{bound_failed} surface(s) failed to bind"
+            )
     return report
 
 
