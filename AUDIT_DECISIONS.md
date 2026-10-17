@@ -56,11 +56,12 @@ the same way.
 
 ### G6 · "`scenes._dressing_wall`'s docstring contradicts its implementation"
 
-**Verdict: the docstring is self-consistent; nothing changed.** `at`'s x **is** treated as the box
-centre, and the docstring says so **and explains that the thickness is deliberately not subtracted**
-because every call site passes the same two face constants. The reviewer read "used AS the box centre"
-as a claim that the surface coordinate equals the centre coordinate; it is a statement about how the
-input is interpreted.
+**CORRECTED 2026-10-17: this entry was WRONG, and so was my verdict.** The docstring says the surface
+"is used AS the box centre" and that "the thickness is not subtracted here on purpose", while
+`scenes.py:711` computes `centre_x = at[0] - MOUNT_CLEARANCE_M - x_thick / 2.0` -- it DOES subtract the
+half-thickness. The inline comment immediately above that line even says the old claim was false. The
+code was changed after I read it and the top docstring was not updated, so my "self-consistent" verdict
+was true only of the version I looked at. The reviewer was right.
 
 ### #12 · "the prompt could change with Level and no test would notice"
 
@@ -80,7 +81,13 @@ no test compares two Levels' prompts) is a coverage gap, not a defect.
 
 ### #63 · "no test instantiates a real `BAOEnv`"
 
-**Verdict: false.** `test_bao_integration.py` contains sixteen `BAOEnv(` occurrences.
+**CORRECTED 2026-10-17: the finding was RIGHT and my "false" was wrong.** I counted with
+`grep -c 'BAOEnv('`, which also matches `FakeBAOEnv(`. Measured properly: `test_bao_integration.py` has
+21 `BAOEnv(` occurrences and **all 21 are `FakeBAOEnv(`** -- zero real ones. `check_success`,
+`reset_scene`'s marker rule and `execute_action` were only ever tested against the stand-in.
+
+There is now `test_a_real_baoenv_scores_the_way_the_fake_does`, which builds a real `BAOEnv` under the
+Isaac interpreter and SKIPS (rather than passes) when the simulator is absent.
 
 ### #82 · "`verify_docs.py` hard-codes `ISAAC_FILES = 1090`"
 
@@ -157,7 +164,8 @@ marker), `#43` (resolved — see E5), `#46`, `#47`, `#48` (ai_agent cache/JSON-m
 1. **Measure the union, not the first element.** Two of this round's three worst errors came from
    inspecting `SHAPES[name][0]` and treating it as the shape.
 2. **A negative claim ("file X has no Y") needs a positive search.** Three of the review's findings
-   were wrong this way (#29, #32, #63).
+   were wrong this way (#29, #32) -- and #63 was the reverse: my own check used a substring match that
+   counted `FakeBAOEnv(` as `BAOEnv(`, so I "refuted" a finding that was correct.
 3. **Separate "the value is wrong" from "the value is hard-coded".** #82 was the second, not the first,
    and the fix differs.
 4. **Check whether a "dead" function is a documented future interface.** `analytic_pass_check` has zero

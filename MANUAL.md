@@ -84,7 +84,7 @@
 | `tools/check_field_names.py`、`tools/check_names.py` | 静态审计：字段名 / 未定义名（后者在 geometry 套件里跑） | 可改 |
 | `tools/fetch_assets.py`、`tools/shrink_textures.py`、`tools/shrink_tree.py` | 素材抓取 / 降采样（**坏图只跳过不中断**） | 可改 |
 | `assets/isaac/` | 随仓库走的素材（**实测 1090 文件 / 约 218 MB**：`git ls-files assets/isaac` 的行数；Simple_Warehouse + Hospital + Office） | 只增 |
-| `test_bao_*.py` | 手写测试套件，**实测 9 套件共 193 项全过**：geometry 40 / scenes **44** / memory 29 / integration 27 / memory_runner 17 / persistence 16 / parsing 10 / health 5 / assets **5** | 必须全过 |
+| `test_bao_*.py` | 手写测试套件，**实测 9 套件共 194 项全过**：geometry 40 / scenes **44** / memory 29 / integration 28 / memory_runner 17 / persistence 16 / parsing 10 / health 5 / assets **5** | 必须全过 |
 | `STAGE1_SCENES.md` | Stage 1 场景与 25 标志物的规格（原 `STAGE3_SCENES.md`） | 可改 |
 | `STAGE1_SCENE_VARIANTS.md` | Stage 1 的 10 个单变量变体规格（原 `STAGE3_SCENE_VARIANTS.md`） | 可改 |
 | `STAGE23_DESIGN.md` | Stage 2/3 记忆实验的**唯一权威规格** | 可改 |
@@ -146,7 +146,7 @@ cd ~/EmbodiedBAO-AS- && python3 tools/parse_agent_logs.py --csv logs_reasoning.c
 # 冒烟验收
 cd ~/EmbodiedBAO-AS- && python3 tools/verify_stage1_lab.py --log smoke_1.1.log --model gpt-4o-mini
 
-# 全部测试（9 套件，实测 193 项）
+# 全部测试（9 套件，实测 194 项）
 # ★ 必须用 Isaac 解释器：系统 python3 没有 Pillow，test_bao_persistence 会 FAIL（实测）
 cd ~/EmbodiedBAO-AS- && for s in test_bao_geometry test_bao_integration test_bao_memory test_bao_scenes test_bao_memory_runner test_bao_persistence test_bao_parsing test_bao_health test_bao_assets; do printf '%-28s ' $s; /home/ybh/isaacsim/python.sh $s.py 2>/dev/null | tail -1; done
 
@@ -563,7 +563,7 @@ curl -s -m 30 -o /tmp/gw.json -w "HTTP %{http_code}\n" -X POST http://35.220.164
 **新增测试套件**：`test_bao_parsing.py`（9 项）、`test_bao_health.py`（5 项）、`tools/check_tags.py`。
 当时九个套件共 **151 项全过**：geometry 37 / integration 20 / persistence 13 / memory 29 /
 memory_runner 17 / scenes 18 / assets 3 / parsing 9 / health 5。
-（**当前值是 193 项：geometry 40、scenes 44、integration 27、persistence 16** —— 见 §2 与 §10，那里的数字以代码为准。）
+（**当前值是 194 项：geometry 40、scenes 44、integration 28、persistence 16** —— 见 §2 与 §10，那里的数字以代码为准。）
 
 **审计工具的一处修正**：`tools/check_field_names.py` 把同义词表的**键**（`move_forward`、`walk`…）
 当成"协议里不存在的动作名"报错。已加豁免：字典的键、其值是合法动作名，那是别名表不是动作引用。

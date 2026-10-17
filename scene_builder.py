@@ -360,17 +360,49 @@ def _bind(stage: Any, prim_path: str, material: Any) -> bool:
 
 
 def _disable_collision(prim: Any) -> None:
-    """Say so explicitly, rather than relying on not having added a collider.
+    """Turn off collision and rigid-body simulation on this prim AND everything it references in.
 
-    A missing collider and an explicitly disabled one look the same to PhysX but not to
-    someone reading the stage, and this property is the one the whole design rests on.
+    THE SUBTREE MATTERS.  This used to write `physics:collisionEnabled = False` on the single prim it
+    was given -- which, for a prop, is an Xform that only REFERENCES the asset. The attribute has no
+    effect there even as written:
+      * `physics:collisionEnabled` is a CollisionAPI property, so on a prim without CollisionAPI it is
+        ignored; and
+      * the geometry that actually carries colliders is in the referenced subtree, whose own
+        CollisionAPI and RigidBodyAPI were left untouched.
+
+    So "dressing never collides" was false: a stage built from one scene still had 42 enabled colliders
+    and 11 enabled rigid bodies under /World/Dressing, including a free dynamic container that falls off
+    the table it was placed on. The benchmark is kinematic and decides legality analytically, so this did
+    not corrupt a score -- but the design invariant was not real, and a scene that moves on its own is
+    not a static stimulus.
+
+    RigidBodyAPI is disabled too, because removing a collider from a body that is still simulated leaves
+    a body that falls through the floor.
     """
     try:
-        from pxr import Sdf
+        from pxr import Sdf, Usd, UsdPhysics
 
-        prim.CreateAttribute("physics:collisionEnabled",
-                             Sdf.ValueTypeNames.Bool, False).Set(False)
-    except Exception:  # noqa: BLE001
+        def _off(target: Any) -> None:
+            if not target or not target.IsValid():
+                return
+            if target.HasAPI(UsdPhysics.CollisionAPI):
+                UsdPhysics.CollisionAPI(target).CreateCollisionEnabledAttr().Set(False)
+            elif target.HasAttribute("physics:collisionEnabled"):
+                target.GetAttribute("physics:collisionEnabled").Set(False)
+            else:
+                target.CreateAttribute(
+                    "physics:collisionEnabled", Sdf.ValueTypeNames.Bool, False
+                ).Set(False)
+            if target.HasAPI(UsdPhysics.RigidBodyAPI):
+                UsdPhysics.RigidBodyAPI(target).CreateRigidBodyEnabledAttr().Set(False)
+            elif target.HasAttribute("physics:rigidBodyEnabled"):
+                target.GetAttribute("physics:rigidBodyEnabled").Set(False)
+
+        _off(prim)
+        for descendant in Usd.PrimRange(prim):
+            if descendant != prim:
+                _off(descendant)
+    except Exception:  # noqa: BLE001 - a stage that cannot be walked must not stop placement
         pass
 
 

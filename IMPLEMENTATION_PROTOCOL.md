@@ -139,7 +139,7 @@ python tools/audit_dressing.py            # 必须: no problems found
 python tools/prove_audit_fails.py         # 必须: all 4 planted fault(s) were caught
 python tools/verify_docs.py               # 必须: all hold
 python tools/check_field_names.py         # 必须: 3 个 ok
-for f in test_bao_*.py; do python $f 2>/dev/null | tail -1; done   # 必须 0 失败，合计 193 项
+for f in test_bao_*.py; do python $f 2>/dev/null | tail -1; done   # 必须 0 失败，合计 194 项
 
 git status --short                        # 先看清有哪些改动
 git add <你改的那几个文件>                  # ★ 逐条列名，不要 -A / -u / .

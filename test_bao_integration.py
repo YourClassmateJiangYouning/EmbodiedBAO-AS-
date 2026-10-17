@@ -2045,6 +2045,88 @@ def test_analysis_does_not_import_the_simulator() -> None:
     print("[ok] analysis imports neither environment nor the simulator")
 
 
+def test_a_real_baoenv_scores_the_way_the_fake_does() -> None:
+    """Exercise the REAL BAOEnv, which no test did.
+
+    Every other test in this repository drives FakeBAOEnv. A grep over test_bao_*.py finds 21
+    `BAOEnv(` occurrences and all 21 are `FakeBAOEnv(` -- zero real ones -- so check_success,
+    reset_scene's marker rule and execute_action were only ever tested against the stand-in. That is
+    fine for the wiring, and it is not evidence that the environment behaves as the stand-in assumes.
+
+    This needs Isaac Sim, and constructing BAOEnv needs SimulationApp, which costs about two minutes.
+    Under an interpreter without the simulator it raises Skipped rather than passing, so a run that
+    cannot do it says so instead of looking green.
+
+    OPT-IN, AND WHY. Starting SimulationApp inside the suite takes about 160 s and Kit takes over stdout,
+    so its prints are swallowed and the rest of the suite cannot be observed; a version that tried it
+    unconditionally produced no output at all and looked like a hang. A test that can silently kill the
+    run it belongs to is worse than no test, so this one runs only when BAO_RUN_ISAAC_TESTS=1 is set:
+
+        BAO_RUN_ISAAC_TESTS=1 /home/ybh/isaacsim/python.sh test_bao_integration.py
+
+    and skips otherwise. Its own behaviour under Isaac has NOT been confirmed by this repository yet --
+    treat the first opt-in run as the experiment, not as a formality.
+    """
+    if os.environ.get("BAO_RUN_ISAAC_TESTS") != "1":
+        raise Skipped(
+            "opt-in: set BAO_RUN_ISAAC_TESTS=1 to build a real BAOEnv (about 160 s of SimulationApp, "
+            "and Kit takes over stdout)"
+        )
+    try:
+        from isaacsim import SimulationApp
+    except Exception as exc:  # noqa: BLE001 - absent simulator, not a failure
+        raise Skipped(
+            f"a real BAOEnv needs Isaac Sim ({type(exc).__name__}: {exc})"
+        ) from exc
+
+    import environment
+
+    # SimulationApp FIRST, then the availability check.  `isaacsim.core` only becomes importable once
+    # the app has started, so checking before it always reports False -- which is exactly what
+    # environment._HAS_ISAAC_SIM used to latch on, and why isaac_available() re-checks rather than
+    # remembering. Testing it in the wrong order here made the whole test skip under the Isaac
+    # interpreter, i.e. a green run that exercised nothing.
+    simulation_app = SimulationApp({"headless": True})
+    try:
+        if not environment.isaac_available():
+            raise Skipped("Isaac Sim did not become importable even after SimulationApp started")
+        env = environment.BAOEnv(simulation_app, task_dict={"headless": True})
+        try:
+            # A real environment must build a stage the agent can act in, and the three methods the
+            # fake stands in for must exist and behave: the channel width the ladder says, a success
+            # predicate that is False at the start pose, and an action that moves the robot.
+            check(
+                abs(env.get_channel_width() - environment.LEVEL_CHANNEL_WIDTHS[0]) < 1e-9,
+                f"the real environment started at {env.get_channel_width()} m, not Level 0's "
+                f"{environment.LEVEL_CHANNEL_WIDTHS[0]} m",
+            )
+            check(
+                env.check_success() is False,
+                "the real environment reports success before the robot has moved",
+            )
+            start = float(env.get_robot_state()["position"][0])
+            result = env.execute_action("forward")
+            check(
+                result.legal,
+                f"a forward step from the start pose is not legal: {result.feedback}",
+            )
+            moved = float(env.get_robot_state()["position"][0]) - start
+            check(
+                moved > 0.0,
+                f"a forward step moved the robot {moved:+.3f} m along x, so the frame disagrees with "
+                "the action name",
+            )
+        finally:
+            env.close()
+    finally:
+        # THE APP IS DELIBERATELY NOT CLOSED.  simulation_app.close() shuts Kit down and ends the
+        # process, so the suite's own summary -- and every test after this one -- never ran: the first
+        # version of this test produced no output at all, which looked like a hang. The process exits
+        # when it exits; leaving the app up is what lets the rest of the suite finish.
+        pass
+    print("[ok] a real BAOEnv builds, starts, rejects an immediate success and moves forward")
+
+
 def main() -> int:
     tests = [
         test_episode_record_contract,
@@ -2056,6 +2138,7 @@ def main() -> int:
         test_the_threshold_family_wise_error_rate_is_controlled,
         test_analysis_recovers_threshold,
         test_choose_tag_counts_the_episodes_it_ranks_by,
+        test_a_real_baoenv_scores_the_way_the_fake_does,
         test_run_shaping_flags_reach_the_tag,
         test_analysis_does_not_import_the_simulator,
         test_analysis_excludes_episodes_with_no_valid_call,

@@ -1303,7 +1303,10 @@ def test_no_module_asks_pxr_for_something_it_does_not_have() -> None:
                 # into prim INSTANCE PROTOTYPES.  A plain traversal does not, which is why the
                 # prop-colour binding reported "flat material on 0 gprim(s)" -- the park's props are
                 # instanced and their meshes live in prototypes, so there was nothing to bind to.
-                "TraverseInstanceProxies"},
+                "TraverseInstanceProxies",
+                # _disable_collision now walks the whole referenced subtree, because the colliders that
+                # matter belong to the asset's own gprims and not to the Xform that references it.
+                "PrimRange"},
         "UsdGeom": {
             "Cube", "Sphere", "Cylinder", "Cone", "Capsule", "Mesh", "Xform", "Scope",
             "Tokens", "SetStageUpAxis", "Xformable", "XformOp", "BBoxCache", "Gprim",
