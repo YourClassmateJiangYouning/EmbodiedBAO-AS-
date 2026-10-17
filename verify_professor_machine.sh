@@ -71,12 +71,23 @@ assert e.ROOM_WIDTH_Z == 5.0
 assert e.ROBOT_START_POS[0] == 0.5
 assert e.MOVE_STEP == 0.75
 assert e.WALL_X == 8.0
-assert e.SUCCESS_X == 11.0
+# SUCCESS_X IS 8.75, AND THIS SCRIPT WAS THE LAST PLACE STILL ASSERTING 11.0.
+#
+# It changed on 2026-09-25 (commit 5215dc2, "score success at the wall, not three metres past it")
+# together with environment.py, README.md, PROFESSOR_TEST_CONTEXT.md and both test suites.  This
+# verifier was missed, so it asserted the retired value and failed on a CORRECT checkout -- which
+# means it told the professor not to start the experiment, every time.
+#
+# 8.75 is one stride past the wall plane: WALL_X 8.0 + MOVE_STEP 0.75.  The old 11.0 asked for three
+# metres and four strides beyond the opening, and that scored a model that had ALREADY passed the
+# opening and then stopped as a failure -- the extra travel measured patience, not the affordance.
+# test_bao_geometry.py:1706 asserts SUCCESS_X == WALL_X + MOVE_STEP, so the two cannot drift.
+assert e.SUCCESS_X == 8.75
 assert abs((e.WALL_X-e.ROBOT_START_POS[0])/e.MOVE_STEP - 10.0) < 1e-12
-assert abs((e.SUCCESS_X-e.WALL_X)/e.MOVE_STEP - 4.0) < 1e-12
-assert abs((e.ROOM_LENGTH_X-e.SUCCESS_X)/e.MOVE_STEP - 20/3) < 1e-12
-print("room=16x5, start=.5, wall=8, goal>=11, far wall=16, step=.75")
-print("10 forward moves to wall; 4 more to goal; 6.67-step run-out")
+assert abs((e.SUCCESS_X-e.WALL_X)/e.MOVE_STEP - 1.0) < 1e-12
+assert abs((e.ROOM_LENGTH_X-e.SUCCESS_X)/e.MOVE_STEP - 29/3) < 1e-12
+print("room=16x5, start=.5, wall=8, goal>=8.75, far wall=16, step=.75")
+print("10 forward moves to wall; 1 more to goal; 9.67-step run-out")
 '
 
 section "2. offline regression suites"
