@@ -289,10 +289,12 @@ SUCCESS_X = 8.75
 # its 0.220 m thickness, so anything below A/S 0.386 cannot be passed at ANY torso
 # angle.  0.35 and 0.30 were considered as "must fail" controls and left out by the
 # researcher's decision.  See tools/ladder_proposal.py for the derivation.
-_APERTURE_RATIOS: Tuple[float, ...] = (
-    2.0, 1.9, 1.8, 1.7, 1.6, 1.5, 1.4, 1.3, 1.2, 1.1, 1.0, 0.9,
-    0.8, 0.7, 0.6, 0.5, 0.4,
-)
+# THE LADDER IS DEFINED IN protocol.py AND IMPORTED HERE.  It is the experiment's independent
+# variable, not a property of the simulator, and experiments.py needs its length without importing
+# this module (see protocol._APERTURE_RATIOS for the reasoning).  Everything below still uses these
+# three names, and other modules still import them from here, so there is one definition and no
+# second copy to drift.
+from protocol import _APERTURE_RATIOS, ROBOT_SHOULDER_WIDTH, LEVEL_CHANNEL_WIDTHS
 
 # Approximate step length for a 1.80 m adult man is defined in protocol.py and
 # imported above, together with the action list, so the controls have one home.
@@ -351,23 +353,18 @@ ROBOT_CAMERA_FOCAL = 13.36
 ROBOT_CAMERA_SENSOR_WIDTH_MM = 20.955
 ROBOT_CAMERA_SENSOR_HEIGHT_MM = 20.955 * 9.0 / 16.0
 
-# H1 kinematic constants (used for analytic collision checks).  Defined before the
-# A/S ladder below because the ladder is derived from the shoulder width.
-ROBOT_SHOULDER_WIDTH = 0.57
+# H1 kinematic constants (used for analytic collision checks).  ROBOT_SHOULDER_WIDTH is imported
+# from protocol.py at the top of this section together with the ladder, because the ladder is derived
+# from it and the two must not be set independently.
 ROBOT_TORSO_THICKNESS = 0.22
 ROBOT_BODY_CENTER_Y = 0.9
 ROBOT_BODY_HALF_HEIGHT = 0.9
 ROBOT_HEAD_HEIGHT = 1.55
 MODEL_YAW_OFFSET_DEG = 0.0
 
-# The channel widths ARE the derived quantity: see _APERTURE_RATIOS above, which
-# is where the ladder is documented.  Built here because it needs the shoulder
-# width, and the recorded `a_s_ratio` is computed back from it, so the geometry
-# and the reported ratio cannot drift apart.
-LEVEL_CHANNEL_WIDTHS: Dict[int, float] = {
-    level: round(ROBOT_SHOULDER_WIDTH * ratio, 6)
-    for level, ratio in enumerate(_APERTURE_RATIOS)
-}
+# LEVEL_CHANNEL_WIDTHS is imported from protocol.py as well -- it is the ladder, and it is built
+# there from the same shoulder width.  This module only re-exports it, so `from environment import
+# LEVEL_CHANNEL_WIDTHS` keeps working and there is exactly one definition.
 
 # Now that the ladder exists, the bare default is Level 0 -- the widest rung, which is what "the
 # default level" means everywhere else (main.py's --level default is 0).  See the note at WALL_X for

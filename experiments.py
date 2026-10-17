@@ -38,7 +38,7 @@ Each step follows the canonical loop:
     result = env.execute_action(action)
     passed = env.check_success()
 
-The module only imports Isaac Sim inside ``main()``, so prompt building, action
+The module imports Isaac Sim only inside ``main()`` -- and, since 2026-10-16, imports nothing from environment.py at module level at all, so importing this module before SimulationApp exists no longer latches the Isaac flag off, so prompt building, action
 parsing and record shaping can be unit-tested with plain Python.
 
 Expected ``ai_agent`` interface (one of):
@@ -72,15 +72,25 @@ from persistence import (
     load_json_file,
     sanitize_tag,
 )
-from environment import (
-    ACTIONS,
-    LEVEL_CHANNEL_WIDTHS,
-    SUCCESS_X,
-    WALL_X,
-    TURN_STEP_DEG,
-    a_s_ratio,
-    level_channel_width,
-)
+# NOTHING IS IMPORTED FROM environment.py AT MODULE LEVEL.  It imports the simulator, and the Isaac
+# modules only exist once SimulationApp has started, so `import experiments` used to decide -- wrongly,
+# permanently -- that Isaac was unavailable, and the scene could then never be built in that process.
+# The two names this module needs at import time are pure and live in protocol.py; the rest are
+# fetched on FIRST USE through _env_attr below.
+from protocol import ACTIONS, LEVEL_CHANNEL_WIDTHS
+
+
+def _env_attr(name: str) -> Any:
+    """An environment.py attribute, imported on first use instead of at module import.
+
+    Deferring it is the point: importing environment.py before SimulationApp exists is legal but
+    latches its Isaac flag off, and this module is imported by tools, tests and by `python
+    experiments.py` before any app is created.  Called a handful of times per episode, so the repeated
+    attribute lookup costs nothing measurable.
+    """
+    import environment  # noqa: PLC0415 - deliberately lazy, see the comment above
+    return getattr(environment, name)
+
 # The yaw fold and the sideways band are defined once, in protocol.py, which is pure
 # text and importable before SimulationApp exists.  They are imported under this
 # module's historical private names so that every caller -- including the tests that
@@ -236,7 +246,7 @@ def _env_channel_width(env: Any, level: int) -> float:
             return float(getter())
         except Exception:
             pass
-    return level_channel_width(level)
+    return _env_attr("level_channel_width")(level)
 
 
 def _env_a_s_ratio(env: Any, channel_width: float) -> float:
@@ -247,7 +257,7 @@ def _env_a_s_ratio(env: Any, channel_width: float) -> float:
             return float(getter())
         except Exception:
             pass
-    return a_s_ratio(channel_width)
+    return _env_attr("a_s_ratio")(channel_width)
 
 
 def _env_passed(env: Any) -> bool:
@@ -257,7 +267,7 @@ def _env_passed(env: Any) -> bool:
         return bool(checker())
     position = getattr(env, "_root_position", None)
     if callable(position):
-        return bool(float(position()[0]) >= SUCCESS_X)
+        return bool(float(position()[0]) >= _env_attr("SUCCESS_X"))
     return False
 
 
@@ -623,7 +633,7 @@ class BAOExperimentRunner:
     ) -> List[Dict[str, Any]]:
         """Run ``episodes`` independent episodes at one channel width."""
         episodes = self.episodes_per_level if episodes is None else int(episodes)
-        requested_width = level_channel_width(level)
+        requested_width = _env_attr("level_channel_width")(level)
         self.env.set_channel_width(requested_width)
         built_width = _env_channel_width(self.env, level)
         ratio = _env_a_s_ratio(self.env, built_width)
@@ -871,7 +881,7 @@ class BAOExperimentRunner:
             if obstacle_collision:
                 wall_collision_count += 1
             if action_legal and action_taken in ("turn_left", "turn_right"):
-                total_rotation += TURN_STEP_DEG
+                total_rotation += _env_attr("TURN_STEP_DEG")
                 if first_turn_step is None:
                     first_turn_step = step
             if first_sideways_step is None and _is_sideways_yaw(torso_rotation):
@@ -882,7 +892,7 @@ class BAOExperimentRunner:
             # plane, not three metres later at the success plane: a model that
             # rotates back to face forward after getting through -- which is what
             # a person does -- would otherwise be scored as never having turned.
-            if passage_sideways is None and float(position[0]) >= WALL_X:
+            if passage_sideways is None and float(position[0]) >= _env_attr("WALL_X"):
                 passage_sideways = bool(_is_sideways_yaw(torso_rotation))
                 passage_rotation_deg = float(torso_rotation)
 

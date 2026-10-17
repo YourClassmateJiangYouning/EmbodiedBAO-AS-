@@ -30,7 +30,7 @@ which is exactly what the agent must judge from the image.
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 # ---------------------------------------------------------------------------
 # The action space and the step length
@@ -136,6 +136,34 @@ ACTIONS = [
 #     body-frame translation, where a turn also redirected the walk.
 # ---------------------------------------------------------------------------
 PROTOCOL_TAG = "v8-actions-flipped"
+
+# ---------------------------------------------------------------------------
+# The A/S ladder -- the benchmark's independent variable
+# ---------------------------------------------------------------------------
+# A/S is channel width divided by shoulder width, so the ladder is DEFINED as ratios and the widths
+# follow.  It lives HERE, with the protocol, for two reasons:
+#
+#   1. It is part of the experiment's design, not of the simulator.  experiments.py needs its LENGTH
+#      to size a sweep (DEFAULT_LEVELS) and to validate --episodes; importing environment.py for that
+#      pulled the whole simulator import into every process that only wanted the ladder, which is how
+#      `import experiments` used to latch the Isaac import off before SimulationApp existed.
+#   2. environment.py derives the actual channel geometry from these numbers and RE-EXPORTS all three
+#      names, so every existing `from environment import LEVEL_CHANNEL_WIDTHS` keeps working.  There
+#      is still exactly one definition; this is where it is.
+#
+# The 17 ratios and the reasoning behind each plateau are documented at length above environment.py's
+# geometry section; the values are duplicated here as the single source and imported back there.
+_APERTURE_RATIOS: Tuple[float, ...] = (
+    2.0, 1.9, 1.8, 1.7, 1.6, 1.5, 1.4, 1.3, 1.2, 1.1, 1.0, 0.9,
+    0.8, 0.7, 0.6, 0.5, 0.4,
+)
+
+ROBOT_SHOULDER_WIDTH = 0.57
+
+LEVEL_CHANNEL_WIDTHS: Dict[int, float] = {
+    level: round(ROBOT_SHOULDER_WIDTH * ratio, 6)
+    for level, ratio in enumerate(_APERTURE_RATIOS)
+}
 
 # ---------------------------------------------------------------------------
 # Action space
