@@ -189,6 +189,11 @@ def main() -> int:
                 printed = True
     if not printed:
         print("  (no rate-limit or balance header was sent by the gateway)")
+    # THE EXIT CODE IS THE POINT OF A GATE.  This returned 0 unconditionally -- including right after
+    # the "VERDICT: every model failed" branch -- so verify_professor_machine.sh, which runs it as a
+    # check, could never fail on a dead key.  A gate that cannot fail is a light that is always green.
+    if not ok:
+        return 1
     return 0
 
 

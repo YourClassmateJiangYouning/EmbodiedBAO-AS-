@@ -2656,8 +2656,14 @@ def _smoke_test() -> None:
     # while still exiting 0, so the launcher reported it as a pass.
     turns = int(round(75.0 / TURN_STEP_DEG))
     actions = ["turn_left"] * turns + ["forward"] * 14
+    legal_count = 0
+    succeeded = False
     for action in actions:
         result = env.execute_action(action)
+        if result.legal:
+            legal_count += 1
+        if result.success:
+            succeeded = True
         print(
             f"[smoke] {action:11s} legal={result.legal} "
             f"feedback={result.feedback} "
@@ -2665,6 +2671,23 @@ def _smoke_test() -> None:
             f"success={result.success}"
         )
     env.close()
+    # IT USED TO PRINT AND RETURN, WHICH IS NOT A TEST.  verify_professor_machine.sh cited this as
+    # evidence that a real Isaac scene could be built and scripted through, while the script exited 0
+    # whatever happened -- and it did exactly that for a stretch when the route above was a body-frame
+    # sequence that walked into the side wall and never left the room.  A smoke test that cannot fail
+    # certifies nothing, so the two conditions it names are now checked.
+    if legal_count == 0:
+        raise SystemExit(
+            "[smoke] FAILED: not one action was legal, so the scene built but the robot could not act "
+            "in it. This is what a mismatched frame or a wall in the wrong place looks like."
+        )
+    if not succeeded:
+        raise SystemExit(
+            f"[smoke] FAILED: {legal_count}/{len(actions)} actions were legal but the robot never "
+            f"reached the goal at x={SUCCESS_X} m. Walking the scripted route should succeed; if it "
+            "does not, the geometry and the action semantics disagree."
+        )
+    print(f"[smoke] PASSED: {legal_count}/{len(actions)} legal and the goal was reached")
 
 
 if __name__ == "__main__":

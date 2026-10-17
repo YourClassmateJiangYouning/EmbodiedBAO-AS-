@@ -92,6 +92,10 @@ def main() -> int:
     print(f"endpoint {base_url}")
     print(f"model    {args.model}")
     print()
+    # THE EXIT CODE IS THE POINT OF A GATE.  This tool printed "if the harness-shaped call parses, the
+    # model is usable" and then returned 0 whatever it had seen -- so verify_professor_machine.sh, which
+    # runs it as a check, passed on a model that answered nothing parseable at all.
+    any_valid = False
     for label, extra in trials:
         body = {
             "model": args.model,
@@ -104,6 +108,7 @@ def main() -> int:
         parsed = parse_action_json(result["text"]) if result["state"] == "OK" else None
         action = (parsed or {}).get("action")
         ok = parsed is not None and action in protocol.ACTIONS
+        any_valid = any_valid or ok
         print(f"{label}")
         print(f"  state={result['state']:<8} {result['seconds']:>6.1f}s  "
               f"finish={result['finish']}  tokens={usage.get('total_tokens')}")
@@ -113,7 +118,7 @@ def main() -> int:
 
     print("if the harness-shaped call parses, the model is usable regardless of")
     print("what a capped probe says.")
-    return 0
+    return 0 if any_valid else 1
 
 
 if __name__ == "__main__":

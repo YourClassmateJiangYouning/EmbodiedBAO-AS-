@@ -583,6 +583,26 @@ def main() -> int:
             write_png(os.path.join(args.outdir, f"{args.scene}_sheet_iso.png"),
                       tile(iso_images, columns=len(iso_images)))
         print(f"[preview] wrote {len(os.listdir(args.outdir))} files to {args.outdir}/")
+        # THE LINEARITY GUARD IS AUDITED HERE, IN THE PATH THAT ACTUALLY RUNS IT.
+        #
+        # NON_LINEAR_BOUND_ASSETS and NON_LINEAR_BOUND_UNMEASURED are written only while a prop is
+        # being placed, and the only thing that ever READ them was a unit test that does not run the
+        # placement -- so on its own that check was vacuously true: an empty set, always, on every
+        # checkout.  A render is what exercises the probe on all 58 props, so the audit belongs at the
+        # end of one.
+        import scene_builder as _sb
+        _bad = sorted(getattr(_sb, "NON_LINEAR_BOUND_ASSETS", ()))
+        _unmeasured = int(getattr(_sb, "NON_LINEAR_BOUND_UNMEASURED", 0))
+        print(
+            f"[preview] linearity probe: {len(_bad)} non-linear asset(s), "
+            f"{_unmeasured} unmeasurable probe(s)"
+        )
+        if _bad or _unmeasured:
+            print(
+                f"[preview] FAILED: the per-axis fit cannot be trusted -- non-linear: {_bad or 'none'}"
+                f", unmeasured probe(s): {_unmeasured}. Every size in this report is suspect."
+            )
+            return 1
         return 0
     except Exception:  # noqa: BLE001
         # Print before closing: env.close() in the finally-path is what used to swallow
