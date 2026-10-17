@@ -90,7 +90,7 @@ that check is reported as `rotation_gradedness` in the threshold table.
 ```
 x : forward   (16 m room; wall at x = 8.0, robot starts at x = 0.5)
 y : up        (ground at y = 0)
-z : lateral   (opening centred at z = 0, room spans z in [-2.5, 2.5], +z is the robot's right)
+z : lateral   (opening centred at z = 0, room spans z in [-2.5, 2.5], -z is the robot's right)
 ```
 
 Two frames are in play and they are easy to mix up, which has already cost one silent
@@ -210,7 +210,7 @@ surface that carries the opening, and retexturing it would change the task.
 | Action | Effect |
 | :--- | :--- |
 | `forward` / `backward` | walk **0.75 m** toward / away from the far wall |
-| `left` / `right` | sidestep **0.75 m** to the walker's right (+z) / left (-z) |
+| `left` / `right` | sidestep **0.75 m** to the walker's right (-z) / left (+z) |
 | `turn_left` / `turn_right` | rotate the torso **15°**; view unchanged |
 | `look_left` / `look_right` | one-frame glance **30°** off the walking direction |
 | `look_down` | one-frame glance **45°** down: the only view of its own body |
@@ -543,8 +543,8 @@ session does not kill it; `run_all_models.sh` still needs `tmux` or `nohup`. Eve
 as it is scored, so an interruption costs at most the episode in flight. Afterwards:
 
 ```bash
-python analysis.py                     # every model found under results/
-python analysis.py --tag gemini-v1     # one exact run
+python analysis.py                     # every model, ONE current-protocol tag per model
+python analysis.py --tag gemini-v1     # one exact run tag; use this to choose that tag explicitly
 ```
 
 **Run this before every sweep**, because `main.py`'s own preflight
@@ -897,17 +897,17 @@ is versioned now — do not delete it, and do not regenerate it in place.
 
 ## Verification without Isaac Sim
 
-Everything that can be decided without a renderer runs on plain Python. **176 checks
+Everything that can be decided without a renderer runs on plain Python. **184 checks
 across nine suites**, counted at the time of writing rather than remembered (`grep -c
 '^def test_' test_bao_*.py`):
 
 ```bash
-python test_bao_geometry.py       # 37 checks: ladder, collision gate, routes, colours, prompt
-python test_bao_integration.py    # 20 checks: full protocol, tagged runs, CLI flags, against a mock environment
+python test_bao_geometry.py       # 40 checks: ladder, collision gate, routes, colours, prompt
+python test_bao_integration.py    # 22 checks: full protocol, tagged runs, CLI flags, against a mock environment
 python test_bao_memory.py         # 29 checks: the Stage 2 measures and prompts, against an independent model and the real gate
-python test_bao_scenes.py         # 41 checks: the Stage 1 catalogue, all arithmetic, no simulator
+python test_bao_scenes.py         # 43 checks: the Stage 1 catalogue, all arithmetic, no simulator
 python test_bao_memory_runner.py  # 17 checks: the Stage 2 runner end to end against a mock environment and a scripted agent
-python test_bao_persistence.py    # 13 checks: interrupt and corruption safety of every artefact written
+python test_bao_persistence.py    # 14 checks: interrupt and corruption safety of every artefact written
 python test_bao_parsing.py        #  9 checks: the reply parser, including shapes once discarded
 python test_bao_health.py         #  5 checks: the runner stops a model whose every call is failing
 python test_bao_assets.py         #  5 checks: every named material exists, `stage1.1` stays bare
@@ -923,12 +923,16 @@ actually run under. On that machine, run the suites with the Isaac interpreter:
 /home/ybh/isaacsim/python.sh test_bao_persistence.py
 ```
 
-The one check that varies is `--save_obs`: under an interpreter without Pillow it reports
-`[skip]` and still asserts the thing that matters -- that a frame the encoder cannot
-serialise does not end a scored episode -- because `_save_observation` imports PIL inside
-the function and catches its own failure. (`ai_agent.encode_image`'s Pillow import is
-unconditional, which is why the sweeps must run under the Isaac interpreter and not under
-`python3`.)
+The one check that varies is `--save_obs`: under an interpreter without Pillow it is
+reported as `[skip]` and is NOT counted as passed -- the suite prints
+"13/14 ... passed, 1 SKIPPED (not run)". It used to return early and still be counted
+in "all 14 passed", and this paragraph used to claim the skipped run "still asserts the
+thing that matters"; it does not, because the whole test body (including the assertion
+that a frame the encoder cannot serialise does not end a scored episode) is behind the
+Pillow import. `_save_observation` does import PIL inside the function and catch its own
+failure, but that path is only exercised when Pillow is present.
+(`ai_agent.encode_image`'s Pillow import is unconditional, which is why the sweeps must
+run under the Isaac interpreter and not under `python3`.)
 ```
 
 The scene suite is the one that keeps the skins honest, and every one of its checks is
@@ -938,7 +942,7 @@ arithmetic — no rendered frame is inspected:
 * every shape inside the 0.90 m bounding box, and no in-plane part thinner than a fifth
   of it, because the marker is about 20 px from the start pose;
 * no dressing item overlaps the opening or the marker in **any** of the 17 start views
-  (544 item × width projections), and no wall item protrudes more than 0.20 m;
+  (1071 item × width projections), and no wall item protrudes more than 0.20 m;
 * every item non-collidable and outside the walking band (`|z| >= 1.5` floor,
   `>= 0.9` wall);
 * no dressing item borrows one of its scene's five marker colours;

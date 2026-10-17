@@ -310,7 +310,12 @@ def main() -> int:
          f"only {len(present_tests)}/{len(TEST_FILES)} test suites exist"
          f" (missing: {', '.join(n for n in TEST_FILES if n not in per_file)})",
          f"{len(TEST_FILES)} test suites present"),
-        (measured_total == 176, f"the suites register {measured_total} checks, docs say 176",
+        # NOT `measured_total == 176`: a hardcoded expected total is the same
+        # restate-the-constant defect the numeric checks above were written to
+        # avoid, and it made every added check a doc-tool failure.  The documents
+        # are compared against the measured total on the next fact; here it is
+        # enough that checks were registered at all.
+        (measured_total > 0, "the suites register no checks at all",
          f"the suites register {measured_total} checks"),
         (bool(documented_totals) or not total_owners,
          "no document states an offline-check total any more",
@@ -360,8 +365,11 @@ def main() -> int:
             ))
     if have_readme:
         readme_checks = stated_counts(readme, (README_CHECK_RE,))
-        facts.append(_num(bool(readme_checks) and all(value == 176 for value in readme_checks),
-                          readme_checks, 176, "README.md", "offline checks"))
+        # Compared against the MEASURED total, not a hardcoded 176: a document was
+        # allowed to state the wrong number as long as it stated this one.
+        facts.append(_num(bool(readme_checks)
+                          and all(value == measured_total for value in readme_checks),
+                          readme_checks, measured_total, "README.md", "offline checks"))
     # Each entry carries its own success wording, because printing the FAILURE text next to "OK " reads
     # as though the check failed -- which is exactly what the first version of this script did.
     for ok, failure, success in facts:

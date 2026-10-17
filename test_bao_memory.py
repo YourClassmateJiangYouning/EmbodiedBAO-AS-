@@ -1377,6 +1377,10 @@ def main() -> int:
         except Failure as exc:
             failures += 1
             print(f"[FAIL] {test.__name__}: {exc}")
+        except Exception as exc:  # noqa: BLE001 - report and continue
+            # Failure-only used to abort the whole suite with no summary.
+            failures += 1
+            print(f"[ERROR] {test.__name__}: {type(exc).__name__}: {exc}")
     print()
     if failures:
         print(f"{failures}/{len(tests)} checks FAILED")

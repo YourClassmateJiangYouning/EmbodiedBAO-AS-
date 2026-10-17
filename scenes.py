@@ -6,7 +6,7 @@ to look like an everyday place, and the five repeats of a (scene, model, level) 
 five different markers rather than five identical ones.  **Stage 2** is the memory/note
 experiment (``memory_protocol.py``, spec in ``STAGE23_DESIGN.md``).  **Stage 3** is the
 follow-up phases of that same memory experiment -- a second passage back through a narrow
-opening and a wide-then-narrow control -- and ``STAGE23_DESIGN.md`` 搂10 lists both under
+opening and a wide-then-narrow control -- and ``STAGE23_DESIGN.md`` §10 lists both under
 "explicitly not doing".  It is NOT the scene-variant matrix: those ten variants change the
 marker, the far wall, the floor and the prompt, so they are Stage 1 variables, and they
 live in ``STAGE1_SCENE_VARIANTS.md``.
@@ -416,11 +416,21 @@ PROP_NEEDS_ROTATION = ("FramedPoster.usd",)
 def needs_rotation(asset: Optional[str]) -> bool:
     """Does this asset have to be turned before it can hang flat on a wall?
 
-    True only for the assets in PROP_NEEDS_ROTATION -- those whose THINNEST axis is not their local x.
-    ``place_dressing`` references a prop with translate and scale and never a rotation, so an asset's
-    local x lands on the room's x; a wall item whose thin axis is local y would therefore stand its
-    full length out into the corridor instead of lying flat against the wall.  That is the framed
-    poster exactly: it measures 1.092 m along local x and 0.0524 m along local y.
+    True for the assets in PROP_NEEDS_ROTATION, i.e. those whose THINNEST axis is not
+    their local x AND whose long axis would exceed the 0.20 m protrusion cap if it were
+    left facing the corridor.  ``place_dressing`` references a prop with translate and
+    scale and never a rotation, so an asset's local x lands on the room's x; a wall item
+    whose thin axis is local y would therefore stand its full length out into the
+    corridor instead of lying flat against the wall.  That is the framed poster exactly:
+    it measures 1.092 m along local x and 0.0524 m along local y.
+
+    The membership list IS the rule; the thin-axis test is its motivation, not a second
+    criterion.  The banana is the case that shows why: its thinnest measured axis is
+    slot 2, so the motivation alone would list it, but its long axis (0.1972 m) is under
+    the cap, so it is legal whichever way it faces and is deliberately absent (see the
+    note on its catalogue entry).  ``test_a_declared_size_is_the_size_of_the_prop_it_names``
+    checks the consequence -- anything above a 10x depth-to-thinness ratio that is not
+    in this list is an error.
 
     ``asset`` may be a bare file name or a full path; both resolve.  Matching on the suffix rather than
     on ``os.path.basename`` keeps this module free of an os import it does not otherwise need.
@@ -1406,15 +1416,26 @@ def _install_dressing() -> None:
         #
         # Their four measurements were removed from PROP_MEASUREMENTS on 2026-10-16 as well, so that
         # nothing can put them back by accident; the numbers are kept in the comment there.
-        # A banana against the obstacle wall.  `_dressing_wall` stores `size` UNCHANGED in the
-        # catalogue frame (x, height, lateral); the old (across, tall, thick) reversal and the
-        # `frame="wall"` switch that went with it are gone -- see the helper's docstring.  So this
-        # tuple IS the declared world box, and for a wall item slot 0 is the DEPTH along the wall
-        # normal rather than the measured length.  The asset measures (0.0741, 0.0386, 0.1972) m as
-        # (x, height, lateral); declaring (0.1972, 0.0741, 0.0386) puts the 0.1972 m length ALONG the
-        # wall (room x) and holds the 0.0386 m thickness out of the corridor, which is what makes a
-        # wall item hang flat.  That departure from the measured order is the same exception
-        # PROP_NEEDS_ROTATION records for the poster.
+        # A banana against the obstacle wall.  `_dressing_wall` stores `size`
+        # UNCHANGED in the catalogue frame (x, height, lateral), and for a wall item
+        # slot 0 is the DEPTH ALONG THE WALL NORMAL.  So declaring
+        # (0.1972, 0.0741, 0.0386) hangs the banana with its 0.1972 m long axis
+        # pointing INTO THE CORRIDOR -- centre x = 7.99 - 0.001 - 0.1972/2 = 7.8904,
+        # world x 7.7918..7.9890 -- and only 0.0386 m of it along the wall.  That is
+        # 0.1972 m of protrusion, just under the 0.20 m cap, so the layout is legal;
+        # this comment used to claim the opposite ("puts the 0.1972 m length ALONG
+        # the wall ... holds the 0.0386 m thickness out of the corridor"), which is
+        # what the code does NOT do.
+        #
+        # It is the deliberate PROP_NEEDS_ROTATION exception spelled out below: the
+        # measured order is (x, height, lateral) = (0.0741, 0.0386, 0.1972), and
+        # place_dressing references a prop with translate and scale only -- never a
+        # rotation -- so a wall item whose thin axis is not its local x cannot both
+        # declare the measured order and lie flat.  Unlike the poster (1.092 m, five
+        # times the cap) the banana fits either way, which is why it is tolerated
+        # and only warned about.  (The DRAWN banana is a speck inside this box: that
+        # is the separate prop-fit defect in SCENE_SIZE_AUDIT.md, not an orientation
+        # question.)
         _dressing_wall("banana", "obstacle_wall", (OBSTACLE_WALL_FACE_X, 1.04 + 0.0386 / 2, 1.98),
                        (0.1972, 0.0741, 0.0386), DRESSING_YELLOW,
                        PROP_ROOT + "/YCB/Axis_Aligned/011_banana.usd"),

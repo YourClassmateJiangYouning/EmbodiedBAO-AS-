@@ -7,16 +7,18 @@ here with plain Python:
 1. **Channel ladder**  -- each Level builds exactly the width from the task
    brief and the derived A/S ratio matches the hand-computed value.
 2. **Frontal feasibility** -- a Level must be frontally passable only when the
-   channel is genuinely as wide as the shoulders.  Levels 0-4 pass head-on
-   (Level 4 exactly, with no aim tolerance to spare); Level 5 cannot at any yaw
-   below 75 degrees, so it is the Level that requires a rotation.
-3. **Analytic gate** -- ``_check_wall_collision`` agrees with the closed-form
-   projected-width test, including the critical 0.90 m channel where the
-   shoulders are narrower than the opening.
+   channel is genuinely as wide as the shoulders (A/S >= 1.0 on the 17-rung
+   ladder, A/S 2.0 down to 0.4).
+3. **Analytic gate** -- ``_check_wall_collision``, sampled along the whole
+   approach, agrees with the closed-form projected width
+   ``shoulder |cos t| + torso |sin t|``.  The test this replaced compared the gate
+   to the body's chord AT the wall plane only, which understates the minimum turn
+   by 27 degrees at A/S 0.90; ``test_pose_only_model_understates_the_minimum_turn``
+   is the regression guard.
 4. **Rotation route** -- the route the model is expected to find (rotate the torso
    until it is narrow across the opening, then keep walking forward, because the
-   walking direction does not follow the torso) actually reaches x >= 11.0 m at
-   every Level, and the robot's body box clears the wall panels while doing it.
+   walking direction does not follow the torso) actually reaches the success plane
+   at every Level, and the robot's body box clears the wall panels while doing it.
 5. **Action space and prompt** -- ``reach``/``retreat`` are gone, the camera
    actions keep the legacy 30 degree step, and the prompt is byte-identical
    across Levels and free of geometry leaks.
@@ -42,6 +44,7 @@ import numpy as np
 
 from environment import (
     ACTIONS,
+    BAOEnv,
     BODY_CLEARANCE,
     CAMERA_ACTIONS,
     CAMERA_PITCH_STEP_DEG,
@@ -55,8 +58,13 @@ from environment import (
     TURN_STEP_DEG,
     WALL_THICKNESS,
     WALL_X,
+    _body_axes_xz,
+    _body_forward_vector,
     _check_room_boundary,
     _check_wall_collision,
+    _forward_vector,
+    _isaac_to_user_pos,
+    _rotate_body_xz,
     _translation_path_is_clear,
     _user_to_isaac_pos,
     action_delta,
@@ -76,8 +84,19 @@ from protocol import (
     build_prompt,
 )
 
-# A/S ratios from the task brief, rounded to two decimals.
-EXPECTED_A_S = {0: 1.58, 1: 1.40, 2: 1.30, 3: 1.19, 4: 1.00, 5: 0.79}
+# The measured H1 body, and the absolute channel widths the ladder must build.
+# A/S + shoulder width alone is not enough: LEVEL_CHANNEL_WIDTHS is DERIVED as
+# shoulder * ratio, so a test that only re-derives the ratio passes with any
+# shoulder (a 5.3% error -- 0.600 instead of 0.570 -- left all 38 geometry checks
+# green).  These absolute values are what pin the physical size, and they are the
+# numbers the human comparison depends on.
+EXPECTED_ROBOT_SHOULDER_WIDTH = 0.570
+EXPECTED_ROBOT_TORSO_THICKNESS = 0.220
+EXPECTED_CHANNEL_WIDTHS = {
+    0: 1.140, 1: 1.083, 2: 1.026, 3: 0.969, 4: 0.912, 5: 0.855,
+    6: 0.798, 7: 0.741, 8: 0.684, 9: 0.627, 10: 0.570, 11: 0.513,
+    12: 0.456, 13: 0.399, 14: 0.342, 15: 0.285, 16: 0.228,
+}
 
 ROBOT_START = ROBOT_START_POS.copy()
 
@@ -118,20 +137,40 @@ def test_channel_ladder() -> None:
         f"the ladder has levels {sorted(LEVEL_CHANNEL_WIDTHS)}, expected "
         f"0-{len(expected_ratios) - 1}",
     )
-    for level, expected_ratio in zip(sorted(LEVEL_CHANNEL_WIDTHS), expected_ratios):
+    # The absolute physical values, first: everything below is a ratio, and a ratio
+    # test cannot see the shoulder width at all.  Asserted against the measured H1
+    # numbers the protocol documents, not against environment's own constants
+    # (which is what a mutated import would change).
+    check(
+        abs(ROBOT_SHOULDER_WIDTH - EXPECTED_ROBOT_SHOULDER_WIDTH) < 1e-9,
+        f"shoulder width is {ROBOT_SHOULDER_WIDTH}, the measured H1 is "
+        f"{EXPECTED_ROBOT_SHOULDER_WIDTH}",
+    )
+    check(
+        abs(ROBOT_TORSO_THICKNESS - EXPECTED_ROBOT_TORSO_THICKNESS) < 1e-9,
+        f"torso thickness is {ROBOT_TORSO_THICKNESS}, the measured H1 is "
+        f"{EXPECTED_ROBOT_TORSO_THICKNESS}",
+    )
+    for level, expected_width in EXPECTED_CHANNEL_WIDTHS.items():
         width = level_channel_width(level)
+        check(
+            abs(width - expected_width) < 1e-6,
+            f"level {level}: absolute channel width {width:.4f} m, the design "
+            f"table says {expected_width:.3f} m",
+        )
+    for level, width in sorted(LEVEL_CHANNEL_WIDTHS.items()):
         ratio = a_s_ratio(width)
         check(
-            abs(round(ratio, 2) - expected_ratio) < 1e-9,
+            abs(round(ratio, 2) - expected_ratios[level]) < 1e-9,
             f"level {level}: A/S {ratio:.4f} rounds to {round(ratio, 2)}, "
-            f"expected {expected_ratio}",
+            f"expected {expected_ratios[level]}",
         )
         # The width must be the ratio times the body's own shoulder width, so the
         # apertures are body-scaled exactly as the human studies' are.
         check(
-            abs(width - ROBOT_SHOULDER_WIDTH * expected_ratio) < 1e-9,
-            f"level {level}: width {width} is not {expected_ratio} x the shoulder "
-            f"width {ROBOT_SHOULDER_WIDTH}",
+            abs(width - ROBOT_SHOULDER_WIDTH * expected_ratios[level]) < 1e-9,
+            f"level {level}: width {width} is not {expected_ratios[level]} x the "
+            f"shoulder width {ROBOT_SHOULDER_WIDTH}",
         )
     # Widest first, so a sweep runs from trivially passable to rotation-required.
     widths = [level_channel_width(level) for level in sorted(LEVEL_CHANNEL_WIDTHS)]
@@ -196,23 +235,22 @@ def z_span_at_x(corners: np.ndarray, x: float) -> float:
 FEASIBILITY_EPS = 1e-9
 
 
-def _rect_xz(yaw_deg: float, u: float, v: float) -> Tuple[float, float]:
-    """Map body-local (u = along facing, v = lateral) to world (x, z)."""
-    rad = math.radians(yaw_deg)
-    cos_y, sin_y = math.cos(rad), math.sin(rad)
-    return cos_y * u + sin_y * v, -sin_y * u + cos_y * v
-
-
 def half_z_span_in_x_slab(
     yaw_deg: float, x_lo: float, x_hi: float, samples: int = 4000
 ) -> Optional[float]:
     """Exact half z-extent of the torso rectangle inside an x-interval.
 
-    For a slab thinner than the rectangle, the extreme |z| is attained either
-    at a rectangle corner inside the slab or where a rectangle edge crosses a
-    slab face.  Sweeping all four edges densely covers both cases (and any
-    edge-interior maximum), so this is an independent re-derivation rather than
-    a copy of the gate's separating-axis test.
+    ``x_lo``/``x_hi`` are measured from the body CENTRE.  The body's local +x
+    (the facing: half-extent torso thickness / 2) maps to ``(cos, sin)`` in the
+    world (x, z) plane, and its local +z (the shoulders: half-extent shoulder
+    width / 2) to ``(-sin, cos)``.  That is the ``_yaw_quat`` torso frame -- the
+    gate was corrected to the same frame -- so the two are directly comparable.
+
+    For a slab thinner than the rectangle the extreme |z| is attained either at a
+    rectangle corner inside the slab or where a rectangle edge crosses a slab
+    face.  Sweeping all four edges densely covers both cases (and any
+    edge-interior maximum), so this is an independent re-derivation rather than a
+    copy of the gate's separating-axis test.
     """
     half_t = ROBOT_TORSO_THICKNESS / 2.0 + BODY_CLEARANCE
     half_s = ROBOT_SHOULDER_WIDTH / 2.0 + BODY_CLEARANCE
@@ -231,8 +269,8 @@ def half_z_span_in_x_slab(
     cos_y, sin_y = math.cos(rad), math.sin(rad)
     best: Optional[float] = None
     for u_values, v_values in edges:
-        x = cos_y * u_values + sin_y * v_values
-        z = -sin_y * u_values + cos_y * v_values
+        x = cos_y * u_values - sin_y * v_values
+        z = sin_y * u_values + cos_y * v_values
         inside = (x >= x_lo - 1e-12) & (x <= x_hi + 1e-12)
         if not inside.any():
             continue
@@ -241,83 +279,194 @@ def half_z_span_in_x_slab(
     return best
 
 
-def exact_fits_channel(root_x: float, root_z: float, yaw_deg: float, width: float) -> bool:
-    """Exact passability: does the footprint squeeze through the gap at the wall?
+def silhouette_half_z(yaw_deg: float) -> float:
+    """Half the body's projected width across the opening at this torso angle.
 
-    The panels occupy the x-slab ``[WALL_X - t, WALL_X + t]`` outside
-    ``|z| < w/2``, so the body fits exactly when its z-extent inside that slab
-    stays within the gap.  This is an independent re-derivation of the gate, not
-    a copy of it, so agreement is evidence the collision model is right.
-
-    Touching counts as fitting.  The comparison used to be
-    ``half_span < width/2 - 1e-12``, which made a body exactly as wide as the
-    channel "not fit" and so disagreed with the gate once the gate's tolerance
-    let A/S == 1.00 pass -- at Level 4 the two models reported opposite answers
-    for the same pose.  Since A/S = 1.00 is defined as the width where shoulder
-    and channel are equal, the boundary must be permissive, not exclusive.
+    The closed form ``(shoulder |cos t| + torso |sin t|) / 2``.  For a straight
+    approach through a thin wall this is the binding quantity: it is the widest
+    chord the body presents inside the panel slab, so the body clears an opening
+    of width ``w`` exactly when ``2 * silhouette_half_z(t) <= w``.
     """
-    slab_lo = WALL_X - WALL_THICKNESS / 2.0 - root_x
-    slab_hi = WALL_X + WALL_THICKNESS / 2.0 - root_x
-    half_span = half_z_span_in_x_slab(yaw_deg, slab_lo, slab_hi)
-    if half_span is None:
-        return True
-    return bool(half_span <= width / 2.0 + 1e-12)
+    rad = math.radians(yaw_deg)
+    return (
+        ROBOT_SHOULDER_WIDTH * abs(math.cos(rad))
+        + ROBOT_TORSO_THICKNESS * abs(math.sin(rad))
+    ) / 2.0 + BODY_CLEARANCE
+
+
+def pose_half_z_at_wall(yaw_deg: float) -> Optional[float]:
+    """Half z-extent of the footprint when the body centre is AT the wall plane.
+
+    Kept only to demonstrate the defect this file used to certify: the slice at
+    the wall plane is narrower than the widest chord the body presents somewhere
+    along the approach, so this UNDERSTATES the rotation needed.  At A/S 0.90 it
+    reports 28 degrees where the real approach needs 55.
+    """
+    return half_z_span_in_x_slab(
+        yaw_deg, -WALL_THICKNESS / 2.0, WALL_THICKNESS / 2.0
+    )
+
+
+def max_chord_half_over_approach(
+    yaw_deg: float, step: float = 0.01, samples: int = 1500
+) -> float:
+    """Widest chord the body presents inside the wall slab on a straight approach.
+
+    The body centre advances along +x; at each position the part of the body
+    inside the panel slab is clipped and its |z| measured.  The maximum over the
+    approach is what the gate enforces, and it equals
+    :func:`silhouette_half_z` (asserted in
+    ``test_max_chord_equals_the_projected_width``).
+    """
+    half_t = ROBOT_TORSO_THICKNESS / 2.0 + BODY_CLEARANCE
+    best = 0.0
+    reach = WALL_THICKNESS / 2.0 + ROBOT_SHOULDER_WIDTH + half_t + 1.0
+    centre = -reach
+    while centre <= reach + 1e-9:
+        span = half_z_span_in_x_slab(
+            yaw_deg,
+            -WALL_THICKNESS / 2.0 - centre,
+            WALL_THICKNESS / 2.0 - centre,
+            samples=samples,
+        )
+        if span is not None:
+            best = max(best, span)
+        centre += step
+    return best
+
+
+def path_is_clear_for_yaw(yaw_deg: float, width: float, step: float = 0.01) -> bool:
+    """Does the REAL gate admit a straight approach at this torso angle?
+
+    Sweeps the body centre through the wall at z = 0, calling
+    ``_check_wall_collision`` -- the same function an episode uses -- so this is
+    the authority, not a model of it.  (``_translation_path_is_clear`` adds the
+    room-boundary test, which a centred approach cannot trip.)
+    """
+    reach = ROBOT_SHOULDER_WIDTH + 1.0
+    x = WALL_X - reach
+    while x <= WALL_X + reach + 1e-9:
+        if _check_wall_collision(
+            np.array([x, 0.0, 0.0]), math.radians(yaw_deg), width
+        ) is not None:
+            return False
+        x += step
+    return True
+
+
+def _clearance_for_width(width: float) -> float:
+    """Half the widest opening the body can clear, over the 0..90 deg arc."""
+    return min(silhouette_half_z(float(a)) for a in range(0, 91))
 
 
 def test_frontal_feasibility() -> None:
-    """The frontal-passage column must match the geometry, derived not tabulated.
+    """The frontal-passage column must match the projected-width geometry.
 
     Frontal passage is feasible exactly when the channel is at least as wide as
-    the shoulders, i.e. A/S >= 1.0, which in the 12-width series is every Level
-    except the last (A/S = 0.9).  This is asserted as that identity rather than as
-    a hand-written table, so it stays true if the sampling changes.  It expected
-    False at A/S = 1.0 while a 2 mm skin was added to the body box, which made the
-    gate demand 0.574 m and turned that Level's own advertised A/S into a value it
-    could not honour.
+    the shoulders, i.e. A/S >= 1.0.  Asserted with the closed-form projected width
+    and cross-checked against the REAL gate along the approach.  The earlier
+    version asked the gate at the wall plane only, which is the pose the old
+    ``exact_fits_channel`` model used and not the binding one (see
+    ``test_pose_only_model_understates_the_minimum_turn``).
     """
     for level, width in LEVEL_CHANNEL_WIDTHS.items():
         expected = a_s_ratio(width) >= 1.0 - 1e-12
-        frontal_ok = exact_fits_channel(WALL_X, 0.0, 0.0, width)
+        frontal_ok = silhouette_half_z(0.0) <= width / 2.0 + FEASIBILITY_EPS
         check(
             frontal_ok == expected,
             f"level {level}: frontal passage feasible={frontal_ok}, expected "
             f"{expected} (A/S {a_s_ratio(width):.2f}, width {width}, shoulders "
             f"{ROBOT_SHOULDER_WIDTH})",
         )
+        check(
+            path_is_clear_for_yaw(0.0, width) == expected,
+            f"level {level}: the real gate disagrees with the projection at yaw 0",
+        )
     # The levels that are not frontally passable must still be passable sideways.
     for level, width in LEVEL_CHANNEL_WIDTHS.items():
         if a_s_ratio(width) >= 1.0 - 1e-12:
             continue
         check(
-            exact_fits_channel(WALL_X, 0.0, 90.0, width),
+            path_is_clear_for_yaw(90.0, width),
             f"level {level} is not passable even sideways",
         )
-    # Every Level must remain passable frontally at some angle up to 90 deg,
-    # otherwise the ladder is unsolvable rather than merely demanding.
+    # Every Level must remain passable at some angle up to 90 deg, otherwise the
+    # ladder is unsolvable rather than merely demanding.
     for level, width in LEVEL_CHANNEL_WIDTHS.items():
-        angles = [a for a in range(0, 91, 5) if exact_fits_channel(WALL_X, 0.0, a, width)]
+        angles = [
+            a for a in range(0, 91, 5) if path_is_clear_for_yaw(float(a), width)
+        ]
         check(angles, f"level {level}: no yaw angle fits the channel")
-    print("[ok] frontal/sideways feasibility matches the Level design table")
+    print("[ok] frontal/sideways feasibility matches the projected-width geometry")
 
 
-def test_gate_matches_exact_geometry() -> None:
-    """The oriented-box gate must agree with an independent geometric model."""
+def test_gate_matches_the_silhouette_along_the_approach() -> None:
+    """The real gate must agree with the closed-form projected width.
+
+    The gate is absolute -- ``_translation_path_is_clear`` samples the whole
+    approach -- so the independent model must be the whole-approach one too: a
+    straight walk at torso angle t clears an opening of width w exactly when
+    ``shoulder |cos t| + torso |sin t| <= w``.  The test this replaces compared the
+    gate to the body's chord AT the wall plane, which passes while understating
+    the minimum angle by 27 degrees at A/S 0.90 (28 deg vs 55 deg).
+    """
     for level, width in sorted(LEVEL_CHANNEL_WIDTHS.items()):
         for yaw in range(-90, 91, 5):
-            # A body centred in the channel at the wall plane.
-            collision = (
-                _check_wall_collision(
-                    np.array([WALL_X, 0.0, 0.0]), math.radians(yaw), width
-                )
-                is not None
-            )
-            predicted = not exact_fits_channel(WALL_X, 0.0, float(yaw), width)
+            clear = path_is_clear_for_yaw(float(yaw), width)
+            predicted = silhouette_half_z(float(yaw)) <= width / 2.0 + FEASIBILITY_EPS
             check(
-                collision == predicted,
-                f"level {level} yaw {yaw}: gate collision={collision} but the "
-                f"geometric model predicts {predicted}",
+                clear == predicted,
+                f"level {level} yaw {yaw}: the gate clear={clear} but the "
+                f"projection predicts {predicted} (projected "
+                f"{2 * silhouette_half_z(float(yaw)):.4f} m vs opening "
+                f"{width:.4f} m)",
             )
-    print("[ok] oriented-box gate matches an independent geometric model")
+    print("[ok] the gate agrees with the projected width along the whole approach")
+
+
+def test_pose_only_model_understates_the_minimum_turn() -> None:
+    """Regression: the wall-plane chord is not the binding constraint.
+
+    At A/S 0.90 the pose-only model says a 30 degree torso fits at the wall plane,
+    while the real approach collides: the widest chord the body presents anywhere
+    in the slab is the projected width, and at 30 degrees that is 0.3018 m against
+    a 0.2565 m half-opening.
+    """
+    width = LEVEL_CHANNEL_WIDTHS[11]          # A/S 0.90, 0.513 m
+    check(
+        pose_half_z_at_wall(30.0) <= width / 2.0 + FEASIBILITY_EPS,
+        "the pose-only model no longer says 30 degrees fits at A/S 0.90",
+    )
+    check(
+        not path_is_clear_for_yaw(30.0, width),
+        "the real approach should collide at 30 degrees and A/S 0.90",
+    )
+    check(
+        max_chord_half_over_approach(30.0) > width / 2.0 + 1e-9,
+        "the widest approach chord should exceed the half-opening at 30 degrees",
+    )
+    # ... and the angle that really does clear is the projected-width one.
+    check(
+        path_is_clear_for_yaw(55.0, width),
+        "55 degrees should clear A/S 0.90 under the real gate",
+    )
+    print("[ok] the pose-only model is shown to understate the minimum turn")
+
+
+def test_max_chord_equals_the_projected_width() -> None:
+    """The numeric max chord must equal the closed-form projected width.
+
+    Pins the equivalence both models above rest on, including through the
+    non-monotone part of the projection (the peak near 21.1 degrees).
+    """
+    for yaw in (0.0, 15.0, 21.1, 30.0, 45.0, 60.0, 75.0, 90.0):
+        numeric = max_chord_half_over_approach(yaw)
+        analytic = silhouette_half_z(yaw)
+        check(
+            abs(numeric - analytic) < 3e-3,
+            f"yaw {yaw}: max chord half {numeric:.5f} != projection {analytic:.5f}",
+        )
+    print("[ok] the maximum approach chord equals the projected width")
 
 
 def test_body_centre_does_not_drift() -> None:
@@ -351,23 +500,18 @@ def test_frontal_passability_matches_the_ladder() -> None:
     """Each Level's frontal passability must match what its A/S claims.
 
     A/S is channel over shoulder width, so the ladder promises frontal passage for
-    A/S >= 1.0 -- every Level except A/S = 0.9, the narrowest -- and the transition
-    at exactly 1.0 must be flush rather than blocked.
+    A/S >= 1.0 and the transition at exactly 1.0 must be flush rather than blocked.
 
-    That Level used to be blocked by a 2 mm skin added to the body box, which made
-    the gate demand 0.574 m for a 0.570 m shoulder.  The Level labelled A/S = 1.00
-    was therefore really 0.993, and every model scored 0/10 there -- a result open
-    to the objection that they failed on the 2 mm rather than on the affordance.
-    The skin is gone and a tolerance in the separating-axis comparison keeps
-    exactly-touching boxes clear instead, so this now asserts the arithmetic the
-    ladder advertises rather than the old pinch point.
+    That boundary used to be blocked by a 2 mm skin added to the body box, which
+    made the gate demand 0.574 m for a 0.570 m shoulder, so the Level labelled
+    A/S = 1.00 was really 0.993.  The skin is gone and a tolerance in the
+    separating-axis comparison keeps exactly-touching boxes clear instead.  The
+    comparison is now against the gate along the whole approach, not a single pose
+    at the wall plane.
     """
     for level, width in sorted(LEVEL_CHANNEL_WIDTHS.items()):
         ratio = a_s_ratio(width)
-        centred_ok = (
-            _check_wall_collision(np.array([WALL_X, 0.0, 0.0]), 0.0, width)
-            is None
-        )
+        centred_ok = path_is_clear_for_yaw(0.0, width)
         check(
             (ratio >= 1.0) == centred_ok,
             f"level {level}: frontal passability ({centred_ok}) disagrees with "
@@ -621,6 +765,67 @@ def test_walking_frame_is_fixed() -> None:
             f"{action} must not translate",
         )
     print("[ok] the walking frame is fixed: rotation does not steer")
+
+
+def _rotate_quat(quat: np.ndarray, vec: np.ndarray) -> np.ndarray:
+    """Apply a (w, x, y, z) quaternion to a vector."""
+    w, x, y, z = (float(v) for v in quat)
+    vx, vy, vz = (float(v) for v in vec)
+    return np.array(
+        [
+            vx * (1 - 2 * (y * y + z * z)) + vy * 2 * (x * y - w * z) + vz * 2 * (x * z + w * y),
+            vx * 2 * (x * y + w * z) + vy * (1 - 2 * (x * x + z * z)) + vz * 2 * (y * z - w * x),
+            vx * 2 * (x * z - w * y) + vy * 2 * (y * z + w * x) + vz * (1 - 2 * (x * x + y * y)),
+        ],
+        dtype=float,
+    )
+
+
+def test_torso_frame_agrees_with_the_rendered_pose() -> None:
+    """The torso helpers must rotate with the pose ``_yaw_quat`` actually writes.
+
+    ``_forward_vector`` is the HEADING frame (positive = the walker's right) and
+    is the mirror of the frame the robot is posed in.  The third-person overview
+    camera, the eye/head POSITION offset and the analytic hand were all built
+    from ``_forward_vector(_robot_yaw)``, so they sat on the mirror side of the
+    body whenever the torso was turned; the analytic collision footprint was the
+    footprint of a body yawed to ``-yaw``.  In a laboratory symmetric about z = 0
+    none of that changes a score, which is exactly why it survived: the image a
+    reviewer looked at was wrong while every number was right.
+
+    Pinned here so the two frames cannot be "unified" back into one by accident.
+    """
+    for deg in (0, 15, 30, 45, 90, 135, 180, -30, -90):
+        rad = math.radians(float(deg))
+        rendered = _isaac_to_user_pos(
+            _rotate_quat(BAOEnv._yaw_quat(deg), np.array([1.0, 0.0, 0.0]))
+        )
+        body = _body_forward_vector(rad)
+        check(
+            np.allclose(rendered, body, atol=1e-12),
+            f"yaw {deg}: _yaw_quat points the body at {rendered} but "
+            f"_body_forward_vector gives {body}",
+        )
+        check(
+            np.allclose(
+                _rotate_body_xz(np.array([1.0, 0.0, 0.0]), rad), body, atol=1e-12
+            ),
+            f"yaw {deg}: _rotate_body_xz disagrees with the rendered body frame",
+        )
+        # The heading and torso frames are deliberate opposites.  Asserted rather
+        # than merely documented: this is the invariant the mirror bug violated.
+        check(
+            np.allclose(_forward_vector(rad), _body_forward_vector(-rad), atol=1e-12),
+            f"yaw {deg}: the heading frame is not the mirror of the torso frame",
+        )
+        # The collision footprint's facing axis must be the rendered body's +x.
+        axes = _body_axes_xz(rad)
+        check(
+            np.allclose(axes[0], body[[0, 2]], atol=1e-12),
+            f"yaw {deg}: collision facing axis {axes[0]} is not the rendered "
+            f"body direction {body[[0, 2]]}",
+        )
+    print("[ok] torso, camera, hand and collision all follow the rendered pose")
 
 
 def test_model_request_params_reach_both_request_paths() -> None:
@@ -1260,9 +1465,16 @@ def test_action_descriptions_match_the_real_step() -> None:
 
 def test_prompt_is_uniform_and_leak_free() -> None:
     """The prompt must be identical everywhere and reveal no geometry."""
+    # THE STATE MUST BE THE ONE THE EXPERIMENT ACTUALLY SENDS.  get_robot_state() always carries
+    # camera_yaw and camera_pitch, so every real prompt includes the head-camera line -- and this
+    # entry omitted both, which meant the GEOMETRY-token scan below never saw the word "sideways" and
+    # passed while the prompt the model actually receives contained it.  A leak test that inspects a
+    # different prompt than the experiment sends is not a leak test.
     base_state = {
         "position": [1.5, 0.0, 0.0],
         "torso_rotation": 0.0,
+        "camera_yaw": 0.0,
+        "camera_pitch": 0.0,
         "channel_width": 0.45,
         "a_s_ratio": 0.79,
     }
@@ -1544,6 +1756,13 @@ def test_no_unbound_names() -> None:
         + (result.stdout or "").strip()
         + (result.stderr or "").strip(),
     )
+    # A return code alone is satisfied by a tool that stubs sys.exit(0); require
+    # the report the tool is supposed to print.
+    check(
+        "no unbound names in" in result.stdout,
+        "tools/check_names.py exited 0 without reporting a result, so a stub "
+        f"would pass:\n{result.stdout}{result.stderr}",
+    )
     print("[ok] no unbound names in any module (static check)")
 
 
@@ -1562,10 +1781,12 @@ def test_scene_readability_constants() -> None:
     #    the inherited 1.5 mm focal length is about 164 degrees -- which
     #    collapsed the 4 m wall into the middle of the frame and rendered the
     #    channel posts a couple of pixels wide.
-    sensor_width = 20.955
+    sensor_width = env.ROBOT_CAMERA_SENSOR_WIDTH_MM
+    sensor_height = env.ROBOT_CAMERA_SENSOR_HEIGHT_MM
     focal = env.ROBOT_CAMERA_FOCAL
     check(focal > 0.0, f"ROBOT_CAMERA_FOCAL is {focal}")
     fov_deg = 2.0 * math.degrees(math.atan((sensor_width / 2.0) / focal))
+    vfov_deg = 2.0 * math.degrees(math.atan((sensor_height / 2.0) / focal))
     check(
         fov_deg < 120.0,
         f"eye camera field of view is {fov_deg:.0f} deg, which is fisheye-like; "
@@ -1575,6 +1796,26 @@ def test_scene_readability_constants() -> None:
         fov_deg > 60.0,
         f"eye camera field of view is only {fov_deg:.0f} deg; too narrow to see "
         f"the opening while walking through it",
+    )
+    # The readability argument quotes exact figures (76.2 horizontal, 47.6 vertical),
+    # so pin them rather than only banding the horizontal one.
+    check(
+        abs(fov_deg - 76.2) < 0.2,
+        f"horizontal field of view is {fov_deg:.2f} deg, the documented value is 76.2",
+    )
+    check(
+        abs(vfov_deg - 47.6) < 0.2,
+        f"vertical field of view is {vfov_deg:.2f} deg, the documented value is 47.6",
+    )
+    # And the aperture must be WRITTEN, not left to the renderer's default: the
+    # field of view depends on it, and before this only focalLength was set.
+    import inspect as _inspect
+
+    apply_src = _inspect.getsource(env.BAOEnv._apply_focal_length)
+    check(
+        "HorizontalApertureAttr" in apply_src and "VerticalApertureAttr" in apply_src,
+        "environment._apply_focal_length no longer pins the sensor aperture, so the "
+        "field of view depends on the renderer's default",
     )
 
     # 2. The channel posts must be wide enough to be more than a few pixels at
@@ -1882,13 +2123,19 @@ def test_channel_edges_do_not_narrow_the_opening() -> None:
             f"level {level}: the recorded A/S is not channel / shoulder width",
         )
 
-    # The posts must sit OUTSIDE the gap at every Level (no Level may be narrowed).
+    # The posts must have positive thickness and stay inside the room's lateral
+    # bound.  The earlier version recomputed the SAME expression as inner_face and
+    # asserted it >= width/2, which the equality above already implies -- it could
+    # never fail, whatever the geometry did.
     for level, width in sorted(env.LEVEL_CHANNEL_WIDTHS.items()):
         for post_centre, post_dims in env.channel_edge_post_boxes(width):
-            outer_face = abs(float(post_centre[2])) - float(post_dims[2]) / 2.0
+            half = float(post_dims[2]) / 2.0
+            outer_edge = abs(float(post_centre[2])) + half
+            check(half > 0.0, f"level {level}: an edge post has no thickness")
             check(
-                outer_face >= width / 2.0 - 1e-12,
-                f"level {level}: a post protrudes into the opening",
+                outer_edge <= env.ROOM_WIDTH_Z / 2.0 + 1e-12,
+                f"level {level}: an edge post reaches z={outer_edge:.4f}, past the "
+                f"room wall at z={env.ROOM_WIDTH_Z / 2.0:.4f}",
             )
 
     # And the gate must agree: a body at A/S >= 1.0 fits the channel with no
@@ -1918,6 +2165,52 @@ def test_channel_edges_do_not_narrow_the_opening() -> None:
     )
 
 
+def _source_without_docstrings(source: str) -> str:
+    """Source with every docstring and comment removed.
+
+    Uses the AST to find the docstring statements and slices them out of the
+    original text, then drops COMMENT tokens with ``tokenize``; both are needed
+    because ``ast.unparse`` (which the earlier version used) drops comments as
+    well, and ``ast.unparse`` only exists on Python 3.9+.  The result is only
+    ever searched as text, so the removals need not leave valid syntax behind.
+    """
+    import ast
+    import io
+    import tokenize
+
+    tree = ast.parse(source)
+    drop = set()
+    for node in ast.walk(tree):
+        if isinstance(
+            node, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
+        ):
+            body = node.body
+            if (
+                body
+                and isinstance(body[0], ast.Expr)
+                and isinstance(body[0].value, ast.Constant)
+                and isinstance(body[0].value.value, str)
+            ):
+                stmt = body[0]
+                last = getattr(stmt, "end_lineno", stmt.lineno)
+                drop.update(range(stmt.lineno, last + 1))
+    without_docstrings = "".join(
+        line for number, line in enumerate(source.splitlines(keepends=True), 1)
+        if number not in drop
+    )
+    try:
+        tokens = [
+            tok
+            for tok in tokenize.generate_tokens(
+                io.StringIO(without_docstrings).readline
+            )
+            if tok.type != tokenize.COMMENT
+        ]
+        return tokenize.untokenize(tokens)
+    except (tokenize.TokenError, IndentationError):
+        return without_docstrings
+
+
 def test_primitive_sizing_is_in_metres() -> None:
     """Boxes must be built with explicit metre extents, not FixedCuboid.
 
@@ -1944,22 +2237,7 @@ def test_primitive_sizing_is_in_metres() -> None:
     source = inspect.getsource(env)
     # Ignore comments and docstrings, which legitimately mention FixedCuboid
     # when explaining why it is not used, and inspect real code only.
-    import ast
-
-    tree = ast.parse(source)
-    for node in ast.walk(tree):
-        if isinstance(
-            node, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)
-        ):
-            body = node.body
-            if (
-                body
-                and isinstance(body[0], ast.Expr)
-                and isinstance(body[0].value, ast.Constant)
-                and isinstance(body[0].value.value, str)
-            ):
-                body.pop(0)
-    code = ast.unparse(tree)
+    code = _source_without_docstrings(source)
     check(
         "FixedCuboid" not in code,
         "environment.py still uses FixedCuboid, whose dimensions are not metres",
@@ -2109,7 +2387,7 @@ def test_default_start_is_usable() -> None:
     From 1.5 m the 2.0 m gap subtends about 77 degrees and fills the whole
     105-degree eye view, leaving no wall in frame; from 0.5 m it is about 39
     degrees.  The start distance and step size have to move together or the
-    robot cannot reach x >= 11.0 inside the budget.
+    robot cannot reach the success plane (x = 8.75 m) inside the budget.
     """
     import environment as env
 
@@ -2442,13 +2720,16 @@ def main() -> int:
     tests = [
         test_channel_ladder,
         test_frontal_feasibility,
-        test_gate_matches_exact_geometry,
+        test_gate_matches_the_silhouette_along_the_approach,
+        test_pose_only_model_understates_the_minimum_turn,
+        test_max_chord_equals_the_projected_width,
         test_body_centre_does_not_drift,
         test_off_axis_collision,
         test_frontal_passability_matches_the_ladder,
         test_rotation_route_reaches_goal,
         test_isaac_scripts_start_the_app_before_importing_environment,
         test_walking_frame_is_fixed,
+        test_torso_frame_agrees_with_the_rendered_pose,
         test_model_request_params_reach_both_request_paths,
         test_run_tag_carries_the_protocol_version,
         test_frontal_route_only_where_feasible,
@@ -2485,6 +2766,12 @@ def main() -> int:
         except Failure as exc:
             failures += 1
             print(f"[FAIL] {test.__name__}: {exc}")
+        except Exception as exc:  # noqa: BLE001 - report and continue
+            # A bare Failure-only handler meant any other exception aborted the
+            # whole suite with a traceback and no summary, while the manual says to
+            # read each file's last line.
+            failures += 1
+            print(f"[ERROR] {test.__name__}: {type(exc).__name__}: {exc}")
     print()
     if failures:
         print(f"{failures}/{len(tests)} checks FAILED")

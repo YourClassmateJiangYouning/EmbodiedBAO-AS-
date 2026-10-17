@@ -23,6 +23,14 @@ class Failure(Exception):
     pass
 
 
+class Skipped(Exception):
+    """A test that cannot run on this interpreter (missing ruff, Pillow, ...).
+
+    Raised rather than returned so the runner can report it as skipped: a test
+    that returns is counted as passed.
+    """
+
+
 def check(condition: bool, message: str) -> None:
     if not condition:
         raise Failure(message)
@@ -364,9 +372,46 @@ DECLARED_BOX_OVERLAP_ALLOWED = frozenset({
 # magnitude above it.
 BOX_OVERLAP_MIN_M = 0.01
 
+# The declared-box overlaps that exist in the shipped layout today.  Every pair below shares more than
+# BOX_OVERLAP_MIN_M on every axis, so these are real: the fix is to move one item of each pair, and it
+# waits on the prop-fit decision (every drawn prop is smaller than its declared box -- see
+# SCENE_SIZE_AUDIT.md §1), because rearranging against boxes that are about to change would be
+# rearranging against the wrong numbers.
+#
+# FROZEN rather than merely printed.  The check below fails on any overlap NOT on this list, so a new
+# box built on top of another is a failure.  Before this, every overlap was appended to a list that was
+# printed and then the test asserted a DIFFERENT, always-empty list was empty -- so it passed with
+# twenty overlapping pairs, and would have passed with two items at the same anchor.
+DECLARED_BOX_OVERLAP_KNOWN = frozenset({
+    ("stage1.3", "bookshelf_left", "book_cart"),
+    ("stage1.3", "bookshelf_left", "cabinet"),
+    ("stage1.3", "bookshelf_right", "armchair"),
+    ("stage1.3", "study_table", "stock_carton"),
+    ("stage1.3", "book_cart", "cabinet"),
+    ("stage1.4", "shrub_left", "flowers_b"),
+    ("stage1.4", "shrub_left", "litter_bin"),
+    ("stage1.4", "shrub_right", "planter_right"),
+    ("stage1.4", "shrub_a", "railing"),
+    ("stage1.4", "shrub_c", "shrub_j"),
+    ("stage1.4", "shrub_d", "shrub_k"),
+    ("stage1.4", "shrub_d", "flowers_c"),
+    ("stage1.4", "shrub_e", "bench_right"),
+    ("stage1.4", "shrub_e", "planter_left"),
+    ("stage1.4", "shrub_f", "railing"),
+    ("stage1.4", "shrub_i", "bench_iron"),
+    ("stage1.4", "picnic_table", "litter_bin"),
+    ("stage1.4", "bin_square", "tree_conifer"),
+    ("stage1.4", "railing", "bench_left"),
+})
 
-def test_no_two_declared_boxes_in_a_scene_overlap() -> None:
-    """Two dressing items in one scene must not occupy the same space.
+
+def test_no_NEW_declared_boxes_in_a_scene_overlap() -> None:
+    """No NEW pair of dressing items in a scene may occupy the same space.
+
+    THE NAME USED TO SAY "no two ... overlap" AND THAT WAS NOT WHAT IT CHECKED.  Nineteen pairs are
+    already known and frozen in DECLARED_BOX_OVERLAP_KNOWN (fourteen in stage1.4, five in stage1.3), so
+    the test only fails on an ADDITION.  A test whose name promises an invariant it does not enforce is
+    worse than no test: it reads as evidence that the layout is clean when the layout is not.
 
     The declared box is the clearance volume every occlusion, walking-band and containment check is
     computed against, so two boxes that intersect mean the clearance the layout was reasoned about
@@ -376,11 +421,11 @@ def test_no_two_declared_boxes_in_a_scene_overlap() -> None:
     added this rule found twenty such pairs, including `rack` and `traffic_cone` with their boxes
     completely on top of each other.
 
-    Standing-on is excepted, and only that: see DECLARED_BOX_OVERLAP_ALLOWED.  Everything else is
-    reported by name and the intersection on each axis, so the layout can be corrected from the
-    message rather than from a render.
+    Standing-on is excepted (see DECLARED_BOX_OVERLAP_ALLOWED), and so are the pairs already known and
+    listed in DECLARED_BOX_OVERLAP_KNOWN.  Anything else fails, by name and with the intersection on
+    each axis, so the layout can be corrected from the message rather than from a render.
     """
-    overlaps, allowed_seen, layout_overlaps = [], [], []
+    unexpected, known_seen, allowed_seen = [], [], []
     for scene in sc.SCENE_ORDER:
         items = list(sc.SCENES[scene]["dressing"])
         for i in range(len(items)):
@@ -402,26 +447,25 @@ def test_no_two_declared_boxes_in_a_scene_overlap() -> None:
                 if pair in DECLARED_BOX_OVERLAP_ALLOWED:
                     allowed_seen.append(f"{scene}/{a['name']}+{b['name']}")
                     continue
-                layout_overlaps.append(
+                message = (
                     f"{scene}: {a['name']} and {b['name']} share "
                     f"{tuple(round(v, 3) for v in share)} m of their declared boxes "
                     f"(anchors {at_a} and {at_b})")
-    check(not overlaps,
-          "these dressing items occupy the same space, so the clearance the occlusion and "
-          "walking-band checks were computed against does not exist:\n    "
-          + "\n    ".join(overlaps))
-    print(f"[ok] no two dressing boxes in a scene overlap by more than {BOX_OVERLAP_MIN_M} m on any "
-          f"axis, apart from {len(allowed_seen)} item(s)-standing-on-item(s) pairs: {allowed_seen}")
-    if layout_overlaps:
-        # Non-fatal, and the reason is the same as the walkway note above: the fix for an overlap
-        # between two of the loose decorative items is to move one of them, and with the prop-fit
-        # defect still open (every drawn prop is smaller than its declared box -- see
-        # SCENE_SIZE_AUDIT.md §1) the declared boxes are not yet the geometry a viewer sees, so a
-        # layout rearranged against them would be rearranged against numbers that are about to
-        # change.  Printed by name every run so the twenty pairs cannot be forgotten.
-        print(f"[layout] {len(layout_overlaps)} declared-box overlap(s) between loose decorative "
-              f"items; the fix is to move one of each pair, and it waits on the prop-fit decision "
-              f"because the boxes are wider than the props drawn in them: {layout_overlaps}")
+                if pair in DECLARED_BOX_OVERLAP_KNOWN:
+                    known_seen.append(message)
+                else:
+                    unexpected.append(message)
+    check(not unexpected,
+          "these dressing items occupy the same space and are not on the known-overlap list, so the "
+          "clearance the occlusion and walking-band checks were computed against does not exist:\n    "
+          + "\n    ".join(unexpected))
+    print(f"[ok] no NEW declared-box overlap by more than {BOX_OVERLAP_MIN_M} m on any axis; "
+          f"{len(known_seen)} known pair(s) still to fix, "
+          f"{len(allowed_seen)} item(s)-standing-on-item(s) pair(s) allowed: {allowed_seen}")
+    if known_seen:
+        print(f"[layout] the {len(known_seen)} known declared-box overlap(s) remain, and their fix waits "
+              f"on the prop-fit decision because the boxes are wider than the props drawn in them: "
+              f"{known_seen}")
 
 
 def test_dressing_colours_are_declared_and_not_marker_colours() -> None:
@@ -637,6 +681,92 @@ def test_the_built_marker_matches_the_environment_plate_exactly() -> None:
     )
 
 
+def test_marker_polygons_are_drawn_in_the_documented_order() -> None:
+    """A "downward-pointing triangle" must actually be drawn pointing down.
+
+    ``scenes.SHAPES`` documents ``(px, py)`` as ``(sideways, height)`` and
+    ``_regular(3, start_deg=-90)`` puts the apex at ``py = -half``, so a downward
+    triangle only comes out downward if the SECOND coordinate is the world height.
+    ``scene_builder._prism`` put ``px`` in the height slot and ``py`` in the lateral
+    one -- a transpose -- so the object on the wall was a triangle pointing 0.45 m
+    to one side at centre height while the prompt asked for a downward-pointing one.
+    """
+    import scene_builder
+
+    centre = (sc.MARKER_X_M, sc.MARKER_Y_M, sc.MARKER_Z_M)
+    thickness = sc.MARKER_THICKNESS_M
+    _, cy, cz = sc.to_world(centre)
+
+    # Pin the axes directly: a lateral offset must move world y (lateral) and a
+    # height offset must move world z (height), and neither may move the other.
+    front, _ = scene_builder.prism_points(((0.25, 0.0),), centre, thickness)
+    check(
+        abs(front[0][1] - (cy + 0.25)) < 1e-12 and abs(front[0][2] - cz) < 1e-12,
+        "the first polygon coordinate is not the lateral (world y) one: "
+        f"{front[0]}",
+    )
+    front, _ = scene_builder.prism_points(((0.0, 0.25),), centre, thickness)
+    check(
+        abs(front[0][1] - cy) < 1e-12 and abs(front[0][2] - (cz + 0.25)) < 1e-12,
+        "the second polygon coordinate is not the height (world z) one: "
+        f"{front[0]}",
+    )
+
+    # The direction-named shape: apex lowest and on the centre line.
+    front, _ = scene_builder.prism_points(
+        sc.SHAPES["triangle_down"][0], centre, thickness
+    )
+    heights = [p[2] for p in front]
+    laterals = [p[1] for p in front]
+    apex = min(range(len(front)), key=lambda index: heights[index])
+    check(
+        heights[apex] < min(heights) + 1e-9
+        and abs(laterals[apex] - cy) < 1e-9,
+        "the downward-pointing triangle's apex is not the lowest, centred vertex: "
+        f"vertices {list(zip(laterals, heights))}",
+    )
+    check(
+        max(heights) - min(heights) > 0.0,
+        "the triangle has no vertical extent, so it is drawn sideways",
+    )
+
+    # The arrow's head is the extreme lateral vertex, at centre height.
+    front, _ = scene_builder.prism_points(sc.SHAPES["arrow"][1], centre, thickness)
+    laterals = [p[1] for p in front]
+    tip = max(range(len(front)), key=lambda index: laterals[index])
+    check(
+        abs(front[tip][2] - cz) < 1e-9,
+        "the arrow's point is not at centre height, so the arrow is rotated: "
+        f"{front[tip]}",
+    )
+    print("[ok] marker polygons map (sideways, height) to (world y, world z)")
+
+
+def test_bound_linearity_is_actually_audited() -> None:
+    """The bound-linearity guard must be read, not merely written.
+
+    ``NON_LINEAR_BOUND_ASSETS`` was added and then never read by anything, so a
+    non-linear asset (the four SM_Mug_* assets measured 200x instead of 2x and drew
+    a 9.2 cm mug 9.2 m wide) would have been recorded and ignored.  Empty is the only
+    healthy value, and the unmeasurable counter must be zero or the guard failed open
+    without anyone noticing.
+    """
+    import scene_builder
+
+    check(
+        not scene_builder.NON_LINEAR_BOUND_ASSETS,
+        "assets with a non-linear bound were placed: "
+        f"{sorted(scene_builder.NON_LINEAR_BOUND_ASSETS)}",
+    )
+    check(
+        scene_builder.NON_LINEAR_BOUND_UNMEASURED == 0,
+        "the linearity probe could not measure its doubled bound "
+        f"{scene_builder.NON_LINEAR_BOUND_UNMEASURED} time(s), so the per-axis fit "
+        "was left unverified",
+    )
+    print("[ok] the bound-linearity guard ran and recorded no non-linear asset")
+
+
 def test_the_scene_tag_separates_scenes_and_leaves_old_tags_alone() -> None:
     """Two scenes must not resolve to one directory, and old tags must not move.
 
@@ -658,7 +788,33 @@ def test_the_scene_tag_separates_scenes_and_leaves_old_tags_alone() -> None:
         check(main.effective_tag("some-model", "", other)
               != main.effective_tag("some-model", "", sc.SCENE_ORDER[0]),
               "two scenes compose the same tag")
-    print("[ok] the scene is in the tag, reapplying is idempotent, old tags unchanged")
+    # --image_size changes what the model sees, so it has to change the directory
+    # too; otherwise a 512 px run and a 1024 px run share results and a checkpoint.
+    native = main.effective_tag("some-model", "", sc.SCENE_ORDER[0])
+    original = os.environ.get("BAO_IMAGE_SIZE")
+    try:
+        os.environ["BAO_IMAGE_SIZE"] = "512"
+        small = main.effective_tag("some-model", "", sc.SCENE_ORDER[0])
+        check(small != native and small.endswith("-img512"),
+              f"a 512 px run did not get its own tag: {small!r} vs {native!r}")
+        check(main.effective_tag("some-model", small, sc.SCENE_ORDER[0]) == small,
+              "the image-size tag is not idempotent")
+        os.environ["BAO_IMAGE_SIZE"] = str(main.native_image_size())
+        check(main.effective_tag("some-model", "", sc.SCENE_ORDER[0]) == native,
+              "the native image size moved an existing tag")
+        # Feeding the 512 tag back in a native run must resolve to the native tag,
+        # not to a double-suffixed one -- a manual `main.py --tag <tag>` has to land
+        # on a stable directory whichever image size this process is configured for.
+        check(main.effective_tag("some-model", small, sc.SCENE_ORDER[0]) == native,
+              f"a 512 tag did not strip back to the native tag: "
+              f"{main.effective_tag('some-model', small, sc.SCENE_ORDER[0])!r}")
+    finally:
+        if original is None:
+            os.environ.pop("BAO_IMAGE_SIZE", None)
+        else:
+            os.environ["BAO_IMAGE_SIZE"] = original
+    print("[ok] the scene and --image_size are in the tag, reapplying is idempotent, "
+          "old tags unchanged")
 
 
 def test_surfaces_are_classified_by_geometry_not_by_name() -> None:
@@ -1635,7 +1791,13 @@ def test_no_scene_floor_is_covered_by_a_dark_material() -> None:
     import re
 
     import numpy as np
-    from PIL import Image
+    try:
+        from PIL import Image
+    except Exception as exc:
+        raise Skipped(
+            f"this check measures texture albedo with Pillow "
+            f"({type(exc).__name__}: {exc}); use /home/ybh/isaacsim/python.sh"
+        ) from exc
 
     assets = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets", "isaac")
     floor_min = float(getattr(sc, "FLOOR_ALBEDO_MIN", 80.0))
@@ -1705,6 +1867,10 @@ def test_the_dressing_code_has_none_of_this_session_s_known_faults() -> None:
     result = subprocess.run([sys.executable, audit], capture_output=True, text=True, cwd=root)
     check(result.returncode == 0,
           f"tools/audit_dressing.py reports problems:\n{result.stdout}{result.stderr}")
+    # A return code alone is satisfied by a stub; require the tool's own verdict.
+    check("no problems found by these checks" in result.stdout,
+          "tools/audit_dressing.py exited 0 without reporting a result:\n"
+          f"{result.stdout}{result.stderr}")
     print("[ok] the dressing audit found none of the session's known faults "
           f"({len([line for line in result.stdout.splitlines() if line.strip().startswith('note:')])} "
           "guarded conversion(s) confirmed)")
@@ -1837,9 +2003,12 @@ def test_the_scene_modules_have_no_undefined_names_or_unused_imports() -> None:
         result = attempt
         break
     if result is None:
-        print("[skip] ruff is not installed, so undefined names and unused imports were NOT checked "
-              "in this run -- install it or this class of error reaches the lab machine again")
-        return
+        # Raised, not returned: a returning test counts as passed.
+        raise Skipped(
+            "ruff is not installed, so undefined names and unused imports were NOT "
+            "checked in this run -- install it or this class of error reaches the "
+            "lab machine again"
+        )
     check(result.returncode == 0,
           "ruff reports static errors, and these are the kind that otherwise reach the lab machine:\n"
           f"{result.stdout}{result.stderr}")
@@ -1867,6 +2036,10 @@ def test_the_handoff_documents_state_facts_that_hold() -> None:
     result = subprocess.run([sys.executable, script], capture_output=True, text=True, cwd=root)
     check(result.returncode == 0,
           f"the handoff documents contain claims that do not hold:\n{result.stdout}{result.stderr}")
+    # A return code alone is satisfied by a stub; require the tool's own verdict.
+    check("all checkable claims" in result.stdout and "hold" in result.stdout,
+          "tools/verify_docs.py exited 0 without reporting a result:\n"
+          f"{result.stdout}{result.stderr}")
     print("[ok] the handoff documents' checkable claims all hold "
           "(asset counts, test count, every tool they name, the check total)")
 
@@ -1883,7 +2056,7 @@ def main() -> int:
         test_dressing_stands_on_the_floor_and_hangs_on_its_wall,
         test_every_dressing_item_has_a_colour,
         test_decoration_is_never_collidable_and_stays_off_the_path,
-        test_no_two_declared_boxes_in_a_scene_overlap,
+        test_no_NEW_declared_boxes_in_a_scene_overlap,
         test_dressing_colours_are_declared_and_not_marker_colours,
         test_the_baseline_scene_is_untouched,
         test_materials_are_marked_as_verified_or_not,
@@ -1895,6 +2068,8 @@ def main() -> int:
         test_the_builder_imports_without_a_simulator,
         test_the_catalogue_matches_the_environment_it_replaces,
         test_the_built_marker_matches_the_environment_plate_exactly,
+        test_marker_polygons_are_drawn_in_the_documented_order,
+        test_bound_linearity_is_actually_audited,
         test_the_scene_tag_separates_scenes_and_leaves_old_tags_alone,
         test_surfaces_are_classified_by_geometry_not_by_name,
         test_catalogue_frame_matches_the_environment_converter,
@@ -1916,9 +2091,13 @@ def main() -> int:
         test_the_handoff_documents_state_facts_that_hold,
     ]
     failed = 0
+    skipped = []
     for test in tests:
         try:
             test()
+        except Skipped as exc:
+            skipped.append(test.__name__)
+            print(f"[skip] {test.__name__}: {exc}")
         except Failure as exc:
             failed += 1
             print(f"[FAIL] {test.__name__}: {exc}")
@@ -1926,9 +2105,19 @@ def main() -> int:
             failed += 1
             print(f"[ERROR] {test.__name__}: {type(exc).__name__}: {exc}")
     print()
+    passed = len(tests) - failed - len(skipped)
     if failed:
-        print(f"{failed}/{len(tests)} checks FAILED")
+        print(
+            f"{failed}/{len(tests)} checks FAILED "
+            f"({passed} passed, {len(skipped)} skipped)"
+        )
         return 1
+    if skipped:
+        print(
+            f"{passed}/{len(tests)} scene-catalogue checks passed, "
+            f"{len(skipped)} SKIPPED (not run): {', '.join(skipped)}"
+        )
+        return 0
     print(f"all {len(tests)} scene-catalogue checks passed")
     return 0
 

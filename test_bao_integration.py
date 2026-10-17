@@ -1702,10 +1702,10 @@ def test_head_camera_offset_reaches_the_model() -> None:
     # "head camera offset from your torso (degrees): 0.0"; when the gaze was pinned
     # to the walking direction the label changed, the old string never appeared
     # again, and the check silently asserted nothing.
-    zero_yaw = "head camera sideways offset from straight ahead (degrees): 0.0"
+    zero_yaw = "head camera yaw offset from straight ahead (degrees): 0.0"
     # look_left reports -30, NOT +30: the sign is the heading frame (negative =
     # the walker's left), which is what the real environment emits.
-    glance_yaw = "head camera sideways offset from straight ahead (degrees): -30.0"
+    glance_yaw = "head camera yaw offset from straight ahead (degrees): -30.0"
     zero_pitch = "head camera extra downward pitch (degrees): 0.0"
     glance_pitch = "head camera extra downward pitch (degrees): 45.0"
     check(
@@ -1724,7 +1724,7 @@ def test_head_camera_offset_reaches_the_model() -> None:
     )
     check(
         not any(
-            "head camera sideways offset from straight ahead (degrees): -60.0" in p
+            "head camera yaw offset from straight ahead (degrees): -60.0" in p
             for p in seen
         ),
         "two look_left actions added up to -60 degrees, so the glance persists",

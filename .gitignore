@@ -164,3 +164,8 @@ diag_logs/
 
 # One-off diagnostics (see the left/right proof in the HEADING_RIGHT comment)
 _lr_test.py
+
+# Runtime artefacts: stale dispatcher pids and the model-verification dump.  Both are produced by
+# a run and mean nothing outside it; pid_* in particular accumulates one file per launch.
+pid_*
+model_verification.json

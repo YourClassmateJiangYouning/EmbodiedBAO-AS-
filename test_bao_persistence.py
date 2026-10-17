@@ -1,6 +1,6 @@
 """Regression suite for the crash-safety of the saved results.
 
-A scored sweep is 11 models x 6 Levels x 10 episodes x 30 steps of real API
+A scored sweep is 15 models x 17 Levels x 5 episodes x 30 steps of real API
 calls.  Losing that data to a truncated file is not recoverable by re-running:
 the model's answers are not deterministic and the calls cost money.  So the
 persistence contract is tested here rather than trusted:
@@ -246,6 +246,47 @@ def test_checkpoint_without_recoverable_data_starts_empty() -> None:
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     print("[ok] an unrecoverable checkpoint starts empty and is rewritten atomically")
+
+
+def test_checkpoint_is_not_truncated_without_resume() -> None:
+    """A run WITHOUT --resume must not erase the recorded completion state.
+
+    ``mark()`` rewrites the checkpoint from ``self.completed``.  The constructor
+    used to load the file only under ``--resume``, so a run without it started with
+    an empty set and, on the first episode, overwrote a checkpoint holding 84
+    finished units with a one-unit file.  The next ``--resume`` then re-ran and
+    overwrote every episode that had already been paid for.  Measured on the real
+    corpus before the fix.
+    """
+    tmp = make_temp_dir()
+    try:
+        path = os.path.join(tmp, "results", "m", "checkpoint_t.json")
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        already = ["level0/episode000", "level7/episode003"]
+        persistence.atomic_write_json(path, {"completed": list(already)})
+
+        checkpoint = ProtocolCheckpoint(path, resume=False)
+        check(
+            checkpoint.completed == set(already),
+            "a non-resume constructor forgot the recorded units: "
+            f"{sorted(checkpoint.completed)}",
+        )
+        # --resume is what makes the runner skip; without it the units are re-run.
+        check(
+            not checkpoint.is_done("level0/episode000"),
+            "without --resume is_done() must not skip a unit",
+        )
+
+        checkpoint.mark("level2/episode007")
+        with open(path, "r", encoding="utf-8") as fh:
+            stored = set(json.load(fh)["completed"])
+        check(
+            stored == set(already) | {"level2/episode007"},
+            f"mark() truncated the checkpoint to {sorted(stored)}",
+        )
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    print("[ok] a non-resume run preserves the units already in the checkpoint")
 
 
 def test_resume_reruns_a_damaged_episode() -> None:
@@ -576,10 +617,13 @@ def test_save_obs_flag_is_honoured_and_survives_bad_frames() -> None:
     try:
         import PIL  # noqa: F401
     except Exception as exc:
-        print(f"[skip] --save_obs needs Pillow ({type(exc).__name__}: {exc}); this "
-              f"interpreter cannot encode a frame, so no episode can run. Use "
-              f"/home/ybh/isaacsim/python.sh on the workstation.")
-        return
+        # Raised, not returned: a returning test counts as passed, which is how a
+        # skipped --save_obs check read as "all 14 passed".
+        raise harness.Skipped(
+            f"--save_obs needs Pillow ({type(exc).__name__}: {exc}); this "
+            "interpreter cannot encode a frame, so no episode can run. Use "
+            "/home/ybh/isaacsim/python.sh on the workstation."
+        ) from exc
 
     harness._install_scripted_agent("frontal")
     try:
@@ -616,6 +660,7 @@ TESTS = [
     test_runner_tag_reaches_paths_intact,
     test_checkpoint_recovers_from_episode_records,
     test_checkpoint_without_recoverable_data_starts_empty,
+    test_checkpoint_is_not_truncated_without_resume,
     test_resume_reruns_a_damaged_episode,
     test_analysis_skips_a_damaged_record,
     test_csv_export_is_tag_qualified_and_atomic,
@@ -628,16 +673,30 @@ TESTS = [
 
 def main() -> int:
     failures = 0
+    skipped = []
     for test in TESTS:
         try:
             test()
+        except harness.Skipped as exc:
+            skipped.append(test.__name__)
+            print(f"[skip] {test.__name__}: {exc}")
         except Exception as exc:  # noqa: BLE001 - report and continue
             failures += 1
             print(f"[FAIL] {test.__name__}: {type(exc).__name__}: {exc}")
     print()
+    passed = len(TESTS) - failures - len(skipped)
     if failures:
-        print(f"{failures}/{len(TESTS)} persistence checks FAILED")
+        print(
+            f"{failures}/{len(TESTS)} persistence checks FAILED "
+            f"({passed} passed, {len(skipped)} skipped)"
+        )
         return 1
+    if skipped:
+        print(
+            f"{passed}/{len(TESTS)} persistence checks passed, "
+            f"{len(skipped)} SKIPPED (not run): {', '.join(skipped)}"
+        )
+        return 0
     print(f"all {len(TESTS)} persistence checks passed")
     return 0
 

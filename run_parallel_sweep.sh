@@ -312,3 +312,10 @@ echo "per-job logs : logs/parallel/"
 echo "results      : results/level*/<model>/<tag>-*/"
 echo "summaries    : $(find results -name 'summary_*.json' 2>/dev/null | wc -l) so far"
 echo "re-run this exact command to resume anything that failed"
+
+# Propagate the job status.  Before this the script ended on the `echo` above, so the
+# EXIT trap captured $? = 0 and cleanup exited 0 whatever the jobs did: xargs reports
+# 123 when any worker fails, and a whole sweep could fail while the launcher -- and
+# anything reading its status -- saw success.  `exit` is the last command, so the trap
+# sees XARGS_RC and re-exits with it.
+exit "${XARGS_RC:-0}"

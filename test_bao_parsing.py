@@ -61,6 +61,15 @@ def test_action_spelling() -> None:
         "advance": "forward", "rotate left": "turn_left", "turn-left": "turn_left",
         "Turn_Left": "turn_left", "backwards": "backward", "glance down": "look_down",
         "look-right": "look_right", "sidestep left": "left",
+        # The reversed word order.  "turn left" resolves correctly through ACTIONS;
+        # "left turn" used to fall through to the substring scan, match "left" and
+        # execute a 0.75 m SIDESTEP where the model asked for a 15-degree rotation.
+        "left turn": "turn_left", "left_turn": "turn_left", "leftturn": "turn_left",
+        "Left Turn": "turn_left", "turn to the left": "turn_left",
+        "right turn": "turn_right", "right_turn": "turn_right",
+        "turn to the right": "turn_right",
+        # ... while "left" on its own is still the sidestep.
+        "left": "left", "sidestep left": "left", "strafe left": "left",
     }
     for given, want in cases.items():
         got = ai_agent.parse_action_json('{"action": "%s"}' % given)

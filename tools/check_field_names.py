@@ -82,6 +82,9 @@ OTHER = {
     # the Stage 1 runner's per-episode summary
     "episodes", "turned_rate", "passed_sideways_count", "first_turn_step_mean",
     "avg_success_steps", "avg_passage_rotation_deg", "resolved_tag",
+    # how many episodes analysis.py dropped because every model call failed; a
+    # summary annotation, not a log field (see analysis.episode_had_no_valid_call).
+    "excluded_no_valid_call",
     # a Stage 1 dressing item (scenes.py) and a scene material entry (scene_builder.py).
     # room_fit belongs here rather than in RECORD_VARS' schema because it is scene CONFIGURATION,
     # not a log field: it is the fraction of a measured asset size that a scene deliberately uses

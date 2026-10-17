@@ -91,9 +91,15 @@ class RoundCheckpoint:
 
     def __init__(self, path: str, resume: bool = False) -> None:
         self.path = path
+        # As in experiments.ProtocolCheckpoint: `resume` controls whether the runner
+        # SKIPS completed rounds, not whether they are loaded.  mark() rewrites the
+        # file from self.completed, so leaving the set empty without --resume
+        # truncated the checkpoint and the next --resume re-ran (and overwrote)
+        # rounds that had already been paid for.
+        self.resume = bool(resume)
         self.completed: set = set()
         self.recovered_from: Optional[str] = None
-        if resume and os.path.exists(path):
+        if os.path.exists(path):
             try:
                 data = persistence.load_json_file(path)
                 self.completed = set(str(item) for item in data.get("completed", []))
@@ -112,6 +118,14 @@ class RoundCheckpoint:
                     f"[checkpoint] rebuilt {len(self.completed)} completed round(s) "
                     "from the records already on disk"
                 )
+        else:
+            rebuilt = self._rebuild_from_records()
+            self.completed = rebuilt
+            if rebuilt:
+                print(
+                    f"[checkpoint] no checkpoint file at {path}; rebuilt "
+                    f"{len(rebuilt)} completed round(s) from the records already on disk"
+                )
 
     def _rebuild_from_records(self) -> set:
         completed: set = set()
@@ -128,7 +142,9 @@ class RoundCheckpoint:
         return completed
 
     def is_done(self, key: str) -> bool:
-        return key in self.completed
+        # Only a --resume run skips; see the constructor.  Recording stays
+        # monotonic either way, so a non-resume run cannot erase resume state.
+        return self.resume and key in self.completed
 
     def mark(self, key: str) -> None:
         self.completed.add(key)

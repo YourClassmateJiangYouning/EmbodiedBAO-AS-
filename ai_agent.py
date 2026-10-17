@@ -238,8 +238,16 @@ ACTION_SYNONYMS: Dict[str, str] = {
     "left": "left", "strafe_left": "left", "move_left": "left", "sidestep_left": "left",
     "right": "right", "strafe_right": "right", "move_right": "right",
     "sidestep_right": "right",
+    # "turn left" is in ACTIONS; these are the same instruction in the other word
+    # order or with a dropped space.  Without them the substring fallback matched
+    # "left" inside "left turn" and the model's 15-degree rotation was executed as a
+    # 0.75 m SIDESTEP -- a different physical action, recorded under the model's name.
     "turn_left": "turn_left", "turnleft": "turn_left", "rotate_left": "turn_left",
+    "left_turn": "turn_left", "leftturn": "turn_left", "turning_left": "turn_left",
+    "turn_to_the_left": "turn_left", "rotate_to_the_left": "turn_left",
     "turn_right": "turn_right", "turnright": "turn_right", "rotate_right": "turn_right",
+    "right_turn": "turn_right", "rightturn": "turn_right", "turning_right": "turn_right",
+    "turn_to_the_right": "turn_right", "rotate_to_the_right": "turn_right",
     "look_left": "look_left", "lookleft": "look_left", "glance_left": "look_left",
     "look_right": "look_right", "lookright": "look_right", "glance_right": "look_right",
     "look_down": "look_down", "lookdown": "look_down", "glance_down": "look_down",
