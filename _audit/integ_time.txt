@@ -1,6 +1,0 @@
-[BAOEnv] Isaac Sim import failed (ModuleNotFoundError: No module named 'isaacsim'). If SimulationApp is already running this is a bug; if not, this module was imported too early.
-Traceback (most recent call last):
-  File "/home/eai/EmbodiedBAO-AS-/environment.py", line 48, in <module>
-    from isaacsim.core.api import World
-ModuleNotFoundError: No module named 'isaacsim'
-5.56s

@@ -169,3 +169,6 @@ _lr_test.py
 # a run and mean nothing outside it; pid_* in particular accumulates one file per launch.
 pid_*
 model_verification.json
+
+# Audit scratch from a review session: logs and per-module reports, not project content.
+_audit/
