@@ -2481,7 +2481,14 @@ class BAOEnv:
             "joint_angles": joints,
             "end_effector_position": hand.tolist(),
             "hand_position": hand.tolist(),
-            "torso_rotation": self.get_torso_rotation(),
+            # FOLDED, BECAUSE THIS VALUE GOES STRAIGHT INTO THE PROMPT.  torso_rotation is
+            # accumulated without wrapping, so a model that turns left twenty-five times reaches 375
+            # degrees and the prompt said so -- while the physical rotation is 15. The folded value is
+            # what "how far have you turned" means, and it is what the sideways predicate and the
+            # reported passage rotation already used. The raw accumulator is still available through
+            # get_torso_rotation() for anything that needs it.
+            "torso_rotation": self.get_abs_torso_rotation(),
+            "torso_rotation_raw": self.get_torso_rotation(),
             "camera_yaw": self._camera_yaw_offset,
             "camera_pitch": self._camera_pitch_offset,
             "channel_width": self.get_channel_width(),

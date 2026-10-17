@@ -456,12 +456,30 @@ def bootstrap_threshold_ci(
             missing += 1
         else:
             values.append(float(found))
-    if not values or missing > resamples // 4:
+    # THE INTERVAL IS REPORTED TOGETHER WITH HOW OFTEN THERE WAS NOTHING TO INTERVAL.
+    #
+    # The percentile was computed only over the resamples that FOUND a threshold, and up to a quarter
+    # were allowed to find none and be discarded. So "95% CI" silently meant "95% CI, conditional on
+    # having found one", which is narrower than the truth and can even be zero-width. A threshold that
+    # exists in only half of the resamples is a different claim from one that exists in all of them, and
+    # the reader has to be able to see which. Both numbers are now returned:
+    #
+    #   lo, hi           the 2.5/97.5 percentiles over the resamples that found a threshold
+    #   n_found          how many did
+    #   n_missing        how many found none (that outcome is NOT inside [lo, hi])
+    #   p_no_threshold   n_missing / resamples, so the conditioning is explicit
+    #
+    # None only when NOT ONE resample found a threshold: then there is no interval and the honest answer
+    # is "no threshold", which the caller already handles.
+    if not values:
         return None
-    return (
-        float(np.percentile(values, 2.5)),
-        float(np.percentile(values, 97.5)),
-    )
+    return {
+        "lo": float(np.percentile(values, 2.5)),
+        "hi": float(np.percentile(values, 97.5)),
+        "n_found": len(values),
+        "n_missing": missing,
+        "p_no_threshold": float(missing) / float(max(1, resamples)),
+    }
 
 
 def _significant_threshold(
