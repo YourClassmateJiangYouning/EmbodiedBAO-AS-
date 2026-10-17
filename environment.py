@@ -951,6 +951,20 @@ class BAOEnv:
             raise ValueError(
                 f"move_step must be finite and in (0, {ROOM_LENGTH_X}], got {self._move_step}"
             )
+        # THE LEVEL HAS TO BECOME A WIDTH.  `capture_scenes.py --level N` put `"level": N` into the
+        # task_dict and nothing read it, and it never called set_channel_width either -- so every
+        # preview was rendered at the DEFAULT width (Level 0, 1.14 m) while the log printed "level N
+        # width ..." from the ladder. Measured before this change: level 5 and level 15 both built a
+        # 1.140 m channel, against 0.855 and 0.285 on the ladder. A level is only meaningful through
+        # LEVEL_CHANNEL_WIDTHS, so it is resolved here; an explicit channel_width still wins.
+        _level = self.task_dict.get("level")
+        if _level is not None and "channel_width" not in self.task_dict:
+            _level = int(_level)
+            if _level not in LEVEL_CHANNEL_WIDTHS:
+                raise ValueError(
+                    f"level must be one of {sorted(LEVEL_CHANNEL_WIDTHS)}, got {_level}"
+                )
+            self.task_dict["channel_width"] = LEVEL_CHANNEL_WIDTHS[_level]
         self._channel_width = float(self.task_dict.get("channel_width", CHANNEL_WIDTH))
         self._camera_yaw_offset = 0.0
         self._camera_pitch_offset = 0.0
@@ -1410,6 +1424,14 @@ class BAOEnv:
             cam.GetFocalLengthAttr().Set(float(focal_mm))
             cam.GetHorizontalApertureAttr().Set(float(ROBOT_CAMERA_SENSOR_WIDTH_MM))
             cam.GetVerticalApertureAttr().Set(float(ROBOT_CAMERA_SENSOR_HEIGHT_MM))
+            # FILM FIT, WRITTEN EXPLICITLY.  The aperture pair is 16:9 and the render is 1:1, so the
+            # renderer has to decide which aperture the image follows -- and it followed the HORIZONTAL
+            # one on BOTH axes.  Measured from this repository's own figure (a 0.60 m plate at 15.48 m
+            # subtends about 25 px at 1024): the vertical field is 76.9 degrees, not the 47.6 that a
+            # vertical aperture of 11.787 mm would give.  Leaving that implicit is what made
+            # scenes.project() overestimate every projected size by about 1.78x.  Horizontal fit is
+            # now the stated contract rather than an accident of the default.
+            cam.GetFilmFitAttr().Set(UsdGeom.Camera.FilmFit.Horizontal)
         except Exception as exc:
             print(f"[BAOEnv] could not set USD focalLength on {path}: {exc}")
 

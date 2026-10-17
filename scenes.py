@@ -939,9 +939,14 @@ def _fov_deg() -> float:
 
 
 HORIZONTAL_FOV_DEG = _fov_deg()
-VERTICAL_FOV_DEG = 2.0 * math.degrees(
-    math.atan((SENSOR_WIDTH_MM * 9.0 / 16.0) / (2.0 * FOCAL_LENGTH_MM))
-)
+# THE VERTICAL FIELD EQUALS THE HORIZONTAL ONE, because the camera fits HORIZONTALLY and the render is
+# square.  This used to compute it from the 16:9 vertical aperture (11.787 mm) and get 47.6 degrees,
+# while the renderer actually applied the 20.955 mm HORIZONTAL aperture on both axes. The repository's
+# own measurement settles it: a 0.60 m plate at 15.48 m subtends about 25 px at 1024, which is 76.9 deg
+# vertical, not 47.6. Every projected size in this module was therefore about 1.78x too large, and
+# test_bao_scenes' legibility figures inherited that. The camera now sets filmFit=Horizontal
+# explicitly (environment._apply_focal_length), so this is the contract rather than a coincidence.
+VERTICAL_FOV_DEG = HORIZONTAL_FOV_DEG
 
 
 # ---------------------------------------------------------------------------

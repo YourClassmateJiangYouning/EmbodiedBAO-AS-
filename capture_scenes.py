@@ -60,9 +60,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--outdir", type=str, default="scene_preview")
     parser.add_argument("--width", type=int, default=512)
     parser.add_argument("--height", type=int, default=512)
-    parser.add_argument("--iso_x", type=float, default=-2.0,
-                        help="where the external camera stands along x; negative is behind the "
-                             "agent's start, outside the open end of the corridor")
+    parser.add_argument("--iso_x", type=float, default=0.4,
+                        help="Where the external camera stands along x.  Keep it inside [0, 16]: the "
+                             "room is ENCLOSED, so a negative x stands behind the near wall and the "
+                             "frame is the back of that wall -- which is what the old default of -2.0 "
+                             "produced, flat grey iso views.")
     parser.add_argument("--iso_height", type=float, default=2.2,
                         help="external camera height.  Keep it under the 3 m ceiling, or the "
                              "ceiling is the only thing in the picture")
@@ -120,9 +122,15 @@ def parse_args() -> argparse.Namespace:
              "round trip, which is what several rounds were wasted on.",
     )
     parser.add_argument(
-        "--iso_orbit_radius", type=float, default=9.0,
-        help="Distance from --iso_target for the orbit views.  Large enough to stand outside the "
-             "5 m wide room, so the orbit does not put the camera inside a wall.",
+        "--iso_orbit_radius", type=float, default=2.0,
+        help=(
+            "Distance from --iso_target for the orbit views.  It MUST keep the camera inside the "
+            "room: the room is enclosed, so an outside camera sees only the back of the near wall. "
+            "It was 9.0 with the opposite reasoning ('large enough to stand outside the 5 m wide "
+            "room, so the orbit does not put the camera inside a wall'), which put 7 of 8 angles "
+            "above the ceiling, below the floor or past the far wall. The room is 16 x 5, so from a "
+            "target at z = 0 a radius above 2.5 leaves it. Positions are clamped to the room as well."
+        ),
     )
     parser.add_argument(
         "--iso_orbit_height", type=float, default=2.2,
@@ -190,7 +198,9 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def average_frames(env: Any, camera: Any, frames: int) -> np.ndarray:
+def average_frames(
+    env: Any, camera: Any, frames: int, repose: Any = None
+) -> np.ndarray:
     """The mean of `frames` renders of the CURRENT pose, one frame at a time.
 
     RaytracedLighting does not converge for a static scene, so a single frame carries per-pixel noise
@@ -205,6 +215,13 @@ def average_frames(env: Any, camera: Any, frames: int) -> np.ndarray:
     total = None
     for _ in range(max(1, int(frames))):
         env.world.step(render=True)
+        if repose is not None:
+            # world.step() runs the environment's per-step camera update, which moves /World/Camera
+            # back to the robot -- so an external pose set once before this loop was overwritten on the
+            # FIRST frame and every later frame was the robot's third-person view. Averaging the two
+            # produced the double image the iso frames showed, and it is the other half of why they came
+            # out flat grey. Re-applying the pose after each step keeps the sensor where it was put.
+            repose()
         if camera is None:
             image = np.asarray(env.get_camera_image())[:, :, :3].astype(np.float64)
         else:
@@ -255,8 +272,17 @@ def look_from(camera, target, position) -> None:
     back of a side wall and every iso frame came out flat grey.  An explicit position cannot do
     that, and the caller can read where the camera is.
     """
-    position = np.array(position, dtype=float)
-    direction = np.array(target, dtype=float) - position
+    # BOTH ARGUMENTS ARE IN USER COORDINATES, (x, height, lateral).  Isaac's world frame is
+    # (x, lateral, height), so passing them straight to set_world_pose transposed every camera: the
+    # default iso position (-2, 2.2, 1.2) became (-2, 1.2, 2.2), which is outside a room that spans
+    # x in [0, 16] and so looked at the back of the near wall -- the flat grey iso frames.
+    # environment.py is imported inside main() (it needs SimulationApp), so the frame converter is
+    # reached the same way rather than at module level.
+    from environment import _user_to_isaac_pos
+
+    position = _user_to_isaac_pos(np.array(position, dtype=float))
+    target = _user_to_isaac_pos(np.array(target, dtype=float))
+    direction = target - position
     norm = float(np.linalg.norm(direction)) or 1.0
     direction = direction / norm
     # Build a rotation whose +X is the view direction and +Z is world up.
@@ -519,12 +545,16 @@ def main() -> int:
                 # Move the camera AFTER the reset, not before: reset() calls _update_camera(),
                 # which puts the external camera back where the environment wants it, so the
                 # earlier order silently threw the iso pose away.
-                # Stand just outside the open end of the corridor, a little above eye height and
-                # a little to one side, looking down it.  Inside the room in both z and y, which
-                # is what the old placement was not.
-                look_from(iso_camera, target=tuple(args.iso_target),
-                          position=(args.iso_x, args.iso_height, args.iso_z))
-                iso = average_frames(env, iso_camera, args.frames).astype(np.uint8)
+                # Stand just inside the closed end of the corridor, a little above eye height and a
+                # little to one side, looking down it. Inside the room in x, z and y, which is what the
+                # old placement (x = -2.0, behind the near wall) was not.
+                _iso_pose = (args.iso_x, args.iso_height, args.iso_z)
+
+                def _repose_iso() -> None:
+                    look_from(iso_camera, target=tuple(args.iso_target), position=_iso_pose)
+
+                _repose_iso()
+                iso = average_frames(env, iso_camera, args.frames, repose=_repose_iso).astype(np.uint8)
                 iso_images.append(iso)
                 write_png(os.path.join(args.outdir, f"{args.scene}_slot{slot}_iso.png"), iso)
 
@@ -541,12 +571,22 @@ def main() -> int:
                 for angle in getattr(args, "iso_orbit", None) or []:
                     radians = math.radians(float(angle))
                     target = tuple(args.iso_target)
-                    position = (target[0] + args.iso_orbit_radius * math.cos(radians),
-                                args.iso_orbit_height,
-                                target[2] + args.iso_orbit_radius * math.sin(radians))
+                    # CLAMPED TO THE ROOM.  A radius larger than the room's half-width puts the
+                    # camera outside it, and the room is enclosed, so the frame is the back of a
+                    # wall. The margin keeps the near plane clear of the surface.
+                    _margin = 0.3
+                    _x = min(max(target[0] + args.iso_orbit_radius * math.cos(radians),
+                                 _margin), 16.0 - _margin)
+                    _y = min(max(args.iso_orbit_height, _margin), 3.0 - _margin)
+                    _z = min(max(target[2] + args.iso_orbit_radius * math.sin(radians),
+                                 -2.5 + _margin), 2.5 - _margin)
+                    position = (_x, _y, _z)
                     look_from(iso_camera, target=tuple(target), position=position)
                     for _ in range(3):
                         env.world.step(render=True)
+                        # Same reason as average_frames: step() re-poses /World/Camera onto the robot,
+                        # so an orbit frame rendered after a step was the robot's view, not this angle.
+                        look_from(iso_camera, target=tuple(target), position=position)
                     orbit = np.asarray(iso_camera.get_rgb())[:, :, :3]
                     name = f"{args.scene}_slot{slot}_orbit{int(float(angle))}.png"
                     write_png(os.path.join(args.outdir, name), orbit)
