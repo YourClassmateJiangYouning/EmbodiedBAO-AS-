@@ -108,6 +108,16 @@ if [ -z "${BOYUE_API_KEY:-}${TAOTOKEN_API_KEY:-}${OPENAI_API_KEY:-}" ]; then
     echo "no API key in the environment (BOYUE_API_KEY / TAOTOKEN_API_KEY / OPENAI_API_KEY)" >&2
     exit 1
 fi
+# THE BASE URL IS REQUIRED TOO, NOW THAT THE HARD-CODED DEFAULT IS GONE.  The default used to be a
+# plaintext http:// address on a public IP, so every request carried the key over the open internet;
+# it was removed and a BOYUE key without a base URL is now fatal in main.py.  Without this check every
+# worker would die on its first line and the sweep log would be a wall of the same traceback.
+if [ -n "${BOYUE_API_KEY:-}" ] && [ -z "${BOYUE_BASE_URL:-}${TAOTOKEN_BASE_URL:-}${OPENAI_BASE_URL:-}" ]; then
+    echo "BOYUE_API_KEY is set but no base URL is.  Export the gateway the key belongs to:" >&2
+    echo "  export BOYUE_BASE_URL='<the gateway the key belongs to>'" >&2
+    echo "  (there is deliberately no hard-coded default: the one that existed was plaintext http://)" >&2
+    exit 1
+fi
 if [ ! -x "$ISAAC_PY" ]; then
     echo "ISAAC_PY is not executable: $ISAAC_PY" >&2
     exit 1

@@ -561,6 +561,21 @@ def resolve_levels(args: argparse.Namespace) -> List[int]:
     """Turn the CLI level flags into a validated, de-duplicated level list."""
     if args.all_levels and args.levels:
         raise ValueError("--all-levels and --levels cannot be used together")
+    # --level IS REJECTED ALONGSIDE THE OTHER TWO.  It used to be silently ignored: `--level 7
+    # --all-levels` ran all seventeen levels, and `--level 7 --levels 3 4` ran levels 3 and 4, with
+    # nothing said. On a sweep that is a night of episodes at the wrong width. `--level` has a
+    # non-None default, so checking it against that default is what tells "the operator passed it"
+    # from "argparse filled it in".
+    if (
+        getattr(args, "level", None) is not None
+        and args.level != PROTOCOL_LEVELS[0]
+        and (args.all_levels or args.levels)
+    ):
+        other = "--all-levels" if args.all_levels else "--levels"
+        raise ValueError(
+            f"--level {args.level} cannot be combined with {other}: one of them would be ignored. "
+            "Pass only one."
+        )
     if args.all_levels:
         return list(PROTOCOL_LEVELS)
     if args.levels:
