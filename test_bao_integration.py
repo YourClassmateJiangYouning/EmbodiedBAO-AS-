@@ -1811,6 +1811,99 @@ def test_parameterised_models_survive_the_compat_client() -> None:
         ai_agent.urllib.request.urlopen = original  # type: ignore[assignment]
 
 
+def test_a_fatal_status_reaches_the_process_exit_code() -> None:
+    """`main()` must turn run_experiment's fatal status into a non-zero exit code.
+
+    main() called run_experiment(args) and DISCARDED what it returned, and __main__ did not call
+    sys.exit either, so `return 2` from the fatal credential path and from the --start_x validation
+    both exited 0. run_all_models.sh then saw every model "succeed" and printed "all models finished",
+    and every job in run_parallel_sweep.sh logged exit=0 -- the exact accident those fatal paths exist
+    to prevent.
+
+    This drives the real main() with parse_args stubbed and run_experiment replaced, so it tests the
+    wiring rather than a copy of it.
+    """
+    import argparse as _argparse
+
+    import main as _main
+
+    original_parse = _main.parse_args
+    original_run = _main.run_experiment
+    try:
+        _main.parse_args = lambda *a, **k: _argparse.Namespace()  # type: ignore[assignment]
+        for status, expected in ((2, 2), (0, 0)):
+            _main.run_experiment = lambda args, _s=status: _s  # type: ignore[assignment]
+            try:
+                _main.main()
+            except SystemExit as exit_error:
+                check(
+                    exit_error.code == expected,
+                    f"main() exited with {exit_error.code!r} for a run that returned {status}; "
+                    "a fatal status has to reach the process exit code or a sweep reports success",
+                )
+            else:
+                check(False, f"main() did not raise SystemExit for a run that returned {status}")
+        # The normal path returns the per-Level summaries, which must still exit 0.
+        _main.run_experiment = lambda args: {0: {"pass_rate": 1.0}}  # type: ignore[assignment]
+        try:
+            _main.main()
+        except SystemExit as exit_error:
+            check(
+                exit_error.code == 0,
+                f"a successful run exited {exit_error.code!r} instead of 0",
+            )
+        else:
+            check(False, "main() did not raise SystemExit on the success path")
+    finally:
+        _main.parse_args = original_parse  # type: ignore[assignment]
+        _main.run_experiment = original_run  # type: ignore[assignment]
+    print("[ok] a fatal status reaches the exit code, and success still exits 0")
+
+
+def test_the_threshold_family_wise_error_rate_is_controlled() -> None:
+    """Under a pure null the threshold search must almost never report a threshold.
+
+    Holm's guarantee depends on the family being the set that was SEARCHED. This used to skip every
+    Level with fewer than THRESHOLD_MIN_COUNT events BEFORE forming the family, so the family was the
+    two or three Levels that happened to have events -- not the seventeen searched -- and the first
+    cut-off was alpha/1 instead of alpha/17. Measured by Monte Carlo at a nominal 0.05: FWER 0.220
+    (q=0.05) and 0.264 (q=0.057). It is 0.029 and 0.039 after the fix.
+
+    The check is deliberately loose (<= 0.10 against a nominal 0.05) because a Monte Carlo estimate
+    from a fixed seed is not the same number on every numpy version; what it catches is the order of
+    magnitude, which is the whole defect.
+    """
+    import numpy as np
+
+    import analysis as _analysis
+
+    rng = np.random.default_rng(7)
+    trials = 400
+    false_positives = 0
+    for _ in range(trials):
+        levels: Dict[int, Dict[str, Any]] = {}
+        for level in range(17):
+            events = int(rng.binomial(5, 0.05))
+            levels[level] = {
+                "level": level,
+                "a_s_ratio": 2.0 - 0.1 * level,
+                "episodes": 5,
+                "passed_sideways_count": events,
+                "turned_count": events,
+                "turned_rate": events / 5.0,
+            }
+        if _analysis.sideways_threshold(levels) is not None:
+            false_positives += 1
+    rate = false_positives / trials
+    check(
+        rate <= 0.10,
+        f"under a pure null the threshold search reported a threshold {rate:.3f} of the time "
+        f"({false_positives}/{trials}); against a nominal 0.05 that is the Holm family-size defect "
+        "back again",
+    )
+    print(f"[ok] the threshold FWER under a null is {rate:.3f}, within the 0.10 bound")
+
+
 def main() -> int:
     tests = [
         test_episode_record_contract,
@@ -1818,6 +1911,8 @@ def main() -> int:
         test_collisions_do_not_end_episode,
         test_sideways_policy_is_scored_sideways,
         test_csv_export_columns,
+        test_a_fatal_status_reaches_the_process_exit_code,
+        test_the_threshold_family_wise_error_rate_is_controlled,
         test_analysis_recovers_threshold,
         test_analysis_excludes_episodes_with_no_valid_call,
         test_threshold_ignores_a_single_wide_level_event,

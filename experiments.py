@@ -110,6 +110,19 @@ DEFAULT_MAX_STEPS = 30
 INVALID_EPISODE_LIMIT = 3
 
 
+def _episode_had_no_valid_call(record: Dict[str, Any]) -> bool:
+    """Did every model call in this episode fail?
+
+    The predicate lives in analysis.py, which owns the definition of "no valid call" -- it is what the
+    offline report excludes from every rate.  It is reached LAZILY here rather than copied, because a
+    second implementation of "this episode is not a measurement" is exactly the kind of drift that put
+    two disagreeing summarize_level functions in this repository.
+    """
+    from analysis import episode_had_no_valid_call
+
+    return bool(episode_had_no_valid_call(record))
+
+
 class ProtocolCheckpoint:
     """Persistent completion state for pause/resume across experiment runs.
 
@@ -208,8 +221,15 @@ class ProtocolCheckpoint:
                 if not match:
                     continue
                 try:
-                    load_json_file(path)
+                    record = load_json_file(path)
                 except Exception:
+                    continue
+                # A RECORD WHOSE EVERY MODEL CALL FAILED IS NOT A MEASUREMENT.  It parses, and
+                # that was the only test, so a credential outage or a 503 window left episodes on
+                # disk that --resume then skipped for ever: deleting the checkpoint file did not
+                # help, because this rebuild re-derived them as complete.  Such a unit has to be
+                # re-run, so it is not completed.
+                if isinstance(record, dict) and _episode_had_no_valid_call(record):
                     continue
                 level_dir = os.path.basename(
                     os.path.dirname(os.path.dirname(os.path.dirname(path)))
@@ -230,6 +250,18 @@ class ProtocolCheckpoint:
     def mark(self, key: str) -> None:
         self.completed.add(key)
         atomic_write_json(self.path, {"completed": sorted(self.completed)})
+
+    def unmark(self, key: str) -> None:
+        """Forget a unit, so the next --resume runs it again.
+
+        Needed because an episode is marked complete before the health check that may reject it: see
+        the ordering note in run_level. Without this, the three all-invalid episodes that trip the
+        health check stay in the checkpoint, and --resume skips exactly the units that have to be
+        re-run.
+        """
+        if key in self.completed:
+            self.completed.discard(key)
+            atomic_write_json(self.path, {"completed": sorted(self.completed)})
 
 
 
@@ -716,7 +748,17 @@ class BAOExperimentRunner:
                 # Order matters: the episode record is on disk before the
                 # checkpoint claims it is done, so a crash in between costs a
                 # re-run rather than losing the episode.
-                checkpoint.mark(unit_key)
+                #
+                # AN EPISODE WHOSE EVERY CALL FAILED IS NOT MARKED COMPLETE.  It is written to disk --
+                # it is evidence, and the offline report excludes it from every rate -- but it is not a
+                # measurement, so --resume has to run it again. The health check four lines below reads
+                # these and raises after INVALID_EPISODE_LIMIT of them in a row, which is the supported
+                # way to stop a run whose credential died; if the unit were already marked, fixing the
+                # key and re-running with --resume would skip exactly the units that need re-running,
+                # and deleting the checkpoint would not help either because _rebuild_from_episodes
+                # re-derived them from the files.
+                if not _episode_had_no_valid_call(episode):
+                    checkpoint.mark(unit_key)
 
             print(
                 f"[level {level} A/S {ratio:.2f}] episode {episode_id + 1}/{episodes} "

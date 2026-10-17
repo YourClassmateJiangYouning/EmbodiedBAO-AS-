@@ -131,6 +131,16 @@ for model in "${MODELS[@]}"; do
     if [ "$status" -ne 0 ]; then
         echo "!! $model exited with status $status; continuing to the next model" >&2
         FAILED="$FAILED $model"
+    else
+        # A ZERO EXIT IS NOT PROOF THAT ANYTHING RAN.  main.py used to discard its own status (see the
+        # comment in main()), and even with that fixed, a run whose credential failed after the preflight
+        # writes no episodes and still exits 0.  So count what was actually produced, and treat an empty
+        # result as a failure rather than reporting "all models finished".
+        produced=$(find results -path "*/${model}/*/episode_*.json" 2>/dev/null | wc -l)
+        if [ "$produced" -eq 0 ]; then
+            echo "!! $model exited 0 but wrote NO episodes -- treating as a failure" >&2
+            FAILED="$FAILED $model(empty)"
+        fi
     fi
 done
 

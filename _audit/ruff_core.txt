@@ -1,0 +1,241 @@
+ai_agent.py:205:19: TRY003 Avoid specifying long messages outside the exception class
+ai_agent.py:443:19: TRY003 Avoid specifying long messages outside the exception class
+ai_agent.py:487:19: TRY003 Avoid specifying long messages outside the exception class
+ai_agent.py:492:19: TRY003 Avoid specifying long messages outside the exception class
+ai_agent.py:508:19: TRY003 Avoid specifying long messages outside the exception class
+ai_agent.py:523:19: TRY003 Avoid specifying long messages outside the exception class
+ai_agent.py:534:19: TRY003 Avoid specifying long messages outside the exception class
+ai_agent.py:570:9: ARG002 Unused method argument: `state`
+ai_agent.py:571:9: ARG002 Unused method argument: `history`
+ai_agent.py:597:28: RUF005 Consider iterable unpacking instead of concatenation
+ai_agent.py:695:17: TRY300 Consider moving this statement to an `else` block
+ai_agent.py:738:9: ARG002 Unused method argument: `image`
+ai_agent.py:739:9: ARG002 Unused method argument: `prompt`
+ai_agent.py:740:9: ARG002 Unused method argument: `state`
+ai_agent.py:741:9: ARG002 Unused method argument: `history`
+ai_agent.py:770:15: TRY003 Avoid specifying long messages outside the exception class
+capture_scenes.py:220:15: TRY003 Avoid specifying long messages outside the exception class
+capture_scenes.py:317:16: PLW1510 `subprocess.run` without explicit `check` argument
+capture_scenes.py:319:24: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+capture_scenes.py:395:17: PERF403 Use a dictionary comprehension instead of a for-loop
+capture_scenes.py:606:9: TRY300 Consider moving this statement to an `else` block
+capture_scenes.py:607:24: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+capture_views.py:203:15: TRY003 Avoid specifying long messages outside the exception class
+capture_views.py:213:15: TRY003 Avoid specifying long messages outside the exception class
+capture_views.py:491:17: PLW2901 `for` loop variable `token` overwritten by assignment target
+environment.py:95:12: PLW0603 Using the global statement to update `_HAS_ISAAC_SIM` is discouraged
+environment.py:106:22: RUF100 [*] Unused `noqa` directive (unused: `F401`)
+environment.py:107:24: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+environment.py:318:22: F401 [*] `protocol._APERTURE_RATIOS` imported but unused
+environment.py:444:15: TRY003 Avoid specifying long messages outside the exception class
+environment.py:820:20: RUF046 Value being cast to `int` is already an integer
+environment.py:845:20: RUF046 Value being cast to `int` is already an integer
+environment.py:893:19: TRY003 Avoid specifying long messages outside the exception class
+environment.py:951:19: TRY003 Avoid specifying long messages outside the exception class
+environment.py:1269:19: RUF046 Value being cast to `int` is already an integer
+environment.py:1280:19: RUF046 Value being cast to `int` is already an integer
+environment.py:1341:19: TRY003 Avoid specifying long messages outside the exception class
+environment.py:1370:39: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+environment.py:1402:9: SIM105 Use `contextlib.suppress(Exception)` instead of `try`-`except`-`pass`
+environment.py:1563:21: SIM105 Use `contextlib.suppress(Exception)` instead of `try`-`except`-`pass`
+environment.py:1646:13: TRY300 Consider moving this statement to an `else` block
+environment.py:1718:15: TRY003 Avoid specifying long messages outside the exception class
+environment.py:1848:17: SIM105 Use `contextlib.suppress(Exception)` instead of `try`-`except`-`pass`
+environment.py:1868:19: TRY003 Avoid specifying long messages outside the exception class
+environment.py:1928:19: TRY003 Avoid specifying long messages outside the exception class
+environment.py:1953:46: B009 [*] Do not call `getattr` with a constant attribute value. It is not any safer than normal property access.
+environment.py:1976:21: TRY301 Abstract `raise` to an inner function
+environment.py:2010:15: TRY003 Avoid specifying long messages outside the exception class
+environment.py:2029:17: TRY300 Consider moving this statement to an `else` block
+environment.py:2033:21: TRY300 Consider moving this statement to an `else` block
+environment.py:2046:25: TRY300 Consider moving this statement to an `else` block
+environment.py:2056:17: TRY300 Consider moving this statement to an `else` block
+environment.py:2060:21: TRY300 Consider moving this statement to an `else` block
+environment.py:2067:17: TRY300 Consider moving this statement to an `else` block
+environment.py:2070:15: TRY003 Avoid specifying long messages outside the exception class
+environment.py:2273:21: SIM105 Use `contextlib.suppress(Exception)` instead of `try`-`except`-`pass`
+environment.py:2303:13: SIM105 Use `contextlib.suppress(Exception)` instead of `try`-`except`-`pass`
+environment.py:2360:19: TRY003 Avoid specifying long messages outside the exception class
+environment.py:2410:19: TRY003 Avoid specifying long messages outside the exception class
+environment.py:2442:57: B905 `zip()` without an explicit `strict=` parameter
+environment.py:2655:13: RUF046 Value being cast to `int` is already an integer
+environment.py:2678:15: TRY003 Avoid specifying long messages outside the exception class
+environment.py:2683:15: TRY003 Avoid specifying long messages outside the exception class
+experiments.py:91:25: RUF100 [*] Unused `noqa` directive (non-enabled: `PLC0415`)
+experiments.py:136:34: C401 Unnecessary generator (rewrite as a set comprehension)
+experiments.py:314:12: PLW0603 Using the global statement to update `_COLLISION_CHECK_WARNED` is discouraged
+experiments.py:321:31: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+experiments.py:373:13: TRY004 Prefer `TypeError` exception for invalid type
+experiments.py:373:19: TRY003 Avoid specifying long messages outside the exception class
+experiments.py:546:25: B009 [*] Do not call `getattr` with a constant attribute value. It is not any safer than normal property access.
+experiments.py:685:19: TRY003 Avoid specifying long messages outside the exception class
+experiments.py:795:19: TRY003 Avoid specifying long messages outside the exception class
+experiments.py:1339:9: SIM105 Use `contextlib.suppress(Exception)` instead of `try`-`except`-`pass`
+experiments.py:1341:28: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+main.py:121:24: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+main.py:293:15: TRY003 Avoid specifying long messages outside the exception class
+main.py:314:15: TRY003 Avoid specifying long messages outside the exception class
+main.py:320:15: TRY003 Avoid specifying long messages outside the exception class
+main.py:334:9: SIM105 Use `contextlib.suppress(Exception)` instead of `try`-`except`-`pass`
+main.py:385:15: TRY003 Avoid specifying long messages outside the exception class
+main.py:392:15: TRY003 Avoid specifying long messages outside the exception class
+main.py:435:17: RUF005 Consider `["", *list(_scene_choices())]` instead of concatenation
+main.py:523:15: TRY003 Avoid specifying long messages outside the exception class
+main.py:526:5: SIM108 Use ternary operator `requested = list(args.levels) if args.levels else [args.level]` instead of `if`-`else`-block
+main.py:686:5: ARG001 Unused function argument: `episode`
+main.py:906:9: TRY300 Consider moving this statement to an `else` block
+memory_experiment.py:105:34: C401 Unnecessary generator (rewrite as a set comprehension)
+memory_experiment.py:187:23: TRY003 Avoid specifying long messages outside the exception class
+memory_experiment.py:191:23: TRY003 Avoid specifying long messages outside the exception class
+memory_experiment.py:195:15: TRY003 Avoid specifying long messages outside the exception class
+memory_experiment.py:198:19: TRY003 Avoid specifying long messages outside the exception class
+memory_experiment.py:502:19: TRY003 Avoid specifying long messages outside the exception class
+memory_experiment.py:762:19: TRY003 Avoid specifying long messages outside the exception class
+memory_metrics.py:193:11: TRY003 Avoid specifying long messages outside the exception class
+memory_metrics.py:276:15: TRY003 Avoid specifying long messages outside the exception class
+memory_metrics.py:278:15: TRY003 Avoid specifying long messages outside the exception class
+memory_metrics.py:280:15: TRY003 Avoid specifying long messages outside the exception class
+memory_metrics.py:328:12: PLW3301 Nested `max` calls can be flattened
+memory_metrics.py:423:15: TRY003 Avoid specifying long messages outside the exception class
+memory_metrics.py:447:15: TRY003 Avoid specifying long messages outside the exception class
+memory_protocol.py:122:15: TRY003 Avoid specifying long messages outside the exception class
+memory_protocol.py:129:15: TRY003 Avoid specifying long messages outside the exception class
+memory_protocol.py:146:15: TRY003 Avoid specifying long messages outside the exception class
+memory_protocol.py:230:43: RUF010 [*] Use explicit conversion flag
+memory_protocol.py:232:11: TRY003 Avoid specifying long messages outside the exception class
+memory_protocol.py:388:15: TRY003 Avoid specifying long messages outside the exception class
+memory_protocol.py:419:5: ARG001 Unused function argument: `max_steps`
+memory_protocol.py:429:15: TRY003 Avoid specifying long messages outside the exception class
+memory_protocol.py:431:15: TRY003 Avoid specifying long messages outside the exception class
+protocol.py:179:20: RUF046 Value being cast to `int` is already an integer
+protocol.py:328:12: PLW0603 Using the global statement to update `MARKER_DESCRIPTOR` is discouraged
+scene_builder.py:124:9: TRY300 Consider moving this statement to an `else` block
+scene_builder.py:125:24: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:178:24: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:281:15: TRY003 Avoid specifying long messages outside the exception class
+scene_builder.py:352:9: TRY300 Consider moving this statement to an `else` block
+scene_builder.py:353:24: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:373:24: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:396:12: PLW0603 Using the global statement to update `_ASSET_INDEX` is discouraged
+scene_builder.py:522:24: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:538:28: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:573:16: PLW0603 Using the global statement to update `NON_LINEAR_BOUND_UNMEASURED` is discouraged
+scene_builder.py:715:28: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:1021:9: TRY300 Consider moving this statement to an `else` block
+scene_builder.py:1022:31: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:1135:32: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:1139:31: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:1194:9: TRY300 Consider moving this statement to an `else` block
+scene_builder.py:1195:31: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:1378:44: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:1476:39: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:1512:39: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:1575:35: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:1687:24: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:1710:24: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:1729:24: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:1746:24: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+scene_builder.py:1780:15: TRY003 Avoid specifying long messages outside the exception class
+scene_builder.py:1841:53: B905 `zip()` without an explicit `strict=` parameter
+scene_builder.py:1896:54: B905 `zip()` without an explicit `strict=` parameter
+scene_builder.py:1953:34: PERF102 When using only the values of a dict use the `values()` method
+test_bao_assets.py:21:22: RUF100 [*] Unused `noqa` directive (non-enabled: `E402`)
+test_bao_assets.py:22:29: RUF100 [*] Unused `noqa` directive (non-enabled: `E402`)
+test_bao_assets.py:166:35: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+test_bao_geometry.py:178:31: B905 `zip()` without an explicit `strict=` parameter
+test_bao_geometry.py:178:31: RUF007 Prefer `itertools.pairwise()` over `zip()` when iterating over successive pairs
+test_bao_geometry.py:357:26: ARG001 Unused function argument: `width`
+test_bao_geometry.py:1221:14: PLW1510 `subprocess.run` without explicit `check` argument
+test_bao_geometry.py:1267:30: ARG001 Unused function argument: `width`
+test_bao_geometry.py:1366:11: SIM300 [*] Yoda condition detected
+test_bao_geometry.py:1457:9: SIM300 [*] Yoda condition detected
+test_bao_geometry.py:1750:14: PLW1510 `subprocess.run` without explicit `check` argument
+test_bao_geometry.py:1880:13: RUF046 Value being cast to `int` is already an integer
+test_bao_geometry.py:1881:13: RUF046 Value being cast to `int` is already an integer
+test_bao_geometry.py:2071:5: RUF059 Unpacked variable `px` is never used
+test_bao_geometry.py:2351:57: B905 `zip()` without an explicit `strict=` parameter
+test_bao_geometry.py:2396:13: RUF046 Value being cast to `int` is already an integer
+test_bao_geometry.py:2398:22: RUF046 Value being cast to `int` is already an integer
+test_bao_geometry.py:2777:35: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+test_bao_health.py:19:21: RUF100 [*] Unused `noqa` directive (non-enabled: `E402`)
+test_bao_health.py:110:35: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+test_bao_integration.py:330:40: ARG002 Unused method argument: `log_file`
+test_bao_integration.py:1254:40: ARG002 Unused method argument: `log_file`
+test_bao_integration.py:1260:19: ARG002 Unused method argument: `prompt`
+test_bao_integration.py:1260:32: ARG002 Unused method argument: `image`
+test_bao_integration.py:1260:44: ARG002 Unused method argument: `state`
+test_bao_integration.py:1313:40: ARG002 Unused method argument: `log_file`
+test_bao_integration.py:1523:27: ARG001 Unused function argument: `kwargs`
+test_bao_integration.py:1660:40: ARG002 Unused method argument: `log_file`
+test_bao_integration.py:1779:36: ARG001 Unused function argument: `timeout`
+test_bao_integration.py:1850:35: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+test_bao_memory.py:188:17: PERF401 Use `list.extend` to create a transformed list
+test_bao_memory.py:307:15: TRY003 Avoid specifying long messages outside the exception class
+test_bao_memory.py:461:19: TRY003 Avoid specifying long messages outside the exception class
+test_bao_memory.py:504:36: B905 `zip()` without an explicit `strict=` parameter
+test_bao_memory.py:504:36: RUF007 Prefer `itertools.pairwise()` over `zip()` when iterating over successive pairs
+test_bao_memory.py:631:15: TRY003 Avoid specifying long messages outside the exception class
+test_bao_memory.py:726:39: RUF005 Consider `[*block.split("\n"), "", new_header]` instead of concatenation
+test_bao_memory.py:815:15: TRY003 Avoid specifying long messages outside the exception class
+test_bao_memory.py:987:19: TRY003 Avoid specifying long messages outside the exception class
+test_bao_memory.py:995:23: TRY003 Avoid specifying long messages outside the exception class
+test_bao_memory.py:1018:14: C408 Unnecessary `dict()` call (rewrite as a literal)
+test_bao_memory.py:1116:19: TRY003 Avoid specifying long messages outside the exception class
+test_bao_memory.py:1124:15: TRY003 Avoid specifying long messages outside the exception class
+test_bao_memory.py:1282:25: ARG005 Unused lambda argument: `text`
+test_bao_memory.py:1380:35: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+test_bao_memory_runner.py:136:36: RUF012 Mutable default value for class attribute
+test_bao_memory_runner.py:138:23: RUF012 Mutable default value for class attribute
+test_bao_memory_runner.py:154:34: ARG002 Unused method argument: `image`
+test_bao_memory_runner.py:154:46: ARG002 Unused method argument: `state`
+test_bao_memory_runner.py:414:19: TRY003 Avoid specifying long messages outside the exception class
+test_bao_memory_runner.py:516:19: TRY003 Avoid specifying long messages outside the exception class
+test_bao_memory_runner.py:534:15: TRY003 Avoid specifying long messages outside the exception class
+test_bao_memory_runner.py:673:13: SIM115 Use a context manager for opening files
+test_bao_memory_runner.py:765:28: ARG002 Unused method argument: `app`
+test_bao_memory_runner.py:968:9: B904 Within an `except` clause, raise exceptions with `raise ... from err` or `raise ... from None` to distinguish them from errors in exception handling
+test_bao_parsing.py:18:18: RUF100 [*] Unused `noqa` directive (non-enabled: `E402`)
+test_bao_parsing.py:72:25: F601 Dictionary key literal `"sidestep left"` repeated
+test_bao_parsing.py:145:35: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+test_bao_persistence.py:37:18: RUF100 [*] Unused `noqa` directive (non-enabled: `E402`)
+test_bao_persistence.py:38:29: RUF100 [*] Unused `noqa` directive (non-enabled: `E402`)
+test_bao_persistence.py:39:21: RUF100 [*] Unused `noqa` directive (non-enabled: `E402`)
+test_bao_persistence.py:40:41: RUF100 [*] Unused `noqa` directive (non-enabled: `E402`)
+test_bao_persistence.py:41:45: RUF100 [*] Unused `noqa` directive (non-enabled: `E402`)
+test_bao_persistence.py:81:18: ARG001 Unused function argument: `src`
+test_bao_persistence.py:81:23: ARG001 Unused function argument: `dst`
+test_bao_persistence.py:81:30: RUF100 [*] Unused `noqa` directive (non-enabled: `ANN001`)
+test_bao_persistence.py:82:19: TRY003 Avoid specifying long messages outside the exception class
+test_bao_persistence.py:476:18: PLW1510 `subprocess.run` without explicit `check` argument
+test_bao_persistence.py:495:27: B905 `zip()` without an explicit `strict=` parameter
+test_bao_persistence.py:622:15: TRY003 Avoid specifying long messages outside the exception class
+test_bao_persistence.py:683:35: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+test_bao_scenes.py:19:22: RUF100 [*] Unused `noqa` directive (non-enabled: `E402`)
+test_bao_scenes.py:275:27: TRY003 Avoid specifying long messages outside the exception class
+test_bao_scenes.py:281:23: TRY003 Avoid specifying long messages outside the exception class
+test_bao_scenes.py:652:9: RUF059 Unpacked variable `cy` is never used
+test_bao_scenes.py:652:13: RUF059 Unpacked variable `cz` is never used
+test_bao_scenes.py:653:9: RUF059 Unpacked variable `hy` is never used
+test_bao_scenes.py:653:13: RUF059 Unpacked variable `hz` is never used
+test_bao_scenes.py:730:26: B905 `zip()` without an explicit `strict=` parameter
+test_bao_scenes.py:1065:23: B007 Loop control variable `colour` not used within loop body
+test_bao_scenes.py:1088:22: SIM115 Use a context manager for opening files
+test_bao_scenes.py:1109:23: B905 `zip()` without an explicit `strict=` parameter
+test_bao_scenes.py:1110:21: B905 `zip()` without an explicit `strict=` parameter
+test_bao_scenes.py:1229:39: SIM115 Use a context manager for opening files
+test_bao_scenes.py:1233:17: PERF401 Use `list.extend` to create a transformed list
+test_bao_scenes.py:1375:22: SIM115 Use a context manager for opening files
+test_bao_scenes.py:1410:29: PERF401 Use `list.extend` to create a transformed list
+test_bao_scenes.py:1457:22: SIM115 Use a context manager for opening files
+test_bao_scenes.py:1704:14: SIM115 Use a context manager for opening files
+test_bao_scenes.py:1709:18: SIM115 Use a context manager for opening files
+test_bao_scenes.py:1801:15: TRY003 Avoid specifying long messages outside the exception class
+test_bao_scenes.py:1828:18: SIM115 Use a context manager for opening files
+test_bao_scenes.py:1871:14: PLW1510 `subprocess.run` without explicit `check` argument
+test_bao_scenes.py:1918:40: RUF002 Docstring contains ambiguous `，` (FULLWIDTH COMMA). Did you mean `,` (COMMA)?
+test_bao_scenes.py:2003:19: PLW1510 `subprocess.run` without explicit `check` argument
+test_bao_scenes.py:2011:15: TRY003 Avoid specifying long messages outside the exception class
+test_bao_scenes.py:2040:14: PLW1510 `subprocess.run` without explicit `check` argument
+test_bao_scenes.py:2108:35: RUF100 [*] Unused `noqa` directive (non-enabled: `BLE001`)
+Found 239 errors.
+[*] 53 fixable with `--fix` (44 unsafe fixes available with `--fix --unsafe-fixes`).

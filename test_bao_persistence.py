@@ -653,6 +653,100 @@ def test_save_obs_flag_is_honoured_and_survives_bad_frames() -> None:
     print("[ok] --save_obs writes PNGs and tolerates an unusable frame")
 
 
+def test_an_all_invalid_episode_is_not_marked_complete() -> None:
+    """An episode whose every model call failed must NOT count as done.
+
+    A credential outage or a 503 window produces episodes in which every step failed. Writing them is
+    right -- they are evidence -- but they were also `checkpoint.mark()`ed, and the health check that
+    rejects three of them in a row runs AFTER the mark. So fixing the key and re-running with --resume
+    skipped exactly the units that had to be re-run, and deleting the checkpoint did not help either,
+    because _rebuild_from_episodes re-derived them from the files and only checked that they PARSED.
+
+    Both halves are asserted: the rebuild must exclude them, and unmark() must retract a key, because
+    that is what lets the health path undo a mark it has already written.
+    """
+    tmp = make_temp_dir()
+    try:
+        results_root = os.path.join(tmp, "results")
+        model = "invalid-model"
+        tag = "invalid-tag"
+        level_dir = os.path.join(results_root, "level0", model, tag)
+        os.makedirs(level_dir, exist_ok=True)
+        good = {
+            "episode_id": 0, "level": 0, "total_steps": 5,
+            "invalid_response_count": 0, "passed": True, "steps": [],
+        }
+        bad = {
+            "episode_id": 1, "level": 0, "total_steps": 5,
+            "invalid_response_count": 5, "passed": False, "steps": [],
+        }
+        persistence.atomic_write_json(os.path.join(level_dir, "episode_000.json"), good)
+        persistence.atomic_write_json(os.path.join(level_dir, "episode_001.json"), bad)
+
+        checkpoint_path = os.path.join(results_root, model, f"checkpoint_{tag}.json")
+        os.makedirs(os.path.dirname(checkpoint_path), exist_ok=True)
+        # No checkpoint FILE, so the rebuild path is the one under test.
+        checkpoint = ProtocolCheckpoint(checkpoint_path, resume=True)
+        check(
+            checkpoint.is_done("level0/episode000"),
+            f"a real episode was not recovered: {sorted(checkpoint.completed)}",
+        )
+        check(
+            not checkpoint.is_done("level0/episode001"),
+            "an episode in which every call failed was rebuilt as complete, so --resume will skip it "
+            f"for ever: {sorted(checkpoint.completed)}",
+        )
+
+        checkpoint.mark("level0/episode001")
+        check(
+            checkpoint.is_done("level0/episode001"),
+            "mark() no longer marks, so the unmark check below would prove nothing",
+        )
+        checkpoint.unmark("level0/episode001")
+        check(
+            not checkpoint.is_done("level0/episode001"),
+            "unmark() did not retract the key, so the health path cannot undo a mark it wrote",
+        )
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    print("[ok] an all-invalid episode is not marked complete, and unmark() retracts a mark")
+
+
+def test_run_level_does_not_mark_an_all_invalid_episode() -> None:
+    """The MARK guard is the other half of P0-1, and it is asserted at the source.
+
+    The test above drives _rebuild_from_episodes, which only runs when the checkpoint FILE is missing.
+    The guard that matters during a live run is in run_level: checkpoint.mark(unit_key) happens BEFORE
+    _note_episode_health, which is what raises on three all-invalid episodes in a row. So an episode in
+    which every model call failed was marked complete and then rejected, and --resume skipped it for
+    ever.
+
+    A behavioural test was written first and DISCARDED: driving run_level with an adapter that answers
+    every request with an unparseable action did not actually produce invalid_response_count ==
+    total_steps, so removing the guard left it green -- a test that cannot fail is worse than no test,
+    which is the lesson of the audit this file answers. What is asserted instead is that run_level
+    consults _episode_had_no_valid_call before marking, because that is the property that was missing
+    and its absence is detectable here.
+    """
+    import inspect
+
+    source = inspect.getsource(BAOExperimentRunner.run_level)
+    check(
+        "_episode_had_no_valid_call" in source,
+        "run_level no longer asks whether an episode had a valid call, so an all-invalid episode is "
+        "marked complete before the health check rejects it and --resume will skip it for ever",
+    )
+    # The guard has to sit on the mark, not somewhere else in the function.
+    mark_at = source.find("checkpoint.mark(")
+    guard_at = source.find("_episode_had_no_valid_call")
+    check(
+        guard_at != -1 and mark_at != -1 and guard_at < mark_at,
+        "the all-invalid check is not applied to checkpoint.mark(): the mark still happens first",
+    )
+    print("[ok] run_level consults the all-invalid check before marking a unit complete")
+
+
+
 TESTS = [
     test_atomic_write_json_round_trips,
     test_failed_write_keeps_the_previous_file,
@@ -668,6 +762,8 @@ TESTS = [
     test_output_root_override_and_progress_file,
     test_run_level_writes_every_artifact,
     test_save_obs_flag_is_honoured_and_survives_bad_frames,
+    test_an_all_invalid_episode_is_not_marked_complete,
+    test_run_level_does_not_mark_an_all_invalid_episode,
 ]
 
 

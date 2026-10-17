@@ -26,7 +26,7 @@
 
 ```bash
 cd ~/EmbodiedBAO-AS- && git pull --ff-only origin master && git log --oneline -3
-git ls-files assets | wc -l        # 必须 1184，否则道具会全部变成 NO ASSET
+git ls-files assets | wc -l        # 必须 1192，否则道具会全部变成 NO ASSET
 ls assets/isaac | head -3          # 必须非空
 ls assets/bucket | head -3         # 必须非空
 
@@ -36,7 +36,7 @@ python tools/prove_audit_fails.py  # 必须: all 4 planted fault(s) were caught
 python tools/verify_docs.py        # 必须: all hold
 python tools/check_field_names.py  # 必须: 3 个 ok
 for f in test_bao_*.py; do echo "== $f"; python $f 2>/dev/null | tail -3; done
-                                   # 必须: 0 失败，合计 184 项
+                                   # 必须: 0 失败，合计 189 项
 ```
 
 **任何一步失败，先修它，不要往下走。**
@@ -257,7 +257,7 @@ python tools/measure_named_props.py <资产名...>                        # ② 
    默认值恰好合理，所以未产生可见症状。**已知未修。**
 5. `shopping_cart_corral_01` 已抓取但**故意未接线**：实测 2.006 × 2.376 × 3.711 m，
    在 5 m 宽房间里需要的 `|z|` 区间只有 2 毫米宽。**已知未接。**
-6. 资产根**已全部提交**（`git ls-files assets` = 1184）。`.gitignore` 用 `assets/*` 屏蔽整个
+6. 资产根**已全部提交**（`git ls-files assets` = 1192）。`.gitignore` 用 `assets/*` 屏蔽整个
    目录，靠 `!assets/isaac/` 与 `!assets/bucket/` 两条**例外**放行——这两条例外曾经缺失，
    症状是"实验室机器上 `0 from assets`，而本机测量正常"。
 
@@ -276,7 +276,7 @@ python tools/measure_named_props.py <资产名...>                        # ② 
 
 ```bash
 git clone https://github.com/YourClassmateJiangYouning/EmbodiedBAO-AS-.git ~/EmbodiedBAO-AS-
-cd ~/EmbodiedBAO-AS- && git log --oneline -1 && git ls-files assets | wc -l   # 1184
+cd ~/EmbodiedBAO-AS- && git log --oneline -1 && git ls-files assets | wc -l   # 1192
 ```
 
 Isaac Sim 的解释器本项目一直用 `/home/ybh/isaacsim/python.sh`。**先确认它存在**：

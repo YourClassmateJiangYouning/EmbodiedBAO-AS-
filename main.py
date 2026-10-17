@@ -923,7 +923,16 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
 
 def main() -> None:
     args = parse_args()
-    run_experiment(args)
+    # THE EXIT STATUS IS THE POINT.  This used to call run_experiment(args) and DISCARD what it
+    # returned, and __main__ did not call sys.exit either, so a fatal credential (return 2) or an
+    # out-of-range --start_x (return 2) still exited 0. run_all_models.sh then saw every model
+    # "succeed" and printed "all models finished", and every job in run_parallel_sweep.sh logged
+    # exit=0 -- which is exactly the accident the fatal paths were added to prevent.
+    #
+    # run_experiment returns the per-Level summaries on success and an int status on a fatal error, so
+    # the two are distinguished rather than assumed.
+    result = run_experiment(args)
+    raise SystemExit(result if isinstance(result, int) else 0)
 
 
 if __name__ == "__main__":

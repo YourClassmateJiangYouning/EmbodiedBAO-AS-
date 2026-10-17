@@ -290,7 +290,17 @@ worker() {
         --headless --resume --tag "${TAG_PREFIX}_${safe}" \
         > "$log" 2>&1
     local rc=$?
-    echo "END   ${model} ${scene}  exit=${rc}  $(( $(date +%s) - t0 ))s  log=${log}"
+    # A ZERO EXIT IS NOT PROOF THAT ANYTHING RAN.  main.py used to discard its own status, and even now a
+    # run whose credential dies after the preflight writes no episodes and exits 0.  Counting them makes
+    # a silent empty run fail the sweep instead of looking like a finished model.
+    local produced
+    produced=$(find results -path "*/${model}*/${TAG_PREFIX}_${safe}/episode_*.json" 2>/dev/null | wc -l)
+    if [ "$rc" -eq 0 ] && [ "$produced" -eq 0 ]; then
+        echo "END   ${model} ${scene}  exit=0-but-EMPTY (0 episodes)  $(( $(date +%s) - t0 ))s  log=${log}" >&2
+        rc=1
+    else
+        echo "END   ${model} ${scene}  exit=${rc}  $(( $(date +%s) - t0 ))s  episodes=${produced}  log=${log}"
+    fi
     return $rc
 }
 export -f worker

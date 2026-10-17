@@ -139,7 +139,7 @@ python tools/audit_dressing.py            # 必须: no problems found
 python tools/prove_audit_fails.py         # 必须: all 4 planted fault(s) were caught
 python tools/verify_docs.py               # 必须: all hold
 python tools/check_field_names.py         # 必须: 3 个 ok
-for f in test_bao_*.py; do python $f 2>/dev/null | tail -1; done   # 必须 0 失败，合计 184 项
+for f in test_bao_*.py; do python $f 2>/dev/null | tail -1; done   # 必须 0 失败，合计 189 项
 
 git status --short                        # 先看清有哪些改动
 git add <你改的那几个文件>                  # ★ 逐条列名，不要 -A / -u / .
@@ -165,7 +165,7 @@ git rev-parse master && git ls-remote origin master   # 两个哈希必须相同
 
 ```bash
 cd ~/EmbodiedBAO-AS- && git pull --ff-only origin master && git log --oneline -3
-git ls-files assets | wc -l        # 必须 1184，否则道具会全部变成 NO ASSET
+git ls-files assets | wc -l        # 必须 1192，否则道具会全部变成 NO ASSET
 ls assets/isaac | head -3          # 必须非空
 ls assets/bucket | head -3         # 必须非空
 python tools/audit_dressing.py
@@ -280,7 +280,7 @@ python capture_scenes.py --scene stage1.4 --level 0 --slots 1 --outdir scene_pre
    默认值恰好合理，未产生可见症状。**已知未修。**
 5. `shopping_cart_corral_01` 已抓取但**故意未接线**：实测 2.006 × 2.376 × 3.711 m，
    在 5 m 宽房间里需要的 `|z|` 区间只有 2 毫米宽。**已知未接。**
-6. 资产根**已全部提交**（`git ls-files assets` = 1184），靠 `.gitignore` 的两条例外放行
+6. 资产根**已全部提交**（`git ls-files assets` = 1192），靠 `.gitignore` 的两条例外放行
    （`!assets/isaac/`、`!assets/bucket/`）——这两条例外曾经缺失，症状是"实验室机器上
    `0 from assets`，而本机测量正常"。
 

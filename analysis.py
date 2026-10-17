@@ -474,8 +474,12 @@ def _significant_threshold(
     for summary in levels:
         n = int(summary.get("episodes", 0))
         k = int(summary.get(count_key, 0))
-        if k < THRESHOLD_MIN_COUNT:
-            continue
+        # THE MINIMUM COUNT IS NOT A PRE-FILTER.  It used to `continue` here, before the p-value was
+        # computed, so the Holm family below held only the two or three Levels that happened to have
+        # enough events -- not the seventeen that were searched. Holm's first cut-off was then
+        # alpha/1..alpha/3 instead of alpha/17, and the family-wise error rate measured 0.220 at a
+        # nominal 0.05 (Monte Carlo, 17 levels x 5 episodes, q = 0.05, 2000 trials) instead of about
+        # 0.037. Every Level with data now enters the test; the minimum count is applied to the RESULT.
         a_s = float(summary["a_s_ratio"])
         background = _pooled_rate(
             [other for other in levels if float(other["a_s_ratio"]) > a_s],
@@ -513,6 +517,8 @@ def _significant_threshold(
     # Step-down: sort the p-values ascending and require p_i <= alpha / (m - i); the first failure ends
     # the family, because every later (larger) p-value would face a stricter threshold.
     candidates.sort(key=lambda pair: pair[0])
+    # EVERY Level with data is in the family -- that is what makes this a Holm correction over the
+    # search that was actually performed. See the note above the p-value loop.
     family = len(candidates)
     survivors = []
     for rank, (p_value, summary) in enumerate(candidates):
@@ -520,6 +526,14 @@ def _significant_threshold(
             survivors.append(summary)
         else:
             break
+    # THE MINIMUM EVENT COUNT IS APPLIED HERE, AFTER THE CORRECTION. A Level that survived Holm on one
+    # event out of five is still not a threshold: one collision-recovery turn is a single action, not a
+    # behaviour. Dropping such Levels from the SURVIVORS rather than from the family keeps the family
+    # size honest.
+    survivors = [
+        summary for summary in survivors
+        if int(summary.get(count_key, 0)) >= THRESHOLD_MIN_COUNT
+    ]
     if not survivors:
         return None
     return float(max(survivors, key=lambda s: float(s["a_s_ratio"]))["a_s_ratio"])

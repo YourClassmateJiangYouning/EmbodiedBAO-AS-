@@ -2048,12 +2048,53 @@ def test_the_handoff_documents_state_facts_that_hold() -> None:
           "(asset counts, test count, every tool they name, the check total)")
 
 
+def test_the_bars_are_bars_and_not_a_solid_block() -> None:
+    """`bars3` and `bars2` must actually show SEPARATED bars.
+
+    Both were solid while five of the twenty-five conditions told the model "set of three bars" or
+    "set of two bars":
+
+        bars3  three bars at x [-0.2397,-0.0303], [-0.1047,+0.1047], [+0.0303,+0.2397] -- each pair
+               OVERLAPPING by 0.0743 m, so the union was a single 0.479 x 0.900 rectangle;
+        bars2  two bars separated by 0.0022 m, about 0.09 px at the 1024-px frame: invisible.
+
+    The check is on the GAP and not on the overall extent, because the extent was always right -- which
+    is exactly why the existing size tests passed throughout. A bounding-box measurement cannot see a
+    gap, and this repository has already been misled once by measuring a shape's box instead of its
+    parts.
+    """
+    expected_gap = sc.BAR_GAP_M
+    # The whole marker spans MARKER_SIZE_M and measures about 38 px at the 1024-px frame from the start
+    # pose (see test_shapes_are_fat_enough_to_read_at_the_start_pose), so this is the pixel size of the
+    # gap the renderer has to keep.
+    pixels_per_metre = 38.0 / sc.MARKER_SIZE_M
+    for name, axis in (("bars3", 0), ("bars2", 1)):
+        intervals = sorted(
+            (min(point[axis] for point in polygon), max(point[axis] for point in polygon))
+            for polygon in sc.SHAPES[name]
+        )
+        for lower, upper in zip(intervals, intervals[1:]):
+            gap = upper[0] - lower[1]
+            check(
+                gap >= expected_gap - 1e-9,
+                f"{name}'s bars are only {gap:.4f} m apart, not the declared {expected_gap:.4f} m: "
+                "they touch or overlap, so the marker reads as one solid block while the prompt calls "
+                "it a set of bars",
+            )
+        gap_px = expected_gap * pixels_per_metre
+        check(
+            gap_px >= 2.0,
+            f"{name}'s gap is only {gap_px:.1f} px at the 1024-px frame, which the downscale hides",
+        )
+
+
 def main() -> int:
     tests = [
         test_twenty_five_markers_are_distinct,
         test_every_marker_names_a_real_shape_and_colour,
         test_every_shape_fits_the_marker_bounding_box,
         test_the_arrow_keeps_its_size_and_its_measured_centroid_offset,
+        test_the_bars_are_bars_and_not_a_solid_block,
         test_shapes_are_fat_enough_to_read_at_the_start_pose,
         test_no_dressing_occludes_the_opening_or_the_marker,
         test_no_dressing_protrudes_into_the_corridor,

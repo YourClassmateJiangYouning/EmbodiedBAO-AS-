@@ -138,6 +138,18 @@ def _rect(x0: float, y0: float, x1: float, y1: float) -> Tuple[Tuple[float, floa
 _ARM = SHAPE_HALF_M / 3.0          # half width of the cross's arms
 SHAFT_HALF = SHAPE_HALF_M / 4.3    # half height of the arrow's shaft
 
+# THE GAP BETWEEN THE BARS, AND WHY IT HAS TO BE A CONSTANT.
+#
+# `bars3` is described to the model as "set of three bars" and `bars2` as "set of two bars".  Both were
+# SOLID: bars3's three bars overlapped each other by 0.0743 m, so their union was one 0.479 x 0.900
+# rectangle, and bars2's two bars were separated by 0.0022 m -- about 0.09 px from the start pose, i.e.
+# invisible.  The five conditions that use them (stage1.1/5, stage1.2/4, stage1.4/2, stage1.4/5,
+# stage1.5/3) therefore showed the model a solid block and told it "three bars".
+#
+# 0.05 m is about 2.2 px at the 1024-px frame and the ~15.5 m distance, so the gap survives the
+# downscale; test_bao_scenes checks that the bars do not touch.
+BAR_GAP_M = 0.05
+
 SHAPES: Dict[str, Tuple[Tuple[Tuple[float, float], ...], ...]] = {
     "square": (_rect(-SHAPE_HALF_M, -SHAPE_HALF_M, SHAPE_HALF_M, SHAPE_HALF_M),),
     "diamond": (((0.0, -SHAPE_HALF_M), (SHAPE_HALF_M, 0.0),
@@ -150,11 +162,16 @@ SHAPES: Dict[str, Tuple[Tuple[Tuple[float, float], ...], ...]] = {
                (SHAPE_HALF_M, -_ARM), (SHAPE_HALF_M, _ARM), (_ARM, _ARM),
                (_ARM, SHAPE_HALF_M), (-_ARM, SHAPE_HALF_M), (-_ARM, _ARM),
                (-SHAPE_HALF_M, _ARM), (-SHAPE_HALF_M, -_ARM), (-_ARM, -_ARM)),),
-    "bars3": (lambda w=SHAPE_HALF_M / 4.3, g=SHAPE_HALF_M * 0.30: (
+    # g is derived from w and BAR_GAP_M so the three bars cannot touch: the centre bar occupies
+    # [-w, w] and the outer bars start at g - w, so the gap is 2*(g - w).  It used to be
+    # SHAPE_HALF_M * 0.30, which is smaller than 2*w and made them OVERLAP by 0.0743 m.
+    "bars3": (lambda w=SHAPE_HALF_M / 4.3, g=(SHAPE_HALF_M / 4.3) * 2.0 + BAR_GAP_M: (
         _rect(-g - w, -SHAPE_HALF_M, -g + w, SHAPE_HALF_M),
         _rect(-w, -SHAPE_HALF_M, w, SHAPE_HALF_M),
         _rect(g - w, -SHAPE_HALF_M, g + w, SHAPE_HALF_M)))(),
-    "bars2": (lambda h=SHAPE_HALF_M / 4.3, g=SHAPE_HALF_M * 0.235: (
+    # g is h plus half the gap, so the two bars are separated by exactly BAR_GAP_M.  It used to be
+    # SHAPE_HALF_M * 0.235, which left a 0.0022 m slit -- invisible, so this read as one solid bar.
+    "bars2": (lambda h=SHAPE_HALF_M / 4.3, g=(SHAPE_HALF_M / 4.3) + BAR_GAP_M / 2.0: (
         _rect(-SHAPE_HALF_M, g - h, SHAPE_HALF_M, g + h),
         _rect(-SHAPE_HALF_M, -g - h, SHAPE_HALF_M, -g + h)))(),
     "arrow": (
