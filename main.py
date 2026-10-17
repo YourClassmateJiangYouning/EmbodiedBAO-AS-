@@ -426,6 +426,24 @@ def _positive_int(value: str) -> int:
     return parsed
 
 
+def _episodes_per_level(value: str) -> int:
+    """A positive int no larger than the number of marker conditions per scene.
+
+    Each scene has five markers and they are five CONDITIONS, so episode N uses slot N % 5 + 1. Asking
+    for six would run the first marker again and file the repeat as a new condition: n rises while the
+    number of distinct conditions does not. Below five is allowed, because a --episodes 1 smoke run is
+    how the pipeline is checked without paying for a Level.
+    """
+    parsed = _positive_int(value)
+    if parsed > DEFAULT_EPISODES_PER_LEVEL:
+        raise argparse.ArgumentTypeError(
+            f"at most {DEFAULT_EPISODES_PER_LEVEL}: a scene has that many marker conditions, and "
+            f"episode N uses slot N % {DEFAULT_EPISODES_PER_LEVEL} + 1, so more episodes repeat "
+            "conditions rather than adding them"
+        )
+    return parsed
+
+
 def _positive_float(value: str) -> float:
     parsed = float(value)
     if not (parsed > 0.0) or parsed == float("inf"):
@@ -454,9 +472,21 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     )
     parser.add_argument(
         "--episodes",
-        type=_positive_int,
+        type=_episodes_per_level,
         default=DEFAULT_EPISODES_PER_LEVEL,
-        help=f"Episodes per Level (default {DEFAULT_EPISODES_PER_LEVEL})",
+        # THE CAP IS THE MARKER COUNT, AND IT IS A DESIGN CONSTRAINT, NOT A LIMIT.
+        #
+        # Each scene has exactly five markers, and they are five CONDITIONS rather than five repeats:
+        # episode N uses slot N % 5 + 1. Asking for more than five therefore re-runs the same five
+        # markers under the same level and files the repeats as if they were new conditions -- n goes up
+        # while the number of distinct conditions does not. Anything BELOW five is allowed because a
+        # smoke test with --episodes 1 is how the pipeline is checked without paying for a full Level.
+        help=(
+            f"Episodes per Level (default {DEFAULT_EPISODES_PER_LEVEL}). At most "
+            f"{DEFAULT_EPISODES_PER_LEVEL}: a scene has that many marker conditions and the marker "
+            "slot is episode_id % that count, so more episodes repeat conditions rather than adding "
+            "them. Fewer is allowed for smoke tests."
+        ),
     )
     parser.add_argument(
         "--max_steps",
