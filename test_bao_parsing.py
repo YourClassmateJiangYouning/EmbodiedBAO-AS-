@@ -120,7 +120,84 @@ def test_text_fallback_still_works() -> None:
     check(ai_agent.parse_action_text("I will go forward now") == "forward",
           "prose fallback broke")
     check(ai_agent.parse_action_text("") is None, "empty text should not parse")
-    print("[ok] the Choice: [n] and prose fallbacks still behave")
+    # THE PROSE FALLBACK HAS TO RESOLVE WORD ORDER THE SAME WAY THE JSON PARSER DOES.
+    #
+    # It scanned only the nine canonical names, longest first, so "turn right" matched "right" -- a
+    # 0.75 m SIDESTEP -- before turn_right was ever considered, and "look left" matched "left" the same
+    # way. That is the bug ACTION_SYNONYMS exists to fix, but only parse_action_json was routed through
+    # it. Each pair below is a rotation against the sidestep of the same word, so a regression shows up
+    # as the wrong PHYSICAL action rather than a parse failure.
+    for text, expected in (
+        ("turn right", "turn_right"),
+        ("turn left", "turn_left"),
+        ("I will turn left now", "turn_left"),
+        ("left turn", "turn_left"),
+        ("right turn", "turn_right"),
+        ("look left", "look_left"),
+        ("look right", "look_right"),
+        ("look down at my body", "look_down"),
+    ):
+        check(
+            ai_agent.parse_action_text(text) == expected,
+            f"the prose fallback read {text!r} as "
+            f"{ai_agent.parse_action_text(text)!r}, not {expected!r}: a rotation would be executed as "
+            "a sidestep",
+        )
+    # ... while the bare words are still the sidesteps, which is what they mean.
+    check(ai_agent.parse_action_text("left") == "left", "a bare 'left' stopped being a sidestep")
+    check(ai_agent.parse_action_text("right") == "right", "a bare 'right' stopped being a sidestep")
+    print("[ok] the Choice: [n] and prose fallbacks still behave, including word order")
+
+
+def test_json_mode_only_downgrades_on_a_parameter_rejection() -> None:
+    """A timeout must not be treated as "this endpoint rejects response_format".
+
+    The JSON-mode fallback disabled response_format on ANY exception and then immediately resent the
+    request without it. A timeout, a 502 or a depleted balance all took that path, so one attempt cost
+    two HTTP calls, the process was switched out of JSON mode for the rest of the run, and the retry
+    changed the request shape halfway through. The classification is what decides.
+    """
+
+    class _Error(Exception):
+        def __init__(self, message: str, status: Any = None) -> None:
+            super().__init__(message)
+            self.status_code = status
+
+    rejections = (
+        _Error("unsupported parameter: response_format"),
+        _Error("invalid parameter", 400),
+        _Error("unprocessable entity", 422),
+        _Error("unrecognized request argument: json_object"),
+    )
+    transient = (
+        _Error("Request timed out"),
+        _Error("502 Bad Gateway", 502),
+        _Error("Insufficient balance", 403),
+        _Error("", None),
+    )
+    for error in rejections:
+        check(
+            ai_agent._is_response_format_rejection(error),
+            f"{error!r} is a parameter rejection and should downgrade JSON mode",
+        )
+    for error in transient:
+        check(
+            not ai_agent._is_response_format_rejection(error),
+            f"{error!r} is transient and must NOT downgrade JSON mode: it would resend the request "
+            "and double the cost of every failed step",
+        )
+    # AND THE WIRING, WHICH THE CLASSIFIER TEST ABOVE DOES NOT REACH.  A behavioural test would need a
+    # fake client that raises through the OpenAI wrapper; the property that matters is that _request
+    # consults the classifier before downgrading, and its absence is detectable at the source.
+    import inspect
+
+    source = inspect.getsource(ai_agent.AgentAPI._request)
+    check(
+        "_is_response_format_rejection" in source,
+        "the JSON-mode fallback no longer consults _is_response_format_rejection, so a timeout or a "
+        "502 disables JSON mode for the process and resends the request: two calls per failed step",
+    )
+    print("[ok] only a parameter rejection downgrades JSON mode, and _request asks before doing it")
 
 
 def main() -> int:
@@ -134,6 +211,7 @@ def main() -> int:
         test_confidence_is_clamped,
         test_refusals_are_not_actions,
         test_text_fallback_still_works,
+        test_json_mode_only_downgrades_on_a_parameter_rejection,
     ]
     failures = 0
     for test in tests:

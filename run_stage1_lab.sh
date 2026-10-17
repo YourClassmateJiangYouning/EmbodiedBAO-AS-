@@ -78,7 +78,13 @@ fi
 
 # 4. Full sweep: all fifteen models, detached, with the usage delta recorded when it ends.
 log "verify passed; launching the full sweep -> $SWEEP_LOG"
-nohup bash -c "bash run_all_models.sh; RC=\$?; echo \"[sweep rc=\$RC]\" >> '$STATUS'; \
+# P1-17: SETSID, SO THE RECORDED PID IS THE PROCESS-GROUP LEADER.
+#
+# `nohup bash -c "... run_all_models.sh ..." &` makes $! the WRAPPER's pid. Killing that, which the
+# line below used to tell the operator to do, left the inner run_all_models.sh reparented to init and
+# still spending money -- a "stop" that did not stop. With setsid the wrapper leads its own group, so
+# the documented command can signal the group and take the inner script with it.
+setsid nohup bash -c "bash run_all_models.sh; RC=\$?; echo \"[sweep rc=\$RC]\" >> '$STATUS'; \
     python3 tools/usage_delta.py --after >> '$STATUS' 2>&1; \
     python3 tools/verify_stage1_lab.py --log '$SWEEP_LOG' --model gpt-4o-mini \
         > logs/verify-sweep-${STAMP}.txt 2>&1; \
@@ -86,8 +92,10 @@ nohup bash -c "bash run_all_models.sh; RC=\$?; echo \"[sweep rc=\$RC]\" >> '$STA
     > "$SWEEP_LOG" 2>&1 &
 echo $! > "logs/sweep-${STAMP}.pid"
 
-log "full sweep pid $(cat "logs/sweep-${STAMP}.pid")"
+SWEEP_PID="$(cat "logs/sweep-${STAMP}.pid")"
+log "full sweep pid $SWEEP_PID (process-group leader)"
 log "monitor with:  tail -f logs/STATUS.txt"
 log "progress with: grep -c '\"passed\"' $SWEEP_LOG"
-log "stop with:     kill \$(cat logs/sweep-${STAMP}.pid)   (never pkill -f isaac)"
+log "stop with:     kill -- -$SWEEP_PID   (the whole group; never pkill -f isaac)"
+log "  a bare 'kill $SWEEP_PID' stops only the wrapper and leaves run_all_models.sh spending money"
 log "done. This script exits; the sweep keeps running."

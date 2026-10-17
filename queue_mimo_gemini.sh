@@ -6,7 +6,12 @@ set -u
 cd "$(dirname "$0")"
 
 export BOYUE_API_KEY="$(cat ~/.bao_key)"
+# P1-17: the dispatcher's PID lives in .dispatcher.pid; .dispatcher.lock is only TOUCHED (it carries
+# the flock, not a number) and stays empty. Reading the lock as a holder pid returned an empty string,
+# so this script called a LIVE dispatcher stale, waited 60 s, and started a second one -- which flock
+# then refused, so the queued models never ran at all.
 LOCK="logs/parallel/.dispatcher.lock"
+PIDFILE="logs/parallel/.dispatcher.pid"
 LOG="logs/queue_mimo_gemini.log"
 
 say() { echo "[$(date '+%F %T')] $*" | tee -a "$LOG"; }
@@ -16,8 +21,16 @@ say "waiter started, pid $$"
 # Deliberately NOT pgrep/pkill: this script's command line contains the very strings those patterns
 # would match, which is exactly how a pkill killed its own shell three times on 2026-10-15.
 while :; do
-    [ -e "$LOCK" ] || { say "no dispatcher lock: nothing is running"; break; }
-    holder="$(cat "$LOCK" 2>/dev/null || true)"
+    [ -e "$LOCK" ] || [ -e "$PIDFILE" ] || { say "no dispatcher lock: nothing is running"; break; }
+    # The pid file is the authority; the lock is consulted only for an old-layout dispatcher that wrote
+    # its pid there. Digits are extracted rather than `cat`ted so a stray newline or comment cannot
+    # produce a non-numeric "pid" that `kill -0` then rejects.
+    holder=""
+    for _source in "$PIDFILE" "$LOCK"; do
+        [ -r "$_source" ] || continue
+        holder="$(tr -dc '0-9' < "$_source" 2>/dev/null || true)"
+        [ -n "$holder" ] && break
+    done
     if [ -n "$holder" ] && kill -0 "$holder" 2>/dev/null; then
         sleep 60
         continue

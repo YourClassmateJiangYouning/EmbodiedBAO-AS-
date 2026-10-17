@@ -236,6 +236,29 @@ def encode_image(image: Any) -> str:
     return f"data:image/jpeg;base64,{data}"
 
 
+def _is_response_format_rejection(exc: Exception) -> bool:
+    """Does this error mean "the endpoint will not accept response_format"?
+
+    The distinction matters because the only sensible response to THIS error is to stop sending
+    response_format, while the response to a timeout or a 502 is to fail the step and let the retry
+    policy decide. Treating them alike made one attempt issue two HTTP requests and permanently moved
+    the process out of JSON mode.
+
+    Read from the exception text and the HTTP status, not from the type: the OpenAI client wraps a
+    parameter error and a transport error in the same class.
+    """
+    status = getattr(exc, "status_code", None) or getattr(exc, "http_status", None)
+    if status in (400, 422):
+        return True
+    text = str(exc).lower()
+    triggers = (
+        "response_format", "json_object", "json mode", "jsonmode",
+        "unsupported parameter", "unrecognized request argument",
+        "invalid parameter", "unknown field",
+    )
+    return any(trigger in text for trigger in triggers)
+
+
 ACTION_SYNONYMS: Dict[str, str] = {
     "forward": "forward", "move_forward": "forward", "moveforward": "forward",
     "walk": "forward", "walk_forward": "forward", "go_forward": "forward",
@@ -368,9 +391,20 @@ def parse_action_text(text: Any) -> Optional[str]:
         if 1 <= index <= len(ACTIONS):
             return ACTIONS[index - 1]
     lowered = cleaned.lower()
-    for action in sorted(ACTIONS, key=len, reverse=True):
-        if action in lowered:
-            return action
+    # THE SYNONYM TABLE COMES FIRST, LONGEST KEY FIRST.  This loop used to scan the nine canonical
+    # names only, longest first, so "turn right" matched "right" -- a 0.75 m SIDESTEP -- before
+    # "turn_right" was ever considered, and "look left" matched "left" the same way.  That is the bug
+    # ACTION_SYNONYMS was added to fix, but only parse_action_json was routed through resolve_action;
+    # this prose fallback was left scanning the bare names.
+    #
+    # Longest key first so "turn_left" wins over "left" and "strafe_left" over "left".
+    # Spaces and hyphens are normalised to underscores BEFORE the scan, because the table's keys use
+    # underscores: "turn right" does not contain "turn_right", so without this the loop fell through to
+    # the bare "right" and executed the sidestep again -- the very failure the table exists to prevent.
+    squashed = lowered.replace("-", "_").replace(" ", "_")
+    for phrase in sorted(ACTION_SYNONYMS, key=len, reverse=True):
+        if phrase in squashed:
+            return ACTION_SYNONYMS[phrase]
     return None
 
 
@@ -715,10 +749,16 @@ class AgentAPI:
                     response_format={"type": "json_object"}, **kwargs
                 )
                 return completion.choices[0].message.content or ""
-            except Exception:
-                # Some aggregator endpoints reject response_format. Disable it
-                # for the rest of the process instead of retrying JSON mode on
-                # every request.
+            except Exception as exc:  # noqa: BLE001 - classified immediately below
+                # ONLY A PARAMETER REJECTION MEANS "this endpoint does not support response_format".
+                #
+                # This used to disable JSON mode on ANY exception and then immediately resend the
+                # request WITHOUT it. A timeout, a 502 or a depleted balance all took that path, so one
+                # attempt cost two HTTP calls, the process was permanently switched out of JSON mode,
+                # and the retry changed the shape of the request halfway through a run. json_mode_supported
+                # decides from the error itself.
+                if not _is_response_format_rejection(exc):
+                    raise
                 self._json_mode_enabled = False
         completion = self.client.chat.completions.create(**kwargs)
         return completion.choices[0].message.content or ""

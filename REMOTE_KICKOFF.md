@@ -36,7 +36,7 @@ python tools/prove_audit_fails.py  # 必须: all 4 planted fault(s) were caught
 python tools/verify_docs.py        # 必须: all hold
 python tools/check_field_names.py  # 必须: 3 个 ok
 for f in test_bao_*.py; do echo "== $f"; python $f 2>/dev/null | tail -3; done
-                                   # 必须: 0 失败，合计 192 项
+                                   # 必须: 0 失败，合计 193 项
 ```
 
 **任何一步失败，先修它，不要往下走。**

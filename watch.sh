@@ -28,7 +28,14 @@ echo "watching $LOG   (Ctrl-C stops watching; it does NOT stop the experiment)"
 echo "one line per finished level, one banner per finished model, failures as they happen"
 echo
 
-tail -n 3 -F "$LOG" 2>/dev/null | awk '
+# THE PROGRESS LINES ARE IN run_progress.txt, NOT IN $LOG.  main.py writes its greppable timeline
+# ("main start: model=", "level N done:") to run_progress.txt while its stdout carries
+# "[main] level N: episode ...", so tailing the log and matching "level N done" printed nothing but
+# the model banner.  Both files are followed: the progress file drives the level/model lines, and the
+# log still drives the traceback watch.
+PROGRESS="$(pwd)/run_progress.txt"
+[ -f "$PROGRESS" ] || PROGRESS="$(dirname "$(pwd)")/run_progress.txt"
+tail -n 3 -F "$PROGRESS" "$LOG" 2>/dev/null | awk '
     /main start: model=/ {
         model = $0
         sub(/.*model=/, "", model)

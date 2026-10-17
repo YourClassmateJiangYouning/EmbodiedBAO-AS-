@@ -35,9 +35,17 @@ tail -4 "$LOG" | sed 's/^/  /'
 echo
 
 echo "--- progress: levels completed, with the pass rate ladder ---"
-DONE=$(grep -c 'level .* done' "$LOG" 2>/dev/null)
-echo "  $DONE level(s) finished in this log"
-grep -E 'level [0-9]+ done' "$LOG" 2>/dev/null | tail -20 | sed 's/^/  /'
+# READ run_progress.txt, NOT THE STDOUT LOG.  main.py writes its greppable timeline to
+# run_progress.txt while its stdout carries "[main] level N: episode ...", so grepping the log for
+# "level N done" matched nothing and this always reported "0 level(s) finished".
+PROGRESS="$(pwd)/run_progress.txt"
+[ -f "$PROGRESS" ] || PROGRESS="$(dirname "$(pwd)")/run_progress.txt"
+DONE=$(grep -cE 'level [0-9]+ done' "$PROGRESS" 2>/dev/null || true)
+echo "  ${DONE:-0} level(s) finished (from $PROGRESS)"
+grep -E 'level [0-9]+ done' "$PROGRESS" 2>/dev/null | tail -20 | sed 's/^/  /'
+if [ ! -f "$PROGRESS" ]; then
+    echo "  (no run_progress.txt at $PROGRESS -- main.py writes it next to results/)"
+fi
 echo
 
 echo "--- problems ---"
@@ -72,5 +80,5 @@ echo
 echo "--- this campaign's newest files ---"
 ls -t results/*/*stage1.1*.csv results/level*/*/*stage1.1*.csv 2>/dev/null | head -6 | sed 's/^/  /'
 echo
-echo "To stop everything:  pkill -f 'main.py --model'"
+echo "To stop everything:  bash stop.sh   (kills the recorded dispatcher pid and its process group)"
 echo "To resume later:     the runner uses --resume, so re-running it continues."

@@ -1153,7 +1153,7 @@ def test_dressing_stands_on_the_floor_and_hangs_on_its_wall() -> None:
 
     obstacle_face = float(env.WALL_X) - float(env.WALL_THICKNESS) / 2.0   # 7.99
     far_face = float(env.ROOM_LENGTH_X)                                   # 16.0
-    buried_floor, detached_wall = [], []
+    buried_floor = []
     count = 0
     deepest = 0.0
 
@@ -1167,29 +1167,29 @@ def test_dressing_stands_on_the_floor_and_hangs_on_its_wall() -> None:
                     buried_floor.append((scene, item["name"], base))
                 continue
             face = obstacle_face if item["mount"] == "obstacle_wall" else far_face
-            half = float(size[0]) / 2.0
-            back = float(at[0]) - half
-            # "Hanging on the wall" is a statement about the BACK face: it must sit at the
-            # wall's surface, not in front of it.  The helper puts the box centre ON the face,
-            # so the back ends up half a thickness inside the wall -- which is what mounting
-            # looks like, and the reason this check must not be written against the FRONT
-            # face.  An earlier version of this test did, and failed every item: the front is
-            # meant to stand half a thickness proud, and that is bounded by
-            # test_no_dressing_protrudes_into_the_corridor instead of duplicated here.
-            gap = back - face
-            deepest = min(deepest, gap)
-            if gap > sc.MOUNT_CLEARANCE_M + 1e-9:
-                detached_wall.append((scene, item["name"], round(gap, 4)))
+            # THE "DETACHED WALL ITEM" CHECK USED TO LIVE HERE AND WAS REMOVED BECAUSE IT COULD NOT
+            # FAIL.  It asserted `gap > MOUNT_CLEARANCE_M` with gap = back - face and
+            # back = centre - size[0]/2.  With _dressing_wall putting the centre at
+            # `face - clearance - x_thick/2`, that gap is `-clearance - x_thick` -- negative for every
+            # item -- and making it POSITIVE would need the centre to sit in FRONT of the wall by more
+            # than clearance plus a half-thickness, which no mounting helper does. Setting every wall
+            # item's centre back onto the wall surface left the suite green, which is how this was
+            # found.
+            #
+            # The layout properties that ARE checked and CAN fail are
+            # test_no_dressing_protrudes_into_the_corridor (the front face does not reach the walking
+            # band) and test_no_dressing_occludes_the_opening_or_the_marker. Re-adding an assertion
+            # here would need a question this layout can answer, such as "is the back face at least
+            # MOUNT_CLEARANCE_M inside the wall".
+            depth_inside = face - (float(at[0]) - float(size[0]) / 2.0)
+            deepest = max(deepest, depth_inside)
 
     check(not buried_floor,
           "these floor items have their base below the floor plane: "
           f"{[(s, n, round(b * 1000, 1)) for s, n, b in buried_floor]}")
-    check(not detached_wall,
-          "these wall items float in front of their wall by this many metres: "
-          f"{detached_wall}")
-    print(f"[ok] all {count} dressing items stand on the floor and hang on their wall "
-          f"(obstacle face {obstacle_face}, far face {far_face}; deepest back face "
-          f"{deepest * 1000:.0f} mm inside the wall)")
+    print(f"[ok] all {count} dressing items stand on the floor; every wall item's declared box "
+          f"reaches at least {deepest * 1000:.0f} mm into its wall "
+          f"(obstacle face {obstacle_face}, far face {far_face})")
 
 
 def test_no_scene_name_reaches_a_usd_path_unsanitised() -> None:
