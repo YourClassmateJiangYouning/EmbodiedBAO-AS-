@@ -1,0 +1,528 @@
+{
+  "model": "gpt-4o-mini",
+  "tags": [
+    "full_gpt-4o-mini-v7-state-axes-stage1.5"
+  ],
+  "levels": {
+    "0": {
+      "level": 0,
+      "channel_width": 1.14,
+      "a_s_ratio": 2.0,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 1.0,
+      "passed_count": 5,
+      "pass_rate_ci": [
+        0.5655175352168251,
+        1.0
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.0,
+      "turned_count": 0,
+      "first_turn_step_mean": null,
+      "first_turn_step_min": null,
+      "avg_success_steps": 11.0,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 0.0,
+      "avg_passage_rotation_deg": 0.0,
+      "passage_rotation_deg_count": 5
+    },
+    "1": {
+      "level": 1,
+      "channel_width": 1.083,
+      "a_s_ratio": 1.9000000000000001,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 1.0,
+      "passed_count": 5,
+      "pass_rate_ci": [
+        0.5655175352168251,
+        1.0
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.0,
+      "turned_count": 0,
+      "first_turn_step_mean": null,
+      "first_turn_step_min": null,
+      "avg_success_steps": 11.0,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 0.0,
+      "avg_passage_rotation_deg": 0.0,
+      "passage_rotation_deg_count": 5
+    },
+    "2": {
+      "level": 2,
+      "channel_width": 1.026,
+      "a_s_ratio": 1.8000000000000003,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 1.0,
+      "passed_count": 5,
+      "pass_rate_ci": [
+        0.5655175352168251,
+        1.0
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.0,
+      "turned_count": 0,
+      "first_turn_step_mean": null,
+      "first_turn_step_min": null,
+      "avg_success_steps": 11.0,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 0.0,
+      "avg_passage_rotation_deg": 0.0,
+      "passage_rotation_deg_count": 5
+    },
+    "3": {
+      "level": 3,
+      "channel_width": 0.969,
+      "a_s_ratio": 1.7000000000000002,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 1.0,
+      "passed_count": 5,
+      "pass_rate_ci": [
+        0.5655175352168251,
+        1.0
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.0,
+      "turned_count": 0,
+      "first_turn_step_mean": null,
+      "first_turn_step_min": null,
+      "avg_success_steps": 11.0,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 0.0,
+      "avg_passage_rotation_deg": 0.0,
+      "passage_rotation_deg_count": 5
+    },
+    "4": {
+      "level": 4,
+      "channel_width": 0.912,
+      "a_s_ratio": 1.6,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 1.0,
+      "passed_count": 5,
+      "pass_rate_ci": [
+        0.5655175352168251,
+        1.0
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.0,
+      "turned_count": 0,
+      "first_turn_step_mean": null,
+      "first_turn_step_min": null,
+      "avg_success_steps": 11.0,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 0.0,
+      "avg_passage_rotation_deg": 0.0,
+      "passage_rotation_deg_count": 5
+    },
+    "5": {
+      "level": 5,
+      "channel_width": 0.855,
+      "a_s_ratio": 1.5,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 1.0,
+      "passed_count": 5,
+      "pass_rate_ci": [
+        0.5655175352168251,
+        1.0
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.0,
+      "turned_count": 0,
+      "first_turn_step_mean": null,
+      "first_turn_step_min": null,
+      "avg_success_steps": 11.0,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 0.0,
+      "avg_passage_rotation_deg": 0.0,
+      "passage_rotation_deg_count": 5
+    },
+    "6": {
+      "level": 6,
+      "channel_width": 0.798,
+      "a_s_ratio": 1.4000000000000001,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 1.0,
+      "passed_count": 5,
+      "pass_rate_ci": [
+        0.5655175352168251,
+        1.0
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.0,
+      "turned_count": 0,
+      "first_turn_step_mean": null,
+      "first_turn_step_min": null,
+      "avg_success_steps": 11.0,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 0.0,
+      "avg_passage_rotation_deg": 0.0,
+      "passage_rotation_deg_count": 5
+    },
+    "7": {
+      "level": 7,
+      "channel_width": 0.741,
+      "a_s_ratio": 1.3,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 0.8,
+      "passed_count": 4,
+      "pass_rate_ci": [
+        0.3755346297625253,
+        0.9637758913675698
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.2,
+      "turned_count": 1,
+      "first_turn_step_mean": 21.0,
+      "first_turn_step_min": 21,
+      "avg_success_steps": 11.0,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 24.0,
+      "avg_passage_rotation_deg": 0.0,
+      "passage_rotation_deg_count": 4
+    },
+    "8": {
+      "level": 8,
+      "channel_width": 0.684,
+      "a_s_ratio": 1.2000000000000002,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 1.0,
+      "passed_count": 5,
+      "pass_rate_ci": [
+        0.5655175352168251,
+        1.0
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.0,
+      "turned_count": 0,
+      "first_turn_step_mean": null,
+      "first_turn_step_min": null,
+      "avg_success_steps": 11.0,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 0.0,
+      "avg_passage_rotation_deg": 0.0,
+      "passage_rotation_deg_count": 5
+    },
+    "9": {
+      "level": 9,
+      "channel_width": 0.627,
+      "a_s_ratio": 1.1,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 1.0,
+      "passed_count": 5,
+      "pass_rate_ci": [
+        0.5655175352168251,
+        1.0
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.0,
+      "turned_count": 0,
+      "first_turn_step_mean": null,
+      "first_turn_step_min": null,
+      "avg_success_steps": 11.0,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 0.0,
+      "avg_passage_rotation_deg": 0.0,
+      "passage_rotation_deg_count": 5
+    },
+    "10": {
+      "level": 10,
+      "channel_width": 0.57,
+      "a_s_ratio": 1.0,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 1.0,
+      "passed_count": 5,
+      "pass_rate_ci": [
+        0.5655175352168251,
+        1.0
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.0,
+      "turned_count": 0,
+      "first_turn_step_mean": null,
+      "first_turn_step_min": null,
+      "avg_success_steps": 11.0,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 0.0,
+      "avg_passage_rotation_deg": 0.0,
+      "passage_rotation_deg_count": 5
+    },
+    "11": {
+      "level": 11,
+      "channel_width": 0.513,
+      "a_s_ratio": 0.9000000000000001,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 0.0,
+      "passed_count": 0,
+      "pass_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.6,
+      "turned_count": 3,
+      "first_turn_step_mean": 10.0,
+      "first_turn_step_min": 10,
+      "avg_success_steps": null,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 45.0,
+      "avg_passage_rotation_deg": null,
+      "passage_rotation_deg_count": 0
+    },
+    "12": {
+      "level": 12,
+      "channel_width": 0.456,
+      "a_s_ratio": 0.8,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 0.0,
+      "passed_count": 0,
+      "pass_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.6,
+      "turned_count": 3,
+      "first_turn_step_mean": 12.0,
+      "first_turn_step_min": 10,
+      "avg_success_steps": null,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 75.0,
+      "avg_passage_rotation_deg": null,
+      "passage_rotation_deg_count": 0
+    },
+    "13": {
+      "level": 13,
+      "channel_width": 0.399,
+      "a_s_ratio": 0.7000000000000001,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 0.0,
+      "passed_count": 0,
+      "pass_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.8,
+      "turned_count": 4,
+      "first_turn_step_mean": 10.0,
+      "first_turn_step_min": 10,
+      "avg_success_steps": null,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 96.0,
+      "avg_passage_rotation_deg": null,
+      "passage_rotation_deg_count": 0
+    },
+    "14": {
+      "level": 14,
+      "channel_width": 0.342,
+      "a_s_ratio": 0.6000000000000001,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 0.0,
+      "passed_count": 0,
+      "pass_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.8,
+      "turned_count": 4,
+      "first_turn_step_mean": 12.5,
+      "first_turn_step_min": 10,
+      "avg_success_steps": null,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 57.0,
+      "avg_passage_rotation_deg": null,
+      "passage_rotation_deg_count": 0
+    },
+    "15": {
+      "level": 15,
+      "channel_width": 0.285,
+      "a_s_ratio": 0.5,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 0.4,
+      "passed_count": 2,
+      "pass_rate_ci": [
+        0.11762077423264783,
+        0.769275718723987
+      ],
+      "sideways_rate_ci": [
+        0.11762077423264783,
+        0.769275718723987
+      ],
+      "sideways_rate": 0.4,
+      "passed_sideways_count": 2,
+      "turned_rate": 1.0,
+      "turned_count": 5,
+      "first_turn_step_mean": 11.4,
+      "first_turn_step_min": 10,
+      "avg_success_steps": 24.0,
+      "avg_sideways_success_steps": 24.0,
+      "avg_total_rotation_deg": 63.0,
+      "avg_passage_rotation_deg": 90.0,
+      "passage_rotation_deg_count": 2
+    },
+    "16": {
+      "level": 16,
+      "channel_width": 0.228,
+      "a_s_ratio": 0.4,
+      "episodes": 5,
+      "excluded_no_valid_call": 0,
+      "pass_rate": 0.0,
+      "passed_count": 0,
+      "pass_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate_ci": [
+        0.0,
+        0.43448246478317476
+      ],
+      "sideways_rate": 0.0,
+      "passed_sideways_count": 0,
+      "turned_rate": 0.6,
+      "turned_count": 3,
+      "first_turn_step_mean": 12.666666666666666,
+      "first_turn_step_min": 10,
+      "avg_success_steps": null,
+      "avg_sideways_success_steps": null,
+      "avg_total_rotation_deg": 39.0,
+      "avg_passage_rotation_deg": null,
+      "passage_rotation_deg_count": 0
+    }
+  },
+  "excluded_no_valid_call": 0,
+  "sideways_threshold": 0.5,
+  "turned_threshold": 0.9000000000000001,
+  "sideways_threshold_ci": {
+    "lo": 0.5,
+    "hi": 0.5,
+    "n_found": 1342,
+    "n_missing": 658,
+    "p_no_threshold": 0.329
+  },
+  "turned_threshold_ci": {
+    "lo": 0.7000000000000001,
+    "hi": 1.3,
+    "n_found": 2000,
+    "n_missing": 0,
+    "p_no_threshold": 0.0
+  },
+  "sideways_background_rate": 0.008928571428571428,
+  "turned_background_rate": 0.026785714285714284,
+  "threshold_rule": {
+    "wide_a_s": 1.0,
+    "alpha": 0.05,
+    "min_count": 2
+  },
+  "human_reference_threshold": 1.3,
+  "threshold_gap_vs_human": -0.8,
+  "threshold_class": "reactive",
+  "turned_threshold_class": "reactive",
+  "overall_class": "reactive",
+  "rotation_gradedness": "graded",
+  "turned_threshold_gap_vs_human": -0.3999999999999999,
+  "overall": {
+    "episodes": 85,
+    "excluded_no_valid_call": 0,
+    "usable_episodes": 85,
+    "passed_count": 56,
+    "pass_rate": 0.6588235294117647,
+    "passed_sideways_count": 2,
+    "sideways_rate": 0.023529411764705882,
+    "first_turn_step_mean": 11.826086956521738,
+    "avg_success_steps": 11.464285714285714,
+    "total_wall_collisions": 204,
+    "total_invalid_responses": 0
+  }
+}

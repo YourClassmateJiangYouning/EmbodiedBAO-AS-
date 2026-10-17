@@ -1,0 +1,125 @@
+{
+  "model": "kimi-kimi-k2.5",
+  "tags": [
+    "kimi-kimi-k2.5-v7-state-axes-stage1.1"
+  ],
+  "levels": {
+    "0": {
+      "level": 0,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "1": {
+      "level": 1,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "2": {
+      "level": 2,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "3": {
+      "level": 3,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "4": {
+      "level": 4,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "5": {
+      "level": 5,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "6": {
+      "level": 6,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "7": {
+      "level": 7,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "8": {
+      "level": 8,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "9": {
+      "level": 9,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "10": {
+      "level": 10,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "11": {
+      "level": 11,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "12": {
+      "level": 12,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "13": {
+      "level": 13,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "14": {
+      "level": 14,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "15": {
+      "level": 15,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    },
+    "16": {
+      "level": 16,
+      "episodes": 0,
+      "excluded_no_valid_call": 5
+    }
+  },
+  "excluded_no_valid_call": 85,
+  "sideways_threshold": null,
+  "turned_threshold": null,
+  "sideways_threshold_ci": null,
+  "turned_threshold_ci": null,
+  "sideways_background_rate": null,
+  "turned_background_rate": null,
+  "threshold_rule": {
+    "wide_a_s": 1.0,
+    "alpha": 0.05,
+    "min_count": 2
+  },
+  "human_reference_threshold": 1.3,
+  "threshold_gap_vs_human": null,
+  "threshold_class": "no_threshold",
+  "turned_threshold_class": "no_threshold",
+  "overall_class": "no_data",
+  "rotation_gradedness": null,
+  "turned_threshold_gap_vs_human": null,
+  "overall": {
+    "episodes": 0,
+    "excluded_no_valid_call": 85,
+    "usable_episodes": -85,
+    "passed_count": 0,
+    "pass_rate": null,
+    "passed_sideways_count": 0,
+    "sideways_rate": null,
+    "first_turn_step_mean": null,
+    "avg_success_steps": null,
+    "total_wall_collisions": 0,
+    "total_invalid_responses": 2550
+  }
+}

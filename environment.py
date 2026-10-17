@@ -1442,7 +1442,22 @@ class BAOEnv:
             # vertical aperture of 11.787 mm would give.  Leaving that implicit is what made
             # scenes.project() overestimate every projected size by about 1.78x.  Horizontal fit is
             # now the stated contract rather than an accident of the default.
-            cam.GetFilmFitAttr().Set(UsdGeom.Camera.FilmFit.Horizontal)
+            # filmFit IS DELIBERATELY NOT SET, and this is a correction.
+            #
+            # I first wrote `cam.GetFilmFitAttr().Set(FilmFit.Horizontal)`. That does not exist in
+            # this pxr build -- the run printed "'Camera' object has no attribute 'GetFilmFitAttr'"
+            # on every startup, the exception was swallowed by the except below, and the setting
+            # never took effect. Retrying through GetPrim().GetAttribute("filmFit") returns an
+            # INVALID attribute: the prim carries no filmFit at all, so the renderer's film fit is
+            # not something this code can configure.
+            #
+            # That is fine, because the projection was never derived from filmFit. It was derived
+            # from MEASUREMENT: a 0.60 m plate at 15.48 m subtends about 25 px at 1024, which is a
+            # 76.9 degree VERTICAL field -- i.e. this renderer applies the 20.955 mm HORIZONTAL
+            # aperture on both axes regardless of the 16:9 aperture pair. scenes.VERTICAL_FOV_DEG is
+            # set to match that measurement. Do not "fix" the camera to agree with the old 47.6
+            # number; the 47.6 is what a 11.787 mm vertical aperture WOULD give and is not what this
+            # renderer does.
         except Exception as exc:
             print(f"[BAOEnv] could not set USD focalLength on {path}: {exc}")
 
@@ -1670,12 +1685,12 @@ class BAOEnv:
                 print(
                     "[BAOEnv] ROBOT HEIGHT (measured) = "
                     f"{self._robot_measured_height:.3f} m | "
-                    f"ground offset = {offset:.4f} m | "
+                    f"residual lift = {offset:.4f} m | "
                     f"authored ROBOT_HEAD_HEIGHT = {ROBOT_HEAD_HEIGHT:.3f} m | "
                     f"wall height = {WALL_HEIGHT:.2f} m"
                 )
             else:
-                print(f"[BAOEnv] robot ground offset = {offset:.4f} m")
+                print(f"[BAOEnv] robot residual lift = {offset:.4f} m")
             return offset
         except Exception as exc:
             import traceback as _tb
