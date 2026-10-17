@@ -431,7 +431,9 @@ Either threshold classifies a model:
 | `anticipatory` | ≥ 1.30 | turns before the gap is tight, like a human |
 | `borderline` | 1.00 – 1.30 | turns while still passable |
 | `reactive` | < 1.00 | only turns after being blocked |
-| `no_sideways` | — | never rotated |
+| `no_threshold` | — | no significant sideways threshold; the model may still have rotated (see the separate turned-threshold column) |
+| `turned_only` | — | the model turned, but the sideways test never reached significance |
+| `no_data` | — | every episode of this model failed at the API, so there is no measurement |
 
 ## Files
 

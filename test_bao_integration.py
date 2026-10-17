@@ -738,8 +738,8 @@ def test_analysis_recovers_threshold() -> None:
         )
         check(
             report_empty["sideways_threshold"] is None
-            and report_empty["threshold_class"] == "no_sideways",
-            "an absent model should report no_sideways",
+            and report_empty["threshold_class"] == "no_threshold",
+            "an absent model should report no_threshold",
         )
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
@@ -1456,8 +1456,8 @@ def test_full_protocol_and_analysis() -> None:
                 f"{report['rotation_gradedness']}",
             )
             check(
-                report["threshold_class"] == "no_sideways",
-                f"a flat-always policy should classify as no_sideways, got "
+                report["threshold_class"] == "no_threshold",
+                f"a flat-always policy should classify as no_threshold, got "
                 f"{report['threshold_class']}",
             )
             check(

@@ -574,6 +574,44 @@ def resolve_levels(args: argparse.Namespace) -> List[int]:
     return seen
 
 
+def _load_step_sidecar(
+    episode: Dict[str, Any],
+    results_root: str,
+    level: int,
+    model: str,
+    tag: str,
+) -> Sequence[Dict[str, Any]]:
+    """The per-step list for one episode when it is not inline.
+
+    analysis.load_episodes falls back to `episode_<id>_steps.json`; the CSV writer did not, so an episode
+    whose steps were only in the sidecar produced no rows in the flat table and nothing reported it. A
+    missing or unreadable sidecar returns empty rather than raising: the CSV is a convenience over the
+    records, and one damaged sidecar must not stop the table being written.
+    """
+    episode_id = episode.get("episode_id")
+    if episode_id is None:
+        return []
+    candidate = os.path.join(
+        results_root,
+        f"level{int(level)}",
+        # model_slug, NOT sanitize_tag: the episode directories are built from the runner's
+        # model_slug (only / and \ are replaced), while sanitize_tag rewrites more characters -- so on a
+        # model name containing one of those, sanitize_tag points at a directory that does not exist.
+        # That mismatch is why experiments.main's checkpoint path missed its episodes; see P2-20.
+        model.replace("/", "-").replace("\\", "-"),
+        tag,
+        f"episode_{int(episode_id):03d}_steps.json",
+    )
+    try:
+        payload = persistence.load_json_file(candidate)
+    except Exception:  # noqa: BLE001 - a damaged sidecar is not a fatal condition
+        return []
+    if isinstance(payload, dict):
+        steps = payload.get("steps")
+        return steps if isinstance(steps, list) else []
+    return payload if isinstance(payload, list) else []
+
+
 def save_episodes_csv(
     episodes: Sequence[Dict[str, Any]],
     model: str,
@@ -658,7 +696,14 @@ def save_episodes_csv(
     writer.writeheader()
     for episode in episodes:
         carried = {name: episode.get(name) for name in episode_fields}
-        for step in episode.get("steps", []):
+        steps = episode.get("steps") or []
+        if not steps:
+            # THE PER-STEP RECORD MAY LIVE IN A SIDECAR.  analysis.load_episodes reads
+            # episode_<id>_steps.json when the inline list is empty; this writer did not, so such an
+            # episode contributed ZERO rows to the flat table and nothing said so. The path is derivable
+            # from the arguments this function already has.
+            steps = _load_step_sidecar(episode, results_root, level, model, tag)
+        for step in steps:
             writer.writerow(
                 {**carried, **{name: step.get(name) for name in step_fields}}
             )

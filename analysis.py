@@ -93,6 +93,16 @@ def load_episodes(
     # Exclude the per-step sidecars written next to the episode records.
     paths = [p for p in paths if not p.endswith("_steps.json")]
     if not paths:
+        # NEVER FALL BACK WHEN A TAG WAS NAMED EXPLICITLY.  The legacy round*/ fallback below silently
+        # analysed a DIFFERENT run when --tag was mistyped or pointed at a tag that had been cleaned up,
+        # and the report was then labelled with the tag that was asked for. A silently wrong answer is
+        # worse than a refusal: the reader has no way to notice.
+        if tag:
+            raise FileNotFoundError(
+                f"no episode records under {os.path.join(model_dir, tag)!r}. Refusing to fall back to "
+                "a different run: pass --tag only for a tag that exists, or omit it to analyse the "
+                "newest one."
+            )
         # Legacy layout: results/level{level}/{model}/round*/episode_*.json
         paths = sorted(
             glob.glob(os.path.join(model_dir, "round*", "episode_*.json"))
@@ -605,10 +615,34 @@ def rotation_gradedness(
     return "graded"
 
 
+def _overall_class(
+    sideways: Optional[float], turned: Optional[float], usable_episodes: int
+) -> str:
+    """One classification per model, from both measures and from whether there was data.
+
+    THREE STATES THE OLD `threshold_class` CONFLATED:
+      * no data at all -- every episode's calls failed, so there is no measurement. Not "the model
+        never turned"; nothing was observed;
+      * a model that rotated (a turned threshold exists) but whose sideways test never fired, which the
+        old label reported as "no_sideways" and the README glossed as "never rotated";
+      * a real threshold, which anticipation_class already handles.
+    """
+    if usable_episodes <= 0:
+        return "no_data"
+    if sideways is not None:
+        return anticipation_class(sideways)
+    if turned is not None:
+        return "turned_only"
+    return "no_threshold"
+
+
 def anticipation_class(threshold: Optional[float]) -> str:
     """Bucket a threshold against the human reference of 1.30."""
     if threshold is None:
-        return "no_sideways"
+        # "no_sideways" said something the number does not: a model can rotate its torso and still
+        # have no significant sideways THRESHOLD, and claude-sonnet-4-6 does exactly that (sideways
+        # None, turned 0.90). README explained the label as "never rotated", which was false.
+        return "no_threshold"
     if threshold >= HUMAN_THRESHOLD:
         return "anticipatory"
     if threshold >= 1.0:
@@ -831,6 +865,13 @@ def analyze_model(
         ),
         "threshold_class": anticipation_class(threshold),
         "turned_threshold_class": anticipation_class(turned),
+        # ONE CLASS PER MODEL THAT LOOKS AT BOTH MEASURES AND AT WHETHER THERE WAS DATA AT ALL.
+        # threshold_class came from the sideways threshold alone, so a model that turned but whose
+        # sideways test never fired was filed under a label about sideways-ness -- and a model whose
+        # every call failed was filed there too.
+        "overall_class": _overall_class(
+            threshold, turned, len(all_episodes) - excluded_no_valid_call
+        ),
         "rotation_gradedness": rotation_gradedness(per_level),
         "turned_threshold_gap_vs_human": (
             None if turned is None else float(turned - HUMAN_THRESHOLD)
@@ -838,11 +879,21 @@ def analyze_model(
         "overall": {
             "episodes": len(all_episodes),
             "excluded_no_valid_call": excluded_no_valid_call,
+            # USABLE EPISODES, AND None RATHER THAN 0.0 WHEN THERE ARE NONE.
+            #
+            # A model whose every call failed (kimi-kimi-k2.5 in the real corpus: 85 episodes, all
+            # invalid) was reported as pass_rate 0.0 and classified "no_sideways". That is
+            # indistinguishable from a model that ran and failed every time, and it contradicts this
+            # module's own statement that such an episode "is not a measurement of the model". With no
+            # usable episode the rates are None, so a reader sees "no data" rather than "0%".
+            "usable_episodes": len(all_episodes) - excluded_no_valid_call,
             "passed_count": total_passed,
-            "pass_rate": (total_passed / len(all_episodes)) if all_episodes else 0.0,
+            "pass_rate": (
+                (total_passed / len(all_episodes)) if all_episodes else None
+            ),
             "passed_sideways_count": total_sideways,
             "sideways_rate": (
-                total_sideways / len(all_episodes) if all_episodes else 0.0
+                total_sideways / len(all_episodes) if all_episodes else None
             ),
             "first_turn_step_mean": (
                 float(
@@ -863,7 +914,15 @@ def analyze_model(
                 float(
                     np.mean(
                         [
-                            int(ep.get("total_steps", 0))
+                            # len(steps) as the fallback, which is what the per-Level summary uses.
+                            # This defaulted to 0, so an older record without total_steps pulled the
+                            # MODEL-level mean toward zero while the per-Level mean did not move.
+                            int(
+                                ep.get(
+                                    "total_steps",
+                                    len(ep.get("steps", []) or []),
+                                )
+                            )
                             for ep in all_episodes
                             if episode_passed(ep)
                         ]
