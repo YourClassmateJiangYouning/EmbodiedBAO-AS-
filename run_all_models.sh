@@ -2,8 +2,8 @@
 # Run the full model roster, one model at a time.
 #
 # Each model gets its own tag so a run can be resumed with --resume and one
-# model's results can never be mistaken for another's.  Scale: 12 Levels x 5
-# episodes x 30 steps = a 60-episode ceiling per model -- the 12-width A/S series
+# model's results can never be mistaken for another's.  Scale: 17 Levels x 5
+# episodes x 30 steps = an 85-episode ceiling per model -- the 17-width A/S series
 # of Warren & Whang (1987) / Keizer et al. (2013), five repetitions per width.
 #
 # Usage (on the Isaac Sim workstation):

@@ -42,7 +42,7 @@ DEFAULT_BASE_URL = "http://35.220.164.252:3888/v1"
 DEFAULT_BASELINE = "usage_baseline.json"
 ROUNDS_PER_RUN = 17
 RUNS_PER_MODEL = 6
-ROSTER_MODELS = 11
+ROSTER_MODELS = 15
 # The panel's own numbers, so a reading that has not moved is visible at a glance.
 STATE_HINT = (
     "A zero delta means nothing was billed: either the work did not run, or every "

@@ -783,8 +783,12 @@ def _check_room_boundary(
     limits = (
         (root[0] - half_x, 0.0, "near"),
         (ROOM_LENGTH_X - (root[0] + half_x), 0.0, "far"),
-        (root[2] - half_z, -ROOM_WIDTH_Z / 2.0, "left"),
-        (ROOM_WIDTH_Z / 2.0 - (root[2] + half_z), 0.0, "right"),
+        # THE SIDE LABELS WERE THE WRONG WAY ROUND.  HEADING_RIGHT is -z, so the wall at z = -2.5 is the
+        # robot's RIGHT and the one at z = +2.5 is its LEFT.  The feedback said the opposite, which
+        # makes a boundary report worse than no report: it tells the model to move away from a wall that
+        # is on its other side.
+        (root[2] - half_z, -ROOM_WIDTH_Z / 2.0, "right"),
+        (ROOM_WIDTH_Z / 2.0 - (root[2] + half_z), 0.0, "left"),
     )
     for value, minimum, name in limits:
         if value < minimum:
