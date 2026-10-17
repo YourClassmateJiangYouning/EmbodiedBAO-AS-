@@ -1579,7 +1579,11 @@ def test_cli_flags_reach_the_runner() -> None:
         "save_obs=args.save_obs",
         "max_steps=args.max_steps",
         "episodes_per_level=args.episodes",
-        "tag=effective_tag(args.model, args.tag, getattr(args, \"scene\", \"\") or \"\")",
+        # The call now spans lines and carries the config suffix (P1-3), so the pieces are asserted
+        # rather than one exact string: what matters is that the tag is derived through effective_tag
+        # AND includes the run-shaping flags.
+        "tag=effective_tag(",
+        "config_tag_suffix(args)",
         "model=args.model",
     ):
         check(
@@ -1904,6 +1908,143 @@ def test_the_threshold_family_wise_error_rate_is_controlled() -> None:
     print(f"[ok] the threshold FWER under a null is {rate:.3f}, within the 0.10 bound")
 
 
+def test_choose_tag_counts_the_episodes_it_ranks_by() -> None:
+    """`choose_tag` must rank tags by their real episode count.
+
+    `_episode_count` globbed `{model}/*{tag}*.json` while the records live at
+    `{model}/{tag}/episode_*.json`, so it always returned 0 -- and choose_tag ranks by it. With every
+    count tied at 0 the choice fell through to "shortest name, then newest directory", so a short,
+    incomplete tag could beat a complete one and the default report described the wrong run.
+    """
+    import analysis
+
+    tmp = make_temp_dir()
+    try:
+        results_root = os.path.join(tmp, "results")
+        tag_small = "m-current"
+        tag_big = "m-current-longer-name"
+        for tag, count in ((tag_small, 2), (tag_big, 5)):
+            level_dir = os.path.join(results_root, "level0", "m", tag)
+            os.makedirs(level_dir, exist_ok=True)
+            for episode_id in range(count):
+                with open(os.path.join(level_dir, f"episode_{episode_id:03d}.json"),
+                          "w", encoding="utf-8") as handle:
+                    json.dump({"level": 0, "episode_id": episode_id, "passed": True}, handle)
+
+        check(
+            analysis._episode_count(results_root, "m", tag_big, [0]) == 5,
+            "the episode count does not see the records: "
+            f"{analysis._episode_count(results_root, 'm', tag_big, [0])}",
+        )
+        check(
+            analysis._episode_count(results_root, "m", tag_small, [0]) == 2,
+            "the episode count is wrong for the small tag: "
+            f"{analysis._episode_count(results_root, 'm', tag_small, [0])}",
+        )
+
+        # The ranking must pick by COUNT, not by name length: tag_big is the longer name, so the
+        # old "shortest name wins on a tie" tiebreak would have chosen the wrong one.
+        import protocol as _protocol
+        named_big = f"m-{_protocol.PROTOCOL_TAG}-longer-name"
+        named_small = f"m-{_protocol.PROTOCOL_TAG}"
+        for tag, count in ((named_small, 2), (named_big, 5)):
+            level_dir = os.path.join(results_root, "level0", "m", tag)
+            os.makedirs(level_dir, exist_ok=True)
+            for episode_id in range(count):
+                with open(os.path.join(level_dir, f"episode_{episode_id:03d}.json"),
+                          "w", encoding="utf-8") as handle:
+                    json.dump({"level": 0, "episode_id": episode_id, "passed": True}, handle)
+        chosen = analysis.choose_tag(results_root, "m", [0])
+        check(
+            chosen == named_big,
+            "choose_tag picked by name length instead of by episode count: "
+            f"{chosen!r}, expected {named_big!r}",
+        )
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    print("[ok] choose_tag ranks tags by the episodes it actually counts")
+
+
+def test_run_shaping_flags_reach_the_tag() -> None:
+    """Two runs with different settings must not share a results directory.
+
+    The tag is the --resume key. It carried the model, protocol, scene, request parameters and
+    --image_size but not --max_steps, --move_step, --start_x, --eye_height/--eye_pitch or
+    --env_config, so a MAX_STEPS=5 smoke test and a default 30 run shared a directory: the smoke
+    episodes were skipped as finished and args.json was overwritten.
+    """
+    import argparse as _argparse
+
+    import main as _main
+
+    def namespace(**overrides: Any) -> _argparse.Namespace:
+        values: Dict[str, Any] = {
+            "max_steps": 30, "move_step": None, "start_x": None,
+            "eye_height": None, "eye_pitch": None, "env_config": None,
+        }
+        values.update(overrides)
+        return _argparse.Namespace(**values)
+
+    check(
+        _main.config_tag_suffix(namespace()) == "",
+        "a default run now carries a config suffix, which would move every committed directory",
+    )
+    default_tag = _main.effective_tag("m", "", "stage1.2", "")
+    smoke_tag = _main.effective_tag("m", "", "stage1.2", _main.config_tag_suffix(namespace(max_steps=5)))
+    check(
+        default_tag != smoke_tag,
+        f"a MAX_STEPS=5 run and a default run share the tag {default_tag!r}, so --resume will skip "
+        "the smoke episodes",
+    )
+    check(
+        smoke_tag.endswith("-ms5"),
+        f"the max_steps suffix is missing from {smoke_tag!r}",
+    )
+    check(
+        _main.effective_tag("m", "", "stage1.2", _main.config_tag_suffix(namespace(move_step=0.5)))
+        .endswith("-mv0.5"),
+        "--move_step does not reach the tag",
+    )
+    check(
+        _main.effective_tag("m", "", "stage1.2", _main.config_tag_suffix(namespace(start_x=1.2)))
+        .endswith("-sx1.2"),
+        "--start_x does not reach the tag",
+    )
+    print("[ok] run-shaping flags change the tag, and defaults leave it alone")
+
+
+def test_analysis_does_not_import_the_simulator() -> None:
+    """The offline report must not pull in Isaac Sim.
+
+    analysis.py imported LEVEL_CHANNEL_WIDTHS from environment.py, which re-exports it -- so
+    `python3 analysis.py` printed a full Isaac Sim ImportError traceback before its first table, and
+    the module's own promise that offline analysis needs no simulator was false. The ladder lives in
+    protocol.py; the name has to be imported from there.
+    """
+    import subprocess as _subprocess
+    import sys as _sys
+
+    probe = (
+        "import sys; sys.path.insert(0, '.'); import analysis; "
+        "print('IMPORTED' if 'environment' in sys.modules else 'CLEAN')"
+    )
+    result = _subprocess.run(
+        [_sys.executable, "-c", probe],
+        cwd=os.path.dirname(os.path.abspath(__file__)),
+        capture_output=True, text=True, timeout=120,
+    )
+    check(
+        "CLEAN" in result.stdout,
+        "importing analysis also imports environment, so the offline report needs the simulator: "
+        f"{result.stdout.strip()[-200:]}{result.stderr.strip()[-200:]}",
+    )
+    check(
+        "isaacsim" not in result.stderr.lower(),
+        f"importing analysis printed an Isaac Sim traceback: {result.stderr.strip()[:200]}",
+    )
+    print("[ok] analysis imports neither environment nor the simulator")
+
+
 def main() -> int:
     tests = [
         test_episode_record_contract,
@@ -1914,6 +2055,9 @@ def main() -> int:
         test_a_fatal_status_reaches_the_process_exit_code,
         test_the_threshold_family_wise_error_rate_is_controlled,
         test_analysis_recovers_threshold,
+        test_choose_tag_counts_the_episodes_it_ranks_by,
+        test_run_shaping_flags_reach_the_tag,
+        test_analysis_does_not_import_the_simulator,
         test_analysis_excludes_episodes_with_no_valid_call,
         test_threshold_ignores_a_single_wide_level_event,
         test_checkpoint_resume,

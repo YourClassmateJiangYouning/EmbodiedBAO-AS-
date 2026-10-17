@@ -55,10 +55,17 @@ for suite in "${SUITES[@]}"; do
     status=$?
     last="$(printf '%s\n' "$out" | grep -vE '^\s*$' | tail -1)"
     printf '  %-30s %s\n' "$suite" "${last:-<no output>}"
-    if [ "$status" -ne 0 ]; then
-        if printf '%s' "$out" | grep -q 'Read-only file system'; then
-            RO_ONLY+=("$suite")
-        elif printf '%s' "$out" | grep -qE 'SKIPPED'; then
+    # CLASSIFY BY WHAT THE OUTPUT SAYS, NOT ONLY WHEN THE EXIT STATUS IS NON-ZERO.  The SKIPPED branch
+    # used to live inside `if [ "$status" -ne 0 ]`, but every suite that can skip RETURNS 0 when it does
+    # -- "43/44 passed, 1 SKIPPED" is a success -- so SKIPPED_ONLY was always empty and the exit 3
+    # "run was incomplete" path was unreachable.  A run with two skipped checks reported "every suite
+    # passed".
+    if printf '%s' "$out" | grep -q 'Read-only file system'; then
+        RO_ONLY+=("$suite")
+    elif [ "$status" -eq 0 ] && printf '%s' "$out" | grep -qE '[0-9]+ SKIPPED|SKIPPED \(not run\)'; then
+        SKIPPED_ONLY+=("$suite")
+    elif [ "$status" -ne 0 ]; then
+        if printf '%s' "$out" | grep -qE 'SKIPPED'; then
             SKIPPED_ONLY+=("$suite")
         else
             FAILED+=("$suite")

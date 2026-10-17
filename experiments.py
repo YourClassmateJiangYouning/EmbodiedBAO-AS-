@@ -989,7 +989,14 @@ class BAOExperimentRunner:
             # a person does -- would otherwise be scored as never having turned.
             if passage_sideways is None and float(position[0]) >= _env_attr("WALL_X"):
                 passage_sideways = bool(_is_sideways_yaw(torso_rotation))
-                passage_rotation_deg = float(torso_rotation)
+                # FOLDED, BECAUSE THE REPORT AVERAGES IT.  torso_rotation is accumulated without
+                # wrapping, so a model that turns left 25 times reaches 375 degrees and one that turns
+                # left and then right can hold -90.  Storing that raw value and averaging it in
+                # analysis.py mixed +90 and -90 into 0: in the real corpus a level with [-90, +75]
+                # reported "Rot@Pass -7.5" while the folded mean is 82.5. The sign of a torso rotation
+                # is not the quantity of interest -- its magnitude is -- and the sideways predicate
+                # above already folds.
+                passage_rotation_deg = float(_abs_yaw(torso_rotation))
 
             passed = _env_passed(self.env)
             final_rotation = torso_rotation

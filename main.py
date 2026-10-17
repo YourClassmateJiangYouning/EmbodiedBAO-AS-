@@ -33,6 +33,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import io
 import json
 import os
@@ -169,7 +170,46 @@ def image_size_suffix() -> str:
     return f"-img{size}"
 
 
-def effective_tag(model: str, tag: str = "", scene: str = "") -> str:
+def config_tag_suffix(args: argparse.Namespace) -> str:
+    """A tag fragment for every run-shaping flag that is NOT at its default.
+
+    THE TAG IS THE --resume KEY, so two runs with different settings must not share a directory. It
+    carried the model, the protocol, the scene, the request parameters and --image_size, but not
+    --max_steps, --move_step, --start_x, --eye_height/--eye_pitch or --env_config. So a smoke test with
+    MAX_STEPS=5 and a real run at the default 30 wrote into the same directory, --resume skipped the
+    five-step episodes as finished, logs/{tag}/args.json was overwritten, and the record then claimed
+    the old episodes had been produced under the new settings.
+
+    Empty when everything is at its default, so every tag composed before this existed still resolves
+    to the same directory and the committed episodes stay findable.
+    """
+    pieces: List[str] = []
+    max_steps = getattr(args, "max_steps", None)
+    if max_steps is not None and int(max_steps) != DEFAULT_MAX_STEPS:
+        pieces.append(f"ms{int(max_steps)}")
+    move_step = getattr(args, "move_step", None)
+    if move_step is not None:
+        pieces.append(f"mv{float(move_step):g}")
+    start_x = getattr(args, "start_x", None)
+    if start_x is not None:
+        pieces.append(f"sx{float(start_x):g}")
+    eye_height = getattr(args, "eye_height", None)
+    if eye_height is not None:
+        pieces.append(f"eh{float(eye_height):g}")
+    eye_pitch = getattr(args, "eye_pitch", None)
+    if eye_pitch is not None:
+        pieces.append(f"ep{float(eye_pitch):g}")
+    env_config = getattr(args, "env_config", None)
+    if env_config and str(env_config).strip() not in ("", "{}"):
+        # A hash, not the JSON: the config can be long and can contain characters a path cannot hold.
+        digest = hashlib.sha256(str(env_config).encode("utf-8")).hexdigest()[:8]
+        pieces.append(f"cfg{digest}")
+    return ("-" + "-".join(pieces)) if pieces else ""
+
+
+def effective_tag(
+    model: str, tag: str = "", scene: str = "", config_suffix: str = ""
+) -> str:
     """Results-directory tag for a run, including the protocol version and the scene.
 
     Idempotent: a tag that already carries the protocol version is returned
@@ -212,7 +252,7 @@ def effective_tag(model: str, tag: str = "", scene: str = "") -> str:
         if stripped != base:
             base = stripped
             changed = True
-    return f"{base}-{PROTOCOL_TAG}{scene_suffix}{suffix}{size_suffix}"
+    return f"{base}-{PROTOCOL_TAG}{scene_suffix}{suffix}{size_suffix}{config_suffix}"
 
 # ---------------------------------------------------------------------------
 # Output layout
@@ -813,7 +853,10 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
             model=args.model,
             max_steps=args.max_steps,
             episodes_per_level=args.episodes,
-            tag=effective_tag(args.model, args.tag, getattr(args, "scene", "") or ""),
+            tag=effective_tag(
+                  args.model, args.tag, getattr(args, "scene", "") or "",
+                  config_tag_suffix(args),
+              ),
             save_obs=args.save_obs,
             results_root=run_results_root,
             logs_root=run_logs_root,

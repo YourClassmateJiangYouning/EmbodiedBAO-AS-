@@ -1842,8 +1842,23 @@ def apply_scene(stage: Any, scene: str, slot: int,
                 how = results[0] if len(set(results)) == 1 else "; ".join(sorted(set(results)))
             elif texture:
                 how = f"flat-paint (texture {texture} is not vendored)"
-            report["materials"][surface] = {"url": url, "how": how,
-                                            "prim": ", ".join(prim_paths)}
+            # THE FLAT/TEXTURE PATH HAS TO REPORT `bound` TOO.  It did not, so surface_ok() below --
+            # which counts a missing "bound" as `unbound`, not as a failure -- made
+            # material_verified_actual structurally always True on the default use_mdl=False path, even
+            # when paint() reported FAILED for every surface.  A check that cannot fail is not a check.
+            # The flat paint is the fallback that is always attempted, so it decides: a surface whose
+            # paint failed is not bound, whatever the texture then did.
+            flat_ok = all(ok for ok, _ in flat_paint)
+            textured_ok = None
+            if local_texture:
+                textured_ok = all(
+                    "failed" not in str(result).lower() and "missing" not in str(result).lower()
+                    for result in results
+                )
+            report["materials"][surface] = {
+                "url": url, "how": how, "prim": ", ".join(prim_paths),
+                "bound": bool(flat_ok and (textured_ok is not False)),
+            }
             continue
         name = os.path.basename(url).replace(".mdl", "")
         material, how = resolve_material(

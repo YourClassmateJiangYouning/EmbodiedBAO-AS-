@@ -53,8 +53,14 @@ from persistence import atomic_write_json, atomic_write_text
 from protocol import is_sideways_yaw as _sideways_yaw
 # The ladder's length is the default for --levels, so it is read from its definition rather than
 # written down: a hard-coded [0..5] silently stopped reporting at level 5 and the tool still looked
-# healthy.  It lives in environment.py, next to the widths themselves.
-from environment import LEVEL_CHANNEL_WIDTHS
+# healthy.
+#
+# IT COMES FROM protocol.py, NOT environment.py.  The ladder moved there (A3) so that the offline tools
+# would stop importing the simulator, and this line was left behind: `python3 analysis.py` printed a
+# full Isaac Sim ImportError traceback before its first table, which is exactly the dependency this
+# module is documented not to have. environment.py re-exports the name, so importing it from there
+# silently pulled in the whole simulator.
+from protocol import LEVEL_CHANNEL_WIDTHS
 
 HUMAN_THRESHOLD = 1.30
 
@@ -638,11 +644,18 @@ def _current_protocol_tags(
 
 
 def _episode_count(results_root: str, model: str, tag: str, levels: Sequence[int]) -> int:
-    """How many episode records a tag actually holds, across the requested Levels."""
+    """How many episode records a tag actually holds, across the requested Levels.
+
+    THE TAG IS A DIRECTORY, NOT PART OF A FILENAME.  This globbed `{model}/*{tag}*.json`, but the
+    layout is `{model}/{tag}/episode_*.json`, so it matched nothing and always returned 0. choose_tag
+    ranks tags by this number, so "most episodes wins" never happened: with every count tied at 0 the
+    choice fell through to "shortest name, then newest directory", and a short, incomplete tag could
+    beat a complete one. A test checks the two layouts explicitly now.
+    """
     total = 0
     for level in levels:
         for path in glob.glob(
-            os.path.join(results_root, f"level{level}", model, f"*{tag}*.json")
+            os.path.join(results_root, f"level{level}", model, tag, "episode_*.json")
         ):
             if not path.endswith("_steps.json"):
                 total += 1
