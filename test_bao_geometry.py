@@ -2161,7 +2161,7 @@ def test_channel_edges_do_not_narrow_the_opening() -> None:
         )
     print(
         "[ok] the edge posts and the collision panels leave exactly the modelled "
-        "opening at all 12 widths, so the recorded A/S is the real one"
+        "opening at all 17 widths, so the recorded A/S is the real one"
     )
 
 

@@ -1082,10 +1082,6 @@ def describe_marker(scene: str, slot: int) -> str:
     return f"{COLOUR_NAMES[colour]} {SHAPE_NAMES[shape]}"
 
 
-def marker_entries(scene: str) -> Tuple[Tuple[str, str], ...]:
-    return MARKERS[scene]
-
-
 def marker_colours(scene: str) -> Tuple[Tuple[float, float, float], ...]:
     return tuple(COLOURS[colour] for _, colour in MARKERS[scene])
 

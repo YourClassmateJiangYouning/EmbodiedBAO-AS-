@@ -228,7 +228,11 @@ def test_the_arrow_keeps_its_size_and_its_measured_centroid_offset() -> None:
 
 
 def test_shapes_are_fat_enough_to_read_at_the_start_pose() -> None:
-    """At 512 px from the start the marker is about 20 px, so thin parts blur away.
+    """At the resolution the sweeps actually send, thin parts of the marker blur away.
+
+    The frame is INPUT_IMAGE_PX (1024) wide, not 512: this docstring said 512 while both dispatchers
+    send 1024, so the pixel figures it quoted were half the real ones. At 1024 the whole marker is
+    about 38 px across from the start pose and the thinnest shapes are a few pixels thick.
 
     The measure is each polygon's smaller bounding dimension, because every marker is a flat
     plate facing the robot: its 0.02 m thickness runs along the view axis and says nothing

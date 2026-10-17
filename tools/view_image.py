@@ -22,10 +22,13 @@ import argparse
 import base64
 import json
 import os
+from typing import Optional
 import urllib.error
 import urllib.request
 
-DEFAULT_BASE_URL = "http://35.220.164.252:3888/v1"
+# No hard-coded gateway: a plaintext http:// default on a public IP puts the API key on the open
+# internet, and a lab-specific address is not portable.  Supply it via an environment variable.
+DEFAULT_BASE_URL: Optional[str] = None
 RAMP = " .:-=+*#%@"
 
 DEFAULT_QUESTION = (

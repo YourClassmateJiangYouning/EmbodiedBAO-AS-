@@ -8,8 +8,10 @@ and key are read from environment variables, in priority order:
     API key   : BOYUE_API_KEY > TAOTOKEN_API_KEY > OPENAI_API_KEY
     base URL  : BOYUE_BASE_URL > TAOTOKEN_BASE_URL > OPENAI_BASE_URL
 
-When only ``BOYUE_API_KEY`` is set, the lab server default
-``http://35.220.164.252:3888/v1/`` is used automatically.
+When ``BOYUE_API_KEY`` is set without ``BOYUE_BASE_URL`` this is an ERROR, not a
+hidden default.  There used to be one -- a plaintext http:// address on a public IP,
+used automatically -- which meant every request carried the API key over the open
+internet.  Supply the address like every other endpoint.
 
 The action space and the task prompt live in ``protocol.py`` so that this
 client and the experiment runner can never disagree about them.  A ``random``
@@ -91,7 +93,12 @@ MODEL_ALIASES: Dict[str, str] = {
     "llava-1.6-7b": "llava-1.6-7b",
 }
 
-BOYUE_DEFAULT_BASE_URL = "http://35.220.164.252:3888/v1/"
+# NO HARD-CODED GATEWAY ADDRESS.  There used to be one here -- a plain http:// URL on a public IP -- and
+# it was used whenever BOYUE_API_KEY was set without BOYUE_BASE_URL, so the API key travelled in clear
+# text across the open internet on every request.  A default that is both remote and plaintext is not a
+# convenience; it is a credential leak waiting for someone to forget an export.  The address now comes
+# from the environment like every other endpoint, and a missing one is an explicit error.
+BOYUE_DEFAULT_BASE_URL: Optional[str] = None
 OPENAI_DEFAULT_BASE_URL = "https://api.openai.com/v1"
 
 # Extra request parameters per model, keyed by the name the gateway is given.
@@ -496,7 +503,13 @@ class AgentAPI:
         elif env_base_url:
             self.base_url = env_base_url
         elif os.environ.get("BOYUE_API_KEY"):
-            self.base_url = BOYUE_DEFAULT_BASE_URL
+            # See the note on BOYUE_DEFAULT_BASE_URL: there is deliberately no fallback address, and
+            # guessing one is worse than refusing, because the guess is where the key would go.
+            raise ValueError(
+                "BOYUE_API_KEY is set but no base URL is.  Set BOYUE_BASE_URL (or pass base_url) -- "
+                "there is no hard-coded default any more, because the one that used to be here was a "
+                "plaintext http:// address and sent the key over the open internet."
+            )
         else:
             self.base_url = OPENAI_DEFAULT_BASE_URL
         # 90 s rather than 60: a recorded run lost 9 of 30 steps to timeouts at

@@ -269,7 +269,10 @@ def progress_path() -> str:
 # ---------------------------------------------------------------------------
 API_KEY_ENV_VARS = ("BOYUE_API_KEY", "TAOTOKEN_API_KEY", "OPENAI_API_KEY")
 BASE_URL_ENV_VARS = ("BOYUE_BASE_URL", "TAOTOKEN_BASE_URL", "OPENAI_BASE_URL")
-BOYUE_DEFAULT_BASE_URL = "http://35.220.164.252:3888/v1"
+# NO HARD-CODED GATEWAY ADDRESS; see the note on ai_agent.BOYUE_DEFAULT_BASE_URL.  The default that
+# used to be here was plaintext http:// on a public IP, so every request carried the API key over the
+# open internet.
+BOYUE_DEFAULT_BASE_URL: Optional[str] = None
 OPENAI_DEFAULT_BASE_URL = "https://api.openai.com/v1"
 
 
@@ -287,7 +290,11 @@ def _configured_base_url() -> str:
         if value:
             return value.rstrip("/")
     if (os.environ.get("BOYUE_API_KEY") or "").strip():
-        return BOYUE_DEFAULT_BASE_URL
+        raise SystemExit(
+            "BOYUE_API_KEY is set but no base URL is.  Set BOYUE_BASE_URL (or TAOTOKEN_BASE_URL / "
+            "OPENAI_BASE_URL) -- there is deliberately no hard-coded default any more, because the "
+            "one that used to be here was plaintext http:// and sent the key over the open internet."
+        )
     return OPENAI_DEFAULT_BASE_URL
 
 
@@ -443,9 +450,10 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         type=float,
         default=None,
         help=(
-            "Head camera height in metres (default: the H1 head height, "
-            "environment.ROBOT_HEAD_HEIGHT). Use this to place the eye "
-            "elsewhere on the body."
+            "Head camera height in metres (default: environment.EYE_CAMERA_HEIGHT, "
+            "1.68 m -- NOT ROBOT_HEAD_HEIGHT, which is 1.55 m and is the height "
+            "REPORTED for the robot, not where the camera sits). Use this to place "
+            "the eye elsewhere on the body."
         ),
     )
     parser.add_argument(
@@ -462,6 +470,10 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         "--start_x",
         type=float,
         default=None,
+        # ONLY INSIDE THE ROOM.  A negative start or one past the wall made every episode begin in a
+        # pose the collision gate rejects, so the whole run recorded failures that said nothing about
+        # the model.  argparse cannot express it because WALL_X lives in environment.py, so it is
+        # checked in main().
         help=(
             "Robot start x in metres (default: 0.5). Standing further back "
             "makes the channel readable at the cost of travel."
@@ -742,6 +754,15 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
         preflight_message = preflight_model(args.model)
         print(f"[main] preflight: {preflight_message}")
         _write_progress(f"preflight: {preflight_message}")
+        # A REJECTED CREDENTIAL IS FATAL HERE, BEFORE THE EXPENSIVE PART.  This used to be a warning, so
+        # a wrong key still paid the ~150 s Isaac startup and then relied on the runner noticing three
+        # consecutive all-invalid episodes to stop -- burning a model slot and writing three useless
+        # records before it did.  The preflight costs one second precisely so that it can decide this.
+        if preflight_message.startswith("WARNING") and (
+            "HTTP 401" in preflight_message or "HTTP 403" in preflight_message
+        ):
+            print("[main] FATAL: the credential was rejected; not starting Isaac Sim.")
+            return 2
 
         from isaacsim import SimulationApp
 
@@ -768,7 +789,20 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
         if args.eye_pitch is not None:
             task_dict["eye_pitch_deg"] = float(args.eye_pitch)
         if args.start_x is not None:
-            task_dict["start_x"] = float(args.start_x)
+            # MUST BE INSIDE THE ROOM AND SHORT OF THE WALL.  A negative start, or one at or past the
+            # obstacle wall, puts every episode in a pose the collision gate rejects, so the whole run
+            # records failures that say nothing about the model -- and the flag accepted any float.
+            # argparse cannot express the bound because WALL_X lives in environment.py.
+            import environment as _env_for_bounds
+            _start_x = float(args.start_x)
+            if not (0.0 <= _start_x < _env_for_bounds.WALL_X):
+                print(
+                    f"[main] FATAL: --start_x {_start_x} m is outside the approach, which runs from "
+                    f"0.0 up to the obstacle wall at {_env_for_bounds.WALL_X} m. Every episode would "
+                    "begin in a pose the collision gate rejects."
+                )
+                return 2
+            task_dict["start_x"] = _start_x
         if args.move_step is not None:
             task_dict["move_step"] = float(args.move_step)
         env = environment.setup_scene(simulation_app, task_dict=task_dict)

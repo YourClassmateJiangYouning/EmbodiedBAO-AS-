@@ -430,16 +430,6 @@ def a_s_ratio(channel_width: float) -> float:
     return float(channel_width) / float(ROBOT_SHOULDER_WIDTH)
 
 
-def channel_width_for_ratio(ratio: float) -> float:
-    """Inverse of :func:`a_s_ratio`; handy for tests and plots."""
-    return float(ratio) * float(ROBOT_SHOULDER_WIDTH)
-
-
-# ---------------------------------------------------------------------------
-# Pure geometry helpers (unit-testable without Isaac Sim)
-# ---------------------------------------------------------------------------
-
-
 def _rotate_xz(vec: np.ndarray, yaw_rad: float) -> np.ndarray:
     """Rotate a vector around up by a HEADING angle (positive = toward the right).
 
@@ -573,16 +563,6 @@ def _user_to_isaac_scale(scale: np.ndarray) -> np.ndarray:
     """Swap the y/z components of a scale vector for Isaac Sim."""
     s = np.asarray(scale, dtype=float)
     return np.array([s[0], s[2], s[1]], dtype=float)
-
-
-def _user_dims_to_isaac(dims: np.ndarray) -> np.ndarray:
-    """Swap the y/z components of a SIZE triple for Isaac Sim.
-
-    This is the counterpart of :func:`_user_to_isaac_scale` and exists purely
-    for documentation: the two are the same operation, and calling the wrong one
-    at the wrong point is what made the channel posts render lying down.
-    """
-    return _user_to_isaac_scale(dims)
 
 
 def _panel_boxes(
@@ -1226,8 +1206,22 @@ class BAOEnv:
         """
         if not self.task_dict.get("goal_marker", True):
             return
-        size = float(self.task_dict.get("goal_marker_height", GOAL_MARKER_SIZE))
-        centre_y = float(self.task_dict.get("goal_marker_base", 1.40))
+        # THE KEY NAMES LIE, AND THE OLD ONES STILL WORK.
+        #
+        # `goal_marker_base` is used as the marker's CENTRE height (1.40 m), not the height of its
+        # base, and `goal_marker_height` is used as its EDGE LENGTH (0.90 m), not its height.  Renaming
+        # them outright would silently stop honouring any task_dict that still passes the old names, so
+        # the new names are preferred and the old ones remain as fallbacks.
+        size = float(
+            self.task_dict.get(
+                "goal_marker_size", self.task_dict.get("goal_marker_height", GOAL_MARKER_SIZE)
+            )
+        )
+        centre_y = float(
+            self.task_dict.get(
+                "goal_marker_centre_y", self.task_dict.get("goal_marker_base", 1.40)
+            )
+        )
         thickness = float(self.task_dict.get("goal_marker_span", 0.02))
         self._add_box(
             "GoalMarker",
@@ -1787,17 +1781,6 @@ class BAOEnv:
             print(f"[BAOEnv] Could not wrap head camera link {self.head_prim_path}: {exc}")
             self.head_xform = None
 
-    def _disable_robot_collisions(self) -> None:
-        """Kinematic mode: keep the articulated body but drop its colliders."""
-        for sub_prim in self.stage.Traverse():
-            path = str(sub_prim.GetPath())
-            if not path.startswith(self.robot_prim_path):
-                continue
-            if sub_prim.HasAPI(UsdPhysics.CollisionAPI):
-                sub_prim.RemoveAPI(UsdPhysics.CollisionAPI)
-            if sub_prim.HasAPI(PhysxSchema.PhysxCollisionAPI):
-                sub_prim.RemoveAPI(PhysxSchema.PhysxCollisionAPI)
-
     def _disable_robot_physics(self) -> None:
         """Freeze the robot in its authored pose.
 
@@ -1831,39 +1814,6 @@ class BAOEnv:
     # ------------------------------------------------------------------
     # Materials
     # ------------------------------------------------------------------
-
-    def _create_and_bind_glass_material(self, prim_path: str, mat_path: str) -> None:
-        """Kept for the optional OmniGlass path; the obstacle wall is opaque now.
-
-        See WALL_COLOR: the panels are solid blue, so this is only used when a
-        caller explicitly asks for a translucent wall.
-        """
-        if not self.task_dict.get("use_omni_glass", False):
-            self._create_and_bind_material(
-                prim_path,
-                mat_path,
-                color=WALL_COLOR,
-                metallic=0.0,
-                roughness=0.5,
-                opacity=WALL_OPACITY,
-            )
-            return
-        prim = self.stage.GetPrimAtPath(prim_path)
-        if not prim or not prim.IsValid():
-            raise RuntimeError(f"Prim {prim_path} not found to bind glass material.")
-        sdf_path = Sdf.Path(mat_path)
-        mat = UsdShade.Material.Define(self.stage, sdf_path)
-        shader = UsdShade.Shader.Define(self.stage, sdf_path.AppendChild("OmniGlass"))
-        shader.CreateIdAttr("OmniGlass.mdl")
-        shader.CreateInput("glass_color", Sdf.ValueTypeNames.Color3f).Set(
-            Gf.Vec3f(0.85, 0.92, 0.95)
-        )
-        shader.CreateInput("glass_ior", Sdf.ValueTypeNames.Float).Set(1.45)
-        shader.CreateInput("glass_reflection", Sdf.ValueTypeNames.Float).Set(0.9)
-        shader.CreateInput("glass_refraction", Sdf.ValueTypeNames.Float).Set(1.0)
-        shader.CreateInput("glass_roughness", Sdf.ValueTypeNames.Float).Set(0.02)
-        mat.CreateSurfaceOutput().ConnectToSource(shader.ConnectableAPI(), "surface")
-        UsdShade.MaterialBindingAPI(prim).Bind(mat)
 
     def _create_and_bind_material(
         self,
@@ -1932,14 +1882,15 @@ class BAOEnv:
         try:
             pos = self.robot_root.get_world_poses()[0][0]
         except Exception as exc:
-            if not self._root_read_warned:
-                self._root_read_warned = True
-                print(
-                    f"[BAOEnv] WARNING: get_world_poses failed "
-                    f"({type(exc).__name__}: {exc}); falling back to the start pose "
-                    f"{self._start_pos}. Further failures are not printed."
-                )
-            return self._start_pos.copy()
+            # THIS USED TO WARN ONCE AND RETURN THE START POSE.  Every success check, collision check
+            # and record for the rest of that episode was then computed from a pose the robot was NOT
+            # in -- silently, behind one line of output early in the run that nothing grepped for. A
+            # number that is quietly fabricated is worse than a crash, so this raises.
+            raise RuntimeError(
+                f"[BAOEnv] get_world_poses failed ({type(exc).__name__}: {exc}). The robot's pose "
+                "cannot be read, so no success or collision check can be trusted this episode. "
+                "Refusing to keep scoring from the start pose, which is what used to happen."
+            ) from exc
         user_pos = _isaac_to_user_pos(np.asarray(pos, dtype=float))
         # The USD root is raised by the ground offset when written, so strip it
         # back out here to keep x/y/z in ground-relative user coordinates.
@@ -2497,11 +2448,6 @@ class BAOEnv:
     def check_collision_with_wall(self) -> bool:
         """Return True when the robot is currently colliding with a panel."""
         return self._get_wall_collision_info() is not None
-
-    def get_collision_position(self) -> Optional[List[float]]:
-        """Return the current collision point (x, y, z) or None."""
-        info = self._get_wall_collision_info()
-        return list(info["point"]) if info else None
 
     def check_success(self) -> bool:
         """Success condition: the body centre reaches the success plane (x = 8.75 m)."""

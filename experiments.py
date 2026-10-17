@@ -355,6 +355,9 @@ class AgentAdapter:
         self.history: List[Dict[str, str]] = []
         self._callable = None
         self._agent = None
+        # Which of the three call shapes self._callable accepts; decided from its SIGNATURE and cached.
+        # See _call_form for why catching TypeError was the wrong mechanism.
+        self._call_form_cached: Optional[str] = None
         # Lazily built, only for the Stage 2 note call; see note().
         self._text_agent = None
 
@@ -372,6 +375,50 @@ class AgentAdapter:
                 "or a create_agent/get_agent factory."
             )
 
+    def _call_form(self) -> str:
+        """Which call shape ``self._callable`` accepts, from its SIGNATURE.
+
+        This used to be decided by CATCHING TypeError and retrying with fewer keywords.  That is the
+        wrong mechanism for two reasons:
+
+          1. It cannot tell "this callable takes fewer parameters" from "this callable raised TypeError
+             from inside its own body".  A bug in the client -- a None subscript, a bad kwarg passed on
+             to the SDK -- was therefore retried with fewer arguments and then a THIRD time
+             positionally, so one failing step cost three model calls and the real exception was
+             swallowed by the last one.
+          2. It hid signature drift: a client that changed its parameters stopped being called at all
+             and nobody noticed, because the narrow forms still "worked".
+
+        The three shapes, widest first:
+            full      image, prompt, state, history, model_name, log_file
+            keywords  image, prompt, state, history
+            else      (image, prompt) positionally
+        """
+        if self._call_form_cached is not None:
+            return self._call_form_cached
+        import inspect
+
+        form = "full"
+        try:
+            parameters = inspect.signature(self._callable).parameters
+        except (TypeError, ValueError):
+            # Some builtins and C functions cannot be introspected.  Assume the widest shape: if it is
+            # wrong the TypeError now propagates instead of being silently retried three times.
+            self._call_form_cached = form
+            return form
+        names = set(parameters)
+        accepts_kwargs = any(
+            p.kind == inspect.Parameter.VAR_KEYWORD for p in parameters.values()
+        )
+        if accepts_kwargs or {"model_name", "log_file"} <= names:
+            form = "full"
+        elif {"image", "prompt", "state", "history"} <= names:
+            form = "keywords"
+        else:
+            form = "positional"
+        self._call_form_cached = form
+        return form
+
     def query(
         self, prompt: str, image: np.ndarray, state: Dict[str, Any]
     ) -> Tuple[Optional[str], str, str, float]:
@@ -384,7 +431,8 @@ class AgentAdapter:
         """
         t0 = time.perf_counter()
         if self._callable is not None:
-            try:
+            form = self._call_form()
+            if form == "full":
                 raw = self._callable(
                     image=image,
                     prompt=prompt,
@@ -393,22 +441,18 @@ class AgentAdapter:
                     model_name=self.model,
                     log_file=self.log_file,
                 )
-            except TypeError:
-                try:
-                    raw = self._callable(
-                        image=image,
-                        prompt=prompt,
-                        state=state,
-                        history=self.history,
-                    )
-                except TypeError:
-                    # Last resort, for the minimal mirrorbench-style callable that
-                    # takes only the frame and the text.  It is positional because
-                    # that is the whole point of this branch, and the order is
-                    # ai_agent.get_action's -- (image, prompt) -- not the order the
-                    # keywords happen to read in.  Passing (prompt, image) here
-                    # handed the model the frame as its instruction text.
-                    raw = self._callable(image, prompt)
+            elif form == "keywords":
+                raw = self._callable(
+                    image=image,
+                    prompt=prompt,
+                    state=state,
+                    history=self.history,
+                )
+            else:
+                # The minimal mirrorbench-style callable: (image, prompt) positionally, in
+                # ai_agent.get_action's order -- NOT the order the keywords read in. Passing
+                # (prompt, image) here once handed the model the frame as its instruction text.
+                raw = self._callable(image, prompt)
         else:
             raw = self._agent.get_action(
                 prompt=prompt,
@@ -1265,7 +1309,16 @@ def main() -> None:
         )
         runner.save_args(args)
         checkpoint = ProtocolCheckpoint(
-            os.path.join("results", runner.model, f"checkpoint_{runner.tag}.json"),
+            # THE PATH MUST AGREE WITH WHERE THE EPISODES GO.  This was
+            # os.path.join("results", runner.model, ...): a literal "results" instead of
+            # runner.results_root, and the raw model name instead of model_slug.  A model name such as
+            # "meta-llama/Llama-3" therefore wrote its checkpoint into a NESTED DIRECTORY that
+            # load_episodes never looks in, while the episodes went to the slugged one -- so --resume
+            # found no checkpoint and the run silently restarted.  The runner keeps the two apart on
+            # purpose (model for requests, model_slug for paths, see its __init__); this now does too.
+            os.path.join(
+                runner.results_root, runner.model_slug, f"checkpoint_{runner.tag}.json"
+            ),
             resume=args.resume,
         )
         results = runner.run_all(levels=args.levels, checkpoint=checkpoint)
@@ -1278,6 +1331,15 @@ def main() -> None:
     finally:
         if env is not None:
             env.close()
+        # THE APP IS CLOSED EVEN WHEN THE ENVIRONMENT WAS NEVER BUILT.  This only closed `env`, so an
+        # exception inside BAOEnv(...) -- a bad task_dict, an unpinned asset, a physics-view failure --
+        # left the Isaac process running with a headless app it had no further use for, and the caller
+        # hung on a process that never exited.  `env.close()` is not a substitute: it is a no-op when
+        # env is None, which is exactly the failing case.
+        try:
+            simulation_app.close()
+        except Exception:  # noqa: BLE001 - a close failure must not mask the original exception
+            pass
 
 
 if __name__ == "__main__":

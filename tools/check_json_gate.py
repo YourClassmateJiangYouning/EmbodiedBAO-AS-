@@ -18,6 +18,7 @@ import argparse
 import json
 import os
 import sys
+from typing import Optional
 import time
 import urllib.error
 import urllib.request
@@ -25,7 +26,9 @@ import urllib.request
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
-DEFAULT_BASE_URL = "http://35.220.164.252:3888/v1"
+# No hard-coded gateway: a plaintext http:// default on a public IP puts the API key on the open
+# internet, and a lab-specific address is not portable.  Supply it via an environment variable.
+DEFAULT_BASE_URL: Optional[str] = None
 
 
 def post(base_url: str, key: str, body: dict, timeout: float) -> dict:

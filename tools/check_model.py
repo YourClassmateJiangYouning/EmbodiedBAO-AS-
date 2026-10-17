@@ -36,6 +36,7 @@ import json
 import os
 import struct
 import sys
+from typing import Optional
 import time
 import urllib.error
 import urllib.request
@@ -44,7 +45,10 @@ import zlib
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, ROOT)
 
-DEFAULT_BASE_URL = "http://35.220.164.252:3888/v1"
+# NO HARD-CODED GATEWAY ADDRESS; must come from --base_url or an environment variable.  A plaintext
+# http:// default on a public IP put the API key on the open internet, and a tool whose default is a
+# specific lab gateway is not portable anyway.
+DEFAULT_BASE_URL: Optional[str] = None
 
 
 def solid_png(size: int, rgb) -> str:
@@ -136,7 +140,12 @@ def main() -> int:
     )
     if not key:
         raise SystemExit("No API key. Set BOYUE_API_KEY.")
-    base_url = args.base_url or os.environ.get("BOYUE_BASE_URL") or DEFAULT_BASE_URL
+    base_url = (args.base_url or os.environ.get("BOYUE_BASE_URL")
+                or os.environ.get("TAOTOKEN_BASE_URL") or os.environ.get("OPENAI_BASE_URL")
+                or DEFAULT_BASE_URL)
+    if not base_url:
+        print("check_model: no base URL. Pass --base_url or set BOYUE_BASE_URL.", file=sys.stderr)
+        return 2
     timeout = args.timeout or float(os.environ.get("BAO_LLM_TIMEOUT", "90"))
     model = args.model
 
