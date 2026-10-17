@@ -85,18 +85,19 @@ if [ -n "$DPID" ]; then
             || echo "could not signal the dispatcher pid $DPID (already gone?)"
     fi
 else
-    echo "no dispatcher pid recorded; stopping the roster loop and runners by pattern below"
-    echo "  (if a sweep is still dispatching, find its feeder with: pgrep -af 'xargs -P')"
+    # NO PATTERN FALLBACK.  This used to `pkill -f 'run_all_models.sh'` and `pkill -f 'main.py
+    # --model'` here.  On a shared machine that matches EVERY user's process whose command line
+    # merely mentions the string -- it has killed this operator's own shell three times -- and it
+    # does not even stop the sweep, whose xargs feeder carries neither string.  So when no pid is
+    # recorded, this script now REPORTS and stops; it does not guess and it does not kill.
+    echo "no dispatcher pid recorded; NOT falling back to a name pattern (see the comment in this file)"
+    echo "  the dispatcher, if one is still dispatching, is one of:"
+    pgrep -af 'run_parallel_sweep\.sh' 2>/dev/null | sed 's/^/    /' || echo "    (none)"
+    echo "  its xargs feeder, which the pattern would never have matched:"
+    pgrep -af 'xargs -P' 2>/dev/null | sed 's/^/    /' || echo "    (none)"
+    echo "  kill one of THOSE by pid, then remove the stale pid file: rm -f $PIDFILE"
 fi
 sleep 2
-
-# 2. The loop, so it cannot start the next model while we work.
-pkill -f 'run_all_models.sh' 2>/dev/null && echo "stopped the roster loop" || echo "no roster loop found"
-sleep 2
-
-# 3. The runners themselves.
-pkill -f 'main.py --model' 2>/dev/null && echo "stopped the main.py runner(s)" || echo "no runner found"
-sleep 6
 
 # 4. Report, and list any surviving Isaac process with its command line, ours or not, so a
 #    leftover can be killed by pid and a colleague's job can be recognised as not ours.

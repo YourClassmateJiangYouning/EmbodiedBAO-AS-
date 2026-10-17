@@ -111,40 +111,44 @@ class ProtocolCheckpoint:
 
     def __init__(self, path: str, resume: bool = False) -> None:
         self.path = path
+        # `resume` decides whether the runner SKIPS units already recorded.  It must
+        # not decide whether they are LOADED: mark() rewrites the file from
+        # self.completed, so a constructor that left the set empty whenever
+        # --resume was absent truncated the checkpoint on the first episode
+        # (measured: 84 of 85 units destroyed by one non-resume run), and the next
+        # --resume then re-ran and overwrote every episode that had been paid for.
+        self.resume = bool(resume)
         self.completed: set[str] = set()
         self.recovered_from: Optional[str] = None
-        if resume:
-            if os.path.exists(path):
-                try:
-                    data = load_json_file(path)
-                    self.completed = set(str(item) for item in data.get("completed", []))
-                except Exception as exc:
-                    # Never silently forget collected data.  Resetting to an empty
-                    # set here used to make the run restart and overwrite episodes
-                    # that were still intact on disk; recover them instead.
-                    self.completed = self._recover(exc)
-            else:
-                # A MISSING checkpoint is also a checkpoint that cannot be read, and the docstring
-                # above promises a rebuild in exactly that case -- but the old `os.path.exists(path)`
-                # guard kept this branch from ever running, so a lost checkpoint silently re-ran and
-                # OVERWROTE episodes that had already been paid for.  Observed on 2026-10-15: a tag
-                # under results/ holding 12 episode records and no checkpoint file at all.  There is
-                # nothing to quarantine here, so rebuild directly from the records on disk.
+        if os.path.exists(path):
+            try:
+                data = load_json_file(path)
+                self.completed = set(str(item) for item in data.get("completed", []))
+            except Exception as exc:
+                # Never silently forget collected data.  Resetting to an empty
+                # set here used to make the run restart and overwrite episodes
+                # that were still intact on disk; recover them instead.
+                self.completed = self._recover(exc)
+        else:
+            # A MISSING checkpoint is also a checkpoint that cannot be read, and the docstring
+            # above promises a rebuild in exactly that case -- but the old `os.path.exists(path)`
+            # guard kept this branch from ever running, so a lost checkpoint silently re-ran and
+            # OVERWROTE episodes that had already been paid for.  Observed on 2026-10-15: a tag
+            # under results/ holding 12 episode records and no checkpoint file at all.  There is
+            # nothing to quarantine here, so rebuild directly from the records on disk.
+            rebuilt = self._rebuild_from_episodes()
+            self.completed = rebuilt
+            if rebuilt:
                 print(
                     f"[checkpoint] no checkpoint file at {path}; "
-                    "rebuilding completion state from the episode records"
+                    f"rebuilt {len(rebuilt)} completed unit(s) from the episode "
+                    "records already on disk"
                 )
-                self.completed = self._rebuild_from_episodes()
-                if self.completed:
-                    print(
-                        f"[checkpoint] rebuilt {len(self.completed)} completed unit(s) "
-                        "from the episode records already on disk"
-                    )
-                else:
-                    print(
-                        "[checkpoint] no completed episode could be recovered from disk; "
-                        "every episode of this tag will be re-run"
-                    )
+            elif self.resume:
+                print(
+                    "[checkpoint] no completed episode could be recovered from disk; "
+                    "every episode of this tag will be re-run"
+                )
 
     def _recover(self, exc: Exception) -> set:
         """Quarantine an unreadable checkpoint and rebuild its state."""
@@ -208,7 +212,10 @@ class ProtocolCheckpoint:
         return completed
 
     def is_done(self, key: str) -> bool:
-        return key in self.completed
+        # Only a --resume run skips.  Recording is monotonic either way, so a run
+        # started without --resume re-runs its units but can no longer erase the
+        # resume state; the next --resume still sees everything that was finished.
+        return self.resume and key in self.completed
 
     def mark(self, key: str) -> None:
         self.completed.add(key)
@@ -284,13 +291,32 @@ def _env_ground_offset(env: Any) -> Optional[float]:
     return value if value == value else None
 
 
+_COLLISION_CHECK_WARNED = False
+
+
 def _env_collision(env: Any) -> bool:
+    """Whether the environment reports the current pose overlapping the wall.
+
+    A checker that raises is NOT the same as "no collision": returning False
+    silently recorded an unknown as a clean pose, so the failure is warned about
+    (once) and still reported as False to keep the record shape.
+    """
+    global _COLLISION_CHECK_WARNED
+
     checker = getattr(env, "check_collision_with_wall", None)
     if not callable(checker):
         return False
     try:
         return bool(checker())
-    except Exception:
+    except Exception as exc:  # noqa: BLE001
+        if not _COLLISION_CHECK_WARNED:
+            _COLLISION_CHECK_WARNED = True
+            print(
+                f"[runner] WARNING: check_collision_with_wall raised "
+                f"({type(exc).__name__}: {exc}); recording collision=False for this "
+                "and any further failures, which is indistinguishable from a clean "
+                "pose in the record."
+            )
         return False
 
 
@@ -917,8 +943,9 @@ class BAOExperimentRunner:
             # see which of the scene's five markers an episode actually used -- which is how five
             # levels silently reused markers under --resume.  The ground offset was likewise
             # invisible, so it could not be discovered that every second episode ran with the robot
-            # 1.0442 m below the floor.  Both are recorded now, and both are checked by
-            # test_bao_geometry so they cannot quietly stop being recorded.
+            # 1.0442 m below the floor.  Both are recorded now; test_bao_integration's record
+            # contract names them so they cannot quietly stop being recorded (this comment used to
+            # claim test_bao_geometry did, and nothing did), and main.py's CSV carries both columns.
             "marker_slot": _env_marker_slot(self.env),
             "robot_ground_offset": _env_ground_offset(self.env),
             "passage_rotation_deg": (
@@ -1012,14 +1039,18 @@ class BAOExperimentRunner:
 
         Observations are a diagnostic extra.  Losing a frame is acceptable,
         aborting a scored episode (or the whole sweep) over one is not.
-        """
-        from PIL import Image
 
+        THE IMPORT BELONGS INSIDE THE try.  It used to sit above it, and Pillow is not installed in
+        every interpreter this repository is driven from, so `--save_obs` raised ImportError on the
+        first step and took the whole episode with it -- inverting this docstring and turning a
+        diagnostic flag into one that kills the run it was meant to observe.
+        """
         path = os.path.join(
             self.obs_dir, f"level{level}_ep{episode_id:03d}_step{step:02d}_{action}.png"
         )
         try:
             import numpy as _np
+            from PIL import Image
 
             array = _np.asarray(rgb)
             if array.ndim == 3 and array.shape[2] == 4:
@@ -1152,22 +1183,17 @@ class BAOExperimentRunner:
     def sideways_threshold(
         level_summaries: Dict[int, Dict[str, Any]]
     ) -> Optional[float]:
-        """Widest A/S ratio at which the agent chose to pass sideways.
+        """Widest A/S ratio at which the agent chose to pass sideways, above noise.
 
-        Levels are inspected from the widest channel (largest A/S) downwards, so
-        the result is the FIRST A/S at which sideways passage appears -- which is
-        also the widest one, and the direct analogue of the human threshold of
-        1.30, above which people stop rotating.
+        Delegates to :func:`analysis.sideways_threshold` so the live runner and the
+        offline report cannot disagree.  This method used to carry its own copy of
+        the old "widest Level with ANY sideways pass" rule, which at the measured
+        ~5.7% per-episode wide-Level rate is a ~96% false positive across the wide
+        Levels; the copy is gone rather than updated in two places.
         """
-        candidates = [
-            summary
-            for summary in level_summaries.values()
-            if int(summary.get("passed_sideways_count", 0)) > 0
-        ]
-        if not candidates:
-            return None
-        best = max(candidates, key=lambda s: float(s["a_s_ratio"]))
-        return float(best["a_s_ratio"])
+        from analysis import sideways_threshold as _sideways_threshold
+
+        return _sideways_threshold(level_summaries)
 
 
 def parse_args() -> argparse.Namespace:

@@ -74,6 +74,50 @@ except Exception as _isaac_import_error:  # pragma: no cover - only outside Isaa
     _HAS_ISAAC_SIM = False
 
 
+def isaac_available() -> bool:
+    """Is Isaac Sim importable RIGHT NOW?  A failed import is retried, not remembered for ever.
+
+    ``_HAS_ISAAC_SIM`` is decided once, at module import, and it CANNOT be decided first: the Isaac
+    modules exist only after ``SimulationApp`` has started.  So importing this module a moment too
+    early used to pin the flag to False for the rest of the process, and every later attempt to build
+    a scene failed with a message about importing too early -- even though by then the app WAS up.
+
+    That is not hypothetical: ``experiments.py`` imported this module at module level (to get
+    SUCCESS_X, LEVEL_CHANNEL_WIDTHS and the geometry helpers), so any process that did
+    ``import experiments`` before constructing SimulationApp latched the flag off and could never build
+    a scene again.  The docstring in that file claimed it "only imports Isaac Sim inside main()".
+
+    Two things are fixed together: this function re-imports and REBINDS the module-level names (not
+    just the flag -- a flag set to True over unresolved globals would fail later with a NameError), and
+    experiments.py no longer imports this module at import time.  Callers that used to read the flag
+    directly should call this instead.
+    """
+    global _HAS_ISAAC_SIM
+    if _HAS_ISAAC_SIM:
+        return True
+    try:
+        from isaacsim.core.api import World
+        from isaacsim.core.prims import XFormPrim
+        from isaacsim.core.utils.stage import add_reference_to_stage
+        from isaacsim.core.utils.viewports import set_camera_view
+        from isaacsim.sensors.camera import Camera
+        from isaacsim.storage.native import get_assets_root_path
+        from pxr import Gf, PhysxSchema, Sdf, UsdGeom, UsdLux, UsdPhysics, UsdShade
+        import carb  # noqa: F401
+    except Exception:  # noqa: BLE001 - still not ready; the caller reports what it needs
+        return False
+    globals().update({
+        "World": World, "XFormPrim": XFormPrim,
+        "add_reference_to_stage": add_reference_to_stage,
+        "set_camera_view": set_camera_view, "Camera": Camera,
+        "get_assets_root_path": get_assets_root_path,
+        "Gf": Gf, "PhysxSchema": PhysxSchema, "Sdf": Sdf, "UsdGeom": UsdGeom,
+        "UsdLux": UsdLux, "UsdPhysics": UsdPhysics, "UsdShade": UsdShade, "carb": carb,
+    })
+    _HAS_ISAAC_SIM = True
+    return True
+
+
 # ---------------------------------------------------------------------------
 # Scene constants (metres / degrees)
 # ---------------------------------------------------------------------------
@@ -203,44 +247,43 @@ SUCCESS_X = 8.75
 #
 # The ratios are the aperture series of the human study this benchmark is modelled
 # on: Warren & Whang (1987) put the critical ratio at A/S = 1.3 (people rotate
-# their torso for anything narrower), and Keizer et al. (2013) replicated the
-# design with 12 aperture widths from A/S 0.9 to 2.0 in steps of 0.1, three trials
-# each.  We use the same 12 ratios, which is what makes a per-model
-# rotation-onset curve directly comparable with the published A/S_crit (healthy
-# controls: 1.25-1.30).
+# their torso for anything narrower).  The ladder runs A/S 2.0 down to 0.4, so a
+# per-model rotation-onset curve is directly comparable with the published
+# A/S_crit (healthy controls: 1.25-1.30).
 #
-# 12 points rather than a coarse ladder matters for more than comparability: a
-# fixed policy ("always turn 90 degrees") produces a high rotation rate at every
-# width and would look like a threshold unless the curve has enough points to show
-# that it does not vary with A/S.
+# More points than a coarse ladder matters for more than comparability: a fixed
+# policy ("always turn 90 degrees") produces a high rotation rate at every width
+# and would look like a threshold unless the curve has enough points to show that
+# it does not vary with A/S.
 #
 # Level 0 is the widest, so a sweep runs from the trivially passable end toward the
 # end that cannot be passed without rotating.  A/S = 1.0 (level 10) is the exact
 # geometric limit: shoulder and channel are equal, so an aligned body just fits.
 #
-# Levels 11-16 all require rotating.  The angles below were CORRECTED on 2026-10-15 (the previous
-# text described the wrong model, see the note at the end of this block).
-#
-# What the gate actually enforces: the body box (0.22 m thick, 0.57 m across) is tested against two
-# PANELS THAT ARE ONLY WALL_THICKNESS = 0.02 m THICK, so the binding quantity is the body's chord
-# inside that 0.02 m slab, not its projected silhouette.  Computed directly from the two rectangles
-# (rotating the body box, clipping it to the slab, measuring its lateral extent), the minimum torso
-# angle that clears is:
+# WHAT THE GATE ENFORCES (corrected 2026-10-16).  The body (0.22 m thick, 0.57 m
+# across) walks along +x at a fixed torso angle and the gate samples the whole
+# approach.  The panels are a 0.02 m slab, but that does NOT make "the chord at the
+# wall plane" the binding quantity: as the body advances, the largest chord it
+# presents inside the slab is its full projected width,
+# ``0.57|cos t| + 0.22|sin t|``.  The equivalence is checked offline
+# (test_bao_geometry.test_max_chord_equals_the_projected_width), and the minimum
+# torso angle that clears is:
 #
 #     A/S 1.00 -> 0 deg (aligned body just fits)
-#     A/S 0.90 -> 28.0    0.85 -> 29.5    0.80 -> 31.5    0.70 -> 36.5
-#     A/S 0.65 -> 39.5    0.60 -> 43.5    0.50 -> 54.5    0.40 -> 79.5
+#     A/S 0.90 -> 55.0    0.80 -> 63.0    0.70 -> 71.0
+#     A/S 0.60 -> 78.0    0.50 -> 84.0    0.40 -> 90.0
 #
-# On the 15-degree action grid that is 30 deg at A/S 0.90 (TWO turns, not four) and 45 deg from
-# A/S 0.60 downward.  The plateaus a threshold measure can resolve are therefore 30 / 45 / 60 / 75 /
-# 90, not the 45 / 60 / 75 / 90 the earlier text claimed -- and "1 and 2 turns are never the best
-# answer" is false: at A/S 0.90 two turns are exactly enough.
+# On the 15-degree action grid that is 60 deg at A/S 0.90 (FOUR turns), 75 deg down
+# to A/S 0.70, then 90.  This matches memory_metrics.min_turns and the turn table
+# in README, which are the authority.
 #
-# The superseded text described the SILHOUETTE model, 0.57|cos t| + 0.22|sin t| <= A, which is the
-# right model for a long tunnel but not for a 2 cm plate, and it is what produced 60/75/90.  The
-# measured pass/fail thresholds are unaffected -- they are empirical -- but any geometric EXPLANATION
-# of them must use the chord numbers above.  Note that memory_metrics.needed_width (Stage 2) still
-# uses the silhouette model and has NOT been reconciled with this.
+# AN EARLIER NOTE HERE WAS WRONG AND IS RETRACTED.  It claimed the 0.02 m slab made
+# the chord at the wall plane the binding quantity, tabulated 28.0 / 31.5 / 36.5 /
+# ... and told the reader that memory_metrics.needed_width "has NOT been reconciled
+# with this".  The wall-plane chord is real but it is the slice at ONE body
+# position; it understates the minimum angle by 27 degrees at A/S 0.90, and acting
+# on the note would have retuned the Stage 2 geometry to a model the simulator does
+# not implement.  Do NOT change memory_metrics to the chord model.
 #
 # 0.4 (0.228 m) is the narrowest level we run: the body's smallest projected width is
 # its 0.220 m thickness, so anything below A/S 0.386 cannot be passed at ANY torso
@@ -298,6 +341,15 @@ CHANNEL_EDGE_COLOR = [0.10, 0.11, 0.13]
 # still 174 degrees over a 1.68 m drop onto a 0.5 m floor grid.  The focal
 # length is now written to the USD attribute as well; see _apply_focal_length.
 ROBOT_CAMERA_FOCAL = 13.36
+# Sensor size, in mm, written to the camera prim EXPLICITLY (focalLength and
+# horizontalAperture are the two attributes that decide the field of view).  Left to
+# the renderer's default the aperture is assumed to be the whole sensor width, but
+# nothing in the repo recorded that, so a changed default would silently change the
+# field of view the readability argument rests on.  9:16 is Isaac's default aspect;
+# the eye camera renders a square frame, so the vertical aperture is the sensor width
+# scaled by the aspect the vertical-FOV figures in _create_goal_marker use.
+ROBOT_CAMERA_SENSOR_WIDTH_MM = 20.955
+ROBOT_CAMERA_SENSOR_HEIGHT_MM = 20.955 * 9.0 / 16.0
 
 # H1 kinematic constants (used for analytic collision checks).  Defined before the
 # A/S ladder below because the ladder is derived from the shoulder width.
@@ -392,21 +444,66 @@ def channel_width_for_ratio(ratio: float) -> float:
 
 
 def _rotate_xz(vec: np.ndarray, yaw_rad: float) -> np.ndarray:
-    """Rotate a 3D vector around the up axis (+y) by yaw_rad."""
+    """Rotate a vector around up by a HEADING angle (positive = toward the right).
+
+    This is the counterpart of :func:`_forward_vector`, i.e. it rotates by ``-yaw``
+    in the ``_yaw_quat`` sense.  It is kept for callers in the heading frame; a
+    torso-carried offset must use :func:`_rotate_body_xz` instead.
+    """
     c, s = float(np.cos(yaw_rad)), float(np.sin(yaw_rad))
     x, y, z = float(vec[0]), float(vec[1]), float(vec[2])
     return np.array([x * c + z * s, y, -x * s + z * c], dtype=float)
 
 
 def _forward_vector(yaw_rad: float) -> np.ndarray:
-    """Unit vector pointing in the robot's facing direction (x/z plane).
+    """Unit vector for a HEADING angle: positive turns toward the walker's right.
 
-    Body frame, and deliberately so: this is what the eye POSITION offset, the
-    analytic hand position and the third-person overview camera use, because the
-    head, hands and overview rig are all carried by the torso.  Movement does NOT
-    use it any more -- see action_delta and HEADING_FORWARD below.
+    This is the walking/gaze frame, NOT the torso frame.  ``_forward_vector(t)``
+    is ``[cos t, 0, -sin t]``, so a positive ``t`` points toward user -z, which is
+    the walker's right (see HEADING_RIGHT).  The eye GAZE uses it with
+    ``self._camera_yaw_offset``, where that sign is the convention; the head/hand
+    POSITION offsets and the collision footprint must NOT use it, because the
+    robot's torso is posed by :meth:`BAOEnv._yaw_quat`, whose positive angle points
+    toward user +z (the walker's left).  Applying this function to ``_robot_yaw``
+    put the third-person camera and the analytic hand on the mirror side of the
+    body.  Movement does not use either function -- see action_delta and
+    HEADING_FORWARD below.
     """
     return np.array([np.cos(yaw_rad), 0.0, -np.sin(yaw_rad)], dtype=float)
+
+
+def _body_forward_vector(yaw_rad: float) -> np.ndarray:
+    """Unit vector along the torso's own +x, for a yaw in the ``_yaw_quat`` frame.
+
+    ``BAOEnv._yaw_quat(yaw)`` rotates isaac +x to ``(cos yaw, sin yaw, 0)``; in the
+    user frame (x, up, lateral) that is ``(cos yaw, 0, sin yaw)``.  This is the
+    torso frame the rendered body, the eye/head offset and the analytic hand live
+    in, and it is the mirror of :func:`_forward_vector`.  Kept as its own function
+    so a caller cannot pick the wrong one by accident.
+    """
+    return np.array([np.cos(yaw_rad), 0.0, np.sin(yaw_rad)], dtype=float)
+
+
+def _rotate_body_xz(vec: np.ndarray, yaw_rad: float) -> np.ndarray:
+    """Rotate a body-frame offset around up by the torso yaw of ``_yaw_quat``.
+
+    Local +x (facing) maps to ``(cos, sin)`` in the user (x, z) plane and local +z
+    (the walker's left) to ``(-sin, cos)``, which is the mirror of
+    :func:`_rotate_xz`.  Used for offsets carried by the torso, e.g. the hand.
+    """
+    c, s = float(np.cos(yaw_rad)), float(np.sin(yaw_rad))
+    x, y, z = float(vec[0]), float(vec[1]), float(vec[2])
+    return np.array([x * c - z * s, y, x * s + z * c], dtype=float)
+
+
+def _body_axes_xz(yaw_rad: float) -> np.ndarray:
+    """The torso's two in-plane axes as rows: local +x (facing) then local +z.
+
+    Returned in the user (x, z) plane and in the ``_yaw_quat`` torso frame, so a
+    footprint built from it is the footprint of the body the renderer drew.
+    """
+    c, s = float(np.cos(yaw_rad)), float(np.sin(yaw_rad))
+    return np.array([[c, s], [-s, c]], dtype=float)
 
 
 # --- the walking frame ------------------------------------------------------
@@ -547,28 +644,6 @@ def channel_edge_post_boxes(
     ]
 
 
-def _robot_body_aabb(
-    root_pos: np.ndarray, yaw_rad: float
-) -> Tuple[np.ndarray, np.ndarray]:
-    """World-space AABB of the robot body box (torso + shoulders).
-
-    The root pose is taken to be the ground-level point directly under the
-    body, so the box centre is the root plus a purely vertical offset: rotating
-    the body in place must never move its footprint sideways.
-
-    The AABB is only used for telemetry and for the vertical extent of the
-    collision test; :func:`_check_wall_collision` uses the exact oriented box.
-    """
-    c, s = abs(float(np.cos(yaw_rad))), abs(float(np.sin(yaw_rad)))
-    hx = ROBOT_TORSO_THICKNESS / 2.0
-    hz = ROBOT_SHOULDER_WIDTH / 2.0
-    center = np.asarray(root_pos, dtype=float) + np.array(
-        [0.0, ROBOT_BODY_CENTER_Y, 0.0], dtype=float
-    )
-    half = np.array([hx * c + hz * s, ROBOT_BODY_HALF_HEIGHT, hx * s + hz * c])
-    return center, half
-
-
 def _project_rect(
     center: np.ndarray, axes: np.ndarray, half: np.ndarray, axis: np.ndarray
 ) -> Tuple[float, float]:
@@ -626,8 +701,19 @@ def _check_wall_collision(
     """
     root = np.asarray(root_pos, dtype=float)
     root_xz = root[[0, 2]]
-    cos_y, sin_y = float(np.cos(yaw_rad)), float(np.sin(yaw_rad))
-    body_axes = np.array([[cos_y, -sin_y], [sin_y, cos_y]], dtype=float)
+    # Body-frame axes of the oriented rectangle, matching BAOEnv._yaw_quat.  See
+    # _body_axes_xz: this used to be the mirror of that, i.e. the footprint of a
+    # body yawed to -yaw.
+    #
+    # NOT a cosmetic fix, although an earlier comment here claimed it was
+    # "harmless because the laboratory is symmetric about z = 0".  The two agree
+    # ONLY at z = 0: with the body off the centreline they disagree, measured over
+    # x in [7, 9], z in [-0.6, 0.6], yaw in [-90, 90] at every Level, 71686 of
+    # 1572500 sampled poses (4.6%).  In the committed corpus, 622 of 3465 episodes
+    # (18.0%) have at least one near-wall step with |z| > 0.05, so the measured
+    # collision and legality of those differ between the old data and this code.
+    # That is why a fix here belongs with a protocol-tag bump, not in a quiet commit.
+    body_axes = _body_axes_xz(yaw_rad)
     body_half = np.array(
         [
             ROBOT_TORSO_THICKNESS / 2.0 + BODY_CLEARANCE,
@@ -801,10 +887,12 @@ class BAOEnv:
     """Isaac Sim environment for the Body-as-Obstacle channel-passage task."""
 
     def __init__(self, sim_app: Any = None, task_dict: Optional[Dict[str, Any]] = None) -> None:
-        if not _HAS_ISAAC_SIM:
+        if not isaac_available():
             raise RuntimeError(
                 "Isaac Sim could not be imported. Run this script with "
-                "%ISAACSIM_ROOT%\\python.bat (Windows) or $ISAACSIM_ROOT/python.sh (Linux)."
+                "%ISAACSIM_ROOT%\\python.bat (Windows) or $ISAACSIM_ROOT/python.sh (Linux).  "
+                "Note this is a RE-CHECK: the flag is not cached from a failed import any more, so "
+                "this message now means Isaac really is unavailable rather than merely early."
             )
         self.sim_app = sim_app
         self.task_dict = task_dict or {}
@@ -837,8 +925,17 @@ class BAOEnv:
         self._robot_yaw = ROBOT_START_YAW_DEG
         self._robot_ground_offset = 0.0
         # Filled in by _compute_robot_ground_offset from the loaded USD, so the
-        # real robot height can be reported instead of assumed.
-        self._robot_measured_height: Optional[float] = None
+        # real robot height can be reported instead of assumed.  Initialised to
+        # NaN, not None: _report_robot_placement formats it with float(), and the
+        # attribute always exists, so a getattr(..., nan) default never applied and
+        # float(None) raised TypeError on the two fallback paths that fail to
+        # measure.  NaN formats as "nan" and keeps the warning a warning.
+        self._robot_measured_height: Optional[float] = float("nan")
+        # One-shot warnings for failures that used to be silent: a failed pose write
+        # and a failed position read both leave the gate scoring a pose the robot is
+        # not in.
+        self._pose_write_warned = False
+        self._root_read_warned = False
         # Start pose and translation step are configurable: standing further
         # back makes the channel readable, but costs travel, so the two have to
         # move together.  See ROBOT_START_POS / MOVE_STEP and the --start_x /
@@ -1098,9 +1195,11 @@ class BAOEnv:
         start pose: at 0.30 m it was about 20 px of the 1024 px frame the sweeps
         send.  The old objection -- a red field at close range -- no longer applies,
         because success is scored at x = 8.75, one stride past the wall, so the
-        agent is never scored while standing 2 m from the far wall.  The rendered
-        plate measures 13-25 px at the start pose (it renders dimmer than this
-        arithmetic and the textured scenes dimmer still), which is why it is 0.90 m.
+        agent is never scored while standing 2 m from the far wall.  The 13-25 px
+        figure that motivated the 0.90 m belongs to the OLD 0.60 m plate, measured
+        from actual 1024 px frames (see the constant above); it is NOT the current
+        plate, which the arithmetic below puts at 67 px.  Quoting it without the
+        0.60 m context made this docstring look self-contradictory.
 
         Apparent edge at 1024 px with the camera's real vertical field of view
         (2*atan((20.955*9/16)/(2*13.36)) = 47.6 degrees; this line used to say
@@ -1254,11 +1353,14 @@ class BAOEnv:
         the value without the renderer honouring it, which is why raising the
         focal length from 1.5 to 8.0 across four runs changed nothing.
 
-        The authoritative attributes are ``focalLength`` and ``horizontalAperture``
-        on the camera prim, in mm and tenths of a mm-of-sensor respectively.
-        Setting ``focalLength`` alone (with the aperture left at its default of
-        the whole sensor width) gives a predictable field of view:
-        ``2 * atan(horizontalAperture / (2 * focalLength))``.
+        The authoritative attributes are ``focalLength`` and
+        ``horizontalAperture``/``verticalAperture`` on the camera prim.  All three are
+        now written explicitly: the field of view is
+        ``2 * atan(aperture / (2 * focalLength))``, and leaving the aperture to the
+        renderer's default made the FOV depend on a value the repo never set or
+        checked.  ``horizontalAperture`` = ROBOT_CAMERA_SENSOR_WIDTH_MM = 20.955 mm
+        and ``verticalAperture`` its 9:16 counterpart, which is the 47.6 degree
+        vertical / 76.2 degree horizontal pair the readability notes use.
         """
         try:
             camera.set_focal_length(float(focal_mm))
@@ -1269,6 +1371,8 @@ class BAOEnv:
             if not cam:
                 return
             cam.GetFocalLengthAttr().Set(float(focal_mm))
+            cam.GetHorizontalApertureAttr().Set(float(ROBOT_CAMERA_SENSOR_WIDTH_MM))
+            cam.GetVerticalApertureAttr().Set(float(ROBOT_CAMERA_SENSOR_HEIGHT_MM))
         except Exception as exc:
             print(f"[BAOEnv] could not set USD focalLength on {path}: {exc}")
 
@@ -1437,13 +1541,17 @@ class BAOEnv:
         back as if it were a calibration.  Nothing here is assigned to ``_robot_ground_offset``.
         """
         residual = self._compute_robot_ground_offset()
+        measured = self._robot_measured_height
+        measured_text = "nan" if measured is None else "%.3f" % float(measured)
+        hidden = bool(self.task_dict.get("hide_robot", False))
         print(
             "[BAOEnv] robot placement: residual lift = %+.4f m "
-            "(authored calibration %.4f m, measured height %.3f m)"
+            "(authored calibration %.4f m, measured height %s m%s)"
             % (
                 float(residual),
                 float(self._robot_ground_offset),
-                float(getattr(self, "_robot_measured_height", float("nan"))),
+                measured_text,
+                "; robot prims inactive (hide_robot)" if hidden else "",
             )
         )
 
@@ -1455,7 +1563,18 @@ class BAOEnv:
             cache = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_])
             min_z = float("inf")
             max_z = float("-inf")
-            for prim in self.stage.Traverse():
+            # TraverseAll, not Traverse: UsdStage::Traverse visits only the active,
+            # loaded, defined prims, so once hide_robot deactivates the robot its whole
+            # subtree disappears from the walk, min_z stays inf, and the function
+            # returned 0.0 -- which _report_robot_placement then printed as a PASS
+            # ("residual lift = +0.0000 m").  TraverseAll includes inactive prims, so
+            # the measurement is the same whether or not the robot is hidden.
+            traversal = (
+                self.stage.TraverseAll()
+                if hasattr(self.stage, "TraverseAll")
+                else self.stage.Traverse()
+            )
+            for prim in traversal:
                 path = str(prim.GetPath())
                 if not path.startswith(self.robot_prim_path):
                     continue
@@ -1792,8 +1911,18 @@ class BAOEnv:
                 positions=np.array([pos_isaac]),
                 orientations=np.array([quat]),
             )
-        except Exception:
-            pass
+        except Exception as exc:
+            # NOT a silent pass: the gate and check_success read the logical pose,
+            # so a failed write means they can be evaluated on a pose the rendered
+            # robot is not in while the action still reports "executed".  Warn once.
+            if not self._pose_write_warned:
+                self._pose_write_warned = True
+                print(
+                    f"[BAOEnv] WARNING: set_world_poses failed "
+                    f"({type(exc).__name__}: {exc}); the collision gate and "
+                    "check_success will use the logical pose, which the robot may not "
+                    "be in. Further failures are not printed."
+                )
         self._robot_yaw = float(yaw_deg)
 
     def _root_position(self) -> np.ndarray:
@@ -1801,7 +1930,14 @@ class BAOEnv:
             return self._start_pos.copy()
         try:
             pos = self.robot_root.get_world_poses()[0][0]
-        except Exception:
+        except Exception as exc:
+            if not self._root_read_warned:
+                self._root_read_warned = True
+                print(
+                    f"[BAOEnv] WARNING: get_world_poses failed "
+                    f"({type(exc).__name__}: {exc}); falling back to the start pose "
+                    f"{self._start_pos}. Further failures are not printed."
+                )
             return self._start_pos.copy()
         user_pos = _isaac_to_user_pos(np.asarray(pos, dtype=float))
         # The USD root is raised by the ground offset when written, so strip it
@@ -2010,12 +2146,15 @@ class BAOEnv:
         root = self._root_position()
         yaw_offset = float(self.task_dict.get("robot_yaw_offset", MODEL_YAW_OFFSET_DEG))
         local = np.array([0.10, 0.95, 0.24], dtype=float)
-        return root + _rotate_xz(local, np.radians(self._robot_yaw + yaw_offset))
+        return root + _rotate_body_xz(local, np.radians(self._robot_yaw + yaw_offset))
 
     def _update_camera(self) -> None:
         """Third-person overview camera: head height, looking down the channel."""
         pos = self._root_position()
-        forward = _forward_vector(np.radians(self._robot_yaw))
+        yaw_offset = float(self.task_dict.get("robot_yaw_offset", MODEL_YAW_OFFSET_DEG))
+        # Torso frame, so the rig stays behind the body however it is turned; see
+        # _body_forward_vector for why _forward_vector must not be used here.
+        forward = _body_forward_vector(np.radians(self._robot_yaw + yaw_offset))
         forward_offset = float(self.task_dict.get("camera_forward_offset", 0.42))
         camera_height = float(self.task_dict.get("camera_height", 1.6))
         eye = np.array([pos[0], camera_height, pos[2]]) + forward * forward_offset
@@ -2103,7 +2242,10 @@ class BAOEnv:
         # may follow the torso yaw.  Only the GAZE is pinned to the walking
         # direction (see _update_eye_camera).  The offset is 0 by default, so in
         # practice the eye sits at the body centre and neither term moves it.
-        forward = _forward_vector(np.radians(self._robot_yaw))
+        # _body_forward_vector, not _forward_vector: the latter is the heading
+        # convention and pointed the head at the mirror side of the body.
+        yaw_offset = float(self.task_dict.get("robot_yaw_offset", MODEL_YAW_OFFSET_DEG))
+        forward = _body_forward_vector(np.radians(self._robot_yaw + yaw_offset))
         height = float(self.task_dict.get("eye_camera_height", EYE_CAMERA_HEIGHT))
         offset = float(self.task_dict.get("eye_forward_offset", 0.0))
         return np.array([root[0], height, root[2]], dtype=float) + forward * offset
@@ -2361,7 +2503,7 @@ class BAOEnv:
         return list(info["point"]) if info else None
 
     def check_success(self) -> bool:
-        """Success condition: the body centre reaches the x=11 m goal plane."""
+        """Success condition: the body centre reaches the success plane (x = 8.75 m)."""
         return bool(self._root_position()[0] >= SUCCESS_X)
 
     def _get_wall_collision_info(self) -> Optional[Dict[str, Any]]:

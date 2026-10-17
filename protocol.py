@@ -71,6 +71,16 @@ ACTIONS = [
 # find the previous protocol's episodes, count them as done, and quietly mix two
 # experiments in one dataset.
 #
+# v8-actions-flipped: left/right and look_left/look_right were MIRRORED against the body.
+#     HEADING_RIGHT moved from +z to -z and look_left's camera-yaw sign flipped with it, so
+#     "right" now moves the walker to its RIGHT instead of its left, and "look_left" looks
+#     left.  The action NAMES are unchanged and their physical meaning is opposite, which is
+#     precisely what this tag exists to separate: a v7 episode and a v8 episode of the same
+#     level are not comparable and must not share a results directory, or --resume counts the
+#     old one as done and the dataset silently mixes two experiments.
+#     Also folded in: the collision footprint is mirrored consistently with what is rendered,
+#     and the state block's z sentence was reworded to match the flipped lateral sign.
+#
 # v7-state-axes: the state block now says which axis each control moves along.
 #     Same action list as v6 (forward is described as heading for the marker); the
 #     task statement is unchanged and still byte-identical to v5.
@@ -125,7 +135,7 @@ ACTIONS = [
 #     rotate the torso relative to that direction.  Every earlier run used
 #     body-frame translation, where a turn also redirected the walk.
 # ---------------------------------------------------------------------------
-PROTOCOL_TAG = "v7-state-axes"
+PROTOCOL_TAG = "v8-actions-flipped"
 
 # ---------------------------------------------------------------------------
 # Action space
@@ -503,8 +513,9 @@ def build_prompt(
         lines.append(
             "- head camera sideways offset from straight ahead (degrees): "
             f"{float(camera_yaw):.1f} (0 = looking straight ahead down your "
-            "walking direction; +30 = the glance to your left you just asked "
-            "for, which clears on your next action)"
+            "walking direction; NEGATIVE is toward your left and POSITIVE toward "
+            "your right -- a look_left reports a negative number -- and the glance "
+            "clears on your next action)"
         )
     camera_pitch = state.get("camera_pitch")
     if camera_pitch is not None:

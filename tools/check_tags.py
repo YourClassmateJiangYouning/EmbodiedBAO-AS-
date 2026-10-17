@@ -13,6 +13,10 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from main import effective_tag  # noqa: E402
+# The protocol tag is READ, never spelled out.  It used to be the literal "v7-state-axes" here, which
+# meant that bumping PROTOCOL_TAG would have silently disabled this check instead of re-aiming it --
+# the tool would have gone on passing while looking for a string no tag contained any more.
+from protocol import PROTOCOL_TAG  # noqa: E402
 
 
 def roster() -> list:
@@ -42,7 +46,7 @@ def main() -> int:
             if once.count("stage1.") > 1:
                 bad += 1
                 print(f"DUPLICATED SCENE model={model!r} scene={scene!r} -> {once}")
-            if once.count("v7-state-axes") > 1:
+            if once.count(PROTOCOL_TAG) > 1:
                 bad += 1
                 print(f"DUPLICATED PROTOCOL model={model!r} scene={scene!r} -> {once}")
         print(f"  {model:<34} -> {effective_tag(model, '', 'stage1.1')}")

@@ -6,7 +6,8 @@ how its behaviour changes as the channel narrows.
 
 Headline metrics (per Level, and per model overall):
 
-* **Pass rate**       -- fraction of episodes that reached the x >= 11 m goal plane.
+* **Pass rate**       -- fraction of episodes that reached the success plane
+  (x = 8.75 m, one stride past the obstacle wall).
 * **Sideways rate**   -- fraction of episodes that passed while the torso was
   rotated into the sideways band (45-135 degrees).
 * **Sideways threshold** -- the widest A/S ratio (largest channel) at which the
@@ -35,6 +36,7 @@ import csv
 import glob
 import io
 import json
+import math
 import os
 from typing import Any, Dict, List, Optional, Sequence
 
@@ -49,6 +51,10 @@ from persistence import atomic_write_json, atomic_write_text
 # is this module's historical name for the predicate, kept because
 # test_bao_integration.py refers to it.
 from protocol import is_sideways_yaw as _sideways_yaw
+# The ladder's length is the default for --levels, so it is read from its definition rather than
+# written down: a hard-coded [0..5] silently stopped reporting at level 5 and the tool still looked
+# healthy.  It lives in environment.py, next to the widths themselves.
+from environment import LEVEL_CHANNEL_WIDTHS
 
 HUMAN_THRESHOLD = 1.30
 
@@ -191,10 +197,37 @@ def episode_first_turn_step(episode: Dict[str, Any]) -> Optional[int]:
     return None
 
 
+def episode_had_no_valid_call(episode: Dict[str, Any]) -> bool:
+    """True when not one step produced a usable action.
+
+    Such an episode is an infrastructure failure -- an HTTP error, an exhausted
+    quota, a dead key -- and the runner records it exactly like a model that could
+    not solve the task: ``passed=False``, ``end_reason=max_steps``.  Counted as a
+    model failure it changes the headline number (measured on the committed corpus:
+    215 of 3465 episodes, every one of them an HTTP 4xx/5xx in the agent log), so
+    the rates exclude it and the count is reported separately.  A model whose whole
+    run failed this way has no measured ability at all, which is not the same as
+    scoring zero.
+    """
+    steps = int(episode.get("total_steps") or 0)
+    invalid = int(episode.get("invalid_response_count") or 0)
+    return steps > 0 and invalid >= steps
+
+
 def summarize_level(level: int, episodes: Sequence[Dict[str, Any]]) -> Dict[str, Any]:
-    """Aggregate the A/S metrics for one Level."""
-    if not episodes:
-        return {"level": int(level), "episodes": 0}
+    """Aggregate the A/S metrics for one Level, over the episodes that produced data."""
+    # Episodes in which every call failed are not measurements of the model; drop
+    # them from the rates and report how many were dropped.  See
+    # episode_had_no_valid_call.
+    excluded = [ep for ep in episodes if episode_had_no_valid_call(ep)]
+    usable = [ep for ep in episodes if not episode_had_no_valid_call(ep)]
+    if not usable:
+        return {
+            "level": int(level),
+            "episodes": 0,
+            "excluded_no_valid_call": len(excluded),
+        }
+    episodes = usable
 
     passed = [episode_passed(ep) for ep in episodes]
     sideways = [episode_passed_sideways(ep) for ep in episodes]
@@ -217,12 +250,16 @@ def summarize_level(level: int, episodes: Sequence[Dict[str, Any]]) -> Dict[str,
         "channel_width": float(episodes[0].get("channel_width", float("nan"))),
         "a_s_ratio": float(episodes[0].get("a_s_ratio", float("nan"))),
         "episodes": len(episodes),
+        "excluded_no_valid_call": len(excluded),
         "pass_rate": float(np.mean(passed)),
         "passed_count": int(sum(passed)),
         "sideways_rate": float(np.mean(sideways)),
         "passed_sideways_count": int(sum(sideways)),
         "turned_rate": float(
             np.mean([episode_first_turn_step(ep) is not None for ep in episodes])
+        ),
+        "turned_count": int(
+            sum(1 for ep in episodes if episode_first_turn_step(ep) is not None)
         ),
         "first_turn_step_mean": (float(np.mean(first_turns)) if first_turns else None),
         "first_turn_step_min": (int(min(first_turns)) if first_turns else None),
@@ -273,20 +310,145 @@ def summarize_level(level: int, episodes: Sequence[Dict[str, Any]]) -> Dict[str,
     }
 
 
-def sideways_threshold(level_summaries: Dict[int, Dict[str, Any]]) -> Optional[float]:
-    """Widest A/S ratio at which the model still passed sideways."""
-    candidates = [
+# A level at or above this A/S is "wide": the human A/S_crit is 1.30, so rotation is
+# not required there.  Sideways or turning behaviour observed at a wide level is the
+# background against which a threshold has to stand out.
+WIDE_A_S = 1.0
+# One-sided binomial significance level for calling a level's rate above background.
+THRESHOLD_ALPHA = 0.05
+# A threshold may not rest on a single episode: with 5 episodes per Level a lone
+# chance sideways pass is 20%, and at the measured 5.7% per-episode wide-level
+# sideways rate the probability of at least one such pass across the 11 wide Levels
+# is about 96%.  Two passes are the minimum evidence for "this width made the model
+# rotate".
+THRESHOLD_MIN_COUNT = 2
+# Used as the null for the WIDEST level, which has no wider level to compare with.
+PRIOR_RATE = 0.05
+
+
+def _binomial_tail(k: int, n: int, p: float) -> float:
+    """P(X >= k) for X ~ Binomial(n, p)."""
+    if k <= 0:
+        return 1.0
+    if n <= 0:
+        return 1.0
+    if p <= 0.0:
+        return 0.0
+    if p >= 1.0:
+        return 1.0
+    return sum(
+        math.comb(n, i) * (p ** i) * ((1.0 - p) ** (n - i))
+        for i in range(k, n + 1)
+    )
+
+
+def _pooled_rate(
+    summaries: Sequence[Dict[str, Any]], count_key: str
+) -> Optional[float]:
+    """Pooled rate of ``count_key`` over ``summaries``, or None if there are none.
+
+    Laplace-smoothed, so a model with no events in the reference set does not make
+    any later single event automatically significant.
+    """
+    hits = trials = 0
+    for summary in summaries:
+        n = int(summary.get("episodes", 0))
+        if n <= 0:
+            continue
+        hits += int(summary.get(count_key, 0))
+        trials += n
+    if trials <= 0:
+        return None
+    return (hits + 0.5) / (trials + 1.0)
+
+
+def _wide_background(
+    level_summaries: Dict[int, Dict[str, Any]], count_key: str
+) -> Optional[float]:
+    """Pooled wide-Level (A/S >= WIDE_A_S) rate, for the report."""
+    return _pooled_rate(
+        [
+            summary
+            for summary in level_summaries.values()
+            if summary.get("a_s_ratio") is not None
+            and float(summary["a_s_ratio"]) >= WIDE_A_S
+        ],
+        count_key,
+    )
+
+
+def _significant_threshold(
+    level_summaries: Dict[int, Dict[str, Any]], count_key: str
+) -> Optional[float]:
+    """Widest A/S whose count is significantly above the wider-Level background.
+
+    The null for a candidate Level is the pooled rate at STRICTLY WIDER openings
+    (excluding the candidate, so a Level cannot raise its own background); for the
+    widest Level, which has none, it is PRIOR_RATE.  The old rule took the widest
+    Level with ANY event, so one chance sideways pass at A/S 2.0 defined a model's
+    threshold.
+    """
+    levels = [
         summary
         for summary in level_summaries.values()
-        if int(summary.get("passed_sideways_count", 0)) > 0
+        if int(summary.get("episodes", 0)) > 0
+        and summary.get("a_s_ratio") is not None
     ]
+    # A threshold is a CONTRAST between widths; with one Level there is nothing to
+    # compare against, and a policy that simply always rotates would otherwise look
+    # like a threshold at whatever that single width happens to be.
+    if len(levels) < 2:
+        return None
+    candidates = []
+    for summary in levels:
+        n = int(summary.get("episodes", 0))
+        k = int(summary.get(count_key, 0))
+        if k < THRESHOLD_MIN_COUNT:
+            continue
+        a_s = float(summary["a_s_ratio"])
+        background = _pooled_rate(
+            [other for other in levels if float(other["a_s_ratio"]) > a_s],
+            count_key,
+        )
+        if background is None:
+            # The widest Level has nothing wider to compare with.  The null is then
+            # the model's own behaviour at the OTHER wide Levels (A/S >= WIDE_A_S),
+            # excluding the candidate: a model that rotates at every wide opening has
+            # no threshold, it has a habit, and comparing only against a fixed prior
+            # would call that habit significant.
+            background = _pooled_rate(
+                [
+                    other
+                    for other in levels
+                    if other is not summary
+                    and float(other["a_s_ratio"]) >= WIDE_A_S
+                ],
+                count_key,
+            )
+        if background is None:
+            background = PRIOR_RATE
+        if _binomial_tail(k, n, background) < THRESHOLD_ALPHA:
+            candidates.append(summary)
     if not candidates:
         return None
     return float(max(candidates, key=lambda s: float(s["a_s_ratio"]))["a_s_ratio"])
 
 
+def sideways_threshold(level_summaries: Dict[int, Dict[str, Any]]) -> Optional[float]:
+    """Widest A/S ratio at which the model still passed sideways, above noise.
+
+    Requires at least THRESHOLD_MIN_COUNT sideways passes at the Level AND a
+    one-sided binomial p < THRESHOLD_ALPHA against the model's own wide-Level
+    sideways rate.  The previous rule took the widest Level with ANY sideways pass,
+    which at the measured 5.7% per-episode wide-Level rate is a ~96% false
+    positive across the 11 wide Levels; it scored gemini-2.5-pro at A/S 2.0
+    ("anticipatory") on 4 sideways passes in the widest opening.
+    """
+    return _significant_threshold(level_summaries, "passed_sideways_count")
+
+
 def turned_threshold(level_summaries: Dict[int, Dict[str, Any]]) -> Optional[float]:
-    """Widest A/S ratio at which the model rotated its torso at all.
+    """Widest A/S ratio at which the model rotated its torso at all, above noise.
 
     Distinct from ``sideways_threshold``, which additionally requires the episode
     to have SUCCEEDED.  The human reference (Warren & Whang 1987, 1.30) measures
@@ -294,15 +456,12 @@ def turned_threshold(level_summaries: Dict[int, Dict[str, Any]]) -> Optional[flo
     this is the closer analogue: it separates the decision from the execution and
     cannot be depressed by a model that rotates correctly and then fails to
     follow through.
+
+    Same significance rule as ``sideways_threshold``: a single collision-recovery
+    turn at the widest opening is not a threshold.  The random baseline used to
+    score 2.0 here purely from the wide-Level turn rate (0.23-0.29, no trend).
     """
-    candidates = [
-        summary
-        for summary in level_summaries.values()
-        if float(summary.get("turned_rate", 0.0)) > 0.0
-    ]
-    if not candidates:
-        return None
-    return float(max(candidates, key=lambda s: float(s["a_s_ratio"]))["a_s_ratio"])
+    return _significant_threshold(level_summaries, "turned_count")
 
 
 def rotation_gradedness(
@@ -346,15 +505,50 @@ def anticipation_class(threshold: Optional[float]) -> str:
     return "reactive"
 
 
+def _current_protocol_tags(
+    results_root: str, model: str, levels: Sequence[int]
+) -> List[str]:
+    """Every run tag under ``results/level*/{model}`` that is the current protocol.
+
+    The tag carries the protocol version (``protocol.PROTOCOL_TAG``, appended by
+    ``main.effective_tag``) and the scene, so a tag is one scene of the current
+    protocol.  Matched by CONTAINMENT, not by suffix: a tag can also carry a
+    request-parameter suffix after the protocol tag ("...-<protocol>-effortnone",
+    for models whose extended thinking is switched off), and an endswith test
+    classified every one of those as a different protocol.
+    """
+    from protocol import PROTOCOL_TAG
+
+    tags: set = set()
+    for level in levels:
+        for path in glob.glob(
+            os.path.join(results_root, f"level{level}", model, "*")
+        ):
+            if not os.path.isdir(path) or os.path.basename(path).startswith("round"):
+                continue
+            name = os.path.basename(path)
+            if f"-{PROTOCOL_TAG}" in name or name == PROTOCOL_TAG:
+                tags.add(name)
+    return sorted(tags)
+
+
 def analyze_model(
     results_root: str,
     model: str,
     levels: Sequence[int],
     tag: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """Build the full per-model report across every requested Level."""
-    selected_tag = tag
-    if selected_tag is None:
+    """Build the full per-model report across every requested Level.
+
+    With ``tag`` given, that one run tag is analysed.  With ``tag is None`` every
+    current-protocol tag is pooled.  It used to pick the single most recently
+    modified tag directory, which meant a default run covered one scene of five and
+    a partially re-run (or merely ``touch``ed) tag could beat a complete one.
+    """
+    selected_tags: List[str] = []
+    if tag is not None:
+        selected_tags = [tag]
+    else:
         tagged_dirs = [
             path
             for level in levels
@@ -364,70 +558,85 @@ def analyze_model(
             if os.path.isdir(path) and not os.path.basename(path).startswith("round")
         ]
         if tagged_dirs:
-            # Prefer a directory from the CURRENT protocol.  The tag carries the
-            # protocol version (protocol.PROTOCOL_TAG, appended by
-            # main.effective_tag), so a directory containing it is this protocol's
-            # data and an older one is a different experiment with different action
-            # semantics.  Choosing purely by mtime would let a partially re-run
-            # model -- or a stray touch -- summarise the old protocol under the new
-            # protocol's name, which is exactly the mix the tag exists to prevent.
-            #
-            # Matched by CONTAINMENT, not by suffix: a tag can also carry a
-            # request-parameter suffix after the protocol tag
-            # ("...-<protocol>-effortnone", for models whose extended thinking is
-            # switched off), and an endswith test would classify every one of those
-            # as a different protocol.
-            from protocol import PROTOCOL_TAG
+            current = _current_protocol_tags(results_root, model, levels)
+            if current:
+                selected_tags = current
+                if len(current) > 1:
+                    print(
+                        f"[analysis] {model}: pooling {len(current)} current-protocol "
+                        f"tag(s): {', '.join(current)}"
+                    )
+                else:
+                    print(f"[analysis] {model}: analysing tag {current[0]!r}")
+            else:
+                # Nothing from the current protocol: fall back to the newest tag so
+                # an old tree still reports, but say plainly that it is not this
+                # protocol's data.
+                from protocol import PROTOCOL_TAG
 
-            current = [
-                path
-                for path in tagged_dirs
-                if f"-{PROTOCOL_TAG}" in os.path.basename(path)
-                or os.path.basename(path) == PROTOCOL_TAG
-            ]
-            pool = current or tagged_dirs
-            selected_tag = os.path.basename(max(pool, key=os.path.getmtime))
-            if not current:
+                fallback = os.path.basename(max(tagged_dirs, key=os.path.getmtime))
+                selected_tags = [fallback]
                 print(
                     f"[analysis] WARNING: no {model} results tagged with the "
-                    f"current protocol ({PROTOCOL_TAG}); using {selected_tag!r}. "
+                    f"current protocol ({PROTOCOL_TAG}); using {fallback!r}. "
                     "Run main.py with a fresh tag before comparing."
                 )
-            older = sorted(
-                {
-                    os.path.basename(path)
-                    for path in tagged_dirs
-                    if os.path.basename(path) != selected_tag
-                }
-            )
-            if older:
-                print(
-                    f"[analysis] {model}: analysing tag {selected_tag!r}; "
-                    f"ignoring {len(older)} other tag(s): {', '.join(older)}"
-                )
 
+    def level_episodes(level: int) -> List[Dict[str, Any]]:
+        if not selected_tags:
+            # Untagged / legacy layout: let load_episodes pick its own directory.
+            return load_episodes(results_root, level, model, tag=None)
+        episodes: List[Dict[str, Any]] = []
+        for selected in selected_tags:
+            episodes.extend(load_episodes(results_root, level, model, tag=selected))
+        return episodes
+
+    # Load each Level once: pooling several tags made the old double load
+    # (per-Level summary, then the overall aggregate) multiply by the tag count.
+    loaded: Dict[int, List[Dict[str, Any]]] = {
+        int(level): level_episodes(level) for level in levels
+    }
     per_level: Dict[int, Dict[str, Any]] = {}
     for level in levels:
-        episodes = load_episodes(results_root, level, model, tag=selected_tag)
+        episodes = loaded[int(level)]
         if not episodes:
             continue
         per_level[int(level)] = summarize_level(int(level), episodes)
 
     threshold = sideways_threshold(per_level)
     turned = turned_threshold(per_level)
+    every_episode = [ep for level in levels for ep in loaded[int(level)]]
+    # Episodes whose every call failed are not a measurement of the model; see
+    # episode_had_no_valid_call.  Reported, never scored.
+    excluded_no_valid_call = sum(
+        1 for ep in every_episode if episode_had_no_valid_call(ep)
+    )
     all_episodes = [
-        ep
-        for level in levels
-        for ep in load_episodes(results_root, level, model, tag=selected_tag)
+        ep for ep in every_episode if not episode_had_no_valid_call(ep)
     ]
     total_passed = sum(1 for ep in all_episodes if episode_passed(ep))
     total_sideways = sum(1 for ep in all_episodes if episode_passed_sideways(ep))
 
     return {
         "model": model,
+        "tags": list(selected_tags),
         "levels": per_level,
+        "excluded_no_valid_call": excluded_no_valid_call,
         "sideways_threshold": threshold,
         "turned_threshold": turned,
+        # The model's own wide-Level behaviour, which the thresholds above are tested
+        # against; reported so a reader can see the noise floor the rule removes.
+        "sideways_background_rate": (
+            _wide_background(per_level, "passed_sideways_count") if per_level else None
+        ),
+        "turned_background_rate": (
+            _wide_background(per_level, "turned_count") if per_level else None
+        ),
+        "threshold_rule": {
+            "wide_a_s": WIDE_A_S,
+            "alpha": THRESHOLD_ALPHA,
+            "min_count": THRESHOLD_MIN_COUNT,
+        },
         "human_reference_threshold": HUMAN_THRESHOLD,
         "threshold_gap_vs_human": (
             None if threshold is None else float(threshold - HUMAN_THRESHOLD)
@@ -440,6 +649,7 @@ def analyze_model(
         ),
         "overall": {
             "episodes": len(all_episodes),
+            "excluded_no_valid_call": excluded_no_valid_call,
             "passed_count": total_passed,
             "pass_rate": (total_passed / len(all_episodes)) if all_episodes else 0.0,
             "passed_sideways_count": total_sideways,
@@ -478,7 +688,9 @@ def analyze_model(
                 sum(int(ep.get("wall_collision_count", 0)) for ep in all_episodes)
             ),
             "total_invalid_responses": int(
-                sum(int(ep.get("invalid_response_count", 0)) for ep in all_episodes)
+                sum(
+                    int(ep.get("invalid_response_count", 0)) for ep in every_episode
+                )
             ),
         },
     }
@@ -510,7 +722,11 @@ def format_markdown_table(
         model = report["model"]
         for level in levels:
             summary = report["levels"].get(int(level))
-            if not summary:
+            # A Level whose every call failed has no measured metric fields, only
+            # episodes=0 and the excluded count (see summarize_level).  It must be
+            # skipped, not indexed: the report crashed with KeyError: 'a_s_ratio'
+            # on the real corpus (kimi, all 85 episodes API-failed).
+            if not summary or not summary.get("episodes"):
                 continue
             first_turn = summary.get("first_turn_step_mean")
             avg_steps = summary.get("avg_success_steps")
@@ -587,7 +803,9 @@ def table_rows(
     for report in reports:
         for level in levels:
             summary = report["levels"].get(int(level))
-            if not summary:
+            # Same guard as format_markdown_table: an all-failed Level has no metric
+            # fields and must be skipped rather than indexed.
+            if not summary or not summary.get("episodes"):
                 continue
             rows.append(
                 {
@@ -709,7 +927,14 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     # on the run that was just produced, wherever it is invoked from.
     parser.add_argument("--results_root", type=str, default=_default_results_root())
     parser.add_argument(
-        "--levels", type=int, nargs="+", default=[0, 1, 2, 3, 4, 5]
+        "--levels", type=int, nargs="+", default=None,
+        help=(
+            "Levels to report on; default: the WHOLE ladder.  This used to default to "
+            "[0, 1, 2, 3, 4, 5], so `python analysis.py` -- the command the README documents -- "
+            "skipped levels 6-16, which is exactly where the threshold is: the wide levels are all "
+            "passable without rotating, so a default report that stops at 5 cannot show a threshold "
+            "at all.  The ladder has %d levels." % len(LEVEL_CHANNEL_WIDTHS)
+        ),
     )
     parser.add_argument(
         "--models", type=str, nargs="*", default=None, help="Model names; default: all"
@@ -725,6 +950,10 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
 
 def main(argv: Optional[List[str]] = None) -> int:
     args = parse_args(argv)
+    if args.levels is None:
+        # The whole ladder, not a prefix of it.  See the --levels help: defaulting to 0-5 hid the
+        # only levels where a threshold can appear.
+        args.levels = list(range(len(LEVEL_CHANNEL_WIDTHS)))
     models = args.models or discover_models(args.results_root)
     if not models:
         print(f"No episode results found under {args.results_root}.")
