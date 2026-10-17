@@ -2450,8 +2450,16 @@ def test_lights_are_inside_the_enclosed_room() -> None:
 
     # Every interior light must be below the ceiling and inside the floor plan;
     # lights must cover both sides of the obstacle in the 16 m enclosure.
-    positions = ([2.0, 2.6, 0.0], [6.0, 2.6, 0.0],
-                 [10.0, 2.6, 0.0], [14.0, 2.6, 0.0])
+    #
+    # READ FROM THE MODULE, NOT SPELLED OUT HERE.  This used to be four literals at x = 2, 6, 10, 14,
+    # while _create_lights places EIGHT at x = 1.5, 3.5 ... 15.0 -- so the checks below were validating
+    # this tuple and would have passed no matter what the lights did.  A regression guard that carries
+    # its own copy of the data it guards tests nothing.
+    positions = [(x, env.LIGHT_HEIGHT_Y, z) for x, z in env.LIGHT_POSITIONS_XZ]
+    check(
+        len(positions) == 8,
+        f"expected eight interior lights along the 16 m, found {len(positions)}",
+    )
     check(
         any(p[0] < env.WALL_X for p in positions)
         and any(p[0] > env.WALL_X for p in positions),

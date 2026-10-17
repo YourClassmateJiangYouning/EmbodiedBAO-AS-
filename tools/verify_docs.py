@@ -52,7 +52,21 @@ TEST_FILES = (
     "test_bao_persistence.py",
     "test_bao_scenes.py",
 )
-ISAAC_FILES = 1090  # git ls-files assets/isaac
+ISAAC_FILES = len([
+    line for line in subprocess.run(
+        ["git", "ls-files", "assets/isaac"],
+        cwd=ROOT, capture_output=True, text=True,
+    ).stdout.splitlines() if line.strip()
+])
+# THE EXPECTED COUNT IS MEASURED, NOT WRITTEN DOWN.  This was `ISAAC_FILES = 1090`, and the check that
+# used it compared the repository against 1090 -- an expectation about the REPOSITORY, not about the
+# DOCUMENTS.  Adding or removing one vendored asset turned the documentation check red for a reason that
+# has nothing to do with documentation.  The three `total == 1192` / `isaac == ISAAC_FILES` /
+# `bucket == 102` facts below were that same mistake three times over.
+#
+# What these numbers are FOR is the second half of this file, which asks whether MANUAL.md/README.md
+# state them correctly.  So the value is measured once here and compared against the documents there,
+# which is the property that actually matters.
 # What a document must SAY about the measured check total, as patterns that cannot be satisfied by
 # deleting the claim.  ``(?<![\d.])`` / ``(?![\d.])`` keep 1090 from matching 51090 or 1090.5, and keep
 # 175 from matching 1175 or a timestamp such as 17:50 -- the first version of this script tested
@@ -300,12 +314,14 @@ def main() -> int:
     # without MANUAL.md/README.md is not evidence that the total went unstated.
     total_owners = {owner for owner, _ in CHECK_TOTAL_PATTERNS if owner in docs}
     facts = [
-        (total == 1192, f"tracked assets is {total}, docs say updated",
-         f"tracked assets = {total}"),
-        (isaac == ISAAC_FILES, f"assets/isaac is {isaac}, docs say updated",
-         f"assets/isaac = {isaac}"),
-        (bucket == 102, f"assets/bucket is {bucket}, docs say updated",
-         f"assets/bucket = {bucket}"),
+        # NOT `total == 1192` / `isaac == ISAAC_FILES` / `bucket == 102`.  Those asserted that the
+        # REPOSITORY has a particular number of files, which is not a documentation property: adding one
+        # vendored asset made the documentation check fail for a reason unrelated to documentation. The
+        # document-versus-measured comparisons live further down and are the ones that matter. What is
+        # asked here is only that the measurements are not empty, which catches a broken count.
+        (total > 0, "no tracked assets at all", f"tracked assets = {total}"),
+        (isaac > 0, "no vendored Isaac assets", f"assets/isaac = {isaac}"),
+        (bucket > 0, "no vendored bucket assets", f"assets/bucket = {bucket}"),
         (len(present_tests) == len(TEST_FILES),
          f"only {len(present_tests)}/{len(TEST_FILES)} test suites exist"
          f" (missing: {', '.join(n for n in TEST_FILES if n not in per_file)})",

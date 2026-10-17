@@ -201,6 +201,11 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
 启动前 `export BOYUE_API_KEY='...'`，`run_all_models.sh` 和 `tools/check_credit.py` 都从环境里取。
 另外要用 `BAO_DISABLE_PROXY=1`。
 
+**地址也必须由环境变量提供：`export BOYUE_BASE_URL='http://35.220.164.252:3888/v1'`。**
+代码里已**没有**硬编码默认地址（2026-10-17 移除）：原来的默认值是一个明文 `http://` 的公网地址，
+只要设了 `BOYUE_API_KEY` 却没设 `BOYUE_BASE_URL`，每个请求就会把 key 明文发到公网上。现在缺地址会
+直接报错退出，而不是静默使用那个默认值。
+
 > **事故记录（2026-10-08）**：这一节原来把真实的 key 明文写在文件里，而 `MANUAL.md` 被提交并推到了
 > 公开仓库 `github.com/YourClassmateJiangYouning/EmbodiedBAO-AS-`。此后账户额度从正常一路掉到
 > `$0.0025`（10-07 21:13 首次 403 quota），22:06 起 key 变成 401 Invalid token。

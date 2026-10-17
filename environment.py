@@ -32,7 +32,7 @@ from __future__ import annotations
 import math
 import os
 from dataclasses import dataclass
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 
@@ -148,6 +148,27 @@ GROUND_THICKNESS = 0.02
 # the room and colouring the walls gives the opening something to reveal.
 ROOM_WALL_HEIGHT = 3.0
 ROOM_WALL_THICKNESS = 0.02
+# THE INTERIOR LIGHT POSITIONS ARE DATA, NOT A LITERAL INSIDE A METHOD.
+#
+# _create_lights builds EIGHT emitters along the 16 m, 2 m apart, and its own docstring says so. The
+# test that guards them (test_lights_are_inside_the_enclosed_room) used FOUR hard-coded positions at
+# x = 2, 6, 10, 14 -- different from the eight the code actually places, at x = 1.5, 3.5 ... 15.0. It
+# was therefore checking its own literals and passing whatever the lights did, which is the one thing a
+# regression guard must not do.
+#
+# Both sides now read these tuples, so they cannot disagree. Height is separate because the test
+# compares it against ROOM_WALL_HEIGHT and the placements do not vary it.
+LIGHT_HEIGHT_Y = 2.6
+LIGHT_POSITIONS_XZ = (
+    (1.5, 0.0),
+    (3.5, 0.0),
+    (5.5, 0.0),
+    (7.5, 0.0),
+    (9.5, 0.0),
+    (11.5, 0.0),
+    (13.5, 0.0),
+    (15.0, 0.0),
+)
 # Side and near walls: light grey.
 ROOM_SIDE_WALL_COLOR = [0.72, 0.73, 0.75]
 # The far wall -- seen THROUGH the channel -- is green, so the destination
@@ -1331,6 +1352,27 @@ class BAOEnv:
             pass
         self._remove_wall()
         self._create_wall()
+        # RE-BIND THE SCENE'S WALL MATERIALS AFTER THE REBUILD.
+        #
+        # _remove_wall/_create_wall destroy the wall prims and build new ones, and the scene's panel
+        # materials were bound to the OLD prims by _apply_scene in __init__ -- which runs exactly once.
+        # So every Level after the first rendered a correctly-sized wall in its DEFAULT colour: the
+        # scene's pavement, brick or panelling vanished at Level 1 and returned only on the next
+        # process.  That is a visual variable that changes with the independent variable, which is the
+        # one thing a stimulus must not do.
+        #
+        # Materials only: the marker and the dressing are not touched by a wall rebuild, and re-running
+        # place_dressing here would move every prop on every Level change.
+        if self.scene_name and self.scene_report is not None:
+            try:
+                self._apply_scene(self.scene_name, slot=self._current_marker_slot or 1,
+                                  parts_override=("materials",))
+            except Exception as exc:  # noqa: BLE001 - a repaint failure must not stop a sweep
+                print(
+                    f"[BAOEnv] WARNING: could not re-bind the scene materials after rebuilding the "
+                    f"wall for channel width {self._channel_width} m ({type(exc).__name__}: {exc}). "
+                    "This Level will render the wall in its default colour."
+                )
         return self._channel_width
 
     def get_channel_width(self) -> float:
@@ -1478,15 +1520,12 @@ class BAOEnv:
         radius = float(self.task_dict.get("light_radius", 1.0))
         dome_intensity = float(self.task_dict.get("dome_intensity", 300.0))
 
+        # Built from the module-level constants so the test and this method read the same numbers.
+        # See LIGHT_POSITIONS_XZ for what went wrong when each kept its own copy.
         positions = [
-            ("/World/Light_01", np.array([1.5, 2.6, 0.0])),
-            ("/World/Light_02", np.array([3.5, 2.6, 0.0])),
-            ("/World/Light_03", np.array([5.5, 2.6, 0.0])),
-            ("/World/Light_04", np.array([7.5, 2.6, 0.0])),
-            ("/World/Light_05", np.array([9.5, 2.6, 0.0])),
-            ("/World/Light_06", np.array([11.5, 2.6, 0.0])),
-            ("/World/Light_07", np.array([13.5, 2.6, 0.0])),
-            ("/World/Light_08", np.array([15.0, 2.6, 0.0])),
+            (f"/World/Light_{index + 1:02d}",
+             np.array([x, LIGHT_HEIGHT_Y, z]))
+            for index, (x, z) in enumerate(LIGHT_POSITIONS_XZ)
         ]
         for path, position in positions:
             light = UsdLux.SphereLight.Define(self.stage, path)
@@ -2281,7 +2320,9 @@ class BAOEnv:
         """
         return self.reset_scene()
 
-    def _apply_scene(self, scene: str, slot: int) -> None:
+    def _apply_scene(
+        self, scene: str, slot: int, parts_override: Optional[Sequence[str]] = None
+    ) -> None:
         """Materials, marker and dressing for one scene, and keep the report.
 
         Two failure modes, deliberately treated differently.
@@ -2298,7 +2339,14 @@ class BAOEnv:
         import scene_builder
 
         surfaces = scene_builder.discover_surfaces(self.stage)
-        parts = tuple(self.task_dict.get("scene_parts") or ("materials", "marker", "dressing"))
+        # parts_override exists so a caller can repaint ONLY the materials. set_channel_width needs
+        # exactly that: it rebuilds the wall, so the scene's wall material has to be bound again, but
+        # re-running the marker and the dressing would move every prop on every Level change.
+        parts = (
+            tuple(parts_override)
+            if parts_override is not None
+            else tuple(self.task_dict.get("scene_parts") or ("materials", "marker", "dressing"))
+        )
         self.scene_report = scene_builder.apply_scene(
             self.stage, scene, slot, surfaces, parts=parts,
             use_mdl=bool(self.task_dict.get("use_mdl", False)))
