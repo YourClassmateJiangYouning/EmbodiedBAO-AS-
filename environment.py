@@ -943,6 +943,17 @@ class BAOEnv:
         # move together.  See ROBOT_START_POS / MOVE_STEP and the --start_x /
         # --move_step CLI flags.
         start_x = float(self.task_dict.get("start_x", ROBOT_START_POS[0]))
+        # A NON-FINITE START IS REJECTED HERE, NOT JUST IN main().  main.py validates --start_x, but
+        # task_dict can also come from --env_config, and json.loads accepts NaN and Infinity -- so a
+        # config file bypassed the CLI check entirely. The consequence is not a crash: NaN makes every
+        # `<` in the SAT test false, so the gate returns a concrete panel collision
+        # ([7.99, 0.9, -0.57]) and the episode freezes at NaN while reporting that it hit the right
+        # wall on every step. Silently fabricated data is worse than a refusal.
+        if not math.isfinite(start_x) or not (0.0 <= start_x < WALL_X):
+            raise ValueError(
+                f"start_x must be finite and in [0, {WALL_X}), got {start_x!r}. "
+                "Inside the approach, short of the wall, and a real number."
+            )
         self._start_pos = np.array(
             [start_x, ROBOT_START_POS[1], ROBOT_START_POS[2]], dtype=float
         )

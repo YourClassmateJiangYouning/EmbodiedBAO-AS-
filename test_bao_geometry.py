@@ -2724,6 +2724,46 @@ def test_no_viewport_camera_in_diagnostics() -> None:
     print("[ok] capture_views moves the sensor it reads (no viewport confusion)")
 
 
+def test_a_non_finite_start_x_cannot_reach_the_environment() -> None:
+    """A NaN start must be refused, not silently frozen into every collision result.
+
+    main.py validates --start_x, but task_dict also comes from --env_config and json.loads accepts NaN
+    and Infinity, so a config file bypassed the CLI check. The consequence is not a crash: NaN makes
+    every `<` in the SAT test false, so the gate returns a concrete panel collision and the episode sits
+    at NaN while reporting that it hit the right wall on every step. Fabricated data is worse than a
+    refusal.
+
+    Asserted at the source, because constructing BAOEnv needs Isaac Sim. What is checked is that the
+    constructor refuses a start that is not finite and inside [0, WALL_X).
+    """
+    import inspect
+
+    import environment
+
+    source = inspect.getsource(environment.BAOEnv.__init__)
+    check(
+        "math.isfinite(start_x)" in source,
+        "BAOEnv.__init__ does not check that start_x is finite, so --env_config can inject NaN",
+    )
+    check(
+        "0.0 <= start_x < WALL_X" in source,
+        "BAOEnv.__init__ does not keep start_x inside the approach, so a config can start the robot "
+        "past the wall",
+    )
+    # And the arithmetic the check relies on: NaN fails both comparisons, which is why the check works.
+    nan = float("nan")
+    check(
+        not (math.isfinite(nan) and 0.0 <= nan < environment.WALL_X),
+        "the start_x guard would accept NaN, so the guard is written wrongly",
+    )
+    for good in (0.0, 0.5, environment.WALL_X - 1e-9):
+        check(
+            math.isfinite(good) and 0.0 <= good < environment.WALL_X,
+            f"the start_x guard rejects a legitimate start of {good}",
+        )
+    print("[ok] a non-finite or out-of-range start_x cannot reach the environment")
+
+
 def main() -> int:
     tests = [
         test_channel_ladder,
@@ -2759,6 +2799,7 @@ def main() -> int:
         test_default_start_is_usable,
         test_start_distance_reachable_in_budget,
         test_robot_has_room_to_rotate_before_the_wall,
+        test_a_non_finite_start_x_cannot_reach_the_environment,
         test_channel_edges_do_not_narrow_the_opening,
         test_box_axis_mapping_is_correct,
         test_ground_grid_exists,

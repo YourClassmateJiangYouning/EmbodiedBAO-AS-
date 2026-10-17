@@ -82,7 +82,7 @@ cd ~/EmbodiedBAO-AS-          # 远程的工作目录
 git pull --ff-only origin master
 git log --oneline -3          # 确认 HEAD 至少是 adadf5b
 
-# ① 全套离线检查必须 194 项全过、0 失败
+# ① 全套离线检查必须 195 项全过、0 失败
 for f in test_bao_*.py; do python $f 2>/dev/null | tail -1; done
 
 # ② 陈设代码的语义审核（必须 "no problems found"）
@@ -107,7 +107,7 @@ ls assets/bucket | head -3         # 必须非空
 
 **任何一步失败，先修它，不要往下走。** 这一轮最大的时间浪费就是"带着已知失败继续往前"。
 
-【依据】`test_bao_scenes.py` 等 **9** 个测试文件，共 **194** 项；
+【依据】`test_bao_scenes.py` 等 **9** 个测试文件，共 **195** 项；
 `tools/audit_dressing.py`（11 条语义规则）；`tools/prove_audit_fails.py`（向源码植入 4 个真实故障
 并验证审核会失败）。
 
@@ -403,7 +403,7 @@ git rev-parse master && git ls-remote origin master   # 两个哈希必须相同
 | `capture_scenes.py` | 预览与三个文本诊断：`--dressing_report` / `--stage_tree`；code stamp | 诊断**别加管道** |
 | `tools/audit_dressing.py` | **11 条语义规则**（框架、可达性、结构、拟合、默认值、陈旧注释） | 新增检查要加进 `prove_audit_fails.py` |
 | `tools/prove_audit_fails.py` | 向源码植入 4 个真实故障并验证审核会失败 | **证明检查有效性的唯一手段** |
-| `test_bao_scenes.py` 等 **9** 个 | **194 项**离线检查 | 提交前必须全过 |
+| `test_bao_scenes.py` 等 **9** 个 | **195 项**离线检查 | 提交前必须全过 |
 | `MANUAL.md` | 交接手册（含更早的错误目录） | 场景表格由测试强制与代码一致 |
 
 ---
