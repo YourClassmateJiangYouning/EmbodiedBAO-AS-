@@ -303,6 +303,26 @@ def _env_passed(env: Any) -> bool:
     return False
 
 
+def _env_scene(env: Any) -> Optional[str]:
+    """The Stage 1 scene this environment was built with, or None for the baseline.
+
+    NOTHING RECORDED THIS. `--scene stage1.1` decided which five markers an episode used and was
+    appended to the run tag, but the per-episode record carried no scene at all, so a reader of
+    results/ could only infer the scene from the directory name -- and any tool that pooled several
+    tags, or a run whose tag was renamed, lost the association entirely. The marker slot is meaningless
+    without it: slot 3 of stage1.1 and slot 3 of stage1.2 are different conditions.
+    """
+    name = getattr(env, "scene_name", None)
+    if name:
+        return str(name)
+    task = getattr(env, "task_dict", None)
+    if isinstance(task, dict):
+        scene = task.get("scene")
+        if scene:
+            return str(scene)
+    return None
+
+
 def _env_marker_slot(env: Any) -> Optional[int]:
     """The marker slot the environment actually used for the current episode.
 
@@ -1058,6 +1078,7 @@ class BAOExperimentRunner:
             # 1.0442 m below the floor.  Both are recorded now; test_bao_integration's record
             # contract names them so they cannot quietly stop being recorded (this comment used to
             # claim test_bao_geometry did, and nothing did), and main.py's CSV carries both columns.
+            "scene": _env_scene(self.env),
             "marker_slot": _env_marker_slot(self.env),
             "robot_ground_offset": _env_ground_offset(self.env),
             "passage_rotation_deg": (

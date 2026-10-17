@@ -359,6 +359,11 @@ EPISODE_FIELDS = {
     # Recorded so the marker slot and the robot ground offset are auditable from
     # results/.  They were written but asserted by no test, and the comment claiming
     # otherwise pointed at test_bao_geometry, which never mentioned them.
+    #
+    # scene belongs with them: a marker slot is only meaningful together with the scene it belongs to,
+    # because slot 3 of stage1.1 and slot 3 of stage1.2 are different conditions. The record carried
+    # only the slot, so the scene was recoverable from the tag directory and nowhere else.
+    "scene",
     "marker_slot",
     "robot_ground_offset",
     "total_rotation",

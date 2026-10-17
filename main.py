@@ -701,6 +701,7 @@ def save_episodes_csv(
         # robot's z.  They were written to the per-episode JSON but never named here,
         # so the flat CSV -- which is what the tables are read from -- silently
         # dropped them.
+        "scene",
         "marker_slot",
         "robot_ground_offset",
         "passage_rotation_deg",
