@@ -207,16 +207,16 @@ ACTION_TEMPLATES: Dict[str, str] = {
         "rotate your torso 15 degrees to the left. This does NOT change your "
         "walking direction, so forward still takes you toward the red marker, and "
         "it does NOT change what you can see: your eyes keep looking straight "
-        "ahead along your walking direction. It changes how wide your body is "
-        "across the opening. Rotating needs room, so you cannot turn once your "
+        "ahead along your walking direction. It changes how wide your body is. "
+        "Rotating needs room, so you cannot turn once your "
         "shoulders are inside the opening"
     ),
     "turn_right": (
         "rotate your torso 15 degrees to the right. This does NOT change your "
         "walking direction, so forward still takes you toward the red marker, and "
         "it does NOT change what you can see: your eyes keep looking straight "
-        "ahead along your walking direction. It changes how wide your body is "
-        "across the opening. Rotating needs room, so you cannot turn once your "
+        "ahead along your walking direction. It changes how wide your body is. "
+        "Rotating needs room, so you cannot turn once your "
         "shoulders are inside the opening"
     ),
     "look_left": (
@@ -538,8 +538,14 @@ def build_prompt(
     # this only puts them in front of the model.
     camera_yaw = state.get("camera_yaw")
     if camera_yaw is not None:
+        # "SIDEWAYS" WAS A GEOMETRY-TOKEN LEAK.  The word is on the leak test's banned list, and the
+        # test only passed because its sample state omitted camera_yaw entirely -- so this line was
+        # never scanned.  As soon as the test's state became the real one, the scan caught it: telling
+        # the model that its head can be turned "sideways" hints that the passage may be awkward, which
+        # is the affordance the experiment exists to measure.  Neutral wording carries the same number
+        # without the hint.
         lines.append(
-            "- head camera sideways offset from straight ahead (degrees): "
+            "- head camera yaw offset from straight ahead (degrees): "
             f"{float(camera_yaw):.1f} (0 = looking straight ahead down your "
             "walking direction; NEGATIVE is toward your left and POSITIVE toward "
             "your right -- a look_left reports a negative number -- and the glance "
