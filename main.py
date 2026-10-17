@@ -122,6 +122,53 @@ def _scene_choices() -> list:
         return []
 
 
+def native_image_size() -> int:
+    """The camera's native frame size, used when --image_size is not given."""
+    return 1024
+
+
+def _strip_image_size_suffix(base: str) -> str:
+    """Remove a trailing ``-img<N>`` or ``-imgsize-unknown`` from a tag.
+
+    By PATTERN, not by the current value: feeding a 512 tag back in a native run
+    must resolve to the native tag, not to a double-suffixed one, and
+    ``effective_tag`` must stay idempotent whichever image size is configured.
+    A model whose name happens to end in ``-img<digits>`` would lose it here; no
+    such model exists and the alternative (matching only the current value) breaks
+    idempotency, which is the property the sweeps depend on.
+    """
+    if base.endswith("-imgsize-unknown"):
+        return base[: -len("-imgsize-unknown")]
+    marker = base.rfind("-img")
+    if marker > 0:
+        tail = base[marker + len("-img"):]
+        if tail.isdigit():
+            return base[:marker]
+    return base
+
+
+def image_size_suffix() -> str:
+    """A tag suffix for a non-native ``--image_size``, else "".
+
+    ``--image_size`` only sets ``BAO_IMAGE_SIZE``, which downscales the frame
+    before it is sent, so it changes what the model sees -- README calls a smaller
+    value "a different measurement".  It was not part of the tag, so a 512 px run
+    and a 1024 px run shared a results directory and a resume checkpoint and a 512
+    episode counted as done for the 1024 run.  Empty for the native size, so every
+    tag composed before this existed is unchanged.
+    """
+    raw = os.environ.get("BAO_IMAGE_SIZE", "").strip()
+    if not raw:
+        return ""
+    try:
+        size = int(float(raw))
+    except ValueError:
+        return "-imgsize-unknown"
+    if size == native_image_size():
+        return ""
+    return f"-img{size}"
+
+
 def effective_tag(model: str, tag: str = "", scene: str = "") -> str:
     """Results-directory tag for a run, including the protocol version and the scene.
 
@@ -134,17 +181,20 @@ def effective_tag(model: str, tag: str = "", scene: str = "") -> str:
     sweep's resume checkpoint.
 
     ``scene`` is appended so that two Stage 1 scenes cannot write into one directory and
-    silently merge.  It is empty by default, so every tag composed before the scenes existed
-    still resolves to exactly the same directory and the committed episodes stay findable.
+    silently merge.  ``--image_size`` is appended when it is not the native size, for
+    the same reason (see :func:`image_size_suffix`).  Both are empty by default, so
+    every tag composed before they existed still resolves to exactly the same
+    directory and the committed episodes stay findable.
     """
     from protocol import PROTOCOL_TAG
 
     base = persistence.sanitize_tag(tag or model, "untagged")
     suffix = request_params_suffix(model)
     scene_suffix = f"-{scene}" if scene else ""
+    size_suffix = image_size_suffix()
     # Strip every piece this function appends, repeatedly and in any order, then rebuild in one
-    # canonical order (core, protocol, scene, params).  Stripping in a fixed order was not
-    # enough: with a request-parameter suffix present, the tag arrives as
+    # canonical order (core, protocol, scene, params, image size).  Stripping in a fixed order was
+    # not enough: with a request-parameter suffix present, the tag arrives as
     # "<model>-v7-state-axes-stage1.1-effortnone", whose last component is the parameter suffix,
     # so the scene was not stripped, the protocol tag was then no longer at the end and got
     # appended a second time, and the directory became
@@ -158,7 +208,11 @@ def effective_tag(model: str, tag: str = "", scene: str = "") -> str:
             if base.endswith(piece) and len(base) > len(piece):
                 base = base[: -len(piece)]
                 changed = True
-    return f"{base}-{PROTOCOL_TAG}{scene_suffix}{suffix}"
+        stripped = _strip_image_size_suffix(base)
+        if stripped != base:
+            base = stripped
+            changed = True
+    return f"{base}-{PROTOCOL_TAG}{scene_suffix}{suffix}{size_suffix}"
 
 # ---------------------------------------------------------------------------
 # Output layout
@@ -507,12 +561,26 @@ def save_episodes_csv(
         "a_s_ratio",
         "passed",
         "passed_sideways",
+        # The two fields experiments.py added so two defects became auditable: which
+        # of the scene's five markers the episode used, and the lift written into the
+        # robot's z.  They were written to the per-episode JSON but never named here,
+        # so the flat CSV -- which is what the tables are read from -- silently
+        # dropped them.
+        "marker_slot",
+        "robot_ground_offset",
         "passage_rotation_deg",
         "max_rotation_deg",
         "total_rotation",
         "first_turn_step",
         "total_steps",
         "action_sequence",
+        # The collision counters.  NEITHER reached the CSV before: `wall_collision_count` was written
+        # into the per-episode JSON but never named here, so the flat CSV -- which is what the tables
+        # are built from -- had no collision column at all.  `turn_blocked_count` is new, and it is
+        # separate on purpose: a turn rejected by the collision gate is not a body hitting a wall,
+        # and counting them together made the single number uninterpretable.
+        "wall_collision_count",
+        "turn_blocked_count",
     )
     step_fields = (
         "step",

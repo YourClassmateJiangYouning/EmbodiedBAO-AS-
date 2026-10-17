@@ -35,6 +35,7 @@ import numpy as np
 
 from environment import (
     CAMERA_PITCH_STEP_DEG,
+    CAMERA_TURN_STEP_DEG,
     LEVEL_CHANNEL_WIDTHS,
     MOVE_STEP,
     ROBOT_START_POS,
@@ -59,6 +60,15 @@ ROBOT_START = ROBOT_START_POS.copy()
 
 class Failure(AssertionError):
     pass
+
+
+class Skipped(Exception):
+    """A test that could not run on this interpreter (missing Pillow, ruff, ...).
+
+    Raised instead of returning: a test that returns counts as passed by the
+    runner, so a skip and a pass were indistinguishable in the "all N passed"
+    line.  ``main`` catches this separately and reports it as skipped.
+    """
 
 
 def check(condition: bool, message: str) -> None:
@@ -195,10 +205,20 @@ class FakeBAOEnv:
             # Assignment, not accumulation: the real environment returns the gaze
             # to straight ahead instead of letting two glances add up to 60, and
             # look_down pitches the head further down on its own axis.
+            #
+            # The SIGNS come from the real environment (_apply_action): look_left is
+            # -CAMERA_TURN_STEP_DEG, because the reported camera_yaw is the heading
+            # frame (negative = the walker's left).  This double used to hardcode
+            # the pre-2026-10-16 opposite, which let the prompt legend and the fake
+            # agree with each other and disagree with the simulator.
             if action == "look_down":
                 self._camera_pitch = CAMERA_PITCH_STEP_DEG
             else:
-                self._camera_yaw = 30.0 if action == "look_left" else -30.0
+                self._camera_yaw = (
+                    -CAMERA_TURN_STEP_DEG
+                    if action == "look_left"
+                    else CAMERA_TURN_STEP_DEG
+                )
         else:
             legal = False
             feedback = f"unknown action: {action}"
@@ -248,8 +268,8 @@ class ScriptedAgent:
             #
             # The agent never needs to rotate back: the channel is an opening
             # through the wall, so once the body is past it the walk continues to
-            # x >= 11.0.  Rotating back mid-channel is what the gate correctly
-            # forbids, because the shoulders would sweep the panel.
+            # the success plane (x = 8.75).  Rotating back mid-channel is what the
+            # gate correctly forbids, because the shoulders would sweep the panel.
             if self.phase == 0:
                 if yaw >= 90.0 - 1e-6:
                     self.phase = 1
@@ -336,6 +356,11 @@ EPISODE_FIELDS = {
     "a_s_ratio",
     "passed",
     "passed_sideways",
+    # Recorded so the marker slot and the robot ground offset are auditable from
+    # results/.  They were written but asserted by no test, and the comment claiming
+    # otherwise pointed at test_bao_geometry, which never mentioned them.
+    "marker_slot",
+    "robot_ground_offset",
     "total_rotation",
     "first_turn_step",
     "total_steps",
@@ -374,6 +399,18 @@ def test_episode_record_contract() -> None:
             for episode in episodes:
                 missing = EPISODE_FIELDS - set(episode)
                 check(not missing, f"episode record missing fields: {sorted(missing)}")
+                # Present is not enough: the two auditable fields must carry the
+                # value the environment actually used, or a later reader cannot tell
+                # which marker an episode saw or whether the robot was on the floor.
+                check(
+                    int(episode["marker_slot"]) in (1, 2, 3, 4, 5),
+                    f"marker_slot {episode['marker_slot']!r} is not a recorded slot",
+                )
+                check(
+                    float(episode["robot_ground_offset"]) > 0.0,
+                    "robot_ground_offset was recorded as "
+                    f"{episode['robot_ground_offset']!r}, not the lift in use",
+                )
                 check(
                     episode["channel_width"] == LEVEL_CHANNEL_WIDTHS[0],
                     f"level 0 channel width is {episode['channel_width']}",
@@ -594,7 +631,8 @@ def test_csv_export_columns() -> None:
             )
             required = {
                 "episode_id", "level", "channel_width", "a_s_ratio", "passed",
-                "passed_sideways", "total_rotation", "first_turn_step",
+                "passed_sideways", "marker_slot", "robot_ground_offset",
+                "total_rotation", "first_turn_step",
                 "total_steps", "action_sequence", "step", "action",
                 "torso_rotation", "position_x", "position_z", "collision",
                 "step_success",
@@ -602,6 +640,14 @@ def test_csv_export_columns() -> None:
             check(
                 required <= set(rows[0]),
                 f"CSV missing columns: {sorted(required - set(rows[0]))}",
+            )
+            # And the two auditable fields must carry their values, not an empty
+            # column produced by a name that matches nothing.
+            check(
+                rows[0]["marker_slot"] not in ("", "None")
+                and rows[0]["robot_ground_offset"] not in ("", "None"),
+                "marker_slot / robot_ground_offset exported as empty columns: "
+                f"{rows[0]['marker_slot']!r}, {rows[0]['robot_ground_offset']!r}",
             )
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
@@ -632,35 +678,43 @@ def test_analysis_recovers_threshold() -> None:
             out_dir = os.path.join(results_root, f"level{level}", "synthetic")
             os.makedirs(out_dir, exist_ok=True)
             sideways = level in sideways_levels
-            episode = {
-                "episode_id": 0,
-                "level": level,
-                "model_name": "synthetic",
-                "channel_width": width,
-                "a_s_ratio": a_s_ratio(width),
-                "passed": True,
-                "passed_sideways": sideways,
-                "total_rotation": 90.0 if sideways else 0.0,
-                "first_turn_step": 0 if sideways else None,
-                "total_steps": 21 if sideways else 20,
-                "action_sequence": "turn_left" if sideways else "forward",
-                "end_reason": "success",
-                "wall_collision_count": 0,
-                "invalid_response_count": 0,
-                "steps": [
-                    {
-                        "step": 0,
-                        "action": "turn_left" if sideways else "forward",
-                        "torso_rotation": 90.0 if sideways else 0.0,
-                        "position_x": 1.55,
-                        "position_z": 0.0,
-                        "collision": False,
-                        "step_success": True,
-                    }
-                ],
-            }
-            with open(os.path.join(out_dir, "episode_000.json"), "w", encoding="utf-8") as fh:
-                json.dump(episode, fh)
+            # Three episodes per Level: the threshold rule now needs at least two
+            # events at a Level to call it above the wider-Level background, so a
+            # one-episode-per-Level fixture could never produce a threshold.
+            for episode_id in range(3):
+                episode = {
+                    "episode_id": episode_id,
+                    "level": level,
+                    "model_name": "synthetic",
+                    "channel_width": width,
+                    "a_s_ratio": a_s_ratio(width),
+                    "passed": True,
+                    "passed_sideways": sideways,
+                    "total_rotation": 90.0 if sideways else 0.0,
+                    "first_turn_step": 0 if sideways else None,
+                    "total_steps": 21 if sideways else 20,
+                    "action_sequence": "turn_left" if sideways else "forward",
+                    "end_reason": "success",
+                    "wall_collision_count": 0,
+                    "invalid_response_count": 0,
+                    "steps": [
+                        {
+                            "step": 0,
+                            "action": "turn_left" if sideways else "forward",
+                            "torso_rotation": 90.0 if sideways else 0.0,
+                            "position_x": 1.55,
+                            "position_z": 0.0,
+                            "collision": False,
+                            "step_success": True,
+                        }
+                    ],
+                }
+                with open(
+                    os.path.join(out_dir, f"episode_{episode_id:03d}.json"),
+                    "w",
+                    encoding="utf-8",
+                ) as fh:
+                    json.dump(episode, fh)
 
         report = analysis.analyze_model(results_root, "synthetic", list(LEVEL_CHANNEL_WIDTHS))
         threshold = report["sideways_threshold"]
@@ -690,6 +744,144 @@ def test_analysis_recovers_threshold() -> None:
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
     print("[ok] analysis recovers the A/S threshold and classifies it")
+
+
+def test_analysis_excludes_episodes_with_no_valid_call() -> None:
+    """An episode whose every call failed must not be scored as a model failure.
+
+    It is recorded like a failure (``passed=False``, ``end_reason=max_steps``), so
+    a pass-rate denominator that keeps it turns a gateway outage into a capability
+    number.  215 of the 3465 committed episodes are like this and every one is an
+    HTTP error in the agent log.  They must be counted and reported separately.
+    """
+    tmp = make_temp_dir()
+    try:
+        root = os.path.join(tmp, "results")
+        out_dir = os.path.join(root, "level0", "outage-model", "run-a")
+        os.makedirs(out_dir, exist_ok=True)
+
+        def write(episode_id: int, passed: bool, invalid: int) -> None:
+            with open(
+                os.path.join(out_dir, f"episode_{episode_id:03d}.json"),
+                "w",
+                encoding="utf-8",
+            ) as handle:
+                json.dump(
+                    {
+                        "episode_id": episode_id,
+                        "level": 0,
+                        "channel_width": 0.90,
+                        "a_s_ratio": 1.58,
+                        "passed": passed,
+                        "passed_sideways": False,
+                        "total_steps": 5,
+                        "invalid_response_count": invalid,
+                        "end_reason": "success" if passed else "max_steps",
+                        "steps": [{"step": 0, "action": "forward"}],
+                    },
+                    handle,
+                )
+
+        write(0, True, 0)      # a real measurement
+        write(1, False, 5)     # every one of its calls failed
+        write(2, False, 5)     # and another
+
+        report = analysis.analyze_model(root, "outage-model", [0], tag="run-a")
+        summary = report["levels"][0]
+        check(
+            summary["episodes"] == 1,
+            f"the failed-call episodes were scored: episodes={summary['episodes']}",
+        )
+        check(
+            summary["excluded_no_valid_call"] == 2,
+            "the excluded count is wrong: "
+            f"{summary.get('excluded_no_valid_call')}",
+        )
+        check(
+            abs(summary["pass_rate"] - 1.0) < 1e-12,
+            f"pass_rate {summary['pass_rate']} counted an infrastructure failure",
+        )
+        check(
+            report["overall"]["excluded_no_valid_call"] == 2
+            and report["overall"]["episodes"] == 1,
+            f"overall did not exclude them: {report['overall']}",
+        )
+
+        # A tag whose EVERY episode failed leaves the Level with no metric fields
+        # at all (episodes=0 plus the excluded count).  The table builders must skip
+        # it rather than index it: before the guard, analysis.py crashed with
+        # KeyError: 'a_s_ratio' on the real corpus (kimi, all 85 episodes failed).
+        all_failed_dir = os.path.join(root, "level0", "outage-model", "run-b")
+        os.makedirs(all_failed_dir, exist_ok=True)
+        out_dir = all_failed_dir
+        write(0, False, 5)
+        write(1, False, 5)
+        outage = analysis.analyze_model(root, "outage-model", [0], tag="run-b")
+        check(
+            outage["levels"][0]["episodes"] == 0,
+            f"an all-failed tag reported episodes="
+            f"{outage['levels'][0].get('episodes')}",
+        )
+        markdown = analysis.format_markdown_table([outage], [0])
+        rows = analysis.table_rows([outage], [0])
+        check(
+            isinstance(markdown, str) and isinstance(rows, list),
+            "the table builders did not survive an all-failed Level",
+        )
+        check(
+            not any(row.get("level") == 0 for row in rows),
+            "an all-failed Level produced a per-Level table row",
+        )
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+    print("[ok] episodes with no successful call are excluded from the rates")
+
+
+def test_threshold_ignores_a_single_wide_level_event() -> None:
+    """A threshold must not be set by one chance pass at a wide opening.
+
+    The old rule was "the widest Level with ANY sideways pass", and at the measured
+    ~5.7% per-episode wide-Level sideways rate one such pass appears somewhere in
+    the wide Levels for ~96% of models -- it scored gemini-2.5-pro at A/S 2.0.  The
+    rule now needs at least two events and a one-sided binomial p < 0.05 against the
+    pooled rate at STRICTLY WIDER openings (the candidate excluded from its own null).
+    """
+
+    def summary(a_s: float, n: int, sideways: int, turned: int) -> Dict[str, Any]:
+        return {
+            "a_s_ratio": a_s,
+            "episodes": n,
+            "passed_sideways_count": sideways,
+            "turned_count": turned,
+            "turned_rate": (turned / n) if n else 0.0,
+        }
+
+    levels = {
+        0: summary(2.0, 5, 1, 1),   # one chance sideways pass / turn, widest opening
+        1: summary(1.9, 5, 0, 0),
+        2: summary(1.3, 5, 0, 0),
+        5: summary(0.9, 5, 3, 5),   # a real effect at a narrow width
+    }
+    check(
+        analysis.sideways_threshold(levels) == 0.9,
+        "a single wide-Level sideways pass still moved the threshold: "
+        f"{analysis.sideways_threshold(levels)}",
+    )
+    check(
+        analysis.turned_threshold(levels) == 0.9,
+        "a single wide-Level turn still moved the threshold: "
+        f"{analysis.turned_threshold(levels)}",
+    )
+
+    # Four sideways passes at A/S 1.3 against the wider background IS a threshold,
+    # and the wide single-pass Level is still excluded.
+    levels[2]["passed_sideways_count"] = 4
+    check(
+        analysis.sideways_threshold(levels) == 1.3,
+        f"a real effect at A/S 1.3 was not detected: "
+        f"{analysis.sideways_threshold(levels)}",
+    )
+    print("[ok] the threshold rule ignores single wide-Level chance events")
 
 
 def test_checkpoint_resume() -> None:
@@ -906,12 +1098,12 @@ def test_analysis_discovers_tagged_runs() -> None:
 def test_analysis_prefers_the_current_protocol_tag() -> None:
     """Analysis must not summarise the previous protocol by accident.
 
-    ``analyze_model`` with no ``--tag`` used to pick the most recently modified
-    tag directory.  Now that the tag carries the protocol version, an old
+    ``analyze_model`` with no ``--tag`` used to pick the single most recently
+    modified tag directory.  Now that the tag carries the protocol version, an old
     directory can still be the newest one -- a re-run that stopped early, or a
-    stray touch -- and the report would then describe an experiment with
-    different action semantics under the current protocol's name.  A directory
-    tagged with the current protocol must win regardless of mtime.
+    stray touch -- and the report would then describe an experiment with different
+    action semantics under the current protocol's name.  Every current-protocol tag
+    must be pooled and an old-protocol one excluded altogether, whatever the mtimes.
     """
     from protocol import PROTOCOL_TAG
 
@@ -978,9 +1170,20 @@ def test_analysis_prefers_the_current_protocol_tag() -> None:
         os.utime(old_dir, None)
         report = analysis.analyze_model(root, "m1", [0])
         check(
-            report["levels"][0]["a_s_ratio"] == 2.0,
-            "a parameter-suffixed tag directory was not recognised as the current "
-            "protocol, so analysis picked a different directory",
+            report["tags"] == [f"m1-{PROTOCOL_TAG}"],
+            "the default must report exactly ONE current-protocol tag, not pool them: the suffixed "
+            "variant is a repeat run with a request parameter, and the five markers of a Level are "
+            f"five CONDITIONS, so pooling doubles n. Got: {report['tags']}",
+        )
+        check(
+            report["levels"][0]["episodes"] == 1,
+            "the episode count must come from the single chosen tag, not from both: "
+            f"{report['levels'][0]['episodes']} episode(s), expected 1",
+        )
+        check(
+            report["levels"][0]["passed_count"] == 1,
+            "the pooled summary lost an episode: "
+            f"{report['levels'][0]['passed_count']}",
         )
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
@@ -996,9 +1199,12 @@ def test_turned_threshold_separates_decision_from_success() -> None:
     construction: it requires the episode to have passed.
     """
     summaries = {
-        0: {"a_s_ratio": 1.58, "turned_rate": 0.0, "passed_sideways_count": 0},
-        2: {"a_s_ratio": 1.30, "turned_rate": 0.5, "passed_sideways_count": 0},
-        5: {"a_s_ratio": 0.79, "turned_rate": 1.0, "passed_sideways_count": 3},
+        0: {"a_s_ratio": 1.58, "episodes": 5, "turned_count": 0,
+            "turned_rate": 0.0, "passed_sideways_count": 0},
+        2: {"a_s_ratio": 1.30, "episodes": 5, "turned_count": 3,
+            "turned_rate": 0.6, "passed_sideways_count": 0},
+        5: {"a_s_ratio": 0.79, "episodes": 5, "turned_count": 5,
+            "turned_rate": 1.0, "passed_sideways_count": 3},
     }
     check(
         analysis.sideways_threshold(summaries) == 0.79,
@@ -1223,13 +1429,16 @@ def test_full_protocol_and_analysis() -> None:
                 level: BAOExperimentRunner.summarize_level(level, eps)
                 for level, eps in results.items()
             }
-            # The sideways policy is scored sideways at every Level, so the
-            # threshold is the widest channel on the ladder.
+            # The sideways policy is scored sideways at EVERY Level, including the
+            # widest openings where no rotation is needed.  That is a flat policy,
+            # not a threshold: rotation_gradedness classifies it flat_always and the
+            # threshold is None.  The old "widest Level with any sideways pass" rule
+            # reported the widest A/S here, which is exactly the false positive the
+            # significance rule removes.
             threshold = BAOExperimentRunner.sideways_threshold(summaries)
             check(
-                threshold is not None
-                and abs(threshold - a_s_ratio(LEVEL_CHANNEL_WIDTHS[0])) < 1e-9,
-                f"runner threshold {threshold} should be the widest A/S",
+                threshold is None,
+                f"a flat-always policy reported a threshold of {threshold}",
             )
 
             # analysis.py must agree when it reads the files back off disk.
@@ -1237,14 +1446,18 @@ def test_full_protocol_and_analysis() -> None:
                 results_root, "scripted-sideways", list(LEVEL_CHANNEL_WIDTHS)
             )
             check(
-                report["sideways_threshold"] is not None
-                and abs(report["sideways_threshold"] - a_s_ratio(LEVEL_CHANNEL_WIDTHS[0]))
-                < 1e-9,
-                f"analysis threshold {report['sideways_threshold']} disagrees",
+                report["sideways_threshold"] is None,
+                f"analysis threshold {report['sideways_threshold']} disagrees with "
+                "the runner",
             )
             check(
-                report["threshold_class"] == "anticipatory",
-                f"sideways at every Level should be 'anticipatory', got "
+                report["rotation_gradedness"] == "flat_always",
+                "a policy that rotates at every width should be flat_always, got "
+                f"{report['rotation_gradedness']}",
+            )
+            check(
+                report["threshold_class"] == "no_sideways",
+                f"a flat-always policy should classify as no_sideways, got "
                 f"{report['threshold_class']}",
             )
             check(
@@ -1433,9 +1646,11 @@ def test_head_camera_offset_reaches_the_model() -> None:
 
     The environment already produced the value in get_robot_state(); the prompt
     simply never rendered it.  This pins it end to end through the runner, and
-    checks the exact 0.0 and 30.0 labels plus the absence of a 60.0 one -- an
+    checks the exact 0.0 and -30.0 labels plus the absence of a -60.0 one -- an
     earlier version matched a string the prompt no longer contains, so it passed
-    while asserting nothing.
+    while asserting nothing.  The glance is NEGATIVE for look_left: the reported
+    camera_yaw is the heading frame, in which negative is the walker's left (the
+    pre-2026-10-16 code and the fake environment both had this sign backwards).
     """
     import experiments
 
@@ -1488,7 +1703,9 @@ def test_head_camera_offset_reaches_the_model() -> None:
     # to the walking direction the label changed, the old string never appeared
     # again, and the check silently asserted nothing.
     zero_yaw = "head camera sideways offset from straight ahead (degrees): 0.0"
-    glance_yaw = "head camera sideways offset from straight ahead (degrees): 30.0"
+    # look_left reports -30, NOT +30: the sign is the heading frame (negative =
+    # the walker's left), which is what the real environment emits.
+    glance_yaw = "head camera sideways offset from straight ahead (degrees): -30.0"
     zero_pitch = "head camera extra downward pitch (degrees): 0.0"
     glance_pitch = "head camera extra downward pitch (degrees): 45.0"
     check(
@@ -1497,7 +1714,7 @@ def test_head_camera_offset_reaches_the_model() -> None:
     )
     check(
         any(glance_yaw in p for p in seen),
-        "no prompt reported the 30 degree glance after a look_left, so a look_* "
+        "no prompt reported the -30 degree glance after a look_left, so a look_* "
         "action never became visible to the agent",
     )
     check(
@@ -1507,10 +1724,10 @@ def test_head_camera_offset_reaches_the_model() -> None:
     )
     check(
         not any(
-            "head camera sideways offset from straight ahead (degrees): 60.0" in p
+            "head camera sideways offset from straight ahead (degrees): -60.0" in p
             for p in seen
         ),
-        "two look_left actions added up to 60 degrees, so the glance persists",
+        "two look_left actions added up to -60 degrees, so the glance persists",
     )
     check(
         zero_yaw in seen[-1] and zero_pitch in seen[-1],
@@ -1602,6 +1819,8 @@ def main() -> int:
         test_sideways_policy_is_scored_sideways,
         test_csv_export_columns,
         test_analysis_recovers_threshold,
+        test_analysis_excludes_episodes_with_no_valid_call,
+        test_threshold_ignores_a_single_wide_level_event,
         test_checkpoint_resume,
         test_run_tags_isolate_episode_files,
         test_passage_rotation_is_scored_at_the_wall_plane,
@@ -1618,9 +1837,13 @@ def main() -> int:
         test_cli_flags_reach_the_runner,
     ]
     failures = 0
+    skipped = []
     for test in tests:
         try:
             test()
+        except Skipped as exc:
+            skipped.append(test.__name__)
+            print(f"[skip] {test.__name__}: {exc}")
         except Failure as exc:
             failures += 1
             print(f"[FAIL] {test.__name__}: {exc}")
@@ -1628,9 +1851,19 @@ def main() -> int:
             failures += 1
             print(f"[ERROR] {test.__name__}: {type(exc).__name__}: {exc}")
     print()
+    passed = len(tests) - failures - len(skipped)
     if failures:
-        print(f"{failures}/{len(tests)} integration checks FAILED")
+        print(
+            f"{failures}/{len(tests)} integration checks FAILED "
+            f"({passed} passed, {len(skipped)} skipped)"
+        )
         return 1
+    if skipped:
+        print(
+            f"{passed}/{len(tests)} integration checks passed, "
+            f"{len(skipped)} SKIPPED (not run): {', '.join(skipped)}"
+        )
+        return 0
     print(f"all {len(tests)} integration checks passed")
     return 0
 

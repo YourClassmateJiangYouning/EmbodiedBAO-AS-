@@ -427,11 +427,31 @@ def _significant_threshold(
             )
         if background is None:
             background = PRIOR_RATE
-        if _binomial_tail(k, n, background) < THRESHOLD_ALPHA:
-            candidates.append(summary)
+        candidates.append((float(_binomial_tail(k, n, background)), summary))
     if not candidates:
         return None
-    return float(max(candidates, key=lambda s: float(s["a_s_ratio"]))["a_s_ratio"])
+    # HOLM, NOT SEVENTEEN INDEPENDENT TESTS AT alpha = 0.05.
+    #
+    # The threshold is searched for over every Level, so 17 one-sided tests at 0.05 give a family-wise
+    # chance of at least one false positive of 1 - 0.95**17 ~= 0.58 -- and the rule then reported the
+    # WIDEST significant Level, which is precisely the rung most likely to be that false positive (a
+    # wide opening where one chance sideways pass stands out against a near-zero background).  Holm
+    # controls the family-wise error rate without assuming the tests are independent, which suits a
+    # ladder whose neighbouring rungs are anything but independent.
+    #
+    # Step-down: sort the p-values ascending and require p_i <= alpha / (m - i); the first failure ends
+    # the family, because every later (larger) p-value would face a stricter threshold.
+    candidates.sort(key=lambda pair: pair[0])
+    family = len(candidates)
+    survivors = []
+    for rank, (p_value, summary) in enumerate(candidates):
+        if p_value <= THRESHOLD_ALPHA / (family - rank):
+            survivors.append(summary)
+        else:
+            break
+    if not survivors:
+        return None
+    return float(max(survivors, key=lambda s: float(s["a_s_ratio"]))["a_s_ratio"])
 
 
 def sideways_threshold(level_summaries: Dict[int, Dict[str, Any]]) -> Optional[float]:
@@ -532,6 +552,56 @@ def _current_protocol_tags(
     return sorted(tags)
 
 
+def _episode_count(results_root: str, model: str, tag: str, levels: Sequence[int]) -> int:
+    """How many episode records a tag actually holds, across the requested Levels."""
+    total = 0
+    for level in levels:
+        for path in glob.glob(
+            os.path.join(results_root, f"level{level}", model, f"*{tag}*.json")
+        ):
+            if not path.endswith("_steps.json"):
+                total += 1
+    return total
+
+
+def choose_tag(
+    results_root: str, model: str, levels: Sequence[int]
+) -> Optional[str]:
+    """The ONE tag to report for ``model``, or None when it has nothing.
+
+    POOLING EVERY MATCHING TAG DOUBLE-COUNTS.  Two tags that both carry the current protocol tag --
+    say ``<model>-v8-actions-flipped`` and ``<model>-v8-actions-flipped-stage1.1`` -- are two runs of
+    the same protocol, and adding their episodes together turns five conditions into ten while
+    presenting them as ten independent observations.  The README is explicit that the five markers are
+    five CONDITIONS rather than replicates, so inflating n is not cosmetic: every rate, and every test
+    built on it, runs on the wrong denominator.
+
+    So a model contributes ONE tag: the one holding the most episode records over the requested
+    Levels, and the most recently written directory when they tie.  A caller that genuinely wants a
+    different tag passes --tag explicitly, which analyze_model still honours.
+    """
+    tags = _current_protocol_tags(results_root, model, levels)
+    if not tags:
+        return None
+    if len(tags) == 1:
+        return tags[0]
+
+    def rank(name: str) -> Any:
+        directory = os.path.join(results_root, f"level{levels[0]}", model, name) \
+            if levels else os.path.join(results_root, model, name)
+        try:
+            mtime = os.path.getmtime(directory)
+        except OSError:
+            mtime = 0.0
+        # Most episodes wins; then the SHORTEST name, because a suffix such as "-effortnone" records
+        # a request parameter rather than a different experiment, and the plain tag is the one a
+        # reader expects to see quoted; then the newest directory.  Without the length term the choice
+        # between two equally-sized tags would come down to mtimes, which differ per checkout.
+        return (_episode_count(results_root, model, name, levels), -len(name), mtime)
+
+    return max(tags, key=rank)
+
+
 def analyze_model(
     results_root: str,
     model: str,
@@ -560,11 +630,17 @@ def analyze_model(
         if tagged_dirs:
             current = _current_protocol_tags(results_root, model, levels)
             if current:
-                selected_tags = current
+                # ONE TAG PER MODEL.  See choose_tag: adding two tags of the same protocol together
+                # presents five marker CONDITIONS as ten independent observations.
+                chosen = choose_tag(results_root, model, levels)
+                selected_tags = [chosen] if chosen else []
                 if len(current) > 1:
+                    ignored = [t for t in current if t != chosen]
                     print(
-                        f"[analysis] {model}: pooling {len(current)} current-protocol "
-                        f"tag(s): {', '.join(current)}"
+                        f"[analysis] {model}: analysing tag {chosen!r}; "
+                        f"NOT pooling {len(ignored)} other current-protocol tag(s) "
+                        f"({', '.join(ignored)}) -- they are repeat runs, not replicates. "
+                        f"Pass --tag to pick one explicitly."
                     )
                 else:
                     print(f"[analysis] {model}: analysing tag {current[0]!r}")

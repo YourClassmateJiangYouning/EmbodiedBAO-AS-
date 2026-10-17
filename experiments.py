@@ -792,6 +792,7 @@ class BAOExperimentRunner:
         steps: List[Dict[str, Any]] = []
         action_sequence: List[str] = []
         wall_collision_count = 0
+        turn_blocked_count = 0
         invalid_response_count = 0
         total_llm_time_ms = 0.0
 
@@ -879,7 +880,15 @@ class BAOExperimentRunner:
                 collision_info is not None and "panel" in collision_info
             )
             if obstacle_collision:
-                wall_collision_count += 1
+                # SPLIT BY THE ACTION, because a blocked TURN is not a body hitting a wall.  Both
+                # report a panel collision, so counting them together made the headline number
+                # unreadable: a model that rotates a lot near the opening scored "wall collisions"
+                # without ever touching the wall, and one that walked into it scored the same thing.
+                # They are two different behaviours and are now two fields.
+                if action_taken in ("turn_left", "turn_right"):
+                    turn_blocked_count += 1
+                else:
+                    wall_collision_count += 1
             if action_legal and action_taken in ("turn_left", "turn_right"):
                 total_rotation += _env_attr("TURN_STEP_DEG")
                 if first_turn_step is None:
@@ -973,6 +982,7 @@ class BAOExperimentRunner:
             "max_steps": self.max_steps,
             "end_reason": end_reason,
             "wall_collision_count": wall_collision_count,
+            "turn_blocked_count": turn_blocked_count,
             "invalid_response_count": invalid_response_count,
             "total_llm_time_ms": round(total_llm_time_ms, 3),
             "turned": bool(first_turn_step is not None),
