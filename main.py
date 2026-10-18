@@ -674,9 +674,15 @@ def save_episodes_csv(
     tell which CSV belonged to which tag.  Across an 11-model sweep that makes
     the flat tables unusable.
     """
-    safe_model = persistence.sanitize_tag(
-        model.replace("/", "-").replace("\\", "-"), "model"
-    )
+    # THE SAME SLUG THE RUNNER USES.  experiments.Runner writes episodes to
+    # model.replace("/", "-").replace("\\", "-"); this function used sanitize_tag, which rewrites MORE
+    # characters. For the current roster the two agree exactly (checked: 15 models, 0 divergences), but
+    # on a name containing any of the extra characters the checkpoint and the episodes would land in
+    # different directories. sanitize_tag is kept only as a guard for a name that would otherwise be
+    # empty or escape the results directory.
+    safe_model = model.replace("/", "-").replace("\\", "-")
+    if safe_model in ("", ".", ".."):
+        safe_model = persistence.sanitize_tag(model, "model")
     out_dir = os.path.join(results_root, safe_model)
     os.makedirs(out_dir, exist_ok=True)
     timestamp = timestamp or time.strftime("%Y%m%d-%H%M%S")
