@@ -15,9 +15,13 @@
 
 - **Stage 1（A/S 阈值）= 当前主战场**：**17 档**（A/S 2.0 → 0.4）、**5 个场景皮肤**、
   每场景 **25 个标志物**（5 场景 × 5）。规模 **15 × 17 × 5 × 5 = 6,375 集**。
-  基线场景 `stage1.1`（无材质无陈设）的全量 sweep 正在实验室机器上跑。
-  Stage 1 另有一组 **10 个单变量变体**（标记大小/形色、远墙距离、地面中线、墙高、提示词、中文），
+  当前 v8 首个模型 `Qwen/Qwen3-VL-8B-Instruct` 的 5 个场景在跑（4 路并行，stage1.5 排队）；
+  下一批 5 个模型已排队。Stage 1 另有一组 **10 个单变量变体**（标记大小/形色、远墙距离、地面中线、墙高、提示词、中文），
   见 `STAGE1_SCENE_VARIANTS.md`，**未实现**。
+- **协议口径（2026-10-18）**：唯一用于实验的数据是 **`v8-actions-flipped`**。v7 及以前的
+  `left/right/look_*` 是镜像的，碰撞脚印也随之不同，**不可与 v8 合并**；v7 归档只作历史留存。
+  `analysis.py` 默认只读 v8，没 v8 数据的模型直接跳过；要读历史必须显式 `--tag`，报告会打印
+  `protocol: v7-state-axes` 并警告不可比较。当前 v8 只覆盖/排队 **6 个模型**，剩余 9 个未排。
 - **Stage 2（记忆/笔记）**：代码与测试**已完成**，数据**零**（`results/memory/` 不存在）。
 - **Stage 3**：`STAGE23_DESIGN.md` §10 把"回穿阶段、逆序对照"等列为**明确不做**，
   所以 Stage 3 目前**只是文档里的名字，没有代码也没有计划**。**它和场景变体矩阵是两回事。**
@@ -35,9 +39,9 @@
 
 | 我要找的东西 | **正确位置** | 说明 |
 | :--- | :--- | :--- |
-| **模型的思考过程 / 原话**（`scene_description`、`reasoning`、`confidence`） | **`logs/{tag}/level{level}_episode{id:03d}_agent.txt`** | **每步的完整提示词 + 模型完整回答** ✓ 每个文件 30+ 处 `scene_description` ✓ |
-| 每回合结果（通过/转角/首次转身步/碰撞） | `results/level{N}/{model}/{tag}/episode_{id:03d}.json` | **只有行为，没有思考** |
-| 每一步行为（动作/位置/旋转/耗时） | `results/level{N}/{model}/{tag}/episode_{id:03d}_steps.json` | **只有行为，没有思考** |
+| **模型的思考过程 / 原话**（`scene_description`、`reasoning`、`confidence`） | **`results/level{N}/{model}/{tag}/episode_{id:03d}_steps.json`**（权威，逐步号）**和** `logs/{tag}/level{level}_episode{id:03d}_agent.txt`（原始 I/O） | `_steps.json` 每步都有 `reasoning`/`response`/`scene_description`，`tools/parse_agent_logs.py` 现在优先读它。旧版 agent 日志曾把每条回复写两次、prompt 写在回复后；新代码只写一次，解析器仍兼容旧格式 |
+| 每回合结果（通过/转角/首次转身步/碰撞） | `results/level{N}/{model}/{tag}/episode_{id:03d}.json` | 行为字段 + inline `steps`；也含 reasoning/response（inline 是 sidecar 的副本） |
+| 每一步行为（动作/位置/旋转/耗时/推理） | `results/level{N}/{model}/{tag}/episode_{id:03d}_steps.json` | **权威逐步记录**：行为 + `reasoning`/`response`/`scene_description` |
 | 档位汇总 | `results/level{N}/{model}/{tag}/summary_{tag}.json` | 通过率、侧身率、平均转角等 |
 | 扁平 CSV（分析用） | `results/{model}/level{N}_{tag}_{时间戳}.csv` | 25 列行为数据（12 episode 列 + 13 step 列，`main.py:save_episodes_csv`）。**⚠️ 这个文件是派生产物，不是权威数据源**：文件名里带运行时间戳，所以同一个 `(模型, 关卡, tag)` 重跑一次就会**多出一个 CSV，旧的不被覆盖**。实测本仓库已有 517 个 CSV，其中 18 组是同一 `(模型,关卡,场景)` 的重复。`glob('results/*/*.csv')` 会把同一批步子数**算两遍**。权威数据永远是 `episode_{id:03d}.json` 和 `episode_{id:03d}_steps.json`；`analysis.py` 和 `tools/summarise_models.py` 读的就是这两个，所以**分析结果不受重复 CSV 影响**。需要一份干净的表时，用 `analysis.py` 生成的报告，或删掉同名的旧 CSV 后重跑 |
 | 断点续跑状态 | `results/{model}/checkpoint_{tag}.json` | |
@@ -187,7 +191,9 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
   60° 需要 0.4755 m ≤ 0.513 m，能过。`STAGE1_SCENES.md` §1 的表写成 5 次（75°）✗，
   `lab_logs/verify_optimal_steps.py` 的广度优先搜索实测 **15 步**（11 forward + 4 turn）✓，与代码一致。
 - 成功判定 x ≥ 8.75；步长 0.75 m；转身 15°；眼高 1.68 m / 俯仰 15° / 焦距 13.36 mm / 传感器 20.955 mm
-  → **水平 FOV 76.2°、垂直 47.6°**（`scenes.HORIZONTAL_FOV_DEG`，不是"≈76° / ≈52°"）。
+  → **水平 FOV 76.2°、有效垂直 FOV 也是 76.2°**（正方形渲染 + 水平 aperture 适配；
+  `scenes.VERTICAL_FOV_DEG` 等于水平值。名义 16:9 垂直 aperture 会给出 47.6°，那是**未被渲染**的
+  名义值，不能再写成"垂直 47.6°"）。
 - 规模：15 模型 × 17 档 × 5 标志物 = **1,275 集/场景**；全 5 场景 **6,375 集**
   （`scenes.episode_count()`，测试断言等于 6375）。
 - **实测成本与时间**：约 $0.036/集 → 单场景 ≈ **$46 / ¥330**；**单模型 2.5–9 小时** → 15 模型 ≈ **50–60 小时**
@@ -636,7 +642,7 @@ memory_runner 17 / scenes 18 / assets 3 / parsing 11 / health 5。
 | `test_bao_scenes.py` 18 项、合计 151 项 | **scenes 26 项，9 套件合计 159 项**（`grep -c '^def test_' test_bao_*.py` 求和） | 实测跑完九个套件 |
 | 素材体积 136 MB / 旧版手册的文件数 | **1090 文件 / 约 218 MB**（跟踪内容合计 218,372,611 B） | `git ls-files assets/isaac` 的行数、`du -sh assets/isaac` |
 | A/S 0.9 需 5 次转身（75°） | **4 次（60°）**。45° 需 0.5586 m > 0.513 m 过不去；60° 需 0.4755 m 能过 | `memory_metrics.min_turns(0.513)==4`；`lab_logs/verify_optimal_steps.py` BFS 实测 15 步 |
-| 垂直 FOV ≈52° | **47.6°**（水平 76.2°；焦距 13.36 mm / 传感器 20.955 mm） | `scenes.VERTICAL_FOV_DEG` |
+| 垂直 FOV ≈52° / 47.6° | **有效垂直 FOV = 76.2°**，与水平相同（正方形渲染，渲染器把水平 aperture 用在两轴；名义 16:9 aperture 才是 47.6°，未被渲染）。焦距 13.36 mm / 传感器 20.955 mm | `scenes.VERTICAL_FOV_DEG == HORIZONTAL_FOV_DEG`；`test_bao_geometry` 同时钉住名义 47.6 和有效 76.2 |
 | 动作 8 个 | **9 个**（含 `look_down`） | `protocol.ACTIONS` |
 | 一台机器上"深度 12 档 / 11 模型 / 每模型 60 集" | 那是 **v7 归档**的历史事实（`lab_logs/bao_v7_all.tgz`，660 集）。**当前代码是 17 档 / 15 模型 / 每模型每场景 85 集** | `main.py` 的 `PROTOCOL_LEVELS`；`models.json` |
 | 标志物 slot 公式与代码"不一致" | **两者恒等**：`((i+1)-1)%5+1 ≡ i%5+1`。这条是我自己一度写错的判断，已实测推翻 | 对 episode_id 0–9 枚举比对 |

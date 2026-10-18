@@ -7,12 +7,15 @@ WHERE THE THINKING ACTUALLY LIVES
     runner assigned.  This tool reads that file FIRST.
 
 WHY THE LOG IS ONLY A FALLBACK
-    ``logs/{tag}/level{N}_episode{id:03d}_agent.txt`` is written by TWO writers: the model client
-    logs each reply, and the runner logs the prompt and the same reply again.  A successful step
-    therefore appears twice, and the runner's prompt is written AFTER the reply it produced.  A
-    parser that counted every ``MODEL RESPONSE:`` block doubled the step count and numbered the
-    copies as consecutive steps.  The fallback below keeps only blocks that contain a prompt (the
-    runner's copy) and, if a log predates that layout, removes exact duplicate replies.
+    ``logs/{tag}/level{N}_episode{id:03d}_agent.txt`` records the prompt and the reply, but its
+    layout changed.  In OLD logs the model client wrote each reply and the runner wrote the prompt
+    plus the same reply again: every successful step appeared twice, and the prompt came AFTER the
+    reply it produced.  The current runner writes the prompt BEFORE the call and the client writes
+    the reply, so each step appears once and in order.
+
+    The fallback below handles both: it keeps prompt-bearing blocks for the old layout, and when
+    there are none (the current layout) it keeps the unique replies and ignores the bare prompt
+    blocks.  The sidecar above remains the primary source either way.
 
 The marker a run used is derivable rather than recorded: ``slot = (episode_id % 5) + 1``, the same
 mapping ``scenes.describe_marker`` expects.  So each reply is attributed to the object that was

@@ -426,6 +426,11 @@ class AgentAdapter:
                 "ai_agent must expose get_action(image, prompt, state, history) "
                 "or a create_agent/get_agent factory."
             )
+        # Both production branches call into ai_agent with this log_file, so ai_agent writes the
+        # reply.  The test harness subclasses AgentAdapter and sets _callable=None with a scripted
+        # _agent; it does not set this attribute, and the getattr fallback in query() then writes
+        # the reply through the runner as before.
+        self._callable_logs = True
 
     def _call_form(self) -> str:
         """Which call shape ``self._callable`` accepts, from its SIGNATURE.
@@ -482,6 +487,24 @@ class AgentAdapter:
         same text a second time.
         """
         t0 = time.perf_counter()
+        # THE PROMPT IS WRITTEN BEFORE THE CALL, AND THE RESPONSE IS NOT WRITTEN AGAIN HERE.
+        #
+        # The production path is ai_agent.get_action, which logs each reply through AgentAPI.  The
+        # runner also logged prompt + reply after the call, so every successful step appeared twice
+        # and the prompt appeared AFTER the reply it produced.  The parser counted both copies as
+        # separate steps.  The prompt now goes in first and the agent writes the reply; the step
+        # record in results/ remains the canonical source either way.
+        #
+        # A custom _agent / _callable used by the test harness does not log, so that path keeps the
+        # old prompt+reply write and nothing is lost.
+        callable_logs = getattr(self, "_callable_logs", self._callable is not None)
+        if self._callable is not None and self._call_form() != "full":
+            # Only the full call form passes log_file through, so only that form makes the client
+            # write the reply.  The keyword and positional compatibility forms do not, and the
+            # runner has to keep the prompt+reply write for them.
+            callable_logs = False
+        if callable_logs:
+            self._append_prompt(prompt)
         if self._callable is not None:
             form = self._call_form()
             if form == "full":
@@ -514,7 +537,8 @@ class AgentAdapter:
             )
         latency_ms = (time.perf_counter() - t0) * 1000.0
         action_name, raw_text, reasoning, confidence, scene_description = self._normalize(raw)
-        self._append_log(prompt, raw_text)
+        if not callable_logs:
+            self._append_log(prompt, raw_text)
         return action_name, raw_text, reasoning, confidence, scene_description, latency_ms
 
     def record(
@@ -607,7 +631,21 @@ class AgentAdapter:
                 float(getattr(raw, "confidence", 0.0) or 0.0),
                 str(getattr(raw, "scene_description", "") or ""))
 
+    def _append_prompt(self, prompt: str) -> None:
+        """Write the question before the call; the client writes the answer.
+
+        The production client already owns the ``MODEL RESPONSE:`` side of the log.  Writing the
+        prompt first is what makes the file chronological and leaves exactly one reply per step.
+        """
+        if not self.log_file:
+            return
+        with open(self.log_file, "a", encoding="utf-8") as handle:
+            handle.write("-" * 40 + "\n")
+            handle.write(prompt + "\n")
+            handle.write("-" * 40 + "\n")
+
     def _append_log(self, prompt: str, raw_text: str) -> None:
+        """Prompt + reply in one block, for a scripted agent that does not log itself."""
         if not self.log_file:
             return
         with open(self.log_file, "a", encoding="utf-8") as handle:

@@ -110,7 +110,7 @@ directly and did not convert.
 | Channel edge posts | 0.05 m wide, full wall height, one on each side, placed **outside** the opening |
 | Robot start | `(0.5, 0, 0)`, facing `+x` |
 | Success | body centre reaches **`x >= 8.75`** (one stride past the wall) |
-| Eye camera | head height 1.68 m, pitched 15° down, focal 13.36 mm on a 20.955 mm sensor → 76.2° horizontal, 47.6° vertical |
+| Eye camera | head height 1.68 m, pitched 15° down, focal 13.36 mm on a 20.955 mm sensor → 76.2° horizontal and 76.2° vertical (square render, horizontal aperture fit; the nominal 16:9 vertical aperture would give 47.6°, which is **not** what is rendered) |
 
 ### Five scene skins, twenty-five markers
 
@@ -357,6 +357,17 @@ v6 and v7 are wording-only: the task statement is byte-identical to v5, and the
 ladder, the action mechanics, the episode length and the success plane are
 unchanged, so the protocols are directly comparable.
 
+**v8-actions-flipped is the CURRENT protocol, and it is not wording-only.** The user
+frame is left-handed after the y-up/z-lateral transpose, so `right` had been moving
+the walker to its physical left and `look_left`/`look_right` aimed the gaze the wrong
+way. v8 puts `right` on `-z` (the walker's right), flips the glance signs with it, and
+mirrors the collision footprint consistently with what is rendered. **v7 and earlier
+are therefore a different experiment**: their left/right actions are not the v8 ones,
+and 18% of the v7 episodes have a near-wall step whose collision legality differs. The
+v7 archive is retained as provenance, not for comparison. `analysis.py` defaults to
+the current protocol only; a historical tag must be named explicitly with `--tag`, and
+the report then carries `protocol: v7-state-axes` instead of `v8-actions-flipped`.
+
 Note the goal marker sits at `x = 16.0` while success is scored at `x = 8.75`:
 the agent is scored as soon as it is clear of the wall, which is what "get through"
 means physically, and it never has to reach the marker itself.
@@ -386,8 +397,14 @@ through "never turned sideways".
 Per step (`episode_{id:03d}_steps.json`, and the flat CSV):
 
 ```
-step, action, torso_rotation, position_x, position_z, collision, step_success
+step, action, torso_rotation, position_x, position_z, collision, step_success,
+llm_response_time_ms, reasoning, response, feedback, confidence, scene_description
 ```
+
+The sidecar is the canonical step record, including the model's own words. The
+agent log remains the raw I/O, but it is no longer the only place the reasoning
+lives (and older logs contain each reply twice; `tools/parse_agent_logs.py` reads
+the sidecar first and de-duplicates the log fallback).
 
 Episodes, sidecars, summaries, run settings and the threshold reports are all
 written **atomically** (temporary file + `os.replace`), so a crash, an OOM kill
@@ -545,8 +562,10 @@ session does not kill it; `run_all_models.sh` still needs `tmux` or `nohup`. Eve
 as it is scored, so an interruption costs at most the episode in flight. Afterwards:
 
 ```bash
-python analysis.py                     # every model, ONE current-protocol tag per model
-python analysis.py --tag gemini-v1     # one exact run tag; use this to choose that tag explicitly
+python analysis.py                     # every model, ONE current-protocol tag per SCENE
+python analysis.py --tag <exact-tag>   # one exact run; a historical tag prints a warning
+# The default is v8-only: a model with no v8 data is skipped rather than back-filled from v7.
+# The report carries scene / protocol / episodes / excluded per row.
 ```
 
 **Run this before every sweep**, because `main.py`'s own preflight
@@ -854,6 +873,11 @@ re-deriving the analysis needs neither Isaac Sim nor an API key:
 | `lab_logs/embodiedbao_v7_episodes.csv` | the 660 rows every figure and table is derived from |
 | `lab_logs/*.py` | `export_table.py`, `analyze_actions.py`, `analyze_reasoning.py`, `make_figures.py`; all four read the archive directly rather than the unpacked tree |
 | `lab_logs/figures/` | fig1–fig4, PDF and 600 dpi PNG |
+
+Both archives are **historical**. They were collected before v8 fixed the mirrored
+left/right and `look_*` actions, so they are not comparable with the current
+`v8-actions-flipped` runs. `analysis.py` skips them by default; the v8 data lives on the
+lab machine under `results/` and is not archived here yet.
 | `lab_logs/summary.txt` | the written analysis summary |
 
 Left out on purpose: `lab_logs/extracted/` (a partial unpacking of the v5 archive,

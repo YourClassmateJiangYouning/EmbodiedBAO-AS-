@@ -60,6 +60,10 @@ from protocol import (
 )
 
 
+# HISTORICAL FALLBACK, NOT THE ROSTER.  The 2025 names below are kept only so a checkout without
+# models.json still has a baseline; the experiment's 15 models are defined by models.json and are read
+# by known_model_names() at the point where a name is checked.  Do not add a model here instead of to
+# models.json: the sweep does not read this list.
 SUPPORTED_MODELS: List[str] = [
     "gpt-4o",
     "gpt-4o-mini",
@@ -92,6 +96,29 @@ MODEL_ALIASES: Dict[str, str] = {
     "llava1.67b": "llava-1.6-7b",
     "llava-1.6-7b": "llava-1.6-7b",
 }
+
+
+def known_model_names() -> set:
+    """Every model name this checkout knows how to talk to.
+
+    The hard-coded list above is a 2025 roster and was never the experiment's roster: models.json is
+    the single definition of the 15 models the sweep runs.  Warning about a name that is in
+    models.json (12 of the 15) trained the operator to ignore the warning, so the roster is read
+    instead of guessed.  Aliases and the random baseline are included; a read failure falls back to
+    the historical list rather than claiming every model is unknown.
+    """
+    names = set(SUPPORTED_MODELS) | set(MODEL_ALIASES) | set(MODEL_ALIASES.values())
+    names.add("random")
+    roster_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "models.json")
+    try:
+        with open(roster_path, encoding="utf-8") as handle:
+            for entry in json.load(handle).get("models", []):
+                runner = entry.get("runner") if isinstance(entry, dict) else None
+                if runner:
+                    names.add(str(runner))
+    except (OSError, ValueError, TypeError):
+        pass
+    return names
 
 # NO HARD-CODED GATEWAY ADDRESS.  There used to be one here -- a plain http:// URL on a public IP -- and
 # it was used whenever BOYUE_API_KEY was set without BOYUE_BASE_URL, so the API key travelled in clear
@@ -534,8 +561,8 @@ class AgentAPI:
         log_file: Optional[str] = None,
     ) -> None:
         self.model_name = normalize_model_name(model_name)
-        if self.model_name not in SUPPORTED_MODELS:
-            print(f"[ai_agent] Warning: model '{self.model_name}' is not in the known list.")
+        if self.model_name not in known_model_names():
+            print(f"[ai_agent] Warning: model '{self.model_name}' is not in models.json or the alias list.")
         self.api_key = (
             api_key
             or os.environ.get("BOYUE_API_KEY")

@@ -1219,36 +1219,38 @@ class BAOEnv:
         It is 0.30 m no longer: the plate was 0.60 m for a while and is 0.90 m now,
         because the prompt makes this marker the TASK ("reach the red marker on the
         far wall") rather than a decoration, so it has to be identifiable from the
-        start pose: at 0.30 m it was about 20 px of the 1024 px frame the sweeps
+        start pose: at 0.30 m it was about 13 px of the 1024 px frame the sweeps
         send.  The old objection -- a red field at close range -- no longer applies,
         because success is scored at x = 8.75, one stride past the wall, so the
         agent is never scored while standing 2 m from the far wall.  The 13-25 px
-        figure that motivated the 0.90 m belongs to the OLD 0.60 m plate, measured
-        from actual 1024 px frames (see the constant above); it is NOT the current
-        plate, which the arithmetic below puts at 67 px.  Quoting it without the
-        0.60 m context made this docstring look self-contradictory.
+        figure that motivated the 0.90 m belongs to the OLD 0.30-0.60 m plates,
+        measured from actual 1024 px frames (see the constant above); it is NOT the
+        current plate, which the arithmetic below puts at 38 px.  Quoting it
+        without the old size context made this docstring look self-contradictory.
 
-        Apparent edge at 1024 px with the camera's real vertical field of view
-        (2*atan((20.955*9/16)/(2*13.36)) = 47.6 degrees; this line used to say
-        52, which is why the table below sits a few per cent off the recomputed
-        value).  At the current 0.90 m the recomputed series is:
+        Apparent edge at 1024 px with the camera's EFFECTIVE vertical field of
+        view.  The render is square and this renderer fits the 20.955 mm HORIZONTAL
+        aperture on both axes, so the effective vertical field is the 76.2 degrees
+        of the horizontal one (a 0.60 m plate at 15.48 m is about 25 px at 1024,
+        which confirms 76.2; the nominal 16:9 vertical aperture would give 47.6
+        and is NOT what is rendered -- see scenes.VERTICAL_FOV_DEG).  At the
+        current 0.90 m the series is:
 
-            agent x=0.5  ->  67 px     (the start pose)
-            agent x=4.0  ->  87 px
-            agent x=7.0  -> 116 px     (approaching the obstacle)
-            agent x=8.75 -> 144 px     (at the goal plane, 16 - 8.75 = 7.25 m)
-            agent x=11.0 -> 209 px     (the old goal plane)
-            agent x=14.0 -> 522 px     (close; edges still clear)
+            agent x=0.5  ->  38 px     (the start pose)
+            agent x=4.0  ->  49 px
+            agent x=7.0  ->  65 px     (approaching the obstacle)
+            agent x=8.75 ->  81 px     (at the goal plane, 16 - 8.75 = 7.25 m)
+            agent x=11.0 -> 118 px     (the old goal plane)
+            agent x=14.0 -> 297 px     (close; edges still clear)
 
-        The rows above are recomputed at the current 0.90 m size and the real
-        47.6 degree vertical field of view.  Centred at
-        1.40 m it spans 0.95 m to 1.85 m, still inside the 0.0 to 2.0 m opening.
-        The camera sits at 1.68 m, so from the start (15.5 m away) the mark is
-        1.0 degree below the optical axis while the frame's lower edge is 23.8
-        degrees below it at that 47.6 degree vertical field of view -- comfortably
-        inside the frame, and inside the opening, so it is visible through the
-        channel from the very start, which is what makes it usable during the
-        approach.
+        The rows above are at the current 0.90 m size and the effective 76.2 degree
+        vertical field of view.  Centred at 1.40 m it spans 0.95 m to 1.85 m, still
+        inside the 0.0 to 2.0 m opening.  The camera sits at 1.68 m, so from the
+        start (15.5 m away) the mark is 1.0 degree below the optical axis while the
+        frame's lower edge is 38.1 degrees below it at that 76.2 degree vertical
+        field of view -- comfortably inside the frame, and inside the opening, so
+        it is visible through the channel from the very start, which is what makes
+        it usable during the approach.
         """
         if not self.task_dict.get("goal_marker", True):
             return
@@ -1421,8 +1423,13 @@ class BAOEnv:
         ``2 * atan(aperture / (2 * focalLength))``, and leaving the aperture to the
         renderer's default made the FOV depend on a value the repo never set or
         checked.  ``horizontalAperture`` = ROBOT_CAMERA_SENSOR_WIDTH_MM = 20.955 mm
-        and ``verticalAperture`` its 9:16 counterpart, which is the 47.6 degree
-        vertical / 76.2 degree horizontal pair the readability notes use.
+        and ``verticalAperture`` its nominal 9:16 counterpart (11.787 mm).  The
+        EFFECTIVE field is not that pair: the render is square and the renderer
+        fits the horizontal aperture on both axes, so the effective vertical field
+        is 76.2 degrees, not the nominal 47.6.  The readability notes and
+        scenes.VERTICAL_FOV_DEG use the effective value; the nominal aperture is
+        still written because leaving it to the renderer's default is what made
+        the field depend on an unstated value.
         """
         try:
             camera.set_focal_length(float(focal_mm))
@@ -1435,9 +1442,9 @@ class BAOEnv:
             cam.GetFocalLengthAttr().Set(float(focal_mm))
             cam.GetHorizontalApertureAttr().Set(float(ROBOT_CAMERA_SENSOR_WIDTH_MM))
             cam.GetVerticalApertureAttr().Set(float(ROBOT_CAMERA_SENSOR_HEIGHT_MM))
-            # FILM FIT, WRITTEN EXPLICITLY.  The aperture pair is 16:9 and the render is 1:1, so the
-            # renderer has to decide which aperture the image follows -- and it followed the HORIZONTAL
-            # one on BOTH axes.  Measured from this repository's own figure (a 0.60 m plate at 15.48 m
+            # FILM FIT IS NOT SETTABLE IN THIS PXR BUILD.  The aperture pair is 16:9 and the render
+            # is 1:1, so the renderer decides which aperture the image follows -- and it follows the
+            # HORIZONTAL one on BOTH axes.  Measured from this repository's own figure (a 0.60 m plate at 15.48 m
             # subtends about 25 px at 1024): the vertical field is 76.9 degrees, not the 47.6 that a
             # vertical aperture of 11.787 mm would give.  Leaving that implicit is what made
             # scenes.project() overestimate every projected size by about 1.78x.  Horizontal fit is

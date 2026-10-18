@@ -37,6 +37,7 @@ import hashlib
 import io
 import json
 import os
+import subprocess
 import time
 import traceback
 import urllib.error
@@ -273,6 +274,26 @@ def project_root() -> str:
     return os.path.dirname(os.path.abspath(__file__))
 
 
+def code_version() -> str:
+    """The git commit a new run is executing, so a batch boundary is visible in the log.
+
+    A long queue survives code edits because the running Python processes keep the modules they
+    imported: the first batch continues on the old code, and the next batch starts new processes that
+    read the current checkout.  Printing the commit makes that boundary checkable instead of assumed;
+    it is read once at startup and never from a shell-out in the hot path.
+    """
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=project_root(),
+            stderr=subprocess.DEVNULL,
+            text=True,
+            timeout=5,
+        ).strip()
+    except Exception:  # noqa: BLE001 - a run must not depend on git being installed
+        return "unknown"
+
+
 def output_root() -> str:
     """Root under which results/, logs/ and run_progress.txt are written."""
     override = os.environ.get("BAO_OUTPUT_ROOT", "").strip()
@@ -455,7 +476,14 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="EmbodiedBAO experiment entry point.")
     parser.add_argument("--model", type=str, default="gpt-4o", help="Model name")
     parser.add_argument(
-        "--level", type=int, choices=list(PROTOCOL_LEVELS), default=0, help="Level to run"
+        "--level",
+        type=int,
+        choices=list(PROTOCOL_LEVELS),
+        # None, not 0, so resolve_levels can tell "the operator passed --level 0" from "argparse
+        # filled in the default".  With default=0, `--level 0 --all-levels` looked like the default
+        # and was silently accepted while --all-levels won.
+        default=None,
+        help="Level to run (default: 0 when no other level flag is given)",
     )
     parser.add_argument(
         "--levels",
@@ -593,14 +621,12 @@ def resolve_levels(args: argparse.Namespace) -> List[int]:
         raise ValueError("--all-levels and --levels cannot be used together")
     # --level IS REJECTED ALONGSIDE THE OTHER TWO.  It used to be silently ignored: `--level 7
     # --all-levels` ran all seventeen levels, and `--level 7 --levels 3 4` ran levels 3 and 4, with
-    # nothing said. On a sweep that is a night of episodes at the wrong width. `--level` has a
-    # non-None default, so checking it against that default is what tells "the operator passed it"
-    # from "argparse filled it in".
-    if (
-        getattr(args, "level", None) is not None
-        and args.level != PROTOCOL_LEVELS[0]
-        and (args.all_levels or args.levels)
-    ):
+    # nothing said. On a sweep that is a night of episodes at the wrong width.
+    #
+    # `--level` now defaults to None, not 0.  With default=0, an EXPLICIT `--level 0` was
+    # indistinguishable from the default, so `--level 0 --all-levels` still silently ran all Levels.
+    # None means "not passed"; the default Level 0 is chosen below only when no other flag is given.
+    if args.level is not None and (args.all_levels or args.levels):
         other = "--all-levels" if args.all_levels else "--levels"
         raise ValueError(
             f"--level {args.level} cannot be combined with {other}: one of them would be ignored. "
@@ -610,8 +636,10 @@ def resolve_levels(args: argparse.Namespace) -> List[int]:
         return list(PROTOCOL_LEVELS)
     if args.levels:
         requested = list(args.levels)
-    else:
+    elif args.level is not None:
         requested = [args.level]
+    else:
+        requested = [PROTOCOL_LEVELS[0]]
     seen: List[int] = []
     for level in requested:
         if level not in seen:
@@ -888,10 +916,11 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
     run_results_root = results_dir()
     run_logs_root = logs_dir()
     print(f"[main] output root: {output_root()}")
+    print(f"[main] code version: {code_version()}")
     _write_progress(
         f"main start: model={args.model} levels={levels} "
         f"episodes={args.episodes} max_steps={args.max_steps} "
-        f"output_root={output_root()}"
+        f"output_root={output_root()} code={code_version()}"
     )
     if args.image_size is not None:
         os.environ["BAO_IMAGE_SIZE"] = str(int(args.image_size))

@@ -1797,15 +1797,27 @@ def test_scene_readability_constants() -> None:
         f"eye camera field of view is only {fov_deg:.0f} deg; too narrow to see "
         f"the opening while walking through it",
     )
-    # The readability argument quotes exact figures (76.2 horizontal, 47.6 vertical),
-    # so pin them rather than only banding the horizontal one.
+    # The readability argument quotes exact figures (76.2 horizontal), so pin it rather than only
+    # banding it.  The vertical field is NOT the 47.6 that the nominal 16:9 aperture would give: the
+    # render is square and this renderer fits the 20.955 mm HORIZONTAL aperture on both axes, which
+    # the repository's own measurement confirms (a 0.60 m plate at 15.48 m subtends ~25 px at 1024,
+    # i.e. ~76.9 deg vertical).  scenes.VERTICAL_FOV_DEG follows that effective value; the 47.6 is
+    # kept as the nominal cross-check so the two cannot silently be confused again.
+    import scenes as sc
+
     check(
         abs(fov_deg - 76.2) < 0.2,
         f"horizontal field of view is {fov_deg:.2f} deg, the documented value is 76.2",
     )
     check(
         abs(vfov_deg - 47.6) < 0.2,
-        f"vertical field of view is {vfov_deg:.2f} deg, the documented value is 47.6",
+        f"the NOMINAL 16:9 vertical aperture should give 47.6 deg, got {vfov_deg:.2f}; "
+        "the projection note is stale",
+    )
+    check(
+        abs(sc.VERTICAL_FOV_DEG - fov_deg) < 1e-9,
+        f"scenes.VERTICAL_FOV_DEG is {sc.VERTICAL_FOV_DEG:.2f} deg but the effective "
+        f"square/horizontal-fit field is {fov_deg:.2f} deg",
     )
     # And the aperture must be WRITTEN, not left to the renderer's default: the
     # field of view depends on it, and before this only focalLength was set.
