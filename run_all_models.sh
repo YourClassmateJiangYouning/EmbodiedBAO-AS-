@@ -136,7 +136,21 @@ for model in "${MODELS[@]}"; do
         # comment in main()), and even with that fixed, a run whose credential failed after the preflight
         # writes no episodes and still exits 0.  So count what was actually produced, and treat an empty
         # result as a failure rather than reporting "all models finished".
-        produced=$(find results -path "*/${model}/*/episode_*.json" 2>/dev/null | wc -l)
+        #
+        # THE SLUG, NOT THE MODEL NAME.  Runner writes to model.replace("/", "-"), so searching for
+        # "*/${model}/*" on a name containing a slash looks for "results/*/Qwen/Qwen3-VL-8B-Instruct/",
+        # which cannot exist. Measured on this tree:
+        #     */Qwen/Qwen3-VL-8B-Instruct/*/episode_*.json   -> 0
+        #     */Qwen-Qwen3-VL-8B-Instruct/*/episode_*.json   -> 20
+        # so every model with a slash in its name -- three of the fifteen in models.json -- would have
+        # been reported as "exited 0 but wrote NO episodes" after a perfectly good run.
+        safe_model="${model//\//-}"
+        safe_model="${safe_model//\\/-}"
+        # Any tag directory under the model, not "slug-*": the tag carries a prefix chosen by the caller
+        # (run_parallel_sweep.sh uses TAG_PREFIX, the September campaign used "full_"), so the directory
+        # name does NOT begin with the slug. Anchoring on the slug found 0 for Qwen while the real tree
+        # holds 20, which is the same false failure this line exists to prevent.
+        produced=$(find results -path "*/${safe_model}/*/episode_*.json" 2>/dev/null | grep -v _steps | wc -l)
         if [ "$produced" -eq 0 ]; then
             echo "!! $model exited 0 but wrote NO episodes -- treating as a failure" >&2
             FAILED="$FAILED $model(empty)"
