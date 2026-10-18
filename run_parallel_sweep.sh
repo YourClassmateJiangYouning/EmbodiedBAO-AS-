@@ -320,8 +320,14 @@ worker() {
     fi
     return $rc
 }
+# UNBUFFERED, OR A KILLED JOB LOSES ITS LAST LINES.  experiments.py used not to flush its
+# per-episode progress print, so a SIGTERM left the job log ending mid-episode; the finished
+# episode's summary line was simply absent. That print flushes now, and this makes every worker
+# unbuffered so no other stale buffer can do the same. Exported here because xargs launches the
+# workers through bash -c, which does not inherit a non-exported variable.
+export PYTHONUNBUFFERED=1
 export -f worker
-export ISAAC_PY EPISODES MAX_STEPS TAG_PREFIX
+export ISAAC_PY EPISODES MAX_STEPS TAG_PREFIX PYTHONUNBUFFERED
 
 # The feeder runs in the background so the cleanup trap can kill it by pid when this dispatcher is
 # signalled; `wait` keeps the dispatcher alive for the whole sweep.

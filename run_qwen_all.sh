@@ -13,6 +13,11 @@ cd "$(dirname "$0")"
 export BOYUE_API_KEY="${BOYUE_API_KEY:-$(cat ~/.bao_key)}"
 export BOYUE_BASE_URL="${BOYUE_BASE_URL:-http://35.220.164.252:3888/v1}"
 export BAO_DISABLE_PROXY=1
+# UNBUFFERED, OR A KILLED RUN LOSES ITS LAST LINES.  experiments.py used not to flush its
+# per-episode progress print, so a SIGTERM left the log ending mid-episode and the finished
+# episode's summary line was missing. That print flushes now; this makes the whole process
+# unbuffered so no other stale buffer can do the same.
+export PYTHONUNBUFFERED=1
 MODEL="${1:-Qwen/Qwen3-VL-8B-Instruct}"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 SAFE="$(printf '%s' "$MODEL" | tr '/' '-')"

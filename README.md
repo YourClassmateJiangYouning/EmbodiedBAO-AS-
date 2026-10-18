@@ -899,7 +899,7 @@ is versioned now — do not delete it, and do not regenerate it in place.
 
 ## Verification without Isaac Sim
 
-Everything that can be decided without a renderer runs on plain Python. **196 checks
+Everything that can be decided without a renderer runs on plain Python. **197 checks
 across nine suites**, counted at the time of writing rather than remembered (`grep -c
 '^def test_' test_bao_*.py`):
 

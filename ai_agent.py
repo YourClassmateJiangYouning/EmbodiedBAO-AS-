@@ -462,7 +462,18 @@ class _OpenAICompatCompletions:
         payload.update(request_params_for(model))
         request = urllib.request.Request(
             self._client._base_url + "/chat/completions",
-            data=json.dumps(payload).encode("utf-8"),
+            # allow_nan=False, BECAUSE NaN IS NOT JSON.
+            #
+            # json.dumps emits a bare NaN/Infinity token for a non-finite float, which no JSON parser
+            # accepts. The gateway answered exactly that: HTTP 400 "JSON decode error" -- seen once in a
+            # real Level 0 run, where it cost a retry and looked like a model failure. With allow_nan
+            # off the encoder raises here instead, naming the problem, rather than sending a body the
+            # server can only reject.
+            #
+            # A non-finite value can only arrive through a per-model request parameter or through
+            # temperature; the message text is a string and formats numbers with f-strings, so a NaN in
+            # the state becomes the text "nan" and stays valid.
+            data=_dumps_request(payload).encode("utf-8"),
             headers={
                 "Content-Type": "application/json",
                 "Authorization": f"Bearer {self._client._api_key}",
@@ -492,6 +503,20 @@ class _OpenAICompatClient:
         self._base_url = str(base_url).rstrip("/")
         self._timeout = timeout
         self.chat = _OpenAICompatChat(self)
+
+
+def _dumps_request(payload: Any) -> str:
+    """Serialise a request body, refusing to emit the non-JSON NaN/Infinity tokens.
+
+    Raises ValueError naming the offending path rather than sending a body the server cannot parse."""
+    try:
+        return json.dumps(payload, allow_nan=False)
+    except ValueError as exc:
+        raise ValueError(
+            f"refusing to send a request whose JSON is invalid: {exc}. A NaN or Infinity in a "
+            "per-model parameter or in temperature produces the bare token NaN, which is not JSON, "
+            "and the gateway answers HTTP 400 'JSON decode error'."
+        ) from exc
 
 
 class AgentAPI:

@@ -10,6 +10,7 @@ assumed.
 
 from __future__ import annotations
 
+import json
 import os
 import sys
 
@@ -200,6 +201,32 @@ def test_json_mode_only_downgrades_on_a_parameter_rejection() -> None:
     print("[ok] only a parameter rejection downgrades JSON mode, and _request asks before doing it")
 
 
+def test_a_non_finite_request_parameter_is_refused() -> None:
+    """NaN is not JSON, and the encoder used to emit it anyway.
+
+    json.dumps writes a bare NaN token for a non-finite float, which no JSON parser accepts. A real
+    Level 0 run produced exactly that from the gateway: HTTP 400 "JSON decode error", which cost a
+    retry and looked like a model failure. The encoder now refuses, so the fault names itself here
+    instead of being a server-side parse error two layers away.
+    """
+    check(
+        json.loads(ai_agent._dumps_request({"temperature": 0.0, "model": "x"}))
+        == {"temperature": 0.0, "model": "x"},
+        "a normal request body is no longer round-trippable",
+    )
+    for bad in (float("nan"), float("inf"), float("-inf")):
+        try:
+            ai_agent._dumps_request({"temperature": bad})
+        except ValueError as exc:
+            check(
+                "not JSON" in str(exc) or "JSON" in str(exc),
+                f"the refusal does not explain itself: {exc}",
+            )
+        else:
+            check(False, f"_dumps_request sent {bad!r}, which JSON cannot represent")
+    print("[ok] a non-finite request parameter is refused instead of sent as NaN")
+
+
 def main() -> int:
     tests = [
         test_plain_json,
@@ -212,6 +239,7 @@ def main() -> int:
         test_refusals_are_not_actions,
         test_text_fallback_still_works,
         test_json_mode_only_downgrades_on_a_parameter_rejection,
+        test_a_non_finite_request_parameter_is_refused,
     ]
     failures = 0
     for test in tests:

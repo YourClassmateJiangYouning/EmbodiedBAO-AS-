@@ -780,12 +780,21 @@ class BAOExperimentRunner:
                 if not _episode_had_no_valid_call(episode):
                     checkpoint.mark(unit_key)
 
+            # flush=True, BECAUSE THIS LINE IS THE RUN'S ONLY LIVE PROGRESS REPORT.
+            #
+            # Nothing in this module flushed. Measured on a sweep killed with SIGTERM: the log ended
+            # with "[scene] marker slot 2: ..." -- the NEXT episode's marker line -- and the line above
+            # it was the PREVIOUS episode's result, so the finished episode's summary line was lost.
+            # The episodes still land on disk; what is lost is the ability to tell, from the log, how
+            # far a killed run actually got. capture_scenes.py hit the same thing and solved it by
+            # writing to a file it flushes; a print cannot be flushed afterwards.
             print(
                 f"[level {level} A/S {ratio:.2f}] episode {episode_id + 1}/{episodes} "
                 f"passed={episode['passed']} "
                 f"sideways={episode['passed_sideways']} "
                 f"steps={episode['total_steps']} "
-                f"end={episode['end_reason']}"
+                f"end={episode['end_reason']}",
+                flush=True,
             )
             if progress_callback is not None:
                 progress_callback(
