@@ -1083,23 +1083,24 @@ def format_markdown_table(
             "> **INCOMPLETE DATA -- not a finished result.**",
             ">",
         ]
-        # ONE LINE PER MODEL, not one per report: a five-scene sweep produces five reports for the same
-        # model, all with the same missing Levels, and five identical paragraphs read as five problems.
-        by_model: Dict[Any, List[Dict[str, Any]]] = {}
+        # ONE LINE PER (MODEL, SCENE), because completeness is a property of a SCENE, not of a model.
+        # Measured on the committed corpus: Qwen3-VL-30B has four complete scenes and stage1.5, which
+        # the October campaign never finished (Levels 14-16 missing). A model-level line said "the
+        # model: 14 of 17 Levels analysed", which is false for four of its five scenes and hides which
+        # one to look at. The scene is the tag's suffix, which is what reports already key on.
+        lines_out = []
         for report in incomplete:
-            by_model.setdefault(report.get("model"), []).append(report)
-        for model, group in by_model.items():
-            analysed = group[0].get("levels_analysed") or []
-            missing = group[0].get("levels_missing") or []
+            analysed = report.get("levels_analysed") or []
+            missing = report.get("levels_missing") or []
             span = f" (missing {missing[0]}-{missing[-1]})" if missing else ""
-            scenes = len(group)
-            lines.append(
-                f"> `{model}`: {len(analysed)} of {len(LEVEL_CHANNEL_WIDTHS)} Levels analysed{span}"
-                + (f", across {scenes} scenes" if scenes > 1 else "")
-                + ". The threshold and gradedness columns below are computed from the Levels that "
-                "exist, so 'no_threshold' here means 'not seen yet', not 'none exists'."
+            scene = scene_from_tag(report.get("tag") or "") or "no scene in tag"
+            lines_out.append(
+                f"> `{report.get('model')}` / `{scene}`: {len(analysed)} of "
+                f"{len(LEVEL_CHANNEL_WIDTHS)} Levels analysed{span}. The threshold and gradedness "
+                "columns below are computed from the Levels that exist, so 'no_threshold' here means "
+                "'not seen yet', not 'none exists'."
             )
-        banner = "\n".join(lines) + "\n\n"
+        banner = "\n".join(lines + lines_out) + "\n\n"
     header = [
         "Model",
         "Level",
