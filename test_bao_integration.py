@@ -1036,15 +1036,20 @@ def test_analysis_discovers_tagged_runs() -> None:
     which is what ``run_all_models.sh`` produces) was reported as empty even
     though every episode was on disk.
     """
+    from protocol import PROTOCOL_TAG
+
     _install_scripted_agent("sideways")
     try:
         tmp = make_temp_dir()
         try:
             root = os.path.join(tmp, "results")
+            # The default analysis is CURRENT-PROTOCOL ONLY, so the fixture tag carries it; a
+            # bare "sweep-1" is now (correctly) treated as historical and skipped.
+            tag = f"sweep-1-{PROTOCOL_TAG}"
             runner = BAOExperimentRunner(
                 env=FakeBAOEnv(),
                 model="tagged-model",
-                tag="sweep-1",
+                tag=tag,
                 results_root=root,
                 logs_root=os.path.join(tmp, "logs"),
             )
@@ -1084,7 +1089,9 @@ def test_analysis_discovers_tagged_runs() -> None:
             check(rc == 0, f"analysis CLI returned {rc} for a tagged run")
             # The file name carries the tag now, because a sweep writes one report per SCENE and
             # two scenes of one model would otherwise overwrite each other.
-            report_path = os.path.join(out_dir, "threshold_tagged-model_sweep-1.json")
+            report_path = os.path.join(
+                out_dir, f"threshold_tagged-model_{tag}.json"
+            )
             check(
                 os.path.exists(report_path),
                 "analysis CLI wrote no threshold report for a tagged run",
@@ -1405,6 +1412,7 @@ def test_full_protocol_and_analysis() -> None:
     the Markdown/CSV writers, i.e. the whole path a real experiment takes.
     """
     import main as main_module
+    from protocol import PROTOCOL_TAG
 
     _install_scripted_agent("sideways")
     try:
@@ -1416,7 +1424,9 @@ def test_full_protocol_and_analysis() -> None:
                 env=env,
                 model="scripted-sideways",
                 max_steps=DEFAULT_MAX_STEPS,
-                tag="full",
+                # The default analysis is CURRENT-PROTOCOL ONLY.  A fixture tag without the
+                # protocol marker is now (correctly) skipped, so this run has to carry one.
+                tag=f"full-{PROTOCOL_TAG}",
                 results_root=results_root,
                 logs_root=os.path.join(tmp, "logs"),
             )

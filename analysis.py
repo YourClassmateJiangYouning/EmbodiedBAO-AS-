@@ -61,7 +61,13 @@ from protocol import is_sideways_yaw as _sideways_yaw
 # full Isaac Sim ImportError traceback before its first table, which is exactly the dependency this
 # module is documented not to have. environment.py re-exports the name, so importing it from there
 # silently pulled in the whole simulator.
-from protocol import LEVEL_CHANNEL_WIDTHS
+from protocol import LEVEL_CHANNEL_WIDTHS, PROTOCOL_TAG
+
+# The number of marker conditions per (scene, model, Level), i.e. the number of episodes a COMPLETE
+# Level must contain.  Imported rather than restated: the runner and the analysis have to agree on
+# what "one Level is finished" means, and a hard-coded 5 in this module would drift from the runner
+# the day the design changes.
+from experiments import DEFAULT_EPISODES_PER_LEVEL
 
 HUMAN_THRESHOLD = 1.30
 
@@ -258,12 +264,18 @@ def summarize_level(level: int, episodes: Sequence[Dict[str, Any]]) -> Dict[str,
     # Episodes in which every call failed are not measurements of the model; drop
     # them from the rates and report how many were dropped.  See
     # episode_had_no_valid_call.
+    attempted = len(episodes)
     excluded = [ep for ep in episodes if episode_had_no_valid_call(ep)]
     usable = [ep for ep in episodes if not episode_had_no_valid_call(ep)]
     if not usable:
         return {
             "level": int(level),
+            # `episodes` is the USABLE count; `attempted_episodes` is what the runner actually
+            # wrote.  A Level with five attempts and no usable one is a finished data-collection
+            # unit whose measurements all failed -- not a missing Level -- and the completeness
+            # check has to be able to tell those apart.
             "episodes": 0,
+            "attempted_episodes": attempted,
             "excluded_no_valid_call": len(excluded),
         }
     episodes = usable
@@ -289,6 +301,7 @@ def summarize_level(level: int, episodes: Sequence[Dict[str, Any]]) -> Dict[str,
         "channel_width": float(episodes[0].get("channel_width", float("nan"))),
         "a_s_ratio": float(episodes[0].get("a_s_ratio", float("nan"))),
         "episodes": len(episodes),
+        "attempted_episodes": attempted,
         "excluded_no_valid_call": len(excluded),
         "pass_rate": float(np.mean(passed)),
         "passed_count": int(sum(passed)),
@@ -776,6 +789,12 @@ def choose_tag(
 
 
 _SCENE_RE = re.compile(r"(stage1\.\d+)")
+# The protocol segment of a tag: "v8-actions-flipped", "v7-state-axes", ...  The lookahead stops at
+# the scene or the request-parameter suffix, so both "...-v7-state-axes-stage1.1" and
+# "...-v7-state-axes-effortnone" yield "v7-state-axes".
+_PROTOCOL_RE = re.compile(
+    r"(v\d+-[a-z0-9]+(?:-[a-z0-9]+)*?)(?=-stage1\.\d+|-(?:effortnone|nothinking)|$)"
+)
 
 
 def scene_from_tag(tag: str) -> Optional[str]:
@@ -789,6 +808,21 @@ def scene_from_tag(tag: str) -> Optional[str]:
     return match.group(1) if match else None
 
 
+def protocol_from_tag(tag: str) -> str:
+    """The protocol version a run tag carries, or "unknown".
+
+    The tag is the only record of which action semantics produced a directory, and a tag from a
+    different protocol is a different experiment.  This reads the version segment out of the tag
+    instead of assuming the newest one: ``...-v7-state-axes-stage1.1`` must be recognisable as v7
+    even when the code is v8.
+    """
+    text = tag or ""
+    if PROTOCOL_TAG in text:
+        return PROTOCOL_TAG
+    match = _PROTOCOL_RE.search(text)
+    return match.group(1) if match else "unknown"
+
+
 def choose_tags(results_root: str, model: str, levels: Sequence[int]) -> Dict[str, Optional[str]]:
     """One tag per SCENE, keyed by scene (None for a tag that names no scene).
 
@@ -796,23 +830,20 @@ def choose_tags(results_root: str, model: str, levels: Sequence[int]) -> Dict[st
     scene. It is wrong once a sweep runs five scenes: they are five CONDITIONS, and picking one tag
     threw away four fifths of the experiment. Within a scene the old rule still applies -- one tag,
     because two runs of the SAME scene would double-count the five marker conditions.
+
+    ONLY THE CURRENT PROTOCOL IS ELIGIBLE.  This used to fall back to every tag directory when no
+    current-protocol tag existed, which made a tree of old data look analysable: `python analysis.py`
+    mixed v7 episodes (whose left/right and look_* were mirrored) with v8 episodes and printed them
+    as one table.  A tag that names another protocol is a different experiment; it is skipped here
+    and must be requested explicitly with --tag.
     """
     tags = _current_protocol_tags(results_root, model, levels)
     if not tags:
-        # NO CURRENT-PROTOCOL TAG: fall back to every tag directory, which is what choose_tag does.
-        # _current_protocol_tags filters on the protocol marker in the tag NAME, so a tree whose tags
-        # do not carry it (an older run, or a fixture) would otherwise yield nothing and the analysis
-        # would report "no analyzable episodes" for data that is sitting right there.
-        tags = sorted(
-            {
-                os.path.basename(path)
-                for level in levels
-                for path in glob.glob(
-                    os.path.join(results_root, f"level{level}", model_dir_name(model), "*")
-                )
-                if os.path.isdir(path) and not os.path.basename(path).startswith("round")
-            }
+        print(
+            f"[analysis] {model}: no results tagged with the current protocol "
+            f"({PROTOCOL_TAG}); skipping. Pass --tag <tag> to analyse a historical run."
         )
+        return {}
     grouped: Dict[str, List[str]] = {}
     for candidate in tags:
         grouped.setdefault(scene_from_tag(candidate) or "", []).append(candidate)
@@ -840,6 +871,7 @@ def analyze_model(
     a partially re-run (or merely ``touch``ed) tag could beat a complete one.
     """
     selected_tags: List[str] = []
+    skip_model = False
     if tag is not None:
         # THE TAG IS CHECKED ONCE, ACROSS ALL LEVELS.  A named tag that exists nowhere is a typo and
         # must be refused; a tag that exists for some Levels is a run in progress and must not be.
@@ -851,6 +883,14 @@ def analyze_model(
             raise FileNotFoundError(
                 f"no Level under {os.path.join(results_root, 'level*', model_dir_name(model))} "
                 f"contains the tag {tag!r}. Refusing to analyse a different run."
+            )
+        if protocol_from_tag(tag) != PROTOCOL_TAG:
+            # An explicit --tag is the one supported way to read a historical run.  Say so loudly:
+            # the numbers are real, but they were produced by a different action space.
+            print(
+                f"[analysis] WARNING: tag {tag!r} carries protocol "
+                f"{protocol_from_tag(tag)!r}, not the current {PROTOCOL_TAG!r}; "
+                "this report is historical, not comparable with current runs."
             )
         selected_tags = [tag]
     else:
@@ -880,20 +920,19 @@ def analyze_model(
                 else:
                     print(f"[analysis] {model}: analysing tag {current[0]!r}")
             else:
-                # Nothing from the current protocol: fall back to the newest tag so
-                # an old tree still reports, but say plainly that it is not this
-                # protocol's data.
-                from protocol import PROTOCOL_TAG
-
-                fallback = os.path.basename(max(tagged_dirs, key=os.path.getmtime))
-                selected_tags = [fallback]
+                # Nothing from the current protocol.  Do NOT fall back to the newest tag: that is
+                # how a v7 directory (mirrored left/right and look_*) got into a v8 table.  The
+                # model is skipped, and the operator can name a historical tag explicitly if that
+                # is what they want.
+                skip_model = True
                 print(
-                    f"[analysis] WARNING: no {model} results tagged with the "
-                    f"current protocol ({PROTOCOL_TAG}); using {fallback!r}. "
-                    "Run main.py with a fresh tag before comparing."
+                    f"[analysis] {model}: no results tagged with the current protocol "
+                    f"({PROTOCOL_TAG}); skipping. Pass --tag <tag> to analyse a historical run."
                 )
 
     def level_episodes(level: int) -> List[Dict[str, Any]]:
+        if skip_model:
+            return []
         if not selected_tags:
             # Untagged / legacy layout: let load_episodes pick its own directory.
             return load_episodes(results_root, level, model, tag=None)
@@ -937,13 +976,31 @@ def analyze_model(
     total_passed = sum(1 for ep in all_episodes if episode_passed(ep))
     total_sideways = sum(1 for ep in all_episodes if episode_passed_sideways(ep))
 
+    selected_tag = selected_tags[0] if len(selected_tags) == 1 else None
+    incomplete_levels = sorted(
+        int(level)
+        for level, summary in per_level.items()
+        if int(summary.get("episodes", 0)) == 0
+        or int(summary.get("attempted_episodes", summary.get("episodes", 0)))
+        < DEFAULT_EPISODES_PER_LEVEL
+    )
+
     return {
         "model": model,
         # The tag IS the run: it carries the scene, so two scenes of one model are two reports with
         # two different tags. main() names the per-scene output files from it; without it they were
         # all "threshold_<model>.json" and only the last scene survived.
-        "tag": selected_tags[0] if len(selected_tags) == 1 else None,
+        "tag": selected_tag,
         "tags": list(selected_tags),
+        # The two facts a reader needs in order to know WHAT this table is: which scene condition,
+        # and which action space.  They were present in the tag but never in the report, so five
+        # scene rows for one model were indistinguishable and a v7 row looked like a v8 row.
+        "scene": scene_from_tag(selected_tag) if selected_tag else None,
+        "protocol": protocol_from_tag(selected_tag) if selected_tag else None,
+        "current_protocol": (
+            protocol_from_tag(selected_tag) == PROTOCOL_TAG if selected_tag else False
+        ),
+        "expected_episodes_per_level": DEFAULT_EPISODES_PER_LEVEL,
         "levels": per_level,
         "excluded_no_valid_call": excluded_no_valid_call,
         "sideways_threshold": threshold,
@@ -992,7 +1049,14 @@ def analyze_model(
         "levels_missing": sorted(
             int(level) for level in range(len(LEVEL_CHANNEL_WIDTHS)) if int(level) not in per_level
         ),
-        "data_complete": len(per_level) == len(LEVEL_CHANNEL_WIDTHS),
+        # A Level can be PRESENT and still not be a complete Level: one episode out of the five
+        # marker conditions is a partial draw, and the rates built on it are not the rates the
+        # design specifies.  Presence alone was the whole test, so a resumed or interrupted Level
+        # looked finished.
+        "levels_incomplete": incomplete_levels,
+        "data_complete": (
+            len(per_level) == len(LEVEL_CHANNEL_WIDTHS) and not incomplete_levels
+        ),
         "turned_threshold_gap_vs_human": (
             None if turned is None else float(turned - HUMAN_THRESHOLD)
         ),
@@ -1092,20 +1156,38 @@ def format_markdown_table(
         for report in incomplete:
             analysed = report.get("levels_analysed") or []
             missing = report.get("levels_missing") or []
+            incomplete_levels = report.get("levels_incomplete") or []
             span = f" (missing {missing[0]}-{missing[-1]})" if missing else ""
-            scene = scene_from_tag(report.get("tag") or "") or "no scene in tag"
+            if not incomplete_levels:
+                short = ""
+            elif len(incomplete_levels) == 1:
+                short = (
+                    f" (Level {incomplete_levels[0]} has fewer than "
+                    f"{DEFAULT_EPISODES_PER_LEVEL} episodes)"
+                )
+            else:
+                short = (
+                    f" (Levels {incomplete_levels[0]}-{incomplete_levels[-1]} have fewer than "
+                    f"{DEFAULT_EPISODES_PER_LEVEL} episodes)"
+                )
+            scene = report.get("scene") or scene_from_tag(report.get("tag") or "") or "no scene in tag"
+            protocol = report.get("protocol") or protocol_from_tag(report.get("tag") or "")
             lines_out.append(
-                f"> `{report.get('model')}` / `{scene}`: {len(analysed)} of "
-                f"{len(LEVEL_CHANNEL_WIDTHS)} Levels analysed{span}. The threshold and gradedness "
-                "columns below are computed from the Levels that exist, so 'no_threshold' here means "
-                "'not seen yet', not 'none exists'."
+                f"> `{report.get('model')}` / `{scene}` / `{protocol}`: {len(analysed)} of "
+                f"{len(LEVEL_CHANNEL_WIDTHS)} Levels analysed{span}{short}. The threshold and "
+                "gradedness columns below are computed from the Levels that exist, so "
+                "'no_threshold' here means 'not seen yet', not 'none exists'."
             )
         banner = "\n".join(lines + lines_out) + "\n\n"
     header = [
         "Model",
+        "Scene",
+        "Protocol",
         "Level",
         "A/S",
         "Width (m)",
+        "Episodes",
+        "Excluded",
         "Pass %",
         "Turned %",
         "Sideways %",
@@ -1129,9 +1211,13 @@ def format_markdown_table(
             rot_at_pass = summary.get("avg_passage_rotation_deg")
             values = [
                 str(model),
+                str(report.get("scene") or "-"),
+                str(report.get("protocol") or "unknown"),
                 str(level),
                 f"{summary['a_s_ratio']:.2f}",
                 f"{summary['channel_width']:.2f}",
+                str(summary.get("episodes", 0)),
+                str(summary.get("excluded_no_valid_call", 0)),
                 f"{100.0 * summary['pass_rate']:.1f}",
                 f"{100.0 * summary['turned_rate']:.1f}",
                 f"{100.0 * summary['sideways_rate']:.1f}",
@@ -1144,6 +1230,8 @@ def format_markdown_table(
     lines.append("")
     threshold_header = [
         "Model",
+        "Scene",
+        "Protocol",
         "Turned Threshold (A/S)",
         "Sideways Threshold (A/S)",
         "Human Reference",
@@ -1162,6 +1250,8 @@ def format_markdown_table(
             + " | ".join(
                 [
                     str(report["model"]),
+                    str(report.get("scene") or "-"),
+                    str(report.get("protocol") or "unknown"),
                     "-" if turned is None else f"{turned:.2f}",
                     "-" if threshold is None else f"{threshold:.2f}",
                     f"{HUMAN_THRESHOLD:.2f}",
@@ -1207,10 +1297,17 @@ def table_rows(
             rows.append(
                 {
                     "model": report["model"],
+                    # The scene and the protocol are CONDITIONS, not decoration: without them the
+                    # five scene rows of one model are indistinguishable in the table and in the CSV.
+                    "scene": report.get("scene"),
+                    "protocol": report.get("protocol"),
+                    "tag": report.get("tag"),
                     "level": level,
                     "channel_width": summary["channel_width"],
                     "a_s_ratio": summary["a_s_ratio"],
                     "episodes": summary["episodes"],
+                    "attempted_episodes": summary.get("attempted_episodes"),
+                    "excluded_no_valid_call": summary.get("excluded_no_valid_call"),
                     "pass_rate": summary["pass_rate"],
                     "sideways_rate": summary["sideways_rate"],
                     "turned_rate": summary["turned_rate"],
@@ -1226,6 +1323,9 @@ def table_rows(
         rows.append(
             {
                 "model": report["model"],
+                "scene": report.get("scene"),
+                "protocol": report.get("protocol"),
+                "tag": report.get("tag"),
                 "level": "ALL",
                 "sideways_threshold": report["sideways_threshold"],
                 "turned_threshold": report.get("turned_threshold"),
@@ -1266,11 +1366,16 @@ def plot_thresholds(
         if not xs:
             continue
         order = np.argsort(xs)
+        # The scene is part of the identity of a line: five scenes of one model are five
+        # conditions, and a legend that says the model name five times cannot be read.
+        label = str(report["model"])
+        if report.get("scene"):
+            label = f"{label} / {report['scene']}"
         plt.plot(
             np.asarray(xs)[order],
             np.asarray(ys)[order],
             marker="o",
-            label=str(report["model"]),
+            label=label,
         )
         threshold = report["sideways_threshold"]
         if threshold is not None:
@@ -1278,7 +1383,7 @@ def plot_thresholds(
                 threshold,
                 linestyle=":",
                 alpha=0.6,
-                label=f"{report['model']} threshold {threshold:.2f}",
+                label=f"{label} threshold {threshold:.2f}",
             )
 
     plt.axvline(

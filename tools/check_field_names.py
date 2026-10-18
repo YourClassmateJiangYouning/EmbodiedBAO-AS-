@@ -85,6 +85,11 @@ OTHER = {
     # how many episodes analysis.py dropped because every model call failed; a
     # summary annotation, not a log field (see analysis.episode_had_no_valid_call).
     "excluded_no_valid_call",
+    # how many episode records the runner attempted at a Level, including the ones whose
+    # every call failed.  It is the completeness denominator: `episodes` is the USABLE count,
+    # and a Level with five attempts and zero usable ones is a finished unit with failed
+    # measurements, not a missing unit.  A summary annotation, not a log field.
+    "attempted_episodes",
     # a Stage 1 dressing item (scenes.py) and a scene material entry (scene_builder.py).
     # room_fit belongs here rather than in RECORD_VARS' schema because it is scene CONFIGURATION,
     # not a log field: it is the fraction of a measured asset size that a scene deliberately uses

@@ -1,23 +1,30 @@
-"""Turn the raw model I/O logs into the table the reasoning analysis needs.
+"""Turn a run's model I/O into the table the reasoning analysis needs.
 
-Where the thinking actually lives: main.py's own output hierarchy documents
-``logs/{tag}/level{level}_episode{id:03d}_agent.txt`` as "raw model I/O", and that is what it is
--- every step's full prompt and the model's complete JSON reply, including ``scene_description``,
-``reasoning`` and ``confidence``.  The per-episode JSON and the flat CSV under results/ hold only
-behaviour, which is why searching there for the reasoning finds nothing.  Nothing was ever lost;
-it was in logs/ the whole time.
+WHERE THE THINKING ACTUALLY LIVES
+    The authoritative per-step record is
+    ``results/level{N}/{model}/{tag}/episode_{id:03d}_steps.json``: every step in it carries its own
+    ``reasoning``, ``response``, ``scene_description`` and ``confidence``, with the step number the
+    runner assigned.  This tool reads that file FIRST.
 
-The marker a run used is derivable rather than recorded: the environment advances the slot once
-per episode, ``slot = (episode_id % 5) + 1``, which is the same mapping scenes.describe_marker
-expects.  So each reply can be attributed to the object that was actually on the wall.
+WHY THE LOG IS ONLY A FALLBACK
+    ``logs/{tag}/level{N}_episode{id:03d}_agent.txt`` is written by TWO writers: the model client
+    logs each reply, and the runner logs the prompt and the same reply again.  A successful step
+    therefore appears twice, and the runner's prompt is written AFTER the reply it produced.  A
+    parser that counted every ``MODEL RESPONSE:`` block doubled the step count and numbered the
+    copies as consecutive steps.  The fallback below keeps only blocks that contain a prompt (the
+    runner's copy) and, if a log predates that layout, removes exact duplicate replies.
 
-    python3 tools/parse_agent_logs.py                       # every stage1.1 run found
-    python3 tools/parse_agent_logs.py --tag gemini-2.5-flash-v7-state-axes-stage1.1
-    python3 tools/parse_agent_logs.py --csv logs_reasoning.csv
+The marker a run used is derivable rather than recorded: ``slot = (episode_id % 5) + 1``, the same
+mapping ``scenes.describe_marker`` expects.  So each reply is attributed to the object that was
+actually on the wall.
 
-Prints, per model: how often its own words mention the marker's colour and shape, whether it
-named the opening, and a few verbatim examples.  A model that never names its marker is not
-looking at it, whatever its feet are doing.
+    python3 tools/parse_agent_logs.py --tag full_Qwen-Qwen3-VL-8B-Instruct-v8-actions-flipped-stage1.1
+    python3 tools/parse_agent_logs.py --tag full_Qwen-Qwen3-VL-8B-Instruct-v8-actions-flipped-stage1.1 --csv logs_reasoning.csv
+    python3 tools/parse_agent_logs.py --results results --scene stage1.1
+
+Prints, per model/tag: how often its own words mention the marker's colour and shape, whether it
+named the opening, and a few verbatim examples.  A model that never names its marker is not looking
+at it, whatever its feet are doing.
 """
 
 from __future__ import annotations
@@ -38,6 +45,9 @@ except Exception:  # noqa: BLE001
 
 RESPONSE = re.compile(r"MODEL RESPONSE:\s*")
 NAME = re.compile(r"level(\d+)_episode(\d+)_agent\.txt$")
+SCENE = re.compile(r"(stage1\.\d+)")
+PROMPT_MARKER = "You are a Unitree H1"
+SEPARATOR = re.compile(r"^-{40,}\s*$", re.MULTILINE)
 
 
 def extract_responses(text: str) -> list:
@@ -64,6 +74,49 @@ def extract_responses(text: str) -> list:
                     break
     return found
 
+
+def extract_prompted_responses(text: str) -> list:
+    """Replies from the runner's blocks only: a block is kept when it carries a prompt.
+
+    The current log layout is
+
+        MODEL RESPONSE: <client copy>
+        ----------------------------------------
+        <prompt>
+        MODEL RESPONSE: <runner copy>
+        ----------------------------------------
+
+    so the client copy has no prompt in its block and the runner copy does.  Keeping the prompted
+    blocks removes the duplicate without having to compare reply bodies, which is what makes it safe
+    when a model legitimately repeats the same action twice.
+    """
+    found = []
+    for block in SEPARATOR.split(text):
+        if PROMPT_MARKER not in block:
+            continue
+        found.extend(extract_responses(block))
+    return found
+
+
+def _canonical(blob: str) -> str:
+    try:
+        return json.dumps(json.loads(blob), sort_keys=True, ensure_ascii=False)
+    except Exception:  # noqa: BLE001 - an unparseable reply is compared by its text
+        return blob.strip()
+
+
+def _dedupe(blobs: list) -> list:
+    """Remove exact duplicate replies, for logs that predate the prompt-block layout."""
+    seen = set()
+    kept = []
+    for blob in blobs:
+        key = _canonical(blob)
+        if key in seen:
+            continue
+        seen.add(key)
+        kept.append(blob)
+    return kept
+
 # The inverse of scenes.COLOUR_NAMES, and it has to be kept in step with it: the marker
 # phrase is built from that table, the first word of the phrase is looked up here, and the
 # result is the letter searched for in the model's own reasoning.  "white"->w and
@@ -84,8 +137,72 @@ def marker_for(scene: str, episode: int) -> str:
         return f"slot{(episode % 5) + 1}"
 
 
+def scene_from_tag(tag: str, fallback: str = "") -> str:
+    match = SCENE.search(tag or "")
+    return match.group(1) if match else (fallback or "stage1.1")
+
+
+def model_from_tag(tag: str) -> str:
+    """The model part of a tag, with the protocol suffix removed when it is a known one."""
+    for suffix in ("-v8-actions-flipped", "-v7-state-axes", "-v6-marker-ahead", "-v5-12widths"):
+        if suffix in tag:
+            return tag.split(suffix)[0]
+    return tag
+
+
+def model_for_tag(level: int, tag: str, results_root: str) -> str:
+    """The model DIRECTORY for one tag, or the tag prefix when the directory is absent.
+
+    The tag's leading text is a run label (``full_``, ``cost_``, ...), not the model.  The
+    results directory has the real model slug, so it wins whenever it exists; only a log with no
+    results tree falls back to stripping the protocol suffix from the tag.
+    """
+    pattern = os.path.join(results_root, f"level{level}", "*", tag)
+    matches = sorted(path for path in glob.glob(pattern) if os.path.isdir(path))
+    if matches:
+        return os.path.basename(os.path.dirname(matches[0]))
+    return model_from_tag(tag)
+
+
+def _row(level: int, episode: int, step: int, marker: str, reply: dict) -> dict:
+    return {
+        "level": level,
+        "episode": episode,
+        "step": step,
+        "marker": marker,
+        "action": str(reply.get("action", "")),
+        "confidence": reply.get("confidence", ""),
+        "scene_description": str(reply.get("scene_description", "")),
+        "reasoning": str(reply.get("reasoning", "")),
+    }
+
+
+def parse_sidecar(path: str, level: int, episode: int, scene: str) -> list:
+    """Read one ``episode_*_steps.json`` -- the canonical per-step record."""
+    with open(path, encoding="utf-8") as handle:
+        payload = json.load(handle)
+    steps = payload.get("steps") if isinstance(payload, dict) else payload
+    if not isinstance(steps, list):
+        return []
+    marker = marker_for(scene, episode)
+    rows = []
+    for index, step in enumerate(steps):
+        if not isinstance(step, dict):
+            continue
+        rows.append(
+            _row(
+                level,
+                episode,
+                int(step.get("step", index)),
+                marker,
+                step,
+            )
+        )
+    return rows
+
+
 def parse_file(path: str, scene: str) -> list:
-    """Every step of one episode, with the model's own words."""
+    """Every step of one episode from the agent log, with the duplicate copy removed."""
     match = NAME.search(os.path.basename(path))
     if not match:
         return []
@@ -93,26 +210,39 @@ def parse_file(path: str, scene: str) -> list:
     marker = marker_for(scene, episode)
     with open(path, encoding="utf-8", errors="replace") as handle:
         text = handle.read()
+    blobs = extract_prompted_responses(text)
+    if not blobs:
+        # An older log without the runner's prompt block: every reply is present, possibly twice.
+        blobs = _dedupe(extract_responses(text))
     rows = []
-    for index, blob in enumerate(extract_responses(text)):
+    for index, blob in enumerate(blobs):
         try:
             reply = json.loads(blob)
         except Exception:  # noqa: BLE001
             continue
-        rows.append({
-            "level": level, "episode": episode, "step": index, "marker": marker,
-            "action": str(reply.get("action", "")),
-            "confidence": reply.get("confidence", ""),
-            "scene_description": str(reply.get("scene_description", "")),
-            "reasoning": str(reply.get("reasoning", "")),
-        })
+        rows.append(_row(level, episode, index, marker, reply))
     return rows
 
 
+def sidecar_for(tag: str, level: int, episode: int, results_root: str) -> str:
+    """Find the sidecar for one episode, across the model directory (the slug varies)."""
+    pattern = os.path.join(
+        results_root,
+        f"level{level}",
+        "*",
+        tag,
+        f"episode_{episode:03d}_steps.json",
+    )
+    matches = sorted(glob.glob(pattern))
+    return matches[0] if matches else ""
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Parse the raw model I/O logs.")
+    parser = argparse.ArgumentParser(description="Parse a run's step-level model I/O.")
     parser.add_argument("--logs", default="logs")
-    parser.add_argument("--scene", default="stage1.1")
+    parser.add_argument("--results", default="results")
+    parser.add_argument("--scene", default="",
+                        help="fallback scene when the tag does not name one (default stage1.1)")
     parser.add_argument("--tag", default="")
     parser.add_argument("--csv", default="")
     parser.add_argument("--examples", type=int, default=2)
@@ -127,14 +257,32 @@ def main() -> int:
 
     by_model = {}
     all_rows = []
+    from_steps = 0
+    from_logs = 0
     for path in files:
+        match = NAME.search(os.path.basename(path))
+        if not match:
+            continue
+        level, episode = int(match.group(1)), int(match.group(2))
         tag = os.path.basename(os.path.dirname(path))
-        model = tag.split("-v7-state")[0]
-        rows = parse_file(path, args.scene)
+        scene = scene_from_tag(tag, args.scene)
+        sidecar = sidecar_for(tag, level, episode, args.results)
+        model = model_for_tag(level, tag, args.results)
+        if sidecar:
+            rows = parse_sidecar(sidecar, level, episode, scene)
+            from_steps += 1
+        else:
+            rows = parse_file(path, scene)
+            from_logs += 1
         if not rows:
             continue
         by_model.setdefault(model, []).extend(rows)
         all_rows.extend(rows)
+
+    print(
+        f"source: {from_steps} episode(s) from _steps.json, "
+        f"{from_logs} episode(s) from the agent log fallback"
+    )
 
     for model in sorted(by_model):
         rows = by_model[model]
@@ -168,6 +316,9 @@ def main() -> int:
                 shown += 1
 
     if args.csv:
+        if not all_rows:
+            print("no rows to write")
+            return 1
         with open(args.csv, "w", encoding="utf-8", newline="") as handle:
             writer = csv.DictWriter(handle, fieldnames=list(all_rows[0]))
             writer.writeheader()

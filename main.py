@@ -484,7 +484,7 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
         help=(
             f"Episodes per Level (default {DEFAULT_EPISODES_PER_LEVEL}). At most "
             f"{DEFAULT_EPISODES_PER_LEVEL}: a scene has that many marker conditions and the marker "
-            "slot is episode_id % that count, so more episodes repeat conditions rather than adding "
+            "slot is episode_id %% that count, so more episodes repeat conditions rather than adding "
             "them. Fewer is allowed for smoke tests."
         ),
     )
