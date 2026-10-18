@@ -427,19 +427,24 @@ is still exported.
 
 | Metric | Definition |
 | :--- | :--- |
-| **Turned rate** | fraction of episodes in which the torso was successfully rotated at all |
-| **Turned threshold** | widest A/S at which the torso was rotated — **the metric to compare against the human 1.30** |
+| **Any-turn rate** | fraction of episodes in which the torso was successfully rotated at any point — **descriptive only**; it counts failed wandering and wall recoveries |
+| **Any-turn threshold** | widest A/S at which the torso was rotated anywhere; kept in JSON/CSV as a descriptive statistic, **not** the human analogue |
+| **Rotated-pass rate** | fraction of episodes that passed with a non-zero torso angle recorded at the wall plane |
+| **Rotated-pass threshold** | widest A/S at which a *passed* episode had a rotated torso at the wall — **the simple metric to compare against the human 1.30** |
 | **Sideways rate** | fraction of episodes that passed while the torso was rotated 45–135° at the wall plane |
 | **Sideways threshold** | widest A/S at which a sideways *passage* was observed; also requires success |
 | **Rotation at passage** | mean torso angle at the wall plane, the graded version of the threshold |
 | **First turn step** | step index of the first successful rotation action |
 | **Mean pass steps** | average steps needed for a successful passage |
+| **Invalid steps** | steps whose reply could not be mapped to one of the nine actions |
+| **Collisions** | every step whose collision flag is set; the CSV splits obstacle-panel and non-panel (room boundary/overlap) |
 
 The human reference (Warren & Whang 1987) counts rotated shoulders, not completed
-passages, so **Turned threshold** is the closer analogue: it separates the decision
-from the execution and cannot be depressed by a model that rotates correctly and
-then fails to follow through. `Sideways threshold` is reported alongside it for
-continuity with the earlier runs.
+passages, so **Rotated-pass threshold** is the closer analogue: it requires the episode
+to have succeeded and the torso to be non-zero at the wall plane. The old any-turn
+threshold counted a turn anywhere — on the v8 corpus `stage1.2` reported 1.30 from three
+failed wall recoveries while both passing episodes at that width were frontal — so it is
+no longer the headline. `Sideways threshold` is the stricter 45–135° version.
 
 Either threshold classifies a model:
 
@@ -448,8 +453,8 @@ Either threshold classifies a model:
 | `anticipatory` | ≥ 1.30 | turns before the gap is tight, like a human |
 | `borderline` | 1.00 – 1.30 | turns while still passable |
 | `reactive` | < 1.00 | only turns after being blocked |
-| `no_threshold` | — | no significant sideways threshold; the model may still have rotated (see the separate turned-threshold column) |
-| `turned_only` | — | the model turned, but the sideways test never reached significance |
+| `no_threshold` | — | no significant rotated-pass or sideways threshold; the model may still have turned without passing (any-turn is descriptive) |
+| `rotated_pass_only` | — | the model passed with a rotated torso, but the stricter sideways test never reached significance |
 | `no_data` | — | every episode of this model failed at the API, so there is no measurement |
 
 ## Files

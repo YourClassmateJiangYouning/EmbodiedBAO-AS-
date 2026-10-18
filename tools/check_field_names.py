@@ -90,6 +90,18 @@ OTHER = {
     # and a Level with five attempts and zero usable ones is a finished unit with failed
     # measurements, not a missing unit.  A summary annotation, not a log field.
     "attempted_episodes",
+    # Analysis summary annotations added when the report learned to separate passage rotation from
+    # "turned anywhere", and to show invalid steps and all collisions rather than only obstacle-panel
+    # collisions.  These are computed by analysis.summarize_level, not fields of a runner record.
+    "rotated_pass_count", "rotated_pass_rate",
+    "invalid_steps", "invalid_episodes", "total_steps",
+    "collision_steps", "panel_collision_steps", "non_panel_collision_steps",
+    "rotated_pass_threshold", "rotated_pass_threshold_class",
+    "rotated_pass_threshold_gap_vs_human", "rotated_pass_background_rate",
+    "overall_rotated_pass_rate", "overall_invalid_responses",
+    "overall_collision_steps", "overall_non_panel_collision_steps",
+    "any_turn_threshold", "sideways_threshold_class",
+    "sideways_threshold_gap_vs_human",
     # a Stage 1 dressing item (scenes.py) and a scene material entry (scene_builder.py).
     # room_fit belongs here rather than in RECORD_VARS' schema because it is scene CONFIGURATION,
     # not a log field: it is the fraction of a measured asset size that a scene deliberately uses

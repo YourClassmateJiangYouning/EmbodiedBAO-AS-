@@ -8,13 +8,17 @@ Headline metrics (per Level, and per model overall):
 
 * **Pass rate**       -- fraction of episodes that reached the success plane
   (x = 8.75 m, one stride past the obstacle wall).
-* **Sideways rate**   -- fraction of episodes that passed while the torso was
-  rotated into the sideways band (45-135 degrees).
-* **Sideways threshold** -- the widest A/S ratio (largest channel) at which the
-  model still chose to pass sideways.  This is the number to compare against
-  the human threshold of **1.30** (Warren & Whang, 1987).  A model that only
-  goes sideways once the channel is already narrower than its shoulders has
-  threshold < 1.0, i.e. it reacts to contact instead of anticipating it.
+* **Rotated-pass rate / threshold** -- fraction of episodes that passed with a
+  non-zero torso angle at the wall plane, and the widest A/S at which that
+  happened.  This is the simple analogue of the human shoulder-rotation measure
+  (**1.30**, Warren & Whang 1987): the torso was rotated while passing.
+* **Sideways rate / threshold** -- the same, but restricted to the 45-135 degree
+  band; the stricter passage measure.  A model that only goes sideways once the
+  channel is already narrower than its shoulders has threshold < 1.0, i.e. it
+  reacts to contact instead of anticipating it.
+* **Any-turn rate / threshold** -- a turn anywhere in the episode, including a
+  failed recovery after wandering into a side wall.  Descriptive only; it is not
+  the human analogue and is kept for continuity/JSON consumers.
 * **First turn step** -- mean step index of the first turn, i.e. how early the
   agent starts re-orienting.
 * **Mean pass steps**  -- average steps needed for a successful passage.
@@ -233,6 +237,25 @@ def episode_passed(episode: Dict[str, Any]) -> bool:
     return bool(episode.get("success"))
 
 
+def episode_passed_rotated(episode: Dict[str, Any]) -> bool:
+    """Did the model pass with a rotated torso at the wall plane?
+
+    This is the headline "rotated passage" measure.  It requires BOTH the episode to succeed and the
+    torso angle recorded at the wall plane to be non-zero.  The older ``turned_count`` counted any
+    legal turn anywhere in the episode, including a failed recovery after the model had wandered into
+    a side wall; on the v8 corpus that made stage1.2 report a 1.30 threshold whose three events were
+    all failed episodes and whose two passing episodes were frontal.  The passage angle is the
+    human-study quantity: shoulders rotated at the aperture, not rotation at any point in the attempt.
+    """
+    if not episode_passed(episode):
+        return False
+    rotation = episode.get("passage_rotation_deg")
+    try:
+        return rotation is not None and abs(float(rotation)) > 1e-9
+    except (TypeError, ValueError):
+        return False
+
+
 def episode_first_turn_step(episode: Dict[str, Any]) -> Optional[int]:
     if episode.get("first_turn_step") is not None:
         return int(episode["first_turn_step"])
@@ -277,11 +300,32 @@ def summarize_level(level: int, episodes: Sequence[Dict[str, Any]]) -> Dict[str,
             "episodes": 0,
             "attempted_episodes": attempted,
             "excluded_no_valid_call": len(excluded),
+            "rotated_pass_count": 0,
+            "rotated_pass_rate": 0.0,
+            "invalid_steps": sum(int(ep.get("invalid_response_count") or 0) for ep in excluded),
+            "invalid_episodes": sum(
+                1 for ep in excluded if int(ep.get("invalid_response_count") or 0) > 0
+            ),
+            "collision_steps": 0,
+            "panel_collision_steps": 0,
+            "non_panel_collision_steps": 0,
+            "total_steps": sum(int(ep.get("total_steps") or 0) for ep in excluded),
         }
     episodes = usable
 
     passed = [episode_passed(ep) for ep in episodes]
     sideways = [episode_passed_sideways(ep) for ep in episodes]
+    rotated = [episode_passed_rotated(ep) for ep in episodes]
+    total_steps = sum(int(ep.get("total_steps") or len(ep.get("steps") or [])) for ep in episodes)
+    invalid_steps = sum(int(ep.get("invalid_response_count") or 0) for ep in episodes)
+    invalid_episodes = sum(1 for ep in episodes if int(ep.get("invalid_response_count") or 0) > 0)
+    collision_steps = sum(
+        1 for ep in episodes for step in (ep.get("steps") or []) if step.get("collision")
+    )
+    panel_collision_steps = sum(
+        int(ep.get("wall_collision_count") or 0) + int(ep.get("turn_blocked_count") or 0)
+        for ep in episodes
+    )
     first_turns = [
         step for step in (episode_first_turn_step(ep) for ep in episodes) if step is not None
     ]
@@ -313,6 +357,13 @@ def summarize_level(level: int, episodes: Sequence[Dict[str, Any]]) -> Dict[str,
         "sideways_rate_ci": wilson_interval(int(sum(sideways)), len(sideways)),
         "sideways_rate": float(np.mean(sideways)),
         "passed_sideways_count": int(sum(sideways)),
+        # THE HEADLINE ROTATION MEASURE.  A pass with a non-zero torso angle at the wall plane;
+        # failed wandering turns and turns after a blocked forward are not counted.
+        "rotated_pass_rate_ci": wilson_interval(int(sum(rotated)), len(rotated)),
+        "rotated_pass_rate": float(np.mean(rotated)),
+        "rotated_pass_count": int(sum(rotated)),
+        # Any legal turn anywhere in the episode.  Kept as a descriptive field (it is what the old
+        # "turned threshold" used); it is not a passage/anticipation measure.
         "turned_rate": float(
             np.mean([episode_first_turn_step(ep) is not None for ep in episodes])
         ),
@@ -365,6 +416,19 @@ def summarize_level(level: int, episodes: Sequence[Dict[str, Any]]) -> Dict[str,
         "passage_rotation_deg_count": int(
             sum(1 for ep in episodes if ep.get("passage_rotation_deg") is not None)
         ),
+        # DATA-QUALITY COUNTS.  The old summary showed only all-invalid episodes (Excluded) and only
+        # the obstacle-panel collisions (wall_collision_count); a partially invalid episode and a
+        # sidestep into the room wall were invisible in the table.
+        "total_steps": total_steps,
+        "invalid_steps": invalid_steps,
+        "invalid_episodes": invalid_episodes,
+        "collision_steps": collision_steps,
+        "panel_collision_steps": panel_collision_steps,
+        # Collision steps the runner did not attribute to an obstacle panel: the room boundary and any
+        # pose overlap.  Deriving the split this way is exact for the ALL count and labels the rest
+        # honestly; the step records do not store collision_info, so an exact boundary count cannot be
+        # reconstructed for episodes recorded before that field existed.
+        "non_panel_collision_steps": max(0, collision_steps - panel_collision_steps),
     }
 
 
@@ -623,20 +687,38 @@ def sideways_threshold(level_summaries: Dict[int, Dict[str, Any]]) -> Optional[f
 
 
 def turned_threshold(level_summaries: Dict[int, Dict[str, Any]]) -> Optional[float]:
-    """Widest A/S ratio at which the model rotated its torso at all, above noise.
+    """Widest A/S ratio at which the model turned its torso AT ALL, above noise.
 
-    Distinct from ``sideways_threshold``, which additionally requires the episode
-    to have SUCCEEDED.  The human reference (Warren & Whang 1987, 1.30) measures
-    whether the shoulders were rotated, not whether the person got through, so
-    this is the closer analogue: it separates the decision from the execution and
-    cannot be depressed by a model that rotates correctly and then fails to
-    follow through.
+    DESCRIPTIVE, NOT THE HUMAN-COMPARISON THRESHOLD.  It counts a legal turn anywhere in the
+    episode, including a failed recovery after the model wandered into the side wall or was blocked
+    at the wall off-centre.  On the v8 corpus this produced stage1.2 = 1.30 from three failed
+    episodes while the two passing episodes at that width were frontal (0 turns), so it is not an
+    anticipatory-aperture measurement.  The headline rotation measure is
+    :func:`rotated_pass_threshold` (a pass with a non-zero torso angle at the wall plane); the
+    stricter passage measure is :func:`sideways_threshold` (45-135 degrees plus success).
 
-    Same significance rule as ``sideways_threshold``: a single collision-recovery
-    turn at the widest opening is not a threshold.  The random baseline used to
-    score 2.0 here purely from the wide-Level turn rate (0.23-0.29, no trend).
+    Kept because "did it rotate at any point" is still a useful descriptive statistic, and existing
+    reports/tests name it.  It should not be quoted as the human 1.30 analogue.
     """
     return _significant_threshold(level_summaries, "turned_count")
+
+
+def rotated_pass_threshold(
+    level_summaries: Dict[int, Dict[str, Any]]
+) -> Optional[float]:
+    """Widest A/S ratio at which the model PASSED with a rotated torso, above noise.
+
+    A rotation only counts when it is recorded at the wall plane (``passage_rotation_deg`` non-zero)
+    in an episode that succeeded.  This removes the two failure modes of the old any-turn threshold:
+    a failed wandering turn and a wall-recovery turn after a blocked forward.  It is the closest
+    simple analogue of the human shoulder-rotation measure: the shoulders were rotated while the
+    participant went through, not merely at some point in the attempt.
+
+    Same Holm-corrected significance rule and two-event minimum as ``sideways_threshold``.  It is
+    broader than sideways because it accepts any non-zero passage angle (a 15-degree turn at
+    A/S 1.3 counts); the 45-135 band remains the stricter ``sideways`` measure.
+    """
+    return _significant_threshold(level_summaries, "rotated_pass_count")
 
 
 def rotation_gradedness(
@@ -645,18 +727,20 @@ def rotation_gradedness(
     """Did the rotation rate actually vary with A/S, or was it a fixed policy?
 
     A threshold only means something if the behaviour changes across the ladder.
-    A model that always rotates 90 degrees scores ``turned_rate`` = 1.0 at every
-    width -- including widths it could walk straight through -- and has no
-    threshold at all, just a habit; one that never rotates has no threshold either.
-    The animal studies control for exactly this ("a simple preference for the
-    conveniently sized opening", Lenkei et al. 2019), and with a binary per-Level
-    rate it is cheap to check here.
+    A model that always rotates 90 degrees and passes scores ``rotated_pass_rate``
+    = 1.0 at every width -- including widths it could walk straight through -- and
+    has no threshold at all, just a habit; one that never rotates has no threshold
+    either.  This used ``turned_rate``, which counted failed wandering turns as
+    rotation: a model that got stuck against a side wall at wide Levels looked
+    "graded" without ever rotating at a passage.  The animal studies control for
+    exactly this ("a simple preference for the conveniently sized opening",
+    Lenkei et al. 2019), and with a binary per-Level rate it is cheap to check here.
 
     Returns "graded", "flat_always", "flat_never", or None when there is nothing
     to judge.
     """
     rates = [
-        float(summary.get("turned_rate", 0.0))
+        float(summary.get("rotated_pass_rate", 0.0))
         for summary in level_summaries.values()
         if int(summary.get("episodes", 0)) > 0
     ]
@@ -670,23 +754,26 @@ def rotation_gradedness(
 
 
 def _overall_class(
-    sideways: Optional[float], turned: Optional[float], usable_episodes: int
+    sideways: Optional[float], rotated_pass: Optional[float], usable_episodes: int
 ) -> str:
     """One classification per model, from both measures and from whether there was data.
 
     THREE STATES THE OLD `threshold_class` CONFLATED:
       * no data at all -- every episode's calls failed, so there is no measurement. Not "the model
         never turned"; nothing was observed;
-      * a model that rotated (a turned threshold exists) but whose sideways test never fired, which the
-        old label reported as "no_sideways" and the README glossed as "never rotated";
+      * a model that passed with a rotated torso (a rotated-pass threshold exists) but whose stricter
+        45-135 sideways test never fired, which the old label reported as "no_sideways";
       * a real threshold, which anticipation_class already handles.
+
+    The second measure is now ROTATED-PASS, not "any turn": a failed wandering turn is not a
+    passage decision, and it must not turn a model with no threshold into "turned_only".
     """
     if usable_episodes <= 0:
         return "no_data"
     if sideways is not None:
         return anticipation_class(sideways)
-    if turned is not None:
-        return "turned_only"
+    if rotated_pass is not None:
+        return "rotated_pass_only"
     return "no_threshold"
 
 
@@ -695,7 +782,7 @@ def anticipation_class(threshold: Optional[float]) -> str:
     if threshold is None:
         # "no_sideways" said something the number does not: a model can rotate its torso and still
         # have no significant sideways THRESHOLD, and claude-sonnet-4-6 does exactly that (sideways
-        # None, turned 0.90). README explained the label as "never rotated", which was false.
+        # None, any-turn 0.90). README explained the label as "never rotated", which was false.
         return "no_threshold"
     if threshold >= HUMAN_THRESHOLD:
         return "anticipatory"
@@ -955,6 +1042,7 @@ def analyze_model(
 
     threshold = sideways_threshold(per_level)
     turned = turned_threshold(per_level)
+    rotated = rotated_pass_threshold(per_level)
     # HOW MUCH WOULD THAT NUMBER MOVE on a different draw?  Both thresholds are the MAXIMUM over a
     # discrete ladder, so they need an interval as much as any rate does -- more, in fact, because a
     # single extra sideways pass on one rung at the edge of significance moves the headline outright.
@@ -964,6 +1052,7 @@ def analyze_model(
     bootstrap_input = {level: loaded[level] for level in sideways_seed}
     sideways_ci = bootstrap_threshold_ci(bootstrap_input, sideways_threshold)
     turned_ci = bootstrap_threshold_ci(bootstrap_input, turned_threshold)
+    rotated_ci = bootstrap_threshold_ci(bootstrap_input, rotated_pass_threshold)
     every_episode = [ep for level in levels for ep in loaded[int(level)]]
     # Episodes whose every call failed are not a measurement of the model; see
     # episode_had_no_valid_call.  Reported, never scored.
@@ -975,6 +1064,7 @@ def analyze_model(
     ]
     total_passed = sum(1 for ep in all_episodes if episode_passed(ep))
     total_sideways = sum(1 for ep in all_episodes if episode_passed_sideways(ep))
+    total_rotated = sum(1 for ep in all_episodes if episode_passed_rotated(ep))
 
     selected_tag = selected_tags[0] if len(selected_tags) == 1 else None
     incomplete_levels = sorted(
@@ -1004,12 +1094,17 @@ def analyze_model(
         "levels": per_level,
         "excluded_no_valid_call": excluded_no_valid_call,
         "sideways_threshold": threshold,
+        # DESCRIPTIVE, not the headline: any legal turn anywhere, including a failed recovery.
         "turned_threshold": turned,
-        # The 95% percentile-bootstrap intervals for the two thresholds above.  None means the
+        "any_turn_threshold": turned,
+        # THE HEADLINE ROTATION MEASURE: passed, with a non-zero torso angle at the wall plane.
+        "rotated_pass_threshold": rotated,
+        # The 95% percentile-bootstrap intervals for the thresholds above.  None means the
         # interval could not be estimated honestly (too few Levels, or most resamples found no
         # threshold at all) -- printed as "n/a" rather than as a reassuring narrow range.
         "sideways_threshold_ci": sideways_ci,
         "turned_threshold_ci": turned_ci,
+        "rotated_pass_threshold_ci": rotated_ci,
         # The model's own wide-Level behaviour, which the thresholds above are tested
         # against; reported so a reader can see the noise floor the rule removes.
         "sideways_background_rate": (
@@ -1018,10 +1113,18 @@ def analyze_model(
         "turned_background_rate": (
             _wide_background(per_level, "turned_count") if per_level else None
         ),
+        "rotated_pass_background_rate": (
+            _wide_background(per_level, "rotated_pass_count") if per_level else None
+        ),
         "threshold_rule": {
             "wide_a_s": WIDE_A_S,
             "alpha": THRESHOLD_ALPHA,
             "min_count": THRESHOLD_MIN_COUNT,
+            "headline_rotation_measure": "rotated_pass_threshold",
+            "turned_threshold_is": (
+                "descriptive only: any legal turn anywhere, including failed recovery; "
+                "not the human 1.30 analogue"
+            ),
         },
         "human_reference_threshold": HUMAN_THRESHOLD,
         "threshold_gap_vs_human": (
@@ -1029,12 +1132,18 @@ def analyze_model(
         ),
         "threshold_class": anticipation_class(threshold),
         "turned_threshold_class": anticipation_class(turned),
+        "rotated_pass_threshold_class": anticipation_class(rotated),
+        "turned_threshold_gap_vs_human": (
+            None if turned is None else float(turned - HUMAN_THRESHOLD)
+        ),
+        "rotated_pass_threshold_gap_vs_human": (
+            None if rotated is None else float(rotated - HUMAN_THRESHOLD)
+        ),
         # ONE CLASS PER MODEL THAT LOOKS AT BOTH MEASURES AND AT WHETHER THERE WAS DATA AT ALL.
-        # threshold_class came from the sideways threshold alone, so a model that turned but whose
-        # sideways test never fired was filed under a label about sideways-ness -- and a model whose
-        # every call failed was filed there too.
+        # The second measure is ROTATED-PASS, not the descriptive any-turn count: a failed wandering
+        # turn must not turn a model with no threshold into "turned_only".
         "overall_class": _overall_class(
-            threshold, turned, len(all_episodes) - excluded_no_valid_call
+            threshold, rotated, len(all_episodes) - excluded_no_valid_call
         ),
         "rotation_gradedness": rotation_gradedness(per_level),
         # IS THIS REPORT BASED ON THE WHOLE LADDER OR ONLY PART OF IT?
@@ -1057,9 +1166,6 @@ def analyze_model(
         "data_complete": (
             len(per_level) == len(LEVEL_CHANNEL_WIDTHS) and not incomplete_levels
         ),
-        "turned_threshold_gap_vs_human": (
-            None if turned is None else float(turned - HUMAN_THRESHOLD)
-        ),
         "overall": {
             "episodes": len(all_episodes),
             "excluded_no_valid_call": excluded_no_valid_call,
@@ -1078,6 +1184,10 @@ def analyze_model(
             "passed_sideways_count": total_sideways,
             "sideways_rate": (
                 total_sideways / len(all_episodes) if all_episodes else None
+            ),
+            "passed_rotated_count": total_rotated,
+            "rotated_pass_rate": (
+                total_rotated / len(all_episodes) if all_episodes else None
             ),
             "first_turn_step_mean": (
                 float(
@@ -1118,9 +1228,45 @@ def analyze_model(
             "total_wall_collisions": int(
                 sum(int(ep.get("wall_collision_count", 0)) for ep in all_episodes)
             ),
+            "total_panel_collisions": int(
+                sum(
+                    int(ep.get("wall_collision_count", 0))
+                    + int(ep.get("turn_blocked_count", 0))
+                    for ep in all_episodes
+                )
+            ),
+            "total_collision_steps": int(
+                sum(
+                    1
+                    for ep in all_episodes
+                    for step in (ep.get("steps") or [])
+                    if step.get("collision")
+                )
+            ),
+            "total_non_panel_collision_steps": max(
+                0,
+                sum(
+                    1
+                    for ep in all_episodes
+                    for step in (ep.get("steps") or [])
+                    if step.get("collision")
+                )
+                - sum(
+                    int(ep.get("wall_collision_count", 0))
+                    + int(ep.get("turn_blocked_count", 0))
+                    for ep in all_episodes
+                ),
+            ),
             "total_invalid_responses": int(
                 sum(
                     int(ep.get("invalid_response_count", 0)) for ep in every_episode
+                )
+            ),
+            "invalid_episodes": int(
+                sum(
+                    1
+                    for ep in every_episode
+                    if int(ep.get("invalid_response_count", 0)) > 0
                 )
             ),
         },
@@ -1188,8 +1334,11 @@ def format_markdown_table(
         "Width (m)",
         "Episodes",
         "Excluded",
+        "Invalid",
+        "Collisions",
         "Pass %",
-        "Turned %",
+        "Any-Turn %",
+        "Rot-Pass %",
         "Sideways %",
         "1st Turn",
         "Rot@Pass",
@@ -1218,8 +1367,11 @@ def format_markdown_table(
                 f"{summary['channel_width']:.2f}",
                 str(summary.get("episodes", 0)),
                 str(summary.get("excluded_no_valid_call", 0)),
+                str(summary.get("invalid_steps", 0)),
+                str(summary.get("collision_steps", 0)),
                 f"{100.0 * summary['pass_rate']:.1f}",
                 f"{100.0 * summary['turned_rate']:.1f}",
+                f"{100.0 * summary.get('rotated_pass_rate', 0.0):.1f}",
                 f"{100.0 * summary['sideways_rate']:.1f}",
                 "-" if first_turn is None else f"{first_turn:.1f}",
                 "-" if rot_at_pass is None else f"{rot_at_pass:.1f}",
@@ -1232,19 +1384,24 @@ def format_markdown_table(
         "Model",
         "Scene",
         "Protocol",
-        "Turned Threshold (A/S)",
+        "Rot-Pass Threshold (A/S)",
+        "Rot-Pass Class",
+        "Rot-Pass Gap",
         "Sideways Threshold (A/S)",
+        "Sideways Class",
+        "Sideways Gap",
         "Human Reference",
-        "Gap vs Human",
-        "Class",
         "Graded?",
     ]
     lines.append("| " + " | ".join(threshold_header) + " |")
     lines.append("|" + "---|" * len(threshold_header))
     for report in reports:
-        threshold = report["sideways_threshold"]
-        turned = report.get("turned_threshold")
-        gap = report["threshold_gap_vs_human"]
+        rotated = report.get("rotated_pass_threshold")
+        rotated_class = report.get("rotated_pass_threshold_class")
+        rotated_gap = report.get("rotated_pass_threshold_gap_vs_human")
+        sideways = report["sideways_threshold"]
+        sideways_class = report["threshold_class"]
+        sideways_gap = report["threshold_gap_vs_human"]
         lines.append(
             "| "
             + " | ".join(
@@ -1252,11 +1409,13 @@ def format_markdown_table(
                     str(report["model"]),
                     str(report.get("scene") or "-"),
                     str(report.get("protocol") or "unknown"),
-                    "-" if turned is None else f"{turned:.2f}",
-                    "-" if threshold is None else f"{threshold:.2f}",
+                    "-" if rotated is None else f"{rotated:.2f}",
+                    str(rotated_class or "-"),
+                    "-" if rotated_gap is None else f"{rotated_gap:+.2f}",
+                    "-" if sideways is None else f"{sideways:.2f}",
+                    str(sideways_class or "-"),
+                    "-" if sideways_gap is None else f"{sideways_gap:+.2f}",
                     f"{HUMAN_THRESHOLD:.2f}",
-                    "-" if gap is None else f"{gap:+.2f}",
-                    str(report["threshold_class"]),
                     str(report.get("rotation_gradedness") or "-"),
                 ]
             )
@@ -1264,20 +1423,37 @@ def format_markdown_table(
         )
     lines.append("")
     lines.append(
-        "Turned Threshold is the widest A/S at which the torso was rotated at all;"
+        "Rot-Pass Threshold is the widest A/S at which the model PASSED with a non-zero"
     )
     lines.append(
-        "Sideways Threshold additionally requires the episode to have succeeded."
+        "torso angle at the wall plane; failed wandering turns do not count."
     )
     lines.append(
-        "The human reference of 1.30 measures whether the shoulders were rotated,"
+        "Sideways Threshold additionally requires 45-135 degrees at that passage."
     )
-    lines.append("so Turned Threshold is the closer analogue.")
     lines.append(
-        "Graded? is flat_always / flat_never when the rotation rate does not vary"
+        "The any-turn threshold is kept in the JSON/CSV as a descriptive statistic: it"
+    )
+    lines.append(
+        "counts a turn anywhere, including a failed recovery, and is NOT the human analogue."
+    )
+    lines.append(
+        "Graded? is flat_always / flat_never when the rotated-pass rate does not vary"
     )
     lines.append(
         "with A/S at all: a fixed policy has no threshold, whatever the number says."
+    )
+    lines.append(
+        "Invalid counts unusable steps; Excluded counts whole episodes with zero usable steps."
+    )
+    lines.append(
+        "Collisions counts every step whose collision flag is set (obstacle panel or room"
+    )
+    lines.append(
+        "boundary); the CSV splits panel / non-panel. Any-Turn is the old descriptive"
+    )
+    lines.append(
+        "turn-anywhere rate; it is not the threshold table's rotation measure."
     )
     # The banner goes FIRST, so a reader who stops after the first table still sees it.
     return banner + "\n".join(lines)
@@ -1308,9 +1484,17 @@ def table_rows(
                     "episodes": summary["episodes"],
                     "attempted_episodes": summary.get("attempted_episodes"),
                     "excluded_no_valid_call": summary.get("excluded_no_valid_call"),
+                    "invalid_steps": summary.get("invalid_steps"),
+                    "invalid_episodes": summary.get("invalid_episodes"),
+                    "total_steps": summary.get("total_steps"),
+                    "collision_steps": summary.get("collision_steps"),
+                    "panel_collision_steps": summary.get("panel_collision_steps"),
+                    "non_panel_collision_steps": summary.get("non_panel_collision_steps"),
                     "pass_rate": summary["pass_rate"],
                     "sideways_rate": summary["sideways_rate"],
                     "turned_rate": summary["turned_rate"],
+                    "rotated_pass_rate": summary.get("rotated_pass_rate"),
+                    "rotated_pass_count": summary.get("rotated_pass_count"),
                     "passed_sideways_count": summary["passed_sideways_count"],
                     "first_turn_step_mean": summary["first_turn_step_mean"],
                     "avg_success_steps": summary["avg_success_steps"],
@@ -1328,11 +1512,27 @@ def table_rows(
                 "tag": report.get("tag"),
                 "level": "ALL",
                 "sideways_threshold": report["sideways_threshold"],
+                "sideways_threshold_class": report["threshold_class"],
+                "sideways_threshold_gap_vs_human": report["threshold_gap_vs_human"],
+                "rotated_pass_threshold": report.get("rotated_pass_threshold"),
+                "rotated_pass_threshold_class": report.get("rotated_pass_threshold_class"),
+                "rotated_pass_threshold_gap_vs_human": report.get(
+                    "rotated_pass_threshold_gap_vs_human"
+                ),
+                "rotated_pass_background_rate": report.get("rotated_pass_background_rate"),
                 "turned_threshold": report.get("turned_threshold"),
-                "threshold_class": report["threshold_class"],
+                "any_turn_threshold": report.get("any_turn_threshold"),
                 "turned_threshold_class": report.get("turned_threshold_class"),
                 "overall_pass_rate": report["overall"]["pass_rate"],
                 "overall_sideways_rate": report["overall"]["sideways_rate"],
+                "overall_rotated_pass_rate": report["overall"].get("rotated_pass_rate"),
+                "overall_invalid_responses": report["overall"].get(
+                    "total_invalid_responses"
+                ),
+                "overall_collision_steps": report["overall"].get("total_collision_steps"),
+                "overall_non_panel_collision_steps": report["overall"].get(
+                    "total_non_panel_collision_steps"
+                ),
             }
         )
     return rows
