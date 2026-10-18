@@ -843,6 +843,11 @@ def _progress_callback(
         _write_progress(message)
 
 
+
+# Empty until main() sets it to the run tag. It needs a module-level default, not just the
+# assignment in main(): the first _write_progress call (“main start”) happens BEFORE the runner
+# exists, so a bare name here would raise NameError on every run.
+_PROGRESS_LABEL = ""
 def _write_progress(message: str) -> None:
     """Append a timestamped line to run_progress.txt (stdout is swallowed).
 
@@ -855,8 +860,9 @@ def _write_progress(message: str) -> None:
         directory = os.path.dirname(path)
         if directory:
             os.makedirs(directory, exist_ok=True)
+        label = f"[{_PROGRESS_LABEL}] " if _PROGRESS_LABEL else ""
         with open(path, "a", encoding="utf-8") as handle:
-            handle.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} {message}\n")
+            handle.write(f"{time.strftime('%Y-%m-%d %H:%M:%S')} {label}{message}\n")
             handle.flush()
     except OSError as exc:
         print(f"[main] WARNING: could not append to {path}: {exc}", flush=True)
@@ -953,6 +959,10 @@ def run_experiment(args: argparse.Namespace) -> Dict[int, Dict[str, Any]]:
             logs_root=run_logs_root,
         )
         runner.save_args(args)
+        # Every durable line from here on carries the tag, which already includes the scene -- so a
+        # four-way sweep produces "level 0 start [full_...-stage1.2]" instead of four identical lines.
+        global _PROGRESS_LABEL
+        _PROGRESS_LABEL = runner.tag
         timestamp = time.strftime("%Y%m%d-%H%M%S")
         safe_model = persistence.sanitize_tag(
             args.model.replace("/", "-").replace("\\", "-"), "model"

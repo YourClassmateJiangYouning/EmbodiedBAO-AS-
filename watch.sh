@@ -45,11 +45,22 @@ tail -n 3 -F "$PROGRESS" "$LOG" 2>/dev/null | awk '
         fflush()
     }
     /level [0-9]+ done/ {
-        levels++
-        printf "    %-34s %2d/17  %s\n", model, levels, $0
+        # COUNT PER JOB, NOT ACROSS JOBS.  A parallel sweep runs several (model, scene) jobs at once
+        # and they all append to this one file, so a single counter reached 17 by summing the levels
+        # of four different jobs and declared a model finished when it was a quarter done. The job tag
+        # is the bracketed prefix main.py now puts on every durable line; count per tag and print it,
+        # so the interleaved streams stay distinguishable.
+        job = $0
+        if (match(job, /\[[^]]+\]/)) {
+            tag = substr(job, RSTART + 1, RLENGTH - 2)
+        } else {
+            tag = model
+        }
+        levels[tag]++
+        printf "    %-58s %2d/17  %s\n", tag, levels[tag], $0
         fflush()
-        if (levels == 17) {
-            printf ">>> MODEL DONE   %s  (17/17 levels)\n\n", model
+        if (levels[tag] == 17) {
+            printf ">>> JOB DONE   %s  (17/17 levels)\n\n", tag
             fflush()
         }
     }
