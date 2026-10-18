@@ -1352,7 +1352,19 @@ def parse_args() -> argparse.Namespace:
         help=f"Episodes per level (default {DEFAULT_EPISODES_PER_LEVEL})",
     )
     parser.add_argument("--max_steps", type=int, default=DEFAULT_MAX_STEPS)
-    parser.add_argument("--seed", type=int, default=0)
+    # CARRIED BUT INERT.  The value reaches BAOExperimentRunner, is stored as self.seed, and builds
+    # self.rng -- which nothing in this file ever draws from, because the benchmark has no random
+    # component: the scene is fixed, the start pose is fixed, the step is deterministic and the model
+    # is called at temperature 0. So the flag changes nothing, and its mere existence suggests it
+    # does. Removing it would break any command line that already passes it, so it is documented
+    # instead. Do not "make it work" by seeding a random choice: determinism is the point.
+    parser.add_argument(
+        "--seed", type=int, default=0,
+        help=(
+            "Accepted for compatibility and has NO EFFECT: this benchmark is deterministic "
+            "(fixed scene, fixed start pose, temperature 0), so there is no randomness to seed."
+        ),
+    )
     parser.add_argument("--tag", type=str, default="", help="Log/result tag")
     parser.add_argument("--save_obs", action="store_true", help="Save per-step camera PNGs")
     parser.add_argument("--headless", action="store_true")

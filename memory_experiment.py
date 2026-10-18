@@ -808,7 +808,17 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         ),
     )
     parser.add_argument("--headless", action="store_true")
-    parser.add_argument("--seed", type=int, default=0)
+    # INERT, like the same flag in experiments.py.  MemoryExperimentRunner accepts seed and stores
+    # nothing that reads it, and this file contains no RNG at all. The memory experiment is
+    # deterministic for the same reasons the threshold experiment is. Kept so an existing command
+    # line still parses; documented so it stops implying otherwise.
+    parser.add_argument(
+        "--seed", type=int, default=0,
+        help=(
+            "Accepted for compatibility and has NO EFFECT: this experiment is deterministic, so "
+            "there is no randomness to seed."
+        ),
+    )
     parser.add_argument(
         "--env_config",
         default="{}",
