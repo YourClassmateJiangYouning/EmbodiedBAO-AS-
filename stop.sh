@@ -90,12 +90,59 @@ else
     # merely mentions the string -- it has killed this operator's own shell three times -- and it
     # does not even stop the sweep, whose xargs feeder carries neither string.  So when no pid is
     # recorded, this script now REPORTS and stops; it does not guess and it does not kill.
-    echo "no dispatcher pid recorded; NOT falling back to a name pattern (see the comment in this file)"
+    echo "no dispatcher pid recorded -- this is normal for a DIRECT run (main.py started by hand, or"
+    echo "by run_qwen_all.sh), which writes no dispatcher pid. Looking for this repository's workers:"
+    echo
+
+    # A DIRECT RUN IS STOPPED BY THE PROCESS GROUP OF *OUR* WORKER.
+    #
+    # The test for "ours" is that the command line contains this repository's ABSOLUTE path, which is
+    # the same test the trailing report uses. That is narrower than any pattern: a colleague's Isaac
+    # job under /workspace/isaaclab cannot contain this path, and neither can another user's shell.
+    # The GROUP is signalled, not the pid, because killing only the parent leaves the Kit child (and,
+    # for the sweep, the xargs feeder) running -- which is how a "stopped" sweep kept spending money.
+    #
+    # Nothing is killed here without being printed first, and /repo stays empty when nothing matches.
+    REPO="$(pwd)"
+    FOUND=""
+    for pid in $(pgrep -f 'main\.py' 2>/dev/null); do
+        line="$(tr '\0' ' ' < "/proc/$pid/cmdline" 2>/dev/null || true)"
+        case "$line" in
+            *"$REPO"*) FOUND="$FOUND $pid" ;;
+        esac
+    done
+    if [ -z "$FOUND" ]; then
+        echo "  no worker of this repository is running either"
+    else
+        for pid in $FOUND; do
+            pgid="$(ps -o pgid= -p "$pid" 2>/dev/null | tr -d ' ')"
+            [ -n "$pgid" ] || continue
+            leader_cmd="$(tr '\0' ' ' < "/proc/$pgid/cmdline" 2>/dev/null || true)"
+            case "$leader_cmd" in
+                *"$REPO"*)
+                    echo "  group $pgid (leader $(ps -o comm= -p "$pgid" 2>/dev/null), ours):"
+                    ps -o pid=,comm= -g "$pgid" 2>/dev/null | sed 's/^/    /'
+                    kill -TERM -- "-$pgid" 2>/dev/null \
+                        && echo "    -> signalled group $pgid" \
+                        || echo "    -> could not signal group $pgid (already gone?)"
+                    ;;
+                *)
+                    # The leader is NOT ours, so this group may contain something else. Signal the
+                    # worker by pid only, and say so, rather than risk sweeping up a stranger.
+                    echo "  pid $pid is ours but its group leader $pgid is not; signalling the pid only:"
+                    echo "    leader cmd: $(echo "$leader_cmd" | cut -c1-90)"
+                    kill -TERM "$pid" 2>/dev/null \
+                        && echo "    -> signalled pid $pid" \
+                        || echo "    -> could not signal pid $pid"
+                    ;;
+            esac
+        done
+    fi
+    echo
     echo "  the dispatcher, if one is still dispatching, is one of:"
     pgrep -af 'run_parallel_sweep\.sh' 2>/dev/null | sed 's/^/    /' || echo "    (none)"
-    echo "  its xargs feeder, which the pattern would never have matched:"
+    echo "  its xargs feeder, which a name pattern would never have matched:"
     pgrep -af 'xargs -P' 2>/dev/null | sed 's/^/    /' || echo "    (none)"
-    echo "  kill one of THOSE by pid, then remove the stale pid file: rm -f $PIDFILE"
 fi
 sleep 2
 
