@@ -38,7 +38,19 @@ def shell_composes_the_tag_itself(source: str) -> bool:
     start = source.find(marker)
     if start < 0:
         return False
-    body = source[start : source.find("}", start)]
+    # THE BODY ENDS AT A LINE THAT IS EXACTLY "}", NOT AT THE FIRST "}".
+    #
+    # The body contains "${SCENE:-}", whose closing brace is the first "}" in the function, so the old
+    # slice was 47 characters long and never contained the heredoc. `delegates` was therefore always
+    # False and this checker reported "run_all_models.sh builds its own tag" on every run, for a script
+    # that does delegate. Proved pre-existing: the same 47-character slice comes out of HEAD~1.
+    tail = source[start:]
+    end = len(tail)
+    for offset, line in enumerate(tail.splitlines(keepends=True)):
+        if line.strip() in ("}", "};"):
+            end = sum(len(item) for item in tail.splitlines(keepends=True)[: offset + 1])
+            break
+    body = tail[:end]
     delegates = "from main import effective_tag" in body and "effective_tag(" in body
     builds_its_own = "sanitize_tag" in body or "PROTOCOL_TAG" in body
     return not delegates or builds_its_own
