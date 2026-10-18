@@ -980,6 +980,19 @@ def analyze_model(
             threshold, turned, len(all_episodes) - excluded_no_valid_call
         ),
         "rotation_gradedness": rotation_gradedness(per_level),
+        # IS THIS REPORT BASED ON THE WHOLE LADDER OR ONLY PART OF IT?
+        #
+        # A run in progress covers some Levels and not others. Measured on a live run at Level 2 of 17:
+        # the report printed overall_class "no_threshold" and rotation_gradedness "flat_never", which
+        # read as "this model has no threshold and a flat policy" -- when the truth was that Levels
+        # 3-16 had not been run yet. Nothing in the report said so. These two fields are additive, so
+        # an existing report keeps every field it had; format_markdown_table prints a banner for
+        # incomplete data so it cannot be read as a finished result.
+        "levels_analysed": sorted(int(level) for level in per_level),
+        "levels_missing": sorted(
+            int(level) for level in range(len(LEVEL_CHANNEL_WIDTHS)) if int(level) not in per_level
+        ),
+        "data_complete": len(per_level) == len(LEVEL_CHANNEL_WIDTHS),
         "turned_threshold_gap_vs_human": (
             None if turned is None else float(turned - HUMAN_THRESHOLD)
         ),
@@ -1059,6 +1072,34 @@ def format_markdown_table(
     reports: Sequence[Dict[str, Any]], levels: Sequence[int]
 ) -> str:
     """Per-(model, level) table plus a threshold summary per model."""
+    # A PARTIAL RUN MUST ANNOUNCE ITSELF.  A report built from Levels 0-2 of 17 printed
+    # "no_threshold" and "flat_never", which reads as a measured conclusion about the model rather than
+    # an artefact of where the run had got to. The banner goes at the TOP, before any number, because a
+    # reader who stops after the first table would otherwise never see it.
+    incomplete = [r for r in reports if not r.get("data_complete", True)]
+    banner = ""
+    if incomplete:
+        lines = [
+            "> **INCOMPLETE DATA -- not a finished result.**",
+            ">",
+        ]
+        # ONE LINE PER MODEL, not one per report: a five-scene sweep produces five reports for the same
+        # model, all with the same missing Levels, and five identical paragraphs read as five problems.
+        by_model: Dict[Any, List[Dict[str, Any]]] = {}
+        for report in incomplete:
+            by_model.setdefault(report.get("model"), []).append(report)
+        for model, group in by_model.items():
+            analysed = group[0].get("levels_analysed") or []
+            missing = group[0].get("levels_missing") or []
+            span = f" (missing {missing[0]}-{missing[-1]})" if missing else ""
+            scenes = len(group)
+            lines.append(
+                f"> `{model}`: {len(analysed)} of {len(LEVEL_CHANNEL_WIDTHS)} Levels analysed{span}"
+                + (f", across {scenes} scenes" if scenes > 1 else "")
+                + ". The threshold and gradedness columns below are computed from the Levels that "
+                "exist, so 'no_threshold' here means 'not seen yet', not 'none exists'."
+            )
+        banner = "\n".join(lines) + "\n\n"
     header = [
         "Model",
         "Level",
@@ -1147,7 +1188,8 @@ def format_markdown_table(
     lines.append(
         "with A/S at all: a fixed policy has no threshold, whatever the number says."
     )
-    return "\n".join(lines)
+    # The banner goes FIRST, so a reader who stops after the first table still sees it.
+    return banner + "\n".join(lines)
 
 
 def table_rows(
