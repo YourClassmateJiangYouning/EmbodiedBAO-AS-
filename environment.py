@@ -1444,9 +1444,10 @@ class BAOEnv:
             cam.GetVerticalApertureAttr().Set(float(ROBOT_CAMERA_SENSOR_HEIGHT_MM))
             # FILM FIT IS NOT SETTABLE IN THIS PXR BUILD.  The aperture pair is 16:9 and the render
             # is 1:1, so the renderer decides which aperture the image follows -- and it follows the
-            # HORIZONTAL one on BOTH axes.  Measured from this repository's own figure (a 0.60 m plate at 15.48 m
-            # subtends about 25 px at 1024): the vertical field is 76.9 degrees, not the 47.6 that a
-            # vertical aperture of 11.787 mm would give.  Leaving that implicit is what made
+            # HORIZONTAL one on BOTH axes.  Measured from this repository's own figure (a 0.60 m plate
+            # at 15.48 m subtends about 25 px at 1024): the vertical field is 76.2-76.9 degrees
+            # (pixel rounding), not the 47.6 that a vertical aperture of 11.787 mm would give.
+            # Leaving that implicit is what made
             # scenes.project() overestimate every projected size by about 1.78x.  Horizontal fit is
             # now the stated contract rather than an accident of the default.
             # filmFit IS DELIBERATELY NOT SET, and this is a correction.
@@ -1460,11 +1461,11 @@ class BAOEnv:
             #
             # That is fine, because the projection was never derived from filmFit. It was derived
             # from MEASUREMENT: a 0.60 m plate at 15.48 m subtends about 25 px at 1024, which is a
-            # 76.9 degree VERTICAL field -- i.e. this renderer applies the 20.955 mm HORIZONTAL
+            # 76.2-76.9 degree VERTICAL field -- i.e. this renderer applies the 20.955 mm HORIZONTAL
             # aperture on both axes regardless of the 16:9 aperture pair. scenes.VERTICAL_FOV_DEG is
-            # set to match that measurement. Do not "fix" the camera to agree with the old 47.6
-            # number; the 47.6 is what a 11.787 mm vertical aperture WOULD give and is not what this
-            # renderer does.
+            # set to the 76.2 horizontal value that measurement is consistent with. Do not "fix" the
+            # camera to agree with the old 47.6 number; the 47.6 is what a 11.787 mm vertical
+            # aperture WOULD give and is not what this renderer does.
         except Exception as exc:
             print(f"[BAOEnv] could not set USD focalLength on {path}: {exc}")
 
