@@ -1082,7 +1082,9 @@ def test_analysis_discovers_tagged_runs() -> None:
                 ]
             )
             check(rc == 0, f"analysis CLI returned {rc} for a tagged run")
-            report_path = os.path.join(out_dir, "threshold_tagged-model.json")
+            # The file name carries the tag now, because a sweep writes one report per SCENE and
+            # two scenes of one model would otherwise overwrite each other.
+            report_path = os.path.join(out_dir, "threshold_tagged-model_sweep-1.json")
             check(
                 os.path.exists(report_path),
                 "analysis CLI wrote no threshold report for a tagged run",

@@ -38,6 +38,7 @@ import io
 import json
 import math
 import os
+import re
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
@@ -85,7 +86,8 @@ def model_dir_name(model: str) -> str:
 
 
 def load_episodes(
-    results_root: str, level: int, model: str, tag: Optional[str] = None
+    results_root: str, level: int, model: str, tag: Optional[str] = None,
+    strict: bool = False,
 ) -> List[Dict[str, Any]]:
     """Load per-episode JSON files for one model/Level, optionally one run tag."""
     model_dir = os.path.join(results_root, f"level{level}", model_dir_name(model))
@@ -111,12 +113,19 @@ def load_episodes(
         # analysed a DIFFERENT run when --tag was mistyped or pointed at a tag that had been cleaned up,
         # and the report was then labelled with the tag that was asked for. A silently wrong answer is
         # worse than a refusal: the reader has no way to notice.
-        if tag:
+        #
+        # STRICT ONLY WHEN ASKED. Applying this per Level was wrong: a run that has reached Level 3 of
+        # 17 has no records for Levels 4-16, so analysing a partial run died on the first missing
+        # Level -- and every partial run is partial while it is running. analyze_model decides ONCE,
+        # across all Levels, whether the tag exists at all, and then loads the Levels leniently.
+        if tag and strict:
             raise FileNotFoundError(
                 f"no episode records under {os.path.join(model_dir, tag)!r}. Refusing to fall back to "
                 "a different run: pass --tag only for a tag that exists, or omit it to analyse the "
                 "newest one."
             )
+        if tag:
+            return []
         # Legacy layout: results/level{level}/{model}/round*/episode_*.json
         paths = sorted(
             glob.glob(os.path.join(model_dir, "round*", "episode_*.json"))
@@ -766,6 +775,57 @@ def choose_tag(
     return max(tags, key=rank)
 
 
+_SCENE_RE = re.compile(r"(stage1\.\d+)")
+
+
+def scene_from_tag(tag: str) -> Optional[str]:
+    """The Stage 1 scene a run tag belongs to, or None when the tag names no scene.
+
+    Runner appends the scene to the tag (main.effective_tag), so "full_<slug>-v8-...-stage1.2" is a
+    different CONDITION from "...-stage1.3", not a repeat of it. Recovering the scene from the tag is
+    what lets the analysis report them separately instead of discarding all but one.
+    """
+    match = _SCENE_RE.search(tag or "")
+    return match.group(1) if match else None
+
+
+def choose_tags(results_root: str, model: str, levels: Sequence[int]) -> Dict[str, Optional[str]]:
+    """One tag per SCENE, keyed by scene (None for a tag that names no scene).
+
+    choose_tag picks a single tag per model, which was right when every tag was a repeat run of one
+    scene. It is wrong once a sweep runs five scenes: they are five CONDITIONS, and picking one tag
+    threw away four fifths of the experiment. Within a scene the old rule still applies -- one tag,
+    because two runs of the SAME scene would double-count the five marker conditions.
+    """
+    tags = _current_protocol_tags(results_root, model, levels)
+    if not tags:
+        # NO CURRENT-PROTOCOL TAG: fall back to every tag directory, which is what choose_tag does.
+        # _current_protocol_tags filters on the protocol marker in the tag NAME, so a tree whose tags
+        # do not carry it (an older run, or a fixture) would otherwise yield nothing and the analysis
+        # would report "no analyzable episodes" for data that is sitting right there.
+        tags = sorted(
+            {
+                os.path.basename(path)
+                for level in levels
+                for path in glob.glob(
+                    os.path.join(results_root, f"level{level}", model_dir_name(model), "*")
+                )
+                if os.path.isdir(path) and not os.path.basename(path).startswith("round")
+            }
+        )
+    grouped: Dict[str, List[str]] = {}
+    for candidate in tags:
+        grouped.setdefault(scene_from_tag(candidate) or "", []).append(candidate)
+    chosen: Dict[str, Optional[str]] = {}
+    for scene, candidates in grouped.items():
+        ranked = sorted(
+            candidates,
+            key=lambda t: (-_episode_count(results_root, model, t, levels), -len(t), t),
+        )
+        chosen[scene or None] = ranked[0] if ranked else None
+    return chosen
+
+
 def analyze_model(
     results_root: str,
     model: str,
@@ -781,6 +841,17 @@ def analyze_model(
     """
     selected_tags: List[str] = []
     if tag is not None:
+        # THE TAG IS CHECKED ONCE, ACROSS ALL LEVELS.  A named tag that exists nowhere is a typo and
+        # must be refused; a tag that exists for some Levels is a run in progress and must not be.
+        # Doing it here rather than inside load_episodes is what makes the partial case work.
+        if not any(
+            os.path.isdir(os.path.join(results_root, f"level{level}", model_dir_name(model), tag))
+            for level in levels
+        ):
+            raise FileNotFoundError(
+                f"no Level under {os.path.join(results_root, 'level*', model_dir_name(model))} "
+                f"contains the tag {tag!r}. Refusing to analyse a different run."
+            )
         selected_tags = [tag]
     else:
         tagged_dirs = [
@@ -868,6 +939,10 @@ def analyze_model(
 
     return {
         "model": model,
+        # The tag IS the run: it carries the scene, so two scenes of one model are two reports with
+        # two different tags. main() names the per-scene output files from it; without it they were
+        # all "threshold_<model>.json" and only the last scene survived.
+        "tag": selected_tags[0] if len(selected_tags) == 1 else None,
         "tags": list(selected_tags),
         "levels": per_level,
         "excluded_no_valid_call": excluded_no_valid_call,
@@ -1239,10 +1314,32 @@ def main(argv: Optional[List[str]] = None) -> int:
         return 1
 
     os.makedirs(args.out_dir, exist_ok=True)
-    reports = [
-        analyze_model(args.results_root, model, args.levels, tag=args.tag)
-        for model in models
-    ]
+    # ONE REPORT PER SCENE, NOT ONE PER MODEL.
+    #
+    # A Stage 1 sweep runs five scenes, and each scene is its own tag because each is its own
+    # condition. Reporting one tag per model threw away four fifths of the experiment -- measured:
+    # four scene tags on disk, choose_tag picked stage1.4 and the other three were dropped. With an
+    # explicit --tag the operator is naming one run and gets one report, as before.
+    if args.tag:
+        reports = [
+            analyze_model(args.results_root, model, args.levels, tag=args.tag)
+            for model in models
+        ]
+    else:
+        reports = []
+        for model in models:
+            # sort on "" for the scene-less key: choose_tags uses None to mean "no scene in the tag",
+            # and sorting a dict of {None, "stage1.1"} raises TypeError comparing None with str.
+            for scene, chosen in sorted(
+                choose_tags(args.results_root, model, args.levels).items(),
+                key=lambda item: item[0] or "",
+            ):
+                if chosen is None:
+                    continue
+                print(f"[analysis] {model}: scene {scene or '(none)'} -> tag {chosen}")
+                reports.append(
+                    analyze_model(args.results_root, model, args.levels, tag=chosen)
+                )
     reports = [r for r in reports if r["levels"]]
     if not reports:
         print("No analyzable episodes.")
@@ -1251,7 +1348,10 @@ def main(argv: Optional[List[str]] = None) -> int:
     for report in reports:
         path = os.path.join(
             args.out_dir,
-            f"threshold_{report['model'].replace('/', '-')}.json",
+            # The tag distinguishes the scenes; without it five reports overwrite each other and
+            # only the last scene survives.
+            f"threshold_{report['model'].replace('/', '-')}"
+            f"_{str(report.get('tag') or 'all').replace('/', '-')}.json",
         )
         # Atomic: a report that is half-written is worse than a stale one, and
         # these files are what the paper's tables are generated from.
