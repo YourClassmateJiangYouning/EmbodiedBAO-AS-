@@ -39,7 +39,7 @@
 | 每回合结果（通过/转角/首次转身步/碰撞） | `results/level{N}/{model}/{tag}/episode_{id:03d}.json` | **只有行为，没有思考** |
 | 每一步行为（动作/位置/旋转/耗时） | `results/level{N}/{model}/{tag}/episode_{id:03d}_steps.json` | **只有行为，没有思考** |
 | 档位汇总 | `results/level{N}/{model}/{tag}/summary_{tag}.json` | 通过率、侧身率、平均转角等 |
-| 扁平 CSV（分析用） | `results/{model}/level{N}_{tag}_{时间戳}.csv` | 25 列行为数据（12 episode 列 + 13 step 列，`main.py:save_episodes_csv`） |
+| 扁平 CSV（分析用） | `results/{model}/level{N}_{tag}_{时间戳}.csv` | 25 列行为数据（12 episode 列 + 13 step 列，`main.py:save_episodes_csv`）。**⚠️ 这个文件是派生产物，不是权威数据源**：文件名里带运行时间戳，所以同一个 `(模型, 关卡, tag)` 重跑一次就会**多出一个 CSV，旧的不被覆盖**。实测本仓库已有 517 个 CSV，其中 18 组是同一 `(模型,关卡,场景)` 的重复。`glob('results/*/*.csv')` 会把同一批步子数**算两遍**。权威数据永远是 `episode_{id:03d}.json` 和 `episode_{id:03d}_steps.json`；`analysis.py` 和 `tools/summarise_models.py` 读的就是这两个，所以**分析结果不受重复 CSV 影响**。需要一份干净的表时，用 `analysis.py` 生成的报告，或删掉同名的旧 CSV 后重跑 |
 | 断点续跑状态 | `results/{model}/checkpoint_{tag}.json` | |
 | 运行时间线 | `logs/parallel/<model>_<scene>.log`（并行调度器每个作业一个，`run_parallel_sweep.sh`）、`run_progress.txt` | |
 | 生效参数 | `logs/{tag}/args.json` | |

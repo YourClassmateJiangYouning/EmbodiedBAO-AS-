@@ -674,6 +674,14 @@ def save_episodes_csv(
     tell which CSV belonged to which tag.  Across an 11-model sweep that makes
     the flat tables unusable.
     """
+    # THIS FILE IS A DERIVED ARTEFACT AND MAY EXIST MORE THAN ONCE PER LEVEL.  The name carries a run
+    # timestamp, so re-running the same (model, level, tag) writes a NEW csv and leaves the old one
+    # behind. Measured on this repository: 517 csvs, 18 of them duplicate (model, level, scene) groups
+    # -- e.g. level0_..._stage1.1_20261018-171647.csv beside ..._20261018-192929.csv. A glob over
+    # results/*/*.csv therefore counts the same steps twice. The authoritative records are
+    # episode_{id:03d}.json and _steps.json; analysis.py and tools/summarise_models.py read those, so no
+    # published number depends on these csvs. A reader that needs one flat table should take the newest
+    # file per (level, tag), not all of them.
     # THE SAME SLUG THE RUNNER USES.  experiments.Runner writes episodes to
     # model.replace("/", "-").replace("\\", "-"); this function used sanitize_tag, which rewrites MORE
     # characters. For the current roster the two agree exactly (checked: 15 models, 0 divergences), but
