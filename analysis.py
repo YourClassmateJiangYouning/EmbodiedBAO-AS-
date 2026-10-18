@@ -70,11 +70,25 @@ HUMAN_THRESHOLD = 1.30
 # ---------------------------------------------------------------------------
 
 
+def model_dir_name(model: str) -> str:
+    """The directory name a model's results live under.
+
+    THIS IS NOT THE MODEL NAME.  experiments.Runner writes to model.replace("/", "-"), and
+    analysis used the raw name everywhere -- so for any model with a slash (Qwen/Qwen3-VL-8B-Instruct,
+    meta-llama/Llama-3-...), every lookup pointed at "results/level0/Qwen/Qwen3-VL-8B-Instruct/...",
+    which does not exist. The analysis of such a model either found nothing or, since the tag check in
+    load_episodes stopped falling back, raised FileNotFoundError. Half the roster has a slash.
+
+    Idempotent: a name that is already a slug passes through unchanged, because it contains no "/".
+    """
+    return str(model).replace("/", "-").replace("\\", "-")
+
+
 def load_episodes(
     results_root: str, level: int, model: str, tag: Optional[str] = None
 ) -> List[Dict[str, Any]]:
     """Load per-episode JSON files for one model/Level, optionally one run tag."""
-    model_dir = os.path.join(results_root, f"level{level}", model)
+    model_dir = os.path.join(results_root, f"level{level}", model_dir_name(model))
     if tag:
         paths = sorted(glob.glob(os.path.join(model_dir, tag, "episode_*.json")))
     else:
@@ -685,7 +699,7 @@ def _current_protocol_tags(
     tags: set = set()
     for level in levels:
         for path in glob.glob(
-            os.path.join(results_root, f"level{level}", model, "*")
+            os.path.join(results_root, f"level{level}", model_dir_name(model), "*")
         ):
             if not os.path.isdir(path) or os.path.basename(path).startswith("round"):
                 continue
@@ -707,7 +721,7 @@ def _episode_count(results_root: str, model: str, tag: str, levels: Sequence[int
     total = 0
     for level in levels:
         for path in glob.glob(
-            os.path.join(results_root, f"level{level}", model, tag, "episode_*.json")
+            os.path.join(results_root, f"level{level}", model_dir_name(model), tag, "episode_*.json")
         ):
             if not path.endswith("_steps.json"):
                 total += 1
@@ -737,8 +751,8 @@ def choose_tag(
         return tags[0]
 
     def rank(name: str) -> Any:
-        directory = os.path.join(results_root, f"level{levels[0]}", model, name) \
-            if levels else os.path.join(results_root, model, name)
+        directory = os.path.join(results_root, f"level{levels[0]}", model_dir_name(model), name) \
+            if levels else os.path.join(results_root, model_dir_name(model), name)
         try:
             mtime = os.path.getmtime(directory)
         except OSError:
@@ -773,7 +787,7 @@ def analyze_model(
             path
             for level in levels
             for path in glob.glob(
-                os.path.join(results_root, f"level{level}", model, "*")
+                os.path.join(results_root, f"level{level}", model_dir_name(model), "*")
             )
             if os.path.isdir(path) and not os.path.basename(path).startswith("round")
         ]

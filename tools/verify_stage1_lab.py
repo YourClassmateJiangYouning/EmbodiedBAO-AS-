@@ -98,6 +98,11 @@ def check_log(report: Report, text: str, model: str) -> None:
 
 def check_results(report: Report, results: str, model: str) -> None:
     print("--- result checks ---")
+    # THE DIRECTORY NAME IS THE SLUG, NOT THE MODEL NAME.  Runner writes to
+    # model.replace("/", "-"), so a --model like Qwen/Qwen3-VL-8B-Instruct looked for
+    # "level*/Qwen/Qwen3-VL-8B-Instruct/..." and found nothing, and this check then reported
+    # "0 directories" as if the run had produced no results.
+    model = str(model).replace("/", "-").replace("\\", "-")
     pattern = os.path.join(results, "level*", model, "*stage1.1*")
     dirs = sorted(glob.glob(pattern))
     report.check("episode directories exist", bool(dirs),

@@ -2132,6 +2132,64 @@ def test_a_real_baoenv_scores_the_way_the_fake_does() -> None:
     print("[ok] a real BAOEnv builds, starts, rejects an immediate success and moves forward")
 
 
+def test_analysis_finds_a_model_whose_name_contains_a_slash() -> None:
+    """half the roster has a slash in its name, and analysis could not read any of them.
+
+    experiments.Runner writes episodes under model.replace("/", "-"), but analysis.load_episodes,
+    choose_tag and the threshold lookups all joined the RAW model name -- so for Qwen/Qwen3-VL-8B-Instruct
+    every path became "results/level0/Qwen/Qwen3-VL-8B-Instruct/...", which does not exist. Measured on a
+    real run: load_episodes raised FileNotFoundError and tools/verify_stage1_lab.py reported "0
+    episode directories" for a run that had produced five.
+
+    A directory fixture, not a source assertion: what matters is that the file is FOUND.
+    """
+    import tempfile
+
+    import analysis
+
+    check(
+        analysis.model_dir_name("Qwen/Qwen3-VL-8B-Instruct") == "Qwen-Qwen3-VL-8B-Instruct",
+        "model_dir_name no longer maps a slash to a dash",
+    )
+    check(
+        analysis.model_dir_name("Qwen-Qwen3-VL-8B-Instruct") == "Qwen-Qwen3-VL-8B-Instruct",
+        "model_dir_name is not idempotent, so an already-slugged name would move",
+    )
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tag = "Qwen-Qwen3-VL-8B-Instruct-v8-actions-flipped-stage1.1"
+        directory = os.path.join(
+            tmp, "level0", "Qwen-Qwen3-VL-8B-Instruct", tag
+        )
+        os.makedirs(directory, exist_ok=True)
+        record = {
+            "episode_id": 0,
+            "level": 0,
+            "channel_width": 1.14,
+            "a_s_ratio": 2.0,
+            "passed": True,
+            "total_steps": 11,
+            "marker_slot": 1,
+            "scene": "stage1.1",
+            "steps": [],
+        }
+        with open(os.path.join(directory, "episode_000.json"), "w") as handle:
+            json.dump(record, handle)
+
+        found = analysis.load_episodes(tmp, 0, "Qwen/Qwen3-VL-8B-Instruct", tag=tag)
+        check(
+            len(found) == 1,
+            f"load_episodes found {len(found)} episode(s) for a model with a slash; the directory is "
+            "named with the slug and the lookup must use it",
+        )
+        # ... and the already-slugged spelling must find the same file, not a second one.
+        check(
+            len(analysis.load_episodes(tmp, 0, "Qwen-Qwen3-VL-8B-Instruct", tag=tag)) == 1,
+            "the slugged spelling does not resolve to the same directory",
+        )
+    print("[ok] analysis reads a model whose name contains a slash")
+
+
 def main() -> int:
     tests = [
         test_episode_record_contract,
@@ -2143,6 +2201,7 @@ def main() -> int:
         test_the_threshold_family_wise_error_rate_is_controlled,
         test_analysis_recovers_threshold,
         test_choose_tag_counts_the_episodes_it_ranks_by,
+        test_analysis_finds_a_model_whose_name_contains_a_slash,
         test_a_real_baoenv_scores_the_way_the_fake_does,
         test_run_shaping_flags_reach_the_tag,
         test_analysis_does_not_import_the_simulator,
