@@ -289,7 +289,13 @@ worker() {
     local job="$1"
     local model="${job%%|*}"
     local scene="${job##*|}"
-    local safe="${model//\//_}"
+    # DASH, NOT UNDERSCORE, BECAUSE THAT IS WHAT main.py WRITES.  Runner slugs a model with
+    # model.replace("/", "-"); this used "_", so the tag it passed (TAG_PREFIX_safe) disagreed
+    # with the directory scheme, and -- worse -- the episode count below searched with the RAW
+    # model name, whose slash makes the glob "results/*/Qwen/Qwen3-VL-8B-Instruct*/..." match
+    # nothing. A finished Qwen job was therefore reported as exit=0-but-EMPTY and failed the
+    # sweep.
+    local safe="${model//\//-}"
     local log="logs/parallel/${safe}_${scene}.log"
     local t0
     t0=$(date +%s)
@@ -304,7 +310,8 @@ worker() {
     # run whose credential dies after the preflight writes no episodes and exits 0.  Counting them makes
     # a silent empty run fail the sweep instead of looking like a finished model.
     local produced
-    produced=$(find results -path "*/${model}*/${TAG_PREFIX}_${safe}/episode_*.json" 2>/dev/null | wc -l)
+    # THE SLUG, not the model name: the directory is named after the slug.
+    produced=$(find results -path "*/${safe}/${TAG_PREFIX}_${safe}*/episode_*.json" 2>/dev/null | grep -v _steps | wc -l)
     if [ "$rc" -eq 0 ] && [ "$produced" -eq 0 ]; then
         echo "END   ${model} ${scene}  exit=0-but-EMPTY (0 episodes)  $(( $(date +%s) - t0 ))s  log=${log}" >&2
         rc=1
