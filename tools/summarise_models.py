@@ -58,8 +58,16 @@ def main() -> int:
                 tag = os.path.basename(tag_dir)
                 if args.tag and tag != args.tag:
                     continue
-                if args.model and model != args.model:
-                    continue
+                # ACCEPT EITHER SPELLING.  `model` here is the DIRECTORY name, i.e. the slugged form,
+                # so comparing it against a model name that contains a slash never matched:
+                #     --model Qwen-Qwen3-VL-8B-Instruct   -> found the data
+                #     --model Qwen/Qwen3-VL-8B-Instruct   -> "no episode records found under results/"
+                # A reader has the model name (it is what models.json lists); requiring them to know the
+                # slug is a trap rather than a filter.
+                if args.model:
+                    wanted = args.model.replace("/", "-").replace("\\", "-")
+                    if model not in (args.model, wanted):
+                        continue
                 episodes = [
                     p
                     for p in glob.glob(os.path.join(tag_dir, "episode_*.json"))
