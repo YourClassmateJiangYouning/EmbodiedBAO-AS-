@@ -1,6 +1,6 @@
 {
-  "_comment": "Final model roster for the EmbodiedBAO A/S threshold experiment. Every entry was verified against the gateway with a text+image request carrying a solid red 64x64 PNG; 'ok' means the model both accepted the image and named its colour. probe_latency_s is a single 64x64 probe, NOT an average and NOT a predictor of sweep cost: the real per-step latency at 512 px with the full prompt and history is what matters, and it can differ by more than an order of magnitude from the probe (deepseek-v4.1-flash probes at 3.5 s but was measured at 30-86 s per real call).",
-  "_sweep_order": "The list order IS the sweep order: run_all_models.sh reads this file top to bottom. The order is LOW PRICE TO HIGH as the owner supplied it, recorded per entry as `price_rank` (1 = cheapest). Every entry was verified by a real request through tools/check_model.py -- 'answered, sees colour, and returns a valid action'.",
+  "_comment": "Final model roster for the EmbodiedBAO A/S threshold experiment. Every entry marked 'verified': 'ok' was verified against the gateway with a text+image request carrying a solid red 64x64 PNG; 'ok' means the model both accepted the image and named its colour. An entry marked 'not probed' was added to the roster but has not yet been exercised; probe it before a sweep. probe_latency_s is a single 64x64 probe, NOT an average and NOT a predictor of sweep cost: the real per-step latency at 512 px with the full prompt and history is what matters, and it can differ by more than an order of magnitude from the probe (deepseek-v4.1-flash probes at 3.5 s but was measured at 30-86 s per real call).",
+  "_sweep_order": "The list order IS the sweep order: run_all_models.sh reads this file top to bottom. The order is LOW PRICE TO HIGH as the owner supplied it, recorded per entry as `price_rank` (1 = cheapest). Every entry marked 'verified': 'ok' was verified by a real request through tools/check_model.py -- 'answered, sees colour, and returns a valid action'; a 'not probed' entry has not been exercised yet.",
   "endpoint": "http://35.220.164.252:3888/v1",
   "image_size": 1024,
   "episodes_per_level": 5,
@@ -99,13 +99,14 @@
       "verified": "ok"
     },
     {
-      "runner": "kimi-k2.6",
-      "label": "Kimi K2.6",
-      "group": "moonshot",
-      "origin": "CN",
+      "runner": "gemini-3-flash-preview",
+      "label": "Gemini 3 Flash Preview",
+      "group": "reference",
+      "origin": "US",
       "price_rank": 9,
       "probe_latency_s": null,
-      "verified": "ok"
+      "verified": "not probed",
+      "note": "Swapped in for the former bare-name Kimi K2.6 entry on 2026-10-19; the prefixed kimi/kimi-k2.6 entry is separate and unchanged. Run tools/check_model.py before a sweep."
     },
     {
       "runner": "kimi/kimi-k2.6",

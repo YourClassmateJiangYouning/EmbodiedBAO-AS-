@@ -217,7 +217,7 @@ cd ~/EmbodiedBAO-AS- && /home/ybh/isaacsim/python.sh memory_experiment.py --mode
 > `$0.0025`（10-07 21:13 首次 403 quota），22:06 起 key 变成 401 Invalid token。
 > **公开仓库里的 key 必须视为已泄露**：删掉这一行不能把它从 git 历史里去掉，任何人 clone 都能翻出来。
 > 正确处理是**换 key**，并且从此只用环境变量。仓库里其他脚本、日志、`results/` 一律不得出现明文 key。
-名单在 `models.json` 的 15 个 `runner`（**列表顺序即 sweep 顺序**）：Qwen/Qwen3-VL-8B-Instruct / Qwen/Qwen3-VL-30B-A3B-Instruct / gpt-4o-mini / deepseek-v4-flash-vision-exp / glm-4.6v / mimo-v2.6-pro / gemini-2.5-flash / grok-4.3 / kimi-k2.6 / kimi/kimi-k2.6 / claude-haiku-4-5-20251001 / grok-4.5 / gpt-4.1 / gemini-2.5-pro / gpt-4o。
+名单在 `models.json` 的 15 个 `runner`（**列表顺序即 sweep 顺序**）：Qwen/Qwen3-VL-8B-Instruct / Qwen/Qwen3-VL-30B-A3B-Instruct / gpt-4o-mini / deepseek-v4-flash-vision-exp / glm-4.6v / mimo-v2.6-pro / gemini-2.5-flash / grok-4.3 / gemini-3-flash-preview / kimi/kimi-k2.6 / claude-haiku-4-5-20251001 / grok-4.5 / gpt-4.1 / gemini-2.5-pro / gpt-4o。
 `ai_agent.MODEL_REQUEST_PARAMS` 只有**一条**：`glm-4.6v` 的 `thinking={"type":"disabled"}`。`mimo-v2.5` 与 `deepseek-v4.1-flash` 已于 2026-10-15 从该表**删除**（两者都已不在 roster，见 `ai_agent.py` 里 "DELETED from this table 2026-10-15" 的注释）。
 **已排除**：MiniMax 全系（认色不稳）、Mistral 全系（HTTP 500）、Meta 全系（500）、kimi-k2-thinking（无视觉）、doubao-seed-2-1-pro（180 s 超时）。
 
