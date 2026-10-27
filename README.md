@@ -31,10 +31,13 @@ because two of these were mis-filed once:
 | **1** | The A/S threshold, on 5 scene skins and 25 markers | `STAGE1_SCENES.md` | `main.py`, `experiments.py`, `scenes.py`, `scene_builder.py` |
 | **1** (variants) | 10 single-variable variants of the stage above: marker size and colour, far-wall distance, floor centre line, three wall heights, three prompt rewrites | `STAGE1_SCENE_VARIANTS.md` | not implemented |
 | **2** | One narrow-success memory → same scene/marker at wide A/S 2.0 | `STAGE2_DESIGN.md` | `tools/build_stage2_memory.py`, `memory_metrics.py` (geometry helpers) |
+| **3** | Two smaller Unitree bodies (G1/R1) at A/S 1.1-0.9, same Stage 1 task | `STAGE3_DESIGN.md` | `stage3_runner.py`, `robot_profiles.py`, `stage3_config.py` |
 
 The Stage 1 scene skins used to live in a file named `STAGE3_SCENES.md`, and the variants in
 `STAGE3_SCENE_VARIANTS.md`, which is why older notes call the scene work "Stage 3". It is
-not: Stage 3 is the memory experiment's follow-up. Both files are now named `STAGE1_*`.
+not: that scene work is Stage 1. The new Stage 3 is the G1/R1 body-size
+supplementary experiment in `STAGE3_DESIGN.md`; the old memory experiment is
+archived and is not the current Stage 3. Both scene files are now named `STAGE1_*`.
 
 ## The A/S ladder
 

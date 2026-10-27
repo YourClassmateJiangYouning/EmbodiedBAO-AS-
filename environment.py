@@ -316,6 +316,7 @@ SUCCESS_X = 8.75
 # three names, and other modules still import them from here, so there is one definition and no
 # second copy to drift.
 from protocol import _APERTURE_RATIOS, ROBOT_SHOULDER_WIDTH, LEVEL_CHANNEL_WIDTHS
+from robot_profiles import PROFILES, RobotProfile, get_profile
 
 # Approximate step length for a 1.80 m adult man is defined in protocol.py and
 # imported above, together with the action list, so the controls have one home.
@@ -382,6 +383,31 @@ ROBOT_BODY_CENTER_Y = 0.9
 ROBOT_BODY_HALF_HEIGHT = 0.9
 ROBOT_HEAD_HEIGHT = 1.55
 MODEL_YAW_OFFSET_DEG = 0.0
+
+# Stage 3 selects a body profile before BAOEnv is constructed.  These globals
+# are what the analytic collider and eye camera already read; the default is
+# the exact H1 values, so Stage 1/2 behaviour is unchanged.
+ACTIVE_ROBOT_PROFILE: RobotProfile = PROFILES["H1"]
+
+
+def apply_robot_profile(key: str) -> RobotProfile:
+    """Switch the kinematic body/camera profile for the next BAOEnv.
+
+    This mutates the module globals used by the analytic gate and eye camera.
+    It is intentionally called once, before BAOEnv(...), in a fresh process.
+    """
+    global ACTIVE_ROBOT_PROFILE, ROBOT_SHOULDER_WIDTH, ROBOT_TORSO_THICKNESS
+    global ROBOT_BODY_CENTER_Y, ROBOT_BODY_HALF_HEIGHT, ROBOT_HEAD_HEIGHT
+    global EYE_CAMERA_HEIGHT
+    profile = get_profile(key)
+    ACTIVE_ROBOT_PROFILE = profile
+    ROBOT_SHOULDER_WIDTH = float(profile.shoulder_width)
+    ROBOT_TORSO_THICKNESS = float(profile.torso_thickness)
+    ROBOT_BODY_CENTER_Y = float(profile.body_height) / 2.0
+    ROBOT_BODY_HALF_HEIGHT = float(profile.body_height) / 2.0
+    ROBOT_HEAD_HEIGHT = float(profile.head_height)
+    EYE_CAMERA_HEIGHT = float(profile.eye_height)
+    return profile
 
 # LEVEL_CHANNEL_WIDTHS is imported from protocol.py as well -- it is the ladder, and it is built
 # there from the same shoulder width.  This module only re-exports it, so `from environment import
@@ -911,7 +937,8 @@ class BAOEnv:
         self.world = World(stage_units_in_meters=1.0)
         self.stage = self.world.stage
 
-        self.robot_prim_path = "/World/H1"
+        self.robot_prim_path = f"/World/{ACTIVE_ROBOT_PROFILE.prim_name}"
+        self.robot_profile = ACTIVE_ROBOT_PROFILE
         self.robot_usd_path: str = ""
         self.robot_root: Optional[XFormPrim] = None
         self.hand_xform: Optional[XFormPrim] = None
@@ -1682,6 +1709,13 @@ class BAOEnv:
                 if not all(
                     math.isfinite(v) for v in (lo[0], lo[1], lo[2], hi[0], hi[1], hi[2])
                 ):
+                    continue
+                # The URDF sensor configuration contains unbounded camera/lidar
+                # prims whose USD extent is +/-FLT_MAX.  Treating that as robot
+                # geometry produced a measured height of -6.8e38 m for G1.  It is
+                # a sensor, not the body; any bound beyond the room is not a body
+                # part and must not contribute to the floor calibration.
+                if any(abs(v) > 1000.0 for v in (lo[0], lo[1], lo[2], hi[0], hi[1], hi[2])):
                     continue
                 min_z = min(min_z, lo[2])
                 max_z = max(max_z, hi[2])
