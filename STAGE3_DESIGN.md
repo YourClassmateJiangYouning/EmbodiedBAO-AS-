@@ -78,29 +78,26 @@ The five models are the Stage 1 overall pass-rate top five:
 `claude` and `gpt-5` are tied at 291/425; both are included.  Gemini-2.5-flash
 is sixth at 67.294% and is not in this set.
 
-For each model, ten source conditions are chosen:
+Final design (2026-10-27): 5 models x 2 bodies x 10 cells = 100 episodes.
 
-- two per Stage 1 scene (stage1.1 ... stage1.5);
-- one assigned to G1 and one to R1;
-- A/S 1.1, 1.0 or 0.9;
-- each source is a concrete Stage 1 episode with its scene, marker and episode id;
-- prefer a passed source episode; otherwise keep the lowest episode and record
-  `source_passed=False`.
-
-This produces exactly:
+Per model and per body:
 
 ```
-5 models x 10 source conditions = 50 episodes
-25 on G1 + 25 on R1
-10 source conditions per scene
+A/S 1.3 x3
+A/S 1.1 x3
+A/S 1.0 x2
+A/S 0.9 x2
+= 10 cells
 ```
 
-The frozen plan is `reports/stage3_pair_plan.csv`; it records the source result,
-source marker, source A/S, target robot, target shoulder width and target
-channel width.
+Every Stage 1 scene appears exactly twice per model and body.  G1 keeps its
+existing five cells per model (22 records already on disk + 3 pending) and adds
+five cells: A/S 1.3 at stage1.1/1.2/1.3, A/S 1.0 at stage1.4, A/S 1.1 at
+stage1.5.  The five supplements use markers 2/4/3/2/5, so the final G1 set uses
+all five marker slots.  R1 mirrors the final ten G1 conditions exactly: same
+scene, A/S, marker and source episode; only the body and width change.
 
-The two source conditions in a scene use different A/S values, so no source
-episode is assigned to both robots.
+The frozen plan is `reports/stage3_final100_plan.csv`.
 
 ## Step length and distance
 

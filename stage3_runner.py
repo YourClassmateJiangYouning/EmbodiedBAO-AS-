@@ -31,7 +31,7 @@ def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Stage 3 body-size supplementary experiment")
     p.add_argument("--robot", choices=("G1", "R1"), required=True)
     p.add_argument("--scene", default="stage1.1", choices=("stage1.1", "stage1.2", "stage1.3", "stage1.4", "stage1.5"))
-    p.add_argument("--plan", default=os.path.join("reports", "stage3_pair_plan.csv"))
+    p.add_argument("--plan", default=os.path.join("reports", "stage3_final100_plan.csv"))
     p.add_argument("--model", default="", help="optional filter")
     p.add_argument("--as", dest="as_value", type=float, default=None, help="optional target A/S filter")
     p.add_argument("--limit", type=int, default=0, help="limit rows; 0 = all")
@@ -95,6 +95,9 @@ def main() -> int:
     env = environment.setup_scene(app, task_dict=task)
 
     for index, row in enumerate(rows, 1):
+        if row.get("already_done") == "True":
+            print(f"[stage3] skip already-done {row.get('pair_id')} {row['model']} {row['source_scene']} A/S={row['target_a_s']}", flush=True)
+            continue
         model = row["model"]
         source_episode = int(row["source_episode_id"])
         source_marker = int(row["source_marker_slot"])
@@ -134,6 +137,7 @@ def main() -> int:
         episode["stage3_a_s_requested"] = float(target_as)
         episode["stage3_scene"] = args.scene
         episode["stage3_pair_id"] = row["pair_id"]
+        episode["stage3_phase"] = row.get("phase", "")
         episode["stage3_source_model"] = model
         episode["stage3_source_scene"] = row["source_scene"]
         episode["stage3_source_level"] = int(row["source_level"])
