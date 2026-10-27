@@ -10,6 +10,13 @@ The profile changes only the robot's physical body, camera anchor, and the A/S
 ladder.  It does not change the room, actions, step length, scene markers,
 scoring plane or prompt wording.
 
+DEFINITION OF "SHOULDER WIDTH": this is the manufacturer's official standing
+body WIDTH (the Y dimension in the standing table), exactly the quantity Stage 1
+used for the H1 (0.570 m from the official 570 mm width).  It is NOT the span
+between the two shoulder-pitch joints: those are about 0.200 m apart on G1 and
+0.171 m on R1, which is a joint-layout quantity, not the body width that has to
+clear a doorway.
+
 `eye_height` is the same 93% eye-height convention used for the H1
 (1.68 / 1.806); `head_height` is the authored head anchor.
 """
@@ -44,7 +51,7 @@ PROFILES: Dict[str, RobotProfile] = {
         body_height=1.806,
         head_height=1.550,
         eye_height=1.680,
-        source_note="Existing Stage 1/2 H1 profile; measured height 1.806 m.",
+        source_note="Existing Stage 1/2 H1 profile; official width 0.570 m, thickness 0.220 m, measured height 1.806 m.",
     ),
     "G1": RobotProfile(
         key="G1",
@@ -56,7 +63,7 @@ PROFILES: Dict[str, RobotProfile] = {
         body_height=1.323,
         head_height=1.135,
         eye_height=1.230,
-        source_note="Official G1 1320x450x200 mm; converted 23-DOF URDF bbox height 1.323 m.",
+        source_note="Official G1 1320x450x200 mm (width 0.450, thickness 0.200); converted 23-DOF URDF bbox height 1.323 m.",
     ),
     "R1": RobotProfile(
         key="R1",
@@ -68,7 +75,7 @@ PROFILES: Dict[str, RobotProfile] = {
         body_height=1.230,
         head_height=1.055,
         eye_height=1.144,
-        source_note="Official R1 1230x357x190 mm; converted URDF bbox height 1.230 m.",
+        source_note="Official R1 1230x357x190 mm (width 0.357, thickness 0.190); converted URDF bbox height 1.230 m.",
     ),
 }
 

@@ -44,6 +44,25 @@ kinematic body experiment.
 - Analytic shoulder width / torso thickness used by the collision gate.
 - Channel width: `width = target_robot_shoulder_width * A/S`.
 
+### Definition of shoulder width
+
+Stage 3 uses the same definition as Stage 1: the manufacturer's official
+standing body **width** (the Y dimension in the standing table), not the span
+between the two shoulder joints.
+
+| robot | official standing size | width used | thickness used |
+|---|---|---|---:|---:|
+| H1 | 1800 x 570 x 220 mm | 0.570 m | 0.220 m |
+| G1 | 1320 x 450 x 200 mm | 0.450 m | 0.200 m |
+| R1 | 1230 x 357 x 190 mm | 0.357 m | 0.190 m |
+
+The URDF shoulder-pitch joints are about 0.200 m apart on G1 and 0.171 m on R1;
+that is a joint-layout distance, not the body width that must clear the opening.
+The converted URDF lateral bounding boxes (G1 0.371 m, R1 0.375 m) are the
+arm-down mesh extents and also are not used as the A/S denominator.  This is a
+deliberate consistency choice: Stage 1's 0.570 m H1 value is the official width,
+so G1/R1 must use their official widths too.
+
 ## Selection
 
 The five models are the Stage 1 overall pass-rate top five:
