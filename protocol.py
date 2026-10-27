@@ -429,9 +429,10 @@ NOTE_SYSTEM_PROMPT = (
 # The agent must remember what it has already done *for the whole episode*, so
 # that step 30 is chosen with steps 0-29 in view rather than only the last few.
 # ``None`` means "never truncate"; ``max_steps`` already bounds the block, so
-# there is nothing to gain from a second, smaller cap.  Set an int to restore a
-# sliding window (that would be a different experiment: it measures behaviour
-# without episodic memory).
+# Unbounded on purpose: every completed Stage-1 model was measured with the full
+# episode history, so capping it now would make the remaining models incomparable.
+# The timeout fix is limited to not writing full tracebacks into history; the
+# number of steps is unchanged.
 HISTORY_LIMIT: Optional[int] = None
 
 # Model reasoning is carried into the history so the agent can see *why* it did

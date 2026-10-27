@@ -140,6 +140,11 @@ MODEL_REQUEST_PARAMS: Dict[str, Dict[str, Any]] = {
     # glm-4.6v honours the Zhipu spelling: 12.9 s / 1,595 tokens at the default,
     # 6.4 s / 1,397 tokens with thinking disabled (n=4 each, same probe).
     "glm-4.6v": {"thinking": {"type": "disabled"}},
+    # glm-4.5v uses the same Zhipu spelling; it is the roster replacement for grok-4.3.
+    "glm-4.5v": {"thinking": {"type": "disabled"}},
+    # GPT-5 is the replacement for gpt-4o; the owner asked for the newer generation with
+    # reasoning_effort="none".  This also makes the tag end in -effortnone.
+    "gpt-5": {"reasoning_effort": "none"},
     # Qwen/Qwen3-VL-8B-Instruct: an entry {"reasoning_effort": "none"} was added here on 2026-10-15 and
     # then REMOVED the same day, because of what it did to the results rather than what it did to the
     # model.  The measurement (tools/probe_reasoning.py, stage 2, n=1) was: default 8.5 s, every
@@ -716,10 +721,15 @@ class AgentAPI:
                 self._log(f"REQUEST ERROR: {last_error}")
 
         self._log(f"FALLBACK (no valid response after {self.max_retries + 1} attempts)")
+        # Never feed the full traceback back into the agent's own history.  The
+        # traceback is already in the agent log for diagnosis; putting it in
+        # ``reasoning`` makes the next prompt larger, which makes another timeout
+        # more likely.  Keep only the first line (exception type/message).
+        short_error = str(last_error or "unknown").splitlines()[0][:240]
         return {
             "action": None,
             "confidence": 0.0,
-            "reasoning": f"failed to obtain a valid action after retries: {last_error}",
+            "reasoning": f"failed to obtain a valid action after retries: {short_error}",
         }
 
     # ------------------------------------------------------------------

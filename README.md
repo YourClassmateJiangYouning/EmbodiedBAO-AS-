@@ -16,6 +16,13 @@ down to 0.4, measuring where the agent's body-scale affordance perception sits.
 prompt is identical for every Level, and it never mentions the width, the body
 size, the A/S ratio, or the need to turn.**
 
+> **Stage 2 note (2026-10-25).** The old repeated-attempt/self-note Stage 2
+> (`STAGE23_DESIGN.md`, `memory_experiment.py`, `memory_protocol.py`, the old
+> 100-pair plan and its analysis scripts) is archived under
+> `_archive/stage2_legacy_20261025/` and is not used. The current Stage 2 is the
+> single-memory → wide A/S 2.0 design in `STAGE2_DESIGN.md`. Sections below that
+> describe the old note experiment are historical.
+
 The study has stages, and this README covers all of them. The numbering is worth stating
 because two of these were mis-filed once:
 
@@ -23,8 +30,7 @@ because two of these were mis-filed once:
 | :--- | :--- | :--- | :--- |
 | **1** | The A/S threshold, on 5 scene skins and 25 markers | `STAGE1_SCENES.md` | `main.py`, `experiments.py`, `scenes.py`, `scene_builder.py` |
 | **1** (variants) | 10 single-variable variants of the stage above: marker size and colour, far-wall distance, floor centre line, three wall heights, three prompt rewrites | `STAGE1_SCENE_VARIANTS.md` | not implemented |
-| **2** | Repeated attempts with a self-written note between them | `STAGE23_DESIGN.md` | `memory_experiment.py`, `memory_protocol.py`, `memory_metrics.py` |
-| **3** | The follow-up phases *of the memory experiment*: a second passage back through a narrow opening, and a wide-then-narrow control. Both are listed under "explicitly not doing" in `STAGE23_DESIGN.md` §10, so there is no code and no plan | `STAGE23_DESIGN.md` §10 | none |
+| **2** | One narrow-success memory → same scene/marker at wide A/S 2.0 | `STAGE2_DESIGN.md` | `tools/build_stage2_memory.py`, `memory_metrics.py` (geometry helpers) |
 
 The Stage 1 scene skins used to live in a file named `STAGE3_SCENES.md`, and the variants in
 `STAGE3_SCENE_VARIANTS.md`, which is why older notes call the scene work "Stage 3". It is

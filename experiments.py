@@ -541,6 +541,24 @@ class AgentAdapter:
             self._append_log(prompt, raw_text)
         return action_name, raw_text, reasoning, confidence, scene_description, latency_ms
 
+    def query_raw(self, prompt: str, image: np.ndarray, state: Dict[str, Any]) -> str:
+        """Return the model's raw text, without the action parser or action retries.
+
+        The digest is deliberately not an action: it has a different JSON schema.
+        Running it through ``query`` made a valid digest look "unparseable", so the
+        action client retried it into an action reply and the digest was lost.
+        """
+        import ai_agent
+
+        agent = self._agent
+        if agent is None or not hasattr(agent, "_request"):
+            agent = ai_agent.AIAgent(self.model, log_file=self.log_file)
+        messages = agent._build_messages(image, prompt)
+        raw = agent._request(messages)
+        text = str(raw or "")
+        self._append_log(prompt, text)
+        return text
+
     def record(
         self,
         action_name: str,
@@ -687,6 +705,11 @@ class BAOExperimentRunner:
         # reads it to report WHY the calls were failing; without it defined here that lookup fell
         # through to its empty default and the report never named the underlying error.
         self.history: List[Dict[str, Any]] = []
+        # Stage 2 is opt-in.  None means the Stage 1 behaviour is byte-for-byte
+        # unchanged; the new runner sets these per pair.
+        self.stage2_memory_text: Optional[str] = None
+        self.stage2_memory_id: Optional[str] = None
+        self.stage2_digest: Optional[str] = None
         self.max_steps = int(max_steps)
         self.episodes_per_level = int(episodes_per_level)
         self.save_obs = bool(save_obs)
@@ -942,6 +965,36 @@ class BAOExperimentRunner:
         self.history = history
 
         self.env.reset_scene(episode_id=episode_id)
+        # Stage 2: one no-action digest call, then the ordinary action loop.  The
+        # digest call is deliberately NOT a step: it does not touch the environment
+        # and it is not appended to history.  The reply is carried into the first
+        # real prompt as the model's own reflection.
+        stage2_digest: Optional[str] = None
+        if self.stage2_memory_text:
+            import stage2_protocol
+
+            digest_rgb = self.env.get_camera_image()
+            digest_state = self.env.get_robot_state()
+            digest_prompt = stage2_protocol.build_digest_prompt(
+                digest_state, self.stage2_memory_text, max_steps=self.max_steps
+            )
+            digest_raw = agent.query_raw(digest_prompt, digest_rgb, digest_state)
+            digest_obj = stage2_protocol.parse_digest(digest_raw)
+            if not digest_obj.get("digested"):
+                repair_prompt = digest_prompt + (
+                    "\n\nYour previous reply was not a valid digest. Do not output an "
+                    'action. Reply only with {"digested": true, "memory_summary": "...", '
+                    '"plan": "...", "cues": ["..."]}.'
+                )
+                digest_raw = agent.query_raw(repair_prompt, digest_rgb, digest_state)
+                digest_obj = stage2_protocol.parse_digest(digest_raw)
+            if not digest_obj.get("digested"):
+                raise RuntimeError(
+                    "Stage 2 digest failed: the model did not return "
+                    '{"digested": true, ...}; refusing to start formal actions.'
+                )
+            stage2_digest = str(digest_raw or "")
+            self.stage2_digest = stage2_digest
         steps: List[Dict[str, Any]] = []
         action_sequence: List[str] = []
         wall_collision_count = 0
@@ -972,14 +1025,31 @@ class BAOExperimentRunner:
         final_position_x = 0.0
         final_position_z = 0.0
 
-        for step in range(self.max_steps):
+        # Stage 2 uses step 0 for the no-action digest; the first environment
+        # action is therefore step 1.  Stage 1 keeps its 0-based indexing.
+        step_range = (
+            range(1, self.max_steps + 1)
+            if self.stage2_memory_text
+            else range(self.max_steps)
+        )
+        for step in step_range:
             rgb = self.env.get_camera_image()
             state = self.env.get_robot_state()
-            prompt = build_prompt(
-                state=state,
-                history=history,
-                max_steps=self.max_steps,
-                move_step=state.get("move_step"),
+            prompt = (
+                stage2_protocol.build_test_prompt(
+                    state=state,
+                    history=history,
+                    memory_text=self.stage2_memory_text,
+                    digest=stage2_digest,
+                    max_steps=self.max_steps,
+                )
+                if self.stage2_memory_text
+                else build_prompt(
+                    state=state,
+                    history=history,
+                    max_steps=self.max_steps,
+                    move_step=state.get("move_step"),
+                )
             )
             # `raw_text`, not `_raw`: the underscore said "unused" and it was, for the whole
             # life of this experiment.  The reply is now recorded verbatim in the step record.
@@ -1094,7 +1164,16 @@ class BAOExperimentRunner:
                 }
             )
             action_sequence.append(action_taken)
-            agent.record(action_taken, feedback, reasoning, step=step)
+            # The step record gets the short reasoning returned by the client.
+            # The full traceback remains in the agent log for diagnosis.  A full
+            # traceback in history makes every subsequent request larger and was
+            # the amplifier behind the 2026-10-23 timeout storms.
+            history_reasoning = (
+                reasoning
+                if action_taken in ACTIONS
+                else "invalid: no valid action returned"
+            )
+            agent.record(action_taken, feedback, history_reasoning, step=step)
 
             if self.save_obs:
                 self._save_observation(level, episode_id, step, action_taken, rgb)
@@ -1113,6 +1192,8 @@ class BAOExperimentRunner:
             "level": int(level),
             "model_name": self.model,
             "run_tag": self.tag,
+            "stage2_memory_id": self.stage2_memory_id,
+            "stage2_digest": stage2_digest or "",
             "channel_width": float(channel_width),
             "a_s_ratio": float(ratio),
             "passed": bool(passed),

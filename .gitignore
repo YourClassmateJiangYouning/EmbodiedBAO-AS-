@@ -173,3 +173,7 @@ model_verification.json
 # Audit scratch from a review session: logs and per-module reports, not project content.
 _audit/
 _backup/
+
+# Local/paper exports and archived legacy Stage-2 code are not source.
+exports/
+_archive/

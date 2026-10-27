@@ -1,0 +1,16 @@
+rank,model,Sfinal,NPS,narrow_pass,narrow_n,S0,stage2_eligible
+1,gemini-3-flash-preview,20.00,54.19,145,150,74.31,True
+2,deepseek-v4-flash-vision-exp,20.00,37.30,149,150,72.92,True
+3,mimo-v2.6-pro,20.00,28.32,91,150,51.01,True
+4,claude-haiku-4-5-20251001,16.60,5.35,23,150,16.60,True
+5,gemini-2.5-flash,15.57,4.48,18,150,15.57,True
+6,gpt-5,15.36,6.47,16,150,15.36,True
+7,Qwen-Qwen3-VL-30B-A3B-Instruct,14.54,3.26,18,150,14.54,True
+8,gpt-4.1,10.46,2.45,10,150,10.46,False
+9,glm-4.5v,10.22,1.52,5,150,10.22,False
+10,glm-4.6v,9.41,0.38,2,150,9.41,False
+11,kimi-kimi-k2.5,9.28,0.46,1,150,9.28,False
+12,gpt-4o-mini,9.17,0.00,2,150,9.17,False
+13,Qwen-Qwen3-VL-8B-Instruct,9.15,0.58,3,150,9.15,False
+14,kimi-kimi-k2.6,9.11,0.00,2,150,9.11,False
+15,Qwen-Qwen3-VL-32B-Instruct,7.77,0.00,0,150,7.77,False

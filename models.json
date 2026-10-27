@@ -90,13 +90,14 @@
       "verified": "ok"
     },
     {
-      "runner": "grok-4.3",
-      "label": "Grok 4.3",
-      "group": "xai",
-      "origin": "US",
+      "runner": "glm-4.5v",
+      "label": "GLM-4.5V (no thinking)",
+      "group": "glm",
+      "origin": "CN",
       "price_rank": 8,
-      "probe_latency_s": 1.7,
-      "verified": "ok"
+      "probe_latency_s": 14.4,
+      "verified": "ok",
+      "note": "Probed 2026-10-21; thinking disabled via MODEL_REQUEST_PARAMS."
     },
     {
       "runner": "gemini-3-flash-preview",
@@ -127,13 +128,14 @@
       "verified": "ok"
     },
     {
-      "runner": "grok-4.5",
-      "label": "Grok 4.5",
-      "group": "xai",
-      "origin": "US",
+      "runner": "kimi/kimi-k2.5",
+      "label": "Kimi K2.5 (prefixed route)",
+      "group": "moonshot",
+      "origin": "CN",
       "price_rank": 12,
-      "probe_latency_s": null,
-      "verified": "ok"
+      "probe_latency_s": 4.2,
+      "verified": "ok",
+      "note": "Probed 2026-10-21; same prefixed-route handling as kimi/kimi-k2.6."
     },
     {
       "runner": "gpt-4.1",
@@ -145,22 +147,24 @@
       "verified": "ok"
     },
     {
-      "runner": "gemini-2.5-pro",
-      "label": "Gemini 2.5 Pro",
-      "group": "reference",
-      "origin": "US",
+      "runner": "Qwen/Qwen3-VL-32B-Instruct",
+      "label": "Qwen3-VL 32B",
+      "group": "qwen",
+      "origin": "CN",
       "price_rank": 14,
-      "probe_latency_s": 4.7,
-      "verified": "ok"
+      "probe_latency_s": 12.3,
+      "verified": "ok",
+      "note": "Replaced the unstarted gemini-2.5-pro on 2026-10-23 to lower cost; probed READY the same day."
     },
     {
-      "runner": "gpt-4o",
-      "label": "GPT-4o",
+      "runner": "gpt-5",
+      "label": "GPT-5 (reasoning off)",
       "group": "reference",
       "origin": "US",
       "price_rank": 15,
-      "probe_latency_s": 2.8,
-      "verified": "ok"
+      "probe_latency_s": 6.8,
+      "verified": "ok",
+      "note": "Probed 2026-10-21; reasoning_effort=none via MODEL_REQUEST_PARAMS."
     }
   ],
   "excluded": [
