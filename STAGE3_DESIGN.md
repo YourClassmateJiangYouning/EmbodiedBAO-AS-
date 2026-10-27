@@ -1,101 +1,134 @@
 # Stage 3 — body-size supplementary experiment
 
-## What changed
+## Question
 
-Stages 1 and 2 used a single body, the Unitree H1.  Its measured height was
-1.806 m and its analytic shoulder width was 0.570 m.  That leaves a substantive
-limitation: the observed A/S threshold could be a property of the H1 rather than
-of body-scale affordance perception.
+Stages 1 and 2 used one body, the Unitree H1 (1.806 m measured height, 0.570 m
+analytic shoulder width).  Stage 3 asks whether the aperture behaviour survives
+when only the body changes.
 
-Stage 3 repeats the same body-as-obstacle setting with two smaller Unitree
-humanoids and tests whether the A/S threshold stays in the same place.
-
-There was no committed old Stage 3 implementation.  Historical notes used
-"Stage 3" for the scene-skin work, but that work is Stage 1 (`STAGE1_SCENES.md`).
+There is no old Stage 3 implementation to delete.  Historical notes used
+"Stage 3" for the scene-skin work, but that is Stage 1 (`STAGE1_SCENES.md`).
 The old repeated-attempt memory experiment is archived under
-`_archive/stage2_legacy_20261025/`.  This document defines the new Stage 3.
+`_archive/stage2_legacy_20261025/`.
 
 ## Robots
 
-| key | robot | official standing size | body height used | shoulder width used | source |
+| key | robot | official size | body height used | shoulder width used | asset |
 |---|---|---|---|---|---|
-| G1 | Unitree G1 | 1320 x 450 x 200 mm, 35 kg | 1.323 m (URDF bbox) | 0.450 m | official G1 page, Unitree ROS g1_description |
-| R1 | Unitree R1 | 1230 x 357 x 190 mm, 27-29 kg | 1.230 m (URDF bbox) | 0.357 m | official R1 page, Unitree ROS r1_description |
+| G1 | Unitree G1 | 1320 x 450 x 200 mm, 35 kg | 1.323 m | 0.450 m | `assets/G1/configuration/g1_base.usd` |
+| R1 | Unitree R1 | 1230 x 357 x 190 mm, 27-29 kg | 1.230 m | 0.357 m | `assets/R1/configuration/r1_base.usd` |
 
-References:
+Official sources:
 
 - https://www.unitree.com/g1/
 - https://www.unitree.com/R1/
 - https://github.com/unitreerobotics/unitree_ros
 
-Assets are converted from the official 23-DOF G1 URDF and the R1 URDF with
-`tools/convert_unitree_urdf.py` into `assets/G1/configuration/g1_base.usd` and
-`assets/R1/configuration/r1_base.usd`.  The base payload is used directly; the
-separate sensor configuration is not part of the kinematic body experiment.
+The official URDFs are converted with `tools/convert_unitree_urdf.py`.  The base
+payload is used directly; the separate sensor configuration is not part of the
+kinematic body experiment.
 
 ## Held constant from Stage 1
 
-- Same room, wall, channel, success plane and 30-step budget.
-- Same action menu, 0.75 m translation, 15 degree torso turn and camera glances.
-- Same Stage 1.1 scene and marker selection.
-- Same prompt except the robot name: "You are a Unitree G1/R1 humanoid robot".
-- No A/S, level, width, shoulder width, narrow/wide or turn instruction appears
-  in the prompt.
-- No Stage 2 memory and no Step 0 digest.
+- Same room, wall, obstacle location, success plane and 30-step limit.
+- Same action set, 0.75 m translation, 15 degree torso turn, camera glances.
+- Same five Stage 1 scenes and their 25 markers.
+- Same prompt except the body name: "You are a Unitree G1/R1 humanoid robot".
+- No A/S, width, shoulder width, narrow/wide or turn instruction in the prompt.
+- No memory and no Step 0 digest.
 
-## Design
+## What changes
+
+- Robot body geometry and USD.
+- Camera height (G1 1.230 m, R1 1.144 m).
+- Analytic shoulder width / torso thickness used by the collision gate.
+- Channel width: `width = target_robot_shoulder_width * A/S`.
+
+## Selection
+
+The five models are the Stage 1 overall pass-rate top five:
+
+| rank | model | pass rate |
+|---:|---|---:|
+| 1 | deepseek-v4-flash-vision-exp | 99.765% |
+| 2 | gemini-3-flash-preview | 98.824% |
+| 3 | mimo-v2.6-pro | 86.118% |
+| 4 | claude-haiku-4-5-20251001 | 68.471% |
+| 5 | gpt-5 | 68.471% |
+
+`claude` and `gpt-5` are tied at 291/425; both are included.  Gemini-2.5-flash
+is sixth at 67.294% and is not in this set.
+
+For each model, ten source conditions are chosen:
+
+- two per Stage 1 scene (stage1.1 ... stage1.5);
+- one assigned to G1 and one to R1;
+- A/S 1.1, 1.0 or 0.9;
+- each source is a concrete Stage 1 episode with its scene, marker and episode id;
+- prefer a passed source episode; otherwise keep the lowest episode and record
+  `source_passed=False`.
+
+This produces exactly:
 
 ```
-5 models x 5 A/S values x 2 robots = 50 episodes
-A/S = 1.10, 1.05, 1.00, 0.95, 0.90
+5 models x 10 source conditions = 50 episodes
+25 on G1 + 25 on R1
+10 source conditions per scene
 ```
 
-Models are the Stage 1 top five by Sfinal/NPS:
+The frozen plan is `reports/stage3_pair_plan.csv`; it records the source result,
+source marker, source A/S, target robot, target shoulder width and target
+channel width.
 
-1. gemini-3-flash-preview
-2. deepseek-v4-flash-vision-exp
-3. mimo-v2.6-pro
-4. claude-haiku-4-5-20251001
-5. gemini-2.5-flash
+The two source conditions in a scene use different A/S values, so no source
+episode is assigned to both robots.
 
-A/S is channel width divided by that robot's shoulder width.  The same scene and
-marker are used across robots; one episode per cell.
+## Step length and distance
+
+Stage 3 keeps the Stage 1 step length (0.75 m), start x (0.5 m), wall x (8.0 m)
+and success plane (8.75 m).  It does not rescale the room.
+
+Reason: the experiment changes one variable, shoulder width.  Scaling step
+length with height would also change the locomotion control and the number of
+steps; scaling the room as well would change the scene.  Either would make a
+difference in A/S impossible to separate from a difference in layout.
+
+The smaller robots therefore take a larger step relative to their height.  That
+is a deliberate fixed-control choice, not a claim that 0.75 m is the G1/R1
+walking gait.  The camera height and the body collision rectangle do change,
+because those are the body variables under study.
+
+A secondary scaled-layout sensitivity is possible later, but is not part of the
+50-cell primary design.
 
 ## Code
 
 - `robot_profiles.py`: body geometry, camera anchor, USD path.
-- `stage3_config.py`: models, robots, A/S values.
-- `stage3_runner.py`: one process per robot; explicit channel width per cell.
-- `tools/convert_unitree_urdf.py`: offline URDF -> USD conversion.
+- `stage3_config.py`: selected models, robots, A/S range.
+- `tools/build_stage3_plan.py`: builds the frozen 50-cell source plan.
+- `stage3_runner.py`: runs one source scene per process.
+- `tools/convert_unitree_urdf.py`: URDF -> USD conversion.
 
-Run:
+Run one scene:
 
 ```bash
-/home/ybh/isaacsim/python.sh stage3_runner.py --robot G1 --headless
-/home/ybh/isaacsim/python.sh stage3_runner.py --robot R1 --headless
+/home/ybh/isaacsim/python.sh stage3_runner.py --robot G1 --scene stage1.1 --headless
 ```
 
-Smoke one cell:
+Run one planned cell:
 
 ```bash
-/home/ybh/isaacsim/python.sh stage3_runner.py --robot G1 \
-  --model deepseek-v4-flash-vision-exp --as 1.0 --limit 1 --headless
+/home/ybh/isaacsim/python.sh stage3_runner.py --robot G1 --scene stage1.1 \
+  --model deepseek-v4-flash-vision-exp --as 1.1 --limit 1 --headless
 ```
 
 ## Smoke status
 
-Both bodies load and complete a Stage 3 episode at A/S 1.0:
+The G1 and R1 asset paths load and complete a Stage 3 episode at A/S 1.0:
 
-| robot | height | width | A/S | result |
+| robot | measured height | shoulder | A/S | result |
 |---|---:|---:|---:|---|
 | G1 | 1.323 m | 0.450 m | 1.00 | passed, 17 steps, 90 degrees |
 | R1 | 1.230 m | 0.357 m | 1.00 | passed, 17 steps, 90 degrees |
 
 These are pipeline smoke tests, not the 50-cell result.
-
-## Interpretation
-
-If the A/S threshold is body-independent, the G1 and R1 rotation-onset curves
-should fall near the same normalized A/S values as H1.  If the curves shift with
-body size, the threshold is not a body-scale invariant.  The 50-cell design is
-deliberately narrow (1.1-0.9) because that is where the H1 threshold sits.

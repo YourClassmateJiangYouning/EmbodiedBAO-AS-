@@ -1,16 +1,22 @@
-"""Stage 3 supplementary runner: G1/R1 bodies, A/S 1.1-0.9, Stage 1 setting.
+"""Stage 3 supplementary runner: G1/R1 bodies, source-matched Stage 1 episodes.
 
-Run one process per robot:
-    /home/ybh/isaacsim/python.sh stage3_runner.py --robot G1 --headless
-    /home/ybh/isaacsim/python.sh stage3_runner.py --robot R1 --headless
+Each row of reports/stage3_pair_plan.csv is one experiment:
+  * Stage 1 source: model, scene, marker, A/S
+  * Stage 3 target: G1 or R1, same scene and marker
+  * A/S is recomputed against the target robot's shoulder width
 
-Smoke:
-    /home/ybh/isaacsim/python.sh stage3_runner.py --robot G1 \
-        --model deepseek-v4-flash-vision-exp --as 1.0 --limit 1 --headless
+Run one source scene per process:
+    /home/ybh/isaacsim/python.sh stage3_runner.py --robot G1 --scene stage1.1 --headless
+    /home/ybh/isaacsim/python.sh stage3_runner.py --robot R1 --scene stage1.1 --headless
+
+Smoke one cell:
+    /home/ybh/isaacsim/python.sh stage3_runner.py --robot G1 --scene stage1.1 \
+        --model deepseek-v4-flash-vision-exp --as 1.1 --limit 1 --headless
 """
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import os
 import sys
@@ -19,20 +25,34 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ROOT)
 
 import stage3_config
-from robot_profiles import as_width, get_profile
 
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="Stage 3 body-size supplementary experiment")
-    p.add_argument("--robot", choices=sorted(stage3_config.STAGE3_ROBOTS + ("H1",)), required=True)
-    p.add_argument("--scene", default=stage3_config.STAGE3_SCENE)
-    p.add_argument("--models", default="", help="comma-separated; default Stage 1 top five")
-    p.add_argument("--as", dest="as_values", default="", help="comma-separated A/S values")
-    p.add_argument("--limit", type=int, default=0, help="limit cells; 0 = all")
+    p.add_argument("--robot", choices=("G1", "R1"), required=True)
+    p.add_argument("--scene", default="stage1.1", choices=("stage1.1", "stage1.2", "stage1.3", "stage1.4", "stage1.5"))
+    p.add_argument("--plan", default=os.path.join("reports", "stage3_pair_plan.csv"))
+    p.add_argument("--model", default="", help="optional filter")
+    p.add_argument("--as", dest="as_value", type=float, default=None, help="optional target A/S filter")
+    p.add_argument("--limit", type=int, default=0, help="limit rows; 0 = all")
     p.add_argument("--max-steps", type=int, default=30)
     p.add_argument("--image-size", type=int, default=1024)
     p.add_argument("--headless", action="store_true")
     return p.parse_args()
+
+
+def load_plan(path: str, robot: str, scene: str, model: str, as_value: float | None):
+    rows = []
+    with open(path) as f:
+        for r in csv.DictReader(f):
+            if r["target_robot"] != robot or r["source_scene"] != scene:
+                continue
+            if model and r["model"] != model:
+                continue
+            if as_value is not None and abs(float(r["target_a_s"]) - float(as_value)) > 1e-9:
+                continue
+            rows.append(r)
+    return rows
 
 
 def main() -> int:
@@ -45,16 +65,23 @@ def main() -> int:
     import protocol
 
     profile = environment.apply_robot_profile(args.robot)
-    # The prompt must name the body the agent controls, otherwise the model is
-    # told it is an H1 while standing in a G1/R1.  Nothing else in the Stage 1
-    # wording is changed.
     protocol.TASK_INSTRUCTION = (
         f"You are a {profile.name} humanoid robot. Your task is to reach the red marker on "
         "the far wall."
     )
+    rows = load_plan(args.plan, args.robot, args.scene, args.model, args.as_value)
+    if args.limit:
+        rows = rows[: args.limit]
+    print(
+        f"[stage3] robot={profile.key} ({profile.name}) scene={args.scene} "
+        f"rows={len(rows)} shoulder={profile.shoulder_width:.3f} height={profile.body_height:.3f}",
+        flush=True,
+    )
+    if not rows:
+        print("[stage3] no rows match the filters", flush=True)
+        app.close()
+        return 2
 
-    models = tuple(x.strip() for x in args.models.split(",") if x.strip()) or stage3_config.STAGE3_MODELS
-    as_values = tuple(float(x) for x in args.as_values.split(",") if x.strip()) or stage3_config.STAGE3_AS_VALUES
     task = {
         "headless": args.headless,
         "scene": args.scene,
@@ -65,27 +92,18 @@ def main() -> int:
         "eye_pitch_deg": 15.0,
         "action_steps": 30,
     }
-    print(
-        f"[stage3] robot={profile.key} ({profile.name}) scene={args.scene} "
-        f"shoulder={profile.shoulder_width:.3f} height={profile.body_height:.3f} usd={task['robot_usd_path']}",
-        flush=True,
-    )
     env = environment.setup_scene(app, task_dict=task)
 
-    cells = []
-    for model in models:
-        for asv in as_values:
-            width = as_width(profile, asv)
-            cells.append((model, asv, width))
-    if args.limit:
-        cells = cells[: args.limit]
-
-    print(f"[stage3] {len(cells)} cells; expected full design {stage3_config.STAGE3_EXPECTED}", flush=True)
-    for index, (model, asv, width) in enumerate(cells, 1):
+    for index, row in enumerate(rows, 1):
+        model = row["model"]
+        source_episode = int(row["source_episode_id"])
+        source_marker = int(row["source_marker_slot"])
+        target_as = float(row["target_a_s"])
+        width = float(row["target_channel_width"])
         env.set_channel_width(width)
         built = env.get_channel_width()
         ratio = env.get_a_s_ratio()
-        tag = f"stage3-{profile.key}-{args.scene}-as{asv:.2f}-{model}".replace("/", "-")
+        tag = f"stage3-{profile.key}-{args.scene}-as{target_as:.2f}-{model}-src{source_episode:03d}"
         runner = experiments.BAOExperimentRunner(
             env=env,
             model=model,
@@ -97,25 +115,38 @@ def main() -> int:
             logs_root="logs",
         )
         print(
-            f"[stage3] {index}/{len(cells)} {model} A/S={asv:.2f} width={width:.4f} "
-            f"built={built:.4f} ratio={ratio:.3f}",
+            f"[stage3] {index}/{len(rows)} {model} A/S={target_as:.2f} "
+            f"source={row['source_scene']} L{row['source_level']} ep{source_episode:03d} "
+            f"marker={source_marker} width={width:.4f} built={built:.4f} ratio={ratio:.3f}",
             flush=True,
         )
+        # The source marker determines reset_scene's slot: same scene and same
+        # marker as the Stage 1 record, but a different body and width.
         episode = runner._run_episode(
-            level=int(round(asv * 100)),
-            episode_id=0,
+            level=int(round(target_as * 100)),
+            episode_id=source_marker - 1,
             channel_width=built,
             ratio=ratio,
         )
         episode["stage3_robot"] = profile.key
         episode["stage3_robot_name"] = profile.name
-        episode["stage3_a_s_requested"] = float(asv)
         episode["stage3_shoulder_width"] = float(profile.shoulder_width)
+        episode["stage3_a_s_requested"] = float(target_as)
         episode["stage3_scene"] = args.scene
+        episode["stage3_pair_id"] = row["pair_id"]
+        episode["stage3_source_model"] = model
+        episode["stage3_source_scene"] = row["source_scene"]
+        episode["stage3_source_level"] = int(row["source_level"])
+        episode["stage3_source_a_s"] = float(row["source_a_s"])
+        episode["stage3_source_episode_id"] = source_episode
+        episode["stage3_source_marker_slot"] = source_marker
+        episode["stage3_source_passed"] = row["source_passed"] == "True"
+        episode["stage3_source_result"] = row["source_result"]
+        episode["stage3_source_actions"] = int(row["source_actions"])
         runner._save_episode(episode)
         print(
-            f"[stage3] done {model} A/S={asv:.2f} passed={episode.get('passed')} "
-            f"steps={episode.get('total_steps')}",
+            f"[stage3] done {row['pair_id']} {model} A/S={target_as:.2f} "
+            f"passed={episode.get('passed')} steps={episode.get('total_steps')}",
             flush=True,
         )
     env.close()
