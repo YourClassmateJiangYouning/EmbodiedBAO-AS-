@@ -1,0 +1,2 @@
+model,target_robot,target_shoulder_width,target_channel_width,target_a_s,source_scene,source_level,source_a_s,source_episode_id,source_marker_slot,source_passed,source_actions,source_result,phase,existing_pair_id,already_done,pair_id
+gpt-5,G1,0.45,0.405,0.9,stage1.5,11,0.9,3,4,True,18,results/level11/gpt-5/full_gpt-5-v8-actions-flipped-stage1.5-effortnone/episode_003.json,existing_keep,S3P-049,False,S3F-090
