@@ -187,8 +187,11 @@
         <div><label>目标物 Marker 名称（界面）</label><input id="c-marker" value="M1"></div>
         <div><label>目标物描述（进入 prompt）</label>
           <select id="c-descriptor">
-            <option value="red triangle">red triangle（红色三角形）</option>
-            <option value="green square">green square（绿色正方形）</option>
+            <option value="green rectangle">green rectangle（绿色长方形）</option>
+            <option value="red circle">red circle（红色圆形）</option>
+            <option value="yellow arrow">yellow arrow（黄色箭头）</option>
+            <option value="blue triangle">blue triangle（蓝色三角形）</option>
+            <option value="purple four-pointed star">purple four-pointed star（紫色四角星）</option>
           </select></div>
         <div><label>Mode</label>
           <select id="c-mode"><option value="A">A · 无记忆</option>
@@ -198,8 +201,10 @@
           <option>deepseek-v4-flash-vision-exp</option>
           <option>claude-haiku-4-5-20251001</option>
         </select></div>
+        <div><label>身体名称（进入 prompt 第一句）</label>
+          <input id="c-body" value="a small wheeled robot"></div>
         <div><label>A/S（仅统计用）</label><select id="c-as">
-          <option>2.0</option><option>1.3</option><option>1.1</option><option>1.0</option><option>0.9</option>
+          <option>2.0</option><option>1.2</option><option>1.0</option><option>0.8</option><option>0.6</option>
         </select></div>
         <div><label>肩宽 S（cm，决定 A/S 对应的实际开口）</label><input id="c-shoulder" value="70"></div>
         <div><label>步长（m，一次 forward 的距离）</label><input id="c-movestep" value="0.75"></div>
@@ -416,6 +421,7 @@ function apply(state){
     $('c-shoulder').value = Math.round((state.config.robot_shoulder_m || 0.7) * 100);
     $('c-movestep').value = state.config.move_step_m || 0.75;
     $('c-nothink').checked = state.config.disable_thinking !== false;
+    $('c-body').value = state.config.body_name || 'a small wheeled robot';
   }
   if (!document.activeElement || document.activeElement.tagName !== 'INPUT'){
     $('c-timeout').value = (state.config && state.config.timeout_s) || 90;
@@ -428,8 +434,9 @@ function apply(state){
   const wb = $('t-width');
   if (wb){
     wb.innerHTML = '';
-    const notes = {2.0:'最宽，直走可通过', 1.3:'接近身体宽度 1.3 倍',
-                   1.1:'略宽于身体', 1.0:'等于身体宽度', 0.9:'窄于身体，必须转身'};
+    const notes = {2.0:'宽口对照（Stage 2 用）', 1.2:'略宽于身体，可直走',
+                   1.0:'正好等于身体宽度', 0.8:'窄于身体，必须转身',
+                   0.6:'远窄于身体，必须转到最窄方向'};
     (g.table || []).forEach(function(row){
       const tr = document.createElement('tr');
       const isCurrent = Math.abs((Number(row.a_s) || 0) - Number(e.a_s || 0)) < 1e-9;
@@ -538,6 +545,7 @@ $('btn-open').onclick = ()=>run(async()=>{
     max_steps: parseInt($('c-steps').value,10) || 30,
     timeout_s: parseFloat($('c-timeout').value) || 90,
     disable_thinking: $('c-nothink').checked,
+    body_name: $('c-body').value.trim() || 'a small wheeled robot',
     api_key: $('c-key').value.trim()
   });
   toast('会话已建立：' + $('c-session').value.trim());

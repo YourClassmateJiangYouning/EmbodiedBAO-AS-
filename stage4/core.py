@@ -59,7 +59,22 @@ DEFAULT_MODELS = [
     "deepseek-v4-flash-vision-exp",
     "claude-haiku-4-5-20251001",
 ]
-A_S_LEVELS = [2.0, 1.3, 1.1, 1.0, 0.9]
+A_S_LEVELS = [2.0, 1.2, 1.0, 0.8, 0.6]
+
+# The five markers printed for the real corridor, in the words the prompt must use.  These are physical
+# boards, so the prompt names them exactly; there is no scene table to look them up from.
+MARKER_PRESETS = [
+    "green rectangle",
+    "red circle",
+    "yellow arrow",
+    "blue triangle",
+    "purple four-pointed star",
+]
+
+# Stage 3 changed exactly one thing in the frozen Stage 1 prompt: the body name, so "You are a Unitree G1
+# humanoid robot" matched the body actually being tested (stage3_runner.py:68).  The real corridor uses a low
+# wheeled platform, so the same substitution is made here -- one noun phrase, every other word frozen.
+DEFAULT_BODY_NAME = "a small wheeled robot"
 
 # THE SCENE MUST MATCH THE SIMULATOR, NOT THE HANDOVER DOCUMENT.
 #
@@ -315,7 +330,8 @@ class Stage4Session:
             "session_id": self.session_id,
             "scene": config.get("scene", "R1"),
             "marker": config.get("marker", "M1"),
-            "marker_descriptor": config.get("marker_descriptor", "red triangle"),
+            "marker_descriptor": config.get("marker_descriptor", "red circle"),
+            "body_name": config.get("body_name") or DEFAULT_BODY_NAME,
             "mode": config.get("mode", "A"),
             "model": config.get("model", DEFAULT_MODELS[0]),
             "a_s": a_s,
@@ -559,10 +575,28 @@ class Stage4Session:
             for item in self.history
         ]
 
+    def _apply_body_name(self) -> None:
+        """Name the body that is actually in the corridor, exactly as Stage 3 did for G1 and R1.
+
+        Only the opening noun phrase changes.  The sentence still contains "the red marker", so the existing
+        marker substitution in build_prompt keeps replacing it, and every other word of the frozen Stage 1
+        text is untouched.
+        """
+        import protocol
+
+        body = (self.config.get("body_name") or DEFAULT_BODY_NAME).strip()
+        protocol.TASK_INSTRUCTION = (
+            "You are %s. Your task is to reach the red marker on the far wall." % body
+        )
+
     def build_current_prompt(self, with_memory: bool = None) -> str:
         """The exact text that will be sent for the next action."""
         mode = self.config.get("mode", "A")
         use_memory = (mode == "B") if with_memory is None else with_memory
+        self._apply_body_name()
+        # Set the marker here as well as in call_model, so a preview can never show a prompt that names a
+        # different object from the one the next request will name.
+        set_marker_descriptor(self.config.get("marker_descriptor"))
         memory_block = None
         if use_memory and self.memory:
             memory_block = self.memory_prompt_block()

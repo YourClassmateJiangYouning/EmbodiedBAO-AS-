@@ -153,6 +153,7 @@ class Handler(BaseHTTPRequestHandler):
                             "scene": body.get("scene"),
                             "marker": body.get("marker"),
                             "marker_descriptor": body.get("marker_descriptor"),
+                            "body_name": body.get("body_name"),
                             "mode": body.get("mode"),
                             "model": body.get("model"),
                             "a_s": body.get("a_s"),
