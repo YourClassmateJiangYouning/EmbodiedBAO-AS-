@@ -45,7 +45,13 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-from protocol import ACTIONS, SYSTEM_PROMPT, build_prompt, set_marker_descriptor  # noqa: E402
+from protocol import (  # noqa: E402
+    ACTIONS,
+    MOVE_STEP as PROTOCOL_MOVE_STEP,
+    SYSTEM_PROMPT,
+    build_prompt,
+    set_marker_descriptor,
+)
 
 DEFAULT_ENDPOINT = "http://35.220.164.252:3888/v1"
 DEFAULT_MODELS = [
@@ -54,9 +60,18 @@ DEFAULT_MODELS = [
     "claude-haiku-4-5-20251001",
 ]
 A_S_LEVELS = [2.0, 1.3, 1.1, 1.0, 0.9]
-ROBOT_SHOULDER_M = 0.570          # Unitree H1, the same denominator Stage 1 used
+# The real-scene shoulder width, not the simulated H1's 0.570 m.  The Stage 4 corridor is 140 cm at its
+# widest and the brief fixes that as A/S = 2.0, so the denominator the operator works against is 70 cm:
+#   2.0 -> 140 cm   1.3 -> 91 cm   1.1 -> 77 cm   1.0 -> 70 cm   0.9 -> 63 cm
+# A/S stays a ratio, which is what makes it comparable with the simulated stages even though the physical
+# body here is a different size; `channel_width_m` in config.json and manifest.csv is derived from this.
+ROBOT_SHOULDER_M = 0.70
 MAX_STEPS = 30
 IMAGE_SIZE = 1024
+# Distance covered by one forward/backward/left/right action, in metres.  Kept at the protocol's 0.75 so the
+# action descriptions in the prompt stay word-for-word identical to Stages 1-3; a session may override it,
+# and the value actually used is written to config.json and into every step record.
+MOVE_STEP = 0.75
 API_TEMPERATURE = 0.0
 # Measured, not guessed.  At 1200 tokens gemini-3-flash-preview once reported finish_reason=length with
 # 1151 reasoning tokens and only 45 characters of visible text, and deepseek-v4-flash-vision-exp consumed
@@ -260,6 +275,8 @@ class Stage4Session:
             os.makedirs(paths[key], exist_ok=True)
 
         a_s = float(config.get("a_s", 1.0))
+        shoulder_m = float(config.get("shoulder_m") or ROBOT_SHOULDER_M)
+        move_step = float(config.get("move_step") or MOVE_STEP)
         self.config = {
             "session_id": self.session_id,
             "scene": config.get("scene", "R1"),
@@ -268,8 +285,9 @@ class Stage4Session:
             "mode": config.get("mode", "A"),
             "model": config.get("model", DEFAULT_MODELS[0]),
             "a_s": a_s,
-            "channel_width_m": channel_width_m(a_s),
-            "robot_shoulder_m": ROBOT_SHOULDER_M,
+            "robot_shoulder_m": shoulder_m,
+            "move_step_m": move_step,
+            "channel_width_m": channel_width_m(a_s, shoulder_m),
             "max_steps": int(config.get("max_steps", MAX_STEPS)),
             "image_size": IMAGE_SIZE,
             "memory_id": config.get("memory_id") or None,
@@ -466,10 +484,16 @@ class Stage4Session:
                     "\n\nYour earlier digest of that memory:\n"
                     + json.dumps(self.digest, ensure_ascii=False)
                 )
+        # 0.75 m is the protocol's own step, and build_prompt already words the action list for it.  Passing
+        # None in that case keeps the prompt byte-identical to Stages 1-3; a session that really walks a
+        # different distance must say so, or the action descriptions would lie about what "forward" covers.
+        step = float(self.config.get("move_step_m") or PROTOCOL_MOVE_STEP)
+        step_argument = None if abs(step - PROTOCOL_MOVE_STEP) < 1e-9 else step
         return build_prompt(
             state=self._state_block(),
             history=self._history_block(),
             max_steps=self.config.get("max_steps", MAX_STEPS),
+            move_step=step_argument,
             memory_block=memory_block,
         )
 
@@ -669,6 +693,9 @@ class Stage4Session:
             "reasoning_tokens": attempt.get("reasoning_tokens"),
             "request_params": self._request_params(),
             "max_tokens": API_MAX_TOKENS,
+            "move_step_m": self.config.get("move_step_m"),
+            "robot_shoulder_m": self.config.get("robot_shoulder_m"),
+            "channel_width_m": self.config.get("channel_width_m"),
             "invalid": invalid,
             "error": attempt.get("error"),
             "timestamp": now_iso(),
@@ -887,6 +914,20 @@ class Stage4Session:
             "session_id": self.session_id,
             "session_dir": self.dir,
             "config": self.config,
+            "geometry": {
+                "robot_shoulder_m": self.config.get("robot_shoulder_m", ROBOT_SHOULDER_M),
+                "move_step_m": self.config.get("move_step_m", MOVE_STEP),
+                "a_s": self.config.get("a_s"),
+                "channel_width_m": self.config.get("channel_width_m"),
+                "channel_width_cm": (round(float(self.config.get("channel_width_m") or 0) * 100, 1)
+                                     if self.config.get("channel_width_m") is not None else None),
+                "table": [
+                    {"a_s": level,
+                     "channel_width_cm": round(level * float(
+                         self.config.get("robot_shoulder_m", ROBOT_SHOULDER_M)) * 100, 1)}
+                    for level in A_S_LEVELS
+                ],
+            },
             "models": DEFAULT_MODELS,
             "a_s_levels": A_S_LEVELS,
             "actions": ACTIONS,

@@ -156,6 +156,8 @@ class Handler(BaseHTTPRequestHandler):
                             "mode": body.get("mode"),
                             "model": body.get("model"),
                             "a_s": body.get("a_s"),
+                            "shoulder_m": body.get("shoulder_m"),
+                            "move_step": body.get("move_step"),
                             "max_steps": body.get("max_steps"),
                             "memory_id": body.get("memory_id"),
                             "api_key": body.get("api_key"),
