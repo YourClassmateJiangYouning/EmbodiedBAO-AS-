@@ -452,10 +452,15 @@ class Stage4Session:
         return self.state()
 
     def _state_block(self) -> Dict[str, Any]:
-        """The `state` dict `build_prompt` expects.  Position is optional and entered by the operator."""
+        """The `state` dict `build_prompt` expects.
+
+        The origin is the start line: x counts metres walked forward from where the robot began, z counts
+        metres to the left, so the numbers the operator types are the ones on the tape measure.  The prompt
+        already explains x as "your forward position along the walkway", which is exactly this.
+        """
         last = self.history[-1] if self.history else {}
         return {
-            "position": last.get("position") or [4.0, 0.0, 0.0],
+            "position": last.get("position") or [0.0, 0.0, 0.0],
             "torso_rotation": last.get("torso_rotation", 0.0),
             "camera_yaw": 0.0,
             "camera_pitch": 0.0,
