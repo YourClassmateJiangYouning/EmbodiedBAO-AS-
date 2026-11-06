@@ -99,6 +99,9 @@
     <h2>当前相机图像（1024 × 1024，原图保存）</h2>
     <img id="frame" alt="尚未拍摄">
     <div class="meta" id="image-meta">尚未拍摄</div>
+    <div id="image-warn" class="hint"
+         style="display:none;background:#fdecea;color:#a52218;border:1px solid #f5c6c2;
+                border-radius:6px;padding:8px 10px;margin-top:8px;font-weight:600"></div>
     <div class="row" style="margin-top:10px">
       <input id="c-path" placeholder="或者直接填照片完整路径，如 D:\stage4_photos\frame_000.png"
              style="flex:1;min-width:220px">
@@ -315,9 +318,23 @@ function apply(state){
   if (img && img.image_id){
     $('frame').src = '/api/image/' + img.image_id + '?t=' + encodeURIComponent(img.captured_at||'');
     $('frame').style.display = 'block';
+    const dims = (img.width && img.height) ? (img.width + ' × ' + img.height) : '尺寸未知';
     $('image-meta').textContent =
-      'image_id: ' + img.image_id + '\n' + img.path + '\n' +
-      'captured: ' + img.captured_at + '\n' + img.bytes + ' bytes · 保存: 是';
+      'image_id: ' + img.image_id + '\n' +
+      '路径: ' + img.path + '\n' +
+      '拍摄时间: ' + img.captured_at + '\n' +
+      '分辨率: ' + dims + (img.size_ok ? '  ✓ 符合 1024×1024' : '  ⚠️ 应为 1024×1024，会被缩放') + '\n' +
+      '文件大小: ' + (img.bytes/1024/1024).toFixed(2) + ' MB（原图保存，不压缩）';
+    // 尺寸不符合时给一条醒目的提示
+    const warn = $('image-warn');
+    if (warn) {
+      if (img.size_ok) { warn.style.display = 'none'; }
+      else {
+        warn.style.display = 'block';
+        warn.textContent = '⚠️ 这张图是 ' + dims + '，不是 1024×1024。软件会把它缩放到 1024×1024 再发给模型' +
+          (img.width !== img.height ? '（非正方形会被拉伸变形！）' : '，建议直接在相机里设成 1024×1024。');
+      }
+    }
   } else {
     $('frame').removeAttribute('src');
     $('image-meta').textContent = '尚未拍摄';

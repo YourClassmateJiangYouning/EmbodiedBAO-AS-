@@ -446,9 +446,21 @@ class Stage4Session:
             "step": len(self.history),
             "episode_id": self.episode["episode_id"],
         }
+        # Record the real pixel size.  The API payload is forced to 1024x1024, and a non-square frame would be
+        # squashed to get there -- silently.  Storing the dimensions lets the window warn instead.
+        try:
+            from PIL import Image
+            with Image.open(io.BytesIO(raw_bytes)) as picture:
+                record["width"], record["height"] = picture.size
+        except Exception:
+            record["width"] = record["height"] = None
         self.current_image = record
         self.status = "READY"
-        self.log("captured %s (%d bytes)" % (image_id, len(raw_bytes)))
+        self.log("captured %s (%d bytes, %sx%s)" % (
+            image_id, len(raw_bytes), record["width"], record["height"]))
+        if record["width"] and (record["width"] != IMAGE_SIZE or record["height"] != IMAGE_SIZE):
+            self.log("WARNING: frame is %sx%s, not %dx%d -- it will be resized for the API"
+                     % (record["width"], record["height"], IMAGE_SIZE, IMAGE_SIZE))
         return self.state()
 
     def _state_block(self) -> Dict[str, Any]:
@@ -954,6 +966,11 @@ class Stage4Session:
                 "captured_at": self.current_image.get("captured_at"),
                 "path": self.current_image.get("path"),
                 "bytes": self.current_image.get("bytes"),
+                "width": self.current_image.get("width"),
+                "height": self.current_image.get("height"),
+                "expected_size": IMAGE_SIZE,
+                "size_ok": (self.current_image.get("width") == IMAGE_SIZE
+                            and self.current_image.get("height") == IMAGE_SIZE),
             } if self.current_image else None),
             "last_call": ({
                 "action": record.get("action"),
