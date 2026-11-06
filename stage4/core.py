@@ -60,12 +60,33 @@ DEFAULT_MODELS = [
     "claude-haiku-4-5-20251001",
 ]
 A_S_LEVELS = [2.0, 1.3, 1.1, 1.0, 0.9]
-# 0.570 m is the robot's real width (its wheels are 57 cm across) and it is also the simulated H1's shoulder
-# width that Stages 1-3 used.  Keeping the same denominator means an A/S value means the same thing in the
-# simulated and the real experiment, so the curves can be compared directly:
-#   2.0 -> 114.0 cm   1.3 -> 74.1 cm   1.1 -> 62.7 cm   1.0 -> 57.0 cm   0.9 -> 51.3 cm
-# (The corridor is 140 cm at its widest, so even A/S 2.0 needs partitions.)
-ROBOT_SHOULDER_M = 0.570
+
+# THE SCENE MUST MATCH THE SIMULATOR, NOT THE HANDOVER DOCUMENT.
+#
+# The handover spec says the robot starts 4.0 m from the opening, but the simulator that produced Stages 1-3
+# does not: ROBOT_START_POS is [0.5, 0, 0] and WALL_X is 8.0, so the start distance is 7.5 m and a straight
+# walk to the opening takes 10 steps of 0.75 m -- which the recorded data confirms, since the median passed
+# episode at every wide level is exactly 11 steps (10 forward + the step that carries it through).
+#
+# Every number below is copied from the simulator, with the constant it comes from:
+SIM_GEOMETRY: Dict[str, Any] = {
+    "start_x_m": 0.5,               # ROBOT_START_POS = [0.5, 0.0, 0.0]
+    "wall_x_m": 8.0,                # WALL_X
+    "start_distance_m": 7.5,        # 8.0 - 0.5
+    "straight_steps_to_wall": 10,   # 7.5 / 0.75
+    "move_step_m": 0.75,            # protocol.MOVE_STEP
+    "turn_step_deg": 15.0,          # TURN_STEP_DEG
+    "camera_turn_step_deg": 30.0,   # CAMERA_TURN_STEP_DEG (look_left / look_right)
+    "camera_pitch_step_deg": 45.0,  # CAMERA_PITCH_STEP_DEG (look_down, on top of the 15 deg eye pitch)
+    "eye_height_m": 1.68,           # EYE_CAMERA_HEIGHT
+    "eye_pitch_deg": 15.0,          # EYE_PITCH_DEG, the camera's normal downward tilt
+    "shoulder_width_m": 0.570,      # ROBOT_SHOULDER_WIDTH (robot_profiles.py)
+    "torso_thickness_m": 0.220,     # ROBOT_TORSO_THICKNESS -- the width after a 90 deg turn
+    "start_yaw_deg": 0.0,           # ROBOT_START_YAW_DEG
+    "max_steps": 30,
+}
+
+ROBOT_SHOULDER_M = SIM_GEOMETRY["shoulder_width_m"]
 MAX_STEPS = 30
 IMAGE_SIZE = 1024
 # Distance covered by one forward/backward/left/right action, in metres.  Kept at the protocol's 0.75 so the
@@ -307,6 +328,7 @@ class Stage4Session:
             "disable_thinking": bool(config.get("disable_thinking", True)),
             "api_max_tokens": API_MAX_TOKENS,
             "request_params": self._request_params(),
+            "sim_geometry": SIM_GEOMETRY,
             "started_at": now_iso(),
         }
         if config.get("api_key"):
@@ -518,7 +540,9 @@ class Stage4Session:
         """
         last = self.history[-1] if self.history else {}
         return {
-            "position": last.get("position") or [0.0, 0.0, 0.0],
+            # 0.5 m is the simulator's ROBOT_START_POS, not 0: the model must see the same absolute
+            # coordinates it saw in Stages 1-3, so the numbers cannot be re-zeroed here.
+            "position": last.get("position") or [SIM_GEOMETRY["start_x_m"], 0.0, 0.0],
             "torso_rotation": last.get("torso_rotation", 0.0),
             "camera_yaw": 0.0,
             "camera_pitch": 0.0,
@@ -977,6 +1001,7 @@ class Stage4Session:
             "session_id": self.session_id,
             "session_dir": self.dir,
             "config": self.config,
+            "sim_geometry": SIM_GEOMETRY,
             "geometry": {
                 "robot_shoulder_m": self.config.get("robot_shoulder_m", ROBOT_SHOULDER_M),
                 "move_step_m": self.config.get("move_step_m", MOVE_STEP),

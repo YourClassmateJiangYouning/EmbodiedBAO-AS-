@@ -226,6 +226,12 @@
           <th style="width:70px">A/S</th><th style="width:110px">开口宽度</th><th>备注</th>
         </tr></thead><tbody id="t-width"></tbody></table>
       </div>
+      <div style="margin-top:12px;font-size:12px;color:var(--muted)">
+        仿真几何（现场必须与之一致）
+      </div>
+      <table class="compact" style="margin-top:4px">
+        <tbody id="t-geom"></tbody>
+      </table>
       <div style="margin-top:14px;font-size:12px;color:var(--muted)">按模型 / 按 A/S 汇总</div>
       <div class="scroll">
         <table class="compact"><thead><tr><th style="width:56px">by</th><th>value</th>
@@ -433,6 +439,30 @@ function apply(state){
                      '<td>' + (notes[String(row.a_s)] || '') + '</td>';
       wb.appendChild(tr);
     });
+  }
+
+  // 仿真几何参数（现场必须对齐）
+  const gb = $('t-geom');
+  if (gb && state.sim_geometry){
+    const sg = state.sim_geometry;
+    const rows = [
+      ['相机高度', sg.eye_height_m + ' m'],
+      ['相机俯角', sg.eye_pitch_deg + '°'],
+      ['肩宽 S', (sg.shoulder_width_m*100) + ' cm'],
+      ['躯干厚度', (sg.torso_thickness_m*100) + ' cm（转 90° 后的有效宽度）'],
+      ['起点 x', sg.start_x_m + ' m'],
+      ['墙面 x', sg.wall_x_m + ' m'],
+      ['起点距通道', sg.start_distance_m + ' m'],
+      ['直走到墙', sg.straight_steps_to_wall + ' 步'],
+      ['步长', sg.move_step_m + ' m'],
+      ['转身', sg.turn_step_deg + '°/步'],
+      ['瞥视', sg.camera_turn_step_deg + '°/步'],
+      ['低头', sg.camera_pitch_step_deg + '°（总 ' + (sg.eye_pitch_deg + sg.camera_pitch_step_deg) + '°）'],
+      ['最大步数', sg.max_steps],
+    ];
+    gb.innerHTML = rows.map(function(r){
+      return '<tr><td style="width:120px;color:#6b7280">' + r[0] + '</td><td>' + r[1] + '</td></tr>';
+    }).join('');
   }
 
   // summary
