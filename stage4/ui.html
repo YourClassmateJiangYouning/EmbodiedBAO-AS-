@@ -309,7 +309,8 @@ function apply(state){
   const c = state.last_call;
   if (c){
     $('o-action').textContent = c.action || '（invalid，无动作）';
-    $('o-conf').textContent   = (c.confidence === null || c.confidence === undefined) ? '—' : c.confidence;
+    $('o-conf').textContent   = (c.confidence === null || c.confidence === undefined || c.confidence === '')
+                                ? '—' : Number(c.confidence).toFixed(2);
     $('o-lat').textContent    = (c.latency_ms !== null && c.latency_ms !== undefined)
                                 ? (c.latency_ms/1000).toFixed(1) + ' s' : '—';
     $('o-invalid').textContent= c.invalid ? 'yes' : 'no';
