@@ -107,7 +107,15 @@
              style="flex:1;min-width:220px">
       <button class="btn ghost" id="btn-path">从路径读取</button>
     </div>
-    <div class="hint">支持：点上面的「Capture」选文件、把照片拖到这个区域、或填路径读本机文件</div>
+    <div class="row" style="margin-top:8px">
+      <input id="c-inbox" placeholder="收件箱目录，如 D:\stage4_inbox"
+             style="flex:1;min-width:220px">
+      <button class="btn ghost" id="btn-inbox">取收件箱最新一张</button>
+    </div>
+    <div class="hint">
+      四种取图方式：①点上面「Capture」选文件 ②把照片拖到这个区域 ③填完整路径读取
+      ④把照片都存进「收件箱」目录，每次点一下自动取最新未用的一张（最省事）
+    </div>
   </section>
 
   <section class="card">
@@ -331,8 +339,9 @@ function apply(state){
       if (img.size_ok) { warn.style.display = 'none'; }
       else {
         warn.style.display = 'block';
-        warn.textContent = '⚠️ 这张图是 ' + dims + '，不是 1024×1024。软件会把它缩放到 1024×1024 再发给模型' +
-          (img.width !== img.height ? '（非正方形会被拉伸变形！）' : '，建议直接在相机里设成 1024×1024。');
+        warn.textContent = '⚠️ 这张图是 ' + dims + '，不是 1024×1024。软件会先' +
+          (img.width !== img.height ? '居中裁成正方形' : '等比缩放') +
+          '再缩到 1024×1024 发给模型。建议直接拍/截成 1024×1024，避免画面被裁掉一部分。';
       }
     }
   } else {
@@ -562,6 +571,14 @@ $('btn-path').onclick = ()=>run(async()=>{
   await api('/api/capture_path', {path: path});
   toast('已读取：' + path);
 }, '从路径读取');
+
+// 收件箱：把照片都丢进一个文件夹，每次点一下取最新未用的那张
+$('btn-inbox').onclick = ()=>run(async()=>{
+  let dir = $('c-inbox').value.trim();
+  if (!dir) { dir = 'D:\\stage4_inbox'; $('c-inbox').value = dir; }
+  await api('/api/capture_inbox', {dir: dir});
+  toast('已从收件箱取图：' + dir);
+}, '取收件箱最新一张');
 
 $('btn-digest').onclick = ()=>run(()=>api('/api/digest', {}), 'Digest');
 $('btn-call').onclick   = ()=>run(()=>api('/api/call', {}), 'Call Model');

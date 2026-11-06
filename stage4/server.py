@@ -231,6 +231,11 @@ class Handler(BaseHTTPRequestHandler):
                     json_response(self, {"ok": True, "state": state})
                     return
 
+                if path == "/api/capture_inbox":
+                    inbox = (body.get("dir") or "").strip().strip('"')
+                    json_response(self, {"ok": True, "state": SESSION.capture_from_inbox(inbox)})
+                    return
+
                 if path == "/api/digest":
                     json_response(self, {"ok": True, "state": SESSION.run_digest()})
                     return

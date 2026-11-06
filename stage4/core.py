@@ -87,6 +87,8 @@ STATUSES = (
     "IDLE", "READY", "CAPTURING", "CALLING_MODEL", "WAITING_FOR_ACTION",
     "ACTION_DONE", "INVALID", "PASSED", "FAILED", "STOPPED", "ERROR",
 )
+# Formats a phone or a screenshot can arrive in.
+INBOX_EXTENSIONS = (".png", ".jpg", ".jpeg", ".bmp", ".webp", ".tif", ".tiff")
 
 # Per-model request extras.  These mirror what the completed sweeps needed: without the override the model
 # reasons at length and either times out or burns the token budget on deliberation instead of an action.
@@ -125,11 +127,16 @@ def channel_width_m(a_s: float, shoulder_m: float = ROBOT_SHOULDER_M) -> float:
 
 
 def encode_for_api(image_path: str, size: int = IMAGE_SIZE, quality: int = 95) -> Tuple[str, int]:
-    """Return (data URL, payload bytes) for the API, downscaled to `size` as a JPEG.
+    """Return (data URL, payload bytes) for the API, at `size` x `size`, as JPEG.
 
     The stored image stays untouched; this is only what goes over the wire.  The completed sweeps sent
     1024 px JPEG at quality 95, so the same encoder is used here and payload size is reported in the step
     record -- a large payload is the first thing to check when latency looks wrong.
+
+    A non-square frame is CENTRE-CROPPED to a square before shrinking, never stretched.  A phone photograph of
+    a monitor is often 4:3, and squashing it to 1:1 would reshape the opening the model has to judge; cropping
+    keeps the geometry honest and only throws away edges.  capture() records the real dimensions so the window
+    can warn that a crop happened.
     """
     raw = open(image_path, "rb").read()
     try:
@@ -141,6 +148,12 @@ def encode_for_api(image_path: str, size: int = IMAGE_SIZE, quality: int = 95) -
         return "data:%s;base64,%s" % (mime, encoded), len(raw)
 
     image = Image.open(io.BytesIO(raw)).convert("RGB")
+    width, height = image.size
+    if width != height:
+        side = min(width, height)
+        left = (width - side) // 2
+        top = (height - side) // 2
+        image = image.crop((left, top, left + side, top + side))
     if image.size != (size, size):
         image = image.resize((size, size), Image.LANCZOS)
     buffer = io.BytesIO()
@@ -418,6 +431,39 @@ class Stage4Session:
         self.log("episode started: %s (mode %s, model %s, A/S %.1f)"
                  % (self.episode["episode_id"], mode, self.episode["model"], self.episode["a_s"]))
         return self.state()
+
+    def state_block_placeholder(self) -> None:  # pragma: no cover - kept for symmetry with the docs
+        return None
+
+    def capture_from_inbox(self, inbox_dir: str) -> Dict[str, Any]:
+        """Take the newest not-yet-used photo from a folder and make it the current frame.
+
+        Sending a frame through a phone is slow enough that finding the file in a dialog 1,080 times is the
+        real cost of the experiment, so the operator can drop the delivery folder's contents into one place and
+        take them in order.  The set of already-used paths is persisted in config.json, so a restart does not
+        re-import a frame that was already recorded.
+        """
+        if not inbox_dir or not os.path.isdir(inbox_dir):
+            raise RuntimeError("收件箱目录不存在: %s" % inbox_dir)
+        used = set(self.config.get("used_sources") or [])
+        candidates = []
+        for name in os.listdir(inbox_dir):
+            if not name.lower().endswith(INBOX_EXTENSIONS):
+                continue
+            path = os.path.join(inbox_dir, name)
+            if not os.path.isfile(path) or path in used:
+                continue
+            candidates.append((os.path.getmtime(path), path))
+        if not candidates:
+            raise RuntimeError("收件箱里没有未使用的新照片（%s）" % inbox_dir)
+        candidates.sort()
+        path = candidates[-1][1]
+        with open(path, "rb") as handle:
+            raw = handle.read()
+        self.config.setdefault("used_sources", []).append(path)
+        with open(self._paths()["config"], "w", encoding="utf-8") as handle:
+            json.dump(self.config, handle, indent=2, ensure_ascii=False)
+        return self.capture(os.path.basename(path), raw, "inbox:" + path)
 
     def capture(self, filename: str, raw_bytes: bytes, source_note: str = "") -> Dict[str, Any]:
         """Store the operator's photograph and make it the current frame.
@@ -968,6 +1014,7 @@ class Stage4Session:
                 "bytes": self.current_image.get("bytes"),
                 "width": self.current_image.get("width"),
                 "height": self.current_image.get("height"),
+                "source": self.current_image.get("source"),
                 "expected_size": IMAGE_SIZE,
                 "size_ok": (self.current_image.get("width") == IMAGE_SIZE
                             and self.current_image.get("height") == IMAGE_SIZE),
