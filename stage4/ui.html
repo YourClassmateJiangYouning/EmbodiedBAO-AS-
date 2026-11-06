@@ -28,7 +28,7 @@
   #frame{width:100%;max-height:460px;object-fit:contain;background:#eceff3;
          border:1px solid var(--line);border-radius:6px;display:block}
   .meta{font-size:12px;color:var(--muted);margin-top:6px;font-family:var(--mono);
-        word-break:break-all}
+        white-space:pre-wrap;line-height:1.6;word-break:break-all}
   .tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
   .tabs button{padding:5px 11px;border:1px solid var(--line);background:#fff;border-radius:14px;
                cursor:pointer;font-size:12.5px}
@@ -41,11 +41,13 @@
   pre{background:#f7f8fa;border:1px solid var(--line);border-radius:6px;padding:10px;
       font-family:var(--mono);font-size:12px;white-space:pre-wrap;word-break:break-word;
       max-height:330px;overflow:auto;margin:8px 0 0}
-  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;table-layout:fixed}
   th,td{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left;
-        font-family:var(--mono)}
+        font-family:var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   th{background:#f7f8fa;font-weight:600;color:var(--muted);position:sticky;top:0}
   .scroll{max-height:300px;overflow:auto}
+  table.compact{font-size:11.5px}
+  table.compact th,table.compact td{padding:4px 5px}
   .actions{display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px;
            background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
   button.btn{padding:9px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);
@@ -203,8 +205,10 @@
       <div class="hint" id="c-status">—</div>
       <div style="margin-top:14px;font-size:12px;color:var(--muted)">按模型 / 按 A/S 汇总</div>
       <div class="scroll">
-        <table><thead><tr><th>by</th><th>value</th><th>episodes</th><th>passed</th>
-                 <th>mean_steps</th><th>turns</th><th>invalid</th></tr></thead>
+        <table class="compact"><thead><tr><th style="width:56px">by</th><th>value</th>
+                 <th style="width:52px">eps</th><th style="width:48px">pass</th>
+                 <th style="width:56px">steps</th><th style="width:48px">turns</th>
+                 <th style="width:56px">invalid</th></tr></thead>
           <tbody id="t-summary"></tbody></table>
       </div>
     </div>
@@ -280,7 +284,8 @@ function apply(state){
   $('s-model').textContent  = e.model || (state.config && state.config.model) || '—';
   $('s-scene').textContent  = e.scene || (state.config && state.config.scene) || '—';
   $('s-marker').textContent = e.marker || (state.config && state.config.marker) || '—';
-  $('s-as').textContent     = (e.a_s !== null && e.a_s !== undefined) ? e.a_s : '—';
+  $('s-as').textContent     = (e.a_s !== null && e.a_s !== undefined && e.a_s !== '')
+                              ? Number(e.a_s).toFixed(1) : '—';
   $('s-episode').textContent= e.episode_id ? (e.episode_id.slice(-6) + ' · ' + (e.mode||'')) : '—';
   $('s-step').textContent   = (e.step !== undefined && e.step !== null)
       ? (e.step + ' / ' + (e.max_steps||30)) : '—';
