@@ -95,6 +95,12 @@
     <h2>当前相机图像（1024 × 1024，原图保存）</h2>
     <img id="frame" alt="尚未拍摄">
     <div class="meta" id="image-meta">尚未拍摄</div>
+    <div class="row" style="margin-top:10px">
+      <input id="c-path" placeholder="或者直接填照片完整路径，如 D:\stage4_photos\frame_000.png"
+             style="flex:1;min-width:220px">
+      <button class="btn ghost" id="btn-path">从路径读取</button>
+    </div>
+    <div class="hint">支持：点上面的「Capture」选文件、把照片拖到这个区域、或填路径读本机文件</div>
   </section>
 
   <section class="card">
@@ -438,13 +444,62 @@ $('btn-open').onclick = ()=>run(async()=>{
 
 $('btn-start').onclick = ()=>run(()=>api('/api/start', {}), 'Start Episode');
 
-$('file-input').onchange = async (ev)=>{
-  const file = ev.target.files[0]; ev.target.value='';
+// 把文件读成 base64。不能用 String.fromCharCode(...new Uint8Array(buf))：
+// 那会把每个字节展开成一个函数参数，真实照片 150 万字节直接 RangeError 栈溢出，
+// 而且抛在 try 外面，界面上连提示都没有。FileReader 是流式实现，任意大小都安全。
+function fileToBase64(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      const result = String(reader.result || '');
+      const comma = result.indexOf(',');
+      if (comma < 0) { reject(new Error('读取图片失败')); return; }
+      resolve(result.slice(comma + 1));
+    };
+    reader.onerror = ()=>reject(new Error('读取图片失败：' + (reader.error && reader.error.message)));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function uploadPhoto(file, source){
   if (!file) return;
-  const buffer = await file.arrayBuffer();
-  const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
-  await run(()=>api('/api/capture', {filename:file.name, data_base64:base64, source:'upload'}), 'Capture');
+  const sizeKb = (file.size/1024).toFixed(1);
+  toast('正在读取 ' + file.name + ' (' + sizeKb + ' KB)...', 1200);
+  try {
+    const base64 = await fileToBase64(file);
+    await api('/api/capture', {filename: file.name, data_base64: base64,
+                               source: source || 'upload'});
+    toast('已拍摄：' + file.name);
+  } catch(err){
+    toast('上传照片失败：' + err.message, 6000);
+  }
+}
+
+$('file-input').onchange = (ev)=>{
+  const file = ev.target.files[0];
+  ev.target.value = '';            // 允许重复选同一张
+  uploadPhoto(file, 'upload');
 };
+
+// 拖拽照片到左侧图片区也能上传
+(function enableDrop(){
+  const zone = $('frame').parentElement;
+  zone.addEventListener('dragover', (ev)=>{ ev.preventDefault(); zone.style.outline = '2px dashed #2e75b6'; });
+  zone.addEventListener('dragleave', ()=>{ zone.style.outline = ''; });
+  zone.addEventListener('drop', (ev)=>{
+    ev.preventDefault(); zone.style.outline = '';
+    const file = ev.dataTransfer.files && ev.dataTransfer.files[0];
+    uploadPhoto(file, 'drop');
+  });
+})();
+
+// 从本机路径直接读取（相机软件把照片写到固定文件夹时最省事）
+$('btn-path').onclick = ()=>run(async()=>{
+  const path = $('c-path').value.trim();
+  if (!path) { toast('请先填照片路径'); return; }
+  await api('/api/capture_path', {path: path});
+  toast('已读取：' + path);
+}, '从路径读取');
 
 $('btn-digest').onclick = ()=>run(()=>api('/api/digest', {}), 'Digest');
 $('btn-call').onclick   = ()=>run(()=>api('/api/call', {}), 'Call Model');

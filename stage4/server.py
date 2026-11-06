@@ -213,6 +213,22 @@ class Handler(BaseHTTPRequestHandler):
                     json_response(self, {"ok": True, "state": state})
                     return
 
+                if path == "/api/capture_path":
+                    # Reading from a local path is the fastest route when the camera software writes frames
+                    # to a fixed folder: no browser file dialog and no base64 round trip.
+                    path_in = (body.get("path") or "").strip().strip('"')
+                    if not path_in:
+                        self._fail("path is empty")
+                        return
+                    if not os.path.isfile(path_in):
+                        self._fail("file not found: %s" % path_in)
+                        return
+                    with open(path_in, "rb") as handle:
+                        raw = handle.read()
+                    state = SESSION.capture(os.path.basename(path_in), raw, "path:" + path_in)
+                    json_response(self, {"ok": True, "state": state})
+                    return
+
                 if path == "/api/digest":
                     json_response(self, {"ok": True, "state": SESSION.run_digest()})
                     return

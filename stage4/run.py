@@ -25,8 +25,34 @@ def main() -> int:
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8765
     from server import serve
 
-    httpd = serve(port=port)
-    url = "http://127.0.0.1:%d/" % port
+    # A stale instance still holding the port would otherwise make this one exit with "address in use",
+    # leaving the operator looking at an old window that is missing the newest code.  Walk forward until a
+    # port is free and use that instead; the printed URL and the opened tab always point at the real one.
+    import socket
+
+    chosen = None
+    for candidate in [port] + list(range(port + 1, port + 15)):
+        # A plain bind, with SO_REUSEADDR deliberately NOT set: on Windows SO_REUSEADDR lets a second
+        # socket bind a port that is already actively listened on, so the probe would report every port as
+        # free and two servers would end up sharing one address.
+        probe = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        try:
+            probe.bind(("127.0.0.1", candidate))
+            chosen = candidate
+            break
+        except OSError:
+            continue
+        finally:
+            probe.close()
+
+    if chosen is None:
+        print("端口 %d 到 %d 都被占用，请先关闭旧的窗口再试。" % (port, port + 14))
+        return 1
+    if chosen != port:
+        print("提示：端口 %d 已被占用（可能是之前没关干净的实例），改用 %d。" % (port, chosen))
+
+    httpd = serve(port=chosen)
+    url = "http://127.0.0.1:%d/" % chosen
     print("=" * 68)
     print(" Stage 4 操作台已启动： %s" % url)
     print(" 关闭窗口：在本终端按 Ctrl+C")
