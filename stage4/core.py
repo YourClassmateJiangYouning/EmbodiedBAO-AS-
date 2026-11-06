@@ -1,0 +1,948 @@
+"""Stage 4 core: session state, prompt assembly, model calls, recording and export.
+
+Stage 4 runs a *closed loop* against real photographs rather than a simulator: the operator captures a
+1024x1024 frame, the model returns one action, the operator performs it, and the next frame is captured.  This
+module owns everything behind the window; `server.py` only moves JSON between the window and this object.
+
+Three rules from the handover spec drive the structure:
+
+1. **The prompt must be the Stage 1 prompt.**  Rather than re-typing the wording, `build_prompt` is imported
+   from the repository's `protocol.py`; `set_marker_descriptor` names the real marker ("red triangle" /
+   "green square").  A/S, channel width, "narrow", "wide" and the level never enter the prompt -- they exist
+   only in the session config and the operator's window.
+
+2. **Nothing is invented.**  A timeout, an unparseable reply or an action outside the enum is recorded as
+   invalid with the raw response kept; the code never substitutes `forward`, never rewrites an action, and
+   never records a failed call as executed.  Every retry is logged separately.
+
+3. **The raw material is kept.**  Original image bytes, the exact prompt text, and every raw response are
+   written to disk next to the parsed fields, so a later analysis can re-check any number.
+
+Layout per session, as specified:
+
+    stage4/sessions/<session_id>/
+        config.json  manifest.csv  episodes.jsonl  steps.jsonl
+        images/  prompts/  responses/  exports/
+"""
+
+from __future__ import annotations
+
+import base64
+import csv
+import io
+import json
+import os
+import sys
+import time
+import uuid
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional, Tuple
+
+import urllib.error
+import urllib.request
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:
+    sys.path.insert(0, ROOT)
+
+from protocol import ACTIONS, SYSTEM_PROMPT, build_prompt, set_marker_descriptor  # noqa: E402
+
+DEFAULT_ENDPOINT = "http://35.220.164.252:3888/v1"
+DEFAULT_MODELS = [
+    "gemini-3-flash-preview",
+    "deepseek-v4-flash-vision-exp",
+    "claude-haiku-4-5-20251001",
+]
+A_S_LEVELS = [2.0, 1.3, 1.1, 1.0, 0.9]
+ROBOT_SHOULDER_M = 0.570          # Unitree H1, the same denominator Stage 1 used
+MAX_STEPS = 30
+IMAGE_SIZE = 1024
+API_TEMPERATURE = 0.0
+# Measured, not guessed.  At 1200 tokens gemini-3-flash-preview once reported finish_reason=length with
+# 1151 reasoning tokens and only 45 characters of visible text, and deepseek-v4-flash-vision-exp consumed
+# 1200/1200 and then 3000/3000 and 8000/8000 on reasoning while returning zero characters -- its reply never
+# reached the JSON.  With reasoning_effort="none" both return a complete action in under 3 s.  2000 keeps
+# headroom for a long scene_description on the models that still think (claude does not).
+API_MAX_TOKENS = 2000
+DEFAULT_TIMEOUT_S = 90.0
+NETWORK_RETRIES = 2               # timeout / 5xx
+FORMAT_RETRIES = 1                # invalid JSON / missing action / action not in enum
+
+STATUSES = (
+    "IDLE", "READY", "CAPTURING", "CALLING_MODEL", "WAITING_FOR_ACTION",
+    "ACTION_DONE", "INVALID", "PASSED", "FAILED", "STOPPED", "ERROR",
+)
+
+# Per-model request extras.  These mirror what the completed sweeps needed: without the override the model
+# reasons at length and either times out or burns the token budget on deliberation instead of an action.
+#
+# The Stage 4 entries were measured on the real prompts with the probe in tools-style form:
+#   gemini-3-flash-preview        default 6.9 s, 840 reasoning tokens, finish=stop   -> reasoning_effort=none
+#                                 2.7 s, 0 reasoning tokens, complete JSON            (the switch IS honoured)
+#                                 "thinking: disabled" is NOT honoured by this model (still 840 tokens)
+#   deepseek-v4-flash-vision-exp  default: 1200/1200, 3000/3000 and 8000/8000 reasoning tokens, 0 characters
+#                                 -> reasoning_effort=none -> complete JSON in 1.8 s
+#   claude-haiku-4-5-20251001     no hidden reasoning at all; the switch is a no-op and is not sent
+# "thinking: {type: disabled}" works for deepseek too but not for gemini, so the standard OpenAI spelling is
+# the one used everywhere -- one knob, same meaning for every model.
+MODEL_REQUEST_PARAMS: Dict[str, Dict[str, Any]] = {
+    "gpt-5": {"reasoning_effort": "none"},
+    "glm-4.6v": {"thinking": {"type": "disabled"}},
+    "glm-4.5v": {"thinking": {"type": "disabled"}},
+    "gemini-3-flash-preview": {"reasoning_effort": "none"},
+    "deepseek-v4-flash-vision-exp": {"reasoning_effort": "none"},
+}
+
+
+def now_iso() -> str:
+    return datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds")
+
+
+def new_id(prefix: str) -> str:
+    return "%s_%s" % (prefix, uuid.uuid4().hex[:12])
+
+
+# --------------------------------------------------------------------------------------------- helpers
+
+def channel_width_m(a_s: float, shoulder_m: float = ROBOT_SHOULDER_M) -> float:
+    """Opening width for an A/S (the only place the geometry is computed)."""
+    return round(a_s * shoulder_m, 4)
+
+
+def encode_for_api(image_path: str, size: int = IMAGE_SIZE, quality: int = 95) -> Tuple[str, int]:
+    """Return (data URL, payload bytes) for the API, downscaled to `size` as a JPEG.
+
+    The stored image stays untouched; this is only what goes over the wire.  The completed sweeps sent
+    1024 px JPEG at quality 95, so the same encoder is used here and payload size is reported in the step
+    record -- a large payload is the first thing to check when latency looks wrong.
+    """
+    raw = open(image_path, "rb").read()
+    try:
+        from PIL import Image
+    except Exception:
+        # No Pillow: send the file as it is.  Slower, but never silently crops or drops the frame.
+        mime = "image/png" if image_path.lower().endswith(".png") else "image/jpeg"
+        encoded = base64.b64encode(raw).decode("ascii")
+        return "data:%s;base64,%s" % (mime, encoded), len(raw)
+
+    image = Image.open(io.BytesIO(raw)).convert("RGB")
+    if image.size != (size, size):
+        image = image.resize((size, size), Image.LANCZOS)
+    buffer = io.BytesIO()
+    image.save(buffer, format="JPEG", quality=quality)
+    payload = buffer.getvalue()
+    encoded = base64.b64encode(payload).decode("ascii")
+    return "data:image/jpeg;base64,%s" % encoded, len(payload)
+
+
+def parse_action(text: Any) -> Optional[Dict[str, Any]]:
+    """Parse the reply into a dict, or None if it is not a usable action.
+
+    Any code fence is stripped first, because several models wrap their JSON in ```json no matter what the
+    prompt asks; that is cosmetic and must not be counted as an invalid reply.
+    """
+    if not text:
+        return None
+    cleaned = str(text).strip()
+    import re
+
+    cleaned = re.sub(r"(?m)^\s*(?:```|~~~)[a-zA-Z]*\s*$", "", cleaned).replace("```", "")
+    candidates: List[str] = []
+    start = cleaned.find("{")
+    while start != -1:
+        depth = 0
+        for index in range(start, len(cleaned)):
+            if cleaned[index] == "{":
+                depth += 1
+            elif cleaned[index] == "}":
+                depth -= 1
+                if depth == 0:
+                    candidates.append(cleaned[start:index + 1])
+                    break
+        start = cleaned.find("{", start + 1)
+    for candidate in candidates:
+        try:
+            data = json.loads(candidate)
+        except Exception:
+            continue
+        if isinstance(data, dict):
+            return data
+    return None
+
+
+def read_jsonl(path: str) -> List[Dict[str, Any]]:
+    if not os.path.exists(path):
+        return []
+    rows = []
+    with open(path, encoding="utf-8") as handle:
+        for line in handle:
+            line = line.strip()
+            if line:
+                try:
+                    rows.append(json.loads(line))
+                except Exception:
+                    continue
+    return rows
+
+
+def append_jsonl(path: str, row: Dict[str, Any]) -> None:
+    with open(path, "a", encoding="utf-8") as handle:
+        handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+
+# --------------------------------------------------------------------------------------------- session
+
+class Stage4Session:
+    """One operator session: the window drives this object through the closed loop."""
+
+    def __init__(self, sessions_root: str = None):
+        self.sessions_root = sessions_root or os.path.join(ROOT, "stage4", "sessions")
+        os.makedirs(self.sessions_root, exist_ok=True)
+
+        self.session_id: Optional[str] = None
+        self.dir: Optional[str] = None
+        self.config: Dict[str, Any] = {}
+        self.api_key: str = os.environ.get("BOYUE_API_KEY", "").strip()
+        self.endpoint: str = os.environ.get("BOYUE_ENDPOINT", DEFAULT_ENDPOINT).rstrip("/")
+
+        self.status = "IDLE"
+        self.episode: Optional[Dict[str, Any]] = None      # current episode record
+        self.episode_index = 0
+        self.total_episodes = 0
+        self.current_image: Optional[Dict[str, Any]] = None
+        self.last_call: Optional[Dict[str, Any]] = None    # last model call, for the window
+        self.history: List[Dict[str, Any]] = []            # steps of the current episode
+        self.steps: List[Dict[str, Any]] = []              # every step of every episode this session
+        self.episodes: List[Dict[str, Any]] = []
+        self.memory: Optional[Dict[str, Any]] = None
+        self.digest: Optional[Dict[str, Any]] = None
+        self.log_lines: List[str] = []
+
+    # -- plumbing -------------------------------------------------------------------------------
+    def _request_params(self) -> Dict[str, Any]:
+        """The per-model extras actually sent, so the data records what the model was asked with.
+
+        `disable_thinking` defaults to true because that is the only setting under which
+        deepseek-v4-flash-vision-exp returns a parseable action at any token budget.  Setting it to false in
+        the session config reproduces the models' default behaviour (hidden reasoning on), which is what a
+        comparison against an earlier sweep would need -- the choice is written into config.json either way.
+        """
+        if not self.config.get("disable_thinking", True):
+            return {}
+        return dict(MODEL_REQUEST_PARAMS.get(self.config.get("model"), {}))
+
+    def log(self, message: str) -> None:
+        stamp = now_iso()
+        self.log_lines.append("%s  %s" % (stamp, message))
+        if len(self.log_lines) > 400:
+            self.log_lines = self.log_lines[-400:]
+
+    def _paths(self) -> Dict[str, str]:
+        base = self.dir
+        return {
+            "config": os.path.join(base, "config.json"),
+            "manifest": os.path.join(base, "manifest.csv"),
+            "episodes": os.path.join(base, "episodes.jsonl"),
+            "steps": os.path.join(base, "steps.jsonl"),
+            "images": os.path.join(base, "images"),
+            "prompts": os.path.join(base, "prompts"),
+            "responses": os.path.join(base, "responses"),
+            "exports": os.path.join(base, "exports"),
+            "memory": os.path.join(base, "memory"),
+        }
+
+    def open_session(self, session_id: str, config: Dict[str, Any]) -> Dict[str, Any]:
+        """Create (or reopen) a session directory and write its config."""
+        self.session_id = session_id.strip() or "session"
+        self.dir = os.path.join(self.sessions_root, self.session_id)
+        paths = self._paths()
+        for key in ("images", "prompts", "responses", "exports", "memory"):
+            os.makedirs(paths[key], exist_ok=True)
+
+        a_s = float(config.get("a_s", 1.0))
+        self.config = {
+            "session_id": self.session_id,
+            "scene": config.get("scene", "R1"),
+            "marker": config.get("marker", "M1"),
+            "marker_descriptor": config.get("marker_descriptor", "red triangle"),
+            "mode": config.get("mode", "A"),
+            "model": config.get("model", DEFAULT_MODELS[0]),
+            "a_s": a_s,
+            "channel_width_m": channel_width_m(a_s),
+            "robot_shoulder_m": ROBOT_SHOULDER_M,
+            "max_steps": int(config.get("max_steps", MAX_STEPS)),
+            "image_size": IMAGE_SIZE,
+            "memory_id": config.get("memory_id") or None,
+            "disable_thinking": bool(config.get("disable_thinking", True)),
+            "api_max_tokens": API_MAX_TOKENS,
+            "request_params": self._request_params(),
+            "started_at": now_iso(),
+        }
+        if config.get("api_key"):
+            self.api_key = str(config["api_key"]).strip()
+        if config.get("endpoint"):
+            self.endpoint = str(config["endpoint"]).rstrip("/")
+
+        with open(paths["config"], "w", encoding="utf-8") as handle:
+            json.dump(self.config, handle, indent=2, ensure_ascii=False)
+
+        # reload previous work so reopening a session does not lose its history
+        self.steps = read_jsonl(paths["steps"])
+        self.episodes = read_jsonl(paths["episodes"])
+        # a reopened session starts with no episode in flight: keeping the old one would block Start Episode
+        # with "an episode is still open" after the operator had already closed that episode's window
+        self.episode = None
+        self.history = []
+        self.current_image = None
+        self.last_call = None
+        self.memory = None
+        self.digest = None
+        self.episode_index = 0
+        if not os.path.exists(paths["manifest"]):
+            with open(paths["manifest"], "w", encoding="utf-8", newline="") as handle:
+                csv.writer(handle).writerow([
+                    "episode_id", "mode", "model", "scene", "marker", "a_s", "channel_width_m",
+                    "memory_id", "started_at", "finished_at", "passed", "total_steps",
+                    "end_reason", "invalid_count",
+                ])
+        self.status = "READY"
+        self.log("session opened: %s" % self.session_id)
+        return self.state()
+
+    def _require(self) -> None:
+        if not self.session_id:
+            raise RuntimeError("no session is open")
+
+    # -- memory ---------------------------------------------------------------------------------
+    def build_memory_from_episode(self, episode: Dict[str, Any], memory_id: str = None) -> Dict[str, Any]:
+        """Turn a passed narrow-gap episode into the blind memory Stage 4B feeds back.
+
+        Blind means: the action sequence, the per-step feedback and the model's own reasoning, and nothing
+        that reveals the geometry -- no A/S, no channel width, no level, no "narrow"/"wide".  The source A/S
+        stays in this record for the operator, and `prompt_text()` never renders it.
+        """
+        episode_id = episode.get("episode_id")
+        steps = [s for s in self.steps if s.get("episode_id") == episode_id]
+        actions = [s.get("action") for s in steps if s.get("action")]
+        lines = []
+        for index, step in enumerate(steps):
+            if not step.get("action"):
+                continue
+            line = "%d. %s -> %s" % (index + 1, step["action"], step.get("feedback") or "executed")
+            reasoning = (step.get("reasoning") or "").strip()
+            if reasoning:
+                line += "  |  %s" % reasoning[:180]
+            lines.append(line)
+        return {
+            "memory_id": memory_id or new_id("S4M"),
+            "source_episode_id": episode_id,
+            "source_scene": episode.get("scene"),
+            "source_marker": episode.get("marker"),
+            "source_a_s": episode.get("a_s"),
+            "actions": actions,
+            "memory_text": "\n".join(lines),
+            "created_at": now_iso(),
+        }
+
+    def load_memory_file(self, path: str) -> Dict[str, Any]:
+        """Load a memory card written by an earlier stage (JSON or JSONL, first record used)."""
+        with open(path, encoding="utf-8") as handle:
+            text = handle.read().strip()
+        if text.startswith("{"):
+            record = json.loads(text.splitlines()[0])
+        else:
+            record = json.loads(text)
+        record.setdefault("memory_id", new_id("S4M"))
+        record.setdefault("memory_text", "")
+        return record
+
+    def memory_prompt_block(self) -> Optional[str]:
+        if not self.memory:
+            return None
+        header = (
+            "A previous successful traversal by the same expert in this same scene and marker:\n"
+        )
+        return header + str(self.memory.get("memory_text", "")).strip()
+
+    # -- episode loop ---------------------------------------------------------------------------
+    def start_episode(self) -> Dict[str, Any]:
+        self._require()
+        if self.episode and not self.episode.get("finished_at"):
+            raise RuntimeError("an episode is still open; finish or stop it first")
+
+        mode = self.config.get("mode", "A")
+        set_marker_descriptor(self.config.get("marker_descriptor"))
+        self.episode_index += 1
+        self.episode = {
+            "episode_id": new_id("S4E"),
+            "run_id": new_id("S4R"),
+            "mode": mode,
+            "model": self.config.get("model"),
+            "scene": self.config.get("scene"),
+            "marker": self.config.get("marker"),
+            "marker_descriptor": self.config.get("marker_descriptor"),
+            "a_s": self.config.get("a_s"),
+            "channel_width_m": self.config.get("channel_width_m"),
+            "memory_id": (self.memory or {}).get("memory_id"),
+            "started_at": now_iso(),
+            "finished_at": None,
+            "passed": None,
+            "total_steps": 0,
+            "end_reason": None,
+            "invalid_count": 0,
+            "digest": None,
+        }
+        self.history = []
+        self.current_image = None
+        self.last_call = None
+        self.digest = None
+        self.status = "READY"
+        self.log("episode started: %s (mode %s, model %s, A/S %.1f)"
+                 % (self.episode["episode_id"], mode, self.episode["model"], self.episode["a_s"]))
+        return self.state()
+
+    def capture(self, filename: str, raw_bytes: bytes, source_note: str = "") -> Dict[str, Any]:
+        """Store the operator's photograph and make it the current frame.
+
+        The bytes are written exactly as received -- no crop, no resize, no annotation -- and only the
+        API payload is re-encoded later.
+        """
+        self._require()
+        if not self.episode:
+            raise RuntimeError("start an episode before capturing")
+        paths = self._paths()
+        image_id = new_id("IMG")
+        extension = os.path.splitext(filename or "frame.png")[1].lower() or ".png"
+        stored_name = "%s%s" % (image_id, extension)
+        stored_path = os.path.join(paths["images"], stored_name)
+        with open(stored_path, "wb") as handle:
+            handle.write(raw_bytes)
+
+        record = {
+            "image_id": image_id,
+            "path": os.path.relpath(stored_path, self.dir).replace("\\", "/"),
+            "abs_path": stored_path,
+            "captured_at": now_iso(),
+            "bytes": len(raw_bytes),
+            "source": source_note or "upload",
+            "step": len(self.history),
+            "episode_id": self.episode["episode_id"],
+        }
+        self.current_image = record
+        self.status = "READY"
+        self.log("captured %s (%d bytes)" % (image_id, len(raw_bytes)))
+        return self.state()
+
+    def _state_block(self) -> Dict[str, Any]:
+        """The `state` dict `build_prompt` expects.  Position is optional and entered by the operator."""
+        last = self.history[-1] if self.history else {}
+        return {
+            "position": last.get("position") or [4.0, 0.0, 0.0],
+            "torso_rotation": last.get("torso_rotation", 0.0),
+            "camera_yaw": 0.0,
+            "camera_pitch": 0.0,
+        }
+
+    def _history_block(self) -> List[Dict[str, Any]]:
+        return [
+            {
+                "step": item.get("step"),
+                "action": item.get("action"),
+                "feedback": item.get("feedback"),
+                "reasoning": item.get("reasoning"),
+            }
+            for item in self.history
+        ]
+
+    def build_current_prompt(self, with_memory: bool = None) -> str:
+        """The exact text that will be sent for the next action."""
+        mode = self.config.get("mode", "A")
+        use_memory = (mode == "B") if with_memory is None else with_memory
+        memory_block = None
+        if use_memory and self.memory:
+            memory_block = self.memory_prompt_block()
+            if self.digest:
+                memory_block += (
+                    "\n\nYour earlier digest of that memory:\n"
+                    + json.dumps(self.digest, ensure_ascii=False)
+                )
+        return build_prompt(
+            state=self._state_block(),
+            history=self._history_block(),
+            max_steps=self.config.get("max_steps", MAX_STEPS),
+            memory_block=memory_block,
+        )
+
+    def build_digest_prompt(self) -> str:
+        """Digest call for Stage 4B: read the memory, choose no action, consume no step."""
+        memory_text = self.memory_prompt_block() or ""
+        return (
+            memory_text
+            + "\n\nBefore taking any action, read the memory and the current view. Do not choose an action "
+              "yet. Return exactly one JSON object:\n"
+              '{"digested": true, "memory_summary": "...", "plan": "...", "cues": ["..."]}'
+        )
+
+    # -- model call -----------------------------------------------------------------------------
+    def _post(self, prompt: str, image_path: str, timeout: float) -> Dict[str, Any]:
+        data_url, payload_bytes = encode_for_api(image_path, self.config.get("image_size", IMAGE_SIZE))
+        body = {
+            "model": self.config.get("model"),
+            "messages": [{
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt},
+                    {"type": "image_url", "image_url": {"url": data_url}},
+                ],
+            }],
+            "temperature": API_TEMPERATURE,
+            "max_tokens": API_MAX_TOKENS,
+        }
+        body.update(self._request_params())
+        request = urllib.request.Request(
+            self.endpoint + "/chat/completions",
+            data=json.dumps(body, allow_nan=False).encode("utf-8"),
+            method="POST",
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + self.api_key,
+            },
+        )
+        started = time.time()
+        try:
+            with urllib.request.urlopen(request, timeout=timeout) as response:
+                raw = response.read().decode("utf-8", "replace")
+            latency_ms = int((time.time() - started) * 1000)
+            try:
+                parsed = json.loads(raw)
+                message = (parsed.get("choices") or [{}])[0].get("message") or {}
+                choice = (parsed.get("choices") or [{}])[0]
+                content = message.get("content") or ""
+                reasoning_content = message.get("reasoning_content") or ""
+                finish_reason = choice.get("finish_reason")
+                usage = parsed.get("usage") or {}
+                reasoning_tokens = (usage.get("completion_tokens_details") or {}).get("reasoning_tokens")
+            except Exception:
+                content, reasoning_content = raw, ""
+                finish_reason, reasoning_tokens = None, None
+            return {
+                "ok": True, "raw": raw, "content": content,
+                "reasoning_content": reasoning_content,
+                "finish_reason": finish_reason, "reasoning_tokens": reasoning_tokens,
+                "latency_ms": latency_ms, "payload_bytes": payload_bytes, "error": None,
+            }
+        except urllib.error.HTTPError as error:
+            raw = ""
+            try:
+                raw = error.read().decode("utf-8", "replace")
+            except Exception:
+                pass
+            return {
+                "ok": False, "raw": raw, "content": "", "reasoning_content": "",
+                "latency_ms": int((time.time() - started) * 1000), "payload_bytes": payload_bytes,
+                "error": "HTTP %s" % error.code, "http_status": error.code,
+            }
+        except Exception as error:  # noqa: BLE001 -- timeout, DNS, TLS, all recorded verbatim
+            return {
+                "ok": False, "raw": "", "content": "", "reasoning_content": "",
+                "latency_ms": int((time.time() - started) * 1000), "payload_bytes": payload_bytes,
+                "error": "%s: %s" % (type(error).__name__, error), "http_status": None,
+            }
+
+    def _call_with_retries(self, prompt: str, image_path: str, prompt_name: str) -> Dict[str, Any]:
+        """Call once, retry per the spec, and keep every attempt.
+
+        A network failure (timeout / 5xx) is retried up to NETWORK_RETRIES times; a reply that arrives but
+        cannot be parsed into a legal action is retried FORMAT_RETRIES times with the same prompt.  If it
+        still fails the step is recorded as invalid with `action: null` -- never guessed.
+        """
+        paths = self._paths()
+        attempts: List[Dict[str, Any]] = []
+        timeout = float(self.config.get("timeout_s", DEFAULT_TIMEOUT_S))
+        deadline_calls = NETWORK_RETRIES + FORMAT_RETRIES + 1
+
+        for attempt_index in range(deadline_calls):
+            result = self._post(prompt, image_path, timeout)
+            parsed = parse_action(result.get("content") or "") if result.get("ok") else None
+            action = None
+            if parsed:
+                candidate = str(parsed.get("action") or "").strip()
+                if candidate in ACTIONS:
+                    action = candidate
+            attempt = {
+                "attempt": attempt_index + 1,
+                "started_at": now_iso(),
+                "latency_ms": result.get("latency_ms"),
+                "payload_bytes": result.get("payload_bytes"),
+                "finish_reason": result.get("finish_reason"),
+                "reasoning_tokens": result.get("reasoning_tokens"),
+                "error": result.get("error"),
+                "raw_response": result.get("raw"),
+                "content": result.get("content"),
+                "reasoning_content": result.get("reasoning_content"),
+                "parsed": parsed,
+                "action": action,
+            }
+            # A truncated reply is worth naming exactly: it is the one failure whose cause is a token budget
+            # rather than the model's choice, and the operator can raise max_tokens instead of retrying blind.
+            if result.get("finish_reason") == "length" and not action:
+                attempt["error"] = "truncated (finish_reason=length, reasoning_tokens=%s)" % (
+                    result.get("reasoning_tokens"))
+            attempts.append(attempt)
+            if action:
+                return {"ok": True, "attempt": attempt, "attempts": attempts, "parsed": parsed}
+
+            network_failure = (not result.get("ok")) or (
+                result.get("http_status") and int(result["http_status"]) >= 500)
+            if network_failure:
+                if attempt_index >= NETWORK_RETRIES:
+                    break
+            else:
+                # The reply arrived but was unusable: at most FORMAT_RETRIES extra tries with the same prompt.
+                if attempt_index >= NETWORK_RETRIES + FORMAT_RETRIES:
+                    break
+            self.log("attempt %d unusable (%s); retrying" % (attempt_index + 1, result.get("error") or "bad reply"))
+
+        return {"ok": False, "attempt": attempts[-1] if attempts else None,
+                "attempts": attempts, "parsed": None}
+
+    def call_model(self) -> Dict[str, Any]:
+        """Send the next-step prompt and record the step (feedback filled in later)."""
+        self._require()
+        if not self.episode:
+            raise RuntimeError("start an episode first")
+        if not self.current_image:
+            raise RuntimeError("capture a frame before calling the model")
+        if len(self.history) >= int(self.config.get("max_steps", MAX_STEPS)):
+            raise RuntimeError("step limit reached; finish the episode")
+
+        paths = self._paths()
+        set_marker_descriptor(self.config.get("marker_descriptor"))
+        prompt = self.build_current_prompt()
+        step_index = len(self.history)
+
+        prompt_id = new_id("PRM")
+        prompt_file = os.path.join(paths["prompts"], "%s.txt" % prompt_id)
+        with open(prompt_file, "w", encoding="utf-8") as handle:
+            handle.write(prompt)
+
+        self.status = "CALLING_MODEL"
+        call = self._call_with_retries(prompt, self.current_image["abs_path"], prompt_id)
+
+        response_id = new_id("RSP")
+        response_file = os.path.join(paths["responses"], "%s.json" % response_id)
+        with open(response_file, "w", encoding="utf-8") as handle:
+            json.dump(call.get("attempts", []), handle, indent=2, ensure_ascii=False)
+
+        attempt = call.get("attempt") or {}
+        parsed = call.get("parsed") or {}
+        action = attempt.get("action")
+        invalid = not bool(action)
+        if invalid:
+            self.episode["invalid_count"] += 1
+
+        record = {
+            "episode_id": self.episode["episode_id"],
+            "step": step_index,
+            "call_index": len(self.history) + 1,
+            "model": self.config.get("model"),
+            "a_s": self.config.get("a_s"),
+            "image_id": self.current_image["image_id"],
+            "image_path": self.current_image["path"],
+            "prompt_path": os.path.relpath(prompt_file, self.dir).replace("\\", "/"),
+            "response_path": os.path.relpath(response_file, self.dir).replace("\\", "/"),
+            "action": action,
+            "confidence": (parsed.get("confidence") if isinstance(parsed, dict) else None),
+            "reasoning": (parsed.get("reasoning") if isinstance(parsed, dict) else None),
+            "scene_description": (parsed.get("scene_description") if isinstance(parsed, dict) else None),
+            "reasoning_content": attempt.get("reasoning_content") or "",
+            "raw_response": attempt.get("raw_response") or "",
+            "attempts": len(call.get("attempts", [])),
+            "feedback": None,
+            "collision": None,
+            "position_x": None,
+            "position_z": None,
+            "torso_rotation": self._state_block().get("torso_rotation"),
+            "latency_ms": attempt.get("latency_ms"),
+            "payload_bytes": attempt.get("payload_bytes"),
+            "finish_reason": attempt.get("finish_reason"),
+            "reasoning_tokens": attempt.get("reasoning_tokens"),
+            "request_params": self._request_params(),
+            "max_tokens": API_MAX_TOKENS,
+            "invalid": invalid,
+            "error": attempt.get("error"),
+            "timestamp": now_iso(),
+        }
+        append_jsonl(paths["steps"], record)
+        self.steps.append(record)
+        self.history.append(record)
+        self.episode["total_steps"] = len(self.history)
+        self.last_call = {"record": record, "attempts": call.get("attempts", []), "prompt": prompt}
+        self.status = "INVALID" if invalid else "WAITING_FOR_ACTION"
+        self.log("step %d: %s (%.1f s)%s" % (
+            step_index, action or "INVALID", (record["latency_ms"] or 0) / 1000.0,
+            "" if not invalid else " -- " + str(record.get("error"))))
+        return self.state()
+
+    def action_executed(
+        self,
+        feedback: str,
+        collision: bool = False,
+        position_x: Optional[float] = None,
+        position_z: Optional[float] = None,
+        torso_rotation: Optional[float] = None,
+        passed: Optional[bool] = None,
+        note: str = "",
+    ) -> Dict[str, Any]:
+        """Record what the operator did with the action, and optionally mark the episode finished."""
+        self._require()
+        if not self.history:
+            raise RuntimeError("there is no pending step")
+        record = self.history[-1]
+        if record.get("feedback"):
+            raise RuntimeError("this step is already recorded")
+
+        record["feedback"] = feedback or "executed"
+        record["collision"] = bool(collision)
+        if position_x is not None:
+            record["position_x"] = float(position_x)
+        if position_z is not None:
+            record["position_z"] = float(position_z)
+        if torso_rotation is not None:
+            record["torso_rotation"] = float(torso_rotation)
+        record["operator_note"] = note or ""
+        record["recorded_at"] = now_iso()
+        self._rewrite_steps()
+        self.status = "ACTION_DONE"
+
+        if passed is True:
+            self.finish(passed=True, end_reason="passed")
+        elif passed is False:
+            self.finish(passed=False, end_reason="failed")
+        elif len(self.history) >= int(self.config.get("max_steps", MAX_STEPS)):
+            self.finish(passed=False, end_reason="max_steps")
+        return self.state()
+
+    def _rewrite_steps(self) -> None:
+        """Rewrite steps.jsonl after an edit, so the file on disk always matches memory.
+
+        The spec asks for one append-only log; an operator editing the last step is the one case where the
+        line has to be replaced, and appending a duplicate would make every later count wrong.
+        """
+        paths = self._paths()
+        with open(paths["steps"], "w", encoding="utf-8") as handle:
+            for row in self.steps:
+                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+    # -- digest (Stage 4B) ----------------------------------------------------------------------
+    def run_digest(self) -> Dict[str, Any]:
+        """Ask the model to read the memory before the loop; consumes no step."""
+        self._require()
+        if self.config.get("mode") != "B":
+            raise RuntimeError("digest only runs in mode B")
+        if not self.memory:
+            raise RuntimeError("no memory selected for this episode")
+        if not self.current_image:
+            raise RuntimeError("capture the first frame before the digest")
+        prompt = self.build_digest_prompt()
+        paths = self._paths()
+        prompt_file = os.path.join(paths["prompts"], "%s_digest.txt" % new_id("PRM"))
+        with open(prompt_file, "w", encoding="utf-8") as handle:
+            handle.write(prompt)
+        result = self._post(prompt, self.current_image["abs_path"],
+                            float(self.config.get("timeout_s", DEFAULT_TIMEOUT_S)))
+        parsed = parse_action(result.get("content") or "") if result.get("ok") else None
+        valid = bool(parsed and parsed.get("digested") in (True, "true", 1))
+        self.digest = {
+            "valid": valid,
+            "raw": (parsed if valid else None),
+            "content": result.get("content"),
+            "error": result.get("error"),
+            "latency_ms": result.get("latency_ms"),
+            "prompt_path": os.path.relpath(prompt_file, self.dir),
+            "created_at": now_iso(),
+        }
+        if self.episode:
+            self.episode["digest"] = self.digest
+        self.log("digest %s (%.1f s)" % ("ok" if valid else "INVALID",
+                                         (result.get("latency_ms") or 0) / 1000.0))
+        return self.state()
+
+    # -- finishing and export -------------------------------------------------------------------
+    def finish(self, passed: bool, end_reason: str) -> Dict[str, Any]:
+        self._require()
+        if not self.episode:
+            raise RuntimeError("no episode is open")
+        self.episode["finished_at"] = now_iso()
+        self.episode["passed"] = bool(passed)
+        self.episode["end_reason"] = end_reason or ("passed" if passed else "failed")
+        self.episode["total_steps"] = len(self.history)
+        self.episode["steps"] = len(self.history)
+        append_jsonl(self._paths()["episodes"], self.episode)
+        self._append_manifest()
+        self.episodes.append(self.episode)
+        self.episode = None
+        self.status = "PASSED" if passed else "FAILED"
+        self.log("episode finished: %s" % ("passed" if passed else "failed"))
+        return self.state()
+
+    def _append_manifest(self) -> None:
+        paths = self._paths()
+        episode = self.episode or {}
+        with open(paths["manifest"], "a", encoding="utf-8", newline="") as handle:
+            csv.writer(handle).writerow([
+                episode.get("episode_id"), episode.get("mode"), episode.get("model"),
+                episode.get("scene"), episode.get("marker"), episode.get("a_s"),
+                episode.get("channel_width_m"), episode.get("memory_id"),
+                episode.get("started_at"), episode.get("finished_at"),
+                episode.get("passed"), episode.get("total_steps"),
+                episode.get("end_reason"), episode.get("invalid_count"),
+            ])
+
+    def stop(self) -> Dict[str, Any]:
+        if self.episode:
+            self.finish(passed=False, end_reason="stopped")
+        else:
+            self.status = "STOPPED"
+        return self.state()
+
+    def summary(self) -> List[Dict[str, Any]]:
+        """Per-model and per-A/S aggregates for the window's summary panel."""
+        finished = [e for e in self.episodes if e.get("finished_at")]
+        rows: List[Dict[str, Any]] = []
+        for key_name in ("model", "a_s"):
+            values = sorted({str(e.get(key_name)) for e in finished})
+            for value in values:
+                group = [e for e in finished if str(e.get(key_name)) == value]
+                if not group:
+                    continue
+                turns = 0
+                invalid = 0
+                for episode in group:
+                    for step in self.steps:
+                        if step.get("episode_id") == episode.get("episode_id"):
+                            turns += 1 if str(step.get("action", "")).startswith("turn_") else 0
+                            invalid += 1 if step.get("invalid") else 0
+                rows.append({
+                    "by": key_name,
+                    "value": value,
+                    "episodes": len(group),
+                    "passed": sum(1 for e in group if e.get("passed")),
+                    "mean_steps": round(sum(e.get("total_steps") or 0 for e in group) / len(group), 2),
+                    "turns": turns,
+                    "invalid": invalid,
+                })
+        return rows
+
+    def export(self) -> Dict[str, Any]:
+        """Write the CSVs the spec lists, next to the raw logs."""
+        self._require()
+        paths = self._paths()
+        os.makedirs(paths["exports"], exist_ok=True)
+
+        steps_csv = os.path.join(paths["exports"], "steps.csv")
+        fields = [
+            "episode_id", "step", "call_index", "model", "a_s", "image_id", "action", "confidence",
+            "feedback", "collision", "position_x", "position_z", "torso_rotation", "latency_ms",
+            "invalid", "error", "attempts", "reasoning", "scene_description",
+        ]
+        with open(steps_csv, "w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=fields, extrasaction="ignore")
+            writer.writeheader()
+            for row in self.steps:
+                writer.writerow(row)
+
+        episodes_csv = os.path.join(paths["exports"], "episodes.csv")
+        episode_fields = [
+            "episode_id", "mode", "model", "scene", "marker", "a_s", "channel_width_m", "memory_id",
+            "started_at", "finished_at", "passed", "total_steps", "end_reason", "invalid_count",
+        ]
+        with open(episodes_csv, "w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(handle, fieldnames=episode_fields, extrasaction="ignore")
+            writer.writeheader()
+            for row in self.episodes:
+                writer.writerow(row)
+
+        summary_csv = os.path.join(paths["exports"], "summary.csv")
+        rows = self.summary()
+        with open(summary_csv, "w", encoding="utf-8", newline="") as handle:
+            writer = csv.DictWriter(
+                handle, fieldnames=["by", "value", "episodes", "passed", "mean_steps", "turns", "invalid"])
+            writer.writeheader()
+            for row in rows:
+                writer.writerow(row)
+
+        self.log("exported to %s" % paths["exports"])
+        return {"ok": True, "directory": paths["exports"],
+                "files": [steps_csv, episodes_csv, summary_csv], "summary": rows,
+                "state": self.state()}
+
+    # -- window state ---------------------------------------------------------------------------
+    def state(self) -> Dict[str, Any]:
+        episode = self.episode or {}
+        last = self.last_call or {}
+        record = last.get("record") or {}
+        return {
+            "status": self.status,
+            "session_id": self.session_id,
+            "session_dir": self.dir,
+            "config": self.config,
+            "models": DEFAULT_MODELS,
+            "a_s_levels": A_S_LEVELS,
+            "actions": ACTIONS,
+            "episode": {
+                "episode_id": episode.get("episode_id"),
+                "mode": episode.get("mode") or self.config.get("mode"),
+                "model": episode.get("model") or self.config.get("model"),
+                "scene": episode.get("scene") or self.config.get("scene"),
+                "marker": episode.get("marker") or self.config.get("marker"),
+                "a_s": episode.get("a_s") if episode else self.config.get("a_s"),
+                "channel_width_m": episode.get("channel_width_m") if episode else self.config.get("channel_width_m"),
+                "index": self.episode_index if episode else None,
+                "step": len(self.history),
+                "max_steps": self.config.get("max_steps", MAX_STEPS),
+                "invalid_count": episode.get("invalid_count", 0),
+            },
+            "image": ({
+                "image_id": self.current_image.get("image_id"),
+                "captured_at": self.current_image.get("captured_at"),
+                "path": self.current_image.get("path"),
+                "bytes": self.current_image.get("bytes"),
+            } if self.current_image else None),
+            "last_call": ({
+                "action": record.get("action"),
+                "confidence": record.get("confidence"),
+                "latency_ms": record.get("latency_ms"),
+                "invalid": record.get("invalid"),
+                "error": record.get("error"),
+                "reasoning": record.get("reasoning"),
+                "reasoning_content": record.get("reasoning_content"),
+                "scene_description": record.get("scene_description"),
+                "raw_response": record.get("raw_response"),
+                "attempts": record.get("attempts"),
+                "payload_bytes": record.get("payload_bytes"),
+                "finish_reason": record.get("finish_reason"),
+                "reasoning_tokens": record.get("reasoning_tokens"),
+                "prompt": last.get("prompt"),
+                "pending_feedback": not bool(record.get("feedback")),
+            } if record else None),
+            "history": [
+                {
+                    "step": item.get("step"), "action": item.get("action"),
+                    "feedback": item.get("feedback"), "collision": item.get("collision"),
+                    "position_x": item.get("position_x"), "position_z": item.get("position_z"),
+                    "torso_rotation": item.get("torso_rotation"),
+                    "latency_ms": item.get("latency_ms"), "invalid": item.get("invalid"),
+                    "reasoning": item.get("reasoning"), "prompt_path": item.get("prompt_path"),
+                    "raw_response": item.get("raw_response"),
+                }
+                for item in self.history
+            ],
+            "memory": self.memory,
+            "digest": self.digest,
+            "episodes_finished": len(self.episodes),
+            "summary": self.summary(),
+            "log": self.log_lines[-60:],
+            "api_key_set": bool(self.api_key),
+            "endpoint": self.endpoint,
+        }

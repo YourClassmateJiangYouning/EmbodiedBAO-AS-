@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>Stage 4 · 闭环实验操作台</title>
+<style>
+  :root{
+    --bg:#f5f6f8; --panel:#ffffff; --line:#dfe3e8; --ink:#1f2328; --muted:#6b7280;
+    --blue:#2e75b6; --blue-dark:#1f5c94; --green:#2f7d32; --red:#c0392b; --amber:#b8860b;
+    --mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif}
+  header{background:var(--blue);color:#fff;padding:10px 16px}
+  header h1{margin:0;font-size:16px;font-weight:600;letter-spacing:.3px}
+  header .sub{font-size:12px;opacity:.85;margin-top:2px}
+  .bar{display:flex;flex-wrap:wrap;gap:10px 22px;padding:9px 16px;background:#fff;
+       border-bottom:1px solid var(--line);font-size:13px}
+  .bar b{font-weight:600}
+  .bar .status{font-weight:700;color:var(--blue-dark)}
+  .bar .status.warn{color:var(--red)}
+  main{display:grid;grid-template-columns:minmax(360px,1fr) minmax(420px,1.15fr);
+       gap:14px;padding:14px;align-items:start}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px}
+  .card h2{margin:0 0 8px;font-size:13px;font-weight:700;color:var(--blue-dark);
+           text-transform:none;letter-spacing:.2px}
+  #frame{width:100%;max-height:460px;object-fit:contain;background:#eceff3;
+         border:1px solid var(--line);border-radius:6px;display:block}
+  .meta{font-size:12px;color:var(--muted);margin-top:6px;font-family:var(--mono);
+        word-break:break-all}
+  .tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+  .tabs button{padding:5px 11px;border:1px solid var(--line);background:#fff;border-radius:14px;
+               cursor:pointer;font-size:12.5px}
+  .tabs button.active{background:var(--blue);border-color:var(--blue);color:#fff}
+  .pane{display:none}
+  .pane.active{display:block}
+  .kv{display:grid;grid-template-columns:112px 1fr;gap:4px 10px;font-size:13px}
+  .kv .k{color:var(--muted)}
+  .kv .v{font-family:var(--mono);word-break:break-word}
+  pre{background:#f7f8fa;border:1px solid var(--line);border-radius:6px;padding:10px;
+      font-family:var(--mono);font-size:12px;white-space:pre-wrap;word-break:break-word;
+      max-height:330px;overflow:auto;margin:8px 0 0}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th,td{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left;
+        font-family:var(--mono)}
+  th{background:#f7f8fa;font-weight:600;color:var(--muted);position:sticky;top:0}
+  .scroll{max-height:300px;overflow:auto}
+  .actions{display:flex;flex-wrap:wrap;gap:8px;padding:12px 14px;
+           background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  button.btn{padding:9px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);
+             color:#fff;cursor:pointer;font-size:13.5px;font-weight:600}
+  button.btn.ghost{background:#fff;color:var(--blue-dark)}
+  button.btn.green{background:var(--green);border-color:var(--green)}
+  button.btn.red{background:var(--red);border-color:var(--red)}
+  button.btn.gray{background:#6b7280;border-color:#6b7280}
+  button.btn:disabled{opacity:.45;cursor:not-allowed}
+  .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+  label{display:block;font-size:12px;color:var(--muted);margin-bottom:3px}
+  input,select{width:100%;padding:7px 8px;border:1px solid var(--line);border-radius:5px;
+               font-size:13px;background:#fff}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .pill{display:inline-block;padding:1px 7px;border-radius:10px;font-size:11.5px;font-weight:600}
+  .pill.ok{background:#e6f4ea;color:#1e6b2b}
+  .pill.bad{background:#fdecea;color:#a52218}
+  .pill.warn{background:#fff5e0;color:#8a6100}
+  #log{font-family:var(--mono);font-size:11.5px;color:var(--muted);max-height:120px;
+       overflow:auto;white-space:pre-wrap}
+  .toast{position:fixed;right:16px;bottom:16px;background:#1f2328;color:#fff;padding:10px 14px;
+         border-radius:6px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:520px}
+  .toast.show{opacity:.95}
+</style>
+</head>
+<body>
+<header>
+  <h1>Stage 4 · 闭环实验操作台</h1>
+  <div class="sub">真实照片 → 模型动作 → 人工执行 → 下一步 · A/S 与记忆只在操作员界面显示，不进入 prompt</div>
+</header>
+
+<div class="bar">
+  <span>Mode <b id="s-mode">—</b></span>
+  <span>Session <b id="s-session">—</b></span>
+  <span>Model <b id="s-model">—</b></span>
+  <span>Scene <b id="s-scene">—</b></span>
+  <span>Marker <b id="s-marker">—</b></span>
+  <span>A/S <b id="s-as">—</b></span>
+  <span>Episode <b id="s-episode">—</b></span>
+  <span>Step <b id="s-step">—</b></span>
+  <span class="status" id="s-status">IDLE</span>
+</div>
+
+<main>
+  <section class="card">
+    <h2>当前相机图像（1024 × 1024，原图保存）</h2>
+    <img id="frame" alt="尚未拍摄">
+    <div class="meta" id="image-meta">尚未拍摄</div>
+  </section>
+
+  <section class="card">
+    <div class="tabs">
+      <button data-tab="out" class="active">Model Output</button>
+      <button data-tab="prompt">Prompt</button>
+      <button data-tab="history">History</button>
+      <button data-tab="memory">Memory</button>
+      <button data-tab="config">配置 / 汇总</button>
+    </div>
+
+    <div class="pane active" id="pane-out">
+      <div class="kv">
+        <div class="k">Action</div><div class="v" id="o-action">—</div>
+        <div class="k">Confidence</div><div class="v" id="o-conf">—</div>
+        <div class="k">Latency</div><div class="v" id="o-lat">—</div>
+        <div class="k">Invalid</div><div class="v" id="o-invalid">—</div>
+        <div class="k">Attempts</div><div class="v" id="o-attempts">—</div>
+        <div class="k">Payload</div><div class="v" id="o-payload">—</div>
+        <div class="k">finish_reason</div><div class="v" id="o-finish">—</div>
+        <div class="k">thinking tokens</div><div class="v" id="o-reastok">—</div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--muted)">Model-provided reasoning</div>
+      <pre id="o-reasoning">(no reasoning returned)</pre>
+      <div style="margin-top:10px;font-size:12px;color:var(--muted)">Scene description</div>
+      <pre id="o-scene">—</pre>
+      <div style="margin-top:10px;font-size:12px;color:var(--muted)">Raw response</div>
+      <pre id="o-raw">—</pre>
+    </div>
+
+    <div class="pane" id="pane-prompt">
+      <div style="font-size:12px;color:var(--muted)">
+        这是<strong>实际发送</strong>给模型的完整 prompt（与 API 请求逐字一致）
+      </div>
+      <pre id="p-prompt">—</pre>
+    </div>
+
+    <div class="pane" id="pane-history">
+      <div class="scroll">
+        <table>
+          <thead><tr><th>step</th><th>action</th><th>feedback</th><th>x</th><th>z</th>
+                     <th>torso</th><th>collision</th><th>latency</th></tr></thead>
+          <tbody id="t-history"></tbody>
+        </table>
+      </div>
+      <div class="hint">展开某一步请看下方「最近一步的原始记录」</div>
+      <pre id="h-detail">—</pre>
+    </div>
+
+    <div class="pane" id="pane-memory">
+      <div class="hint">仅 Stage 4B。A/S 与 source A/S 只在操作员界面显示，不进入 prompt。</div>
+      <div class="kv">
+        <div class="k">memory_id</div><div class="v" id="m-id">—</div>
+        <div class="k">source scene</div><div class="v" id="m-scene">—</div>
+        <div class="k">source marker</div><div class="v" id="m-marker">—</div>
+        <div class="k">source A/S</div><div class="v" id="m-as">—</div>
+        <div class="k">digest 状态</div><div class="v" id="m-digest">—</div>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:var(--muted)">Memory text（进入 prompt 的部分）</div>
+      <pre id="m-text">—</pre>
+      <div style="margin-top:10px;font-size:12px;color:var(--muted)">Digest</div>
+      <pre id="m-digest-text">—</pre>
+    </div>
+
+    <div class="pane" id="pane-config">
+      <div class="form">
+        <div><label>Session ID</label><input id="c-session" value="s4-20261106-01"></div>
+        <div><label>场景 Scene</label><input id="c-scene" value="R1"></div>
+        <div><label>目标物 Marker 名称（界面）</label><input id="c-marker" value="M1"></div>
+        <div><label>目标物描述（进入 prompt）</label>
+          <select id="c-descriptor">
+            <option value="red triangle">red triangle（红色三角形）</option>
+            <option value="green square">green square（绿色正方形）</option>
+          </select></div>
+        <div><label>Mode</label>
+          <select id="c-mode"><option value="A">A · 无记忆</option>
+            <option value="B">B · 宽口 + 窄口成功记忆</option></select></div>
+        <div><label>模型</label><select id="c-model"></select></div>
+        <div><label>A/S（仅统计用）</label><select id="c-as"></select></div>
+        <div><label>最大步数</label><input id="c-steps" value="30"></div>
+        <div><label>API 超时（秒）</label><input id="c-timeout" value="90"></div>
+        <div><label>&nbsp;</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink)">
+            <input type="checkbox" id="c-nothink" checked style="width:auto">
+            关闭隐藏思考（reasoning_effort=none）
+          </label></div>
+        <div><label>API Key（留空则用环境变量 BOYUE_API_KEY）</label>
+          <input id="c-key" placeholder="sk-..."></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost" id="btn-open">建立 / 打开会话</button>
+        <button class="btn ghost" id="btn-export">导出 CSV</button>
+      </div>
+      <div class="hint" id="c-status">—</div>
+      <div style="margin-top:14px;font-size:12px;color:var(--muted)">按模型 / 按 A/S 汇总</div>
+      <div class="scroll">
+        <table><thead><tr><th>by</th><th>value</th><th>episodes</th><th>passed</th>
+                 <th>mean_steps</th><th>turns</th><th>invalid</th></tr></thead>
+          <tbody id="t-summary"></tbody></table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="actions">
+  <button class="btn" id="btn-start">Start Episode</button>
+  <label class="btn ghost" style="cursor:pointer;padding:9px 14px;border-radius:6px;
+         border:1px solid var(--blue);display:inline-block;font-weight:600;color:var(--blue-dark)">
+    Capture / 下一步照片
+    <input type="file" id="file-input" accept="image/*" style="display:none">
+  </label>
+  <button class="btn ghost" id="btn-digest">Digest（仅 B）</button>
+  <button class="btn" id="btn-call">Call Model</button>
+  <button class="btn green" id="btn-action">Action Executed</button>
+  <button class="btn green" id="btn-passed">Mark Passed</button>
+  <button class="btn red" id="btn-failed">Mark Failed</button>
+  <button class="btn gray" id="btn-retry">Retry API</button>
+  <button class="btn gray" id="btn-stop">Stop</button>
+</div>
+
+<div class="actions" style="border-top:none">
+  <span style="font-size:12px;color:var(--muted);align-self:center">执行结果：</span>
+  <select id="a-feedback" style="width:170px">
+    <option value="executed">executed 执行成功</option>
+    <option value="blocked">blocked 被挡住</option>
+    <option value="collision">collision 碰撞</option>
+    <option value="skipped">skipped 未执行</option>
+  </select>
+  <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink)">
+    <input type="checkbox" id="a-collision" style="width:auto"> 发生碰撞
+  </label>
+  <div><label>x（可选）</label><input id="a-x" style="width:100px" placeholder="4.00"></div>
+  <div><label>z（可选）</label><input id="a-z" style="width:100px" placeholder="0.00"></div>
+  <div><label>躯干角（可选）</label><input id="a-torso" style="width:100px" placeholder="0"></div>
+  <div><label>备注</label><input id="a-note" style="width:220px" placeholder="可选"></div>
+</div>
+
+<div id="log-card" class="card" style="margin:0 14px 14px">
+  <h2>运行日志</h2>
+  <div id="log"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let STATE = null;
+let BUSY = false;
+
+function toast(msg, ms=2600){
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), ms);
+}
+
+async function api(path, body){
+  const opt = body === undefined ? {} :
+    {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)};
+  const resp = await fetch(path, opt);
+  const data = await resp.json();
+  if (!data.ok) throw new Error(data.error || ('HTTP ' + resp.status));
+  if (data.state) apply(data.state);
+  return data;
+}
+
+function apply(state){
+  STATE = state;
+  const e = state.episode || {};
+  $('s-mode').textContent   = (state.config && state.config.mode) || e.mode || '—';
+  $('s-session').textContent= state.session_id || '—';
+  $('s-model').textContent  = e.model || (state.config && state.config.model) || '—';
+  $('s-scene').textContent  = e.scene || (state.config && state.config.scene) || '—';
+  $('s-marker').textContent = e.marker || (state.config && state.config.marker) || '—';
+  $('s-as').textContent     = (e.a_s !== null && e.a_s !== undefined) ? e.a_s : '—';
+  $('s-episode').textContent= e.episode_id ? (e.episode_id.slice(-6) + ' · ' + (e.mode||'')) : '—';
+  $('s-step').textContent   = (e.step !== undefined && e.step !== null)
+      ? (e.step + ' / ' + (e.max_steps||30)) : '—';
+  const st = $('s-status'); st.textContent = state.status || 'IDLE';
+  st.className = 'status' + (['INVALID','ERROR','FAILED','STOPPED'].includes(state.status) ? ' warn' : '');
+
+  // image
+  const img = state.image;
+  if (img && img.image_id){
+    $('frame').src = '/api/image/' + img.image_id + '?t=' + encodeURIComponent(img.captured_at||'');
+    $('frame').style.display = 'block';
+    $('image-meta').textContent =
+      'image_id: ' + img.image_id + '\n' + img.path + '\n' +
+      'captured: ' + img.captured_at + '\n' + img.bytes + ' bytes · 保存: 是';
+  } else {
+    $('frame').removeAttribute('src');
+    $('image-meta').textContent = '尚未拍摄';
+  }
+
+  // model output
+  const c = state.last_call;
+  if (c){
+    $('o-action').textContent = c.action || '（invalid，无动作）';
+    $('o-conf').textContent   = (c.confidence === null || c.confidence === undefined) ? '—' : c.confidence;
+    $('o-lat').textContent    = (c.latency_ms !== null && c.latency_ms !== undefined)
+                                ? (c.latency_ms/1000).toFixed(1) + ' s' : '—';
+    $('o-invalid').textContent= c.invalid ? 'yes' : 'no';
+    $('o-attempts').textContent = c.attempts !== undefined ? c.attempts : '—';
+    $('o-payload').textContent  = c.payload_bytes ? (c.payload_bytes/1024).toFixed(1) + ' KB' : '—';
+    $('o-finish').textContent   = c.finish_reason || '—';
+    $('o-reastok').textContent  = (c.reasoning_tokens === null || c.reasoning_tokens === undefined)
+                                  ? '—' : c.reasoning_tokens;
+    $('o-reasoning').textContent = c.reasoning || c.reasoning_content || '(no reasoning returned)';
+    $('o-scene').textContent = c.scene_description || '—';
+    $('o-raw').textContent = c.raw_response || '—';
+    $('p-prompt').textContent = c.prompt || '—';
+  } else {
+    ['o-action','o-conf','o-lat','o-invalid','o-attempts','o-payload'].forEach(k=>$(k).textContent='—');
+    $('o-reasoning').textContent = '(no reasoning returned)';
+    $('o-scene').textContent = '—'; $('o-raw').textContent = '—'; $('p-prompt').textContent = '—';
+  }
+
+  // history
+  const tb = $('t-history'); tb.innerHTML = '';
+  (state.history||[]).forEach(h=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${h.step}</td><td>${h.action||'INVALID'}</td><td>${h.feedback||'—'}</td>
+      <td>${h.position_x??'—'}</td><td>${h.position_z??'—'}</td><td>${h.torso_rotation??'—'}</td>
+      <td>${h.collision===true?'yes':(h.collision===false?'no':'—')}</td>
+      <td>${h.latency_ms?((h.latency_ms/1000).toFixed(1)+'s'):'—'}</td>`;
+    tr.onclick = ()=>{ $('h-detail').textContent =
+      JSON.stringify({action:h.action, feedback:h.feedback, reasoning:h.reasoning,
+                      prompt:h.prompt_path, raw:h.raw_response}, null, 2); };
+    tb.appendChild(tr);
+  });
+
+  // memory
+  const m = state.memory;
+  $('m-id').textContent = m ? m.memory_id : '—';
+  $('m-scene').textContent = m ? (m.source_scene||'—') : '—';
+  $('m-marker').textContent = m ? (m.source_marker||'—') : '—';
+  $('m-as').textContent = m && m.source_a_s!==undefined ? m.source_a_s : '—';
+  $('m-digest').textContent = state.digest ? (state.digest.valid?'valid':'INVALID') : '—';
+  $('m-text').textContent = m ? (m.memory_text||'') : '—';
+  $('m-digest-text').textContent = state.digest ? JSON.stringify(state.digest.raw||state.digest.content, null, 2) : '—';
+
+  // config fields (only when not busy typing)
+  if (state.config && state.config.session_id && document.activeElement === document.body){
+    $('c-session').value = state.config.session_id;
+    $('c-scene').value = state.config.scene || 'R1';
+    $('c-marker').value = state.config.marker || 'M1';
+    $('c-descriptor').value = state.config.marker_descriptor || 'red triangle';
+    $('c-mode').value = state.config.mode || 'A';
+    $('c-model').value = state.config.model || (state.models||[])[0];
+    $('c-as').value = String(state.config.a_s);
+    $('c-steps').value = state.config.max_steps || 30;
+    $('c-nothink').checked = state.config.disable_thinking !== false;
+  }
+  if (!document.activeElement || document.activeElement.tagName !== 'INPUT'){
+    $('c-timeout').value = (state.config && state.config.timeout_s) || 90;
+  }
+  $('c-status').textContent = state.api_key_set
+      ? ('会话目录: ' + (state.session_dir||'—') + ' · Key: 已设置 · Endpoint: ' + state.endpoint)
+      : '尚未设置 API Key（可用环境变量 BOYUE_API_KEY）';
+
+  // summary
+  const sb = $('t-summary'); sb.innerHTML='';
+  (state.summary||[]).forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML = `<td>${r.by}</td><td>${r.value}</td><td>${r.episodes}</td><td>${r.passed}</td>
+                    <td>${r.mean_steps}</td><td>${r.turns}</td><td>${r.invalid}</td>`;
+    sb.appendChild(tr);
+  });
+
+  $('log').textContent = (state.log||[]).join('\n');
+  updateButtons();
+}
+
+function updateButtons(){
+  const st = (STATE && STATE.status) || 'IDLE';
+  const hasEpisode = STATE && STATE.episode && STATE.episode.episode_id;
+  const hasImage = STATE && STATE.image;
+  const pending = STATE && STATE.last_call && STATE.last_call.pending_feedback;
+  const busy = BUSY || st === 'CALLING_MODEL';
+  $('btn-start').disabled  = busy || hasEpisode;
+  $('btn-digest').disabled = busy || !hasEpisode || !hasImage || STATE.config.mode !== 'B';
+  $('btn-call').disabled   = busy || !hasEpisode || !hasImage || pending;
+  $('btn-action').disabled = busy || !pending;
+  $('btn-passed').disabled = busy || !hasEpisode;
+  $('btn-failed').disabled = busy || !hasEpisode;
+  $('btn-retry').disabled  = busy || !hasEpisode || !hasImage;
+  $('btn-stop').disabled   = busy || !hasEpisode;
+}
+
+async function run(fn, label){
+  BUSY = true; updateButtons();
+  try { await fn(); }
+  catch(err){ toast(label + ' 失败：' + err.message, 6000); }
+  finally { BUSY = false; updateButtons(); }
+}
+
+// tabs
+document.querySelectorAll('.tabs button').forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    $('pane-' + btn.dataset.tab).classList.add('active');
+  };
+});
+
+// config selects
+$('c-model').innerHTML = (${JSON.stringify(DEFAULT_MODELS)}).map(m=>`<option>${m}</option>`).join('');
+$('c-as').innerHTML = (${JSON.stringify(A_S_LEVELS)}).map(a=>`<option>${a}</option>`).join('');
+
+// buttons
+$('btn-open').onclick = ()=>run(async()=>{
+  await api('/api/session', {
+    session_id: $('c-session').value.trim(),
+    scene: $('c-scene').value.trim(),
+    marker: $('c-marker').value.trim(),
+    marker_descriptor: $('c-descriptor').value,
+    mode: $('c-mode').value,
+    model: $('c-model').value,
+    a_s: parseFloat($('c-as').value),
+    max_steps: parseInt($('c-steps').value,10) || 30,
+    timeout_s: parseFloat($('c-timeout').value) || 90,
+    disable_thinking: $('c-nothink').checked,
+    api_key: $('c-key').value.trim()
+  });
+  toast('会话已建立：' + $('c-session').value.trim());
+}, '建立会话');
+
+$('btn-start').onclick = ()=>run(()=>api('/api/start', {}), 'Start Episode');
+
+$('file-input').onchange = async (ev)=>{
+  const file = ev.target.files[0]; ev.target.value='';
+  if (!file) return;
+  const buffer = await file.arrayBuffer();
+  const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+  await run(()=>api('/api/capture', {filename:file.name, data_base64:base64, source:'upload'}), 'Capture');
+};
+
+$('btn-digest').onclick = ()=>run(()=>api('/api/digest', {}), 'Digest');
+$('btn-call').onclick   = ()=>run(()=>api('/api/call', {}), 'Call Model');
+
+$('btn-action').onclick = ()=>run(()=>api('/api/action', {
+  feedback: $('a-feedback').value,
+  collision: $('a-collision').checked,
+  position_x: $('a-x').value ? parseFloat($('a-x').value) : null,
+  position_z: $('a-z').value ? parseFloat($('a-z').value) : null,
+  torso_rotation: $('a-torso').value ? parseFloat($('a-torso').value) : null,
+  note: $('a-note').value
+}), 'Action Executed');
+
+$('btn-passed').onclick = ()=>run(()=>api('/api/finish', {passed:true, end_reason:'passed'}), 'Mark Passed');
+$('btn-failed').onclick = ()=>run(()=>api('/api/finish', {passed:false, end_reason:'failed'}), 'Mark Failed');
+$('btn-retry').onclick  = ()=>run(()=>api('/api/call', {}), 'Retry API');
+$('btn-stop').onclick   = ()=>run(()=>api('/api/stop', {}), 'Stop');
+$('btn-export').onclick = ()=>run(async()=>{
+  const data = await api('/api/export', {});
+  toast('已导出到 ' + data.directory, 6000);
+}, 'Export');
+
+// poll
+setInterval(async ()=>{
+  if (BUSY) return;
+  try { const r = await fetch('/api/state'); const d = await r.json(); if (d.state) apply(d.state); }
+  catch(_){}
+}, 1500);
+fetch('/api/state').then(r=>r.json()).then(d=>{ if(d.state) apply(d.state); }).catch(()=>{});
+</script>
+</body>
+</html>
