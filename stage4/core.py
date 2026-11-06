@@ -60,12 +60,12 @@ DEFAULT_MODELS = [
     "claude-haiku-4-5-20251001",
 ]
 A_S_LEVELS = [2.0, 1.3, 1.1, 1.0, 0.9]
-# The real-scene shoulder width, not the simulated H1's 0.570 m.  The Stage 4 corridor is 140 cm at its
-# widest and the brief fixes that as A/S = 2.0, so the denominator the operator works against is 70 cm:
-#   2.0 -> 140 cm   1.3 -> 91 cm   1.1 -> 77 cm   1.0 -> 70 cm   0.9 -> 63 cm
-# A/S stays a ratio, which is what makes it comparable with the simulated stages even though the physical
-# body here is a different size; `channel_width_m` in config.json and manifest.csv is derived from this.
-ROBOT_SHOULDER_M = 0.70
+# 0.570 m is the robot's real width (its wheels are 57 cm across) and it is also the simulated H1's shoulder
+# width that Stages 1-3 used.  Keeping the same denominator means an A/S value means the same thing in the
+# simulated and the real experiment, so the curves can be compared directly:
+#   2.0 -> 114.0 cm   1.3 -> 74.1 cm   1.1 -> 62.7 cm   1.0 -> 57.0 cm   0.9 -> 51.3 cm
+# (The corridor is 140 cm at its widest, so even A/S 2.0 needs partitions.)
+ROBOT_SHOULDER_M = 0.570
 MAX_STEPS = 30
 IMAGE_SIZE = 1024
 # Distance covered by one forward/backward/left/right action, in metres.  Kept at the protocol's 0.75 so the
