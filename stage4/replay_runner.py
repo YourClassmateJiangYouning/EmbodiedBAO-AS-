@@ -134,6 +134,7 @@ def run_episode(session: core.Stage4Session, spec: dict, verbose: bool = True) -
             x, theta, feedback, blocked, collision = apply_action(action, x, theta, spec["a_s"])
             session.position_x, session.torso_rotation = x, theta
 
+        reached = x >= SUCCESS_X - 1e-9
         session.action_executed(
             feedback=feedback,
             collision=collision,
@@ -141,12 +142,15 @@ def run_episode(session: core.Stage4Session, spec: dict, verbose: bool = True) -
             torso_rotation=theta,
             note="replay",
             advance_odometer=False,   # the replay owns x and theta; see apply_action()
+            # report the arrival here: action_executed closes a max-steps episode as failed, and without
+            # this an episode that arrived on the very last step would be recorded a failure.
+            passed=True if reached else None,
         )
         if verbose:
             print("    step %2d  %-11s  x=%5.2f theta=%3.0f  W=%.3f/%.3f  %s"
                   % (step, action, x, theta, width_at(theta), spec["a_s"] * S,
                      "blocked" if blocked else "ok"))
-        if x >= SUCCESS_X - 1e-9:
+        if reached:
             passed = True
             end_reason = "passed"
             break

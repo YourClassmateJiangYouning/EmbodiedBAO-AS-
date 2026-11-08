@@ -666,13 +666,23 @@ class Stage4Session:
         odometer is the single source of truth, advanced either by action_executed or, in replay, by the caller.
         """
         last = self.history[-1] if self.history else {}
+        # The simulator reports the FOLDED angle ("Absolute torso yaw in degrees, folded into [0, 180]", see
+        # environment.get_abs_torso_rotation), so turning right once reads 15, not 345.  The internal value
+        # stays signed and unbounded because the geometry and the analysis both need the raw direction.
+        folded = abs(float(last.get("torso_rotation", self.torso_rotation))) % 360.0
+        if folded > 180.0:
+            folded = 360.0 - folded
+        # A glance lasts exactly one frame: the simulator's _camera_pitch_offset is +45 on the observation
+        # that follows look_down and 0 on every other.  Reporting 0 while showing the downward photograph
+        # would make the state contradict the image.
+        glanced_down = bool(last and last.get("action") == "look_down")
         return {
             # 0.5 m is the simulator's ROBOT_START_POS, not 0: the model must see the same absolute
             # coordinates it saw in Stages 1-3, so the numbers cannot be re-zeroed here.
             "position": [float(self.position_x), 0.0, float(self.position_z)],
-            "torso_rotation": float(last.get("torso_rotation", self.torso_rotation)),
+            "torso_rotation": folded,
             "camera_yaw": 0.0,
-            "camera_pitch": 0.0,
+            "camera_pitch": 45.0 if glanced_down else 0.0,
         }
 
     def _history_block(self) -> List[Dict[str, Any]]:
