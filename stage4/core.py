@@ -588,14 +588,17 @@ class Stage4Session:
         frame = self.bank_frame_for_state(bank_root)
         with open(frame, "rb") as handle:
             raw = handle.read()
-        state = self.capture(os.path.basename(frame), raw, "bank:" + frame)
+        # the bank is the archive, so record a pointer and a hash rather than a 7 MB duplicate per step
+        state = self.capture(os.path.basename(frame), raw, "bank:" + frame,
+                             store_copy=False, reference_path=frame)
         if self.current_image is not None:
             self.current_image["bank_frame"] = frame
         self.log("bank frame: %s (x=%.2f, torso=%.0f)" % (
             frame, self.position_x, self.torso_rotation))
         return state
 
-    def capture(self, filename: str, raw_bytes: bytes, source_note: str = "") -> Dict[str, Any]:
+    def capture(self, filename: str, raw_bytes: bytes, source_note: str = "",
+                store_copy: bool = True, reference_path: str = "") -> Dict[str, Any]:
         """Store the operator's photograph and make it the current frame.
 
         The bytes are written exactly as received -- no crop, no resize, no annotation -- and only the
@@ -608,14 +611,23 @@ class Stage4Session:
         image_id = new_id("IMG")
         extension = os.path.splitext(filename or "frame.png")[1].lower() or ".png"
         stored_name = "%s%s" % (image_id, extension)
-        stored_path = os.path.join(paths["images"], stored_name)
-        with open(stored_path, "wb") as handle:
-            handle.write(raw_bytes)
+        if store_copy:
+            stored_path = os.path.join(paths["images"], stored_name)
+            with open(stored_path, "wb") as handle:
+                handle.write(raw_bytes)
+        else:
+            # reference mode: the pixels stay in the photo bank, this record keeps the pointer and a hash
+            stored_path = reference_path or ""
+
+        import hashlib
 
         record = {
             "image_id": image_id,
-            "path": os.path.relpath(stored_path, self.dir).replace("\\", "/"),
+            "path": (os.path.relpath(stored_path, self.dir).replace("\\", "/")
+                     if store_copy else stored_path),
             "abs_path": stored_path,
+            "sha256": hashlib.sha256(raw_bytes).hexdigest(),
+            "stored_copy": bool(store_copy),
             "captured_at": now_iso(),
             "bytes": len(raw_bytes),
             "source": source_note or "upload",
