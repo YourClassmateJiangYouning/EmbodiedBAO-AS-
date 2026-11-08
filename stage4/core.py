@@ -327,6 +327,7 @@ class Stage4Session:
         self.digest: Optional[Dict[str, Any]] = None
         # the session's own odometer, so the frame bank does not depend on what the operator typed
         self.position_x: float = 0.5
+        self.position_z: float = 0.0
         self.torso_rotation: float = 0.0
         self.log_lines: List[str] = []
 
@@ -514,6 +515,7 @@ class Stage4Session:
         self.last_call = None
         self.digest = None
         self.position_x = float(SIM_GEOMETRY["start_x_m"])
+        self.position_z = 0.0
         self.torso_rotation = 0.0
         self.status = "READY"
         self.log("episode started: %s (mode %s, model %s, A/S %.1f)"
@@ -657,13 +659,18 @@ class Stage4Session:
         The origin is the start line: x counts metres walked forward from where the robot began, z counts
         metres to the left, so the numbers the operator types are the ones on the tape measure.  The prompt
         already explains x as "your forward position along the walkway", which is exactly this.
+
+        The position comes from the session odometer, NOT from `history[-1]["position"]`: action_executed stores
+        `position_x` / `position_z`, so reading the absent `position` key silently froze the prompt at the start
+        coordinates for every step of every episode -- the agent walked without ever seeing its x change.  The
+        odometer is the single source of truth, advanced either by action_executed or, in replay, by the caller.
         """
         last = self.history[-1] if self.history else {}
         return {
             # 0.5 m is the simulator's ROBOT_START_POS, not 0: the model must see the same absolute
             # coordinates it saw in Stages 1-3, so the numbers cannot be re-zeroed here.
-            "position": last.get("position") or [SIM_GEOMETRY["start_x_m"], 0.0, 0.0],
-            "torso_rotation": last.get("torso_rotation", 0.0),
+            "position": [float(self.position_x), 0.0, float(self.position_z)],
+            "torso_rotation": float(last.get("torso_rotation", self.torso_rotation)),
             "camera_yaw": 0.0,
             "camera_pitch": 0.0,
         }
