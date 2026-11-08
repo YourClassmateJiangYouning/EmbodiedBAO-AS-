@@ -76,6 +76,22 @@ MARKER_PRESETS = [
 # wheeled platform, so the same substitution is made here -- one noun phrase, every other word frozen.
 DEFAULT_BODY_NAME = "a small wheeled robot"
 
+# The real-scene look_down frame is a single photograph, so it cannot show the body at every torso angle the
+# way the simulator's renderer does.  Rather than let the prompt promise a view the image does not give, the
+# description says exactly what the frame contains -- the body seen from its own front, i.e. the width being
+# presented and the thickness behind it -- and points at the torso angle in the state as the thing that says
+# how that width is oriented.  Every other word stays as frozen Stage 1 text.
+LOOK_DOWN_DESCRIPTION_REAL = (
+    "glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of "
+    "you and your own body as seen from your own front. That view gives you the two dimensions you cannot "
+    "otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. "
+    "The view itself does not change when you rotate your torso -- it always shows the body from your own "
+    "front -- so read the torso rotation reported in your state to know which way that width is now facing. "
+    "Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you "
+    "are, which you cannot otherwise see. Your torso and your walking direction are "
+    "unaffected by the glance itself"
+)
+
 # THE SCENE MUST MATCH THE SIMULATOR, NOT THE HANDOVER DOCUMENT.
 #
 # The handover spec says the robot starts 4.0 m from the opening, but the simulator that produced Stages 1-3
@@ -589,6 +605,22 @@ class Stage4Session:
             "You are %s. Your task is to reach the red marker on the far wall." % body
         )
 
+    def _action_options(self, move_step: float) -> str:
+        """The action menu, with the real-scene look_down description substituted in.
+
+        build_prompt takes its options from the module-level ACTION_OPTIONS_STRING when move_step is None, and
+        regenerates them from action_descriptions() otherwise.  Regenerating would lose the override, so the
+        string is always built here -- with the configured step length AND the override -- and passed down by
+        setting the module global.  Every other action's text is the frozen Stage 1 wording.
+        """
+        import protocol
+
+        descriptions = dict(protocol.action_descriptions(move_step))
+        descriptions["look_down"] = LOOK_DOWN_DESCRIPTION_REAL
+        return "\n".join(
+            '{"action": "%s"} - %s' % (name, descriptions[name]) for name in protocol.ACTIONS
+        )
+
     def build_current_prompt(self, with_memory: bool = None) -> str:
         """The exact text that will be sent for the next action."""
         mode = self.config.get("mode", "A")
@@ -609,12 +641,16 @@ class Stage4Session:
         # None in that case keeps the prompt byte-identical to Stages 1-3; a session that really walks a
         # different distance must say so, or the action descriptions would lie about what "forward" covers.
         step = float(self.config.get("move_step_m") or PROTOCOL_MOVE_STEP)
-        step_argument = None if abs(step - PROTOCOL_MOVE_STEP) < 1e-9 else step
+        # Always pass the options through the module global (move_step=None), because the look_down override
+        # lives in that string; build_prompt would otherwise regenerate the frozen wording when the step
+        # length differs from the protocol default.
+        import protocol
+        protocol.ACTION_OPTIONS_STRING = self._action_options(step)
         return build_prompt(
             state=self._state_block(),
             history=self._history_block(),
             max_steps=self.config.get("max_steps", MAX_STEPS),
-            move_step=step_argument,
+            move_step=None,
             memory_block=memory_block,
         )
 
