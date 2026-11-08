@@ -368,3 +368,56 @@ def test_mode_b_cannot_start_without_a_memory(tmp_path):
                              "mode": "B"})
     with pytest.raises(RuntimeError, match="memory"):
         made.start_episode()
+
+# ------------------------------------------------------------------ housekeeping
+def test_session_id_cannot_escape_the_sessions_root(tmp_path):
+    made = core.Stage4Session(sessions_root=str(tmp_path / "sess"))
+    for bad in ("../evil", "a/b", "a\\\\b", "x:y"):
+        with pytest.raises(RuntimeError, match="plain name"):
+            made.open_session(bad, {"a_s": 1.0})
+    made.open_session("normal-1", {"a_s": 1.0, "model": "gpt-5", "marker_descriptor": "red circle"})
+    assert made.session_id == "normal-1"
+
+
+def test_state_reports_the_five_offered_actions(session):
+    assert session.state()["actions"] == core.REAL_ACTION_SET
+
+
+def test_an_interrupted_episode_is_closed_on_reopen(tmp_path):
+    root = str(tmp_path / "o")
+    made = core.Stage4Session(sessions_root=root)
+    made.open_session("orphan", {"a_s": 1.2, "model": "gpt-5", "marker_descriptor": "red circle"})
+    made.start_episode()
+    episode_id = made.episode["episode_id"]
+    made.steps = [
+        {"episode_id": episode_id, "step": 0, "action": "forward", "scene": "R1",
+         "marker": "M2", "a_s": 1.2, "model": "gpt-5"},
+    ]
+    made._rewrite_steps()
+
+    reopened = core.Stage4Session(sessions_root=root)
+    reopened.open_session("orphan", {"a_s": 1.2, "model": "gpt-5", "marker_descriptor": "red circle"})
+    assert len(reopened.episodes) == 1
+    assert reopened.episodes[0]["aborted"] is True
+    assert reopened.episodes[0]["steps"] == 1
+
+
+def test_digest_keeps_the_reply_not_only_the_prompt(session, monkeypatch, png_file):
+    fake_image(session, png_file)
+    session.config["mode"] = "B"
+    session.memory = {"memory_id": "M1", "memory_text": "1. forward -> executed"}
+    session.episode = {"episode_id": "E1"}
+
+    def fake_post(prompt, image_path, timeout, json_mode=None):
+        return {"ok": True, "raw": '{"digested": true, "summary": "walked straight"}',
+                "content": '{"digested": true, "summary": "walked straight"}',
+                "reasoning_content": "", "finish_reason": "stop", "reasoning_tokens": None,
+                "latency_ms": 12, "payload_bytes": 100, "error": None, "json_mode": True}
+
+    monkeypatch.setattr(session, "_post", fake_post)
+    session.run_digest()
+    response_path = os.path.join(session.dir, session.digest["response_path"])
+    assert os.path.isfile(response_path), "the digest reply must be stored next to its prompt"
+    with open(response_path, encoding="utf-8") as handle:
+        stored = json.load(handle)
+    assert "walked straight" in (stored.get("content") or "")

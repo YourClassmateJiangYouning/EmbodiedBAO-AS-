@@ -369,7 +369,15 @@ class Stage4Session:
 
     def open_session(self, session_id: str, config: Dict[str, Any]) -> Dict[str, Any]:
         """Create (or reopen) a session directory and write its config."""
-        self.session_id = session_id.strip() or "session"
+        # The id becomes a directory name, so a separator or a ".." would write outside the sessions root
+        # (or read another session's files).  Reject rather than silently sanitise: a silent rewrite would
+        # split one intended session across two directories.
+        cleaned = (session_id or "").strip()
+        if not cleaned:
+            cleaned = "session"
+        if any(mark in cleaned for mark in ("..", "/", "\\", ":", "*", "?", '"', "<", ">", "|")):
+            raise RuntimeError("session id must be a plain name, got %r" % session_id)
+        self.session_id = cleaned
         self.dir = os.path.join(self.sessions_root, self.session_id)
         paths = self._paths()
         for key in ("images", "prompts", "responses", "exports", "memory"):
@@ -429,6 +437,36 @@ class Stage4Session:
         # reload previous work so reopening a session does not lose its history
         self.steps = read_jsonl(paths["steps"])
         self.episodes = read_jsonl(paths["episodes"])
+
+        # An episode interrupted by a crash leaves steps on disk with no episodes.jsonl row, so those steps
+        # belong to nothing and the manifest silently under-counts.  This must run AFTER the steps are loaded:
+        # the first version of this check read self.steps before open_session had filled it and therefore
+        # never found an orphan -- the same ordering mistake as request_params.
+        episodes_path = paths["episodes"]
+        known = {episode.get("episode_id") for episode in self.episodes}
+        orphaned = [row for row in self.steps if row.get("episode_id") not in known]
+        if orphaned:
+            by_episode = {}
+            for row in orphaned:
+                by_episode.setdefault(row.get("episode_id"), []).append(row)
+            for episode_id, rows in by_episode.items():
+                if not episode_id:
+                    continue
+                record = {
+                    "episode_id": episode_id,
+                    "aborted": True,
+                    "passed": False,
+                    "end_reason": "aborted (process stopped mid-episode)",
+                    "total_steps": len(rows),
+                    "steps": len(rows),
+                    "scene": rows[0].get("scene"),
+                    "marker": rows[0].get("marker"),
+                    "a_s": rows[0].get("a_s"),
+                    "model": rows[0].get("model"),
+                }
+                append_jsonl(episodes_path, record)
+                self.episodes.append(record)
+                self.log("closed an interrupted episode as aborted: %s (%d steps)" % (episode_id, len(rows)))
         # a reopened session starts with no episode in flight: keeping the old one would block Start Episode
         # with "an episode is still open" after the operator had already closed that episode's window
         self.episode = None
@@ -1258,11 +1296,29 @@ class Stage4Session:
             raise RuntimeError("capture the first frame before the digest")
         prompt = self.build_digest_prompt()
         paths = self._paths()
-        prompt_file = os.path.join(paths["prompts"], "%s_digest.txt" % new_id("PRM"))
+        prompt_id = new_id("PRM")
+        prompt_file = os.path.join(paths["prompts"], "%s_digest.txt" % prompt_id)
         with open(prompt_file, "w", encoding="utf-8") as handle:
             handle.write(prompt)
         result = self._post(prompt, self.current_image["abs_path"],
                             float(self.config.get("timeout_s", DEFAULT_TIMEOUT_S)))
+        # The reply is kept beside the prompt, like every step's.  Storing only the prompt left nothing to
+        # check the digest against -- and the digest is the text that gets quoted as "a summary of the memory".
+        response_file = os.path.join(paths["responses"], "%s_digest.json" % prompt_id)
+        with open(response_file, "w", encoding="utf-8") as handle:
+            json.dump({
+                "prompt_file": os.path.basename(prompt_file),
+                "raw_response": result.get("raw"),
+                "content": result.get("content"),
+                "reasoning_content": result.get("reasoning_content"),
+                "finish_reason": result.get("finish_reason"),
+                "reasoning_tokens": result.get("reasoning_tokens"),
+                "json_mode": result.get("json_mode"),
+                "latency_ms": result.get("latency_ms"),
+                "payload_bytes": result.get("payload_bytes"),
+                "error": result.get("error"),
+                "request_params": self._request_params(),
+            }, handle, indent=2, ensure_ascii=False)
         parsed = parse_action(result.get("content") or "") if result.get("ok") else None
         valid = bool(parsed and parsed.get("digested") in (True, "true", 1))
         self.digest = {
@@ -1272,6 +1328,7 @@ class Stage4Session:
             "error": result.get("error"),
             "latency_ms": result.get("latency_ms"),
             "prompt_path": os.path.relpath(prompt_file, self.dir),
+            "response_path": os.path.relpath(response_file, self.dir),
             "created_at": now_iso(),
         }
         if self.episode:
@@ -1416,7 +1473,8 @@ class Stage4Session:
             },
             "models": DEFAULT_MODELS,
             "a_s_levels": A_S_LEVELS,
-            "actions": ACTIONS,
+            # the menu actually offered: the five photograph-backed actions, not the simulator's nine
+            "actions": list(getattr(self, "action_set", REAL_ACTION_SET)),
             "episode": {
                 "episode_id": episode.get("episode_id"),
                 "mode": episode.get("mode") or self.config.get("mode"),

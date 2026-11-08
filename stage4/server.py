@@ -116,17 +116,31 @@ class Handler(BaseHTTPRequestHandler):
                     self._fail("no session open")
                     return
                 images_dir = os.path.join(SESSION.dir, "images")
-                for name in os.listdir(images_dir):
-                    if name.startswith(image_id):
-                        data = open(os.path.join(images_dir, name), "rb").read()
-                        content_type = "image/png" if name.lower().endswith(".png") else "image/jpeg"
-                        self.send_response(200)
-                        self.send_header("Content-Type", content_type)
-                        self.send_header("Content-Length", str(len(data)))
-                        self.send_header("Cache-Control", "no-store")
-                        self.end_headers()
-                        self.wfile.write(data)
-                        return
+                # A frame-bank capture stores a reference to the photograph instead of a 7 MB copy, so its
+                # pixels live in the bank.  Try the referenced path first, then the session copy: without this
+                # every bank frame previewed as 404 while the file was on disk.
+                candidates = [
+                    record["image_path"]
+                    for record in getattr(SESSION, "steps", [])
+                    if record.get("image_id") == image_id and record.get("image_path")
+                ]
+                if os.path.isdir(images_dir):
+                    candidates += [
+                        os.path.join(images_dir, name)
+                        for name in os.listdir(images_dir) if name.startswith(image_id)
+                    ]
+                for path_on_disk in candidates:
+                    if not path_on_disk or not os.path.isfile(path_on_disk):
+                        continue
+                    data = open(path_on_disk, "rb").read()
+                    content_type = "image/png" if path_on_disk.lower().endswith(".png") else "image/jpeg"
+                    self.send_response(200)
+                    self.send_header("Content-Type", content_type)
+                    self.send_header("Content-Length", str(len(data)))
+                    self.send_header("Cache-Control", "no-store")
+                    self.end_headers()
+                    self.wfile.write(data)
+                    return
                 self._fail("image not found", 404)
                 return
 
