@@ -140,6 +140,7 @@ def run_episode(session: core.Stage4Session, spec: dict, verbose: bool = True) -
             position_x=x,
             torso_rotation=theta,
             note="replay",
+            advance_odometer=False,   # the replay owns x and theta; see apply_action()
         )
         if verbose:
             print("    step %2d  %-11s  x=%5.2f theta=%3.0f  W=%.3f/%.3f  %s"

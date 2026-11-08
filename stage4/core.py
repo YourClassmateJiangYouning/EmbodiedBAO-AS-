@@ -1005,6 +1005,7 @@ class Stage4Session:
         torso_rotation: Optional[float] = None,
         passed: Optional[bool] = None,
         note: str = "",
+        advance_odometer: bool = True,
     ) -> Dict[str, Any]:
         """Record what the operator did with the action, and optionally mark the episode finished."""
         self._require()
@@ -1014,17 +1015,21 @@ class Stage4Session:
         if record.get("feedback"):
             raise RuntimeError("this step is already recorded")
 
-        # advance the odometer from the action itself, so the frame bank follows the real sequence
-        step = float(self.config.get("move_step_m") or SIM_GEOMETRY["move_step_m"])
-        action = record.get("action")
-        if action == "forward":
-            self.position_x += step
-        elif action == "backward":
-            self.position_x -= step
-        if action == "turn_left":
-            self.torso_rotation = (self.torso_rotation + 15.0) % 360.0
-        elif action == "turn_right":
-            self.torso_rotation = (self.torso_rotation - 15.0) % 360.0
+        # Advance the odometer from the action itself, so the window's frame bank follows the real sequence.
+        # A caller that simulates the geometry (the replay runner) owns x and theta and passes False, otherwise
+        # the position would advance twice -- once there and once here -- and the photographs would run ahead
+        # of the state the model is told.
+        if advance_odometer:
+            step = float(self.config.get("move_step_m") or SIM_GEOMETRY["move_step_m"])
+            action = record.get("action")
+            if action == "forward":
+                self.position_x += step
+            elif action == "backward":
+                self.position_x -= step
+            if action == "turn_left":
+                self.torso_rotation = (self.torso_rotation + 15.0) % 360.0
+            elif action == "turn_right":
+                self.torso_rotation = (self.torso_rotation - 15.0) % 360.0
 
         record["feedback"] = feedback or "executed"
         record["collision"] = bool(collision)
