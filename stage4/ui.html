@@ -112,6 +112,11 @@
              style="flex:1;min-width:220px">
       <button class="btn ghost" id="btn-inbox">取收件箱最新一张</button>
     </div>
+    <div class="row" style="margin-top:8px">
+      <input id="c-bank" placeholder="照片库根目录，如 D:\stage4_photos"
+             style="flex:1;min-width:220px">
+      <button class="btn" id="btn-bank">按状态取帧库图片</button>
+    </div>
     <div class="hint">
       四种取图方式：①点上面「Capture」选文件 ②把照片拖到这个区域 ③填完整路径读取
       ④把照片都存进「收件箱」目录，每次点一下自动取最新未用的一张（最省事）
@@ -609,6 +614,14 @@ $('btn-path').onclick = ()=>run(async()=>{
   await api('/api/capture_path', {path: path});
   toast('已读取：' + path);
 }, '从路径读取');
+
+// 帧库：按当前（x, 躯干角, 上一步动作）自动取对应照片
+$('btn-bank').onclick = ()=>run(async()=>{
+  let dir = $('c-bank').value.trim();
+  if (!dir) { dir = 'D:\\stage4_photos'; $('c-bank').value = dir; }
+  await api('/api/capture_bank', {dir: dir});
+  toast('已按状态取帧：' + dir);
+}, '按状态取帧库图片');
 
 // 收件箱：把照片都丢进一个文件夹，每次点一下取最新未用的那张
 $('btn-inbox').onclick = ()=>run(async()=>{

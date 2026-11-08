@@ -92,6 +92,35 @@ LOOK_DOWN_DESCRIPTION_REAL = (
     "unaffected by the glance itself"
 )
 
+# The real scene has photographs only for the forward walk, the torso turn and one downward glance.  left and
+# right would need laterally offset photographs, and look_left/look_right would need 30-degree aside views;
+# neither exists, so the action set is the five the frame bank can answer.  In Stage 1 these five cover about
+# 85% of all decisions (forward 73.1%, turn_left+turn_right 11.5%, look_down 5.0%).
+REAL_ACTION_SET = ["forward", "backward", "turn_left", "turn_right", "look_down"]
+
+# The plate-and-wheels photograph stands in for the body; the marker name selects the bank folder that holds
+# that target's forward sequence.
+BANK_MARKER_DIRS = {
+    "red circle": "红色",
+    "green rectangle": "绿色",
+    "blue triangle": "蓝色",
+    "yellow arrow": "黄色",
+    "purple four-pointed star": "紫色",
+}
+
+# The frozen frame note minus the clauses about actions that are no longer offered.
+ACTION_FRAME_NOTE_REAL = (
+    "Your walking direction is fixed: it always points straight ahead at the far wall, which is where the red "
+    "marker you are heading for is. forward/backward are defined relative to that walking direction, so they "
+    "behave the same way however your torso is turned.\n"
+    "turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you "
+    "walk does not change, and neither does your view: your eyes look straight ahead along your walking "
+    "direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you "
+    "and it does not change what you see.\n"
+    "look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are "
+    "unaffected, and the glance clears as soon as you do anything else. You cannot look up."
+)
+
 # THE SCENE MUST MATCH THE SIMULATOR, NOT THE HANDOVER DOCUMENT.
 #
 # The handover spec says the robot starts 4.0 m from the opening, but the simulator that produced Stages 1-3
@@ -296,6 +325,9 @@ class Stage4Session:
         self.episodes: List[Dict[str, Any]] = []
         self.memory: Optional[Dict[str, Any]] = None
         self.digest: Optional[Dict[str, Any]] = None
+        # the session's own odometer, so the frame bank does not depend on what the operator typed
+        self.position_x: float = 0.5
+        self.torso_rotation: float = 0.0
         self.log_lines: List[str] = []
 
     # -- plumbing -------------------------------------------------------------------------------
@@ -481,6 +513,8 @@ class Stage4Session:
         self.current_image = None
         self.last_call = None
         self.digest = None
+        self.position_x = float(SIM_GEOMETRY["start_x_m"])
+        self.torso_rotation = 0.0
         self.status = "READY"
         self.log("episode started: %s (mode %s, model %s, A/S %.1f)"
                  % (self.episode["episode_id"], mode, self.episode["model"], self.episode["a_s"]))
@@ -518,6 +552,48 @@ class Stage4Session:
         with open(self._paths()["config"], "w", encoding="utf-8") as handle:
             json.dump(self.config, handle, indent=2, ensure_ascii=False)
         return self.capture(os.path.basename(path), raw, "inbox:" + path)
+
+    def bank_frame_for_state(self, bank_root: str) -> str:
+        """The one photograph that matches the current state, or a clear error naming what is missing.
+
+        The x index comes from the session's own odometer (start_x + n * step), not from what the operator typed,
+        so a forgotten position field cannot silently feed the wrong frame.
+        """
+        root = (bank_root or "").strip().strip('"')
+        if not root or not os.path.isdir(root):
+            raise RuntimeError("photo bank directory not found: %s" % (root or "(empty)"))
+        last = self.history[-1] if self.history else None
+        if last and last.get("action") == "look_down":
+            glance = os.path.join(root, "_look_down", "look_down.PNG")
+            if not os.path.isfile(glance):
+                raise RuntimeError("missing downward-glance photograph: %s" % glance)
+            return glance
+        colour = BANK_MARKER_DIRS.get(self.config.get("marker_descriptor") or "")
+        if colour is None:
+            raise RuntimeError(
+                "no bank folder is mapped to marker %r; known markers: %s"
+                % (self.config.get("marker_descriptor"), sorted(BANK_MARKER_DIRS)))
+        start = float(SIM_GEOMETRY["start_x_m"])
+        step = float(self.config.get("move_step_m") or SIM_GEOMETRY["move_step_m"])
+        index = int(round((self.position_x - start) / step))
+        index = max(0, min(10, index))
+        folder = "%s%s" % ("%.1f" % float(self.config.get("a_s")), colour)
+        frame = os.path.join(root, folder, "%d.PNG" % (index + 1))
+        if not os.path.isfile(frame):
+            raise RuntimeError("missing forward frame: %s (folder %s)" % (frame, folder))
+        return frame
+
+    def capture_from_bank(self, bank_root: str) -> Dict[str, Any]:
+        """Load the photograph the state calls for and make it the current frame."""
+        frame = self.bank_frame_for_state(bank_root)
+        with open(frame, "rb") as handle:
+            raw = handle.read()
+        state = self.capture(os.path.basename(frame), raw, "bank:" + frame)
+        if self.current_image is not None:
+            self.current_image["bank_frame"] = frame
+        self.log("bank frame: %s (x=%.2f, torso=%.0f)" % (
+            frame, self.position_x, self.torso_rotation))
+        return state
 
     def capture(self, filename: str, raw_bytes: bytes, source_note: str = "") -> Dict[str, Any]:
         """Store the operator's photograph and make it the current frame.
@@ -606,26 +682,65 @@ class Stage4Session:
         )
 
     def _action_options(self, move_step: float) -> str:
-        """The action menu, with the real-scene look_down description substituted in.
+        """The action menu for the real scene: only the actions the frame bank can answer.
 
         build_prompt takes its options from the module-level ACTION_OPTIONS_STRING when move_step is None, and
-        regenerates them from action_descriptions() otherwise.  Regenerating would lose the override, so the
-        string is always built here -- with the configured step length AND the override -- and passed down by
-        setting the module global.  Every other action's text is the frozen Stage 1 wording.
+        regenerates them from action_descriptions() otherwise.  Regenerating would lose the look_down override,
+        so the string is always built here -- with the configured step length and the override -- and passed
+        down by setting the module global.  Every other action's text is the frozen Stage 1 wording.
         """
         import protocol
 
         descriptions = dict(protocol.action_descriptions(move_step))
         descriptions["look_down"] = LOOK_DOWN_DESCRIPTION_REAL
         return "\n".join(
-            '{"action": "%s"} - %s' % (name, descriptions[name]) for name in protocol.ACTIONS
+            '{"action": "%s"} - %s' % (name, descriptions[name]) for name in REAL_ACTION_SET
         )
+
+    def _apply_real_scene_actions(self) -> None:
+        """Restrict the offered actions to the five the photographs can answer.
+
+        The frame note is replaced too, because the frozen one describes look_left/look_right and left/right,
+        which are no longer in the menu; a note that explains absent actions is worse than no note.
+        """
+        import protocol
+
+        protocol.ACTION_FRAME_NOTE = ACTION_FRAME_NOTE_REAL
+        self.action_set = list(REAL_ACTION_SET)
+
+    # Two sentences inside build_prompt's state block name actions the real scene no longer offers.  They are
+    # rewritten after the prompt is built, with the expected text asserted first so a change in protocol.py
+    # fails loudly instead of silently leaving a stale sentence in the prompt.
+    REMOVED_ACTION_REWRITES = [
+        (
+            "z is how far to the right (negative) or left (positive) of the line you started on you are, and "
+            "changes only when you use left/right",
+            "z is how far to the right (negative) or left (positive) of the line you started on you are; it "
+            "does not change in this task",
+        ),
+        (
+            " (0 = looking straight ahead down your walking direction; NEGATIVE is toward your left and "
+            "POSITIVE toward your right -- a look_left reports a negative number -- and the glance clears on "
+            "your next action)",
+            " (0 = looking straight ahead down your walking direction; you have no side glance in this task)",
+        ),
+    ]
+
+    def _trim_removed_action_mentions(self, prompt: str) -> str:
+        for old, new in self.REMOVED_ACTION_REWRITES:
+            if old not in prompt:
+                raise RuntimeError(
+                    "prompt no longer contains a sentence that must be rewritten for the real-scene action "
+                    "set: %r -- protocol.py changed, update REMOVED_ACTION_REWRITES" % old[:60])
+            prompt = prompt.replace(old, new)
+        return prompt
 
     def build_current_prompt(self, with_memory: bool = None) -> str:
         """The exact text that will be sent for the next action."""
         mode = self.config.get("mode", "A")
         use_memory = (mode == "B") if with_memory is None else with_memory
         self._apply_body_name()
+        self._apply_real_scene_actions()
         # Set the marker here as well as in call_model, so a preview can never show a prompt that names a
         # different object from the one the next request will name.
         set_marker_descriptor(self.config.get("marker_descriptor"))
@@ -646,13 +761,14 @@ class Stage4Session:
         # length differs from the protocol default.
         import protocol
         protocol.ACTION_OPTIONS_STRING = self._action_options(step)
-        return build_prompt(
+        prompt = build_prompt(
             state=self._state_block(),
             history=self._history_block(),
             max_steps=self.config.get("max_steps", MAX_STEPS),
             move_step=None,
             memory_block=memory_block,
         )
+        return self._trim_removed_action_mentions(prompt)
 
     def build_digest_prompt(self) -> str:
         """Digest call for Stage 4B: read the memory, choose no action, consume no step."""
@@ -748,7 +864,7 @@ class Stage4Session:
             action = None
             if parsed:
                 candidate = str(parsed.get("action") or "").strip()
-                if candidate in ACTIONS:
+                if candidate in getattr(self, "action_set", ACTIONS):
                     action = candidate
             attempt = {
                 "attempt": attempt_index + 1,
@@ -886,10 +1002,24 @@ class Stage4Session:
         if record.get("feedback"):
             raise RuntimeError("this step is already recorded")
 
+        # advance the odometer from the action itself, so the frame bank follows the real sequence
+        step = float(self.config.get("move_step_m") or SIM_GEOMETRY["move_step_m"])
+        action = record.get("action")
+        if action == "forward":
+            self.position_x += step
+        elif action == "backward":
+            self.position_x -= step
+        if action == "turn_left":
+            self.torso_rotation = (self.torso_rotation + 15.0) % 360.0
+        elif action == "turn_right":
+            self.torso_rotation = (self.torso_rotation - 15.0) % 360.0
+
         record["feedback"] = feedback or "executed"
         record["collision"] = bool(collision)
         if position_x is not None:
             record["position_x"] = float(position_x)
+        else:
+            record["position_x"] = round(self.position_x, 3)
         if position_z is not None:
             record["position_z"] = float(position_z)
         if torso_rotation is not None:

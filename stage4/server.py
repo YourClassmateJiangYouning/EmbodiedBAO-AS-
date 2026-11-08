@@ -232,6 +232,11 @@ class Handler(BaseHTTPRequestHandler):
                     json_response(self, {"ok": True, "state": state})
                     return
 
+                if path == "/api/capture_bank":
+                    # Take the photograph the current state calls for, out of the pre-captured bank.
+                    json_response(self, {"ok": True, "state": SESSION.capture_from_bank(body.get("dir") or "")})
+                    return
+
                 if path == "/api/capture_inbox":
                     inbox = (body.get("dir") or "").strip().strip('"')
                     json_response(self, {"ok": True, "state": SESSION.capture_from_inbox(inbox)})
