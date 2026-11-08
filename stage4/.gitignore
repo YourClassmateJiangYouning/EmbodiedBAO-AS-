@@ -1,7 +1,9 @@
 # Stage 4 实验数据不进版本库
 #
-# sessions/ 里是真实实验产物：原图、prompt、模型响应、JSONL 记录。它们体积大、含实验现场的
-# 画面，而且每次运行都会变，所以只在本地保留，随实验目录一起归档。
+# sessions/ 和 sessions_r1/ 里是真实实验产物：原图、prompt、模型响应、JSONL 记录。
+# 它们体积大、含实验现场的画面，而且每次运行都会变，所以只在本地保留，随实验目录一起归档。
 sessions/
+sessions_r1/
 __pycache__/
 *.pyc
+.pytest_cache/

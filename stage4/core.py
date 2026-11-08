@@ -52,6 +52,7 @@ from protocol import (  # noqa: E402
     build_prompt,
     set_marker_descriptor,
 )
+import protocol  # noqa: E402  - module handle, for fold_yaw and the Stage-4 prompt overrides
 
 DEFAULT_ENDPOINT = "http://35.220.164.252:3888/v1"
 DEFAULT_MODELS = [
@@ -330,6 +331,8 @@ class Stage4Session:
         self.position_z: float = 0.0
         self.torso_rotation: float = 0.0
         self.log_lines: List[str] = []
+        # set to False the first time the gateway refuses response_format; every attempt records it
+        self.json_mode_supported: bool = True
 
     # -- plumbing -------------------------------------------------------------------------------
     def _request_params(self) -> Dict[str, Any]:
@@ -371,6 +374,16 @@ class Stage4Session:
         paths = self._paths()
         for key in ("images", "prompts", "responses", "exports", "memory"):
             os.makedirs(paths[key], exist_ok=True)
+        # Reopening must not forget state that belongs to the DIRECTORY rather than to this call.  The inbox
+        # de-duplication list is the one that matters: rebuilding it from nothing let the same photograph be
+        # captured again after a restart, exactly what used_sources exists to prevent.
+        previous: Dict[str, Any] = {}
+        if os.path.isfile(paths["config"]):
+            try:
+                with open(paths["config"], encoding="utf-8") as handle:
+                    previous = json.load(handle) or {}
+            except (OSError, ValueError):
+                previous = {}
 
         a_s = float(config.get("a_s", 1.0))
         shoulder_m = float(config.get("shoulder_m") or ROBOT_SHOULDER_M)
@@ -391,11 +404,20 @@ class Stage4Session:
             "image_size": IMAGE_SIZE,
             "memory_id": config.get("memory_id") or None,
             "disable_thinking": bool(config.get("disable_thinking", True)),
-            "api_max_tokens": API_MAX_TOKENS,
-            "request_params": self._request_params(),
+            "timeout_s": float(config.get("timeout_s") or DEFAULT_TIMEOUT_S),
             "sim_geometry": SIM_GEOMETRY,
             "started_at": now_iso(),
         }
+        # Fill the provenance fields AFTER the assignment.  Computing "request_params" inside the dict literal
+        # called _request_params() while self.config was still the PREVIOUS session's config (empty on a fresh
+        # one), so config.json recorded {} while the requests carried the per-model parameters -- the one file
+        # an auditor would check was the file telling the wrong story.
+        self.config["request_params"] = self._request_params()
+        # Carry the directory's own state across a reopen.
+        if isinstance(previous.get("used_sources"), list):
+            self.config["used_sources"] = list(previous["used_sources"])
+        if previous.get("started_at") and previous.get("session_id") == self.config["session_id"]:
+            self.config["started_at"] = previous["started_at"]
         if config.get("api_key"):
             self.api_key = str(config["api_key"]).strip()
         if config.get("endpoint"):
@@ -466,10 +488,21 @@ class Stage4Session:
         """Load a memory card written by an earlier stage (JSON or JSONL, first record used)."""
         with open(path, encoding="utf-8") as handle:
             text = handle.read().strip()
-        if text.startswith("{"):
-            record = json.loads(text.splitlines()[0])
-        else:
+        try:
+            # A pretty-printed JSON object is what /api/memory writes (indent=2); parsing only its first line
+            # raises "Expecting property name ... line 1 column 2", so the tool could not read its own cards.
             record = json.loads(text)
+        except ValueError:
+            record = None
+            for line in text.splitlines():
+                line = line.strip()
+                if line:
+                    record = json.loads(line)   # JSONL: first record wins
+                    break
+            if record is None:
+                raise RuntimeError("memory file is empty: %s" % path)
+        if not isinstance(record, dict):
+            raise RuntimeError("memory file is not a JSON object: %s" % path)
         record.setdefault("memory_id", new_id("S4M"))
         record.setdefault("memory_text", "")
         return record
@@ -666,12 +699,14 @@ class Stage4Session:
         odometer is the single source of truth, advanced either by action_executed or, in replay, by the caller.
         """
         last = self.history[-1] if self.history else {}
+        # Read the ODOMETER, never history[-1]["torso_rotation"]: call_model writes the previous step's folded
+        # value into the record, so reading the record reported an angle one step behind, and 0.0 whenever the
+        # operator had not typed one, while the odometer itself was correct.
+        #
         # The simulator reports the FOLDED angle ("Absolute torso yaw in degrees, folded into [0, 180]", see
         # environment.get_abs_torso_rotation), so turning right once reads 15, not 345.  The internal value
         # stays signed and unbounded because the geometry and the analysis both need the raw direction.
-        folded = abs(float(last.get("torso_rotation", self.torso_rotation))) % 360.0
-        if folded > 180.0:
-            folded = 360.0 - folded
+        folded = float(protocol.fold_yaw(self.torso_rotation))
         # A glance lasts exactly one frame: the simulator's _camera_pitch_offset is +45 on the observation
         # that follows look_down and 0 on every other.  Reporting 0 while showing the downward photograph
         # would make the state contradict the image.
@@ -810,20 +845,41 @@ class Stage4Session:
         )
 
     # -- model call -----------------------------------------------------------------------------
-    def _post(self, prompt: str, image_path: str, timeout: float) -> Dict[str, Any]:
+    # A parameter rejection is the ONLY reason to drop JSON mode.  Any other error (timeout, 502, balance)
+    # must propagate, because silently resending without response_format would change the shape of the
+    # request halfway through a run -- the same distinction ai_agent._request makes.
+    RESPONSE_FORMAT_REJECTION_MARKERS = (
+        "response_format", "json_object", "json mode", "unsupported_parameter",
+        "unsupported parameter", "unrecognized request argument",
+    )
+
+    def _post(self, prompt: str, image_path: str, timeout: float,
+              json_mode: Optional[bool] = None) -> Dict[str, Any]:
+        """One HTTP call, in the same envelope Stage 1-3 used.
+
+        The system message is the one Stage 1-3 sent ("This is a benign virtual simulation ... Always respond
+        with a single JSON object"), and response_format is requested unless the endpoint has already refused
+        it.  max_tokens is deliberately NOT set: Stage 1-3 used the provider default, and a fixed budget here
+        would both truncate long answers and make the two stages incomparable.
+        """
         data_url, payload_bytes = encode_for_api(image_path, self.config.get("image_size", IMAGE_SIZE))
+        use_json_mode = self.json_mode_supported if json_mode is None else json_mode
         body = {
             "model": self.config.get("model"),
-            "messages": [{
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": prompt},
-                    {"type": "image_url", "image_url": {"url": data_url}},
-                ],
-            }],
+            "messages": [
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": prompt},
+                        {"type": "image_url", "image_url": {"url": data_url}},
+                    ],
+                },
+            ],
             "temperature": API_TEMPERATURE,
-            "max_tokens": API_MAX_TOKENS,
         }
+        if use_json_mode:
+            body["response_format"] = {"type": "json_object"}
         body.update(self._request_params())
         request = urllib.request.Request(
             self.endpoint + "/chat/completions",
@@ -856,6 +912,7 @@ class Stage4Session:
                 "reasoning_content": reasoning_content,
                 "finish_reason": finish_reason, "reasoning_tokens": reasoning_tokens,
                 "latency_ms": latency_ms, "payload_bytes": payload_bytes, "error": None,
+                "json_mode": use_json_mode,
             }
         except urllib.error.HTTPError as error:
             raw = ""
@@ -863,10 +920,19 @@ class Stage4Session:
                 raw = error.read().decode("utf-8", "replace")
             except Exception:
                 pass
+            lowered = raw.lower()
+            rejected = any(marker in lowered for marker in self.RESPONSE_FORMAT_REJECTION_MARKERS)
+            if use_json_mode and rejected:
+                # The endpoint does not accept response_format: turn it off for the rest of the session and
+                # resend once.  Every later attempt records json_mode=false, so the provenance stays honest.
+                self.json_mode_supported = False
+                self.log("endpoint rejected response_format; retrying without JSON mode")
+                return self._post(prompt, image_path, timeout, json_mode=False)
             return {
                 "ok": False, "raw": raw, "content": "", "reasoning_content": "",
                 "latency_ms": int((time.time() - started) * 1000), "payload_bytes": payload_bytes,
                 "error": "HTTP %s" % error.code, "http_status": error.code,
+                "json_mode": use_json_mode,
             }
         except Exception as error:  # noqa: BLE001 -- timeout, DNS, TLS, all recorded verbatim
             return {
@@ -885,9 +951,14 @@ class Stage4Session:
         paths = self._paths()
         attempts: List[Dict[str, Any]] = []
         timeout = float(self.config.get("timeout_s", DEFAULT_TIMEOUT_S))
-        deadline_calls = NETWORK_RETRIES + FORMAT_RETRIES + 1
+        # Two independent budgets, because the two failure kinds mean different things.  The old single range()
+        # bounded the TOTAL at NETWORK_RETRIES + FORMAT_RETRIES + 1 and then compared that same index against
+        # both constants, so a format failure really made four calls (should be 2) and a network failure three.
+        network_used = 0
+        format_used = 0
+        attempt_index = 0
 
-        for attempt_index in range(deadline_calls):
+        while True:
             result = self._post(prompt, image_path, timeout)
             parsed = parse_action(result.get("content") or "") if result.get("ok") else None
             action = None
@@ -903,6 +974,7 @@ class Stage4Session:
                 "finish_reason": result.get("finish_reason"),
                 "reasoning_tokens": result.get("reasoning_tokens"),
                 "error": result.get("error"),
+                "json_mode": result.get("json_mode"),
                 "raw_response": result.get("raw"),
                 "content": result.get("content"),
                 "reasoning_content": result.get("reasoning_content"),
@@ -918,16 +990,33 @@ class Stage4Session:
             if action:
                 return {"ok": True, "attempt": attempt, "attempts": attempts, "parsed": parsed}
 
+            http_status = result.get("http_status")
+            # A 4xx other than rate limiting / timeout will fail identically however often it is sent: a wrong
+            # key or a malformed body must surface immediately rather than burn three timeouts.
+            fatal_client_error = (
+                http_status is not None
+                and 400 <= int(http_status) < 500
+                and int(http_status) not in (408, 429)
+            )
+            if fatal_client_error:
+                self.log("attempt %d refused by the endpoint (HTTP %s); not retrying"
+                         % (attempt_index + 1, http_status))
+                break
+
             network_failure = (not result.get("ok")) or (
-                result.get("http_status") and int(result["http_status"]) >= 500)
+                http_status is not None and int(http_status) >= 500) or int(http_status or 0) in (408, 429)
             if network_failure:
-                if attempt_index >= NETWORK_RETRIES:
+                if network_used >= NETWORK_RETRIES:
                     break
+                network_used += 1
             else:
                 # The reply arrived but was unusable: at most FORMAT_RETRIES extra tries with the same prompt.
-                if attempt_index >= NETWORK_RETRIES + FORMAT_RETRIES:
+                if format_used >= FORMAT_RETRIES:
                     break
-            self.log("attempt %d unusable (%s); retrying" % (attempt_index + 1, result.get("error") or "bad reply"))
+                format_used += 1
+            attempt_index += 1
+            self.log("attempt %d unusable (%s); retrying (%d network, %d format retries used)"
+                     % (attempt_index, result.get("error") or "bad reply", network_used, format_used))
 
         return {"ok": False, "attempt": attempts[-1] if attempts else None,
                 "attempts": attempts, "parsed": None}
@@ -939,6 +1028,14 @@ class Stage4Session:
             raise RuntimeError("start an episode first")
         if not self.current_image:
             raise RuntimeError("capture a frame before calling the model")
+        # A step is built on top of the previous one's recorded outcome.  Without this guard, pressing Retry
+        # (which is just Call Model again) while the last action was still unrecorded created a SECOND step:
+        # the first one's feedback stayed null for ever and the next prompt told the model
+        # "step 0: forward -> None", which reads as an executed step with no result.
+        if self.history and not self.history[-1].get("feedback"):
+            raise RuntimeError(
+                "the previous step has not been recorded yet: mark it executed/blocked/skipped before "
+                "calling the model again")
         if len(self.history) >= int(self.config.get("max_steps", MAX_STEPS)):
             raise RuntimeError("step limit reached; finish the episode")
 
@@ -975,6 +1072,9 @@ class Stage4Session:
             "a_s": self.config.get("a_s"),
             "image_id": self.current_image["image_id"],
             "image_path": self.current_image["path"],
+            # The hash pins which bytes the model was shown.  In bank mode the pixels are not copied into the
+            # episode, so this is what lets the audit prove the photograph still on disk is the one used.
+            "image_sha256": self.current_image.get("sha256"),
             "prompt_path": os.path.relpath(prompt_file, self.dir).replace("\\", "/"),
             "response_path": os.path.relpath(response_file, self.dir).replace("\\", "/"),
             "action": action,
@@ -1032,32 +1132,39 @@ class Stage4Session:
         if record.get("feedback"):
             raise RuntimeError("this step is already recorded")
 
-        # Advance the odometer from the action itself, so the window's frame bank follows the real sequence.
-        # A caller that simulates the geometry (the replay runner) owns x and theta and passes False, otherwise
-        # the position would advance twice -- once there and once here -- and the photographs would run ahead
-        # of the state the model is told.
-        if advance_odometer:
+        # The odometer is the single source of truth for what the next prompt reports, so it advances only
+        # when the action actually happened: a move the operator marks blocked, skipped or colliding did not
+        # change where the robot is, and advancing on it would put every later prompt out of step with the
+        # corridor.  A caller that simulates the geometry itself (the replay runner) also owns the odometer
+        # and passes advance_odometer=False, otherwise the position would move twice per step.
+        executed = str(feedback or "executed").strip().lower() in ("executed", "ok", "done") and not collision
+        action = record.get("action")
+        if advance_odometer and executed:
             step = float(self.config.get("move_step_m") or SIM_GEOMETRY["move_step_m"])
-            action = record.get("action")
+            turn = float(SIM_GEOMETRY["turn_step_deg"])
             if action == "forward":
                 self.position_x += step
             elif action == "backward":
                 self.position_x -= step
-            if action == "turn_left":
-                self.torso_rotation = (self.torso_rotation + 15.0) % 360.0
+            elif action == "turn_left":
+                self.torso_rotation = (self.torso_rotation + turn) % 360.0
             elif action == "turn_right":
-                self.torso_rotation = (self.torso_rotation - 15.0) % 360.0
+                self.torso_rotation = (self.torso_rotation - turn) % 360.0
+
+        # An operator-supplied measurement WINS and becomes the odometer, so the tape measure overrides the
+        # estimate and the next prompt continues from the measured value rather than drifting.
+        if position_x is not None:
+            self.position_x = float(position_x)
+        if position_z is not None:
+            self.position_z = float(position_z)
+        if torso_rotation is not None:
+            self.torso_rotation = float(torso_rotation)
 
         record["feedback"] = feedback or "executed"
         record["collision"] = bool(collision)
-        if position_x is not None:
-            record["position_x"] = float(position_x)
-        else:
-            record["position_x"] = round(self.position_x, 3)
-        if position_z is not None:
-            record["position_z"] = float(position_z)
-        if torso_rotation is not None:
-            record["torso_rotation"] = float(torso_rotation)
+        record["position_x"] = round(self.position_x, 3)
+        record["position_z"] = round(self.position_z, 3)
+        record["torso_rotation"] = round(self.torso_rotation, 3)
         record["operator_note"] = note or ""
         record["recorded_at"] = now_iso()
         self._rewrite_steps()

@@ -54,7 +54,11 @@ def fold(angle):
 # ------------------------------------------------------------------ A. prompt semantics, from the builder
 def audit_prompt_semantics():
     print("A. prompt state fields follow the simulator's conventions")
-    session = core.Stage4Session()
+    # A throwaway directory, never the production sessions root: the earlier version created
+    # stage4/sessions/audit-a and left it behind on every run.
+    import tempfile
+    temporary = tempfile.mkdtemp(prefix="stage4-audit-")
+    session = core.Stage4Session(sessions_root=os.path.join(temporary, "sessions"))
     session.open_session("audit-a", {
         "scene": "R1", "marker": "M1", "marker_descriptor": "red circle", "mode": "A",
         "model": "gemini-3-flash-preview", "a_s": 1.0, "max_steps": 30,
@@ -77,6 +81,8 @@ def audit_prompt_semantics():
 
     # torso angle is folded into [0, 180] like environment.get_abs_torso_rotation()
     for raw, expected in ((15.0, 15.0), (-15.0, 15.0), (-90.0, 90.0), (195.0, 165.0), (345.0, 15.0)):
+        # the prompt reads the ODOMETER (never history[-1]), so the test must set the odometer
+        session.torso_rotation = raw
         session.history = [{"step": 0, "action": "turn_right", "feedback": "executed",
                             "torso_rotation": raw}]
         prompt = session.build_current_prompt()
@@ -194,11 +200,21 @@ def audit_files(root):
         for row in rows:
             pp = os.path.join(path, row.get("prompt_path") or "")
             rp = os.path.join(path, row.get("response_path") or "")
-            prompts += os.path.isfile(pp)
-            responses += os.path.isfile(rp)
+            # These used to be counted without being asserted, so a session with every response deleted
+            # still printed "responses present 0" and passed.
+            if check(os.path.isfile(pp), "%s step %d: prompt file missing" % (name, row["step"])):
+                prompts += 1
+            if check(os.path.isfile(rp), "%s step %d: response file missing" % (name, row["step"])):
+                responses += 1
             bank = row.get("image_path") or ""
-            if bank and not os.path.isfile(bank):
-                check(False, "%s step %d: bank frame gone: %s" % (name, row["step"], bank))
+            if bank:
+                if check(os.path.isfile(bank), "%s step %d: bank frame gone: %s" % (name, row["step"], bank)):
+                    digest = hashlib.sha256(open(bank, "rb").read()).hexdigest()
+                    recorded = row.get("image_sha256")
+                    if recorded:
+                        check(digest == recorded,
+                              "%s step %d: bank frame changed since the run (%s)"
+                              % (name, row["step"], os.path.basename(bank)))
         # the manifest must have one row per finished episode
         manifest = os.path.join(path, "manifest.csv")
         if os.path.exists(manifest):

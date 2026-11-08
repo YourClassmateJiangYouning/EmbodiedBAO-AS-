@@ -211,7 +211,7 @@
         <div><label>A/S（仅统计用）</label><select id="c-as">
           <option>2.0</option><option>1.2</option><option>1.0</option><option>0.8</option><option>0.6</option>
         </select></div>
-        <div><label>肩宽 S（cm，决定 A/S 对应的实际开口）</label><input id="c-shoulder" value="70"></div>
+        <div><label>肩宽 S（cm，决定 A/S 对应的实际开口）</label><input id="c-shoulder" value="57"></div>
         <div><label>步长（m，一次 forward 的距离）</label><input id="c-movestep" value="0.75"></div>
         <div><label>最大步数</label><input id="c-steps" value="30"></div>
         <div><label>API 超时（秒）</label><input id="c-timeout" value="90"></div>
@@ -423,7 +423,7 @@ function apply(state){
     $('c-model').value = state.config.model || (state.models||[])[0];
     $('c-as').value = String(state.config.a_s);
     $('c-steps').value = state.config.max_steps || 30;
-    $('c-shoulder').value = Math.round((state.config.robot_shoulder_m || 0.7) * 100);
+    $('c-shoulder').value = Math.round((state.config.robot_shoulder_m || 0.57) * 100);
     $('c-movestep').value = state.config.move_step_m || 0.75;
     $('c-nothink').checked = state.config.disable_thinking !== false;
     $('c-body').value = state.config.body_name || 'a small wheeled robot';
@@ -525,11 +525,19 @@ document.querySelectorAll('.tabs button').forEach(btn=>{
 
 // 下拉框的选项来自 /api/state，单一数据源；保留用户已选的值
 function fillSelects(state){
+  // Only write a value into a select when its OPTION LIST changes (first load, or the server's choices
+  // changed) or when the field is still empty.  Unconditionally re-applying the server's config on every
+  // 1.5 s poll raced the operator: picking a new model or A/S level and then pressing "create session" lost
+  // the pick and the next episode was recorded under the previous config.
   const keep = (sel, values, current) => {
-    if (sel.options.length !== values.length || !values.every((v,i)=>sel.options[i].value === String(v))) {
+    const replaced = sel.options.length !== values.length ||
+                     !values.every((v,i)=>sel.options[i].value === String(v));
+    if (replaced) {
       sel.innerHTML = values.map(v=>`<option value="${v}">${v}</option>`).join('');
+      if (current !== undefined && current !== null) sel.value = String(current);
+    } else if (!sel.value && current !== undefined && current !== null) {
+      sel.value = String(current);
     }
-    if (current !== undefined && current !== null) sel.value = String(current);
   };
   if (state.models && state.models.length) keep($('c-model'), state.models, STATE && STATE.config && STATE.config.model);
   if (state.a_s_levels && state.a_s_levels.length) keep($('c-as'), state.a_s_levels, STATE && STATE.config && STATE.config.a_s);
@@ -545,7 +553,7 @@ $('btn-open').onclick = ()=>run(async()=>{
     mode: $('c-mode').value,
     model: $('c-model').value,
     a_s: parseFloat($('c-as').value),
-    shoulder_m: (parseFloat($('c-shoulder').value) || 70) / 100,
+    shoulder_m: (parseFloat($('c-shoulder').value) || 57) / 100,
     move_step: parseFloat($('c-movestep').value) || 0.75,
     max_steps: parseInt($('c-steps').value,10) || 30,
     timeout_s: parseFloat($('c-timeout').value) || 90,

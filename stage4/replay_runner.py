@@ -45,13 +45,16 @@ MODELS = [
     "gpt-5",
 ]
 LEVELS = [1.2, 1.0, 0.8, 0.6]
-MARKERS = [
-    ("red circle", "M1"),
-    ("green rectangle", "M2"),
-    ("blue triangle", "M3"),
-    ("yellow arrow", "M4"),
-    ("purple four-pointed star", "M5"),
+# Slot numbers follow core.MARKER_PRESETS, so the manifest's marker column means the same thing it did in
+# Stages 1-3 (M1 is the green rectangle, not the red circle).
+MARKER_ORDER = [
+    "green rectangle",
+    "red circle",
+    "yellow arrow",
+    "blue triangle",
+    "purple four-pointed star",
 ]
+MARKERS = [(descriptor, "M%d" % (MARKER_ORDER.index(descriptor) + 1)) for descriptor in MARKER_ORDER]
 
 S = core.SIM_GEOMETRY["shoulder_width_m"]
 D = core.SIM_GEOMETRY["torso_thickness_m"]
@@ -62,10 +65,16 @@ STEP = core.SIM_GEOMETRY["move_step_m"]
 TURN_DEG = core.SIM_GEOMETRY["turn_step_deg"]
 MAX_STEPS = core.SIM_GEOMETRY["max_steps"]
 
-# A turn is refused when the body is close enough to the wall that the swept arc would reach a panel.  The
-# simulator tests the actual swept rectangle; this uses the half-diagonal of the torso as the stand-off, which
-# is the distance at which any rotation necessarily reaches the wall plane.
-TURN_STANDOFF = math.hypot(S, D) / 2.0 + 0.02
+# A turn is refused when the swept rectangle reaches a wall PANEL.  The panels begin at |z| = A/2, and a rotated
+# S x D rectangle projects W(theta) on both axes, so the body is clear of the panels exactly while W(theta) <= A;
+# once W(theta) > A it reaches the wall plane when x + W(theta)/2 >= WALL_X.  (The earlier rule refused any turn
+# within hypot(S,D)/2 of the wall regardless of the opening, which wrongly forbade turning at a wide gap.)
+def turn_is_refused(x: float, theta: float, a_s: float, delta: float) -> bool:
+    opening = a_s * S
+    worst = max(width_at(theta), width_at(theta + delta))
+    if worst <= opening + 1e-9:
+        return False          # the body still fits through the opening, so the panels are never touched
+    return x + worst / 2.0 >= WALL_X - 1e-9
 
 
 def width_at(theta_deg: float) -> float:
@@ -85,9 +94,9 @@ def apply_action(action: str, x: float, theta: float, a_s: float):
     if action == "backward":
         return max(START_X, x - STEP), theta, "executed", False, False
     if action in ("turn_left", "turn_right"):
-        if WALL_X - x <= TURN_STANDOFF:
-            return x, theta, "blocked: cannot turn this close to the opening", True, False
         delta = TURN_DEG if action == "turn_left" else -TURN_DEG
+        if turn_is_refused(x, theta, a_s, delta):
+            return x, theta, "blocked: turning here would strike the wall panels", True, False
         return x, (theta + delta) % 360.0, "executed", False, False
     if action == "look_down":
         return x, theta, "executed", False, False
