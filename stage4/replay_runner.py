@@ -112,6 +112,14 @@ def apply_action(action: str, x: float, theta: float, a_s: float):
     return x, theta, FEEDBACK_INVALID, True, False
 
 
+def session_id_for(spec):
+    """Stable directory name for one (model, A/S, marker) cell, used by main() and repair_replay."""
+    return "r1-%s-%s-%s" % (
+        spec["model"].split("/")[0].replace("-", "")[:20],
+        ("%.1f" % spec["a_s"]).replace(".", ""),
+        spec["marker"].split()[0])
+
+
 def plan_matrix():
     episodes = []
     for model in MODELS:
@@ -210,10 +218,7 @@ def main() -> int:
     started = time.time()
     for index, spec in enumerate(plan, 1):
         session = core.Stage4Session(sessions_root=root)
-        session_id = "r1-%s-%s-%s" % (
-            spec["model"].split("/")[0].replace("-", "")[:20],
-            ("%.1f" % spec["a_s"]).replace(".", ""),
-            spec["marker"].split()[0])
+        session_id = session_id_for(spec)
         session.open_session(session_id, {
             "scene": "R1", "marker": spec["marker_slot"], "marker_descriptor": spec["marker"],
             "mode": "A", "model": spec["model"], "a_s": spec["a_s"],
