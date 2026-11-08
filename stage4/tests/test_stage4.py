@@ -334,3 +334,37 @@ def test_replay_width_formula_matches_the_paper():
                    core.SIM_GEOMETRY["torso_thickness_m"] * abs(math.sin(math.radians(degrees)))
         assert abs(replay_runner.width_at(degrees) - expected) < 1e-9
     assert abs(replay_runner.width_at(90) - core.SIM_GEOMETRY["torso_thickness_m"]) < 1e-9
+
+# ------------------------------------------------------------------ memory provenance and blinding
+def test_memory_card_must_come_from_a_passed_episode(session):
+    with pytest.raises(RuntimeError, match="PASSED"):
+        session.build_memory_from_episode({"episode_id": "E1", "passed": False,
+                                           "scene": "R1", "marker": "M2", "a_s": 0.8})
+
+
+def test_memory_card_must_match_the_scene_and_marker(session):
+    passed = {"episode_id": "E2", "passed": True, "scene": "R1", "marker": "M1", "a_s": 0.8}
+    with pytest.raises(RuntimeError, match="marker"):
+        session.build_memory_from_episode(passed, expect_marker="M2")
+    with pytest.raises(RuntimeError, match="scene"):
+        session.build_memory_from_episode(passed, expect_scene="R2")
+
+
+def test_memory_reasoning_is_blinded():
+    """A memory card must not hand Stage 4B the geometry Stage 4A withholds."""
+    kept, dropped = core.Stage4Session.blind_memory_text(
+        "The opening is about 0.57 m wide so I turn. I will walk forward and then turn.")
+    assert "0.57" not in kept and "wide" not in kept
+    assert "walk forward and then turn" in kept
+    assert dropped == 1
+    for probe in ("a narrow gap", "the A/S is 0.8", "my shoulder is 57 cm", "level 11"):
+        kept, _ = core.Stage4Session.blind_memory_text(probe)
+        assert kept == "", probe
+
+
+def test_mode_b_cannot_start_without_a_memory(tmp_path):
+    made = core.Stage4Session(sessions_root=str(tmp_path / "mb"))
+    made.open_session("b", {"a_s": 1.0, "model": "gpt-5", "marker_descriptor": "red circle",
+                             "mode": "B"})
+    with pytest.raises(RuntimeError, match="memory"):
+        made.start_episode()

@@ -181,6 +181,22 @@ class Handler(BaseHTTPRequestHandler):
                         if not target:
                             self._fail("episode not found in that session")
                             return
+                        # The prompt states, in fixed words, that this was a successful traversal of the same
+                        # scene and marker.  Without these checks any episode would pass -- a failed run, a
+                        # different marker, a different scene -- and the prompt would then be lying to the model.
+                        if target.get("passed") is not True:
+                            self._fail(
+                                "that episode did not pass (passed=%r); a memory card must come from a "
+                                "successful traversal" % target.get("passed"))
+                            return
+                        if body.get("expect_scene") and target.get("scene") != body["expect_scene"]:
+                            self._fail("memory comes from scene %r, not %r"
+                                       % (target.get("scene"), body["expect_scene"]))
+                            return
+                        if body.get("expect_marker") and target.get("marker") != body["expect_marker"]:
+                            self._fail("memory comes from marker %r, not %r"
+                                       % (target.get("marker"), body["expect_marker"]))
+                            return
                         # the steps of that episode come from its own steps.jsonl
                         saved_steps = SESSION.steps
                         SESSION.steps = read_jsonl(os.path.join(base, "steps.jsonl"))

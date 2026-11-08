@@ -454,24 +454,74 @@ class Stage4Session:
             raise RuntimeError("no session is open")
 
     # -- memory ---------------------------------------------------------------------------------
-    def build_memory_from_episode(self, episode: Dict[str, Any], memory_id: str = None) -> Dict[str, Any]:
-        """Turn a passed narrow-gap episode into the blind memory Stage 4B feeds back.
+    # Anything that names the geometry is removed from a memory card.  The list is deliberately blunt: a
+    # false positive costs one sentence, a false negative hands Stage 4B the A/S it is meant to withhold.
+    MEMORY_LEAK_PATTERNS = [
+        r"\d+(\.\d+)?\s*(m\b|cm\b|metres?|meters?|centimetres?|centimeters?)",
+        r"\bA\s*/\s*S\b",
+        r"\bratio\b",
+        r"\bnarrow(er|est)?\b",
+        r"\bwide(r|st)?\b",
+        r"\baperture\b",
+        r"\bchannel\b",
+        r"\blevel\b",
+        r"\b0?\.\d+\b",
+        r"\bshoulder\b",
+        r"\bthickness\b",
+    ]
 
-        Blind means: the action sequence, the per-step feedback and the model's own reasoning, and nothing
-        that reveals the geometry -- no A/S, no channel width, no level, no "narrow"/"wide".  The source A/S
-        stays in this record for the operator, and `prompt_text()` never renders it.
+    @classmethod
+    def blind_memory_text(cls, text: str, limit: int = 180) -> Tuple[str, int]:
+        """Keep only the sentences that say nothing about the geometry.  Returns (kept, dropped)."""
+        import re as _re
+
+        kept, dropped = [], 0
+        for sentence in _re.split(r"(?<=[.!?])\s+", (text or "").strip()):
+            sentence = sentence.strip()
+            if not sentence:
+                continue
+            if any(_re.search(pattern, sentence, _re.IGNORECASE) for pattern in cls.MEMORY_LEAK_PATTERNS):
+                dropped += 1
+                continue
+            kept.append(sentence)
+        return " ".join(kept)[:limit], dropped
+
+    def build_memory_from_episode(
+        self,
+        episode: Dict[str, Any],
+        memory_id: str = None,
+        expect_scene: str = None,
+        expect_marker: str = None,
+    ) -> Dict[str, Any]:
+        """Turn a PASSED episode into the blind memory Stage 4B feeds back.
+
+        Blind means: the action sequence, the per-step feedback and whatever survives the geometry filter of
+        the model's own reasoning.  The provenance is checked here rather than asserted in the prompt, because
+        memory_prompt_block states in fixed words that this was a successful traversal of the same scene and
+        marker -- so a card built from a failed run, or from another marker, would make the prompt lie.
         """
+        if episode.get("passed") is not True:
+            raise RuntimeError(
+                "a memory card must come from a PASSED episode; %s recorded passed=%r"
+                % (episode.get("episode_id"), episode.get("passed")))
+        if expect_scene and episode.get("scene") != expect_scene:
+            raise RuntimeError("memory source scene %r is not %r" % (episode.get("scene"), expect_scene))
+        if expect_marker and episode.get("marker") != expect_marker:
+            raise RuntimeError("memory source marker %r is not %r" % (episode.get("marker"), expect_marker))
+
         episode_id = episode.get("episode_id")
         steps = [s for s in self.steps if s.get("episode_id") == episode_id]
         actions = [s.get("action") for s in steps if s.get("action")]
         lines = []
+        dropped_total = 0
         for index, step in enumerate(steps):
             if not step.get("action"):
                 continue
             line = "%d. %s -> %s" % (index + 1, step["action"], step.get("feedback") or "executed")
-            reasoning = (step.get("reasoning") or "").strip()
+            reasoning, dropped = self.blind_memory_text(step.get("reasoning") or "")
+            dropped_total += dropped
             if reasoning:
-                line += "  |  %s" % reasoning[:180]
+                line += "  |  %s" % reasoning
             lines.append(line)
         return {
             "memory_id": memory_id or new_id("S4M"),
@@ -479,7 +529,9 @@ class Stage4Session:
             "source_scene": episode.get("scene"),
             "source_marker": episode.get("marker"),
             "source_a_s": episode.get("a_s"),
+            "source_passed": True,
             "actions": actions,
+            "reasoning_sentences_dropped": dropped_total,
             "memory_text": "\n".join(lines),
             "created_at": now_iso(),
         }
@@ -547,6 +599,11 @@ class Stage4Session:
         self.current_image = None
         self.last_call = None
         self.digest = None
+        # A mode B episode without a memory is not a Stage 4B episode: the prompt would carry no memory block
+        # while the record claimed mode B, silently mixing the two conditions in the same comparison.
+        if str(self.config.get("mode", "A")).upper() == "B" and not self.memory:
+            raise RuntimeError(
+                "mode B needs a memory card; attach one with /api/memory before starting the episode")
         self.position_x = float(SIM_GEOMETRY["start_x_m"])
         self.position_z = 0.0
         self.torso_rotation = 0.0
