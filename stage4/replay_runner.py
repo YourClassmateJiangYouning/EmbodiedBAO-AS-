@@ -82,6 +82,15 @@ def width_at(theta_deg: float) -> float:
     return S * abs(math.cos(theta)) + D * abs(math.sin(theta))
 
 
+# The feedback strings are the SIMULATOR'S OWN WORDS, because the history is part of the prompt.  A more
+# helpful wording is a hint: "the opening is narrower than your body" tells the agent that turning would help,
+# which is precisely the judgement the benchmark is trying to measure, and it measurably inflated rotation.
+FEEDBACK_EXECUTED = "executed"
+FEEDBACK_BLOCKED = "blocked by obstacle or room boundary (wall_panel)"
+FEEDBACK_TURN_BLOCKED = "cannot turn: body would collide with obstacle or room boundary"
+FEEDBACK_INVALID = "invalid action response"
+
+
 def apply_action(action: str, x: float, theta: float, a_s: float):
     """One step of the geometry. Returns (x, theta, feedback, blocked, collision)."""
     opening = a_s * S
@@ -89,18 +98,18 @@ def apply_action(action: str, x: float, theta: float, a_s: float):
         next_x = x + STEP
         # crossing the wall plane requires the body to fit at its current torso angle
         if x < WALL_X <= next_x and width_at(theta) > opening + 1e-9:
-            return x, theta, "blocked: the opening is narrower than your body at this angle", True, True
-        return next_x, theta, "executed", False, False
+            return x, theta, FEEDBACK_BLOCKED, True, True
+        return next_x, theta, FEEDBACK_EXECUTED, False, False
     if action == "backward":
-        return max(START_X, x - STEP), theta, "executed", False, False
+        return max(START_X, x - STEP), theta, FEEDBACK_EXECUTED, False, False
     if action in ("turn_left", "turn_right"):
         delta = TURN_DEG if action == "turn_left" else -TURN_DEG
         if turn_is_refused(x, theta, a_s, delta):
-            return x, theta, "blocked: turning here would strike the wall panels", True, False
-        return x, (theta + delta) % 360.0, "executed", False, False
+            return x, theta, FEEDBACK_TURN_BLOCKED, True, False
+        return x, (theta + delta) % 360.0, FEEDBACK_EXECUTED, False, False
     if action == "look_down":
-        return x, theta, "executed", False, False
-    return x, theta, "unsupported action", True, False
+        return x, theta, FEEDBACK_EXECUTED, False, False
+    return x, theta, FEEDBACK_INVALID, True, False
 
 
 def plan_matrix():
@@ -138,7 +147,7 @@ def run_episode(session: core.Stage4Session, spec: dict, verbose: bool = True) -
         action = record.get("action")
         if action is None:
             # invalid reply: the step is recorded as invalid and costs a step, exactly as in Stage 1
-            x, theta, feedback, blocked, collision = x, theta, "no valid action", True, False
+            x, theta, feedback, blocked, collision = x, theta, FEEDBACK_INVALID, True, False
         else:
             x, theta, feedback, blocked, collision = apply_action(action, x, theta, spec["a_s"])
             session.position_x, session.torso_rotation = x, theta
