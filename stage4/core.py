@@ -53,6 +53,7 @@ from protocol import (  # noqa: E402
     set_marker_descriptor,
 )
 import protocol  # noqa: E402  - module handle, for fold_yaw and the Stage-4 prompt overrides
+import stage2_protocol  # noqa: E402  - the memory protocol, imported rather than re-implemented
 
 DEFAULT_ENDPOINT = "http://35.220.164.252:3888/v1"
 DEFAULT_MODELS = [
@@ -413,6 +414,8 @@ class Stage4Session:
             "memory_id": config.get("memory_id") or None,
             "disable_thinking": bool(config.get("disable_thinking", True)),
             "timeout_s": float(config.get("timeout_s") or DEFAULT_TIMEOUT_S),
+            # false reproduces Stage 2 (its digest call loses the memory); true runs the corrected variant
+            "digest_sees_memory": bool(config.get("digest_sees_memory", False)),
             "sim_geometry": SIM_GEOMETRY,
             "started_at": now_iso(),
         }
@@ -597,13 +600,18 @@ class Stage4Session:
         record.setdefault("memory_text", "")
         return record
 
+    def _memory_text(self) -> str:
+        return str((self.memory or {}).get("memory_text", "")).strip()
+
+    def _digest_text(self) -> Optional[str]:
+        """The digest as Stage 2 carries it: the model's RAW reply, not a re-serialised object."""
+        return (self.digest or {}).get("content") or None
+
     def memory_prompt_block(self) -> Optional[str]:
+        """Byte-identical to stage2_protocol.memory_block, because it IS that function."""
         if not self.memory:
             return None
-        header = (
-            "A previous successful traversal by the same expert in this same scene and marker:\n"
-        )
-        return header + str(self.memory.get("memory_text", "")).strip()
+        return stage2_protocol.memory_block(self._memory_text(), digest=self._digest_text())
 
     # -- episode loop ---------------------------------------------------------------------------
     def start_episode(self) -> Dict[str, Any]:
@@ -905,12 +913,8 @@ class Stage4Session:
         set_marker_descriptor(self.config.get("marker_descriptor"))
         memory_block = None
         if use_memory and self.memory:
+            # memory_prompt_block already appends the reflection in Stage 2's wording when a digest exists
             memory_block = self.memory_prompt_block()
-            if self.digest:
-                memory_block += (
-                    "\n\nYour earlier digest of that memory:\n"
-                    + json.dumps(self.digest, ensure_ascii=False)
-                )
         # 0.75 m is the protocol's own step, and build_prompt already words the action list for it.  Passing
         # None in that case keeps the prompt byte-identical to Stages 1-3; a session that really walks a
         # different distance must say so, or the action descriptions would lie about what "forward" covers.
@@ -930,14 +934,56 @@ class Stage4Session:
         return self._trim_removed_action_mentions(prompt)
 
     def build_digest_prompt(self) -> str:
-        """Digest call for Stage 4B: read the memory, choose no action, consume no step."""
-        memory_text = self.memory_prompt_block() or ""
-        return (
-            memory_text
-            + "\n\nBefore taking any action, read the memory and the current view. Do not choose an action "
-              "yet. Return exactly one JSON object:\n"
-              '{"digested": true, "memory_summary": "...", "plan": "...", "cues": ["..."]}'
+        """Digest call: task + memory + state, no action menu, digest instruction appended.
+
+        Built here rather than delegated, because stage2_protocol.build_digest_prompt deletes the memory while
+        removing the action menu (the memory block is inserted between the menu and "Current state:").  The
+        archived Stage 2 logs confirm the consequence: their digest prompts never contained the memory, so the
+        "digests do not mention turning" observation describes a prompt that could not have mentioned it.
+
+        Everything else matches Stage 2: same memory block, same DIGEST_INSTRUCTION, the action menu and the
+        action-response instruction both removed.
+        """
+        if not self.memory:
+            raise RuntimeError("no memory attached; the digest needs one")
+        # DEFAULT: reproduce Stage 2 exactly.  stage2_protocol.build_digest_prompt removes the action menu
+        # together with the memory block (the memory is inserted between the menu and "Current state:"), so
+        # the digest call never sees the memory.  That is what the published Stage 2 did -- verified against
+        # the archived agent logs -- and keeping it makes the real-scene comparison valid.  Set
+        # digest_sees_memory=true in the session config to run the corrected variant instead.
+        if not self.config.get("digest_sees_memory", False):
+            self._apply_body_name()
+            self._apply_real_scene_actions()
+            step = float(self.config.get("move_step_m") or PROTOCOL_MOVE_STEP)
+            protocol.ACTION_OPTIONS_STRING = self._action_options(step)
+            return stage2_protocol.build_digest_prompt(
+                self._state_block(),
+                self._memory_text(),
+                max_steps=int(self.config.get("max_steps", MAX_STEPS)),
+            )
+        self._apply_body_name()
+        self._apply_real_scene_actions()
+        step = float(self.config.get("move_step_m") or PROTOCOL_MOVE_STEP)
+        protocol.ACTION_OPTIONS_STRING = self._action_options(step)
+
+        memory = stage2_protocol.memory_block(self._memory_text())
+        base = build_prompt(
+            state=self._state_block(),
+            history=[],
+            max_steps=int(self.config.get("max_steps", MAX_STEPS)),
+            move_step=None,
+            memory_block=memory,
         )
+        # Drop the action menu and the frame note, but stop at the memory block so it survives.
+        menu_at = base.find("Available actions")
+        keep_at = base.find(memory) if memory else base.find("Current state:")
+        if menu_at != -1 and keep_at != -1 and keep_at > menu_at:
+            base = base[:menu_at] + base[keep_at:]
+        # Drop the action-response instruction; the digest answer has its own shape.
+        instruction = protocol.RESPONSE_FORMAT_INSTRUCTION
+        if base.endswith(instruction):
+            base = base[: -len(instruction)].rstrip()
+        return base + stage2_protocol.DIGEST_INSTRUCTION
 
     # -- model call -----------------------------------------------------------------------------
     # A parameter rejection is the ONLY reason to drop JSON mode.  Any other error (timeout, 502, balance)
@@ -1319,8 +1365,9 @@ class Stage4Session:
                 "error": result.get("error"),
                 "request_params": self._request_params(),
             }, handle, indent=2, ensure_ascii=False)
-        parsed = parse_action(result.get("content") or "") if result.get("ok") else None
-        valid = bool(parsed and parsed.get("digested") in (True, "true", 1))
+        # Stage 2's parser: digested must be exactly true AND memory_summary and plan must be strings
+        parsed = stage2_protocol.parse_digest(result.get("content") or "") if result.get("ok") else None
+        valid = bool(parsed and parsed.get("digested") is True)
         self.digest = {
             "valid": valid,
             "raw": (parsed if valid else None),

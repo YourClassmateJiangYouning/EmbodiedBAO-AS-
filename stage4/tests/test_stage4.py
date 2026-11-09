@@ -421,3 +421,53 @@ def test_digest_keeps_the_reply_not_only_the_prompt(session, monkeypatch, png_fi
     with open(response_path, encoding="utf-8") as handle:
         stored = json.load(handle)
     assert "walked straight" in (stored.get("content") or "")
+
+# ------------------------------------------------------------------ Stage 2 memory parity
+def test_memory_block_is_byte_identical_to_stage2(tmp_path):
+    import stage2_protocol
+    made = core.Stage4Session(sessions_root=str(tmp_path / "mb"))
+    made.open_session("b", {"a_s": 2.0, "model": "gpt-5", "marker_descriptor": "red circle",
+                             "mode": "B"})
+    made.memory = {"memory_id": "M1", "memory_text": "1. forward -> executed"}
+    made.start_episode()
+    made.digest = {"content": '{"digested": true}', "valid": True}
+    assert made.memory_prompt_block() == stage2_protocol.memory_block(
+        made.memory["memory_text"], digest=made.digest["content"])
+
+
+def test_digest_prompt_reproduces_stage2_by_default(tmp_path):
+    """Stage 2's digest call loses the memory; the default must reproduce that, warts and all."""
+    made = core.Stage4Session(sessions_root=str(tmp_path / "dg"))
+    made.open_session("b", {"a_s": 2.0, "model": "gpt-5", "marker_descriptor": "red circle",
+                             "mode": "B"})
+    made.memory = {"memory_id": "M1", "memory_text": "1. forward -> executed"}
+    made.start_episode()
+    prompt = made.build_digest_prompt()
+    assert "previous successful traversal" not in prompt, "the default must match Stage 2"
+    assert "Your task is to reach" in prompt
+    assert "Current state:" in prompt
+    assert "digested" in prompt
+
+
+def test_digest_prompt_can_include_the_memory(tmp_path):
+    made = core.Stage4Session(sessions_root=str(tmp_path / "dg2"))
+    made.open_session("b", {"a_s": 2.0, "model": "gpt-5", "marker_descriptor": "red circle",
+                             "mode": "B", "digest_sees_memory": True})
+    made.memory = {"memory_id": "M1", "memory_text": "1. forward -> executed"}
+    made.start_episode()
+    assert "previous successful traversal" in made.build_digest_prompt()
+
+
+def test_test_prompt_carries_the_memory_and_the_reflection(tmp_path):
+    """The action-loop prompt is what the memory manipulation actually rests on; it must carry both."""
+    made = core.Stage4Session(sessions_root=str(tmp_path / "tp"))
+    made.open_session("b", {"a_s": 2.0, "model": "gpt-5", "marker_descriptor": "red circle",
+                             "mode": "B"})
+    made.memory = {"memory_id": "M1", "memory_text": "1. forward -> executed"}
+    made.start_episode()
+    made.digest = {"content": '{"digested": true, "memory_summary": "s", "plan": "p"}',
+                   "valid": True, "latency_ms": 999}
+    prompt = made.build_current_prompt()
+    assert "previous successful traversal" in prompt
+    assert "Your reflection on that experience:" in prompt
+    assert "latency_ms" not in prompt, "the digest must be injected as raw text, not as a dict"
