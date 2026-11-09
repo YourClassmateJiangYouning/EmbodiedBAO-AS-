@@ -51,7 +51,13 @@ def episode_state(session_dir):
                 row = json.loads(line)
             except ValueError:
                 continue
-            if "blocked" in (row.get("feedback") or ""):
+            # Detect the OLD wording specifically.  The corrected feedback also contains the word
+            # "blocked" ("blocked by obstacle or room boundary"), so a bare substring test would mark every
+            # re-run as contaminated and re-run it for ever.
+            feedback = row.get("feedback") or ""
+            if "the opening is narrower than your body" in feedback \
+                    or "turning here would strike the wall panels" in feedback \
+                    or feedback == "no valid action":
                 blocked += 1
     # a session directory with steps but no manifest row was interrupted; treat it as absent so it re-runs
     if not os.path.isfile(manifest):
@@ -62,10 +68,14 @@ def episode_state(session_dir):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--models", default="", help="comma-separated model names to restrict to")
     args = parser.parse_args()
 
     os.makedirs(ROOT, exist_ok=True)
     plan = runner.plan_matrix()
+    if args.models:
+        wanted = {name.strip() for name in args.models.split(",") if name.strip()}
+        plan = [spec for spec in plan if spec["model"] in wanted]
 
     todo, keep, discard = [], 0, 0
     for spec in plan:
@@ -97,10 +107,11 @@ def main():
     results = []
     for index, (spec, directory, blocked) in enumerate(todo, 1):
         if os.path.isdir(directory):
-            target = os.path.join(DISCARD, os.path.basename(directory) + "_" + core.new_id("old"))
-            shutil.move(directory, target)
-            print("[%3d/%3d] discarded %s (blocked=%d) -> %s"
-                  % (index, len(todo), os.path.basename(directory), blocked, os.path.basename(target)))
+            # delete rather than archive: the contaminated episode is unusable by construction, and keeping it
+            # only invites it back into an analysis by accident
+            shutil.rmtree(directory)
+            print("[%3d/%3d] deleted %s (old blocked wording, %d step(s))"
+                  % (index, len(todo), os.path.basename(directory), blocked))
         print("[%3d/%3d] %-32s A/S %.1f  %s"
               % (index, len(todo), spec["model"], spec["a_s"], spec["marker"]))
         session = core.Stage4Session(sessions_root=ROOT)
