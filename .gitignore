@@ -177,3 +177,7 @@ _backup/
 # Local/paper exports and archived legacy Stage-2 code are not source.
 exports/
 _archive/
+
+# v7 时代的论文草稿与测试上下文：只基于 660 集旧语料，不进公开仓库。
+PAPER_DRAFT_CN.md
+PROFESSOR_TEST_CONTEXT.md

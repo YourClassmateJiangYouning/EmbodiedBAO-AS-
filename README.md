@@ -877,64 +877,47 @@ mkdir -p lab_logs/extracted && tar xzf bao_results_*.tgz -C lab_logs/extracted &
 
 ## Reproducing this repository
 
-A clone contains the code **and the collected data of every scored experiment**, so
-re-deriving the analysis needs neither Isaac Sim nor an API key:
+A clone contains the code **and the data of every scored experiment**, so re-deriving the
+analysis needs neither Isaac Sim nor an API key:
 
 | Committed | What it holds |
 | :--- | :--- |
-| `lab_logs/bao_v7_all.tgz` | the 660-episode v7 sweep — 11 models x 12 Levels x 5 episodes — with the per-step sidecars, the raw model I/O, `summary_v7.txt`, `run_progress.txt` and `git_head_v7.txt` |
-| `lab_logs/bao_v5_logs.tgz` | the 346-episode v5-era runs on the earlier layouts and prompts |
-| `lab_logs/embodiedbao_v7_episodes.csv` | the 660 rows every figure and table is derived from |
-| `lab_logs/*.py` | `export_table.py`, `analyze_actions.py`, `analyze_reasoning.py`, `make_figures.py`; all four read the archive directly rather than the unpacked tree |
-| `lab_logs/figures/` | fig1–fig4, PDF and 600 dpi PNG |
+| `data/v8/S1_episodes.csv` | the Stage 1 corpus: 6,375 episodes, 15 models x 17 A/S levels x 5 markers x 5 scenes |
+| `data/v8/S1_steps.csv.gz` | the per-step actions and state for those episodes (gzip; 159 MB raw, 14 MB packed) |
+| `data/v8/S2_*.csv` | the Stage 2 memory experiment: 105 episodes, 105 pairs, the blind and full memory cards |
+| `data/v8/S3_*.csv` | the Stage 3 body swap: 100 episodes over H1 / G1 / R1 |
+| `data/v8/S1_model_summary.csv` etc. | the per-model and per-level aggregates the paper's tables are built from |
+| `stage4/sessions_r1/` | the Stage 4A real-corridor replay: 100 episodes, prompt and reply per step |
+| `stage4/sessions_b/` | the Stage 4B memory experiment: 14 baseline, 24 memory, 3 body-name ablation |
+| `stage4/exported_results/*.csv` | the same two real-scene tables, flattened to one row per episode |
 
-Both archives are **historical**. They were collected before v8 fixed the mirrored
-left/right and `look_*` actions, so they are not comparable with the current
-`v8-actions-flipped` runs. `analysis.py` skips them by default; the v8 data lives on the
-lab machine under `results/` and is not archived here yet.
-| `lab_logs/summary.txt` | the written analysis summary |
+`data/v8/README.md` describes every file and the run each one came from.
 
-Left out on purpose: `lab_logs/extracted/` (a partial unpacking of the v5 archive,
-60 MB) and `lab_logs/bao_v7_qwen.tgz` (a strict subset of the v7 archive). Both were
-checked against the committed archives **key by key and byte by byte** (SHA-256)
-before being left out:
-
-| Copy | Records | Identical to an archive | Conflicting | Unique to this copy |
-| :--- | :--- | :--- | :--- | :--- |
-| `results/` (loose, this machine) | 346 | 346/346 vs `bao_v5_logs.tgz` | 0 | 0 |
-| `lab_logs/extracted/` | 346 | 346/346 vs `bao_v5_logs.tgz` | 0 | 0 |
-| `lab_logs/bao_v7_qwen.tgz` | 180 | 180/180 vs `bao_v7_all.tgz` | 0 | 0 |
-
-The per-step sidecars match the same way (346/346 identical again). So committing
-the two archives and nothing else drops nothing.
+**Only v8 is committed.** The repository previously also carried the 11-model, 660-episode v7 sweep
+(`lab_logs/bao_v7_all.tgz`, `lab_logs/embodiedbao_v7_episodes.csv`, `lab_logs/model_level_table.csv`) and a
+v5-era archive, together with the figures and analysis scripts built on them. They were collected before v8
+fixed the mirrored left/right and `look_*` actions, they name models that no v8 table contains
+(`deepseek-v4.1-flash`, `gemini-2.5-pro`, `claude-sonnet-4-6`, `qwen-vl-max`), and the paper reports none of
+their numbers -- so they were removed rather than left to be confused with the reported corpus. They remain in
+the commit history; a fresh clone of `HEAD` does not contain them.
 
 ### From a fresh clone, offline
 
 ```bash
 python test_bao_geometry.py; python test_bao_integration.py; python test_bao_persistence.py; python test_bao_memory.py; python test_bao_memory_runner.py
-python lab_logs/export_table.py
-python lab_logs/analyze_actions.py
-python lab_logs/analyze_reasoning.py
-python lab_logs/analyze_door_reach.py lab_logs/bao_v7_all.tgz
-python lab_logs/verify_optimal_steps.py
-python lab_logs/make_figures.py
+python stage4/tests/test_stage4.py
+python stage4/audit_replay.py
 ```
 
-The first line is the 37 + 20 + 13 offline checks; the rest rebuild the episode
-table, the statistics and the figures from inside the archive. Re-running them
-leaves `git status --short` clean, which is what makes this repository reproducible
-rather than merely archived.
+The first line is the offline checks; `stage4/tests/test_stage4.py` is the thirty Stage 4 tests, and
+`stage4/audit_replay.py` re-derives the Stage 4 numbers from `stage4/sessions_r1` and `stage4/sessions_b`
+without calling a model. The Stage 1-3 statistics read straight from the CSVs under `data/v8`, e.g.
 
-What a clone still cannot reproduce is a **new sweep**: that needs the Isaac Sim
-machine, the API key, and model versions that may since have changed. `models.json`,
-the run tags and `git_head_v7.txt` are what record which models, which settings and
-which commit produced each dataset.
-
-**Before `bao_v7_all.tgz` was committed, the entire 660-episode Stage 1 existed in
-exactly one file on this machine**: the loose `results/` tree holds v5-era runs
-only, zero v7 records. Losing that one archive would have lost Stage 1 outright. It
-is versioned now — do not delete it, and do not regenerate it in place.
-
+```python
+import pandas as pd
+s1 = pd.read_csv("data/v8/S1_episodes.csv")
+print(s1[s1.a_s_ratio == 0.9].passed.mean())
+```
 ## Verification without Isaac Sim
 
 Everything that can be decided without a renderer runs on plain Python. **197 checks
