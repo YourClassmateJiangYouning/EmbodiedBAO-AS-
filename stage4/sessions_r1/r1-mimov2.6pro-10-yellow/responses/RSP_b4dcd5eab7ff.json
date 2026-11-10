@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:41:00+08:00",
+    "latency_ms": 8026,
+    "payload_bytes": 230181,
+    "finish_reason": "stop",
+    "reasoning_tokens": 105,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"8ae0dd1b-a615-4434-a9d1-450644d1fe0c_43e7b04f27684b14a31eb736ed9850c8\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpet walkway leads straight ahead to a doorway in the far wall where the yellow arrow is displayed. The doorway is now very close, framed by patterned walls on both sides. The path is clear with no obstacles, and the arrow is centered directly ahead.\\\", \\\"reasoning\\\": \\\"The yellow arrow at the far wall doorway is directly ahead and very close now (x=5.75). My torso rotation is 0, so my body is aligned with my walking direction presenting my narrowest footprint. The path is clear on the red carpet. I should continue forward to reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The yellow arrow is right ahead at the doorway. I'm at x=5.75 after 6 forward steps (75cm each = 4.5m from start at 1.25?). The arrow appears very close now. I should continue forward to reach the doorway/arrow. The path is clear. My torso is aligned. Let me just go forward.\\n\\nThe arrow looks like it's right at the threshold. A few more forward steps should get me there. Let me continue forward.\"}}],\"created\":1794138059,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":248,\"prompt_tokens\":2366,\"total_tokens\":2614,\"completion_tokens_details\":{\"reasoning_tokens\":105},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpet walkway leads straight ahead to a doorway in the far wall where the yellow arrow is displayed. The doorway is now very close, framed by patterned walls on both sides. The path is clear with no obstacles, and the arrow is centered directly ahead.\", \"reasoning\": \"The yellow arrow at the far wall doorway is directly ahead and very close now (x=5.75). My torso rotation is 0, so my body is aligned with my walking direction presenting my narrowest footprint. The path is clear on the red carpet. I should continue forward to reach the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The yellow arrow is right ahead at the doorway. I'm at x=5.75 after 6 forward steps (75cm each = 4.5m from start at 1.25?). The arrow appears very close now. I should continue forward to reach the doorway/arrow. The path is clear. My torso is aligned. Let me just go forward.\n\nThe arrow looks like it's right at the threshold. A few more forward steps should get me there. Let me continue forward.",
+    "parsed": {
+      "scene_description": "Red carpet walkway leads straight ahead to a doorway in the far wall where the yellow arrow is displayed. The doorway is now very close, framed by patterned walls on both sides. The path is clear with no obstacles, and the arrow is centered directly ahead.",
+      "reasoning": "The yellow arrow at the far wall doorway is directly ahead and very close now (x=5.75). My torso rotation is 0, so my body is aligned with my walking direction presenting my narrowest footprint. The path is clear on the red carpet. I should continue forward to reach the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

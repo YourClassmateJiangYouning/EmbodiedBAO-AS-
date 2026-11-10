@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:42:57+08:00",
+    "latency_ms": 7452,
+    "payload_bytes": 358327,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_bmz6s2gyixdt2rnzqehearhfrpt25kwzgczazyppdpwqwd66wbuq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145377,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a long red carpeted walkway stretching ahead toward a far wall. The green rectangle target is clearly visible on the far wall, centered in my view and directly ahead along my walking direction. The path is clear with no obstacles blocking forward movement. The walls on either side show decorative patterns in blue and tan colors. My torso remains at neutral rotation (0 degrees).\\\",\\n  \\\"reasoning\\\": \\\"I have successfully moved forward twice and the green rectangle target remains visible and directly ahead. The walkway is clear and unobstructed. My walking direction is fixed toward the target on the far wall. I should continue moving forward to reach the green rectangle, as this is the most direct path.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2474,\"completion_tokens\":183,\"total_tokens\":2657,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2474,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":183,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2474,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a long red carpeted walkway stretching ahead toward a far wall. The green rectangle target is clearly visible on the far wall, centered in my view and directly ahead along my walking direction. The path is clear with no obstacles blocking forward movement. The walls on either side show decorative patterns in blue and tan colors. My torso remains at neutral rotation (0 degrees).\",\n  \"reasoning\": \"I have successfully moved forward twice and the green rectangle target remains visible and directly ahead. The walkway is clear and unobstructed. My walking direction is fixed toward the target on the far wall. I should continue moving forward to reach the green rectangle, as this is the most direct path.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a long red carpeted walkway stretching ahead toward a far wall. The green rectangle target is clearly visible on the far wall, centered in my view and directly ahead along my walking direction. The path is clear with no obstacles blocking forward movement. The walls on either side show decorative patterns in blue and tan colors. My torso remains at neutral rotation (0 degrees).",
+      "reasoning": "I have successfully moved forward twice and the green rectangle target remains visible and directly ahead. The walkway is clear and unobstructed. My walking direction is fixed toward the target on the far wall. I should continue moving forward to reach the green rectangle, as this is the most direct path.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

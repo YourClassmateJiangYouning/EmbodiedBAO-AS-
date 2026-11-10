@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:23:17+08:00",
+    "latency_ms": 6812,
+    "payload_bytes": 267932,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090823126127381618268d9d6TzHsRq5x\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212597,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight ahead down a red carpeted walkway. In the distance, a bright green rectangle is visible on the floor against a far wall. To the left of the rectangle is a black draped object, and to the right is a yellow chair. I have cleared the narrow opening and am now in a wider space.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at x=5.75 and the green rectangle is directly ahead. I have already successfully navigated the narrow gap by rotating my torso to 90 degrees. I will continue moving forward to reach the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2958,\"completion_tokens\":147,\"total_tokens\":3105,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2958,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":147,\"totalTokenCount\":3105,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1869},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":147}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1869,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":147,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight ahead down a red carpeted walkway. In the distance, a bright green rectangle is visible on the floor against a far wall. To the left of the rectangle is a black draped object, and to the right is a yellow chair. I have cleared the narrow opening and am now in a wider space.\",\n  \"reasoning\": \"I am currently at x=5.75 and the green rectangle is directly ahead. I have already successfully navigated the narrow gap by rotating my torso to 90 degrees. I will continue moving forward to reach the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight ahead down a red carpeted walkway. In the distance, a bright green rectangle is visible on the floor against a far wall. To the left of the rectangle is a black draped object, and to the right is a yellow chair. I have cleared the narrow opening and am now in a wider space.",
+      "reasoning": "I am currently at x=5.75 and the green rectangle is directly ahead. I have already successfully navigated the narrow gap by rotating my torso to 90 degrees. I will continue moving forward to reach the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

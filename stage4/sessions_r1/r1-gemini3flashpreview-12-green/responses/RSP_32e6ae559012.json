@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:13:41+08:00",
+    "latency_ms": 6383,
+    "payload_bytes": 390745,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081013363721517748268d9d6HAOOxvNF\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794132822,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A long red carpet leads toward a narrow opening in a wall decorated with geometric patterns. Through the opening, a bright green rectangle is visible on the far wall. The robot is currently at x=0.5, some distance away from the opening.\\\", \\\"reasoning\\\": \\\"My torso is currently rotated 45 degrees. To fit through the narrow opening ahead, I need to reach a 90-degree rotation to present my thinnest profile. I am still far enough away from the opening to continue rotating my torso before I begin moving forward.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2290,\"completion_tokens\":133,\"total_tokens\":2423,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2290,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":133,\"totalTokenCount\":2423,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1201},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":133}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1201,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":133,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"A long red carpet leads toward a narrow opening in a wall decorated with geometric patterns. Through the opening, a bright green rectangle is visible on the far wall. The robot is currently at x=0.5, some distance away from the opening.\", \"reasoning\": \"My torso is currently rotated 45 degrees. To fit through the narrow opening ahead, I need to reach a 90-degree rotation to present my thinnest profile. I am still far enough away from the opening to continue rotating my torso before I begin moving forward.\", \"action\": \"turn_right\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpet leads toward a narrow opening in a wall decorated with geometric patterns. Through the opening, a bright green rectangle is visible on the far wall. The robot is currently at x=0.5, some distance away from the opening.",
+      "reasoning": "My torso is currently rotated 45 degrees. To fit through the narrow opening ahead, I need to reach a 90-degree rotation to present my thinnest profile. I am still far enough away from the opening to continue rotating my torso before I begin moving forward.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

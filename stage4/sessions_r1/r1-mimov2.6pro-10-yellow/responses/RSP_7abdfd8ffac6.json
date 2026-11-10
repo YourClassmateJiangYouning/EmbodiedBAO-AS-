@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:39:00+08:00",
+    "latency_ms": 8510,
+    "payload_bytes": 384228,
+    "finish_reason": "stop",
+    "reasoning_tokens": 101,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e98fd172-d861-4f93-bd22-6b27026433f5_02594e5ccacb42bcb3a8d473d79de602\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches forward toward a doorway in a wall covered with colorful geometric/abstract patterned wallpaper. An orange/yellow arrow points right at the base of the dark doorway opening at the far wall. Bright sunlight patches fall across the floor on either side. The carpet path appears clear and unobstructed.\\\",\\\"reasoning\\\": \\\"The path ahead is clear on the red carpet leading straight to the yellow arrow at the far wall doorway. No obstacles are visible in front of me, so I should move forward toward the goal.\\\",\\\"action\\\": \\\"forward\\\",\\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The camera shows a red carpet walkway leading toward a doorway with an orange/yellow arrow pointing right at the far wall. The path is clear. I should just move forward toward the arrow. Let me check if there's an obstacle - the doorway appears narrow ahead. But the path seems clear right now. Let me just go forward.\\n\\nActually, there might be an obstacle ahead that I need to check width for. But the carpet is wide and clear. Let me just move forward and see.\"}}],\"created\":1794137940,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":231,\"prompt_tokens\":1907,\"total_tokens\":2138,\"completion_tokens_details\":{\"reasoning_tokens\":101},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches forward toward a doorway in a wall covered with colorful geometric/abstract patterned wallpaper. An orange/yellow arrow points right at the base of the dark doorway opening at the far wall. Bright sunlight patches fall across the floor on either side. The carpet path appears clear and unobstructed.\",\"reasoning\": \"The path ahead is clear on the red carpet leading straight to the yellow arrow at the far wall doorway. No obstacles are visible in front of me, so I should move forward toward the goal.\",\"action\": \"forward\",\"confidence\": 0.95}",
+    "reasoning_content": "The camera shows a red carpet walkway leading toward a doorway with an orange/yellow arrow pointing right at the far wall. The path is clear. I should just move forward toward the arrow. Let me check if there's an obstacle - the doorway appears narrow ahead. But the path seems clear right now. Let me just go forward.\n\nActually, there might be an obstacle ahead that I need to check width for. But the carpet is wide and clear. Let me just move forward and see.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches forward toward a doorway in a wall covered with colorful geometric/abstract patterned wallpaper. An orange/yellow arrow points right at the base of the dark doorway opening at the far wall. Bright sunlight patches fall across the floor on either side. The carpet path appears clear and unobstructed.",
+      "reasoning": "The path ahead is clear on the red carpet leading straight to the yellow arrow at the far wall doorway. No obstacles are visible in front of me, so I should move forward toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

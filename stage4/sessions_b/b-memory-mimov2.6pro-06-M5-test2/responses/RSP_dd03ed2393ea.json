@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:04:37+08:00",
+    "latency_ms": 13936,
+    "payload_bytes": 382500,
+    "finish_reason": "stop",
+    "reasoning_tokens": 122,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"d83e16e3-cd31-4b64-93a9-9ced8107666d_b639b3afc5ba48639bbef4e59ce33d9a\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A long red carpet leads straight ahead toward a dark opening between two decorated walls. A small purple four-pointed star glows at the center of the dark area at the end of the carpet. Shadows from window patterns fall across the carpet and floor. The path is clear with no obstacles.\\\", \\\"reasoning\\\": \\\"The purple star is directly ahead at the far end of the carpet through the opening. The path is clear and my torso rotation is 0 degrees, so my body is aligned normally. I simply need to continue walking forward to reach the star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The star is visible ahead on the carpet, through an opening between decorated walls. I'm at x=0.5. I need to keep moving forward. The previous trajectory shows continuing forward reaches the star. Let me just continue forward.\\n\\nCurrent state shows torso rotation 0 - so I'm facing forward again? Interesting, the state says rotation 0. But the previous trace said 90 degrees. Regardless, my state now says 0 rotation and I should proceed forward toward the star.\\n\\nLet me analyze the image: red carpet leading to dark opening with purple star at center. Continue forward.\"}}],\"created\":1794215077,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":257,\"prompt_tokens\":2646,\"total_tokens\":2903,\"completion_tokens_details\":{\"reasoning_tokens\":122},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A long red carpet leads straight ahead toward a dark opening between two decorated walls. A small purple four-pointed star glows at the center of the dark area at the end of the carpet. Shadows from window patterns fall across the carpet and floor. The path is clear with no obstacles.\", \"reasoning\": \"The purple star is directly ahead at the far end of the carpet through the opening. The path is clear and my torso rotation is 0 degrees, so my body is aligned normally. I simply need to continue walking forward to reach the star.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The star is visible ahead on the carpet, through an opening between decorated walls. I'm at x=0.5. I need to keep moving forward. The previous trajectory shows continuing forward reaches the star. Let me just continue forward.\n\nCurrent state shows torso rotation 0 - so I'm facing forward again? Interesting, the state says rotation 0. But the previous trace said 90 degrees. Regardless, my state now says 0 rotation and I should proceed forward toward the star.\n\nLet me analyze the image: red carpet leading to dark opening with purple star at center. Continue forward.",
+    "parsed": {
+      "scene_description": "A long red carpet leads straight ahead toward a dark opening between two decorated walls. A small purple four-pointed star glows at the center of the dark area at the end of the carpet. Shadows from window patterns fall across the carpet and floor. The path is clear with no obstacles.",
+      "reasoning": "The purple star is directly ahead at the far end of the carpet through the opening. The path is clear and my torso rotation is 0 degrees, so my body is aligned normally. I simply need to continue walking forward to reach the star.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

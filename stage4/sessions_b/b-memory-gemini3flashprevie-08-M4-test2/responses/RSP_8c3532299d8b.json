@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:48:35+08:00",
+    "latency_ms": 8922,
+    "payload_bytes": 300072,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090848286991277888268d9d6SM829li9\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794214115,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight ahead down a red carpeted walkway. In the distance, a blue triangle is visible on the floor against a dark background. To the left and right are white walls with purple and blue geometric patterns. The robot is approaching a narrow opening between these two walls.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 75 degrees, which is the optimal orientation to minimize my width for the narrow gap ahead. I am currently at position x=3.5 and need to continue moving forward to pass through the opening and reach the blue triangle. I will proceed with another forward step.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3651,\"completion_tokens\":154,\"total_tokens\":3805,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3651,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":154,\"totalTokenCount\":3805,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2562}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":154}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2562,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":154,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight ahead down a red carpeted walkway. In the distance, a blue triangle is visible on the floor against a dark background. To the left and right are white walls with purple and blue geometric patterns. The robot is approaching a narrow opening between these two walls.\",\n  \"reasoning\": \"I have already rotated my torso to 75 degrees, which is the optimal orientation to minimize my width for the narrow gap ahead. I am currently at position x=3.5 and need to continue moving forward to pass through the opening and reach the blue triangle. I will proceed with another forward step.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight ahead down a red carpeted walkway. In the distance, a blue triangle is visible on the floor against a dark background. To the left and right are white walls with purple and blue geometric patterns. The robot is approaching a narrow opening between these two walls.",
+      "reasoning": "I have already rotated my torso to 75 degrees, which is the optimal orientation to minimize my width for the narrow gap ahead. I am currently at position x=3.5 and need to continue moving forward to pass through the opening and reach the blue triangle. I will proceed with another forward step.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

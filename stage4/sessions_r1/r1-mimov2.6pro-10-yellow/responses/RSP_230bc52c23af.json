@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:39:10+08:00",
+    "latency_ms": 9069,
+    "payload_bytes": 368746,
+    "finish_reason": "stop",
+    "reasoning_tokens": 39,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"0e260bcc-8115-4e56-8165-7c5f86519ba1_f2f857498ecf44f99651d728c7cd5e85\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet stretches straight ahead toward a dark doorway in a wall decorated with blue geometric patterns. A yellow arrow pointing right is visible at the far wall near the doorway. The carpet is flanked by lighter floor areas with colored shapes. The path directly ahead is clear.\\\", \\\"reasoning\\\": \\\"The red carpet leads directly toward the yellow arrow at the far wall. No obstacles block the path. I should continue moving forward toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path ahead is clear. I need to keep moving forward toward the yellow arrow. The opening is ahead - I should watch for whether my body fits through. Let me just continue forward.\"}}],\"created\":1794137949,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":149,\"prompt_tokens\":1997,\"total_tokens\":2146,\"completion_tokens_details\":{\"reasoning_tokens\":39},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet stretches straight ahead toward a dark doorway in a wall decorated with blue geometric patterns. A yellow arrow pointing right is visible at the far wall near the doorway. The carpet is flanked by lighter floor areas with colored shapes. The path directly ahead is clear.\", \"reasoning\": \"The red carpet leads directly toward the yellow arrow at the far wall. No obstacles block the path. I should continue moving forward toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path ahead is clear. I need to keep moving forward toward the yellow arrow. The opening is ahead - I should watch for whether my body fits through. Let me just continue forward.",
+    "parsed": {
+      "scene_description": "A red carpet stretches straight ahead toward a dark doorway in a wall decorated with blue geometric patterns. A yellow arrow pointing right is visible at the far wall near the doorway. The carpet is flanked by lighter floor areas with colored shapes. The path directly ahead is clear.",
+      "reasoning": "The red carpet leads directly toward the yellow arrow at the far wall. No obstacles block the path. I should continue moving forward toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:08:25+08:00",
+    "latency_ms": 2326,
+    "payload_bytes": 237187,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"0e0998ef-3ffb-46ec-8dc2-d1cec439e9d2\",\"object\":\"chat.completion\",\"created\":1794208104,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a dark red carpeted floor leading toward a dark opening in the far wall, with a red circle mounted on a raised dark panel just inside the opening. Patterned wall panels flank the opening on the left and right.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead but sits on a raised panel that has repeatedly blocked forward motion. I have backed up twice to gain clearance; now I should try advancing forward again to see if the extra clearance lets me climb onto the panel and reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2841,\"completion_tokens\":123,\"total_tokens\":2964,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":2329},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a dark red carpeted floor leading toward a dark opening in the far wall, with a red circle mounted on a raised dark panel just inside the opening. Patterned wall panels flank the opening on the left and right.\", \"reasoning\": \"The red circle is directly ahead but sits on a raised panel that has repeatedly blocked forward motion. I have backed up twice to gain clearance; now I should try advancing forward again to see if the extra clearance lets me climb onto the panel and reach the goal.\", \"action\": \"forward\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a dark red carpeted floor leading toward a dark opening in the far wall, with a red circle mounted on a raised dark panel just inside the opening. Patterned wall panels flank the opening on the left and right.",
+      "reasoning": "The red circle is directly ahead but sits on a raised panel that has repeatedly blocked forward motion. I have backed up twice to gain clearance; now I should try advancing forward again to see if the extra clearance lets me climb onto the panel and reach the goal.",
+      "action": "forward",
+      "confidence": 0.4
+    },
+    "action": "forward"
+  }
+]

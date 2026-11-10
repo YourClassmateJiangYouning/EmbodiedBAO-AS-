@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:49+08:00",
+    "latency_ms": 2828,
+    "payload_bytes": 216006,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"0165fa64-dac9-4d66-9db9-33f9584eddd0\",\"object\":\"chat.completion\",\"created\":1794208188,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is visible ahead and slightly right of center, mounted low on a dark panel between a striped wall on the left and a blue patterned wall on the right. The red carpet floor fills the lower portion of the view.\\\", \\\"reasoning\\\": \\\"Forward steps were repeatedly blocked by the wall panel even with the torso aligned at 0 degrees, and I have just backed up one step to regain turning room. The arrow appears slightly right of center, so a small right turn may better align my body with the actual opening before attempting forward again.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2786,\"completion_tokens\":131,\"total_tokens\":2917,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":2274},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is visible ahead and slightly right of center, mounted low on a dark panel between a striped wall on the left and a blue patterned wall on the right. The red carpet floor fills the lower portion of the view.\", \"reasoning\": \"Forward steps were repeatedly blocked by the wall panel even with the torso aligned at 0 degrees, and I have just backed up one step to regain turning room. The arrow appears slightly right of center, so a small right turn may better align my body with the actual opening before attempting forward again.\", \"action\": \"turn_right\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is visible ahead and slightly right of center, mounted low on a dark panel between a striped wall on the left and a blue patterned wall on the right. The red carpet floor fills the lower portion of the view.",
+      "reasoning": "Forward steps were repeatedly blocked by the wall panel even with the torso aligned at 0 degrees, and I have just backed up one step to regain turning room. The arrow appears slightly right of center, so a small right turn may better align my body with the actual opening before attempting forward again.",
+      "action": "turn_right",
+      "confidence": 0.4
+    },
+    "action": "turn_right"
+  }
+]

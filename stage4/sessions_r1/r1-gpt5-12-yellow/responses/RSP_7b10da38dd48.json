@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:23:50+08:00",
+    "latency_ms": 9054,
+    "payload_bytes": 261736,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A yellow arrow sign on a black board is directly ahead on the floor, close and centered. The arrow points to the right. The immediate foreground shows a red carpet edge; beyond it is a smooth light-colored floor. No obstacles block the straight path ahead to the sign.\\\", \\\"reasoning\\\": \\\"The target yellow arrow on the far wall area is now very close and centered ahead. Moving straight forward will bring me to it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.83}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198227,\"id\":\"chatcmpl-EiBD1bRx8DFmDeZGfypWTrLUb7QnD\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":114,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":398,\"engine_ttlt_ms\":1370,\"pre_inference_ms\":360,\"service_tbt_ms\":8,\"service_ttft_ms\":937,\"service_ttlt_ms\":1883,\"user_visible_ttft_ms\":577},\"prompt_tokens\":1926,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2040}}\n",
+    "content": "{\"scene_description\": \"A yellow arrow sign on a black board is directly ahead on the floor, close and centered. The arrow points to the right. The immediate foreground shows a red carpet edge; beyond it is a smooth light-colored floor. No obstacles block the straight path ahead to the sign.\", \"reasoning\": \"The target yellow arrow on the far wall area is now very close and centered ahead. Moving straight forward will bring me to it.\", \"action\": \"forward\", \"confidence\": 0.83}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A yellow arrow sign on a black board is directly ahead on the floor, close and centered. The arrow points to the right. The immediate foreground shows a red carpet edge; beyond it is a smooth light-colored floor. No obstacles block the straight path ahead to the sign.",
+      "reasoning": "The target yellow arrow on the far wall area is now very close and centered ahead. Moving straight forward will bring me to it.",
+      "action": "forward",
+      "confidence": 0.83
+    },
+    "action": "forward"
+  }
+]

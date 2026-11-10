@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:06:23+08:00",
+    "latency_ms": 5918,
+    "payload_bytes": 266821,
+    "finish_reason": "stop",
+    "reasoning_tokens": 16,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"73a9833a-8669-4eaf-b207-e7d84a850105_d64b48b730644be6865d5893c65d91cf\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A dark red carpeted floor extends forward to a narrow opening between two decorated walls. Through the opening, a bright green rectangle sits on the far floor against a black curtain. The path appears clear with no obstacles on the carpet.\\\", \\\"reasoning\\\": \\\"The green rectangle remains directly ahead through the opening and the carpeted path is clear. My torso is at 0 degrees, presenting minimal width. I have already confirmed my body fits through the gap with an earlier look_down. I continue forward toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is still ahead, the path is clear. Continue forward.\"}}],\"created\":1794135982,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":142,\"prompt_tokens\":2369,\"total_tokens\":2511,\"completion_tokens_details\":{\"reasoning_tokens\":16},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A dark red carpeted floor extends forward to a narrow opening between two decorated walls. Through the opening, a bright green rectangle sits on the far floor against a black curtain. The path appears clear with no obstacles on the carpet.\", \"reasoning\": \"The green rectangle remains directly ahead through the opening and the carpeted path is clear. My torso is at 0 degrees, presenting minimal width. I have already confirmed my body fits through the gap with an earlier look_down. I continue forward toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The green rectangle is still ahead, the path is clear. Continue forward.",
+    "parsed": {
+      "scene_description": "A dark red carpeted floor extends forward to a narrow opening between two decorated walls. Through the opening, a bright green rectangle sits on the far floor against a black curtain. The path appears clear with no obstacles on the carpet.",
+      "reasoning": "The green rectangle remains directly ahead through the opening and the carpeted path is clear. My torso is at 0 degrees, presenting minimal width. I have already confirmed my body fits through the gap with an earlier look_down. I continue forward toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

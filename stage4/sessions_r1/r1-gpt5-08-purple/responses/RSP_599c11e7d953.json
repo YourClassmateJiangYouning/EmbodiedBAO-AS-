@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:14:57+08:00",
+    "latency_ms": 7343,
+    "payload_bytes": 166724,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A bright purple four-pointed star is directly ahead, glowing on a panel at floor level against a dark backdrop. The red carpet ends just before the panel; there is clear space to advance straight toward the star.\\\", \\\"reasoning\\\": \\\"The star panel is immediately in front and centered. Previous forward steps were sometimes blocked when too close to the wall panel, but a single forward step should place me onto the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.64}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204893,\"id\":\"chatcmpl-EiCwXYbs0w4F52uuGd3ARVe4cRC5p\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":112,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":273,\"engine_ttlt_ms\":1233,\"pre_inference_ms\":329,\"service_tbt_ms\":9,\"service_ttft_ms\":930,\"service_ttlt_ms\":1883,\"user_visible_ttft_ms\":602},\"prompt_tokens\":2326,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2438}}\n",
+    "content": "{\"scene_description\": \"A bright purple four-pointed star is directly ahead, glowing on a panel at floor level against a dark backdrop. The red carpet ends just before the panel; there is clear space to advance straight toward the star.\", \"reasoning\": \"The star panel is immediately in front and centered. Previous forward steps were sometimes blocked when too close to the wall panel, but a single forward step should place me onto the target.\", \"action\": \"forward\", \"confidence\": 0.64}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A bright purple four-pointed star is directly ahead, glowing on a panel at floor level against a dark backdrop. The red carpet ends just before the panel; there is clear space to advance straight toward the star.",
+      "reasoning": "The star panel is immediately in front and centered. Previous forward steps were sometimes blocked when too close to the wall panel, but a single forward step should place me onto the target.",
+      "action": "forward",
+      "confidence": 0.64
+    },
+    "action": "forward"
+  }
+]

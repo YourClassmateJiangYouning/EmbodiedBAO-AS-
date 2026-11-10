@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:59:46+08:00",
+    "latency_ms": 6005,
+    "payload_bytes": 359664,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081059411216485448268d9d6PpSR5wA8\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135586,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading toward a narrow vertical opening in a wall decorated with geometric patterns. A blue triangle is visible on the far wall through the opening. I have moved forward once and am now closer to the opening.\\\",\\n  \\\"reasoning\\\": \\\"I need to determine if my body width will fit through the narrow opening ahead. Since I cannot see my own dimensions from this perspective, I will use the 'look_down' action to see my body's width and thickness relative to my current torso rotation (0.0 degrees).\\\",\\n  \\\"action\\\": \\\"look_down\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2087,\"completion_tokens\":144,\"total_tokens\":2231,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2087,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":144,\"totalTokenCount\":2231,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":998}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":144}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":998,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":144,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a red carpeted walkway leading toward a narrow vertical opening in a wall decorated with geometric patterns. A blue triangle is visible on the far wall through the opening. I have moved forward once and am now closer to the opening.\",\n  \"reasoning\": \"I need to determine if my body width will fit through the narrow opening ahead. Since I cannot see my own dimensions from this perspective, I will use the 'look_down' action to see my body's width and thickness relative to my current torso rotation (0.0 degrees).\",\n  \"action\": \"look_down\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading toward a narrow vertical opening in a wall decorated with geometric patterns. A blue triangle is visible on the far wall through the opening. I have moved forward once and am now closer to the opening.",
+      "reasoning": "I need to determine if my body width will fit through the narrow opening ahead. Since I cannot see my own dimensions from this perspective, I will use the 'look_down' action to see my body's width and thickness relative to my current torso rotation (0.0 degrees).",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

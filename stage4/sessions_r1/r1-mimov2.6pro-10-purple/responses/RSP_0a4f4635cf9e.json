@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:22:32+08:00",
+    "latency_ms": 5041,
+    "payload_bytes": 248979,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T12:22:40+08:00",
+    "latency_ms": 7904,
+    "payload_bytes": 248979,
+    "finish_reason": "stop",
+    "reasoning_tokens": 200,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"462425d1-1e6d-4c8d-95fd-38413f6d3457_8ea9d960e5fa48b9a747bbb33e0c6988\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the red carpet leading straight ahead toward a narrow opening between two decorated wall panels. Through the opening, the purple four-pointed star on a dark panel is visible on the far wall, now appearing closer than before. The carpet path is clear with no obstacles in front of me.\\\", \\\"reasoning\\\": \\\"I am at x=5.75 and the star is directly ahead through the opening, getting closer with each forward step. My torso is at 90 degrees rotation, presenting my narrowest profile for the narrow opening. The path is clear, so I should continue moving forward to reach the star. I have 14 steps remaining and no need to change orientation.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=5.750, step 16 of 30 (16 steps taken). The star is visible ahead through the opening. We should keep moving forward. Steps remaining: 14. Let's check distance. Started at x=0 presumably. Each forward is 0.75m. Steps forward: 0,8,9,10,11,12,15 = 7 forwards = 5.25... but position is 5.75, so maybe 8 forwards including one before recorded? Actually position 5.75 isn't multiple of 0.75 (5.75/0.75 = 7.67). Hmm, maybe initial position offset. Anyway, star appears close but still some distance. Continue forward.\\n\\nThe opening appears ahead; we're approaching it. Our torso at 90 degrees, narrowest profile. Keep going forward.\"}}],\"created\":1794198159,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":367,\"prompt_tokens\":2874,\"total_tokens\":3241,\"completion_tokens_details\":{\"reasoning_tokens\":200},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows the red carpet leading straight ahead toward a narrow opening between two decorated wall panels. Through the opening, the purple four-pointed star on a dark panel is visible on the far wall, now appearing closer than before. The carpet path is clear with no obstacles in front of me.\", \"reasoning\": \"I am at x=5.75 and the star is directly ahead through the opening, getting closer with each forward step. My torso is at 90 degrees rotation, presenting my narrowest profile for the narrow opening. The path is clear, so I should continue moving forward to reach the star. I have 14 steps remaining and no need to change orientation.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "We are at x=5.750, step 16 of 30 (16 steps taken). The star is visible ahead through the opening. We should keep moving forward. Steps remaining: 14. Let's check distance. Started at x=0 presumably. Each forward is 0.75m. Steps forward: 0,8,9,10,11,12,15 = 7 forwards = 5.25... but position is 5.75, so maybe 8 forwards including one before recorded? Actually position 5.75 isn't multiple of 0.75 (5.75/0.75 = 7.67). Hmm, maybe initial position offset. Anyway, star appears close but still some distance. Continue forward.\n\nThe opening appears ahead; we're approaching it. Our torso at 90 degrees, narrowest profile. Keep going forward.",
+    "parsed": {
+      "scene_description": "The camera shows the red carpet leading straight ahead toward a narrow opening between two decorated wall panels. Through the opening, the purple four-pointed star on a dark panel is visible on the far wall, now appearing closer than before. The carpet path is clear with no obstacles in front of me.",
+      "reasoning": "I am at x=5.75 and the star is directly ahead through the opening, getting closer with each forward step. My torso is at 90 degrees rotation, presenting my narrowest profile for the narrow opening. The path is clear, so I should continue moving forward to reach the star. I have 14 steps remaining and no need to change orientation.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

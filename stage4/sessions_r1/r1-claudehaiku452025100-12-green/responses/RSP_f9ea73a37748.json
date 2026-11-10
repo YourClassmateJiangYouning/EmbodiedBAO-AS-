@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:35:35+08:00",
+    "latency_ms": 7637,
+    "payload_bytes": 376732,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_nit32q2haqykl25fer2lkgfd6xw754afrhz4hd7gtzzwskag6p4a\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794144935,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a long corridor with a red textured floor stretching ahead toward the far wall. The green rectangle target is clearly visible on the far wall, centered in my view. The walls on both sides have tan/beige coloring with blue geometric patterns. There are yellow and white angular shapes along the left and right edges of the floor. The path ahead is clear and unobstructed. I am currently at position x=1.250m, having moved forward 75cm from my starting position.\\\",\\n  \\\"reasoning\\\": \\\"I have a clear, straight path to the green rectangle on the far wall. My torso is aligned straight (0 degrees rotation), and my walking direction remains fixed toward the target. The green rectangle is visible and centered ahead. I should continue moving forward to reach it. There are no obstacles in my path, and I have 29 steps remaining out of my 30-step limit.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2414,\"completion_tokens\":228,\"total_tokens\":2642,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2414,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":228,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2414,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a long corridor with a red textured floor stretching ahead toward the far wall. The green rectangle target is clearly visible on the far wall, centered in my view. The walls on both sides have tan/beige coloring with blue geometric patterns. There are yellow and white angular shapes along the left and right edges of the floor. The path ahead is clear and unobstructed. I am currently at position x=1.250m, having moved forward 75cm from my starting position.\",\n  \"reasoning\": \"I have a clear, straight path to the green rectangle on the far wall. My torso is aligned straight (0 degrees rotation), and my walking direction remains fixed toward the target. The green rectangle is visible and centered ahead. I should continue moving forward to reach it. There are no obstacles in my path, and I have 29 steps remaining out of my 30-step limit.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a long corridor with a red textured floor stretching ahead toward the far wall. The green rectangle target is clearly visible on the far wall, centered in my view. The walls on both sides have tan/beige coloring with blue geometric patterns. There are yellow and white angular shapes along the left and right edges of the floor. The path ahead is clear and unobstructed. I am currently at position x=1.250m, having moved forward 75cm from my starting position.",
+      "reasoning": "I have a clear, straight path to the green rectangle on the far wall. My torso is aligned straight (0 degrees rotation), and my walking direction remains fixed toward the target. The green rectangle is visible and centered ahead. I should continue moving forward to reach it. There are no obstacles in my path, and I have 29 steps remaining out of my 30-step limit.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

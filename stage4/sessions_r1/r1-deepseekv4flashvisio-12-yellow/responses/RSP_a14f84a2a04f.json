@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:01:13+08:00",
+    "latency_ms": 2418,
+    "payload_bytes": 360125,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"cc2d54ca-0e00-4012-a962-cdcf866f06a9\",\"object\":\"chat.completion\",\"created\":1794207671,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches straight ahead toward a dark opening in the far wall, where a yellow arrow points to the right. Patterned walls flank the path on both sides.\\\", \\\"reasoning\\\": \\\"The yellow arrow is visible directly ahead through the opening. The path is clear and unobstructed, and my torso is aligned at 0 degrees. Continuing forward advances me toward the goal without needing to turn.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1694,\"completion_tokens\":103,\"total_tokens\":1797,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":926},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches straight ahead toward a dark opening in the far wall, where a yellow arrow points to the right. Patterned walls flank the path on both sides.\", \"reasoning\": \"The yellow arrow is visible directly ahead through the opening. The path is clear and unobstructed, and my torso is aligned at 0 degrees. Continuing forward advances me toward the goal without needing to turn.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches straight ahead toward a dark opening in the far wall, where a yellow arrow points to the right. Patterned walls flank the path on both sides.",
+      "reasoning": "The yellow arrow is visible directly ahead through the opening. The path is clear and unobstructed, and my torso is aligned at 0 degrees. Continuing forward advances me toward the goal without needing to turn.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:31:25+08:00",
+    "latency_ms": 10014,
+    "payload_bytes": 245159,
+    "finish_reason": "stop",
+    "reasoning_tokens": 117,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"5587d078-ecfa-461a-9366-148f429644fb_0776e7f9a48d4ad0af99be414d4bc78e\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead along the walking direction at the narrow dark opening in the far wall, with the yellow right-pointing arrow visible just beyond it. The red carpet leads toward the opening, and patterned wall panels flank either side. The view is unchanged by torso rotation.\\\", \\\"reasoning\\\": \\\"I am at x=6.5 with torso rotation at 45 degrees after three turn_left actions. My wide plate-like body was blocked at x=7.25 by the narrow opening. I need to continue rotating to 90 degrees to present my thinnest profile (body thickness) to the opening. Three more turn_left actions are needed to reach 90 degrees, leaving enough steps to move forward through the opening. Turning is allowed at x=6.5 since my shoulders are not inside the opening.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.82}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue turning left to 90 degrees. Currently at 45 degrees after three turn_left. Need 3 more turn_left to reach 90 degrees.\\n\\nWait, but actually - should we present thin side? At 90 degrees rotation, body presents width = thickness. The opening is narrow. Let's continue turning.\\n\\nSteps remaining: 30 - 16 = 14 steps. Need 3 more turns (steps 16, 17, 18), then forward attempts.\\n\\nLet me do turn_left again.\"}}],\"created\":1794209485,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":313,\"prompt_tokens\":2989,\"total_tokens\":3302,\"completion_tokens_details\":{\"reasoning_tokens\":117},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead along the walking direction at the narrow dark opening in the far wall, with the yellow right-pointing arrow visible just beyond it. The red carpet leads toward the opening, and patterned wall panels flank either side. The view is unchanged by torso rotation.\", \"reasoning\": \"I am at x=6.5 with torso rotation at 45 degrees after three turn_left actions. My wide plate-like body was blocked at x=7.25 by the narrow opening. I need to continue rotating to 90 degrees to present my thinnest profile (body thickness) to the opening. Three more turn_left actions are needed to reach 90 degrees, leaving enough steps to move forward through the opening. Turning is allowed at x=6.5 since my shoulders are not inside the opening.\", \"action\": \"turn_left\", \"confidence\": 0.82}",
+    "reasoning_content": "We need to continue turning left to 90 degrees. Currently at 45 degrees after three turn_left. Need 3 more turn_left to reach 90 degrees.\n\nWait, but actually - should we present thin side? At 90 degrees rotation, body presents width = thickness. The opening is narrow. Let's continue turning.\n\nSteps remaining: 30 - 16 = 14 steps. Need 3 more turns (steps 16, 17, 18), then forward attempts.\n\nLet me do turn_left again.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead along the walking direction at the narrow dark opening in the far wall, with the yellow right-pointing arrow visible just beyond it. The red carpet leads toward the opening, and patterned wall panels flank either side. The view is unchanged by torso rotation.",
+      "reasoning": "I am at x=6.5 with torso rotation at 45 degrees after three turn_left actions. My wide plate-like body was blocked at x=7.25 by the narrow opening. I need to continue rotating to 90 degrees to present my thinnest profile (body thickness) to the opening. Three more turn_left actions are needed to reach 90 degrees, leaving enough steps to move forward through the opening. Turning is allowed at x=6.5 since my shoulders are not inside the opening.",
+      "action": "turn_left",
+      "confidence": 0.82
+    },
+    "action": "turn_left"
+  }
+]

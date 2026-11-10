@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:38:51+08:00",
+    "latency_ms": 6702,
+    "payload_bytes": 359505,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081038463430338608268d9d6SVCi5TKX\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134331,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down a long red carpeted walkway towards a narrow opening in a wall decorated with geometric patterns. A green rectangle is visible on the far wall through the opening.\\\",\\n  \\\"reasoning\\\": \\\"My current torso rotation is 75.0 degrees. To present my narrowest profile to the gap ahead, I need to reach a 90-degree rotation. I will perform one more turn_right action to reach 90 degrees before proceeding forward.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2590,\"completion_tokens\":127,\"total_tokens\":2717,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2590,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":127,\"totalTokenCount\":2717,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1501},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":127}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1501,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":127,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down a long red carpeted walkway towards a narrow opening in a wall decorated with geometric patterns. A green rectangle is visible on the far wall through the opening.\",\n  \"reasoning\": \"My current torso rotation is 75.0 degrees. To present my narrowest profile to the gap ahead, I need to reach a 90-degree rotation. I will perform one more turn_right action to reach 90 degrees before proceeding forward.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down a long red carpeted walkway towards a narrow opening in a wall decorated with geometric patterns. A green rectangle is visible on the far wall through the opening.",
+      "reasoning": "My current torso rotation is 75.0 degrees. To present my narrowest profile to the gap ahead, I need to reach a 90-degree rotation. I will perform one more turn_right action to reach 90 degrees before proceeding forward.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

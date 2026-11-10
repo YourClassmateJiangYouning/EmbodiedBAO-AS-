@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:27:00+08:00",
+    "latency_ms": 5356,
+    "payload_bytes": 267932,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090826556741870238268d9d6sMrb2qf9\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212820,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading towards a green rectangle on the far wall. To the left of the rectangle is a black draped object, and to the right is a yellow chair. The green rectangle is now much larger in the field of view, indicating I am close to the goal.\\\", \\\"reasoning\\\": \\\"I have successfully passed through the narrow gap with my torso rotated at 90 degrees. I am now at position x=5.75 and the green rectangle is directly ahead. I will continue moving forward to reach the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3534,\"completion_tokens\":132,\"total_tokens\":3666,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3534,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":132,\"totalTokenCount\":3666,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2445}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":132}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2445,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":132,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading towards a green rectangle on the far wall. To the left of the rectangle is a black draped object, and to the right is a yellow chair. The green rectangle is now much larger in the field of view, indicating I am close to the goal.\", \"reasoning\": \"I have successfully passed through the narrow gap with my torso rotated at 90 degrees. I am now at position x=5.75 and the green rectangle is directly ahead. I will continue moving forward to reach the target.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading towards a green rectangle on the far wall. To the left of the rectangle is a black draped object, and to the right is a yellow chair. The green rectangle is now much larger in the field of view, indicating I am close to the goal.",
+      "reasoning": "I have successfully passed through the narrow gap with my torso rotated at 90 degrees. I am now at position x=5.75 and the green rectangle is directly ahead. I will continue moving forward to reach the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

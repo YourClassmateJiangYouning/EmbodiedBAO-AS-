@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:16:37+08:00",
+    "latency_ms": 2627,
+    "payload_bytes": 343286,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f4b2f3ce-fb5d-464a-b5a6-7be638a59070\",\"object\":\"chat.completion\",\"created\":1794208596,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading toward a dark doorway on the far wall, with a yellow arrow visible just inside/above the opening. The patterned floor is to the left, and the path ahead appears clear and aligned with the walking direction.\\\", \\\"reasoning\\\": \\\"The yellow arrow is straight ahead through the doorway and the path is clear. My torso is at 0 degrees, so my body width is aligned with the opening. I have already checked my width and advanced once; continuing forward moves me closer to the goal. I should keep moving forward until near the doorway, then reassess clearance.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1764,\"completion_tokens\":143,\"total_tokens\":1907,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":996},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted walkway leading toward a dark doorway on the far wall, with a yellow arrow visible just inside/above the opening. The patterned floor is to the left, and the path ahead appears clear and aligned with the walking direction.\", \"reasoning\": \"The yellow arrow is straight ahead through the doorway and the path is clear. My torso is at 0 degrees, so my body width is aligned with the opening. I have already checked my width and advanced once; continuing forward moves me closer to the goal. I should keep moving forward until near the doorway, then reassess clearance.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading toward a dark doorway on the far wall, with a yellow arrow visible just inside/above the opening. The patterned floor is to the left, and the path ahead appears clear and aligned with the walking direction.",
+      "reasoning": "The yellow arrow is straight ahead through the doorway and the path is clear. My torso is at 0 degrees, so my body width is aligned with the opening. I have already checked my width and advanced once; continuing forward moves me closer to the goal. I should keep moving forward until near the doorway, then reassess clearance.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

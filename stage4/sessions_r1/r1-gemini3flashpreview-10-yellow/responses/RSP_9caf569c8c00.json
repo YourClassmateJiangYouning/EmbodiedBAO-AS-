@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:33:15+08:00",
+    "latency_ms": 6433,
+    "payload_bytes": 250636,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081033102055639108268d9d6yu5Gea8a\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133995,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a large yellow arrow pointing to the right on a black sign, positioned on the floor just past the edge of a red carpet. Behind the arrow is a dark, draped fabric wall.\\\", \\\"reasoning\\\": \\\"I am at position x=7.25 and the yellow arrow is very close. I will move forward one more time to reach the target on the far wall.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3040,\"completion_tokens\":99,\"total_tokens\":3139,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3040,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":99,\"totalTokenCount\":3139,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1951},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":99}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1951,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":99,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera shows a large yellow arrow pointing to the right on a black sign, positioned on the floor just past the edge of a red carpet. Behind the arrow is a dark, draped fabric wall.\", \"reasoning\": \"I am at position x=7.25 and the yellow arrow is very close. I will move forward one more time to reach the target on the far wall.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a large yellow arrow pointing to the right on a black sign, positioned on the floor just past the edge of a red carpet. Behind the arrow is a dark, draped fabric wall.",
+      "reasoning": "I am at position x=7.25 and the yellow arrow is very close. I will move forward one more time to reach the target on the far wall.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

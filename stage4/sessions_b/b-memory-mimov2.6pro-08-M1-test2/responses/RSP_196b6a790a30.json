@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:27:28+08:00",
+    "latency_ms": 6928,
+    "payload_bytes": 264283,
+    "finish_reason": "stop",
+    "reasoning_tokens": 19,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5c750271-6f41-40dc-a9e1-5bd900a38242_ac69b581026a483d92861e2dfe0f2462\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle is directly ahead and very close, centered in the camera view, standing on the light-colored floor just beyond the edge of the red carpet. Behind it is a dark draped object and a tan chair. The path ahead on the carpet and floor is clear.\\\", \\\"reasoning\\\": \\\"The green rectangle is extremely close and centered ahead, with the path clear. All forward steps have executed successfully this episode without needing to turn, unlike the prior traversal. I should continue forward to reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is very close and centered ahead. I should continue forward to reach it.\"}}],\"created\":1794212848,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":144,\"prompt_tokens\":3358,\"total_tokens\":3502,\"completion_tokens_details\":{\"reasoning_tokens\":19},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The green rectangle is directly ahead and very close, centered in the camera view, standing on the light-colored floor just beyond the edge of the red carpet. Behind it is a dark draped object and a tan chair. The path ahead on the carpet and floor is clear.\", \"reasoning\": \"The green rectangle is extremely close and centered ahead, with the path clear. All forward steps have executed successfully this episode without needing to turn, unlike the prior traversal. I should continue forward to reach the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The green rectangle is very close and centered ahead. I should continue forward to reach it.",
+    "parsed": {
+      "scene_description": "The green rectangle is directly ahead and very close, centered in the camera view, standing on the light-colored floor just beyond the edge of the red carpet. Behind it is a dark draped object and a tan chair. The path ahead on the carpet and floor is clear.",
+      "reasoning": "The green rectangle is extremely close and centered ahead, with the path clear. All forward steps have executed successfully this episode without needing to turn, unlike the prior traversal. I should continue forward to reach the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:15:58+08:00",
+    "latency_ms": 5919,
+    "payload_bytes": 377050,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081015531531667558268d9d6hSiWWqO0\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794132958,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading towards a narrow opening between two patterned walls. In the distance, behind the opening, a red circle is visible on a dark background. The floor to the left and right of the carpet has white rectangular markers.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at a 45-degree torso rotation. To fit through the narrow gap ahead, I need to present my thinnest profile, which occurs at a 90-degree rotation. I will continue rotating to the right in 15-degree increments until I reach that orientation.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2366,\"completion_tokens\":148,\"total_tokens\":2514,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2366,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":148,\"totalTokenCount\":2514,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1277}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":148}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1277,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":148,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading towards a narrow opening between two patterned walls. In the distance, behind the opening, a red circle is visible on a dark background. The floor to the left and right of the carpet has white rectangular markers.\",\n  \"reasoning\": \"I am currently at a 45-degree torso rotation. To fit through the narrow gap ahead, I need to present my thinnest profile, which occurs at a 90-degree rotation. I will continue rotating to the right in 15-degree increments until I reach that orientation.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading towards a narrow opening between two patterned walls. In the distance, behind the opening, a red circle is visible on a dark background. The floor to the left and right of the carpet has white rectangular markers.",
+      "reasoning": "I am currently at a 45-degree torso rotation. To fit through the narrow gap ahead, I need to present my thinnest profile, which occurs at a 90-degree rotation. I will continue rotating to the right in 15-degree increments until I reach that orientation.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

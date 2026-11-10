@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:22:56+08:00",
+    "latency_ms": 7304,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A large bright green rectangle directly ahead on the far wall, close and occupying much of the view. The red carpeted path leads up to the wall, with a narrow doorway or opening around the rectangle. Lighting is dim except for the glowing green panel.\\\", \\\"reasoning\\\": \\\"The green rectangle is immediately ahead; previous forwards were blocked likely due to being at the wall. To reach the rectangle, I should continue advancing until contact is confirmed, as walking direction is fixed toward it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.74}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205372,\"id\":\"chatcmpl-EiD4GmEcXfiXYEvT9y4bj7CtplkSW\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008215714-19515ff0-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":125,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":429,\"engine_ttlt_ms\":1450,\"pre_inference_ms\":320,\"service_tbt_ms\":8,\"service_ttft_ms\":937,\"service_ttlt_ms\":1925,\"user_visible_ttft_ms\":617},\"prompt_tokens\":2628,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2753}}\n",
+    "content": "{\"scene_description\": \"A large bright green rectangle directly ahead on the far wall, close and occupying much of the view. The red carpeted path leads up to the wall, with a narrow doorway or opening around the rectangle. Lighting is dim except for the glowing green panel.\", \"reasoning\": \"The green rectangle is immediately ahead; previous forwards were blocked likely due to being at the wall. To reach the rectangle, I should continue advancing until contact is confirmed, as walking direction is fixed toward it.\", \"action\": \"forward\", \"confidence\": 0.74}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A large bright green rectangle directly ahead on the far wall, close and occupying much of the view. The red carpeted path leads up to the wall, with a narrow doorway or opening around the rectangle. Lighting is dim except for the glowing green panel.",
+      "reasoning": "The green rectangle is immediately ahead; previous forwards were blocked likely due to being at the wall. To reach the rectangle, I should continue advancing until contact is confirmed, as walking direction is fixed toward it.",
+      "action": "forward",
+      "confidence": 0.74
+    },
+    "action": "forward"
+  }
+]

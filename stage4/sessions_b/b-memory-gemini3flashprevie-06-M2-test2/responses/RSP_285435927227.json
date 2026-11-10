@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:31:20+08:00",
+    "latency_ms": 7296,
+    "payload_bytes": 350154,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090831158240931528268d9d62GuX7EWQ\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213081,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight down a red carpeted path. In the distance, there is a narrow opening between two patterned walls. Beyond the opening, a red circle is visible on a black background on the far wall. Several white rectangular markers are on the floor to the left and right of the carpet.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees to minimize my width, which is necessary to pass through the narrow gap ahead. My current position is x=3.5. I need to continue moving forward along the red carpet to pass through the gap and reach the red circle on the far wall.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3270,\"completion_tokens\":158,\"total_tokens\":3428,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3270,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":158,\"totalTokenCount\":3428,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2181}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":158}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2181,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":158,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight down a red carpeted path. In the distance, there is a narrow opening between two patterned walls. Beyond the opening, a red circle is visible on a black background on the far wall. Several white rectangular markers are on the floor to the left and right of the carpet.\",\n  \"reasoning\": \"I have already rotated my torso to 90 degrees to minimize my width, which is necessary to pass through the narrow gap ahead. My current position is x=3.5. I need to continue moving forward along the red carpet to pass through the gap and reach the red circle on the far wall.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red carpeted path. In the distance, there is a narrow opening between two patterned walls. Beyond the opening, a red circle is visible on a black background on the far wall. Several white rectangular markers are on the floor to the left and right of the carpet.",
+      "reasoning": "I have already rotated my torso to 90 degrees to minimize my width, which is necessary to pass through the narrow gap ahead. My current position is x=3.5. I need to continue moving forward along the red carpet to pass through the gap and reach the red circle on the far wall.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

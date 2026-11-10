@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:16:51+08:00",
+    "latency_ms": 7846,
+    "payload_bytes": 285334,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081016448777386408268d9d65AaqpZmy\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133011,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera view shows a red carpeted path leading towards a narrow opening between two decorated panels. Beyond the opening, a red circle is visible on a dark background at the far end of the path. I am currently positioned just before or within the gap.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees to present my thinnest profile. My current position is x=4.25. I need to continue moving forward to pass through the narrow opening and reach the red circle target on the far wall.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2857,\"completion_tokens\":138,\"total_tokens\":2995,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2857,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":138,\"totalTokenCount\":2995,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1768}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":138}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1768,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":138,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera view shows a red carpeted path leading towards a narrow opening between two decorated panels. Beyond the opening, a red circle is visible on a dark background at the far end of the path. I am currently positioned just before or within the gap.\",\n  \"reasoning\": \"I have already rotated my torso to 90 degrees to present my thinnest profile. My current position is x=4.25. I need to continue moving forward to pass through the narrow opening and reach the red circle target on the far wall.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera view shows a red carpeted path leading towards a narrow opening between two decorated panels. Beyond the opening, a red circle is visible on a dark background at the far end of the path. I am currently positioned just before or within the gap.",
+      "reasoning": "I have already rotated my torso to 90 degrees to present my thinnest profile. My current position is x=4.25. I need to continue moving forward to pass through the narrow opening and reach the red circle target on the far wall.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

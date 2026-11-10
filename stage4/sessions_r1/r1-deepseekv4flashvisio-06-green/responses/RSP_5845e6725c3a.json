@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:14:29+08:00",
+    "latency_ms": 2734,
+    "payload_bytes": 242589,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"c0e7cc38-f2df-4afb-864d-6d9e5d0ccf59\",\"object\":\"chat.completion\",\"created\":1794208468,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is visible ahead through a narrow dark opening between wall panels. The floor in front is dark red/brown, and the opening appears tight, with wall panels on both sides. The robot is close to the opening after backing up one step.\\\", \\\"reasoning\\\": \\\"Forward was blocked at torso rotations of 0, 15, and 30 degrees right, and I just backed up one step. The blockage may be due to the torso orientation presenting a wide profile, or the robot being too close to the wall panel. Since I have not tried a leftward torso rotation, I should turn left to present a different profile to the opening, then attempt forward again.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.5}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2782,\"completion_tokens\":158,\"total_tokens\":2940,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2142},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is visible ahead through a narrow dark opening between wall panels. The floor in front is dark red/brown, and the opening appears tight, with wall panels on both sides. The robot is close to the opening after backing up one step.\", \"reasoning\": \"Forward was blocked at torso rotations of 0, 15, and 30 degrees right, and I just backed up one step. The blockage may be due to the torso orientation presenting a wide profile, or the robot being too close to the wall panel. Since I have not tried a leftward torso rotation, I should turn left to present a different profile to the opening, then attempt forward again.\", \"action\": \"turn_left\", \"confidence\": 0.5}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is visible ahead through a narrow dark opening between wall panels. The floor in front is dark red/brown, and the opening appears tight, with wall panels on both sides. The robot is close to the opening after backing up one step.",
+      "reasoning": "Forward was blocked at torso rotations of 0, 15, and 30 degrees right, and I just backed up one step. The blockage may be due to the torso orientation presenting a wide profile, or the robot being too close to the wall panel. Since I have not tried a leftward torso rotation, I should turn left to present a different profile to the opening, then attempt forward again.",
+      "action": "turn_left",
+      "confidence": 0.5
+    },
+    "action": "turn_left"
+  }
+]

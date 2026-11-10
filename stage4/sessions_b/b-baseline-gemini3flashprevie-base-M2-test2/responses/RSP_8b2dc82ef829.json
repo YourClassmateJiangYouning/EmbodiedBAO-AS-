@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:28:19+08:00",
+    "latency_ms": 7276,
+    "payload_bytes": 372094,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090828146547173648268d9d6qsVSW1Uq\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212899,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight down a red carpeted walkway towards a red circle on a black background at the far end. There are patterned walls on both sides and white rectangular markers on the floor. The path narrows significantly where the patterned walls end.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at x=2.75 with a torso rotation of 45 degrees. To pass through the narrow gap between the patterned walls ahead, I need to present a thinner profile. A 90-degree rotation is typically the narrowest profile for this robot. I will continue rotating my torso to the left before moving forward again.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2576,\"completion_tokens\":157,\"total_tokens\":2733,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2576,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":157,\"totalTokenCount\":2733,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1487},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":157}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1487,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":157,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight down a red carpeted walkway towards a red circle on a black background at the far end. There are patterned walls on both sides and white rectangular markers on the floor. The path narrows significantly where the patterned walls end.\",\n  \"reasoning\": \"I am currently at x=2.75 with a torso rotation of 45 degrees. To pass through the narrow gap between the patterned walls ahead, I need to present a thinner profile. A 90-degree rotation is typically the narrowest profile for this robot. I will continue rotating my torso to the left before moving forward again.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red carpeted walkway towards a red circle on a black background at the far end. There are patterned walls on both sides and white rectangular markers on the floor. The path narrows significantly where the patterned walls end.",
+      "reasoning": "I am currently at x=2.75 with a torso rotation of 45 degrees. To pass through the narrow gap between the patterned walls ahead, I need to present a thinner profile. A 90-degree rotation is typically the narrowest profile for this robot. I will continue rotating my torso to the left before moving forward again.",
+      "action": "turn_left",
+      "confidence": 0.9
+    },
+    "action": "turn_left"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:18:26+08:00",
+    "latency_ms": 7212,
+    "payload_bytes": 384902,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_cnwtsea5wq54kldnaf3vfojwce6szzvvphsb4vnz72cnus6ucezq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794197907,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I am in an indoor space with a red carpet stretching ahead toward a far wall. The wall has graffiti-style artwork with purple/blue designs on a tan/beige background. I can see a green rectangle on the far wall - this is my target. The floor transitions from yellow/cream colored tiles on the left side to the red carpet in the center and right. There are some geometric shapes and patterns visible on the walls. The space appears to be a corridor or hallway leading directly toward the green rectangle.\\\",\\n  \\\"reasoning\\\": \\\"My task is to reach the green rectangle on the far wall. I can clearly see it in the distance on the far wall. My walking direction is fixed toward that wall, and my current position is at x=0.500 (near the start). The path ahead on the red carpet appears clear and unobstructed. I should move forward to progress toward the green rectangle. There are no obstacles visible in my direct path.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2303,\"completion_tokens\":238,\"total_tokens\":2541,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2303,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":238,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2303,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I am in an indoor space with a red carpet stretching ahead toward a far wall. The wall has graffiti-style artwork with purple/blue designs on a tan/beige background. I can see a green rectangle on the far wall - this is my target. The floor transitions from yellow/cream colored tiles on the left side to the red carpet in the center and right. There are some geometric shapes and patterns visible on the walls. The space appears to be a corridor or hallway leading directly toward the green rectangle.\",\n  \"reasoning\": \"My task is to reach the green rectangle on the far wall. I can clearly see it in the distance on the far wall. My walking direction is fixed toward that wall, and my current position is at x=0.500 (near the start). The path ahead on the red carpet appears clear and unobstructed. I should move forward to progress toward the green rectangle. There are no obstacles visible in my direct path.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I am in an indoor space with a red carpet stretching ahead toward a far wall. The wall has graffiti-style artwork with purple/blue designs on a tan/beige background. I can see a green rectangle on the far wall - this is my target. The floor transitions from yellow/cream colored tiles on the left side to the red carpet in the center and right. There are some geometric shapes and patterns visible on the walls. The space appears to be a corridor or hallway leading directly toward the green rectangle.",
+      "reasoning": "My task is to reach the green rectangle on the far wall. I can clearly see it in the distance on the far wall. My walking direction is fixed toward that wall, and my current position is at x=0.500 (near the start). The path ahead on the red carpet appears clear and unobstructed. I should move forward to progress toward the green rectangle. There are no obstacles visible in my direct path.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

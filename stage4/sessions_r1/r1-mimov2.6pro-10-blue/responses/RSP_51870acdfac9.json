@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:43:18+08:00",
+    "latency_ms": 9722,
+    "payload_bytes": 274514,
+    "finish_reason": "stop",
+    "reasoning_tokens": 33,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"732c186d-3e7f-4e3d-8b1e-5eda7c40ed91_a4dcede49c294d92803dad414260654a\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet leads straight ahead toward a narrow opening in a decorated wall, with the blue triangle target visible just beyond it on the floor. The path is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead through the opening. My torso is at 0 degrees (narrowest profile), so I fit through the opening. The path remains clear along the red carpet, so I continue forward toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The blue triangle is visible ahead through the opening. The red carpet leads directly to it. Torso at 0 degrees (narrowest). Continue forward.\"}}],\"created\":1794138198,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":146,\"prompt_tokens\":2365,\"total_tokens\":2511,\"completion_tokens_details\":{\"reasoning_tokens\":33},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet leads straight ahead toward a narrow opening in a decorated wall, with the blue triangle target visible just beyond it on the floor. The path is clear and unobstructed.\", \"reasoning\": \"The blue triangle is directly ahead through the opening. My torso is at 0 degrees (narrowest profile), so I fit through the opening. The path remains clear along the red carpet, so I continue forward toward the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The blue triangle is visible ahead through the opening. The red carpet leads directly to it. Torso at 0 degrees (narrowest). Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpet leads straight ahead toward a narrow opening in a decorated wall, with the blue triangle target visible just beyond it on the floor. The path is clear and unobstructed.",
+      "reasoning": "The blue triangle is directly ahead through the opening. My torso is at 0 degrees (narrowest profile), so I fit through the opening. The path remains clear along the red carpet, so I continue forward toward the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

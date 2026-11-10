@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:53:39+08:00",
+    "latency_ms": 48186,
+    "payload_bytes": 300072,
+    "finish_reason": "stop",
+    "reasoning_tokens": 9,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n\n\n\n\n\n\n{\"id\":\"5adca8d8-ce39-47dd-879e-a87a181200b4_bf25225d35a94fa9b40f0bef0b17518d\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted floor stretches ahead toward a dark opening in a wall with blue geometric decorations on the sides. A blue triangle is visible centered in the dark opening ahead.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead through the opening, and the red carpet leads straight to it. My torso is at 0 degrees, presenting the narrowest profile. I have already moved 5 steps forward and the path remains clear, so I should continue forward toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear. Continue forward.\"}}],\"created\":1794214419,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":128,\"prompt_tokens\":2240,\"total_tokens\":2368,\"completion_tokens_details\":{\"reasoning_tokens\":9},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted floor stretches ahead toward a dark opening in a wall with blue geometric decorations on the sides. A blue triangle is visible centered in the dark opening ahead.\", \"reasoning\": \"The blue triangle is directly ahead through the opening, and the red carpet leads straight to it. My torso is at 0 degrees, presenting the narrowest profile. I have already moved 5 steps forward and the path remains clear, so I should continue forward toward the goal.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The path is clear. Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted floor stretches ahead toward a dark opening in a wall with blue geometric decorations on the sides. A blue triangle is visible centered in the dark opening ahead.",
+      "reasoning": "The blue triangle is directly ahead through the opening, and the red carpet leads straight to it. My torso is at 0 degrees, presenting the narrowest profile. I have already moved 5 steps forward and the path remains clear, so I should continue forward toward the goal.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

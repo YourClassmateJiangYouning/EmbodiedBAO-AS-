@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:23:19+08:00",
+    "latency_ms": 7670,
+    "payload_bytes": 266330,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_xm6opmgxvnmaxzzfrwtjvpyyqdtdjhgerqperw5afes4sv4tnqbq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794212600,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a red carpet walkway stretching forward toward a far wall. The yellow arrow target is clearly visible and centered in my view on the far wall, positioned above what appears to be a dark panel or opening. The walls on either side show decorative artwork with purple and blue patterns. The path forward appears clear and unobstructed.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=4.250, having successfully moved forward 5 times in this episode. My torso is at 0 degrees rotation (straight ahead), properly aligned with the yellow arrow target which remains centered in my view. The red carpet path continues to be clear with no obstacles blocking my way forward. I should continue moving forward toward the yellow arrow.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3823,\"completion_tokens\":189,\"total_tokens\":4012,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3823,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":189,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3823,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a red carpet walkway stretching forward toward a far wall. The yellow arrow target is clearly visible and centered in my view on the far wall, positioned above what appears to be a dark panel or opening. The walls on either side show decorative artwork with purple and blue patterns. The path forward appears clear and unobstructed.\",\n  \"reasoning\": \"I am at position x=4.250, having successfully moved forward 5 times in this episode. My torso is at 0 degrees rotation (straight ahead), properly aligned with the yellow arrow target which remains centered in my view. The red carpet path continues to be clear with no obstacles blocking my way forward. I should continue moving forward toward the yellow arrow.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a red carpet walkway stretching forward toward a far wall. The yellow arrow target is clearly visible and centered in my view on the far wall, positioned above what appears to be a dark panel or opening. The walls on either side show decorative artwork with purple and blue patterns. The path forward appears clear and unobstructed.",
+      "reasoning": "I am at position x=4.250, having successfully moved forward 5 times in this episode. My torso is at 0 degrees rotation (straight ahead), properly aligned with the yellow arrow target which remains centered in my view. The red carpet path continues to be clear with no obstacles blocking my way forward. I should continue moving forward toward the yellow arrow.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

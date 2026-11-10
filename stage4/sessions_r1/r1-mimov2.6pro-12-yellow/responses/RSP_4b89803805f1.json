@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:23:34+08:00",
+    "latency_ms": 8798,
+    "payload_bytes": 261736,
+    "finish_reason": "stop",
+    "reasoning_tokens": 29,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ffdd041f-6f48-4246-9c6f-5fedd7ddb41c_0614605daf374c43bcfa11d1463beba3\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow on a black rectangular plate is directly ahead on the floor, very close — likely under a meter away. Beyond it is a dark draped object and a wooden surface at the far wall. Red carpet is visible in the immediate foreground beneath the robot.\\\", \\\"reasoning\\\": \\\"The yellow arrow is right in front of me, very close. One more forward step of 75cm should bring me onto/over the arrow and complete the task.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The yellow arrow is very close, just ahead. The image shows the yellow arrow right in front. I should move forward to reach it.\"}}],\"created\":1794137014,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":144,\"prompt_tokens\":2979,\"total_tokens\":3123,\"completion_tokens_details\":{\"reasoning_tokens\":29},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The yellow arrow on a black rectangular plate is directly ahead on the floor, very close — likely under a meter away. Beyond it is a dark draped object and a wooden surface at the far wall. Red carpet is visible in the immediate foreground beneath the robot.\", \"reasoning\": \"The yellow arrow is right in front of me, very close. One more forward step of 75cm should bring me onto/over the arrow and complete the task.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The yellow arrow is very close, just ahead. The image shows the yellow arrow right in front. I should move forward to reach it.",
+    "parsed": {
+      "scene_description": "The yellow arrow on a black rectangular plate is directly ahead on the floor, very close — likely under a meter away. Beyond it is a dark draped object and a wooden surface at the far wall. Red carpet is visible in the immediate foreground beneath the robot.",
+      "reasoning": "The yellow arrow is right in front of me, very close. One more forward step of 75cm should bring me onto/over the arrow and complete the task.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

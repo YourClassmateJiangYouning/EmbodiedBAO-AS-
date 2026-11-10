@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:13:29+08:00",
+    "latency_ms": 2817,
+    "payload_bytes": 361646,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"46393075-f455-401c-bffc-67c3c1b426c2\",\"object\":\"chat.completion\",\"created\":1794208408,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead down a red carpeted walkway toward a far wall with a narrow dark opening; a small bright green rectangle is visible inside that opening. The patterned floor is to the left, and the red carpet strip leads directly toward the opening.\\\", \\\"reasoning\\\": \\\"The green target is straight ahead through the narrow opening. My torso is at 0 degrees, which from the earlier downward glance presented a wide profile; the opening is narrow, so I should rotate my torso to present a slimmer profile before advancing. Turning left or right by 15 degrees will narrow the presented width without changing my walking direction or view. I'll turn right first to begin aligning my narrow side toward the opening.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1692,\"completion_tokens\":163,\"total_tokens\":1855,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1052},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead down a red carpeted walkway toward a far wall with a narrow dark opening; a small bright green rectangle is visible inside that opening. The patterned floor is to the left, and the red carpet strip leads directly toward the opening.\", \"reasoning\": \"The green target is straight ahead through the narrow opening. My torso is at 0 degrees, which from the earlier downward glance presented a wide profile; the opening is narrow, so I should rotate my torso to present a slimmer profile before advancing. Turning left or right by 15 degrees will narrow the presented width without changing my walking direction or view. I'll turn right first to begin aligning my narrow side toward the opening.\", \"action\": \"turn_right\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead down a red carpeted walkway toward a far wall with a narrow dark opening; a small bright green rectangle is visible inside that opening. The patterned floor is to the left, and the red carpet strip leads directly toward the opening.",
+      "reasoning": "The green target is straight ahead through the narrow opening. My torso is at 0 degrees, which from the earlier downward glance presented a wide profile; the opening is narrow, so I should rotate my torso to present a slimmer profile before advancing. Turning left or right by 15 degrees will narrow the presented width without changing my walking direction or view. I'll turn right first to begin aligning my narrow side toward the opening.",
+      "action": "turn_right",
+      "confidence": 0.6
+    },
+    "action": "turn_right"
+  }
+]

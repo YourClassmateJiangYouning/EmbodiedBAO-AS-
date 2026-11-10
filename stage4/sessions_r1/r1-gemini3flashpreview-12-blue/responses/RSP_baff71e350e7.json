@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:20:52+08:00",
+    "latency_ms": 9625,
+    "payload_bytes": 360575,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081020444250693448268d9d6wPhQIrLe\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133253,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The image shows a red carpeted path leading towards a narrow opening in a wall decorated with geometric patterns. At the far end of the path, visible through the opening, is a blue triangle on the floor. The robot is currently positioned on the red carpet, facing directly towards the triangle.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=2.0 and have rotated my torso to 45 degrees to present a narrower profile. The opening is still ahead of me. I will continue moving forward to reach the blue triangle. I have 24 steps remaining, which is plenty of time to reach the goal.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2432,\"completion_tokens\":154,\"total_tokens\":2586,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2432,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":154,\"totalTokenCount\":2586,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1343}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":154}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1343,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":154,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The image shows a red carpeted path leading towards a narrow opening in a wall decorated with geometric patterns. At the far end of the path, visible through the opening, is a blue triangle on the floor. The robot is currently positioned on the red carpet, facing directly towards the triangle.\",\n  \"reasoning\": \"I am at x=2.0 and have rotated my torso to 45 degrees to present a narrower profile. The opening is still ahead of me. I will continue moving forward to reach the blue triangle. I have 24 steps remaining, which is plenty of time to reach the goal.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The image shows a red carpeted path leading towards a narrow opening in a wall decorated with geometric patterns. At the far end of the path, visible through the opening, is a blue triangle on the floor. The robot is currently positioned on the red carpet, facing directly towards the triangle.",
+      "reasoning": "I am at x=2.0 and have rotated my torso to 45 degrees to present a narrower profile. The opening is still ahead of me. I will continue moving forward to reach the blue triangle. I have 24 steps remaining, which is plenty of time to reach the goal.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

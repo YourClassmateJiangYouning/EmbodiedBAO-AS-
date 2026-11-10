@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:27:35+08:00",
+    "latency_ms": 6319,
+    "payload_bytes": 408882,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090827306596523018268d9d6I0sXE0v2\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212856,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a long red carpet leading towards a red circle on a black background at the far end. There are white rectangular markers on the floor to the left and right of the carpet. Two patterned walls create a narrow opening just before the red circle.\\\", \\\"reasoning\\\": \\\"I am currently at x=1.25 and need to reach the red circle. The path ahead is clear for several steps before I reach the narrow opening between the walls. I will continue moving forward to get closer to the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2152,\"completion_tokens\":124,\"total_tokens\":2276,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2152,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":124,\"totalTokenCount\":2276,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1063},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":124}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1063,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":124,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera shows a long red carpet leading towards a red circle on a black background at the far end. There are white rectangular markers on the floor to the left and right of the carpet. Two patterned walls create a narrow opening just before the red circle.\", \"reasoning\": \"I am currently at x=1.25 and need to reach the red circle. The path ahead is clear for several steps before I reach the narrow opening between the walls. I will continue moving forward to get closer to the target.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading towards a red circle on a black background at the far end. There are white rectangular markers on the floor to the left and right of the carpet. Two patterned walls create a narrow opening just before the red circle.",
+      "reasoning": "I am currently at x=1.25 and need to reach the red circle. The path ahead is clear for several steps before I reach the narrow opening between the walls. I will continue moving forward to get closer to the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

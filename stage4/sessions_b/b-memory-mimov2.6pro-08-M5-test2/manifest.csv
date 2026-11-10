@@ -1,0 +1,2 @@
+episode_id,mode,model,scene,marker,a_s,channel_width_m,memory_id,started_at,finished_at,passed,total_steps,end_reason,invalid_count
+S4E_4d838848c8f5,B,mimo-v2.6-pro,R1,M5,2.0,1.14,S4M_bfc3b402e5e1,2026-11-09T17:08:56+08:00,2026-11-09T17:15:05+08:00,True,16,passed,0

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:21+08:00",
+    "latency_ms": 2504,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"1e8af5fe-a56d-42ae-be23-7f1d390d4a4c\",\"object\":\"chat.completion\",\"created\":1794208160,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is directly ahead and very close, mounted on a dark wall panel above the red carpet. The view is slightly angled, suggesting the torso is rotated relative to the walking direction.\\\", \\\"reasoning\\\": \\\"The forward step was blocked by a wall panel even though the arrow is close. The arrow appears slightly right of center, so a small right turn may align the body better with the opening before attempting forward again.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.5}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2215,\"completion_tokens\":106,\"total_tokens\":2321,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1447},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is directly ahead and very close, mounted on a dark wall panel above the red carpet. The view is slightly angled, suggesting the torso is rotated relative to the walking direction.\", \"reasoning\": \"The forward step was blocked by a wall panel even though the arrow is close. The arrow appears slightly right of center, so a small right turn may align the body better with the opening before attempting forward again.\", \"action\": \"turn_right\", \"confidence\": 0.5}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is directly ahead and very close, mounted on a dark wall panel above the red carpet. The view is slightly angled, suggesting the torso is rotated relative to the walking direction.",
+      "reasoning": "The forward step was blocked by a wall panel even though the arrow is close. The arrow appears slightly right of center, so a small right turn may align the body better with the opening before attempting forward again.",
+      "action": "turn_right",
+      "confidence": 0.5
+    },
+    "action": "turn_right"
+  }
+]

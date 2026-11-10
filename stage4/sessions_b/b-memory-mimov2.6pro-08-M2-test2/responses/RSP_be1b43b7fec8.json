@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:39:02+08:00",
+    "latency_ms": 7653,
+    "payload_bytes": 372094,
+    "finish_reason": "stop",
+    "reasoning_tokens": 33,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"c28de516-f92e-47b0-9d28-001e08680127_85f050b92abe493e954d189aa2ae2f54\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead along the walking direction down a red carpeted walkway. A narrow opening is visible ahead between two patterned panels, with the red circle on a dark square panel on the far wall centered in the opening. White strip markings line the carpet edges. The red circle is still at a moderate distance ahead.\\\", \\\"reasoning\\\": \\\"My torso is already rotated 90 degrees to present my shallow depth for the narrow opening, matching the successful traversal. The red circle is directly ahead and still at a moderate distance, and the carpeted path is clear. I should continue advancing with forward steps.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue forward toward the red circle. Position x=2.75. The circle appears some distance ahead, through the opening. Continue forward.\"}}],\"created\":1794213542,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":182,\"prompt_tokens\":3349,\"total_tokens\":3531,\"completion_tokens_details\":{\"reasoning_tokens\":33},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead along the walking direction down a red carpeted walkway. A narrow opening is visible ahead between two patterned panels, with the red circle on a dark square panel on the far wall centered in the opening. White strip markings line the carpet edges. The red circle is still at a moderate distance ahead.\", \"reasoning\": \"My torso is already rotated 90 degrees to present my shallow depth for the narrow opening, matching the successful traversal. The red circle is directly ahead and still at a moderate distance, and the carpeted path is clear. I should continue advancing with forward steps.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We need to continue forward toward the red circle. Position x=2.75. The circle appears some distance ahead, through the opening. Continue forward.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead along the walking direction down a red carpeted walkway. A narrow opening is visible ahead between two patterned panels, with the red circle on a dark square panel on the far wall centered in the opening. White strip markings line the carpet edges. The red circle is still at a moderate distance ahead.",
+      "reasoning": "My torso is already rotated 90 degrees to present my shallow depth for the narrow opening, matching the successful traversal. The red circle is directly ahead and still at a moderate distance, and the carpeted path is clear. I should continue advancing with forward steps.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

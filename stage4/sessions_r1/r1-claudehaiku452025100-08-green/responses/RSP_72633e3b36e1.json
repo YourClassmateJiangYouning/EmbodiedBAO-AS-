@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:19:13+08:00",
+    "latency_ms": 8717,
+    "payload_bytes": 255976,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_v2dpwl67v6mjd34pbqcmehz7yj4c6u4j4c76msuwgvyqxfw42bra\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794197953,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a dark opening/doorway ahead with the green rectangle target visible on the far wall inside it. The opening appears to be a narrow passage with dark walls on either side. The floor in front is a dark reddish-brown color. The green rectangle is clearly visible centered on the far wall within the dark opening. The walls on either side of the opening have colorful murals/artwork visible on the left and right sides.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=5.000 after 6 forward steps. The green rectangle target is clearly visible on the far wall inside the dark opening ahead. The path forward appears clear and unobstructed. I should continue walking forward toward the target. The opening looks wide enough for my body to pass through based on what I can see. I will take another forward step to continue approaching the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.92\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2748,\"completion_tokens\":217,\"total_tokens\":2965,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2748,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":217,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2748,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a dark opening/doorway ahead with the green rectangle target visible on the far wall inside it. The opening appears to be a narrow passage with dark walls on either side. The floor in front is a dark reddish-brown color. The green rectangle is clearly visible centered on the far wall within the dark opening. The walls on either side of the opening have colorful murals/artwork visible on the left and right sides.\",\n  \"reasoning\": \"I am at position x=5.000 after 6 forward steps. The green rectangle target is clearly visible on the far wall inside the dark opening ahead. The path forward appears clear and unobstructed. I should continue walking forward toward the target. The opening looks wide enough for my body to pass through based on what I can see. I will take another forward step to continue approaching the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.92\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a dark opening/doorway ahead with the green rectangle target visible on the far wall inside it. The opening appears to be a narrow passage with dark walls on either side. The floor in front is a dark reddish-brown color. The green rectangle is clearly visible centered on the far wall within the dark opening. The walls on either side of the opening have colorful murals/artwork visible on the left and right sides.",
+      "reasoning": "I am at position x=5.000 after 6 forward steps. The green rectangle target is clearly visible on the far wall inside the dark opening ahead. The path forward appears clear and unobstructed. I should continue walking forward toward the target. The opening looks wide enough for my body to pass through based on what I can see. I will take another forward step to continue approaching the target.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

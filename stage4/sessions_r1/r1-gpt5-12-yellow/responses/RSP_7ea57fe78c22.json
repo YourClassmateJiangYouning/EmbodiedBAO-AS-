@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:22:48+08:00",
+    "latency_ms": 8784,
+    "payload_bytes": 360125,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A straight red-carpeted corridor leads to a rectangular doorway ahead. Beyond the doorway, the yellow arrow is visible on the far wall pointing left. The opening appears wide enough and unobstructed, with patterned walls on both sides.\\\", \\\"reasoning\\\": \\\"The path to the doorway and the yellow arrow is clear and straight. My walking direction is fixed toward the arrow, so moving forward will bring me closer to and likely through the doorway toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.79}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198166,\"id\":\"chatcmpl-EiBC2gS8Cqa2pZO55iFMj1qK2iZL0\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":120,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":395,\"engine_ttlt_ms\":1544,\"pre_inference_ms\":408,\"service_tbt_ms\":9,\"service_ttft_ms\":997,\"service_ttlt_ms\":2121,\"user_visible_ttft_ms\":589},\"prompt_tokens\":1625,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1745}}\n",
+    "content": "{\"scene_description\": \"A straight red-carpeted corridor leads to a rectangular doorway ahead. Beyond the doorway, the yellow arrow is visible on the far wall pointing left. The opening appears wide enough and unobstructed, with patterned walls on both sides.\", \"reasoning\": \"The path to the doorway and the yellow arrow is clear and straight. My walking direction is fixed toward the arrow, so moving forward will bring me closer to and likely through the doorway toward the goal.\", \"action\": \"forward\", \"confidence\": 0.79}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight red-carpeted corridor leads to a rectangular doorway ahead. Beyond the doorway, the yellow arrow is visible on the far wall pointing left. The opening appears wide enough and unobstructed, with patterned walls on both sides.",
+      "reasoning": "The path to the doorway and the yellow arrow is clear and straight. My walking direction is fixed toward the arrow, so moving forward will bring me closer to and likely through the doorway toward the goal.",
+      "action": "forward",
+      "confidence": 0.79
+    },
+    "action": "forward"
+  }
+]

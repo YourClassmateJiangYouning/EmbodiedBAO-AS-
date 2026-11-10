@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:35:51+08:00",
+    "latency_ms": 3167,
+    "payload_bytes": 281807,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"fc6c77cc-ba9a-4362-b931-4080f7afdffb\",\"object\":\"chat.completion\",\"created\":1794216950,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the red circle on a black rectangular panel lying on the floor directly ahead, very close and slightly below the usual view, with a dark draped object and an orange couch in the background.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead and appears very close after 10 forward steps (7.5m). One more forward step should bring me onto the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2032,\"completion_tokens\":96,\"total_tokens\":2128,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1520},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows the red circle on a black rectangular panel lying on the floor directly ahead, very close and slightly below the usual view, with a dark draped object and an orange couch in the background.\", \"reasoning\": \"The red circle is directly ahead and appears very close after 10 forward steps (7.5m). One more forward step should bring me onto the target.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows the red circle on a black rectangular panel lying on the floor directly ahead, very close and slightly below the usual view, with a dark draped object and an orange couch in the background.",
+      "reasoning": "The red circle is directly ahead and appears very close after 10 forward steps (7.5m). One more forward step should bring me onto the target.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

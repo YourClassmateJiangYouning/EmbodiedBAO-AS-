@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:10:06+08:00",
+    "latency_ms": 2288,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"83ef3a0d-4935-4cb1-957c-b8e9f56d94c6\",\"object\":\"chat.completion\",\"created\":1794208205,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is very close and centered, mounted low on a dark panel just ahead; the red carpet is visible below.\\\", \\\"reasoning\\\": \\\"The arrow is extremely close and centered. My torso is at 0 degrees after three left turns, aligning my body with the opening. Previous forward attempts were blocked, but with alignment restored I should try forward once more to reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.5}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3146,\"completion_tokens\":98,\"total_tokens\":3244,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2506},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is very close and centered, mounted low on a dark panel just ahead; the red carpet is visible below.\", \"reasoning\": \"The arrow is extremely close and centered. My torso is at 0 degrees after three left turns, aligning my body with the opening. Previous forward attempts were blocked, but with alignment restored I should try forward once more to reach the goal.\", \"action\": \"forward\", \"confidence\": 0.5}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is very close and centered, mounted low on a dark panel just ahead; the red carpet is visible below.",
+      "reasoning": "The arrow is extremely close and centered. My torso is at 0 degrees after three left turns, aligning my body with the opening. Previous forward attempts were blocked, but with alignment restored I should try forward once more to reach the goal.",
+      "action": "forward",
+      "confidence": 0.5
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:21:13+08:00",
+    "latency_ms": 6395,
+    "payload_bytes": 291239,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081021081480007448268d9d6h3o26ejl\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133273,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight down a red carpeted path. In the distance, there is a narrow opening between two decorated walls. Beyond the opening, a blue triangle is visible on a dark background. The robot is currently at x=4.25, approaching the gap.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=4.25 and my torso is rotated 45 degrees to minimize my width. I am approaching the narrow opening. I need to continue moving forward to pass through the gap and reach the blue triangle. I have 21 steps remaining, which is sufficient.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2629,\"completion_tokens\":150,\"total_tokens\":2779,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2629,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":150,\"totalTokenCount\":2779,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1540},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":150}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1540,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":150,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight down a red carpeted path. In the distance, there is a narrow opening between two decorated walls. Beyond the opening, a blue triangle is visible on a dark background. The robot is currently at x=4.25, approaching the gap.\",\n  \"reasoning\": \"I am at x=4.25 and my torso is rotated 45 degrees to minimize my width. I am approaching the narrow opening. I need to continue moving forward to pass through the gap and reach the blue triangle. I have 21 steps remaining, which is sufficient.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red carpeted path. In the distance, there is a narrow opening between two decorated walls. Beyond the opening, a blue triangle is visible on a dark background. The robot is currently at x=4.25, approaching the gap.",
+      "reasoning": "I am at x=4.25 and my torso is rotated 45 degrees to minimize my width. I am approaching the narrow opening. I need to continue moving forward to pass through the gap and reach the blue triangle. I have 21 steps remaining, which is sufficient.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

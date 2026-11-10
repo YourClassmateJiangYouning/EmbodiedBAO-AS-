@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:19:37+08:00",
+    "latency_ms": 2495,
+    "payload_bytes": 191441,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"82e88297-9d92-45e3-9b3e-6e9aea62aa83\",\"object\":\"chat.completion\",\"created\":1794208776,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is mounted on a dark panel directly ahead, very close, with a narrow opening framed by wall panels on the left and right. The red carpet leads up to the base of the star's panel.\\\", \\\"reasoning\\\": \\\"Forward steps were blocked by the wall panel because my wide body catches on the narrow opening. I have been turning right to present my narrower profile; at 45 degrees I am halfway to the 90-degree orientation where my thickness faces the gap. Turning further right to 60 degrees should reduce the width presented to the opening, then I can try forward again.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2406,\"completion_tokens\":143,\"total_tokens\":2549,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1766},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is mounted on a dark panel directly ahead, very close, with a narrow opening framed by wall panels on the left and right. The red carpet leads up to the base of the star's panel.\", \"reasoning\": \"Forward steps were blocked by the wall panel because my wide body catches on the narrow opening. I have been turning right to present my narrower profile; at 45 degrees I am halfway to the 90-degree orientation where my thickness faces the gap. Turning further right to 60 degrees should reduce the width presented to the opening, then I can try forward again.\", \"action\": \"turn_right\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is mounted on a dark panel directly ahead, very close, with a narrow opening framed by wall panels on the left and right. The red carpet leads up to the base of the star's panel.",
+      "reasoning": "Forward steps were blocked by the wall panel because my wide body catches on the narrow opening. I have been turning right to present my narrower profile; at 45 degrees I am halfway to the 90-degree orientation where my thickness faces the gap. Turning further right to 60 degrees should reduce the width presented to the opening, then I can try forward again.",
+      "action": "turn_right",
+      "confidence": 0.6
+    },
+    "action": "turn_right"
+  }
+]

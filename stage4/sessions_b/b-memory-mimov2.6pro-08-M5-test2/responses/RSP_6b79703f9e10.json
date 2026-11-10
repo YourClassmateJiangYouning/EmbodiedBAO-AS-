@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:09:27+08:00",
+    "latency_ms": 8772,
+    "payload_bytes": 351677,
+    "finish_reason": "stop",
+    "reasoning_tokens": 14,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"6c997e92-45ee-471b-9999-c8cd3c62fa61_ba1f29b5c811432e8db47347f1a32805\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpet leads straight ahead toward a dark opening between two patterned wall panels. The purple four-pointed star is visible centered in the opening, some distance away. The carpet is clear of obstacles.\\\", \\\"reasoning\\\": \\\"The star is visible straight ahead through the opening and the carpet path is clear. At x=2.0 with 28 steps remaining, I should continue forward to close distance toward the opening, where I'll likely need to turn sideways to fit through as in the previous traversal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The opening is ahead with the star visible. Keep moving forward.\"}}],\"created\":1794215367,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":141,\"prompt_tokens\":3042,\"total_tokens\":3183,\"completion_tokens_details\":{\"reasoning_tokens\":14},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpet leads straight ahead toward a dark opening between two patterned wall panels. The purple four-pointed star is visible centered in the opening, some distance away. The carpet is clear of obstacles.\", \"reasoning\": \"The star is visible straight ahead through the opening and the carpet path is clear. At x=2.0 with 28 steps remaining, I should continue forward to close distance toward the opening, where I'll likely need to turn sideways to fit through as in the previous traversal.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The opening is ahead with the star visible. Keep moving forward.",
+    "parsed": {
+      "scene_description": "Red carpet leads straight ahead toward a dark opening between two patterned wall panels. The purple four-pointed star is visible centered in the opening, some distance away. The carpet is clear of obstacles.",
+      "reasoning": "The star is visible straight ahead through the opening and the carpet path is clear. At x=2.0 with 28 steps remaining, I should continue forward to close distance toward the opening, where I'll likely need to turn sideways to fit through as in the previous traversal.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

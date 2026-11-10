@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:05:35+08:00",
+    "latency_ms": 7988,
+    "payload_bytes": 369687,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_sa5svcairrxbknc5h64ypcyxe466yz6rrigd4petuqznwakznmya\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794204335,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a clear path ahead on a red carpeted floor leading toward the far wall. The red circle target is visible on the wall in the distance, centered in my view. There's a dark vertical structure (possibly a pillar or wall feature) in the middle distance, but it appears to be above floor level and should not obstruct my path. The floor is clear and unobstructed. Yellow and tan colored walls with purple markings are visible on the sides.\\\",\\n  \\\"reasoning\\\": \\\"I'm at position x=1.250 with a clear, direct path to the red circle on the far wall. My walking direction is fixed toward the target. The most efficient strategy is to continue moving forward along the walkway. There are no obstacles blocking my path on the floor, and I have 28 steps remaining. I should continue advancing toward the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2415,\"completion_tokens\":216,\"total_tokens\":2631,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2415,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":216,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2415,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a clear path ahead on a red carpeted floor leading toward the far wall. The red circle target is visible on the wall in the distance, centered in my view. There's a dark vertical structure (possibly a pillar or wall feature) in the middle distance, but it appears to be above floor level and should not obstruct my path. The floor is clear and unobstructed. Yellow and tan colored walls with purple markings are visible on the sides.\",\n  \"reasoning\": \"I'm at position x=1.250 with a clear, direct path to the red circle on the far wall. My walking direction is fixed toward the target. The most efficient strategy is to continue moving forward along the walkway. There are no obstacles blocking my path on the floor, and I have 28 steps remaining. I should continue advancing toward the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a clear path ahead on a red carpeted floor leading toward the far wall. The red circle target is visible on the wall in the distance, centered in my view. There's a dark vertical structure (possibly a pillar or wall feature) in the middle distance, but it appears to be above floor level and should not obstruct my path. The floor is clear and unobstructed. Yellow and tan colored walls with purple markings are visible on the sides.",
+      "reasoning": "I'm at position x=1.250 with a clear, direct path to the red circle on the far wall. My walking direction is fixed toward the target. The most efficient strategy is to continue moving forward along the walkway. There are no obstacles blocking my path on the floor, and I have 28 steps remaining. I should continue advancing toward the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

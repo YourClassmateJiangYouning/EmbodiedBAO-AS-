@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:33:37+08:00",
+    "latency_ms": 5266,
+    "payload_bytes": 345209,
+    "finish_reason": "stop",
+    "reasoning_tokens": 25,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f097fc75-d773-4d7c-bfbe-1f2247867de0_5cdb1d69358f41efab5528f12d566f77\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpet leading toward a narrow dark opening in the far wall where the purple four-pointed star is visible. Patterned floor and walls flank the carpet.\\\", \\\"reasoning\\\": \\\"My torso is at 75 degrees. I need one more turn_right to reach 90 degrees, presenting my thin depth dimension to the narrow opening. I must complete this before my shoulders enter the opening.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me continue the sequence. Torso is at 75 degrees. Continue turning right to 90 degrees.\"}}],\"created\":1794144817,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":128,\"prompt_tokens\":2508,\"total_tokens\":2636,\"completion_tokens_details\":{\"reasoning_tokens\":25},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpet leading toward a narrow dark opening in the far wall where the purple four-pointed star is visible. Patterned floor and walls flank the carpet.\", \"reasoning\": \"My torso is at 75 degrees. I need one more turn_right to reach 90 degrees, presenting my thin depth dimension to the narrow opening. I must complete this before my shoulders enter the opening.\", \"action\": \"turn_right\", \"confidence\": 0.85}",
+    "reasoning_content": "Let me continue the sequence. Torso is at 75 degrees. Continue turning right to 90 degrees.",
+    "parsed": {
+      "scene_description": "Red carpet leading toward a narrow dark opening in the far wall where the purple four-pointed star is visible. Patterned floor and walls flank the carpet.",
+      "reasoning": "My torso is at 75 degrees. I need one more turn_right to reach 90 degrees, presenting my thin depth dimension to the narrow opening. I must complete this before my shoulders enter the opening.",
+      "action": "turn_right",
+      "confidence": 0.85
+    },
+    "action": "turn_right"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:41:15+08:00",
+    "latency_ms": 6156,
+    "payload_bytes": 263946,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090841108352392108268d9d6MJE0fQtm\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213676,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The view shows a red carpeted walkway leading towards a blue triangle on a dark far wall. There are two patterned walls on either side, creating a narrow opening ahead. The camera is looking straight down the path.\\\",\\n  \\\"reasoning\\\": \\\"I previously turned right to reduce my width, but my torso rotation is currently at 15.0 degrees. To present the narrowest profile (side-on) to the opening, I should continue rotating my torso. I will turn right again to reach 0 degrees, and then further to align my narrowest dimension with the direction of travel.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2420,\"completion_tokens\":151,\"total_tokens\":2571,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2420,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":151,\"totalTokenCount\":2571,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1331}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":151}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1331,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":151,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The view shows a red carpeted walkway leading towards a blue triangle on a dark far wall. There are two patterned walls on either side, creating a narrow opening ahead. The camera is looking straight down the path.\",\n  \"reasoning\": \"I previously turned right to reduce my width, but my torso rotation is currently at 15.0 degrees. To present the narrowest profile (side-on) to the opening, I should continue rotating my torso. I will turn right again to reach 0 degrees, and then further to align my narrowest dimension with the direction of travel.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The view shows a red carpeted walkway leading towards a blue triangle on a dark far wall. There are two patterned walls on either side, creating a narrow opening ahead. The camera is looking straight down the path.",
+      "reasoning": "I previously turned right to reduce my width, but my torso rotation is currently at 15.0 degrees. To present the narrowest profile (side-on) to the opening, I should continue rotating my torso. I will turn right again to reach 0 degrees, and then further to align my narrowest dimension with the direction of travel.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

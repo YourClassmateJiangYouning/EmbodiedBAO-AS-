@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:36:11+08:00",
+    "latency_ms": 6228,
+    "payload_bytes": 255976,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward an opening between two patterned wall panels. At the base of the opening there is a small raised lip/threshold. Beyond the opening, on the floor near the far wall, a bright green rectangle is visible slightly left of center.\\\", \\\"reasoning\\\": \\\"My walking direction is straight toward the green rectangle. Previous forward steps near the opening were blocked by the threshold lip, but I have backed up several steps to gain distance. Advancing forward now should bring me closer to the opening again and attempt to approach the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.61}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198968,\"id\":\"chatcmpl-EiBOylKIXNVaT7uUsGa1gaT2QVplK\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":141,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":311,\"engine_ttlt_ms\":1597,\"pre_inference_ms\":411,\"service_tbt_ms\":9,\"service_ttft_ms\":1061,\"service_ttlt_ms\":2389,\"user_visible_ttft_ms\":650},\"prompt_tokens\":2397,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2538}}\n",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward an opening between two patterned wall panels. At the base of the opening there is a small raised lip/threshold. Beyond the opening, on the floor near the far wall, a bright green rectangle is visible slightly left of center.\", \"reasoning\": \"My walking direction is straight toward the green rectangle. Previous forward steps near the opening were blocked by the threshold lip, but I have backed up several steps to gain distance. Advancing forward now should bring me closer to the opening again and attempt to approach the target.\", \"action\": \"forward\", \"confidence\": 0.61}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward an opening between two patterned wall panels. At the base of the opening there is a small raised lip/threshold. Beyond the opening, on the floor near the far wall, a bright green rectangle is visible slightly left of center.",
+      "reasoning": "My walking direction is straight toward the green rectangle. Previous forward steps near the opening were blocked by the threshold lip, but I have backed up several steps to gain distance. Advancing forward now should bring me closer to the opening again and attempt to approach the target.",
+      "action": "forward",
+      "confidence": 0.61
+    },
+    "action": "forward"
+  }
+]

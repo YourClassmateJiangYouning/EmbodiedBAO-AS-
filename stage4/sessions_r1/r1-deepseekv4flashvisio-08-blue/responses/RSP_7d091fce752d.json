@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:11:22+08:00",
+    "latency_ms": 2601,
+    "payload_bytes": 241510,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"17f9cd33-7870-4944-bfcf-5f3a7d6613aa\",\"object\":\"chat.completion\",\"created\":1794208280,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a dark red carpeted floor leading toward a dark doorway opening, with the blue triangle visible on a raised platform just beyond the opening. Wall panels with geometric patterns flank the doorway on both sides.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead through the doorway. Previous forward attempts were blocked by a low ledge at wheel height, but backing up then moving forward succeeded once. I have backed up two steps to gain clearance, so attempting forward again should close the remaining gap toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.55}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2897,\"completion_tokens\":121,\"total_tokens\":3018,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2257},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a dark red carpeted floor leading toward a dark doorway opening, with the blue triangle visible on a raised platform just beyond the opening. Wall panels with geometric patterns flank the doorway on both sides.\", \"reasoning\": \"The blue triangle is directly ahead through the doorway. Previous forward attempts were blocked by a low ledge at wheel height, but backing up then moving forward succeeded once. I have backed up two steps to gain clearance, so attempting forward again should close the remaining gap toward the goal.\", \"action\": \"forward\", \"confidence\": 0.55}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a dark red carpeted floor leading toward a dark doorway opening, with the blue triangle visible on a raised platform just beyond the opening. Wall panels with geometric patterns flank the doorway on both sides.",
+      "reasoning": "The blue triangle is directly ahead through the doorway. Previous forward attempts were blocked by a low ledge at wheel height, but backing up then moving forward succeeded once. I have backed up two steps to gain clearance, so attempting forward again should close the remaining gap toward the goal.",
+      "action": "forward",
+      "confidence": 0.55
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:40:55+08:00",
+    "latency_ms": 5539,
+    "payload_bytes": 378741,
+    "finish_reason": "stop",
+    "reasoning_tokens": 26,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"39f6e5ca-741c-4c00-b951-f68db2fe4dde_63fdd1b655cc4252b60369ce073d12d4\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches straight ahead between patterned walls. A yellow arrow is visible on the far wall in the distance, centered ahead in the walking direction. The floor is clear of obstacles.\\\", \\\"reasoning\\\": \\\"The yellow arrow is directly ahead and the path is clear. Simplest strategy is to move forward until reaching the arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The scene: red carpet corridor, yellow arrow visible at far wall ahead. The path is clear. Just move forward repeatedly.\"}}],\"created\":1794213655,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":119,\"prompt_tokens\":1907,\"total_tokens\":2026,\"completion_tokens_details\":{\"reasoning_tokens\":26},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches straight ahead between patterned walls. A yellow arrow is visible on the far wall in the distance, centered ahead in the walking direction. The floor is clear of obstacles.\", \"reasoning\": \"The yellow arrow is directly ahead and the path is clear. Simplest strategy is to move forward until reaching the arrow.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "The scene: red carpet corridor, yellow arrow visible at far wall ahead. The path is clear. Just move forward repeatedly.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches straight ahead between patterned walls. A yellow arrow is visible on the far wall in the distance, centered ahead in the walking direction. The floor is clear of obstacles.",
+      "reasoning": "The yellow arrow is directly ahead and the path is clear. Simplest strategy is to move forward until reaching the arrow.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

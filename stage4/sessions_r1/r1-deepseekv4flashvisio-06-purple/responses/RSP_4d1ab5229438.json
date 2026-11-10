@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:18:58+08:00",
+    "latency_ms": 2216,
+    "payload_bytes": 345209,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"3364441b-2ea5-4e19-9a80-ac0c728c9954\",\"object\":\"chat.completion\",\"created\":1794208738,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red carpet stretches straight ahead toward a dark doorway on the far wall, where the purple four-pointed star is visible slightly left of center. The patterned floor is to the left, and the path ahead appears clear.\\\", \\\"reasoning\\\": \\\"The star is directly ahead along the red carpet and the path is unobstructed. Continuing forward moves me closer to the goal without needing any turns.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1697,\"completion_tokens\":98,\"total_tokens\":1795,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":929},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red carpet stretches straight ahead toward a dark doorway on the far wall, where the purple four-pointed star is visible slightly left of center. The patterned floor is to the left, and the path ahead appears clear.\", \"reasoning\": \"The star is directly ahead along the red carpet and the path is unobstructed. Continuing forward moves me closer to the goal without needing any turns.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red carpet stretches straight ahead toward a dark doorway on the far wall, where the purple four-pointed star is visible slightly left of center. The patterned floor is to the left, and the path ahead appears clear.",
+      "reasoning": "The star is directly ahead along the red carpet and the path is unobstructed. Continuing forward moves me closer to the goal without needing any turns.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

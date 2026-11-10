@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:21:58+08:00",
+    "latency_ms": 7940,
+    "payload_bytes": 191441,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_stbmutr2vlwnok24l7jypgbgcqvnlpzmfrkh2eonw5n22agxhpqq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794205318,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The purple four-pointed star is clearly visible ahead on the far wall, centered in my view. The star is bright magenta/purple and glowing. I can see dark wall panels on either side of the star. On the left side, there's a blue/purple patterned wall or panel. On the right side, there's a blue-lit wall. The floor appears dark. The star is my target destination.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=7.0 (after the forward step from x=6.5 in step 16 was executed). My torso is rotated 15 degrees to the right. The purple star is clearly visible and centered ahead on the far wall. I have 13 steps remaining (30 - 17 = 13). The star appears to be at a moderate distance still. Since my last forward attempt succeeded (step 16), I should continue moving forward toward the star. My torso rotation to the right may have allowed me to navigate around the wall_panel obstacle that was blocking me before.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.75\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3552,\"completion_tokens\":262,\"total_tokens\":3814,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3552,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":262,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3552,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The purple four-pointed star is clearly visible ahead on the far wall, centered in my view. The star is bright magenta/purple and glowing. I can see dark wall panels on either side of the star. On the left side, there's a blue/purple patterned wall or panel. On the right side, there's a blue-lit wall. The floor appears dark. The star is my target destination.\",\n  \"reasoning\": \"I am at position x=7.0 (after the forward step from x=6.5 in step 16 was executed). My torso is rotated 15 degrees to the right. The purple star is clearly visible and centered ahead on the far wall. I have 13 steps remaining (30 - 17 = 13). The star appears to be at a moderate distance still. Since my last forward attempt succeeded (step 16), I should continue moving forward toward the star. My torso rotation to the right may have allowed me to navigate around the wall_panel obstacle that was blocking me before.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.75\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is clearly visible ahead on the far wall, centered in my view. The star is bright magenta/purple and glowing. I can see dark wall panels on either side of the star. On the left side, there's a blue/purple patterned wall or panel. On the right side, there's a blue-lit wall. The floor appears dark. The star is my target destination.",
+      "reasoning": "I am at position x=7.0 (after the forward step from x=6.5 in step 16 was executed). My torso is rotated 15 degrees to the right. The purple star is clearly visible and centered ahead on the far wall. I have 13 steps remaining (30 - 17 = 13). The star appears to be at a moderate distance still. Since my last forward attempt succeeded (step 16), I should continue moving forward toward the star. My torso rotation to the right may have allowed me to navigate around the wall_panel obstacle that was blocking me before.",
+      "action": "forward",
+      "confidence": 0.75
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:15:09+08:00",
+    "latency_ms": 2800,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"2b6c5307-4e1e-4e2a-95b9-892be9589ade\",\"object\":\"chat.completion\",\"created\":1794208508,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The downward glance shows the robot's own body from the front: two wheels on either side, a wide white chassis with a tray on top, and wiring in the center. The body's width spans roughly the full frame, with the wheels defining the widest points.\\\", \\\"reasoning\\\": \\\"I have checked my body width with look_down. The body is fairly wide, but the walkway ahead appears clear and the red circle is straight ahead along my fixed walking direction. Since turning is not needed and the path is unobstructed, I should proceed forward toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.8}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1701,\"completion_tokens\":135,\"total_tokens\":1836,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":933},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The downward glance shows the robot's own body from the front: two wheels on either side, a wide white chassis with a tray on top, and wiring in the center. The body's width spans roughly the full frame, with the wheels defining the widest points.\", \"reasoning\": \"I have checked my body width with look_down. The body is fairly wide, but the walkway ahead appears clear and the red circle is straight ahead along my fixed walking direction. Since turning is not needed and the path is unobstructed, I should proceed forward toward the goal.\", \"action\": \"forward\", \"confidence\": 0.8}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The downward glance shows the robot's own body from the front: two wheels on either side, a wide white chassis with a tray on top, and wiring in the center. The body's width spans roughly the full frame, with the wheels defining the widest points.",
+      "reasoning": "I have checked my body width with look_down. The body is fairly wide, but the walkway ahead appears clear and the red circle is straight ahead along my fixed walking direction. Since turning is not needed and the path is unobstructed, I should proceed forward toward the goal.",
+      "action": "forward",
+      "confidence": 0.8
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:15:40+08:00",
+    "latency_ms": 8342,
+    "payload_bytes": 215919,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A dark doorway ahead with a glowing purple four-pointed star panel at the base of the far wall. A red carpeted walkway leads straight to the doorway; edges of patterned walls are on left and right. The star is centered and very close, indicating the wall is immediately ahead.\\\", \\\"reasoning\\\": \\\"Repeated forward steps were blocked by the wall panel, meaning I am already at or touching the wall near the star. To avoid wasting remaining steps pushing into the wall, I should create a little space, then advance once more if needed. First, back up slightly.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.63}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204936,\"id\":\"chatcmpl-EiCxEHRmg78YPGGEFD6Ir9Pohaj4z\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":144,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":520,\"engine_ttlt_ms\":1837,\"pre_inference_ms\":393,\"service_tbt_ms\":9,\"service_ttft_ms\":1168,\"service_ttlt_ms\":2480,\"user_visible_ttft_ms\":774},\"prompt_tokens\":2680,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2824}}\n",
+    "content": "{\"scene_description\": \"A dark doorway ahead with a glowing purple four-pointed star panel at the base of the far wall. A red carpeted walkway leads straight to the doorway; edges of patterned walls are on left and right. The star is centered and very close, indicating the wall is immediately ahead.\", \"reasoning\": \"Repeated forward steps were blocked by the wall panel, meaning I am already at or touching the wall near the star. To avoid wasting remaining steps pushing into the wall, I should create a little space, then advance once more if needed. First, back up slightly.\", \"action\": \"backward\", \"confidence\": 0.63}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A dark doorway ahead with a glowing purple four-pointed star panel at the base of the far wall. A red carpeted walkway leads straight to the doorway; edges of patterned walls are on left and right. The star is centered and very close, indicating the wall is immediately ahead.",
+      "reasoning": "Repeated forward steps were blocked by the wall panel, meaning I am already at or touching the wall near the star. To avoid wasting remaining steps pushing into the wall, I should create a little space, then advance once more if needed. First, back up slightly.",
+      "action": "backward",
+      "confidence": 0.63
+    },
+    "action": "backward"
+  }
+]

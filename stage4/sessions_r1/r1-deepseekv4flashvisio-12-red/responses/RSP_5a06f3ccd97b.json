@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:01:04+08:00",
+    "latency_ms": 2772,
+    "payload_bytes": 253010,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"6a799388-598a-4ea9-b94a-0ca9756b4e3c\",\"object\":\"chat.completion\",\"created\":1794207662,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the red circle on a dark rectangular panel directly ahead and very close, filling much of the lower view, with the floor visible in front of it.\\\", \\\"reasoning\\\": \\\"The red circle goal is directly ahead and appears immediately in front of me. My torso is rotated 30 degrees right, narrowing my presented width, and the path is clear. One more forward step should bring me onto the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2426,\"completion_tokens\":103,\"total_tokens\":2529,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1914},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows the red circle on a dark rectangular panel directly ahead and very close, filling much of the lower view, with the floor visible in front of it.\", \"reasoning\": \"The red circle goal is directly ahead and appears immediately in front of me. My torso is rotated 30 degrees right, narrowing my presented width, and the path is clear. One more forward step should bring me onto the goal.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows the red circle on a dark rectangular panel directly ahead and very close, filling much of the lower view, with the floor visible in front of it.",
+      "reasoning": "The red circle goal is directly ahead and appears immediately in front of me. My torso is rotated 30 degrees right, narrowing my presented width, and the path is clear. One more forward step should bring me onto the goal.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

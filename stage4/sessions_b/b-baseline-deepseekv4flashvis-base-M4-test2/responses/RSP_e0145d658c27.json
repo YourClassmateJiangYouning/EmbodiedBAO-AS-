@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:22:30+08:00",
+    "latency_ms": 2761,
+    "payload_bytes": 328680,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"066c2ede-5507-4fb2-b752-828b3cc50b80\",\"object\":\"chat.completion\",\"created\":1794212549,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a narrow dark opening in the far wall, with the blue triangle visible inside the opening. Patterned walls flank the walkway on both sides.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead through a narrow opening. Before entering, I should check my body width with a downward glance to ensure I can fit through the gap, since turning is not possible once shoulders are inside.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.8}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1722,\"completion_tokens\":107,\"total_tokens\":1829,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":954},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a narrow dark opening in the far wall, with the blue triangle visible inside the opening. Patterned walls flank the walkway on both sides.\", \"reasoning\": \"The blue triangle is directly ahead through a narrow opening. Before entering, I should check my body width with a downward glance to ensure I can fit through the gap, since turning is not possible once shoulders are inside.\", \"action\": \"look_down\", \"confidence\": 0.8}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a narrow dark opening in the far wall, with the blue triangle visible inside the opening. Patterned walls flank the walkway on both sides.",
+      "reasoning": "The blue triangle is directly ahead through a narrow opening. Before entering, I should check my body width with a downward glance to ensure I can fit through the gap, since turning is not possible once shoulders are inside.",
+      "action": "look_down",
+      "confidence": 0.8
+    },
+    "action": "look_down"
+  }
+]

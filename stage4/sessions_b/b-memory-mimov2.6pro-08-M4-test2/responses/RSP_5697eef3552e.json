@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:58:21+08:00",
+    "latency_ms": 12298,
+    "payload_bytes": 383069,
+    "finish_reason": "stop",
+    "reasoning_tokens": 59,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"40c2a039-56e3-45e2-b73b-cb91e68ff6b7_2d1b24f3b7c3480ca60b7be75cb8b3f6\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted path leads straight ahead to a dark doorway on the far wall, with a small blue triangle visible at the threshold. Patterned walls flank the doorway, and lighter patterned flooring borders the carpet on both sides. The doorway is still some distance ahead.\\\", \\\"reasoning\\\": \\\"Following the previous successful traversal, I need to rotate my torso 90 degrees right so my thinner front-to-back dimension faces the opening when passing through. I'm at 15 degrees now, so I need 5 more turn_right actions. The doorway is still well ahead, leaving room to finish rotating before reaching it.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The previous successful traversal turned 90 degrees (6 turn_rights). Currently at 15 degrees. Need 5 more turn_right actions to reach 90 degrees. The image shows the doorway ahead with blue triangle, still far away (x=0.5). Continue turning.\"}}],\"created\":1794214701,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":207,\"prompt_tokens\":2765,\"total_tokens\":2972,\"completion_tokens_details\":{\"reasoning_tokens\":59},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted path leads straight ahead to a dark doorway on the far wall, with a small blue triangle visible at the threshold. Patterned walls flank the doorway, and lighter patterned flooring borders the carpet on both sides. The doorway is still some distance ahead.\", \"reasoning\": \"Following the previous successful traversal, I need to rotate my torso 90 degrees right so my thinner front-to-back dimension faces the opening when passing through. I'm at 15 degrees now, so I need 5 more turn_right actions. The doorway is still well ahead, leaving room to finish rotating before reaching it.\", \"action\": \"turn_right\", \"confidence\": 0.9}",
+    "reasoning_content": "The previous successful traversal turned 90 degrees (6 turn_rights). Currently at 15 degrees. Need 5 more turn_right actions to reach 90 degrees. The image shows the doorway ahead with blue triangle, still far away (x=0.5). Continue turning.",
+    "parsed": {
+      "scene_description": "A red carpeted path leads straight ahead to a dark doorway on the far wall, with a small blue triangle visible at the threshold. Patterned walls flank the doorway, and lighter patterned flooring borders the carpet on both sides. The doorway is still some distance ahead.",
+      "reasoning": "Following the previous successful traversal, I need to rotate my torso 90 degrees right so my thinner front-to-back dimension faces the opening when passing through. I'm at 15 degrees now, so I need 5 more turn_right actions. The doorway is still well ahead, leaving room to finish rotating before reaching it.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

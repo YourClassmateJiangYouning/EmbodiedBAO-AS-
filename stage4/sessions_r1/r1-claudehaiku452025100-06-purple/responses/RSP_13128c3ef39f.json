@@ -1,0 +1,47 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:20:31+08:00",
+    "latency_ms": 3295,
+    "payload_bytes": 257628,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T14:20:34+08:00",
+    "latency_ms": 3433,
+    "payload_bytes": 257628,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 3,
+    "started_at": "2026-11-09T14:20:37+08:00",
+    "latency_ms": 2249,
+    "payload_bytes": 257628,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  }
+]

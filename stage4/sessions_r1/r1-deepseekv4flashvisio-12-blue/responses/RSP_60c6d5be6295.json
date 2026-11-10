@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:01:56+08:00",
+    "latency_ms": 2673,
+    "payload_bytes": 274247,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a2c6243b-c83b-4bf9-83e2-75f544ba3fcf\",\"object\":\"chat.completion\",\"created\":1794207714,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading toward a narrow opening between two patterned walls, with a blue triangle visible on a dark surface just beyond the opening. The gap appears narrow relative to the robot's body.\\\", \\\"reasoning\\\": \\\"The blue triangle is straight ahead through a narrow doorway. Before advancing into the opening, I should check my body width with a downward glance to ensure I can fit through without getting stuck, since turning is impossible once shoulders are inside.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1901,\"completion_tokens\":114,\"total_tokens\":2015,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1133},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading toward a narrow opening between two patterned walls, with a blue triangle visible on a dark surface just beyond the opening. The gap appears narrow relative to the robot's body.\", \"reasoning\": \"The blue triangle is straight ahead through a narrow doorway. Before advancing into the opening, I should check my body width with a downward glance to ensure I can fit through without getting stuck, since turning is impossible once shoulders are inside.\", \"action\": \"look_down\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading toward a narrow opening between two patterned walls, with a blue triangle visible on a dark surface just beyond the opening. The gap appears narrow relative to the robot's body.",
+      "reasoning": "The blue triangle is straight ahead through a narrow doorway. Before advancing into the opening, I should check my body width with a downward glance to ensure I can fit through without getting stuck, since turning is impossible once shoulders are inside.",
+      "action": "look_down",
+      "confidence": 0.7
+    },
+    "action": "look_down"
+  }
+]

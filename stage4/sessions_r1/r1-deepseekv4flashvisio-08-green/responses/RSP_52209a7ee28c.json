@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:06:08+08:00",
+    "latency_ms": 2261,
+    "payload_bytes": 210305,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ec0c18b1-3960-48a8-ae7b-5eccdea12504\",\"object\":\"chat.completion\",\"created\":1794207967,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is visible ahead through a narrow opening between two walls, sitting on a raised platform beyond a dark red carpeted floor. The opening appears narrow, with walls close on both sides.\\\", \\\"reasoning\\\": \\\"The green target is straight ahead and the path appears clear, but the opening looks narrow. Since turning changes body width orientation and I cannot turn once shoulders are inside the opening, I should check my body width with look_down before entering to ensure I fit through without collision.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1988,\"completion_tokens\":119,\"total_tokens\":2107,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1220},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is visible ahead through a narrow opening between two walls, sitting on a raised platform beyond a dark red carpeted floor. The opening appears narrow, with walls close on both sides.\", \"reasoning\": \"The green target is straight ahead and the path appears clear, but the opening looks narrow. Since turning changes body width orientation and I cannot turn once shoulders are inside the opening, I should check my body width with look_down before entering to ensure I fit through without collision.\", \"action\": \"look_down\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is visible ahead through a narrow opening between two walls, sitting on a raised platform beyond a dark red carpeted floor. The opening appears narrow, with walls close on both sides.",
+      "reasoning": "The green target is straight ahead and the path appears clear, but the opening looks narrow. Since turning changes body width orientation and I cannot turn once shoulders are inside the opening, I should check my body width with look_down before entering to ensure I fit through without collision.",
+      "action": "look_down",
+      "confidence": 0.7
+    },
+    "action": "look_down"
+  }
+]

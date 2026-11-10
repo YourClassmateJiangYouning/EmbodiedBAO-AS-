@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:07:13+08:00",
+    "latency_ms": 6450,
+    "payload_bytes": 216006,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A dimly lit doorway ahead with a glowing yellow right-pointing arrow sign mounted low on the far wall. A red carpeted path leads directly to the opening; the left edge of the carpet is slightly lifted. Walls with patterned panels flank the doorway. There are no obstacles blocking the straight path to the arrow.\\\", \\\"reasoning\\\": \\\"My walking direction is straight toward the doorway and the yellow arrow on the far wall. Previous forward steps at the very end were blocked by the wall panel, indicating the wall is within one step. From the current position slightly back from the wall, one more forward step should bring me into contact range with the arrow panel, satisfying the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.69}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204430,\"id\":\"chatcmpl-EiCp4QIoPMXm9qagQbfF4fXq4zA54\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":164,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":12,\"engine_ttft_ms\":325,\"engine_ttlt_ms\":2262,\"pre_inference_ms\":423,\"service_tbt_ms\":12,\"service_ttft_ms\":1091,\"service_ttlt_ms\":3023,\"user_visible_ttft_ms\":668},\"prompt_tokens\":2407,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2571}}\n",
+    "content": "{\"scene_description\": \"A dimly lit doorway ahead with a glowing yellow right-pointing arrow sign mounted low on the far wall. A red carpeted path leads directly to the opening; the left edge of the carpet is slightly lifted. Walls with patterned panels flank the doorway. There are no obstacles blocking the straight path to the arrow.\", \"reasoning\": \"My walking direction is straight toward the doorway and the yellow arrow on the far wall. Previous forward steps at the very end were blocked by the wall panel, indicating the wall is within one step. From the current position slightly back from the wall, one more forward step should bring me into contact range with the arrow panel, satisfying the goal.\", \"action\": \"forward\", \"confidence\": 0.69}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A dimly lit doorway ahead with a glowing yellow right-pointing arrow sign mounted low on the far wall. A red carpeted path leads directly to the opening; the left edge of the carpet is slightly lifted. Walls with patterned panels flank the doorway. There are no obstacles blocking the straight path to the arrow.",
+      "reasoning": "My walking direction is straight toward the doorway and the yellow arrow on the far wall. Previous forward steps at the very end were blocked by the wall panel, indicating the wall is within one step. From the current position slightly back from the wall, one more forward step should bring me into contact range with the arrow panel, satisfying the goal.",
+      "action": "forward",
+      "confidence": 0.69
+    },
+    "action": "forward"
+  }
+]

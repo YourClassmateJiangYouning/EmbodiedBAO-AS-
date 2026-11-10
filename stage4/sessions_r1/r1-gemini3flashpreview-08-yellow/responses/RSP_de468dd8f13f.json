@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:26:48+08:00",
+    "latency_ms": 12471,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090426367663404818268d9d6j5yMSb9I\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794198408,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is very close to the yellow arrow on the far wall. The arrow is large and centered in the view, pointing to the right. The floor is dark, and the wall behind the arrow is also dark.\\\", \\\"reasoning\\\": \\\"I am at position x=7.25, which is very close to the target. I have successfully navigated through the narrow opening with my torso at a 90-degree rotation. I will move forward one more time to reach the yellow arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3139,\"completion_tokens\":121,\"total_tokens\":3260,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3139,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":121,\"totalTokenCount\":3260,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2050}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":121}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2050,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":121,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is very close to the yellow arrow on the far wall. The arrow is large and centered in the view, pointing to the right. The floor is dark, and the wall behind the arrow is also dark.\", \"reasoning\": \"I am at position x=7.25, which is very close to the target. I have successfully navigated through the narrow opening with my torso at a 90-degree rotation. I will move forward one more time to reach the yellow arrow.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is very close to the yellow arrow on the far wall. The arrow is large and centered in the view, pointing to the right. The floor is dark, and the wall behind the arrow is also dark.",
+      "reasoning": "I am at position x=7.25, which is very close to the target. I have successfully navigated through the narrow opening with my torso at a 90-degree rotation. I will move forward one more time to reach the yellow arrow.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

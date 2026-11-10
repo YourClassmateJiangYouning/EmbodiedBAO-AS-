@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:38:41+08:00",
+    "latency_ms": 7629,
+    "payload_bytes": 361646,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_ptlrl3pakrnnljq527uz4h2mxlcmklondkysmfcsnonlw6junbja\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794199121,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a walkway with a red carpet/floor stretching ahead. On the far wall, there is a bright green rectangle (the target) positioned in the center-upper area of the wall. The wall has tan/beige colored panels with purple geometric designs. To my left is a yellow floor area with purple markings. The green rectangle is clearly visible and appears to be my destination. My walking direction is straight ahead toward the far wall.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=1.250, having already taken one forward step. The green rectangle is visible straight ahead on the far wall. My torso is at 0 degrees rotation (aligned straight), and my walking direction is fixed toward the green rectangle. There are no obstacles blocking my path on the red carpet. I should continue moving forward to reach the green rectangle. The most direct path is to keep walking forward.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2416,\"completion_tokens\":222,\"total_tokens\":2638,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2416,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":222,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2416,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a walkway with a red carpet/floor stretching ahead. On the far wall, there is a bright green rectangle (the target) positioned in the center-upper area of the wall. The wall has tan/beige colored panels with purple geometric designs. To my left is a yellow floor area with purple markings. The green rectangle is clearly visible and appears to be my destination. My walking direction is straight ahead toward the far wall.\",\n  \"reasoning\": \"I am at position x=1.250, having already taken one forward step. The green rectangle is visible straight ahead on the far wall. My torso is at 0 degrees rotation (aligned straight), and my walking direction is fixed toward the green rectangle. There are no obstacles blocking my path on the red carpet. I should continue moving forward to reach the green rectangle. The most direct path is to keep walking forward.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a walkway with a red carpet/floor stretching ahead. On the far wall, there is a bright green rectangle (the target) positioned in the center-upper area of the wall. The wall has tan/beige colored panels with purple geometric designs. To my left is a yellow floor area with purple markings. The green rectangle is clearly visible and appears to be my destination. My walking direction is straight ahead toward the far wall.",
+      "reasoning": "I am at position x=1.250, having already taken one forward step. The green rectangle is visible straight ahead on the far wall. My torso is at 0 degrees rotation (aligned straight), and my walking direction is fixed toward the green rectangle. There are no obstacles blocking my path on the red carpet. I should continue moving forward to reach the green rectangle. The most direct path is to keep walking forward.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

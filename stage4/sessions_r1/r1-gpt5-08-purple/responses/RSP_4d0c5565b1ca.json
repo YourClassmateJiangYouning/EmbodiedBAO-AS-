@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:13:03+08:00",
+    "latency_ms": 11327,
+    "payload_bytes": 356328,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A long red carpeted path leads straight ahead toward a small rectangular opening in the far wall. Through the opening, the purple four-pointed star is visible glowing inside. The passage appears centered and clear, with patterned walls on both sides and no obstacles on the carpet.\\\", \\\"reasoning\\\": \\\"The star is directly ahead and the carpeted path to the doorway looks unobstructed. Continuing straight will bring me closer to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.73}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204780,\"id\":\"chatcmpl-EiCuix7JvEFJOzJIbgGGGHfw3Tj9i\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":115,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":526,\"engine_ttlt_ms\":1428,\"pre_inference_ms\":394,\"service_tbt_ms\":8,\"service_ttft_ms\":1037,\"service_ttlt_ms\":1934,\"user_visible_ttft_ms\":643},\"prompt_tokens\":1630,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1745}}\n",
+    "content": "{\"scene_description\": \"A long red carpeted path leads straight ahead toward a small rectangular opening in the far wall. Through the opening, the purple four-pointed star is visible glowing inside. The passage appears centered and clear, with patterned walls on both sides and no obstacles on the carpet.\", \"reasoning\": \"The star is directly ahead and the carpeted path to the doorway looks unobstructed. Continuing straight will bring me closer to the goal.\", \"action\": \"forward\", \"confidence\": 0.73}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpeted path leads straight ahead toward a small rectangular opening in the far wall. Through the opening, the purple four-pointed star is visible glowing inside. The passage appears centered and clear, with patterned walls on both sides and no obstacles on the carpet.",
+      "reasoning": "The star is directly ahead and the carpeted path to the doorway looks unobstructed. Continuing straight will bring me closer to the goal.",
+      "action": "forward",
+      "confidence": 0.73
+    },
+    "action": "forward"
+  }
+]

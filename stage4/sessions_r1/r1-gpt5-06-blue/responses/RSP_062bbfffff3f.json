@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:35:38+08:00",
+    "latency_ms": 7538,
+    "payload_bytes": 177406,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A large blue illuminated triangle is directly ahead on a wall panel at the end of the red carpet. The panel is very close, filling much of the forward view, indicating the robot is right at the wall.\\\", \\\"reasoning\\\": \\\"Repeated forward steps have been blocked by the wall panel, meaning I am already at the wall where the blue triangle is. A single backward step should create enough space so that one subsequent forward step can make contact without immediate block.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.66}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794206136,\"id\":\"chatcmpl-EiDGaZFuaEXkf2ytk1N3yyZF9sddC\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":121,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":11,\"engine_ttft_ms\":287,\"engine_ttlt_ms\":1574,\"pre_inference_ms\":340,\"service_tbt_ms\":11,\"service_ttft_ms\":826,\"service_ttlt_ms\":2109,\"user_visible_ttft_ms\":486},\"prompt_tokens\":2662,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2783}}\n",
+    "content": "{\"scene_description\": \"A large blue illuminated triangle is directly ahead on a wall panel at the end of the red carpet. The panel is very close, filling much of the forward view, indicating the robot is right at the wall.\", \"reasoning\": \"Repeated forward steps have been blocked by the wall panel, meaning I am already at the wall where the blue triangle is. A single backward step should create enough space so that one subsequent forward step can make contact without immediate block.\", \"action\": \"backward\", \"confidence\": 0.66}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A large blue illuminated triangle is directly ahead on a wall panel at the end of the red carpet. The panel is very close, filling much of the forward view, indicating the robot is right at the wall.",
+      "reasoning": "Repeated forward steps have been blocked by the wall panel, meaning I am already at the wall where the blue triangle is. A single backward step should create enough space so that one subsequent forward step can make contact without immediate block.",
+      "action": "backward",
+      "confidence": 0.66
+    },
+    "action": "backward"
+  }
+]

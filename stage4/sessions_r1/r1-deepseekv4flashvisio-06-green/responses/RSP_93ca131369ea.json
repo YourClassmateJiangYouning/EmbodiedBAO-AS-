@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:14:15+08:00",
+    "latency_ms": 2476,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"4f6063ba-a95b-43f0-88cb-9e567f199b23\",\"object\":\"chat.completion\",\"created\":1794208454,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is visible straight ahead, filling much of the view, with a narrow dark opening/doorway framing it. The floor in front is dark and the walls on either side are close.\\\", \\\"reasoning\\\": \\\"Forward was blocked at step 13, likely because the torso at 30 degrees right presented a wide diagonal profile to the narrow opening. I have turned left twice, bringing the torso back to 0 degrees, which should present the narrowest profile aligned with the opening. Now I should try moving forward again to pass through toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2506,\"completion_tokens\":133,\"total_tokens\":2639,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1866},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is visible straight ahead, filling much of the view, with a narrow dark opening/doorway framing it. The floor in front is dark and the walls on either side are close.\", \"reasoning\": \"Forward was blocked at step 13, likely because the torso at 30 degrees right presented a wide diagonal profile to the narrow opening. I have turned left twice, bringing the torso back to 0 degrees, which should present the narrowest profile aligned with the opening. Now I should try moving forward again to pass through toward the target.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is visible straight ahead, filling much of the view, with a narrow dark opening/doorway framing it. The floor in front is dark and the walls on either side are close.",
+      "reasoning": "Forward was blocked at step 13, likely because the torso at 30 degrees right presented a wide diagonal profile to the narrow opening. I have turned left twice, bringing the torso back to 0 degrees, which should present the narrowest profile aligned with the opening. Now I should try moving forward again to pass through toward the target.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

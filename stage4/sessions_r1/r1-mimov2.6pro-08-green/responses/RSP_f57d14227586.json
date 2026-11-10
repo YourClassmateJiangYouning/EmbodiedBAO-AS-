@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:25:35+08:00",
+    "latency_ms": 9910,
+    "payload_bytes": 311181,
+    "finish_reason": "stop",
+    "reasoning_tokens": 149,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"d480c72d-6e99-4d1f-bf85-fac411b0e882_5ef5cd6f01b446d4824ee5662625264d\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red-carpeted path leads straight ahead toward a dark narrow opening in a wall covered with abstract geometric graphics. Through the opening, the green rectangle is visible at floor level on the far wall, now appearing closer after several forward steps. The floor on the left is a lighter patterned surface. The view is centered directly on the opening and the green target.\\\",\\\"reasoning\\\": \\\"I have moved forward 4 steps (x=3.5) with torso rotation 0 degrees, presenting my narrowest profile toward the opening. The green rectangle is straight ahead and the path is clear. I should continue forward without turning, since turning would widen my body and is impossible once inside the opening.\\\",\\\"action\\\": \\\"forward\\\",\\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=3.5, forward moves 75cm (0.75m) per step. We need to reach the green rectangle on the far wall. We've taken 5 steps already (1 look_down + 4 forwards = 3m forward). Position x=3.5 suggests starting at 0.5 and 4 forwards = 3.5. The green rectangle appears fairly close now. Perhaps a few more forwards. The opening appears narrow-ish but centered. Continue forward.\\n\\nWe need scene description. The image shows red carpet path leading to an opening in a wall with abstract graphics, green rectangle visible inside the opening on the far wall. Continue forward.\\n\\nI'd say forward again.\"}}],\"created\":1794198335,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":310,\"prompt_tokens\":2235,\"total_tokens\":2545,\"completion_tokens_details\":{\"reasoning_tokens\":149},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red-carpeted path leads straight ahead toward a dark narrow opening in a wall covered with abstract geometric graphics. Through the opening, the green rectangle is visible at floor level on the far wall, now appearing closer after several forward steps. The floor on the left is a lighter patterned surface. The view is centered directly on the opening and the green target.\",\"reasoning\": \"I have moved forward 4 steps (x=3.5) with torso rotation 0 degrees, presenting my narrowest profile toward the opening. The green rectangle is straight ahead and the path is clear. I should continue forward without turning, since turning would widen my body and is impossible once inside the opening.\",\"action\": \"forward\",\"confidence\": 0.92}",
+    "reasoning_content": "We are at x=3.5, forward moves 75cm (0.75m) per step. We need to reach the green rectangle on the far wall. We've taken 5 steps already (1 look_down + 4 forwards = 3m forward). Position x=3.5 suggests starting at 0.5 and 4 forwards = 3.5. The green rectangle appears fairly close now. Perhaps a few more forwards. The opening appears narrow-ish but centered. Continue forward.\n\nWe need scene description. The image shows red carpet path leading to an opening in a wall with abstract graphics, green rectangle visible inside the opening on the far wall. Continue forward.\n\nI'd say forward again.",
+    "parsed": {
+      "scene_description": "A red-carpeted path leads straight ahead toward a dark narrow opening in a wall covered with abstract geometric graphics. Through the opening, the green rectangle is visible at floor level on the far wall, now appearing closer after several forward steps. The floor on the left is a lighter patterned surface. The view is centered directly on the opening and the green target.",
+      "reasoning": "I have moved forward 4 steps (x=3.5) with torso rotation 0 degrees, presenting my narrowest profile toward the opening. The green rectangle is straight ahead and the path is clear. I should continue forward without turning, since turning would widen my body and is impossible once inside the opening.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

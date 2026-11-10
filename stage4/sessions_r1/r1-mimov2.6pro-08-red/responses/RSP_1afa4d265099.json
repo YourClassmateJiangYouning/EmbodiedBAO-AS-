@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:35:54+08:00",
+    "latency_ms": 7879,
+    "payload_bytes": 354416,
+    "finish_reason": "stop",
+    "reasoning_tokens": 108,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f07c765e-ddab-4358-a3d1-aa3d92810683_228d9c997ef443af8fa0e6d96a444bc8\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpet stretching ahead to a dark doorway in a decorated wall; a small red circle (the target) is visible through the doorway at floor level. Patterned floor tiles on the left side. The doorway appears relatively narrow.\\\", \\\"reasoning\\\": \\\"The doorway at the far end looks narrow, and I cannot judge my body width from the forward view. Before I get close enough that my shoulders are inside the opening (where turning becomes impossible), I should glance down to measure my width and thickness, so I can orient my torso appropriately to fit through.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.7}</parameter\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red circle is visible through a doorway at the far end. The doorway looks narrow. I should check my body width before entering. Let me do look_down to see my width, then decide whether to turn torso before passing through.\\n\\nPosition is x=2.0, started presumably at x=0 or so? 2 steps forward of 75cm = 1.5m... but x is 2.0. Maybe started at 0.5. Anyway.\\n\\nLet me look_down to check width first.\"}}],\"created\":1794198954,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":244,\"prompt_tokens\":2069,\"total_tokens\":2313,\"completion_tokens_details\":{\"reasoning_tokens\":108},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpet stretching ahead to a dark doorway in a decorated wall; a small red circle (the target) is visible through the doorway at floor level. Patterned floor tiles on the left side. The doorway appears relatively narrow.\", \"reasoning\": \"The doorway at the far end looks narrow, and I cannot judge my body width from the forward view. Before I get close enough that my shoulders are inside the opening (where turning becomes impossible), I should glance down to measure my width and thickness, so I can orient my torso appropriately to fit through.\", \"action\": \"look_down\", \"confidence\": 0.7}</parameter",
+    "reasoning_content": "The red circle is visible through a doorway at the far end. The doorway looks narrow. I should check my body width before entering. Let me do look_down to see my width, then decide whether to turn torso before passing through.\n\nPosition is x=2.0, started presumably at x=0 or so? 2 steps forward of 75cm = 1.5m... but x is 2.0. Maybe started at 0.5. Anyway.\n\nLet me look_down to check width first.",
+    "parsed": {
+      "scene_description": "Red carpet stretching ahead to a dark doorway in a decorated wall; a small red circle (the target) is visible through the doorway at floor level. Patterned floor tiles on the left side. The doorway appears relatively narrow.",
+      "reasoning": "The doorway at the far end looks narrow, and I cannot judge my body width from the forward view. Before I get close enough that my shoulders are inside the opening (where turning becomes impossible), I should glance down to measure my width and thickness, so I can orient my torso appropriately to fit through.",
+      "action": "look_down",
+      "confidence": 0.7
+    },
+    "action": "look_down"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:21:55+08:00",
+    "latency_ms": 2387,
+    "payload_bytes": 396561,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"8249a250-f026-45b4-9e87-2d4fe82d3481\",\"object\":\"chat.completion\",\"created\":1794212514,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A long red carpet stretches straight ahead toward a small red circle on a dark panel at the far wall, flanked by patterned wall panels and white floor markings.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the fixed walking direction and the carpeted path is clear, so continuing forward advances toward the goal, consistent with the prior successful traversal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2819,\"completion_tokens\":90,\"total_tokens\":2909,\"prompt_tokens_details\":{\"cached_tokens\":1664},\"prompt_cache_hit_tokens\":1664,\"prompt_cache_miss_tokens\":1155},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A long red carpet stretches straight ahead toward a small red circle on a dark panel at the far wall, flanked by patterned wall panels and white floor markings.\", \"reasoning\": \"The red circle is directly ahead along the fixed walking direction and the carpeted path is clear, so continuing forward advances toward the goal, consistent with the prior successful traversal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpet stretches straight ahead toward a small red circle on a dark panel at the far wall, flanked by patterned wall panels and white floor markings.",
+      "reasoning": "The red circle is directly ahead along the fixed walking direction and the carpeted path is clear, so continuing forward advances toward the goal, consistent with the prior successful traversal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

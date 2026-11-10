@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:23:19+08:00",
+    "latency_ms": 6818,
+    "payload_bytes": 362235,
+    "finish_reason": "stop",
+    "reasoning_tokens": 107,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"807630d7-d1fa-451e-a183-6a478d078f6e_891fa4be1ccb4ae4af53c49dbfd3ad3b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet stretches ahead toward a wall with colorful geometric patterns. There is an opening/doorway in the wall ahead, and a yellow arrow points to the right at the base of that opening. The floor to the left has a light-colored tiled pattern. The path straight ahead along the red carpet is clear.\\\", \\\"reasoning\\\": \\\"The yellow arrow is visible straight ahead through the opening in the wall. The red carpet leads directly toward it and the path is clear. I need to continue moving forward to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me analyze the current situation. I'm a small wheeled robot trying to reach a yellow arrow on a far wall. The current position is at x=1.250 after one forward step. The yellow arrow appears to be straight ahead through/near an opening in the wall ahead. The red carpet leads directly toward it. The path is clear.\\n\\nI should continue moving forward toward the arrow. The opening ahead looks like it might be narrow, but I'm still approaching it. Let me just keep going forward.\"}}],\"created\":1794208998,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":235,\"prompt_tokens\":1994,\"total_tokens\":2229,\"completion_tokens_details\":{\"reasoning_tokens\":107},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet stretches ahead toward a wall with colorful geometric patterns. There is an opening/doorway in the wall ahead, and a yellow arrow points to the right at the base of that opening. The floor to the left has a light-colored tiled pattern. The path straight ahead along the red carpet is clear.\", \"reasoning\": \"The yellow arrow is visible straight ahead through the opening in the wall. The red carpet leads directly toward it and the path is clear. I need to continue moving forward to reach it.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "Let me analyze the current situation. I'm a small wheeled robot trying to reach a yellow arrow on a far wall. The current position is at x=1.250 after one forward step. The yellow arrow appears to be straight ahead through/near an opening in the wall ahead. The red carpet leads directly toward it. The path is clear.\n\nI should continue moving forward toward the arrow. The opening ahead looks like it might be narrow, but I'm still approaching it. Let me just keep going forward.",
+    "parsed": {
+      "scene_description": "A red carpet stretches ahead toward a wall with colorful geometric patterns. There is an opening/doorway in the wall ahead, and a yellow arrow points to the right at the base of that opening. The floor to the left has a light-colored tiled pattern. The path straight ahead along the red carpet is clear.",
+      "reasoning": "The yellow arrow is visible straight ahead through the opening in the wall. The red carpet leads directly toward it and the path is clear. I need to continue moving forward to reach it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:36:32+08:00",
+    "latency_ms": 8154,
+    "payload_bytes": 232670,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A dimly lit corridor with a red carpet leads straight ahead to a doorway/opening. At the base of the far wall/opening, slightly recessed and centered ahead, there is a glowing blue triangle on a small dark panel on the floor. The carpet edges curl slightly near the opening, but there are no obstacles blocking the path directly forward.\\\",\\\"reasoning\\\":\\\"The blue triangle target is directly ahead within one short step distance. Previous forward attempts were blocked because I was already at the wall; I backed up on the last step to create space. With one step remaining and clear line, a single forward move should reach/contact the triangle.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.71}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794206189,\"id\":\"chatcmpl-EiDHRIxynSGDKzskOosA7kW5BFydN\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":150,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":11,\"engine_ttft_ms\":506,\"engine_ttlt_ms\":2224,\"pre_inference_ms\":435,\"service_tbt_ms\":11,\"service_ttft_ms\":1172,\"service_ttlt_ms\":2884,\"user_visible_ttft_ms\":736},\"prompt_tokens\":3058,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":3208}}\n",
+    "content": "{\"scene_description\":\"A dimly lit corridor with a red carpet leads straight ahead to a doorway/opening. At the base of the far wall/opening, slightly recessed and centered ahead, there is a glowing blue triangle on a small dark panel on the floor. The carpet edges curl slightly near the opening, but there are no obstacles blocking the path directly forward.\",\"reasoning\":\"The blue triangle target is directly ahead within one short step distance. Previous forward attempts were blocked because I was already at the wall; I backed up on the last step to create space. With one step remaining and clear line, a single forward move should reach/contact the triangle.\",\"action\":\"forward\",\"confidence\":0.71}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A dimly lit corridor with a red carpet leads straight ahead to a doorway/opening. At the base of the far wall/opening, slightly recessed and centered ahead, there is a glowing blue triangle on a small dark panel on the floor. The carpet edges curl slightly near the opening, but there are no obstacles blocking the path directly forward.",
+      "reasoning": "The blue triangle target is directly ahead within one short step distance. Previous forward attempts were blocked because I was already at the wall; I backed up on the last step to create space. With one step remaining and clear line, a single forward move should reach/contact the triangle.",
+      "action": "forward",
+      "confidence": 0.71
+    },
+    "action": "forward"
+  }
+]

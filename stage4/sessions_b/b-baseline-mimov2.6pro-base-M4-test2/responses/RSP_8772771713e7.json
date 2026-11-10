@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:52:51+08:00",
+    "latency_ms": 10954,
+    "payload_bytes": 328680,
+    "finish_reason": "stop",
+    "reasoning_tokens": 102,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"b09344fe-5156-4707-b537-d6a136730d9c_485f894915be49b38b8cc8015025b123\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet leads straight ahead toward a dark opening between two decorated walls. The blue triangle is visible centered in the opening at the far wall. The path is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead through the narrow opening. My torso remains at 0 degrees rotation, presenting the narrowest profile, which is ideal for passing through the opening. The path is clear along the red carpet, so I should continue moving forward without turning.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The scene shows a red carpet leading toward a dark opening/doorway with a blue triangle visible. I need to keep moving forward. The previous reasoning mentioned the opening is narrow and I should keep torso at 0 degrees. Current position x=2.750, I've done 3 forwards (0.75*3 = 2.25, plus initial 0.5 = 2.75). The blue triangle appears close but through the opening. Continue forward.\"}}],\"created\":1794214371,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":222,\"prompt_tokens\":2179,\"total_tokens\":2401,\"completion_tokens_details\":{\"reasoning_tokens\":102},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet leads straight ahead toward a dark opening between two decorated walls. The blue triangle is visible centered in the opening at the far wall. The path is clear and unobstructed.\", \"reasoning\": \"The blue triangle is directly ahead through the narrow opening. My torso remains at 0 degrees rotation, presenting the narrowest profile, which is ideal for passing through the opening. The path is clear along the red carpet, so I should continue moving forward without turning.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "The scene shows a red carpet leading toward a dark opening/doorway with a blue triangle visible. I need to keep moving forward. The previous reasoning mentioned the opening is narrow and I should keep torso at 0 degrees. Current position x=2.750, I've done 3 forwards (0.75*3 = 2.25, plus initial 0.5 = 2.75). The blue triangle appears close but through the opening. Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpet leads straight ahead toward a dark opening between two decorated walls. The blue triangle is visible centered in the opening at the far wall. The path is clear and unobstructed.",
+      "reasoning": "The blue triangle is directly ahead through the narrow opening. My torso remains at 0 degrees rotation, presenting the narrowest profile, which is ideal for passing through the opening. The path is clear along the red carpet, so I should continue moving forward without turning.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

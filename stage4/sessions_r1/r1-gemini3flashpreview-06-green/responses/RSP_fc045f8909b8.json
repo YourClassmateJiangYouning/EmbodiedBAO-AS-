@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:51:26+08:00",
+    "latency_ms": 7180,
+    "payload_bytes": 382550,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081051201454831258268d9d6IyiyTXy9\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135086,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The image shows a long red carpeted walkway leading toward a far wall with a narrow vertical opening. Inside that opening, a bright green rectangle is visible. To the left of the red carpet is a patterned floor with purple and white geometric shapes.\\\",\\n  \\\"reasoning\\\": \\\"I am at the start of the walkway (x=0.5). The goal is the green rectangle at the end. Before moving forward, I need to understand my body's dimensions (width and thickness) relative to the narrow opening ahead to ensure I can pass through. Looking down will provide this information.\\\",\\n  \\\"action\\\": \\\"look_down\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1974,\"completion_tokens\":149,\"total_tokens\":2123,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":1974,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":149,\"totalTokenCount\":2123,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":885}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":149}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":885,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":149,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The image shows a long red carpeted walkway leading toward a far wall with a narrow vertical opening. Inside that opening, a bright green rectangle is visible. To the left of the red carpet is a patterned floor with purple and white geometric shapes.\",\n  \"reasoning\": \"I am at the start of the walkway (x=0.5). The goal is the green rectangle at the end. Before moving forward, I need to understand my body's dimensions (width and thickness) relative to the narrow opening ahead to ensure I can pass through. Looking down will provide this information.\",\n  \"action\": \"look_down\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The image shows a long red carpeted walkway leading toward a far wall with a narrow vertical opening. Inside that opening, a bright green rectangle is visible. To the left of the red carpet is a patterned floor with purple and white geometric shapes.",
+      "reasoning": "I am at the start of the walkway (x=0.5). The goal is the green rectangle at the end. Before moving forward, I need to understand my body's dimensions (width and thickness) relative to the narrow opening ahead to ensure I can pass through. Looking down will provide this information.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

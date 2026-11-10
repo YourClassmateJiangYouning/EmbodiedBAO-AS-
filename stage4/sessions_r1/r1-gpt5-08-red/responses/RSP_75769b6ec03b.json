@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:39:34+08:00",
+    "latency_ms": 6674,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"Downward view of the robot’s front: two wide wheels on a red carpet, a white bumper or shelf-like overhang at the front, and cables/electronics visible. No doorway or opening is visible; the immediate floor ahead is clear carpet.\\\",\\\"reasoning\\\":\\\"The last two forward steps were blocked by the wall panel; looking down confirms my body’s front bumper is right at the boundary. To reach the red circle on the wall, I need to adjust my body orientation so my presented width is slimmer if an opening exists, but turning requires space outside the opening and doesn’t change my walking direction. Since forward is blocked, the safe next move is to back up to gain space for potential turning or another approach.\\\",\\\"action\\\":\\\"backward\\\",\\\"confidence\\\":0.63}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794199171,\"id\":\"chatcmpl-EiBSFVNwDiRVh1XbVS2cFB0oYMKhb\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":169,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":11,\"engine_ttft_ms\":332,\"engine_ttlt_ms\":2262,\"pre_inference_ms\":373,\"service_tbt_ms\":11,\"service_ttft_ms\":1033,\"service_ttlt_ms\":2960,\"user_visible_ttft_ms\":660},\"prompt_tokens\":2064,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2233}}\n",
+    "content": "{\"scene_description\":\"Downward view of the robot’s front: two wide wheels on a red carpet, a white bumper or shelf-like overhang at the front, and cables/electronics visible. No doorway or opening is visible; the immediate floor ahead is clear carpet.\",\"reasoning\":\"The last two forward steps were blocked by the wall panel; looking down confirms my body’s front bumper is right at the boundary. To reach the red circle on the wall, I need to adjust my body orientation so my presented width is slimmer if an opening exists, but turning requires space outside the opening and doesn’t change my walking direction. Since forward is blocked, the safe next move is to back up to gain space for potential turning or another approach.\",\"action\":\"backward\",\"confidence\":0.63}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "Downward view of the robot’s front: two wide wheels on a red carpet, a white bumper or shelf-like overhang at the front, and cables/electronics visible. No doorway or opening is visible; the immediate floor ahead is clear carpet.",
+      "reasoning": "The last two forward steps were blocked by the wall panel; looking down confirms my body’s front bumper is right at the boundary. To reach the red circle on the wall, I need to adjust my body orientation so my presented width is slimmer if an opening exists, but turning requires space outside the opening and doesn’t change my walking direction. Since forward is blocked, the safe next move is to back up to gain space for potential turning or another approach.",
+      "action": "backward",
+      "confidence": 0.63
+    },
+    "action": "backward"
+  }
+]

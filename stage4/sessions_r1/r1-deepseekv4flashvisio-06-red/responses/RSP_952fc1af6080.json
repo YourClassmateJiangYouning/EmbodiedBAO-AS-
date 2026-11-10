@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:16:05+08:00",
+    "latency_ms": 2759,
+    "payload_bytes": 186978,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"88c2ff8d-c7a6-4aef-a8ba-8f4b2429a185\",\"object\":\"chat.completion\",\"created\":1794208564,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle glows on a dark panel directly ahead, mounted on the far wall above the floor. The carpeted walkway leads up to it, with a narrow opening framed by walls on either side.\\\", \\\"reasoning\\\": \\\"The previous forward step after turning 75 degrees succeeded, meaning the narrower profile now fits through the opening. The red circle is directly ahead along the fixed walking direction, so continuing forward should bring the robot to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.8}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2692,\"completion_tokens\":110,\"total_tokens\":2802,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2052},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle glows on a dark panel directly ahead, mounted on the far wall above the floor. The carpeted walkway leads up to it, with a narrow opening framed by walls on either side.\", \"reasoning\": \"The previous forward step after turning 75 degrees succeeded, meaning the narrower profile now fits through the opening. The red circle is directly ahead along the fixed walking direction, so continuing forward should bring the robot to the goal.\", \"action\": \"forward\", \"confidence\": 0.8}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle glows on a dark panel directly ahead, mounted on the far wall above the floor. The carpeted walkway leads up to it, with a narrow opening framed by walls on either side.",
+      "reasoning": "The previous forward step after turning 75 degrees succeeded, meaning the narrower profile now fits through the opening. The red circle is directly ahead along the fixed walking direction, so continuing forward should bring the robot to the goal.",
+      "action": "forward",
+      "confidence": 0.8
+    },
+    "action": "forward"
+  }
+]

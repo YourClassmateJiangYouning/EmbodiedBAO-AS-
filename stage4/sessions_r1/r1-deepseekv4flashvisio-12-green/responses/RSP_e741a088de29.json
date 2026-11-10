@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:00:07+08:00",
+    "latency_ms": 2687,
+    "payload_bytes": 279948,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"404c3d20-fb85-4614-84d2-7a84298b4b13\",\"object\":\"chat.completion\",\"created\":1794207606,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle target is directly ahead, appearing close and centered on the floor just beyond a red carpet edge. The path is clear with no visible obstacles between the robot and the target.\\\", \\\"reasoning\\\": \\\"The target is directly ahead and appears very close. Continuing forward should bring the robot onto the green rectangle, completing the task. Plenty of steps remain.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2168,\"completion_tokens\":92,\"total_tokens\":2260,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1400},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green rectangle target is directly ahead, appearing close and centered on the floor just beyond a red carpet edge. The path is clear with no visible obstacles between the robot and the target.\", \"reasoning\": \"The target is directly ahead and appears very close. Continuing forward should bring the robot onto the green rectangle, completing the task. Plenty of steps remain.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green rectangle target is directly ahead, appearing close and centered on the floor just beyond a red carpet edge. The path is clear with no visible obstacles between the robot and the target.",
+      "reasoning": "The target is directly ahead and appears very close. Continuing forward should bring the robot onto the green rectangle, completing the task. Plenty of steps remain.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

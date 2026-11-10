@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:13:15+08:00",
+    "latency_ms": 12580,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081013082308413698268d9d6J5qTD7D6\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794132794,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper at the front, which is significantly wider than the main chassis. Two large black wheels are visible on either side of the chassis, tucked slightly behind the bumper's width. The torso rotation is currently 0.0 degrees, meaning the wide bumper is perpendicular to the walking direction.\\\",\\n  \\\"reasoning\\\": \\\"Looking down reveals that my body is very wide due to the white bumper. At 0 degrees rotation, I present my maximum width to the path ahead. To fit through any narrow openings I might encounter while moving toward the green rectangle, I will likely need to rotate my torso to reduce my effective width. I will start by rotating to the right to see how the profile changes.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2088,\"completion_tokens\":196,\"total_tokens\":2284,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2088,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":196,\"totalTokenCount\":2284,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":999},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":196}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":999,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":196,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper at the front, which is significantly wider than the main chassis. Two large black wheels are visible on either side of the chassis, tucked slightly behind the bumper's width. The torso rotation is currently 0.0 degrees, meaning the wide bumper is perpendicular to the walking direction.\",\n  \"reasoning\": \"Looking down reveals that my body is very wide due to the white bumper. At 0 degrees rotation, I present my maximum width to the path ahead. To fit through any narrow openings I might encounter while moving toward the green rectangle, I will likely need to rotate my torso to reduce my effective width. I will start by rotating to the right to see how the profile changes.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper at the front, which is significantly wider than the main chassis. Two large black wheels are visible on either side of the chassis, tucked slightly behind the bumper's width. The torso rotation is currently 0.0 degrees, meaning the wide bumper is perpendicular to the walking direction.",
+      "reasoning": "Looking down reveals that my body is very wide due to the white bumper. At 0 degrees rotation, I present my maximum width to the path ahead. To fit through any narrow openings I might encounter while moving toward the green rectangle, I will likely need to rotate my torso to reduce my effective width. I will start by rotating to the right to see how the profile changes.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

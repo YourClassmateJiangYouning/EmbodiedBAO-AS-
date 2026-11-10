@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:17:10+08:00",
+    "latency_ms": 2761,
+    "payload_bytes": 173192,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ebd0adf3-1452-48e0-bb18-1d9ac8eaa837\",\"object\":\"chat.completion\",\"created\":1794208628,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is directly ahead, mounted on a low panel at body height, very close to the camera. The panel blocks direct forward motion.\\\", \\\"reasoning\\\": \\\"Forward steps are blocked by the low wall_panel holding the arrow. Turning only changes torso width orientation, not walking direction, so it cannot steer around the obstacle. The arrow is the goal and is very close; the panel is low, so continuing forward is the only way to reach it, though it has been blocked twice. I'll try forward once more since the goal is essentially at the sign.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.3}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2440,\"completion_tokens\":135,\"total_tokens\":2575,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1672},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is directly ahead, mounted on a low panel at body height, very close to the camera. The panel blocks direct forward motion.\", \"reasoning\": \"Forward steps are blocked by the low wall_panel holding the arrow. Turning only changes torso width orientation, not walking direction, so it cannot steer around the obstacle. The arrow is the goal and is very close; the panel is low, so continuing forward is the only way to reach it, though it has been blocked twice. I'll try forward once more since the goal is essentially at the sign.\", \"action\": \"forward\", \"confidence\": 0.3}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is directly ahead, mounted on a low panel at body height, very close to the camera. The panel blocks direct forward motion.",
+      "reasoning": "Forward steps are blocked by the low wall_panel holding the arrow. Turning only changes torso width orientation, not walking direction, so it cannot steer around the obstacle. The arrow is the goal and is very close; the panel is low, so continuing forward is the only way to reach it, though it has been blocked twice. I'll try forward once more since the goal is essentially at the sign.",
+      "action": "forward",
+      "confidence": 0.3
+    },
+    "action": "forward"
+  }
+]

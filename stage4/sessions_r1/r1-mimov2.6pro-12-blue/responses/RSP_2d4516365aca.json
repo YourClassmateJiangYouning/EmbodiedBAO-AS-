@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:24:06+08:00",
+    "latency_ms": 6800,
+    "payload_bytes": 339401,
+    "finish_reason": "stop",
+    "reasoning_tokens": 9,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"59b92b7f-ab97-4c92-bb7e-fe3c367fe7aa_47d3e570365d4c80bcd2786cd7de2c41\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a dark doorway in the far wall, where a blue triangle sits centered in the opening. Decorated wall panels with zigzag patterns flank the doorway. Papers lie along the edges of the carpet on both sides. The path ahead is completely clear.\\\", \\\"reasoning\\\": \\\"The path remains completely clear straight toward the blue triangle at the far wall opening. I've moved forward three times already and should continue advancing until I reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear, continue forward.\"}}],\"created\":1794137046,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":129,\"prompt_tokens\":2085,\"total_tokens\":2214,\"completion_tokens_details\":{\"reasoning_tokens\":9},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a dark doorway in the far wall, where a blue triangle sits centered in the opening. Decorated wall panels with zigzag patterns flank the doorway. Papers lie along the edges of the carpet on both sides. The path ahead is completely clear.\", \"reasoning\": \"The path remains completely clear straight toward the blue triangle at the far wall opening. I've moved forward three times already and should continue advancing until I reach the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear, continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a dark doorway in the far wall, where a blue triangle sits centered in the opening. Decorated wall panels with zigzag patterns flank the doorway. Papers lie along the edges of the carpet on both sides. The path ahead is completely clear.",
+      "reasoning": "The path remains completely clear straight toward the blue triangle at the far wall opening. I've moved forward three times already and should continue advancing until I reach the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

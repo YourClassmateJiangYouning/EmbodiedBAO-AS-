@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:21:42+08:00",
+    "latency_ms": 6592,
+    "payload_bytes": 411773,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090821369960009038268d9d64lAnkAgr\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212502,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The image shows a long red carpet walkway leading towards a green rectangle on a far wall. There are white rectangular markers on the floor to the left and right of the carpet. At the end of the carpet, there is a narrow opening between two patterned walls. The green rectangle is visible through this opening.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso by 15 degrees to the right (from 30 to 15). To present the narrowest profile (90 degrees relative to the walking direction), I need to continue rotating. I will turn right again to reach 0 degrees, and then continue until I am sideways. I am still far from the opening, so I can safely rotate while moving forward.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2207,\"completion_tokens\":180,\"total_tokens\":2387,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2207,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":180,\"totalTokenCount\":2387,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1118},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":180}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1118,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":180,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The image shows a long red carpet walkway leading towards a green rectangle on a far wall. There are white rectangular markers on the floor to the left and right of the carpet. At the end of the carpet, there is a narrow opening between two patterned walls. The green rectangle is visible through this opening.\",\n  \"reasoning\": \"I have already rotated my torso by 15 degrees to the right (from 30 to 15). To present the narrowest profile (90 degrees relative to the walking direction), I need to continue rotating. I will turn right again to reach 0 degrees, and then continue until I am sideways. I am still far from the opening, so I can safely rotate while moving forward.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The image shows a long red carpet walkway leading towards a green rectangle on a far wall. There are white rectangular markers on the floor to the left and right of the carpet. At the end of the carpet, there is a narrow opening between two patterned walls. The green rectangle is visible through this opening.",
+      "reasoning": "I have already rotated my torso by 15 degrees to the right (from 30 to 15). To present the narrowest profile (90 degrees relative to the walking direction), I need to continue rotating. I will turn right again to reach 0 degrees, and then continue until I am sideways. I am still far from the opening, so I can safely rotate while moving forward.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

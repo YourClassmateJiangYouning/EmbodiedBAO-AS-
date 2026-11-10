@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:23:52+08:00",
+    "latency_ms": 5935,
+    "payload_bytes": 376886,
+    "finish_reason": "stop",
+    "reasoning_tokens": 19,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"163621e0-a33b-494a-94fb-659e1606022a_a7f70951439d4b94b1bacab074adb386\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a far wall with colorful geometric patterns. A blue triangle marker sits at the far end near what appears to be an opening between panels. The carpet is clear of obstacles in the direct path ahead.\\\", \\\"reasoning\\\": \\\"The path ahead is clear and straight toward the blue triangle. No obstacles are present, so continuing forward is the correct action.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear on a red carpet toward the blue triangle. Just keep moving forward.\"}}],\"created\":1794137031,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":120,\"prompt_tokens\":1992,\"total_tokens\":2112,\"completion_tokens_details\":{\"reasoning_tokens\":19},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a far wall with colorful geometric patterns. A blue triangle marker sits at the far end near what appears to be an opening between panels. The carpet is clear of obstacles in the direct path ahead.\", \"reasoning\": \"The path ahead is clear and straight toward the blue triangle. No obstacles are present, so continuing forward is the correct action.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear on a red carpet toward the blue triangle. Just keep moving forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a far wall with colorful geometric patterns. A blue triangle marker sits at the far end near what appears to be an opening between panels. The carpet is clear of obstacles in the direct path ahead.",
+      "reasoning": "The path ahead is clear and straight toward the blue triangle. No obstacles are present, so continuing forward is the correct action.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

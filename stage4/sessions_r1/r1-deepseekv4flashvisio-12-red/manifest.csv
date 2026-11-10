@@ -1,0 +1,2 @@
+episode_id,mode,model,scene,marker,a_s,channel_width_m,memory_id,started_at,finished_at,passed,total_steps,end_reason,invalid_count
+S4E_22bfad011717,A,deepseek-v4-flash-vision-exp,R1,M2,1.2,0.684,,2026-11-09T15:00:11+08:00,2026-11-09T15:01:04+08:00,True,15,passed,0

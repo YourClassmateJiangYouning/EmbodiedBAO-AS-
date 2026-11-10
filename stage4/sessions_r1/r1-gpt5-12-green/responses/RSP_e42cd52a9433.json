@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:18:56+08:00",
+    "latency_ms": 7999,
+    "payload_bytes": 344277,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A straight carpeted corridor leads toward a wall with a rectangular doorway/opening at center. Beyond the opening, a bright green rectangle (the goal) sits low against the far wall and is clearly visible. The central path appears unobstructed and wide enough for passage.\\\",\\\"reasoning\\\":\\\"The goal is straight ahead through the opening, and the path looks clear and centered. Advancing forward keeps efficient progress toward the green rectangle without needing to adjust torso orientation.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.79}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794197934,\"id\":\"chatcmpl-EiB8IvS4gi5qNVBaApJ8bipwQDQix\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":114,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":401,\"engine_ttlt_ms\":1307,\"pre_inference_ms\":351,\"service_tbt_ms\":8,\"service_ttft_ms\":936,\"service_ttlt_ms\":1820,\"user_visible_ttft_ms\":585},\"prompt_tokens\":1648,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1762}}\n",
+    "content": "{\"scene_description\":\"A straight carpeted corridor leads toward a wall with a rectangular doorway/opening at center. Beyond the opening, a bright green rectangle (the goal) sits low against the far wall and is clearly visible. The central path appears unobstructed and wide enough for passage.\",\"reasoning\":\"The goal is straight ahead through the opening, and the path looks clear and centered. Advancing forward keeps efficient progress toward the green rectangle without needing to adjust torso orientation.\",\"action\":\"forward\",\"confidence\":0.79}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight carpeted corridor leads toward a wall with a rectangular doorway/opening at center. Beyond the opening, a bright green rectangle (the goal) sits low against the far wall and is clearly visible. The central path appears unobstructed and wide enough for passage.",
+      "reasoning": "The goal is straight ahead through the opening, and the path looks clear and centered. Advancing forward keeps efficient progress toward the green rectangle without needing to adjust torso orientation.",
+      "action": "forward",
+      "confidence": 0.79
+    },
+    "action": "forward"
+  }
+]

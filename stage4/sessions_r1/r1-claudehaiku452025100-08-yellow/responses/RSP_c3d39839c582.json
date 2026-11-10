@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:29:58+08:00",
+    "latency_ms": 7351,
+    "payload_bytes": 216006,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_sqwc7axajio46w6aicxublndcrk42dqtxqfvzggkb32fudffek4q\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198598,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the yellow arrow target clearly visible on the far wall, centered in my view. The arrow is pointing to the right. I'm currently in a dark area with wall panels visible on both sides. The yellow arrow appears to be on a dark panel/wall ahead of me. The environment shows colored panels (purple, orange, tan) on the sides.\\\",\\n  \\\"reasoning\\\": \\\"I've been stuck at x=7.250 for many steps, blocked by a wall_panel obstacle. My torso is currently rotated 90 degrees to the right. I took a backward step on step 19 to try to back away from the obstacle. Now I need to reassess my approach. Since my walking direction is fixed toward the yellow arrow and I've been blocked going forward, I should try turning my torso to reorient and find a clear path. Let me turn left to reduce my torso rotation and attempt to navigate around the obstacle differently.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 0.4\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3844,\"completion_tokens\":238,\"total_tokens\":4082,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3844,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":238,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3844,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the yellow arrow target clearly visible on the far wall, centered in my view. The arrow is pointing to the right. I'm currently in a dark area with wall panels visible on both sides. The yellow arrow appears to be on a dark panel/wall ahead of me. The environment shows colored panels (purple, orange, tan) on the sides.\",\n  \"reasoning\": \"I've been stuck at x=7.250 for many steps, blocked by a wall_panel obstacle. My torso is currently rotated 90 degrees to the right. I took a backward step on step 19 to try to back away from the obstacle. Now I need to reassess my approach. Since my walking direction is fixed toward the yellow arrow and I've been blocked going forward, I should try turning my torso to reorient and find a clear path. Let me turn left to reduce my torso rotation and attempt to navigate around the obstacle differently.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 0.4\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the yellow arrow target clearly visible on the far wall, centered in my view. The arrow is pointing to the right. I'm currently in a dark area with wall panels visible on both sides. The yellow arrow appears to be on a dark panel/wall ahead of me. The environment shows colored panels (purple, orange, tan) on the sides.",
+      "reasoning": "I've been stuck at x=7.250 for many steps, blocked by a wall_panel obstacle. My torso is currently rotated 90 degrees to the right. I took a backward step on step 19 to try to back away from the obstacle. Now I need to reassess my approach. Since my walking direction is fixed toward the yellow arrow and I've been blocked going forward, I should try turning my torso to reorient and find a clear path. Let me turn left to reduce my torso rotation and attempt to navigate around the obstacle differently.",
+      "action": "turn_left",
+      "confidence": 0.4
+    },
+    "action": "turn_left"
+  }
+]

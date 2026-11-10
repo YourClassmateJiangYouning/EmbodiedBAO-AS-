@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:02:39+08:00",
+    "latency_ms": 3021,
+    "payload_bytes": 255540,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"1f4fac7c-d77f-4698-92a8-a8e79f26eaad\",\"object\":\"chat.completion\",\"created\":1794207757,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star sits on a dark panel ahead, framed by a narrow opening between a dark draped object on the left and a patterned wall panel on the right. Red carpet fills the foreground, and the gap ahead looks narrow.\\\", \\\"reasoning\\\": \\\"The star is directly ahead and the path is clear, but the opening between the left drape and right panel appears narrow. Since turning is impossible once shoulders are inside the opening, I should check my body width with look_down before committing to entering the gap.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1931,\"completion_tokens\":125,\"total_tokens\":2056,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1163},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star sits on a dark panel ahead, framed by a narrow opening between a dark draped object on the left and a patterned wall panel on the right. Red carpet fills the foreground, and the gap ahead looks narrow.\", \"reasoning\": \"The star is directly ahead and the path is clear, but the opening between the left drape and right panel appears narrow. Since turning is impossible once shoulders are inside the opening, I should check my body width with look_down before committing to entering the gap.\", \"action\": \"look_down\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star sits on a dark panel ahead, framed by a narrow opening between a dark draped object on the left and a patterned wall panel on the right. Red carpet fills the foreground, and the gap ahead looks narrow.",
+      "reasoning": "The star is directly ahead and the path is clear, but the opening between the left drape and right panel appears narrow. Since turning is impossible once shoulders are inside the opening, I should check my body width with look_down before committing to entering the gap.",
+      "action": "look_down",
+      "confidence": 0.7
+    },
+    "action": "look_down"
+  }
+]

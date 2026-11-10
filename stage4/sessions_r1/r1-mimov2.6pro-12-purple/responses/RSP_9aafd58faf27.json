@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:28:04+08:00",
+    "latency_ms": 6548,
+    "payload_bytes": 314430,
+    "finish_reason": "stop",
+    "reasoning_tokens": 85,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"885bcce5-2b5f-4548-9588-b7b5b84d5592_ff0c8ce840614727a8fc4fbf1c0470e4\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead to an opening between two decorated panels. A purple four-pointed star is visible through the opening, slightly above floor level. The path is clear with no obstacles. Decorated floor tiles are visible on the left side.\\\", \\\"reasoning\\\": \\\"The purple star is directly ahead through the opening and the path remains clear. I've already taken 4 forward steps and should continue moving toward the star. No turning is needed as I'm already aligned with the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image shows a red carpeted walkway leading to an opening where a purple four-pointed star is visible. The path is clear ahead. I've taken 4 forward steps already, position x = 3.5. The star appears to be at some distance ahead. Let me continue moving forward toward it.\\n\\nThe opening appears to be ahead and the star is visible through it. I should keep going forward.\"}}],\"created\":1794137283,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":211,\"prompt_tokens\":2138,\"total_tokens\":2349,\"completion_tokens_details\":{\"reasoning_tokens\":85},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead to an opening between two decorated panels. A purple four-pointed star is visible through the opening, slightly above floor level. The path is clear with no obstacles. Decorated floor tiles are visible on the left side.\", \"reasoning\": \"The purple star is directly ahead through the opening and the path remains clear. I've already taken 4 forward steps and should continue moving toward the star. No turning is needed as I'm already aligned with the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The image shows a red carpeted walkway leading to an opening where a purple four-pointed star is visible. The path is clear ahead. I've taken 4 forward steps already, position x = 3.5. The star appears to be at some distance ahead. Let me continue moving forward toward it.\n\nThe opening appears to be ahead and the star is visible through it. I should keep going forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead to an opening between two decorated panels. A purple four-pointed star is visible through the opening, slightly above floor level. The path is clear with no obstacles. Decorated floor tiles are visible on the left side.",
+      "reasoning": "The purple star is directly ahead through the opening and the path remains clear. I've already taken 4 forward steps and should continue moving toward the star. No turning is needed as I'm already aligned with the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

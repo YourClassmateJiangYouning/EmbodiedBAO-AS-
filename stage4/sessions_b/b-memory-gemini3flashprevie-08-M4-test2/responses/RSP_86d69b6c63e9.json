@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:46:17+08:00",
+    "latency_ms": 7468,
+    "payload_bytes": 366815,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090846130059289068268d9d6HymgYifN\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213978,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. In the distance, through the opening, a blue triangle is visible on the far wall. The floor to the left is tiled, and there are white markers on the floor to the right.\\\",\\n  \\\"reasoning\\\": \\\"To pass through the narrow opening ahead, I need to know my current body width and orientation relative to the path. I will use 'look_down' to see my torso dimensions before I start rotating to fit through the gap.\\\",\\n  \\\"action\\\": \\\"look_down\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3002,\"completion_tokens\":141,\"total_tokens\":3143,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3002,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":141,\"totalTokenCount\":3143,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1913}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":141}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1913,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":141,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. In the distance, through the opening, a blue triangle is visible on the far wall. The floor to the left is tiled, and there are white markers on the floor to the right.\",\n  \"reasoning\": \"To pass through the narrow opening ahead, I need to know my current body width and orientation relative to the path. I will use 'look_down' to see my torso dimensions before I start rotating to fit through the gap.\",\n  \"action\": \"look_down\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. In the distance, through the opening, a blue triangle is visible on the far wall. The floor to the left is tiled, and there are white markers on the floor to the right.",
+      "reasoning": "To pass through the narrow opening ahead, I need to know my current body width and orientation relative to the path. I will use 'look_down' to see my torso dimensions before I start rotating to fit through the gap.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

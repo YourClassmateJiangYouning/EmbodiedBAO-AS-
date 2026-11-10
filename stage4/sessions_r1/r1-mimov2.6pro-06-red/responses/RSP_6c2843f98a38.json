@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:16:16+08:00",
+    "latency_ms": 7055,
+    "payload_bytes": 242096,
+    "finish_reason": "stop",
+    "reasoning_tokens": 22,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"321ea97e-d3a9-4679-873f-5de71ff0e9f2_d84d61c4e4844d8d8d552b8e677a26d9\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead along the walking direction: a dark red carpeted path leads to a narrow opening between two patterned wall panels (purple/white geometric designs on the left, blue/white on the right). Through the dark opening, the red circle glows on the far wall, centered in the gap. The path is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead through the narrow opening, and the carpeted path remains clear. My torso is already turned 15 degrees left, narrowing my profile to fit through the gap, and further turning is not possible once my shoulders reach the opening. Continuing forward is the way to approach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need continue forward toward red circle. Gap ahead. Torres at 15 deg. Keep forward.\"}}],\"created\":1794208576,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":191,\"prompt_tokens\":2578,\"total_tokens\":2769,\"completion_tokens_details\":{\"reasoning_tokens\":22},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead along the walking direction: a dark red carpeted path leads to a narrow opening between two patterned wall panels (purple/white geometric designs on the left, blue/white on the right). Through the dark opening, the red circle glows on the far wall, centered in the gap. The path is clear and unobstructed.\", \"reasoning\": \"The red circle is directly ahead through the narrow opening, and the carpeted path remains clear. My torso is already turned 15 degrees left, narrowing my profile to fit through the gap, and further turning is not possible once my shoulders reach the opening. Continuing forward is the way to approach the goal.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "We need continue forward toward red circle. Gap ahead. Torres at 15 deg. Keep forward.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead along the walking direction: a dark red carpeted path leads to a narrow opening between two patterned wall panels (purple/white geometric designs on the left, blue/white on the right). Through the dark opening, the red circle glows on the far wall, centered in the gap. The path is clear and unobstructed.",
+      "reasoning": "The red circle is directly ahead through the narrow opening, and the carpeted path remains clear. My torso is already turned 15 degrees left, narrowing my profile to fit through the gap, and further turning is not possible once my shoulders reach the opening. Continuing forward is the way to approach the goal.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

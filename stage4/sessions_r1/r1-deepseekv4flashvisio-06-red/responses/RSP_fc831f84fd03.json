@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:15:12+08:00",
+    "latency_ms": 2678,
+    "payload_bytes": 353193,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"9d99a168-86be-4a5d-bd15-9d25b469e8ce\",\"object\":\"chat.completion\",\"created\":1794208511,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a dark doorway in the far wall, with a glowing red circle visible inside the opening. Patterned walls flank the walkway on both sides.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along my fixed walking direction, and the carpeted path is clear. I have already checked my body width and advanced twice; continuing forward moves me closer to the goal without needing to turn.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1765,\"completion_tokens\":107,\"total_tokens\":1872,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":997},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a dark doorway in the far wall, with a glowing red circle visible inside the opening. Patterned walls flank the walkway on both sides.\", \"reasoning\": \"The red circle is directly ahead along my fixed walking direction, and the carpeted path is clear. I have already checked my body width and advanced twice; continuing forward moves me closer to the goal without needing to turn.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a dark doorway in the far wall, with a glowing red circle visible inside the opening. Patterned walls flank the walkway on both sides.",
+      "reasoning": "The red circle is directly ahead along my fixed walking direction, and the carpeted path is clear. I have already checked my body width and advanced twice; continuing forward moves me closer to the goal without needing to turn.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

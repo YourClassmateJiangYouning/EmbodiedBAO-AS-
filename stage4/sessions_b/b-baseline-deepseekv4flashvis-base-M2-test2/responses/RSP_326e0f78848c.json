@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:21:38+08:00",
+    "latency_ms": 2603,
+    "payload_bytes": 267491,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"9070cde2-7514-47a1-8b8a-783664f952b5\",\"object\":\"chat.completion\",\"created\":1794212497,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle target is visible ahead on a black panel at the far wall, with a red carpet leading toward it and a step up to a lighter floor just before the target. The path appears clear.\\\", \\\"reasoning\\\": \\\"The target is directly ahead and the carpet path is unobstructed. Seven forward steps have already been executed successfully, so continuing forward will bring me closer to the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1893,\"completion_tokens\":100,\"total_tokens\":1993,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1125},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle target is visible ahead on a black panel at the far wall, with a red carpet leading toward it and a step up to a lighter floor just before the target. The path appears clear.\", \"reasoning\": \"The target is directly ahead and the carpet path is unobstructed. Seven forward steps have already been executed successfully, so continuing forward will bring me closer to the red circle.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle target is visible ahead on a black panel at the far wall, with a red carpet leading toward it and a step up to a lighter floor just before the target. The path appears clear.",
+      "reasoning": "The target is directly ahead and the carpet path is unobstructed. Seven forward steps have already been executed successfully, so continuing forward will bring me closer to the red circle.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

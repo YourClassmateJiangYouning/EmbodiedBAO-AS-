@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:18:02+08:00",
+    "latency_ms": 2389,
+    "payload_bytes": 347868,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"b691ce46-1275-4876-ae90-f3593d9c5d5b\",\"object\":\"chat.completion\",\"created\":1794208681,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted path leads straight ahead toward a dark doorway on the far wall, with a blue triangle visible inside the opening. Patterned walls flank the path on both sides.\\\", \\\"reasoning\\\": \\\"The blue triangle is straight ahead along the fixed walking direction, and the red path is clear. Continuing forward reduces distance to the goal; no turning is needed since the doorway is aligned with the walking direction.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1684,\"completion_tokens\":101,\"total_tokens\":1785,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":916},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted path leads straight ahead toward a dark doorway on the far wall, with a blue triangle visible inside the opening. Patterned walls flank the path on both sides.\", \"reasoning\": \"The blue triangle is straight ahead along the fixed walking direction, and the red path is clear. Continuing forward reduces distance to the goal; no turning is needed since the doorway is aligned with the walking direction.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted path leads straight ahead toward a dark doorway on the far wall, with a blue triangle visible inside the opening. Patterned walls flank the path on both sides.",
+      "reasoning": "The blue triangle is straight ahead along the fixed walking direction, and the red path is clear. Continuing forward reduces distance to the goal; no turning is needed since the doorway is aligned with the walking direction.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

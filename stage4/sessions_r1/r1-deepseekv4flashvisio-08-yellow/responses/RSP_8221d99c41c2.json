@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:38+08:00",
+    "latency_ms": 2660,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5ae713ca-c1ca-479e-8dcb-65847418d15c\",\"object\":\"chat.completion\",\"created\":1794208177,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is very close and centered ahead, mounted on a dark wall panel above the red carpet. The path forward appears clear now that the torso has been rotated back toward alignment.\\\", \\\"reasoning\\\": \\\"The arrow is extremely close and centered. My torso is now at 0 degrees after four left turns, aligning my body with the opening. Previous forward attempts were blocked when the torso was rotated, so with alignment restored I should try forward again to reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2596,\"completion_tokens\":115,\"total_tokens\":2711,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1956},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is very close and centered ahead, mounted on a dark wall panel above the red carpet. The path forward appears clear now that the torso has been rotated back toward alignment.\", \"reasoning\": \"The arrow is extremely close and centered. My torso is now at 0 degrees after four left turns, aligning my body with the opening. Previous forward attempts were blocked when the torso was rotated, so with alignment restored I should try forward again to reach the goal.\", \"action\": \"forward\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is very close and centered ahead, mounted on a dark wall panel above the red carpet. The path forward appears clear now that the torso has been rotated back toward alignment.",
+      "reasoning": "The arrow is extremely close and centered. My torso is now at 0 degrees after four left turns, aligning my body with the opening. Previous forward attempts were blocked when the torso was rotated, so with alignment restored I should try forward again to reach the goal.",
+      "action": "forward",
+      "confidence": 0.7
+    },
+    "action": "forward"
+  }
+]

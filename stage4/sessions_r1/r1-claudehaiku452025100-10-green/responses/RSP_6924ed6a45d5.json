@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:43:04+08:00",
+    "latency_ms": 7451,
+    "payload_bytes": 342240,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_ynmpxnk2z6g2yi2udbg7bk6mwkrf3w2jjxzahn7hh5l4yvmbq2xa\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145385,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the green rectangle target clearly visible on the far wall, centered in my view and directly ahead along my walking direction. The walkway in front of me is clear with a red/burgundy colored floor. The walls have colorful graffiti-style artwork. There are no obstacles blocking the direct path forward to the target.\\\",\\n  \\\"reasoning\\\": \\\"I have successfully moved forward 2.25 meters (3 steps × 0.75m) and the green rectangle target remains clearly visible and directly ahead. My walking direction is fixed toward the target on the far wall, my torso is at neutral rotation (0 degrees), and the path is completely clear. I should continue moving forward to reach the target. I have 27 steps remaining out of my 30-step limit.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.98\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2534,\"completion_tokens\":203,\"total_tokens\":2737,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2534,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":203,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2534,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the green rectangle target clearly visible on the far wall, centered in my view and directly ahead along my walking direction. The walkway in front of me is clear with a red/burgundy colored floor. The walls have colorful graffiti-style artwork. There are no obstacles blocking the direct path forward to the target.\",\n  \"reasoning\": \"I have successfully moved forward 2.25 meters (3 steps × 0.75m) and the green rectangle target remains clearly visible and directly ahead. My walking direction is fixed toward the target on the far wall, my torso is at neutral rotation (0 degrees), and the path is completely clear. I should continue moving forward to reach the target. I have 27 steps remaining out of my 30-step limit.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.98\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the green rectangle target clearly visible on the far wall, centered in my view and directly ahead along my walking direction. The walkway in front of me is clear with a red/burgundy colored floor. The walls have colorful graffiti-style artwork. There are no obstacles blocking the direct path forward to the target.",
+      "reasoning": "I have successfully moved forward 2.25 meters (3 steps × 0.75m) and the green rectangle target remains clearly visible and directly ahead. My walking direction is fixed toward the target on the far wall, my torso is at neutral rotation (0 degrees), and the path is completely clear. I should continue moving forward to reach the target. I have 27 steps remaining out of my 30-step limit.",
+      "action": "forward",
+      "confidence": 0.98
+    },
+    "action": "forward"
+  }
+]

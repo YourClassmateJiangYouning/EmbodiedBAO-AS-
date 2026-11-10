@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:12:06+08:00",
+    "latency_ms": 7943,
+    "payload_bytes": 245159,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_b2qsgifpkv4qf5eqw5t7xwccac45i42cynlqrchmebguoaux336a\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794204726,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the yellow arrow target on the far wall, centered in my view. The arrow is clearly visible on a dark background. The floor in front appears to be a dark red/maroon carpet. There are colorful wall panels visible on either side. My walking direction points straight at the yellow arrow.\\\",\\n  \\\"reasoning\\\": \\\"I'm at position x=6.750 after moving backward from x=7.250. My torso is rotated 90 degrees to the right. I've been blocked by a wall_panel obstacle when trying to move forward directly. The yellow arrow is still visible and centered ahead. Since my walking direction is fixed toward the arrow and cannot be changed by torso rotation, I need to find a way around the obstacle. Moving backward has repositioned me slightly. Now I should try moving forward again to see if I can progress past the obstacle, or continue exploring alternative paths.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.4\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3807,\"completion_tokens\":225,\"total_tokens\":4032,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3807,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":225,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3807,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the yellow arrow target on the far wall, centered in my view. The arrow is clearly visible on a dark background. The floor in front appears to be a dark red/maroon carpet. There are colorful wall panels visible on either side. My walking direction points straight at the yellow arrow.\",\n  \"reasoning\": \"I'm at position x=6.750 after moving backward from x=7.250. My torso is rotated 90 degrees to the right. I've been blocked by a wall_panel obstacle when trying to move forward directly. The yellow arrow is still visible and centered ahead. Since my walking direction is fixed toward the arrow and cannot be changed by torso rotation, I need to find a way around the obstacle. Moving backward has repositioned me slightly. Now I should try moving forward again to see if I can progress past the obstacle, or continue exploring alternative paths.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.4\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the yellow arrow target on the far wall, centered in my view. The arrow is clearly visible on a dark background. The floor in front appears to be a dark red/maroon carpet. There are colorful wall panels visible on either side. My walking direction points straight at the yellow arrow.",
+      "reasoning": "I'm at position x=6.750 after moving backward from x=7.250. My torso is rotated 90 degrees to the right. I've been blocked by a wall_panel obstacle when trying to move forward directly. The yellow arrow is still visible and centered ahead. Since my walking direction is fixed toward the arrow and cannot be changed by torso rotation, I need to find a way around the obstacle. Moving backward has repositioned me slightly. Now I should try moving forward again to see if I can progress past the obstacle, or continue exploring alternative paths.",
+      "action": "forward",
+      "confidence": 0.4
+    },
+    "action": "forward"
+  }
+]

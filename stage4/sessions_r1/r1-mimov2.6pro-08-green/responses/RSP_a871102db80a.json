@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:25:25+08:00",
+    "latency_ms": 9789,
+    "payload_bytes": 335133,
+    "finish_reason": "stop",
+    "reasoning_tokens": 121,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"6e2b29d9-badd-4554-9d3d-96075fccd8b5_7a579147c1e04e76a9ef8b6f414b1669\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead along the walkway: a red carpeted floor fills the foreground, with patterned floor tiles on the left. Ahead is a patterned wall with a narrow dark opening, through which the green rectangle is clearly visible. The opening appears close now after three forward steps.\\\",\\\"reasoning\\\": \\\"The green rectangle is clearly visible through the narrow opening directly ahead. My torso remains at 0 degrees (narrowest profile), which is the safest orientation for passing through the narrow opening, and turning is unnecessary since walking direction is fixed toward the goal. The path is clear, so I continue forward.\\\",\\\"action\\\": \\\"forward\\\",\\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue forward toward green rectangle. Current x=2.75, we've moved 2.25 forward from 0.5? Started at 2.75 after 3 forwards... position x=2.75. Green rectangle visible through narrow opening ahead. Keep torso at 0 (narrowest), continue forward. Distance to wall maybe close. The opening appears close - after next forward we may be inside. Since turning not needed, just keep going.\\n\\nActually, should I check width again? Already did at start. Keep it simple: forward.\"}}],\"created\":1794198325,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":267,\"prompt_tokens\":2178,\"total_tokens\":2445,\"completion_tokens_details\":{\"reasoning_tokens\":121},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead along the walkway: a red carpeted floor fills the foreground, with patterned floor tiles on the left. Ahead is a patterned wall with a narrow dark opening, through which the green rectangle is clearly visible. The opening appears close now after three forward steps.\",\"reasoning\": \"The green rectangle is clearly visible through the narrow opening directly ahead. My torso remains at 0 degrees (narrowest profile), which is the safest orientation for passing through the narrow opening, and turning is unnecessary since walking direction is fixed toward the goal. The path is clear, so I continue forward.\",\"action\": \"forward\",\"confidence\": 0.9}",
+    "reasoning_content": "We need to continue forward toward green rectangle. Current x=2.75, we've moved 2.25 forward from 0.5? Started at 2.75 after 3 forwards... position x=2.75. Green rectangle visible through narrow opening ahead. Keep torso at 0 (narrowest), continue forward. Distance to wall maybe close. The opening appears close - after next forward we may be inside. Since turning not needed, just keep going.\n\nActually, should I check width again? Already did at start. Keep it simple: forward.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead along the walkway: a red carpeted floor fills the foreground, with patterned floor tiles on the left. Ahead is a patterned wall with a narrow dark opening, through which the green rectangle is clearly visible. The opening appears close now after three forward steps.",
+      "reasoning": "The green rectangle is clearly visible through the narrow opening directly ahead. My torso remains at 0 degrees (narrowest profile), which is the safest orientation for passing through the narrow opening, and turning is unnecessary since walking direction is fixed toward the goal. The path is clear, so I continue forward.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:01:10+08:00",
+    "latency_ms": 2601,
+    "payload_bytes": 379702,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"af65eae7-4fd3-48eb-aff1-59e730da42c6\",\"object\":\"chat.completion\",\"created\":1794207668,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a far wall with a yellow arrow pointing right, positioned in a dark opening between patterned wall panels. The path appears clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The yellow arrow is directly ahead along the fixed walking direction, and the carpeted path is clear. Continuing forward advances toward the goal. Torso rotation is 0, so no turning is needed yet.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1641,\"completion_tokens\":103,\"total_tokens\":1744,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":873},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a far wall with a yellow arrow pointing right, positioned in a dark opening between patterned wall panels. The path appears clear and unobstructed.\", \"reasoning\": \"The yellow arrow is directly ahead along the fixed walking direction, and the carpeted path is clear. Continuing forward advances toward the goal. Torso rotation is 0, so no turning is needed yet.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a far wall with a yellow arrow pointing right, positioned in a dark opening between patterned wall panels. The path appears clear and unobstructed.",
+      "reasoning": "The yellow arrow is directly ahead along the fixed walking direction, and the carpeted path is clear. Continuing forward advances toward the goal. Torso rotation is 0, so no turning is needed yet.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

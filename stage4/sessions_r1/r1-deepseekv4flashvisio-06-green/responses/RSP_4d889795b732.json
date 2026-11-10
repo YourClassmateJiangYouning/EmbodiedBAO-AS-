@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:14:07+08:00",
+    "latency_ms": 2511,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e850c48a-1f9b-4940-84a6-51c4b3c091e3\",\"object\":\"chat.completion\",\"created\":1794208446,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle target is directly ahead, appearing large and close, framed by a dark doorway/opening with patterned walls on either side. The floor in front is dark and clear.\\\", \\\"reasoning\\\": \\\"The target fills much of the view, indicating I am very close. Repeated forward steps have been successful without collision, so continuing forward should reach the green rectangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2330,\"completion_tokens\":93,\"total_tokens\":2423,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1690},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green rectangle target is directly ahead, appearing large and close, framed by a dark doorway/opening with patterned walls on either side. The floor in front is dark and clear.\", \"reasoning\": \"The target fills much of the view, indicating I am very close. Repeated forward steps have been successful without collision, so continuing forward should reach the green rectangle.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green rectangle target is directly ahead, appearing large and close, framed by a dark doorway/opening with patterned walls on either side. The floor in front is dark and clear.",
+      "reasoning": "The target fills much of the view, indicating I am very close. Repeated forward steps have been successful without collision, so continuing forward should reach the green rectangle.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

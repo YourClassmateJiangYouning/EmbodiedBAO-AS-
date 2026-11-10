@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:16:22+08:00",
+    "latency_ms": 2607,
+    "payload_bytes": 186978,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"014b24f9-ab30-49d6-9e87-4effe8444f53\",\"object\":\"chat.completion\",\"created\":1794208580,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle is directly ahead, mounted on a dark panel above the floor, filling much of the view. The carpeted floor is visible below it, and the walkway walls flank the path.\\\", \\\"reasoning\\\": \\\"The goal circle is directly ahead and very close. The last forward step succeeded after backing up and turning, so continuing forward should bring the robot to the goal. Forward is the most direct action toward the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3019,\"completion_tokens\":107,\"total_tokens\":3126,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2379},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle is directly ahead, mounted on a dark panel above the floor, filling much of the view. The carpeted floor is visible below it, and the walkway walls flank the path.\", \"reasoning\": \"The goal circle is directly ahead and very close. The last forward step succeeded after backing up and turning, so continuing forward should bring the robot to the goal. Forward is the most direct action toward the red circle.\", \"action\": \"forward\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle is directly ahead, mounted on a dark panel above the floor, filling much of the view. The carpeted floor is visible below it, and the walkway walls flank the path.",
+      "reasoning": "The goal circle is directly ahead and very close. The last forward step succeeded after backing up and turning, so continuing forward should bring the robot to the goal. Forward is the most direct action toward the red circle.",
+      "action": "forward",
+      "confidence": 0.7
+    },
+    "action": "forward"
+  }
+]

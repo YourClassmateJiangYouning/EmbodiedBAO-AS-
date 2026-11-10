@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:47:45+08:00",
+    "latency_ms": 13119,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081047392428770498268d9d6vjhfu3Dw\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134865,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down at the robot's own body against a red carpet. The white rectangular bumper is oriented almost horizontally across the frame, indicating that at a 75-degree torso rotation, the long axis of the body is now nearly aligned with the forward walking direction (which is 'up' in this view).\\\",\\n  \\\"reasoning\\\": \\\"At a 75-degree rotation, the robot's profile is significantly narrowed relative to the forward path. The white bumper, which is the widest part, is now mostly aligned with the direction of travel. This should be sufficient to pass through the narrow opening ahead. I will now move forward to approach the gap.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2764,\"completion_tokens\":167,\"total_tokens\":2931,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2764,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":167,\"totalTokenCount\":2931,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1675},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":167}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1675,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":167,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down at the robot's own body against a red carpet. The white rectangular bumper is oriented almost horizontally across the frame, indicating that at a 75-degree torso rotation, the long axis of the body is now nearly aligned with the forward walking direction (which is 'up' in this view).\",\n  \"reasoning\": \"At a 75-degree rotation, the robot's profile is significantly narrowed relative to the forward path. The white bumper, which is the widest part, is now mostly aligned with the direction of travel. This should be sufficient to pass through the narrow opening ahead. I will now move forward to approach the gap.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body against a red carpet. The white rectangular bumper is oriented almost horizontally across the frame, indicating that at a 75-degree torso rotation, the long axis of the body is now nearly aligned with the forward walking direction (which is 'up' in this view).",
+      "reasoning": "At a 75-degree rotation, the robot's profile is significantly narrowed relative to the forward path. The white bumper, which is the widest part, is now mostly aligned with the direction of travel. This should be sufficient to pass through the narrow opening ahead. I will now move forward to approach the gap.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:45:50+08:00",
+    "latency_ms": 8479,
+    "payload_bytes": 352435,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_tnyx6i3yzgic47sirgtya4w3imopbdd5nfhgjl5lm7ugbv44rrwq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145550,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a red carpeted floor stretching ahead toward the far wall. The yellow arrow target is clearly visible in the center-upper portion of my view, mounted on the dark wall ahead. The path is clear and unobstructed. On the left side, there are colorful wall decorations with blue patterns and yellow/white sections. The arrow appears to be at approximately x=1.250 based on perspective, and I'm currently at x=2.000, meaning I need to continue forward to close the distance.\\\",\\n  \\\"reasoning\\\": \\\"My task is to reach the yellow arrow on the far wall. The arrow is clearly visible and centered in my view. The path ahead is completely clear with no obstacles. My walking direction is fixed toward the arrow. I have taken 2 steps forward already and made good progress. The arrow is still ahead of me, so I should continue moving forward to reach it. This is a straightforward approach with no complications.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2475,\"completion_tokens\":237,\"total_tokens\":2712,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2475,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":237,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2475,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a red carpeted floor stretching ahead toward the far wall. The yellow arrow target is clearly visible in the center-upper portion of my view, mounted on the dark wall ahead. The path is clear and unobstructed. On the left side, there are colorful wall decorations with blue patterns and yellow/white sections. The arrow appears to be at approximately x=1.250 based on perspective, and I'm currently at x=2.000, meaning I need to continue forward to close the distance.\",\n  \"reasoning\": \"My task is to reach the yellow arrow on the far wall. The arrow is clearly visible and centered in my view. The path ahead is completely clear with no obstacles. My walking direction is fixed toward the arrow. I have taken 2 steps forward already and made good progress. The arrow is still ahead of me, so I should continue moving forward to reach it. This is a straightforward approach with no complications.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a red carpeted floor stretching ahead toward the far wall. The yellow arrow target is clearly visible in the center-upper portion of my view, mounted on the dark wall ahead. The path is clear and unobstructed. On the left side, there are colorful wall decorations with blue patterns and yellow/white sections. The arrow appears to be at approximately x=1.250 based on perspective, and I'm currently at x=2.000, meaning I need to continue forward to close the distance.",
+      "reasoning": "My task is to reach the yellow arrow on the far wall. The arrow is clearly visible and centered in my view. The path ahead is completely clear with no obstacles. My walking direction is fixed toward the arrow. I have taken 2 steps forward already and made good progress. The arrow is still ahead of me, so I should continue moving forward to reach it. This is a straightforward approach with no complications.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

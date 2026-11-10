@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:08:49+08:00",
+    "latency_ms": 2219,
+    "payload_bytes": 370372,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"89770f2c-6523-4424-bf84-75d706d72330\",\"object\":\"chat.completion\",\"created\":1794208128,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a dark doorway in the far wall, with a yellow arrow visible inside the opening. Patterned walls flank the path on both sides.\\\", \\\"reasoning\\\": \\\"The yellow arrow is straight ahead through the doorway and my walking direction already points toward it. The path is clear, so continuing forward is the direct way to reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1629,\"completion_tokens\":96,\"total_tokens\":1725,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":861},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a dark doorway in the far wall, with a yellow arrow visible inside the opening. Patterned walls flank the path on both sides.\", \"reasoning\": \"The yellow arrow is straight ahead through the doorway and my walking direction already points toward it. The path is clear, so continuing forward is the direct way to reach the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a dark doorway in the far wall, with a yellow arrow visible inside the opening. Patterned walls flank the path on both sides.",
+      "reasoning": "The yellow arrow is straight ahead through the doorway and my walking direction already points toward it. The path is clear, so continuing forward is the direct way to reach the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

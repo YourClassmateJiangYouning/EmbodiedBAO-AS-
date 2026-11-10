@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:36:17+08:00",
+    "latency_ms": 6722,
+    "payload_bytes": 266821,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_w4hiewg4cvnmt4ugje4dabfjm5qjwrqeh3v4sdblwpgbk7ch2cza\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794144977,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the green rectangle target clearly on the far wall, centered in my view. The walkway ahead is clear with a dark red/maroon textured floor. The walls on either side show decorative patterns. The green rectangle appears to be at ground level on the far wall, and I have a straight, unobstructed path toward it.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=5.0m and have taken 6 forward steps. The green rectangle is clearly visible and centered ahead on the far wall. The path remains completely clear and straight. My torso is aligned at 0 degrees rotation. I should continue moving forward toward the target. Each forward step moves me 75cm (0.75m) closer, so I need to continue advancing.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2755,\"completion_tokens\":200,\"total_tokens\":2955,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2755,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":200,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2755,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the green rectangle target clearly on the far wall, centered in my view. The walkway ahead is clear with a dark red/maroon textured floor. The walls on either side show decorative patterns. The green rectangle appears to be at ground level on the far wall, and I have a straight, unobstructed path toward it.\",\n  \"reasoning\": \"I am at position x=5.0m and have taken 6 forward steps. The green rectangle is clearly visible and centered ahead on the far wall. The path remains completely clear and straight. My torso is aligned at 0 degrees rotation. I should continue moving forward toward the target. Each forward step moves me 75cm (0.75m) closer, so I need to continue advancing.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the green rectangle target clearly on the far wall, centered in my view. The walkway ahead is clear with a dark red/maroon textured floor. The walls on either side show decorative patterns. The green rectangle appears to be at ground level on the far wall, and I have a straight, unobstructed path toward it.",
+      "reasoning": "I am at position x=5.0m and have taken 6 forward steps. The green rectangle is clearly visible and centered ahead on the far wall. The path remains completely clear and straight. My torso is aligned at 0 degrees rotation. I should continue moving forward toward the target. Each forward step moves me 75cm (0.75m) closer, so I need to continue advancing.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

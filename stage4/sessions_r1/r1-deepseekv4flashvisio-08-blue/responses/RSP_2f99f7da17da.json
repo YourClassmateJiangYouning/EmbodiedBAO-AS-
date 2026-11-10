@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:10:33+08:00",
+    "latency_ms": 2571,
+    "payload_bytes": 241510,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a628888a-6519-49f6-87ed-63c2c38cd685\",\"object\":\"chat.completion\",\"created\":1794208232,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a dark red carpeted path leading toward a dark opening in the far wall, with a glowing blue triangle centered in that opening. Patterned walls flank the path on both sides, forming a narrow doorway ahead.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along the fixed walking direction, and the carpeted path is clear. Continuing forward advances toward the goal; turning is unnecessary since it does not change walking direction. The doorway ahead may be narrow, but I have not yet reached it, so I should keep moving forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1914,\"completion_tokens\":129,\"total_tokens\":2043,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1146},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a dark red carpeted path leading toward a dark opening in the far wall, with a glowing blue triangle centered in that opening. Patterned walls flank the path on both sides, forming a narrow doorway ahead.\", \"reasoning\": \"The blue triangle is directly ahead along the fixed walking direction, and the carpeted path is clear. Continuing forward advances toward the goal; turning is unnecessary since it does not change walking direction. The doorway ahead may be narrow, but I have not yet reached it, so I should keep moving forward.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a dark red carpeted path leading toward a dark opening in the far wall, with a glowing blue triangle centered in that opening. Patterned walls flank the path on both sides, forming a narrow doorway ahead.",
+      "reasoning": "The blue triangle is directly ahead along the fixed walking direction, and the carpeted path is clear. Continuing forward advances toward the goal; turning is unnecessary since it does not change walking direction. The doorway ahead may be narrow, but I have not yet reached it, so I should keep moving forward.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

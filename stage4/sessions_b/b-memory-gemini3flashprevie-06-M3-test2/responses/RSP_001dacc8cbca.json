@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:36:05+08:00",
+    "latency_ms": 6301,
+    "payload_bytes": 371265,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090836001411005528268d9d6ifJ3o2lK\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213365,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted path leading toward a narrow opening between two decorated walls. A yellow arrow is visible on the far wall through the opening. The current view is straight ahead along the walking direction.\\\", \\\"reasoning\\\": \\\"My torso is currently rotated 15 degrees to the right. To fit through the narrow gap ahead, I need to reach a 90-degree rotation to present my slimmest profile. I will continue turning right in 15-degree increments.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2738,\"completion_tokens\":122,\"total_tokens\":2860,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2738,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":122,\"totalTokenCount\":2860,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1649}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":122}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1649,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":122,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted path leading toward a narrow opening between two decorated walls. A yellow arrow is visible on the far wall through the opening. The current view is straight ahead along the walking direction.\", \"reasoning\": \"My torso is currently rotated 15 degrees to the right. To fit through the narrow gap ahead, I need to reach a 90-degree rotation to present my slimmest profile. I will continue turning right in 15-degree increments.\", \"action\": \"turn_right\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted path leading toward a narrow opening between two decorated walls. A yellow arrow is visible on the far wall through the opening. The current view is straight ahead along the walking direction.",
+      "reasoning": "My torso is currently rotated 15 degrees to the right. To fit through the narrow gap ahead, I need to reach a 90-degree rotation to present my slimmest profile. I will continue turning right in 15-degree increments.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

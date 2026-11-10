@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:11:42+08:00",
+    "latency_ms": 6811,
+    "payload_bytes": 167433,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a large blue illuminated triangle directly ahead on a wall panel at close range, with the red carpet floor leading up to the wall. The triangle is centered and very near, indicating the robot is right in front of the target wall.\\\", \\\"reasoning\\\": \\\"Forward movement has repeatedly been blocked by the wall panel, confirming I am already at the far wall where the blue triangle is located. To finalize reaching the triangle without causing another blocked step, I should avoid pushing into the wall.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.66}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204699,\"id\":\"chatcmpl-EiCtPID7qL3IB6sgY239tY1WvqAsA\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":128,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":13,\"engine_ttft_ms\":280,\"engine_ttlt_ms\":1970,\"pre_inference_ms\":310,\"service_tbt_ms\":13,\"service_ttft_ms\":928,\"service_ttlt_ms\":2613,\"user_visible_ttft_ms\":617},\"prompt_tokens\":2584,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2712}}\n",
+    "content": "{\"scene_description\": \"The camera shows a large blue illuminated triangle directly ahead on a wall panel at close range, with the red carpet floor leading up to the wall. The triangle is centered and very near, indicating the robot is right in front of the target wall.\", \"reasoning\": \"Forward movement has repeatedly been blocked by the wall panel, confirming I am already at the far wall where the blue triangle is located. To finalize reaching the triangle without causing another blocked step, I should avoid pushing into the wall.\", \"action\": \"backward\", \"confidence\": 0.66}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a large blue illuminated triangle directly ahead on a wall panel at close range, with the red carpet floor leading up to the wall. The triangle is centered and very near, indicating the robot is right in front of the target wall.",
+      "reasoning": "Forward movement has repeatedly been blocked by the wall panel, confirming I am already at the far wall where the blue triangle is located. To finalize reaching the triangle without causing another blocked step, I should avoid pushing into the wall.",
+      "action": "backward",
+      "confidence": 0.66
+    },
+    "action": "backward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:20:12+08:00",
+    "latency_ms": 7039,
+    "payload_bytes": 210305,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_nhkckmkjaios6mmy53jjfhrotwhkbuzceppqdm743vezpjdpprea\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198012,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the green rectangle target clearly visible on the far wall ahead, centered in the dark opening. The immediate area in front of me appears to be a dark floor/corridor. On the left side, there's a striped wall panel, and on the right side, there's a blue wall panel. The green rectangle is my destination on the far wall.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=6.500 after backing up from x=7.250. My torso is at 0 degrees (neutral). I was blocked by a wall_panel when trying to move forward at x=7.250. By backing up, I've created space to reassess. The green rectangle is clearly visible ahead on the far wall. I need to find a way around the obstacle. Since my previous attempts to turn and move forward were blocked, I should try turning left to angle my body and see if I can navigate around the wall_panel obstacle that was blocking me. Let me turn left to reduce my width in the forward direction.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 0.65\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3333,\"completion_tokens\":255,\"total_tokens\":3588,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3333,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":255,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3333,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the green rectangle target clearly visible on the far wall ahead, centered in the dark opening. The immediate area in front of me appears to be a dark floor/corridor. On the left side, there's a striped wall panel, and on the right side, there's a blue wall panel. The green rectangle is my destination on the far wall.\",\n  \"reasoning\": \"I am at position x=6.500 after backing up from x=7.250. My torso is at 0 degrees (neutral). I was blocked by a wall_panel when trying to move forward at x=7.250. By backing up, I've created space to reassess. The green rectangle is clearly visible ahead on the far wall. I need to find a way around the obstacle. Since my previous attempts to turn and move forward were blocked, I should try turning left to angle my body and see if I can navigate around the wall_panel obstacle that was blocking me. Let me turn left to reduce my width in the forward direction.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 0.65\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the green rectangle target clearly visible on the far wall ahead, centered in the dark opening. The immediate area in front of me appears to be a dark floor/corridor. On the left side, there's a striped wall panel, and on the right side, there's a blue wall panel. The green rectangle is my destination on the far wall.",
+      "reasoning": "I am at position x=6.500 after backing up from x=7.250. My torso is at 0 degrees (neutral). I was blocked by a wall_panel when trying to move forward at x=7.250. By backing up, I've created space to reassess. The green rectangle is clearly visible ahead on the far wall. I need to find a way around the obstacle. Since my previous attempts to turn and move forward were blocked, I should try turning left to angle my body and see if I can navigate around the wall_panel obstacle that was blocking me. Let me turn left to reduce my width in the forward direction.",
+      "action": "turn_left",
+      "confidence": 0.65
+    },
+    "action": "turn_left"
+  }
+]

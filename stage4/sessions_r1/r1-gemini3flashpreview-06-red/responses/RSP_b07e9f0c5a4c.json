@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:56:03+08:00",
+    "latency_ms": 6774,
+    "payload_bytes": 242096,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081055575435972378268d9d6qjGuSj5d\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135363,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight ahead at a narrow opening between two patterned walls. A red circle is visible on the far wall through the gap. The floor is covered with a dark red carpet.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at x=6.5 and my torso is rotated 90 degrees, which is my narrowest profile. I am entering the narrow gap. I must continue moving forward to reach the red circle on the far wall. I cannot turn while inside the opening, but since I am already at 90 degrees, I should fit through.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3053,\"completion_tokens\":145,\"total_tokens\":3198,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3053,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":145,\"totalTokenCount\":3198,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1964},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":145}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1964,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":145,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight ahead at a narrow opening between two patterned walls. A red circle is visible on the far wall through the gap. The floor is covered with a dark red carpet.\",\n  \"reasoning\": \"I am currently at x=6.5 and my torso is rotated 90 degrees, which is my narrowest profile. I am entering the narrow gap. I must continue moving forward to reach the red circle on the far wall. I cannot turn while inside the opening, but since I am already at 90 degrees, I should fit through.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight ahead at a narrow opening between two patterned walls. A red circle is visible on the far wall through the gap. The floor is covered with a dark red carpet.",
+      "reasoning": "I am currently at x=6.5 and my torso is rotated 90 degrees, which is my narrowest profile. I am entering the narrow gap. I must continue moving forward to reach the red circle on the far wall. I cannot turn while inside the opening, but since I am already at 90 degrees, I should fit through.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

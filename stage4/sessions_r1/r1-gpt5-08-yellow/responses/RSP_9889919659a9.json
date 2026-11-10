@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:08:12+08:00",
+    "latency_ms": 6887,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A large yellow right-pointing arrow is directly ahead on a panel at the base of the far wall, very close to the camera. The carpeted floor ends at the wall, and the panel sits slightly above the floor edge. The arrow fills much of the view, indicating I am essentially at the target wall.\\\", \\\"reasoning\\\": \\\"Recent forward attempts were repeatedly blocked by the wall panel, meaning I’m already at or in contact range of the arrow on the far wall. The image shows the arrow directly ahead and very close, indicating the goal is effectively reached. One small adjustment forward may finalize contact if not already touching.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.64}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204489,\"id\":\"chatcmpl-EiCq1X44IV7JSfJayQLUVjaojSDWz\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":154,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":513,\"engine_ttlt_ms\":1918,\"pre_inference_ms\":469,\"service_tbt_ms\":9,\"service_ttft_ms\":1281,\"service_ttlt_ms\":2646,\"user_visible_ttft_ms\":812},\"prompt_tokens\":2825,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2979}}\n",
+    "content": "{\"scene_description\": \"A large yellow right-pointing arrow is directly ahead on a panel at the base of the far wall, very close to the camera. The carpeted floor ends at the wall, and the panel sits slightly above the floor edge. The arrow fills much of the view, indicating I am essentially at the target wall.\", \"reasoning\": \"Recent forward attempts were repeatedly blocked by the wall panel, meaning I’m already at or in contact range of the arrow on the far wall. The image shows the arrow directly ahead and very close, indicating the goal is effectively reached. One small adjustment forward may finalize contact if not already touching.\", \"action\": \"forward\", \"confidence\": 0.64}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A large yellow right-pointing arrow is directly ahead on a panel at the base of the far wall, very close to the camera. The carpeted floor ends at the wall, and the panel sits slightly above the floor edge. The arrow fills much of the view, indicating I am essentially at the target wall.",
+      "reasoning": "Recent forward attempts were repeatedly blocked by the wall panel, meaning I’m already at or in contact range of the arrow on the far wall. The image shows the arrow directly ahead and very close, indicating the goal is effectively reached. One small adjustment forward may finalize contact if not already touching.",
+      "action": "forward",
+      "confidence": 0.64
+    },
+    "action": "forward"
+  }
+]

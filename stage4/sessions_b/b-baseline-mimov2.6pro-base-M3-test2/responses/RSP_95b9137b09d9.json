@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:43:26+08:00",
+    "latency_ms": 16427,
+    "payload_bytes": 159645,
+    "finish_reason": "stop",
+    "reasoning_tokens": 125,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"e9077519-4b5e-4ae0-b600-e2ac9b317a18_e0538758487042c599f27bd355a3692b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is now very close, filling much of the camera view on the dark wall panel ahead. Below it is a metal floor strip and dark red carpet. The arrow points right on a dark rectangular plate mounted on the wall. I appear to be just about at the far wall with the arrow directly in front.\\\",\\\"reasoning\\\": \\\"I am at x=7.25 and the yellow arrow is immediately ahead, appearing within one step's distance (75cm). My torso rotation is 0 degrees (narrowest profile) and the path is clear. Taking one more forward step should bring me directly to the arrow at the far wall.\\\",\\\"action\\\": \\\"forward\\\",\\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image shows the yellow arrow very close on the wall. Position is x=7.25. The arrow appears right ahead, very close. One more forward step should reach it. Actually, it looks like the arrow is right at the wall, and I'm at 7.25 already. The step limit is 30 and I've used 10. Let me take a forward step to reach the arrow.\\n\\nActually, the arrow looks extremely close - it fills the view. Maybe I'm already at it. But taking one more forward step should confirm reaching it. Let me do forward.\"}}],\"created\":1794213806,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":279,\"prompt_tokens\":2507,\"total_tokens\":2786,\"completion_tokens_details\":{\"reasoning_tokens\":125},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is now very close, filling much of the camera view on the dark wall panel ahead. Below it is a metal floor strip and dark red carpet. The arrow points right on a dark rectangular plate mounted on the wall. I appear to be just about at the far wall with the arrow directly in front.\",\"reasoning\": \"I am at x=7.25 and the yellow arrow is immediately ahead, appearing within one step's distance (75cm). My torso rotation is 0 degrees (narrowest profile) and the path is clear. Taking one more forward step should bring me directly to the arrow at the far wall.\",\"action\": \"forward\",\"confidence\": 0.9}",
+    "reasoning_content": "The image shows the yellow arrow very close on the wall. Position is x=7.25. The arrow appears right ahead, very close. One more forward step should reach it. Actually, it looks like the arrow is right at the wall, and I'm at 7.25 already. The step limit is 30 and I've used 10. Let me take a forward step to reach the arrow.\n\nActually, the arrow looks extremely close - it fills the view. Maybe I'm already at it. But taking one more forward step should confirm reaching it. Let me do forward.",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is now very close, filling much of the camera view on the dark wall panel ahead. Below it is a metal floor strip and dark red carpet. The arrow points right on a dark rectangular plate mounted on the wall. I appear to be just about at the far wall with the arrow directly in front.",
+      "reasoning": "I am at x=7.25 and the yellow arrow is immediately ahead, appearing within one step's distance (75cm). My torso rotation is 0 degrees (narrowest profile) and the path is clear. Taking one more forward step should bring me directly to the arrow at the far wall.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

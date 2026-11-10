@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:28:31+08:00",
+    "latency_ms": 14136,
+    "payload_bytes": 372094,
+    "finish_reason": "stop",
+    "reasoning_tokens": 36,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"af5677c1-09e0-4a60-bf6f-beee1b93b8b0_916f5ba0ebf94307a6a2fb9188e0bed3\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a red circle target placed at the far end on a dark box, flanked by white floor tiles and decorative wall panels on both sides. The path is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The red circle remains straight ahead with a clear carpeted path. I have moved forward three times without issue and no obstacles are visible, so continuing forward is the direct route to the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red circle is ahead on the carpeted path. The path is clear. There appear to be openings/panels on either side but the middle is clear. Continue forward.\"}}],\"created\":1794212911,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":149,\"prompt_tokens\":2101,\"total_tokens\":2250,\"completion_tokens_details\":{\"reasoning_tokens\":36},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a red circle target placed at the far end on a dark box, flanked by white floor tiles and decorative wall panels on both sides. The path is clear and unobstructed.\", \"reasoning\": \"The red circle remains straight ahead with a clear carpeted path. I have moved forward three times without issue and no obstacles are visible, so continuing forward is the direct route to the target.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The red circle is ahead on the carpeted path. The path is clear. There appear to be openings/panels on either side but the middle is clear. Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a red circle target placed at the far end on a dark box, flanked by white floor tiles and decorative wall panels on both sides. The path is clear and unobstructed.",
+      "reasoning": "The red circle remains straight ahead with a clear carpeted path. I have moved forward three times without issue and no obstacles are visible, so continuing forward is the direct route to the target.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,49 @@
+You are a small wheeled robot. Your task is to reach the green rectangle on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the green rectangle on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the green rectangle on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the green rectangle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the green rectangle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the green rectangle you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+Current state:
+- position (x, y, z): [6.500, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 0.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (24 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: forward -> executed | your reasoning: The green rectangle goal is straight ahead with a clear path along the red carpet. No need to rotate; moving forward progresses directly toward the target.
+- step 1: forward -> executed | your reasoning: The goal is straight ahead along a clear, unobstructed red carpet toward the green rectangle in the doorway. No turning is needed since walking direction is fixed toward the goal.
+- step 2: forward -> executed | your reasoning: The goal green rectangle is directly ahead down the carpet with a clear, wide opening. Walking direction is fixed toward it and no turning is needed. Advancing will bring me closer to the doorway and the green rectangle.
+- step 3: forward -> executed | your reasoning: The goal is straight ahead with a clear path and a wide doorway; walking direction is fixed toward the green rectangle. Proceeding forward will move closer to the target.
+- step 4: forward -> executed | your reasoning: The goal green rectangle is straight ahead in the doorway. Walking direction is fixed toward it, and the opening appears wide and accessible. Moving forward will bring me closer to the target.
+- step 5: None -> invalid action response
+- step 6: forward -> executed | your reasoning: The green rectangle goal is directly ahead through the opening, and the path on the red carpet is clear. Walking direction is fixed toward the goal and no turning is needed.
+- step 7: forward -> executed | your reasoning: The green rectangle goal is directly ahead with a clear path on the red carpet. No turning is needed since walking direction is fixed toward the goal.
+- step 8: forward -> executed | your reasoning: The goal green rectangle is directly ahead through the doorway and the carpet path is unobstructed. Walking direction is fixed toward the goal, and no torso rotation is needed.
+- step 9: forward -> executed | your reasoning: The green goal is directly ahead through a clear doorway. Walking direction is already aligned toward it, and no rotation is needed. Advancing will bring me closer to or into contact with the green rectangle.
+- step 10: forward -> blocked by obstacle or room boundary (wall_panel) | your reasoning: The goal green rectangle is directly ahead and close; continuing straight will reach it. No turning is needed since walking direction is fixed toward the goal.
+- step 11: backward -> executed | your reasoning: I’m already at the doorway and previously hit a block likely because I’m in contact with the wall panel or target plane. A small adjustment backward should clear the immediate obstruction and allow a subsequent forward to complete contact…
+- step 12: forward -> executed | your reasoning: The green rectangle goal is directly ahead and close. I previously stepped back to clear any contact; moving forward should reach or contact the rectangle.
+- step 13: forward -> blocked by obstacle or room boundary (wall_panel) | your reasoning: The goal green rectangle is directly ahead and close. Walking direction is fixed toward it and the path is clear; continuing forward should reach the target.
+- step 14: forward -> blocked by obstacle or room boundary (wall_panel) | your reasoning: Previous forward attempts at this close range were blocked by the wall panel, suggesting I am already at contact distance. Taking one more forward step should complete reaching the green rectangle.
+- step 15: backward -> executed | your reasoning: Recent forward steps were blocked by the wall panel, indicating I’m already at the wall/goal. To avoid repeated blocks and properly position, I should step back slightly, then reassess or advance carefully.
+- step 16: forward -> executed | your reasoning: The goal green rectangle is directly ahead at close range, and forward movement aligns with the walking direction. Previous blocks occurred when too close; after stepping back, advancing should reach the target.
+- step 17: forward -> blocked by obstacle or room boundary (wall_panel) | your reasoning: I am very close to the green rectangle and facing straight toward it. Previous forward steps sometimes hit the wall panel due to being at contact distance, but after stepping back and advancing I should now be able to reach it with one mor…
+- step 18: forward -> blocked by obstacle or room boundary (wall_panel) | your reasoning: Multiple recent forward steps were blocked by the wall panel, indicating the front is already at or touching the goal plane. To register reaching the green rectangle, a minimal advance is needed; stepping forward is the direct way to make…
+- step 19: backward -> executed | your reasoning: Repeated forward steps are blocked by the wall panel, indicating I’m already at contact distance with the green rectangle. To register the goal, a tiny adjustment may be needed; stepping backward slightly will create space to approach clea…
+- step 20: forward -> executed | your reasoning: The goal (green rectangle) is directly ahead with a clear path along the carpet. Previous blocks indicate being at or near the wall, but after stepping backward, a single forward step should approach or reach the rectangle.
+- step 21: forward -> blocked by obstacle or room boundary (wall_panel) | your reasoning: Forward movement is aligned with the goal and previous backward step created space. A single forward step should make contact with the green rectangle. Given prior blocks at the wall, this is likely the final approach needed.
+- step 22: forward -> blocked by obstacle or room boundary (wall_panel) | your reasoning: The green rectangle is immediately ahead; previous forwards were blocked likely due to being at the wall. To reach the rectangle, I should continue advancing until contact is confirmed, as walking direction is fixed toward it.
+- step 23: backward -> executed | your reasoning: Multiple recent forward steps were blocked by the wall_panel, meaning I’m already at contact distance with the goal plane. Stepping forward again is futile and wastes steps; a small backward move may create the spacing needed to register a…
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

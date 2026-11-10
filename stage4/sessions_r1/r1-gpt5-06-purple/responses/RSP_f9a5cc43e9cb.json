@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:38:12+08:00",
+    "latency_ms": 7219,
+    "payload_bytes": 191441,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A close-up view straight ahead of a doorway opening from a red carpeted floor onto a smooth gray floor panel. Centered beyond the threshold is a rectangular plaque with a glowing purple four-pointed star. The lower edge of the gray panel has a slight raised lip or step at the doorway, which may be causing contact. Side walls of the doorway are visible; the far wall behind is dark.\\\",\\\"reasoning\\\":\\\"Multiple forward steps were blocked, likely by the small raised lip at the threshold. Turning does not change walking direction but changes body width; to fit or angle over the lip, I should reduce effective width by rotating slightly, then try forward again. First, rotate to potentially clear the doorway lip and avoid scraping shoulders against the opening before attempting forward.\\\",\\\"action\\\":\\\"turn_right\\\",\\\"confidence\\\":0.66}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794206289,\"id\":\"chatcmpl-EiDJ3VWrwCLKemL5gXlvQIfJlmh54\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008215714-19515ff0-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":176,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":439,\"engine_ttlt_ms\":2078,\"pre_inference_ms\":338,\"service_tbt_ms\":9,\"service_ttft_ms\":971,\"service_ttlt_ms\":2573,\"user_visible_ttft_ms\":632},\"prompt_tokens\":2121,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2297}}\n",
+    "content": "{\"scene_description\":\"A close-up view straight ahead of a doorway opening from a red carpeted floor onto a smooth gray floor panel. Centered beyond the threshold is a rectangular plaque with a glowing purple four-pointed star. The lower edge of the gray panel has a slight raised lip or step at the doorway, which may be causing contact. Side walls of the doorway are visible; the far wall behind is dark.\",\"reasoning\":\"Multiple forward steps were blocked, likely by the small raised lip at the threshold. Turning does not change walking direction but changes body width; to fit or angle over the lip, I should reduce effective width by rotating slightly, then try forward again. First, rotate to potentially clear the doorway lip and avoid scraping shoulders against the opening before attempting forward.\",\"action\":\"turn_right\",\"confidence\":0.66}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A close-up view straight ahead of a doorway opening from a red carpeted floor onto a smooth gray floor panel. Centered beyond the threshold is a rectangular plaque with a glowing purple four-pointed star. The lower edge of the gray panel has a slight raised lip or step at the doorway, which may be causing contact. Side walls of the doorway are visible; the far wall behind is dark.",
+      "reasoning": "Multiple forward steps were blocked, likely by the small raised lip at the threshold. Turning does not change walking direction but changes body width; to fit or angle over the lip, I should reduce effective width by rotating slightly, then try forward again. First, rotate to potentially clear the doorway lip and avoid scraping shoulders against the opening before attempting forward.",
+      "action": "turn_right",
+      "confidence": 0.66
+    },
+    "action": "turn_right"
+  }
+]

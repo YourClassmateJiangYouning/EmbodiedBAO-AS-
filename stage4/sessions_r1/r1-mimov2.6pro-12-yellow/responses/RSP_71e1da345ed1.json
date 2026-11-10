@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:22:07+08:00",
+    "latency_ms": 11810,
+    "payload_bytes": 339134,
+    "finish_reason": "stop",
+    "reasoning_tokens": 71,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"a227f809-730f-46ca-b561-a5d5529517d0_ae311949543c4dca9f250a91074c7c1b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead to a narrow opening in a patterned wall. The yellow arrow is visible at the far wall through the opening. Paper shapes lie on the floor to the left and right. My torso is rotated 90 degrees, presenting my thinnest profile toward the gap.\\\", \\\"reasoning\\\": \\\"I've rotated to 90 degrees to present my thinnest profile and am moving through the gap toward the yellow arrow. The path ahead is clear, so I should continue moving forward to close the distance to the arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=2.75, torso rotation 90 degrees (turned to present thin profile). The yellow arrow is visible ahead. Need to keep going forward to reach the arrow. Position x changes 0.75 per forward. Likely need to reach some x like 4.5 or so. Let's continue forward.\"}}],\"created\":1794136926,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":208,\"prompt_tokens\":2611,\"total_tokens\":2819,\"completion_tokens_details\":{\"reasoning_tokens\":71},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead to a narrow opening in a patterned wall. The yellow arrow is visible at the far wall through the opening. Paper shapes lie on the floor to the left and right. My torso is rotated 90 degrees, presenting my thinnest profile toward the gap.\", \"reasoning\": \"I've rotated to 90 degrees to present my thinnest profile and am moving through the gap toward the yellow arrow. The path ahead is clear, so I should continue moving forward to close the distance to the arrow.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "We are at x=2.75, torso rotation 90 degrees (turned to present thin profile). The yellow arrow is visible ahead. Need to keep going forward to reach the arrow. Position x changes 0.75 per forward. Likely need to reach some x like 4.5 or so. Let's continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead to a narrow opening in a patterned wall. The yellow arrow is visible at the far wall through the opening. Paper shapes lie on the floor to the left and right. My torso is rotated 90 degrees, presenting my thinnest profile toward the gap.",
+      "reasoning": "I've rotated to 90 degrees to present my thinnest profile and am moving through the gap toward the yellow arrow. The path ahead is clear, so I should continue moving forward to close the distance to the arrow.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

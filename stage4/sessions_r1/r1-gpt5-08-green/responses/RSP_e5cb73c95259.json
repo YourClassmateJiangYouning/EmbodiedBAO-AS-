@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:35:49+08:00",
+    "latency_ms": 5572,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A bright green rectangular target panel lies directly ahead on the floor, very close. A slight lip/threshold or wall panel appears just in front of it blocking further advance; the surrounding area is dim with a dark backdrop behind the green rectangle.\\\", \\\"reasoning\\\": \\\"Forward steps are being blocked by a low wall/threshold right before the green rectangle. Since walking direction is fixed and turning doesn’t change path or view, continuing to push forward won’t help. I should back up to clear the obstruction and then try a different approach if needed.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.64}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198947,\"id\":\"chatcmpl-EiBOdrun0Bp0b5dgbv9KqQBmrFo2c\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":138,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":489,\"engine_ttlt_ms\":1770,\"pre_inference_ms\":351,\"service_tbt_ms\":9,\"service_ttft_ms\":1101,\"service_ttlt_ms\":2343,\"user_visible_ttft_ms\":750},\"prompt_tokens\":2229,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2367}}\n",
+    "content": "{\"scene_description\": \"A bright green rectangular target panel lies directly ahead on the floor, very close. A slight lip/threshold or wall panel appears just in front of it blocking further advance; the surrounding area is dim with a dark backdrop behind the green rectangle.\", \"reasoning\": \"Forward steps are being blocked by a low wall/threshold right before the green rectangle. Since walking direction is fixed and turning doesn’t change path or view, continuing to push forward won’t help. I should back up to clear the obstruction and then try a different approach if needed.\", \"action\": \"backward\", \"confidence\": 0.64}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A bright green rectangular target panel lies directly ahead on the floor, very close. A slight lip/threshold or wall panel appears just in front of it blocking further advance; the surrounding area is dim with a dark backdrop behind the green rectangle.",
+      "reasoning": "Forward steps are being blocked by a low wall/threshold right before the green rectangle. Since walking direction is fixed and turning doesn’t change path or view, continuing to push forward won’t help. I should back up to clear the obstruction and then try a different approach if needed.",
+      "action": "backward",
+      "confidence": 0.64
+    },
+    "action": "backward"
+  }
+]

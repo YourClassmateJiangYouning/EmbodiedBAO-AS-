@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:24:46+08:00",
+    "latency_ms": 6531,
+    "payload_bytes": 397400,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090824409850470218268d9d6RVJLDXDi\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212686,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet walkway leading towards a green rectangle on a far wall. There are white markers on the floor to the left and right of the carpet. The green rectangle is positioned between two patterned partitions at the end of the path.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees to present the narrowest profile. I am currently at position x=2.0 and need to continue moving forward to reach the green rectangle at the end of the walkway. I will continue moving forward in 75cm increments.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3134,\"completion_tokens\":143,\"total_tokens\":3277,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3134,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":143,\"totalTokenCount\":3277,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2045},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":143}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2045,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":143,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet walkway leading towards a green rectangle on a far wall. There are white markers on the floor to the left and right of the carpet. The green rectangle is positioned between two patterned partitions at the end of the path.\",\n  \"reasoning\": \"I have already rotated my torso to 90 degrees to present the narrowest profile. I am currently at position x=2.0 and need to continue moving forward to reach the green rectangle at the end of the walkway. I will continue moving forward in 75cm increments.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet walkway leading towards a green rectangle on a far wall. There are white markers on the floor to the left and right of the carpet. The green rectangle is positioned between two patterned partitions at the end of the path.",
+      "reasoning": "I have already rotated my torso to 90 degrees to present the narrowest profile. I am currently at position x=2.0 and need to continue moving forward to reach the green rectangle at the end of the walkway. I will continue moving forward in 75cm increments.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

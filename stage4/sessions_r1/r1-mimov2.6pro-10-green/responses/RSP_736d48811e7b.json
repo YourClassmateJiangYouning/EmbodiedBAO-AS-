@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:30:24+08:00",
+    "latency_ms": 11794,
+    "payload_bytes": 317411,
+    "finish_reason": "stop",
+    "reasoning_tokens": 167,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"0d3673f9-02e7-48e8-92b4-2cffec367109_85093f9add934fb2a40b838c87271ff2\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted floor stretches forward toward a narrow opening in a patterned far wall. Through the dark opening, a green rectangle sits at floor level. Decorative geometric walls flank the carpet on both sides. The green rectangle is centered in the view and slightly below the horizon line.\\\", \\\"reasoning\\\": \\\"The green rectangle is directly ahead and centered in my walking direction. My torso is at 0 rotation, presenting my narrowest profile, which is ideal for the narrow opening ahead. The path on the carpet is clear, and every forward step closes distance to the goal. I should keep moving forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are in a room with a red carpet leading toward a green rectangle at the far wall. There is an opening/narrow passage ahead. The green rectangle is visible through a doorway/opening. We are at x=3.5, having taken 5 steps. The green rectangle appears to be some distance ahead but we can see it clearly. The path is straight along the carpet. There appears to be an opening in the wall ahead - a narrow passage. We need to go forward.\\n\\nWe need to be careful about the width. The opening might be narrow, and we can't turn once shoulders are inside the opening. We already did a look_down earlier. Torso is at 0 degrees - narrowest profile. We should just continue forward.\\n\\nThe green rectangle is visible and centered. Forward is the right action.\"}}],\"created\":1794137424,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":312,\"prompt_tokens\":2216,\"total_tokens\":2528,\"completion_tokens_details\":{\"reasoning_tokens\":167},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted floor stretches forward toward a narrow opening in a patterned far wall. Through the dark opening, a green rectangle sits at floor level. Decorative geometric walls flank the carpet on both sides. The green rectangle is centered in the view and slightly below the horizon line.\", \"reasoning\": \"The green rectangle is directly ahead and centered in my walking direction. My torso is at 0 rotation, presenting my narrowest profile, which is ideal for the narrow opening ahead. The path on the carpet is clear, and every forward step closes distance to the goal. I should keep moving forward.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "We are in a room with a red carpet leading toward a green rectangle at the far wall. There is an opening/narrow passage ahead. The green rectangle is visible through a doorway/opening. We are at x=3.5, having taken 5 steps. The green rectangle appears to be some distance ahead but we can see it clearly. The path is straight along the carpet. There appears to be an opening in the wall ahead - a narrow passage. We need to go forward.\n\nWe need to be careful about the width. The opening might be narrow, and we can't turn once shoulders are inside the opening. We already did a look_down earlier. Torso is at 0 degrees - narrowest profile. We should just continue forward.\n\nThe green rectangle is visible and centered. Forward is the right action.",
+    "parsed": {
+      "scene_description": "A red carpeted floor stretches forward toward a narrow opening in a patterned far wall. Through the dark opening, a green rectangle sits at floor level. Decorative geometric walls flank the carpet on both sides. The green rectangle is centered in the view and slightly below the horizon line.",
+      "reasoning": "The green rectangle is directly ahead and centered in my walking direction. My torso is at 0 rotation, presenting my narrowest profile, which is ideal for the narrow opening ahead. The path on the carpet is clear, and every forward step closes distance to the goal. I should keep moving forward.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:01:27+08:00",
+    "latency_ms": 2322,
+    "payload_bytes": 257081,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"bd8148a3-178f-460f-ad75-5fa72add8686\",\"object\":\"chat.completion\",\"created\":1794207686,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpet leading toward a narrow opening between two patterned wall panels. Through the opening, a black sign with a yellow arrow pointing right is visible on the far wall. The path ahead appears clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The yellow arrow is directly ahead through the opening, and my torso is aligned at 0 degrees. The path is clear, so continuing forward advances me toward the goal. No turning is needed yet.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1969,\"completion_tokens\":111,\"total_tokens\":2080,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1201},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpet leading toward a narrow opening between two patterned wall panels. Through the opening, a black sign with a yellow arrow pointing right is visible on the far wall. The path ahead appears clear and unobstructed.\", \"reasoning\": \"The yellow arrow is directly ahead through the opening, and my torso is aligned at 0 degrees. The path is clear, so continuing forward advances me toward the goal. No turning is needed yet.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpet leading toward a narrow opening between two patterned wall panels. Through the opening, a black sign with a yellow arrow pointing right is visible on the far wall. The path ahead appears clear and unobstructed.",
+      "reasoning": "The yellow arrow is directly ahead through the opening, and my torso is aligned at 0 degrees. The path is clear, so continuing forward advances me toward the goal. No turning is needed yet.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

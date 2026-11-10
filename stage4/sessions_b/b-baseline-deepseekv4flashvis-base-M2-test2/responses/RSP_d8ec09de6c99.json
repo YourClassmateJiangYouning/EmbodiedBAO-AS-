@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:21:47+08:00",
+    "latency_ms": 2580,
+    "payload_bytes": 281807,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5457ec7d-e81a-4aa4-9d66-92715710ef99\",\"object\":\"chat.completion\",\"created\":1794212505,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle on its black rectangular base is directly ahead and very close, filling much of the lower view; the floor and a dark object with an orange couch are visible beyond it.\\\", \\\"reasoning\\\": \\\"After nine forward steps the target is immediately in front of me. One more forward step should place me at the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2006,\"completion_tokens\":86,\"total_tokens\":2092,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1238},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle on its black rectangular base is directly ahead and very close, filling much of the lower view; the floor and a dark object with an orange couch are visible beyond it.\", \"reasoning\": \"After nine forward steps the target is immediately in front of me. One more forward step should place me at the red circle.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle on its black rectangular base is directly ahead and very close, filling much of the lower view; the floor and a dark object with an orange couch are visible beyond it.",
+      "reasoning": "After nine forward steps the target is immediately in front of me. One more forward step should place me at the red circle.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

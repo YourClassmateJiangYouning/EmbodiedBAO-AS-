@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:27:53+08:00",
+    "latency_ms": 6464,
+    "payload_bytes": 317411,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A straight red-carpeted walkway leads ahead between patterned walls. At the far end, a bright green rectangle is visible low against the back wall, slightly offset to the left. The path appears clear with no obstacles.\\\", \\\"reasoning\\\": \\\"The goal green rectangle is straight ahead down the clear walkway. Continuing straight will bring me closer efficiently.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.78}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198471,\"id\":\"chatcmpl-EiBGxCWBxe6ItCJSBf0xjppbioVVD\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008215714-19515ff0-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":97,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":448,\"engine_ttlt_ms\":1186,\"pre_inference_ms\":343,\"service_tbt_ms\":7,\"service_ttft_ms\":906,\"service_ttlt_ms\":1618,\"user_visible_ttft_ms\":564},\"prompt_tokens\":1691,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1788}}\n",
+    "content": "{\"scene_description\": \"A straight red-carpeted walkway leads ahead between patterned walls. At the far end, a bright green rectangle is visible low against the back wall, slightly offset to the left. The path appears clear with no obstacles.\", \"reasoning\": \"The goal green rectangle is straight ahead down the clear walkway. Continuing straight will bring me closer efficiently.\", \"action\": \"forward\", \"confidence\": 0.78}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight red-carpeted walkway leads ahead between patterned walls. At the far end, a bright green rectangle is visible low against the back wall, slightly offset to the left. The path appears clear with no obstacles.",
+      "reasoning": "The goal green rectangle is straight ahead down the clear walkway. Continuing straight will bring me closer efficiently.",
+      "action": "forward",
+      "confidence": 0.78
+    },
+    "action": "forward"
+  }
+]

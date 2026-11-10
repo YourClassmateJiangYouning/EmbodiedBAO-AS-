@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:14:04+08:00",
+    "latency_ms": 3033,
+    "payload_bytes": 242589,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"0b07e5f2-d0e1-4155-9f62-68aaa716a7a4\",\"object\":\"chat.completion\",\"created\":1794208443,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is visible straight ahead through a narrow dark opening, with patterned walls on either side and a dark red floor in the foreground. The opening appears close and narrow.\\\", \\\"reasoning\\\": \\\"The green target is directly ahead through the narrow doorway. My torso is rotated 30 degrees right to present a slimmer profile, and repeated forward steps have brought me close to the opening. Continuing forward should carry me through toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2272,\"completion_tokens\":108,\"total_tokens\":2380,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1632},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is visible straight ahead through a narrow dark opening, with patterned walls on either side and a dark red floor in the foreground. The opening appears close and narrow.\", \"reasoning\": \"The green target is directly ahead through the narrow doorway. My torso is rotated 30 degrees right to present a slimmer profile, and repeated forward steps have brought me close to the opening. Continuing forward should carry me through toward the target.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is visible straight ahead through a narrow dark opening, with patterned walls on either side and a dark red floor in the foreground. The opening appears close and narrow.",
+      "reasoning": "The green target is directly ahead through the narrow doorway. My torso is rotated 30 degrees right to present a slimmer profile, and repeated forward steps have brought me close to the opening. Continuing forward should carry me through toward the target.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

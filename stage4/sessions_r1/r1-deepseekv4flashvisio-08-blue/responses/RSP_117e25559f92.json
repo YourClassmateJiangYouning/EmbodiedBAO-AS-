@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:11:34+08:00",
+    "latency_ms": 2922,
+    "payload_bytes": 212085,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"99c9126e-f4bc-4be1-b689-558d39bd11fe\",\"object\":\"chat.completion\",\"created\":1794208292,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle sits on a raised platform directly ahead, framed by a dark doorway with patterned walls on either side. The carpeted floor leads up to the platform edge, which appears to be a low ledge at wheel height.\\\", \\\"reasoning\\\": \\\"The goal is very close and centered ahead. Forward steps have repeatedly been blocked by the low ledge, but backing up to gain clearance then moving forward has succeeded before. I just backed up one step, so attempting forward now should close the remaining gap to the triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3111,\"completion_tokens\":122,\"total_tokens\":3233,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2471},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle sits on a raised platform directly ahead, framed by a dark doorway with patterned walls on either side. The carpeted floor leads up to the platform edge, which appears to be a low ledge at wheel height.\", \"reasoning\": \"The goal is very close and centered ahead. Forward steps have repeatedly been blocked by the low ledge, but backing up to gain clearance then moving forward has succeeded before. I just backed up one step, so attempting forward now should close the remaining gap to the triangle.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle sits on a raised platform directly ahead, framed by a dark doorway with patterned walls on either side. The carpeted floor leads up to the platform edge, which appears to be a low ledge at wheel height.",
+      "reasoning": "The goal is very close and centered ahead. Forward steps have repeatedly been blocked by the low ledge, but backing up to gain clearance then moving forward has succeeded before. I just backed up one step, so attempting forward now should close the remaining gap to the triangle.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

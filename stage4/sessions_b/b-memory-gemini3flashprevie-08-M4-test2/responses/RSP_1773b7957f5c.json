@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:47:27+08:00",
+    "latency_ms": 13264,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090847195446283528268d9d6nUfiM59i\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794214047,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The downward view shows the robot's white bumper and wheels against a red carpet. The torso is rotated 75 degrees, making the bumper appear nearly vertical in the frame, which minimizes the width presented to the forward path.\\\", \\\"reasoning\\\": \\\"I have successfully rotated my torso to 75 degrees, which is the optimal orientation to pass through the narrow gap ahead based on the previous successful traversal. Now that my profile is minimized, I will begin moving forward toward the blue triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3458,\"completion_tokens\":119,\"total_tokens\":3577,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3458,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":119,\"totalTokenCount\":3577,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2369},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":119}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2369,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":119,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The downward view shows the robot's white bumper and wheels against a red carpet. The torso is rotated 75 degrees, making the bumper appear nearly vertical in the frame, which minimizes the width presented to the forward path.\", \"reasoning\": \"I have successfully rotated my torso to 75 degrees, which is the optimal orientation to pass through the narrow gap ahead based on the previous successful traversal. Now that my profile is minimized, I will begin moving forward toward the blue triangle.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The downward view shows the robot's white bumper and wheels against a red carpet. The torso is rotated 75 degrees, making the bumper appear nearly vertical in the frame, which minimizes the width presented to the forward path.",
+      "reasoning": "I have successfully rotated my torso to 75 degrees, which is the optimal orientation to pass through the narrow gap ahead based on the previous successful traversal. Now that my profile is minimized, I will begin moving forward toward the blue triangle.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:06:15+08:00",
+    "latency_ms": 2281,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"0ee3bdeb-2e32-481f-a30b-347670350f88\",\"object\":\"chat.completion\",\"created\":1794207974,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is directly ahead, appearing large and close, mounted on the far wall above a light-colored floor area. The path forward looks clear.\\\", \\\"reasoning\\\": \\\"The green target is straight ahead and appears close, so continuing forward reduces the remaining distance to the goal. No turning is needed since forward always heads toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2109,\"completion_tokens\":88,\"total_tokens\":2197,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1341},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is directly ahead, appearing large and close, mounted on the far wall above a light-colored floor area. The path forward looks clear.\", \"reasoning\": \"The green target is straight ahead and appears close, so continuing forward reduces the remaining distance to the goal. No turning is needed since forward always heads toward the target.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is directly ahead, appearing large and close, mounted on the far wall above a light-colored floor area. The path forward looks clear.",
+      "reasoning": "The green target is straight ahead and appears close, so continuing forward reduces the remaining distance to the goal. No turning is needed since forward always heads toward the target.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

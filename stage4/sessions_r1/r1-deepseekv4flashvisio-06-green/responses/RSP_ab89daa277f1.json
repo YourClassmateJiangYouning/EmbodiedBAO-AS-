@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:13:39+08:00",
+    "latency_ms": 2923,
+    "payload_bytes": 361646,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"b43e3277-811c-4360-b5d2-348617d4960d\",\"object\":\"chat.completion\",\"created\":1794208418,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead down a red carpeted walkway toward a far wall with a narrow dark opening; the green target rectangle is visible inside that opening, slightly left of center. The patterned floor is to the left, and the opening appears narrow relative to the robot's body.\\\", \\\"reasoning\\\": \\\"The green target is straight ahead through the narrow opening. My torso is now rotated 30 degrees right, which should present a slimmer profile to the opening than the wide wheel-to-wheel width seen at 0 degrees. I have already turned twice; rather than turning further, I should attempt to advance through the opening toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1879,\"completion_tokens\":148,\"total_tokens\":2027,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1367},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead down a red carpeted walkway toward a far wall with a narrow dark opening; the green target rectangle is visible inside that opening, slightly left of center. The patterned floor is to the left, and the opening appears narrow relative to the robot's body.\", \"reasoning\": \"The green target is straight ahead through the narrow opening. My torso is now rotated 30 degrees right, which should present a slimmer profile to the opening than the wide wheel-to-wheel width seen at 0 degrees. I have already turned twice; rather than turning further, I should attempt to advance through the opening toward the target.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead down a red carpeted walkway toward a far wall with a narrow dark opening; the green target rectangle is visible inside that opening, slightly left of center. The patterned floor is to the left, and the opening appears narrow relative to the robot's body.",
+      "reasoning": "The green target is straight ahead through the narrow opening. My torso is now rotated 30 degrees right, which should present a slimmer profile to the opening than the wide wheel-to-wheel width seen at 0 degrees. I have already turned twice; rather than turning further, I should attempt to advance through the opening toward the target.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

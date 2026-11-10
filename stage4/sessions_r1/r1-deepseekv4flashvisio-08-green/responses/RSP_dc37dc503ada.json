@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:06:40+08:00",
+    "latency_ms": 2844,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"d6d17f8b-95dd-4a68-aa14-d4b14291a19c\",\"object\":\"chat.completion\",\"created\":1794207999,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is visible directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path forward appears blocked at close range by a wall panel despite the target being centered.\\\", \\\"reasoning\\\": \\\"Forward has been blocked repeatedly at torso rotations of 0, 15, 30, and 45 degrees, so further turning left is unlikely to help. Since the target is extremely close and centered, I should try turning right to reorient my body width differently, as the left turns have not resolved the blockage.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.3}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2644,\"completion_tokens\":132,\"total_tokens\":2776,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2004},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is visible directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path forward appears blocked at close range by a wall panel despite the target being centered.\", \"reasoning\": \"Forward has been blocked repeatedly at torso rotations of 0, 15, 30, and 45 degrees, so further turning left is unlikely to help. Since the target is extremely close and centered, I should try turning right to reorient my body width differently, as the left turns have not resolved the blockage.\", \"action\": \"turn_right\", \"confidence\": 0.3}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is visible directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path forward appears blocked at close range by a wall panel despite the target being centered.",
+      "reasoning": "Forward has been blocked repeatedly at torso rotations of 0, 15, 30, and 45 degrees, so further turning left is unlikely to help. Since the target is extremely close and centered, I should try turning right to reorient my body width differently, as the left turns have not resolved the blockage.",
+      "action": "turn_right",
+      "confidence": 0.3
+    },
+    "action": "turn_right"
+  }
+]

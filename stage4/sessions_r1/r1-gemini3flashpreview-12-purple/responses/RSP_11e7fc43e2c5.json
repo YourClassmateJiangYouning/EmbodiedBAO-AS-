@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:25:10+08:00",
+    "latency_ms": 8504,
+    "payload_bytes": 252187,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081025029642466218268d9d6JzRbzIS3\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133510,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is positioned directly in front of a black rectangular panel featuring a large, glowing purple four-pointed star. The panel is resting on a light-colored floor, and behind it is a dark, draped fabric.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=8.0, and the purple star is immediately in front of me. I will move forward one more time to ensure I have reached the target position.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3195,\"completion_tokens\":115,\"total_tokens\":3310,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3195,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":115,\"totalTokenCount\":3310,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2106}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":115}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2106,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":115,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is positioned directly in front of a black rectangular panel featuring a large, glowing purple four-pointed star. The panel is resting on a light-colored floor, and behind it is a dark, draped fabric.\",\n  \"reasoning\": \"I am at x=8.0, and the purple star is immediately in front of me. I will move forward one more time to ensure I have reached the target position.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is positioned directly in front of a black rectangular panel featuring a large, glowing purple four-pointed star. The panel is resting on a light-colored floor, and behind it is a dark, draped fabric.",
+      "reasoning": "I am at x=8.0, and the purple star is immediately in front of me. I will move forward one more time to ensure I have reached the target position.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

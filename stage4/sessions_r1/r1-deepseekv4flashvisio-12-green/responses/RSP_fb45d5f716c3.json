@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:59:45+08:00",
+    "latency_ms": 3090,
+    "payload_bytes": 361551,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"b42a7b1b-2d41-4ec5-924b-d0aa40426cc5\",\"object\":\"chat.completion\",\"created\":1794207584,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a narrow opening between two patterned walls, with a small green rectangle visible on the far wall through the gap. The path appears clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The green target is directly ahead through the narrow opening. My torso is at 0 degrees, so my width is presented squarely to the opening. I have already advanced twice and the path remains clear, so continuing forward brings me closer to the goal. I should keep moving forward while the opening is still ahead.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1757,\"completion_tokens\":127,\"total_tokens\":1884,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":989},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a narrow opening between two patterned walls, with a small green rectangle visible on the far wall through the gap. The path appears clear and unobstructed.\", \"reasoning\": \"The green target is directly ahead through the narrow opening. My torso is at 0 degrees, so my width is presented squarely to the opening. I have already advanced twice and the path remains clear, so continuing forward brings me closer to the goal. I should keep moving forward while the opening is still ahead.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a narrow opening between two patterned walls, with a small green rectangle visible on the far wall through the gap. The path appears clear and unobstructed.",
+      "reasoning": "The green target is directly ahead through the narrow opening. My torso is at 0 degrees, so my width is presented squarely to the opening. I have already advanced twice and the path remains clear, so continuing forward brings me closer to the goal. I should keep moving forward while the opening is still ahead.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

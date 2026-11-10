@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:27:15+08:00",
+    "latency_ms": 7315,
+    "payload_bytes": 322258,
+    "finish_reason": "stop",
+    "reasoning_tokens": 64,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"523a4e0a-2f61-4981-8ad6-4a488842f042_03297e7a194d4cb78543823ee59619c3\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpet on the right and patterned floor on the left, with the dark narrow opening and blue triangle in the far wall now noticeably closer and larger after several forward steps.\\\", \\\"reasoning\\\": \\\"My torso is already at 90 degrees, presenting my thinnest profile for the narrow opening. The triangle is much closer now and the path along the carpet remains clear, so I should keep walking forward toward it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are 3.5 meters forward. There are 30 steps, 11 used, 19 remain. The blue triangle appears closer now. Torso rotation 90 (minimum width). We should just keep going forward. The opening appears to be ahead; continue forward.\\n\\nContinue forward.\"}}],\"created\":1794144435,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":173,\"prompt_tokens\":2657,\"total_tokens\":2830,\"completion_tokens_details\":{\"reasoning_tokens\":64},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpet on the right and patterned floor on the left, with the dark narrow opening and blue triangle in the far wall now noticeably closer and larger after several forward steps.\", \"reasoning\": \"My torso is already at 90 degrees, presenting my thinnest profile for the narrow opening. The triangle is much closer now and the path along the carpet remains clear, so I should keep walking forward toward it.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "We are 3.5 meters forward. There are 30 steps, 11 used, 19 remain. The blue triangle appears closer now. Torso rotation 90 (minimum width). We should just keep going forward. The opening appears to be ahead; continue forward.\n\nContinue forward.",
+    "parsed": {
+      "scene_description": "Red carpet on the right and patterned floor on the left, with the dark narrow opening and blue triangle in the far wall now noticeably closer and larger after several forward steps.",
+      "reasoning": "My torso is already at 90 degrees, presenting my thinnest profile for the narrow opening. The triangle is much closer now and the path along the carpet remains clear, so I should keep walking forward toward it.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:28:48+08:00",
+    "latency_ms": 6099,
+    "payload_bytes": 375325,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A straight red-carpeted corridor leads forward toward a wall with a rectangular opening. The opening appears somewhat narrow, with patterned panels on both sides. A red circle target is visible on the far wall through the opening. The path ahead on the carpet looks clear.\\\", \\\"reasoning\\\": \\\"The target is straight ahead and the carpeted path is unobstructed. I am not yet at the narrow opening, so no torso rotation or width check is needed right now. Advancing forward brings me closer to the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.76}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198525,\"id\":\"chatcmpl-EiBHp1RdOCqHYiVlR1hO2OgVGVXTG\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":133,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":10,\"engine_ttft_ms\":353,\"engine_ttlt_ms\":1730,\"pre_inference_ms\":327,\"service_tbt_ms\":10,\"service_ttft_ms\":1001,\"service_ttlt_ms\":2373,\"user_visible_ttft_ms\":674},\"prompt_tokens\":1580,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1713}}\n",
+    "content": "{\"scene_description\": \"A straight red-carpeted corridor leads forward toward a wall with a rectangular opening. The opening appears somewhat narrow, with patterned panels on both sides. A red circle target is visible on the far wall through the opening. The path ahead on the carpet looks clear.\", \"reasoning\": \"The target is straight ahead and the carpeted path is unobstructed. I am not yet at the narrow opening, so no torso rotation or width check is needed right now. Advancing forward brings me closer to the red circle.\", \"action\": \"forward\", \"confidence\": 0.76}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight red-carpeted corridor leads forward toward a wall with a rectangular opening. The opening appears somewhat narrow, with patterned panels on both sides. A red circle target is visible on the far wall through the opening. The path ahead on the carpet looks clear.",
+      "reasoning": "The target is straight ahead and the carpeted path is unobstructed. I am not yet at the narrow opening, so no torso rotation or width check is needed right now. Advancing forward brings me closer to the red circle.",
+      "action": "forward",
+      "confidence": 0.76
+    },
+    "action": "forward"
+  }
+]

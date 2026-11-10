@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:31:14+08:00",
+    "latency_ms": 7481,
+    "payload_bytes": 335019,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_4rfsrglw4sbtz4ewcmpeqv62f4nujrdjjb7yyza2dp2ayr3m3qia\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198674,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a clear walkway ahead with a red/burgundy textured floor. The blue triangle target is visible on the far wall, centered in my view and well-lit against a dark background. The path is completely unobstructed. On the left side, there's a lighter colored floor area with decorative patterns. The walkway extends straight ahead toward the target.\\\",\\n  \\\"reasoning\\\": \\\"I'm at position x=2.750, having made good progress toward the blue triangle. The target is clearly visible and directly ahead. My torso is at 0 degrees (neutral), my walking direction is perfectly aligned toward the target, and the path ahead is completely clear with no obstacles. I should continue forward to reach the blue triangle. I have 27 steps remaining out of my 30-step budget.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.98\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2560,\"completion_tokens\":207,\"total_tokens\":2767,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2560,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":207,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2560,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a clear walkway ahead with a red/burgundy textured floor. The blue triangle target is visible on the far wall, centered in my view and well-lit against a dark background. The path is completely unobstructed. On the left side, there's a lighter colored floor area with decorative patterns. The walkway extends straight ahead toward the target.\",\n  \"reasoning\": \"I'm at position x=2.750, having made good progress toward the blue triangle. The target is clearly visible and directly ahead. My torso is at 0 degrees (neutral), my walking direction is perfectly aligned toward the target, and the path ahead is completely clear with no obstacles. I should continue forward to reach the blue triangle. I have 27 steps remaining out of my 30-step budget.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.98\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a clear walkway ahead with a red/burgundy textured floor. The blue triangle target is visible on the far wall, centered in my view and well-lit against a dark background. The path is completely unobstructed. On the left side, there's a lighter colored floor area with decorative patterns. The walkway extends straight ahead toward the target.",
+      "reasoning": "I'm at position x=2.750, having made good progress toward the blue triangle. The target is clearly visible and directly ahead. My torso is at 0 degrees (neutral), my walking direction is perfectly aligned toward the target, and the path ahead is completely clear with no obstacles. I should continue forward to reach the blue triangle. I have 27 steps remaining out of my 30-step budget.",
+      "action": "forward",
+      "confidence": 0.98
+    },
+    "action": "forward"
+  }
+]

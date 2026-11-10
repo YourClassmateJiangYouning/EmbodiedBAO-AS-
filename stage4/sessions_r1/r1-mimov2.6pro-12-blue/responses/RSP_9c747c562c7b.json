@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:24:27+08:00",
+    "latency_ms": 9403,
+    "payload_bytes": 274247,
+    "finish_reason": "stop",
+    "reasoning_tokens": 10,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"1246bd70-0997-4017-b515-1541dfb44261_ef8c07a201064ed5905ece1328f22c2d\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpeted floor stretching ahead between two patterned wall panels, with a blue triangle visible at the far wall opening centered ahead.\\\", \\\"reasoning\\\": \\\"The path remains completely clear along the red carpet toward the blue triangle at the far wall. I've moved forward 3.75m so far with no obstacles, so I should continue advancing.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear, just continue forward.\"}}],\"created\":1794137067,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":104,\"prompt_tokens\":2224,\"total_tokens\":2328,\"completion_tokens_details\":{\"reasoning_tokens\":10},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpeted floor stretching ahead between two patterned wall panels, with a blue triangle visible at the far wall opening centered ahead.\", \"reasoning\": \"The path remains completely clear along the red carpet toward the blue triangle at the far wall. I've moved forward 3.75m so far with no obstacles, so I should continue advancing.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear, just continue forward.",
+    "parsed": {
+      "scene_description": "Red carpeted floor stretching ahead between two patterned wall panels, with a blue triangle visible at the far wall opening centered ahead.",
+      "reasoning": "The path remains completely clear along the red carpet toward the blue triangle at the far wall. I've moved forward 3.75m so far with no obstacles, so I should continue advancing.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

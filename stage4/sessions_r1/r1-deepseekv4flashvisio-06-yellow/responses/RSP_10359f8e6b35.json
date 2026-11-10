@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:17:31+08:00",
+    "latency_ms": 2482,
+    "payload_bytes": 173192,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"879b5c17-a125-4592-ae3a-87a0b304dee6\",\"object\":\"chat.completion\",\"created\":1794208650,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is directly ahead, very close, mounted on a low dark panel that blocks the path at body height. The doorway edges are visible on both sides.\\\", \\\"reasoning\\\": \\\"The arrow is extremely close and centered. Forward steps have been blocked by the low wall_panel, but backing up then moving forward succeeded once, suggesting the panel is passable at a slightly different distance. I just backed up and moved forward successfully at step 20, so I am close again. Since the arrow is the goal and appears reachable, I will attempt one more forward step to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2890,\"completion_tokens\":140,\"total_tokens\":3030,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2250},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is directly ahead, very close, mounted on a low dark panel that blocks the path at body height. The doorway edges are visible on both sides.\", \"reasoning\": \"The arrow is extremely close and centered. Forward steps have been blocked by the low wall_panel, but backing up then moving forward succeeded once, suggesting the panel is passable at a slightly different distance. I just backed up and moved forward successfully at step 20, so I am close again. Since the arrow is the goal and appears reachable, I will attempt one more forward step to reach it.\", \"action\": \"forward\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is directly ahead, very close, mounted on a low dark panel that blocks the path at body height. The doorway edges are visible on both sides.",
+      "reasoning": "The arrow is extremely close and centered. Forward steps have been blocked by the low wall_panel, but backing up then moving forward succeeded once, suggesting the panel is passable at a slightly different distance. I just backed up and moved forward successfully at step 20, so I am close again. Since the arrow is the goal and appears reachable, I will attempt one more forward step to reach it.",
+      "action": "forward",
+      "confidence": 0.4
+    },
+    "action": "forward"
+  }
+]

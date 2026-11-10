@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:12:08+08:00",
+    "latency_ms": 2034,
+    "payload_bytes": 166724,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"606de41e-9afa-433c-a3ed-7a75de313e93\",\"object\":\"chat.completion\",\"created\":1794208327,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star glows brightly on a dark panel directly ahead, with the red carpet leading up to it. The star appears large and close, filling much of the view.\\\", \\\"reasoning\\\": \\\"The star is directly ahead along my fixed walking direction and appears very close after 9 forward steps. One more forward step should bring me to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1975,\"completion_tokens\":93,\"total_tokens\":2068,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1207},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star glows brightly on a dark panel directly ahead, with the red carpet leading up to it. The star appears large and close, filling much of the view.\", \"reasoning\": \"The star is directly ahead along my fixed walking direction and appears very close after 9 forward steps. One more forward step should bring me to the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star glows brightly on a dark panel directly ahead, with the red carpet leading up to it. The star appears large and close, filling much of the view.",
+      "reasoning": "The star is directly ahead along my fixed walking direction and appears very close after 9 forward steps. One more forward step should bring me to the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

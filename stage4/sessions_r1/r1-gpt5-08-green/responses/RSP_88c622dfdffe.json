@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:37:15+08:00",
+    "latency_ms": 7829,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A bright green rectangular panel lies directly ahead on a smooth gray floor at the far wall. In the foreground there is a dark red carpeted area with a small raised lip or threshold where it meets the gray floor. The green rectangle appears very close beyond this lip, centered in the path.\\\", \\\"reasoning\\\": \\\"Multiple recent forward moves were blocked at the carpet-to-floor threshold, indicating I am right up against a low lip that intermittently blocks progress. With only a few steps left and the goal immediately ahead, the only chance to reach it is to attempt another forward move over the lip.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.62}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794199032,\"id\":\"chatcmpl-EiBQ0NwWcj86t39zUshOqMkqSwDsQ\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":147,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":511,\"engine_ttlt_ms\":1763,\"pre_inference_ms\":298,\"service_tbt_ms\":8,\"service_ttft_ms\":959,\"service_ttlt_ms\":2169,\"user_visible_ttft_ms\":661},\"prompt_tokens\":2952,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":3099}}\n",
+    "content": "{\"scene_description\": \"A bright green rectangular panel lies directly ahead on a smooth gray floor at the far wall. In the foreground there is a dark red carpeted area with a small raised lip or threshold where it meets the gray floor. The green rectangle appears very close beyond this lip, centered in the path.\", \"reasoning\": \"Multiple recent forward moves were blocked at the carpet-to-floor threshold, indicating I am right up against a low lip that intermittently blocks progress. With only a few steps left and the goal immediately ahead, the only chance to reach it is to attempt another forward move over the lip.\", \"action\": \"forward\", \"confidence\": 0.62}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A bright green rectangular panel lies directly ahead on a smooth gray floor at the far wall. In the foreground there is a dark red carpeted area with a small raised lip or threshold where it meets the gray floor. The green rectangle appears very close beyond this lip, centered in the path.",
+      "reasoning": "Multiple recent forward moves were blocked at the carpet-to-floor threshold, indicating I am right up against a low lip that intermittently blocks progress. With only a few steps left and the goal immediately ahead, the only chance to reach it is to attempt another forward move over the lip.",
+      "action": "forward",
+      "confidence": 0.62
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,58 @@
+You are a small wheeled robot. Your task is to reach the green rectangle on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the green rectangle on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the green rectangle on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the green rectangle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the green rectangle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the green rectangle you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+A previous successful traversal by the same model in this same scene and marker:
+
+1. look_down -> executed  |  Before committing to the opening (where turning may become impossible), I should check my body width and orientation with a downward glance to see if I need to rotate my torso to f
+2. forward -> executed
+3. forward -> executed  |  I should continue moving forward toward the opening and the green rectangle.
+4. forward -> executed  |  The path is clear on the carpet, so I should keep advancing toward the goal.
+5. forward -> executed  |  The path is clear, so I continue forward.
+6. forward -> executed  |  The green rectangle is straight ahead and the path is clear. I should continue forward without turning, since turning would widen my body and is impossible once inside the opening.
+7. forward -> executed  |  The path on the red carpet is clear and I am making steady progress toward the goal. I should continue moving forward without turning.
+8. forward -> executed  |  Turning would only widen my body and risk getting stuck at the opening, so I should continue straight forward toward the target.
+9. forward -> executed  |  The green rectangle is centered and close. I should continue walking straight forward without turning, as turning would only widen my body and risk getting stuck at the opening.
+10. forward -> executed  |  The path is clear on the carpet. I should continue walking forward toward the green rectangle without turning.
+11. forward -> blocked by obstacle or room boundary (wall_panel)
+12. look_down -> executed  |  The last forward step was blocked by a wall_panel despite the green rectangle being directly ahead. Turning may not be allowed once shoulders are inside, so a downward glance is th
+13. forward -> blocked by obstacle or room boundary (wall_panel)  |  Turning would only widen my footprint, so it shouldn't help. The block may be transient or a tight fit at the opening threshold - retrying forward is the most direct way to test wh
+14. turn_left -> executed  |  Straight alignment is not enough to pass the opening. Since I'm still outside the opening (turning should be allowed here), rotating my torso may change the width I present and let
+15. turn_left -> executed  |  Since the turn was allowed, my shoulders are still outside the opening, so I can keep rotating. I will continue turning left to reduce my presented width until I fit through.
+16. forward -> blocked by obstacle or room boundary (wall_panel)  |  I have turned left to 30 degrees and should now test forward again to see if I can squeeze through the opening.
+17. turn_left -> executed  |  So 30 degrees is the wrong way to be: I need to rotate all the way to 90 degrees so my thin depth faces the opening, then move forward. Turning is still permitted (the last two tur
+18. forward -> blocked by obstacle or room boundary (wall_panel)  |  With 13 steps left, I should test forward at this new orientation; if it still blocks, I'll re-examine my body width with look_down.
+19. turn_left -> executed  |  The projected width through the opening is W·cos(θ) + D·sin(θ), which for W > D is minimized at θ = 90° (= D), not at 0° or 45°. Currently at 45°, I need 3 more left turns.
+20. turn_left -> executed  |  I'm currently at 60°. Two more turn_left actions will get me there.
+21. turn_left -> executed  |  Currently at 75°, I should turn left one more time to reach 90° (presenting my thinnest profile to the opening), then attempt forward. I have 10 steps remaining - one to turn and t
+22. forward -> executed  |  Forward has been blocked at torso rotations 0°, 30°, and 45°. I should attempt forward again in this minimal-profile orientation.
+23. forward -> executed  |  The green rectangle is now extremely close and centered. I should continue forward to reach it.
+
+Current state:
+- position (x, y, z): [5.750, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 0.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (7 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: forward -> executed | your reasoning: The green rectangle is directly ahead and close. The path is clear, so I should continue forward without turning. Turning would only widen my body and risk getting stuck at the opening.
+- step 1: forward -> executed | your reasoning: Following the successful prior traversal, the path along the carpet is clear and the green rectangle is centered ahead through the opening. There is still distance to cover before the opening (where the prior episode got blocked around x~5…
+- step 2: forward -> executed | your reasoning: The green rectangle is visible straight ahead through the opening and the carpeted path is clear. At x=2.0 I still have distance to cover before the opening. Following the prior successful traversal, I should continue forward without turni…
+- step 3: forward -> executed | your reasoning: I am at x=2.75 with torso rotation 0 degrees. The green rectangle is centered ahead and the carpet path is clear. The prior successful traversal showed forward steps work until near the opening (~x=5), where turning to 90 degrees was neede…
+- step 4: forward -> executed | your reasoning: I am at x=3.5 with torso rotation 0 degrees. The green rectangle is centered ahead and the path is clear. The prior successful traversal showed forward steps work until near the opening (~x=5), where turning to 90 degrees was needed. I sho…
+- step 5: forward -> executed | your reasoning: I'm at x=4.25 with torso rotation 0°. The prior successful traversal showed forward works until near the opening (~x=5.0), where it got blocked and turning to 90° was needed. The path looks clear ahead, so I should attempt another forward…
+- step 6: forward -> executed | your reasoning: I am at x=5.0 with torso rotation 0. The prior successful traversal showed forward gets blocked around x~5 when facing straight, and turning to 90 degrees (presenting my thinnest depth) was needed to squeeze through the opening. However, i…
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:28:41+08:00",
+    "latency_ms": 6398,
+    "payload_bytes": 372094,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090828360176067408268d9d626IkDtfe\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212921,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a long red carpet leading towards a red circle on a black background at the far end. On either side of the carpet are patterned walls with geometric shapes. There is a narrow gap between the walls that I must pass through to reach the target.\\\", \\\"reasoning\\\": \\\"I have successfully rotated my torso to 90 degrees, which presents my narrowest profile. I am currently at x=2.75. Now that I am oriented correctly to fit through the narrow opening ahead, I can resume moving forward towards the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2801,\"completion_tokens\":131,\"total_tokens\":2932,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2801,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":131,\"totalTokenCount\":2932,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1712}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":131}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1712,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":131,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera shows a long red carpet leading towards a red circle on a black background at the far end. On either side of the carpet are patterned walls with geometric shapes. There is a narrow gap between the walls that I must pass through to reach the target.\", \"reasoning\": \"I have successfully rotated my torso to 90 degrees, which presents my narrowest profile. I am currently at x=2.75. Now that I am oriented correctly to fit through the narrow opening ahead, I can resume moving forward towards the red circle.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading towards a red circle on a black background at the far end. On either side of the carpet are patterned walls with geometric shapes. There is a narrow gap between the walls that I must pass through to reach the target.",
+      "reasoning": "I have successfully rotated my torso to 90 degrees, which presents my narrowest profile. I am currently at x=2.75. Now that I am oriented correctly to fit through the narrow opening ahead, I can resume moving forward towards the red circle.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

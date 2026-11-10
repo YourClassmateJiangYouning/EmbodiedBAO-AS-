@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:25:10+08:00",
+    "latency_ms": 8935,
+    "payload_bytes": 173192,
+    "finish_reason": "stop",
+    "reasoning_tokens": 52,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"3dc65c2d-5c88-4718-a913-95e90100cc8a_6bf9b428417647d98750b62530aa41e9\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is directly ahead and very close, mounted on a dark panel at the far wall/exit. The red carpet leads straight to it through the narrow opening between the patterned wall on the left and the white/blue wall on the right. The arrow appears to be just a short distance ahead.\\\", \\\"reasoning\\\": \\\"The yellow arrow is directly ahead and appears very close - I have already taken 9 forward steps and am at x=7.25. My torso is at 0 degrees rotation, presenting my narrowest profile through the opening. The path is clear and I should continue forward to reach the arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The yellow arrow is directly ahead, very close. I'm at x=7.25 after 9 forward steps (started at 0 presumably... actually started somewhere). The arrow appears very close now. Let me just continue forward to reach it.\"}}],\"created\":1794209110,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":205,\"prompt_tokens\":2528,\"total_tokens\":2733,\"completion_tokens_details\":{\"reasoning_tokens\":52},\"prompt_tokens_details\":{\"cached_tokens\":128,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is directly ahead and very close, mounted on a dark panel at the far wall/exit. The red carpet leads straight to it through the narrow opening between the patterned wall on the left and the white/blue wall on the right. The arrow appears to be just a short distance ahead.\", \"reasoning\": \"The yellow arrow is directly ahead and appears very close - I have already taken 9 forward steps and am at x=7.25. My torso is at 0 degrees rotation, presenting my narrowest profile through the opening. The path is clear and I should continue forward to reach the arrow.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The yellow arrow is directly ahead, very close. I'm at x=7.25 after 9 forward steps (started at 0 presumably... actually started somewhere). The arrow appears very close now. Let me just continue forward to reach it.",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is directly ahead and very close, mounted on a dark panel at the far wall/exit. The red carpet leads straight to it through the narrow opening between the patterned wall on the left and the white/blue wall on the right. The arrow appears to be just a short distance ahead.",
+      "reasoning": "The yellow arrow is directly ahead and appears very close - I have already taken 9 forward steps and am at x=7.25. My torso is at 0 degrees rotation, presenting my narrowest profile through the opening. The path is clear and I should continue forward to reach the arrow.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

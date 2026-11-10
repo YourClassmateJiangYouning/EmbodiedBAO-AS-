@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:32:13+08:00",
+    "latency_ms": 6127,
+    "payload_bytes": 368746,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081032085057916188268d9d6dVDBnd3z\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133933,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight down a red carpeted path towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just beyond the opening, pointing to the right.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees, which is the narrowest profile to fit through the gap. I am currently at x=1.25 and moving forward. I need to continue moving forward to reach the yellow arrow.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2558,\"completion_tokens\":126,\"total_tokens\":2684,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2558,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":126,\"totalTokenCount\":2684,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1469}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":126}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1469,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":126,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight down a red carpeted path towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just beyond the opening, pointing to the right.\",\n  \"reasoning\": \"I have already rotated my torso to 90 degrees, which is the narrowest profile to fit through the gap. I am currently at x=1.25 and moving forward. I need to continue moving forward to reach the yellow arrow.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red carpeted path towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just beyond the opening, pointing to the right.",
+      "reasoning": "I have already rotated my torso to 90 degrees, which is the narrowest profile to fit through the gap. I am currently at x=1.25 and moving forward. I need to continue moving forward to reach the yellow arrow.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

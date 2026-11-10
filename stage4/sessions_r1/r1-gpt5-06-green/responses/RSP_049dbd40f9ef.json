@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:16:57+08:00",
+    "latency_ms": 7294,
+    "payload_bytes": 336560,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A long red carpeted path runs straight ahead toward a doorway in the far wall. The doorway opening is visible with a bright green rectangle panel inside it, slightly to the right of center. Walls with abstract patterns line both sides; the left side shows a different floor surface beside the carpet. The path ahead appears unobstructed.\\\", \\\"reasoning\\\": \\\"The goal green rectangle is directly ahead down the carpet with a clear, wide opening. Walking direction is fixed toward it and no turning is needed. Advancing will bring me closer to the doorway and the green rectangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.78}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205014,\"id\":\"chatcmpl-EiCyUcuy4LOZGcfABHFLo6FUvDWuJ\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261027053535-fb88dfcf-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":142,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":15,\"engine_ttft_ms\":238,\"engine_ttlt_ms\":2356,\"pre_inference_ms\":473,\"service_tbt_ms\":15,\"service_ttft_ms\":1003,\"service_ttlt_ms\":3115,\"user_visible_ttft_ms\":531},\"prompt_tokens\":1623,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1765}}\n",
+    "content": "{\"scene_description\": \"A long red carpeted path runs straight ahead toward a doorway in the far wall. The doorway opening is visible with a bright green rectangle panel inside it, slightly to the right of center. Walls with abstract patterns line both sides; the left side shows a different floor surface beside the carpet. The path ahead appears unobstructed.\", \"reasoning\": \"The goal green rectangle is directly ahead down the carpet with a clear, wide opening. Walking direction is fixed toward it and no turning is needed. Advancing will bring me closer to the doorway and the green rectangle.\", \"action\": \"forward\", \"confidence\": 0.78}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpeted path runs straight ahead toward a doorway in the far wall. The doorway opening is visible with a bright green rectangle panel inside it, slightly to the right of center. Walls with abstract patterns line both sides; the left side shows a different floor surface beside the carpet. The path ahead appears unobstructed.",
+      "reasoning": "The goal green rectangle is directly ahead down the carpet with a clear, wide opening. Walking direction is fixed toward it and no turning is needed. Advancing will bring me closer to the doorway and the green rectangle.",
+      "action": "forward",
+      "confidence": 0.78
+    },
+    "action": "forward"
+  }
+]

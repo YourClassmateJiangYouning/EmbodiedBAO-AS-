@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:19:41+08:00",
+    "latency_ms": 6374,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_phv7vkrcrnnwcubzygczdyehvbpbcraqm65cjoq6is7jrjx2iola\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794197981,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the green rectangle target on the far wall ahead, centered in my view. The space appears to be a dark corridor or room with walls on both sides. There is a curved wall panel or obstacle visible on the left side of my view. The green rectangle is clearly visible and appears to be my destination on the far wall.\\\",\\n  \\\"reasoning\\\": \\\"My last forward action was blocked by a wall_panel obstacle at x=7.250. I can see the green rectangle is still ahead on the far wall. Since I cannot move forward due to the obstacle, I need to navigate around it. The obstacle appears to be on my left side. I should try turning right to rotate my torso and potentially create space to maneuver, or I could try turning left to see if there's a path around the obstacle on that side. Let me first try turning right to see if that helps me navigate around the blocking panel.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.6\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3030,\"completion_tokens\":229,\"total_tokens\":3259,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3030,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":229,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3030,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the green rectangle target on the far wall ahead, centered in my view. The space appears to be a dark corridor or room with walls on both sides. There is a curved wall panel or obstacle visible on the left side of my view. The green rectangle is clearly visible and appears to be my destination on the far wall.\",\n  \"reasoning\": \"My last forward action was blocked by a wall_panel obstacle at x=7.250. I can see the green rectangle is still ahead on the far wall. Since I cannot move forward due to the obstacle, I need to navigate around it. The obstacle appears to be on my left side. I should try turning right to rotate my torso and potentially create space to maneuver, or I could try turning left to see if there's a path around the obstacle on that side. Let me first try turning right to see if that helps me navigate around the blocking panel.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.6\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the green rectangle target on the far wall ahead, centered in my view. The space appears to be a dark corridor or room with walls on both sides. There is a curved wall panel or obstacle visible on the left side of my view. The green rectangle is clearly visible and appears to be my destination on the far wall.",
+      "reasoning": "My last forward action was blocked by a wall_panel obstacle at x=7.250. I can see the green rectangle is still ahead on the far wall. Since I cannot move forward due to the obstacle, I need to navigate around it. The obstacle appears to be on my left side. I should try turning right to rotate my torso and potentially create space to maneuver, or I could try turning left to see if there's a path around the obstacle on that side. Let me first try turning right to see if that helps me navigate around the blocking panel.",
+      "action": "turn_right",
+      "confidence": 0.6
+    },
+    "action": "turn_right"
+  }
+]

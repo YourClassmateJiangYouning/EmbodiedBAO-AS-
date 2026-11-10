@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:23:59+08:00",
+    "latency_ms": 7016,
+    "payload_bytes": 360575,
+    "finish_reason": "stop",
+    "reasoning_tokens": 29,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"b0b9ee2e-7222-4585-a67f-79537b8aceb7_718c6b77cc1247a8b1664b2bb1bc9a9f\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet walkway stretches straight ahead toward a far wall decorated with abstract patterns. A blue triangle marker is visible at the far end, centered in a dark opening in the wall. The floor on either side of the carpet has colorful geometric tile patterns. The path is clear with no obstacles.\\\", \\\"reasoning\\\": \\\"The path ahead is completely clear - a straight red carpet leading directly to the blue triangle on the far wall. I've already moved forward twice and there are no obstacles. I should continue moving forward to reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path ahead is clear, a red carpet walkway leading straight to the blue triangle on the far wall. I should continue moving forward.\"}}],\"created\":1794137039,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":160,\"prompt_tokens\":2029,\"total_tokens\":2189,\"completion_tokens_details\":{\"reasoning_tokens\":29},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet walkway stretches straight ahead toward a far wall decorated with abstract patterns. A blue triangle marker is visible at the far end, centered in a dark opening in the wall. The floor on either side of the carpet has colorful geometric tile patterns. The path is clear with no obstacles.\", \"reasoning\": \"The path ahead is completely clear - a straight red carpet leading directly to the blue triangle on the far wall. I've already moved forward twice and there are no obstacles. I should continue moving forward to reach the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path ahead is clear, a red carpet walkway leading straight to the blue triangle on the far wall. I should continue moving forward.",
+    "parsed": {
+      "scene_description": "A red carpet walkway stretches straight ahead toward a far wall decorated with abstract patterns. A blue triangle marker is visible at the far end, centered in a dark opening in the wall. The floor on either side of the carpet has colorful geometric tile patterns. The path is clear with no obstacles.",
+      "reasoning": "The path ahead is completely clear - a straight red carpet leading directly to the blue triangle on the far wall. I've already moved forward twice and there are no obstacles. I should continue moving forward to reach the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

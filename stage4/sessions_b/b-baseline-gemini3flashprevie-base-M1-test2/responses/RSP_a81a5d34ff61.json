@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:21:27+08:00",
+    "latency_ms": 6055,
+    "payload_bytes": 411773,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090821223446552828268d9d6W86dGYQq\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212487,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"I am on a red carpet walkway leading towards a green rectangle on a far wall. There are white markers on the floor to my left and right. Ahead, there is a narrow opening between two patterned walls. Beyond the opening, a dark object sits on a yellow surface near the green target.\\\",\\n  \\\"reasoning\\\": \\\"I need to determine my body's width and orientation to ensure I can pass through the narrow opening ahead. Using 'look_down' will allow me to see my own dimensions relative to the path.\\\",\\n  \\\"action\\\": \\\"look_down\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2081,\"completion_tokens\":137,\"total_tokens\":2218,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2081,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":137,\"totalTokenCount\":2218,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":992},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":137}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":992,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":137,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"I am on a red carpet walkway leading towards a green rectangle on a far wall. There are white markers on the floor to my left and right. Ahead, there is a narrow opening between two patterned walls. Beyond the opening, a dark object sits on a yellow surface near the green target.\",\n  \"reasoning\": \"I need to determine my body's width and orientation to ensure I can pass through the narrow opening ahead. Using 'look_down' will allow me to see my own dimensions relative to the path.\",\n  \"action\": \"look_down\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I am on a red carpet walkway leading towards a green rectangle on a far wall. There are white markers on the floor to my left and right. Ahead, there is a narrow opening between two patterned walls. Beyond the opening, a dark object sits on a yellow surface near the green target.",
+      "reasoning": "I need to determine my body's width and orientation to ensure I can pass through the narrow opening ahead. Using 'look_down' will allow me to see my own dimensions relative to the path.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

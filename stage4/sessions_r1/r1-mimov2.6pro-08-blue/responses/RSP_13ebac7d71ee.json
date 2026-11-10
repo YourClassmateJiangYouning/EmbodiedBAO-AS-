@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:22:01+08:00",
+    "latency_ms": 8006,
+    "payload_bytes": 259332,
+    "finish_reason": "stop",
+    "reasoning_tokens": 87,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"9bcd92eb-cddb-4106-8eef-b8864d9ad87a_5149cfb473074f42874f2373ca8d2f2f\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a dark red carpeted floor leading toward a narrow dark doorway in the far wall, through which a glowing blue triangle is visible, flanked by colorful patterned walls. The doorway appears quite close now, just ahead on the carpet.\\\", \\\"reasoning\\\": \\\"I am nearly at the doorway with the blue triangle visible just beyond it. My torso is rotated 90 degrees so my thinner body dimension faces the narrow opening, which is the correct orientation to pass through. The carpet ahead is clear, so I continue forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We have 30 step limit, 14 steps used (including an invalid). The blue triangle appears close, just beyond a narrow doorway. We're at x=5.0 presumably. We need to reach the triangle. Continue forward. The doorway appears just ahead. Maybe 2 more forward steps. Let's just continue forward.\\n\\nTorso is at 90 degrees so thinner dimension faces doorway. Continue forward.\"}}],\"created\":1794205321,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":218,\"prompt_tokens\":2785,\"total_tokens\":3003,\"completion_tokens_details\":{\"reasoning_tokens\":87},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a dark red carpeted floor leading toward a narrow dark doorway in the far wall, through which a glowing blue triangle is visible, flanked by colorful patterned walls. The doorway appears quite close now, just ahead on the carpet.\", \"reasoning\": \"I am nearly at the doorway with the blue triangle visible just beyond it. My torso is rotated 90 degrees so my thinner body dimension faces the narrow opening, which is the correct orientation to pass through. The carpet ahead is clear, so I continue forward.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "We have 30 step limit, 14 steps used (including an invalid). The blue triangle appears close, just beyond a narrow doorway. We're at x=5.0 presumably. We need to reach the triangle. Continue forward. The doorway appears just ahead. Maybe 2 more forward steps. Let's just continue forward.\n\nTorso is at 90 degrees so thinner dimension faces doorway. Continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows a dark red carpeted floor leading toward a narrow dark doorway in the far wall, through which a glowing blue triangle is visible, flanked by colorful patterned walls. The doorway appears quite close now, just ahead on the carpet.",
+      "reasoning": "I am nearly at the doorway with the blue triangle visible just beyond it. My torso is rotated 90 degrees so my thinner body dimension faces the narrow opening, which is the correct orientation to pass through. The carpet ahead is clear, so I continue forward.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

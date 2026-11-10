@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:35:26+08:00",
+    "latency_ms": 7659,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A bright green rectangle is directly ahead on the floor near the far wall, centered in view. The immediate path in front appears clear, but a low lip or edge is visible just before the green rectangle, suggesting a wall panel or raised boundary that may block further forward movement.\\\", \\\"reasoning\\\": \\\"Two consecutive forward steps were blocked by a wall panel right before the green rectangle, indicating I am already at the boundary and cannot advance further. Since walking direction is fixed and rotations do not change position or view, additional forward attempts will remain blocked. The best move is to step backward to get out of contact with the boundary, then reassess if needed.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.66}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198922,\"id\":\"chatcmpl-EiBOEbjP9JTt23UtEEDufqgCsOrx1\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261027053535-fb88dfcf-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":160,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":12,\"engine_ttft_ms\":231,\"engine_ttlt_ms\":2239,\"pre_inference_ms\":334,\"service_tbt_ms\":13,\"service_ttft_ms\":840,\"service_ttlt_ms\":2843,\"user_visible_ttft_ms\":506},\"prompt_tokens\":1996,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2156}}\n",
+    "content": "{\"scene_description\": \"A bright green rectangle is directly ahead on the floor near the far wall, centered in view. The immediate path in front appears clear, but a low lip or edge is visible just before the green rectangle, suggesting a wall panel or raised boundary that may block further forward movement.\", \"reasoning\": \"Two consecutive forward steps were blocked by a wall panel right before the green rectangle, indicating I am already at the boundary and cannot advance further. Since walking direction is fixed and rotations do not change position or view, additional forward attempts will remain blocked. The best move is to step backward to get out of contact with the boundary, then reassess if needed.\", \"action\": \"backward\", \"confidence\": 0.66}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A bright green rectangle is directly ahead on the floor near the far wall, centered in view. The immediate path in front appears clear, but a low lip or edge is visible just before the green rectangle, suggesting a wall panel or raised boundary that may block further forward movement.",
+      "reasoning": "Two consecutive forward steps were blocked by a wall panel right before the green rectangle, indicating I am already at the boundary and cannot advance further. Since walking direction is fixed and rotations do not change position or view, additional forward attempts will remain blocked. The best move is to step backward to get out of contact with the boundary, then reassess if needed.",
+      "action": "backward",
+      "confidence": 0.66
+    },
+    "action": "backward"
+  }
+]

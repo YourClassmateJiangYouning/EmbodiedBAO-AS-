@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:07:40+08:00",
+    "latency_ms": 6092,
+    "payload_bytes": 244409,
+    "finish_reason": "stop",
+    "reasoning_tokens": 58,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"2086eb2d-394a-4e4a-9897-ad8d65c9a56c_8c4acac38ed1430bb4ec1ef3d5036c3b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the red carpet floor leading directly to a dark opening between two decorated walls. The yellow arrow points right at the threshold of the opening. The opening appears wide enough to pass through comfortably.\\\", \\\"reasoning\\\": \\\"I am at x=5.75 and right at the opening. My torso is rotated 15 degrees right for a narrower profile, and I cannot turn once inside the opening. The opening appears wide and clear ahead. Continue forward through the opening toward the yellow arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The opening is ahead, yellow arrow pointing right at the floor of the opening. My torso is rotated 15 degrees right. I'm at x=5.75. Just keep going forward through the opening. The opening looks fairly wide actually. I should keep moving forward.\"}}],\"created\":1794204459,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":181,\"prompt_tokens\":2457,\"total_tokens\":2638,\"completion_tokens_details\":{\"reasoning_tokens\":58},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows the red carpet floor leading directly to a dark opening between two decorated walls. The yellow arrow points right at the threshold of the opening. The opening appears wide enough to pass through comfortably.\", \"reasoning\": \"I am at x=5.75 and right at the opening. My torso is rotated 15 degrees right for a narrower profile, and I cannot turn once inside the opening. The opening appears wide and clear ahead. Continue forward through the opening toward the yellow arrow.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The opening is ahead, yellow arrow pointing right at the floor of the opening. My torso is rotated 15 degrees right. I'm at x=5.75. Just keep going forward through the opening. The opening looks fairly wide actually. I should keep moving forward.",
+    "parsed": {
+      "scene_description": "The camera shows the red carpet floor leading directly to a dark opening between two decorated walls. The yellow arrow points right at the threshold of the opening. The opening appears wide enough to pass through comfortably.",
+      "reasoning": "I am at x=5.75 and right at the opening. My torso is rotated 15 degrees right for a narrower profile, and I cannot turn once inside the opening. The opening appears wide and clear ahead. Continue forward through the opening toward the yellow arrow.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

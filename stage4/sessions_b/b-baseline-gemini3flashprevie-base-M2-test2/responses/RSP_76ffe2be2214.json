@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:29:24+08:00",
+    "latency_ms": 7361,
+    "payload_bytes": 279661,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090829197290954358268d9d6sfPU8oQh\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212964,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle on the black rectangular board is now very close, occupying a large portion of the center view. Behind it is a dark draped cloth on the left and a yellow-brown couch on the right. The floor is a light color, and a red textured rug is visible in the immediate foreground.\\\", \\\"reasoning\\\": \\\"I am at x=7.25 and the red circle is directly in front of me. I need to continue moving forward to reach the target. One more step should bring me to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3203,\"completion_tokens\":127,\"total_tokens\":3330,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3203,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":127,\"totalTokenCount\":3330,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2114},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":127}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2114,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":127,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The red circle on the black rectangular board is now very close, occupying a large portion of the center view. Behind it is a dark draped cloth on the left and a yellow-brown couch on the right. The floor is a light color, and a red textured rug is visible in the immediate foreground.\", \"reasoning\": \"I am at x=7.25 and the red circle is directly in front of me. I need to continue moving forward to reach the target. One more step should bring me to the goal.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle on the black rectangular board is now very close, occupying a large portion of the center view. Behind it is a dark draped cloth on the left and a yellow-brown couch on the right. The floor is a light color, and a red textured rug is visible in the immediate foreground.",
+      "reasoning": "I am at x=7.25 and the red circle is directly in front of me. I need to continue moving forward to reach the target. One more step should bring me to the goal.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:15:57+08:00",
+    "latency_ms": 8218,
+    "payload_bytes": 215919,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A red carpeted walkway leads straight ahead to a doorway/opening. Beyond the threshold, on the far wall just ahead, there is a glowing purple four-pointed star centered at low height on a black panel. The path in front is unobstructed, and the star is directly ahead.\\\",\\\"reasoning\\\":\\\"Forward movement always goes straight toward the star, and the path appears clear. I recently backed up to create space; a single forward step should bring me closer toward the star without hitting the wall if not already at it.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.74}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204954,\"id\":\"chatcmpl-EiCxWEgqPFOQuWW8QEHfAzsvBIj1e\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":129,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":10,\"engine_ttft_ms\":366,\"engine_ttlt_ms\":1690,\"pre_inference_ms\":336,\"service_tbt_ms\":10,\"service_ttft_ms\":844,\"service_ttlt_ms\":2164,\"user_visible_ttft_ms\":508},\"prompt_tokens\":2796,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2925}}\n",
+    "content": "{\"scene_description\":\"A red carpeted walkway leads straight ahead to a doorway/opening. Beyond the threshold, on the far wall just ahead, there is a glowing purple four-pointed star centered at low height on a black panel. The path in front is unobstructed, and the star is directly ahead.\",\"reasoning\":\"Forward movement always goes straight toward the star, and the path appears clear. I recently backed up to create space; a single forward step should bring me closer toward the star without hitting the wall if not already at it.\",\"action\":\"forward\",\"confidence\":0.74}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead to a doorway/opening. Beyond the threshold, on the far wall just ahead, there is a glowing purple four-pointed star centered at low height on a black panel. The path in front is unobstructed, and the star is directly ahead.",
+      "reasoning": "Forward movement always goes straight toward the star, and the path appears clear. I recently backed up to create space; a single forward step should bring me closer toward the star without hitting the wall if not already at it.",
+      "action": "forward",
+      "confidence": 0.74
+    },
+    "action": "forward"
+  }
+]

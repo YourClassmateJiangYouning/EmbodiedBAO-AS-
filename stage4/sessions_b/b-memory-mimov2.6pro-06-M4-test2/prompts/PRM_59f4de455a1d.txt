@@ -1,0 +1,48 @@
+You are a small wheeled robot. Your task is to reach the blue triangle on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the blue triangle on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the blue triangle on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the blue triangle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the blue triangle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the blue triangle you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+A previous successful traversal by the same model in this same scene and marker:
+
+1. look_down -> executed  |  Before entering a potentially tight passage, I should check my body width using look_down to see if I need to turn my torso to fit through.
+2. turn_left -> executed  |  I'll begin rotating left (6 steps of 15 degrees = 90 degrees total).
+3. turn_left -> executed  |  The opening is still some distance away, so I should continue rotating my torso toward 90 degrees to minimize my width before approaching the opening. I need 5 more turn_left actio
+4. turn_left -> executed  |  My torso is at 30 degrees. I'm still well before the opening, so I can keep turning. I'll turn left 15 more degrees to 45, then continue until 90 before moving forward.
+5. turn_left -> executed  |  My torso is at 45 degrees rotation. The opening is still some distance away, so I have room to continue rotating. I'll turn left another 15 degrees to reach 60 degrees.
+6. turn_left -> executed  |  I'm at 60 degrees torso rotation. I need one more turn_left to reach 75 degrees, then another to reach 90 degrees.
+7. turn_left -> executed  |  One more turn_left reaches 90 degrees, and I'm still well before the opening, so turning is permitted. After reaching 90 degrees I will proceed forward through the opening.
+8. forward -> executed  |  The blue triangle is visible through the dark opening on the far wall. I should now start moving forward along the red carpet toward the opening. The opening is still some distance
+9. forward -> executed  |  The opening is still some distance away and the path is clear, so I should continue moving forward along the carpet toward the blue triangle.
+10. forward -> executed  |  The path along the red carpet is clear and I'm approaching the opening. I should continue moving forward to get closer to the blue triangle through the opening.
+11. forward -> executed  |  The path on the carpet is clear and the blue triangle is visible through the dark opening. I should keep walking straight forward to reach it.
+12. forward -> executed  |  The triangle is much closer now and the path along the carpet remains clear, so I should keep walking forward toward it.
+13. forward -> executed  |  The blue triangle is visible through the dark opening ahead and the path along the red carpet is clear. I should continue moving forward to approach the opening and reach the trian
+14. forward -> executed  |  The path is clear and I'm not yet inside the opening, so I should continue moving forward toward the triangle.
+15. forward -> executed  |  The blue triangle is clearly visible just beyond the opening and the path on the carpet is clear. I should continue forward to reach it.
+16. forward -> executed  |  My torso is at 90 degrees presenting my thinnest profile. The opening is very close - just ahead on the carpet. I should continue moving forward to enter the opening and reach the 
+17. forward -> executed  |  I've been approaching with my torso rotated 90 degrees to present my thinnest profile. The path is clear and I'm not yet inside the opening. I should continue moving forward to rea
+18. forward -> executed  |  I should continue forward to reach the blue triangle on the far wall.
+
+Current state:
+- position (x, y, z): [0.500, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 15.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (2 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: look_down -> executed | your reasoning: Following the successful previous traversal strategy: first check body width with look_down, then rotate torso 90 degrees to minimize width before approaching the tight opening. The blue triangle is visible through the dark passage ahead.
+- step 1: turn_left -> executed | your reasoning: Following the successful previous traversal: after checking body width with look_down, I rotate my torso 90 degrees to present my thinnest profile before approaching the tight opening. I'm still early along the walkway (x=0.5), far from th…
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:14:32+08:00",
+    "latency_ms": 8485,
+    "payload_bytes": 166724,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A bright purple four-pointed star panel is directly ahead at the base of the far wall, centered in view just beyond the edge of the red carpet onto a gray floor. The star is very close, with the wall immediately behind it.\\\",\\\"reasoning\\\":\\\"I’m at the wall panel with the star directly in front; prior forward steps were blocked by the wall, indicating I’m already at or touching the target surface. No lateral alignment is needed. A small forward step should place me onto the star panel.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.76}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204870,\"id\":\"chatcmpl-EiCwA2hF6Dz6W3yBVzwzH5JgdYapt\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":125,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":10,\"engine_ttft_ms\":367,\"engine_ttlt_ms\":1567,\"pre_inference_ms\":373,\"service_tbt_ms\":9,\"service_ttft_ms\":907,\"service_ttlt_ms\":2091,\"user_visible_ttft_ms\":534},\"prompt_tokens\":2140,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2265}}\n",
+    "content": "{\"scene_description\":\"A bright purple four-pointed star panel is directly ahead at the base of the far wall, centered in view just beyond the edge of the red carpet onto a gray floor. The star is very close, with the wall immediately behind it.\",\"reasoning\":\"I’m at the wall panel with the star directly in front; prior forward steps were blocked by the wall, indicating I’m already at or touching the target surface. No lateral alignment is needed. A small forward step should place me onto the star panel.\",\"action\":\"forward\",\"confidence\":0.76}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A bright purple four-pointed star panel is directly ahead at the base of the far wall, centered in view just beyond the edge of the red carpet onto a gray floor. The star is very close, with the wall immediately behind it.",
+      "reasoning": "I’m at the wall panel with the star directly in front; prior forward steps were blocked by the wall, indicating I’m already at or touching the target surface. No lateral alignment is needed. A small forward step should place me onto the star panel.",
+      "action": "forward",
+      "confidence": 0.76
+    },
+    "action": "forward"
+  }
+]

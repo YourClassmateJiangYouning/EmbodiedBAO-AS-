@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:42:00+08:00",
+    "latency_ms": 7389,
+    "payload_bytes": 289556,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081041543321477398268d9d6AKItm79J\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134520,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight ahead down a red carpeted walkway. In the distance, there is a narrow opening between two decorated walls. Beyond the opening, a red circle is visible on a dark far wall. The robot is currently at x=4.25, approaching the gap.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at x=4.25 and my torso is rotated to 90 degrees, which is the thinnest profile to fit through the narrow gap ahead. I need to continue moving forward to pass through the opening and reach the red circle. I will take another step forward.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2880,\"completion_tokens\":152,\"total_tokens\":3032,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2880,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":152,\"totalTokenCount\":3032,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1791}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":152}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1791,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":152,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight ahead down a red carpeted walkway. In the distance, there is a narrow opening between two decorated walls. Beyond the opening, a red circle is visible on a dark far wall. The robot is currently at x=4.25, approaching the gap.\",\n  \"reasoning\": \"I am currently at x=4.25 and my torso is rotated to 90 degrees, which is the thinnest profile to fit through the narrow gap ahead. I need to continue moving forward to pass through the opening and reach the red circle. I will take another step forward.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight ahead down a red carpeted walkway. In the distance, there is a narrow opening between two decorated walls. Beyond the opening, a red circle is visible on a dark far wall. The robot is currently at x=4.25, approaching the gap.",
+      "reasoning": "I am currently at x=4.25 and my torso is rotated to 90 degrees, which is the thinnest profile to fit through the narrow gap ahead. I need to continue moving forward to pass through the opening and reach the red circle. I will take another step forward.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

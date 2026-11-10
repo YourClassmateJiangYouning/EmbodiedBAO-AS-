@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:42:58+08:00",
+    "latency_ms": 10982,
+    "payload_bytes": 201498,
+    "finish_reason": "stop",
+    "reasoning_tokens": 59,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"f16b6cd2-b28e-49fd-98e5-068c52f98470_83a9586ffb414cc9b9012bd53c35aff9\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a dark red carpeted floor extending forward to a metal floor section at the far wall where the yellow arrow sign sits directly ahead. The arrow is very close now, just beyond the opening between the walls. Dark furniture is visible behind the arrow on the far wall.\\\", \\\"reasoning\\\": \\\"I am at x=5.75 and the yellow arrow is very close, appearing just ahead on the metal floor section. One more forward step of 75cm should bring me right to the arrow. My torso is at 0 degrees rotation (narrowest profile), which was fine through the opening. The path is clear and unobstructed.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image shows the yellow arrow very close ahead, just beyond the opening between walls. I'm at x=5.75 and the arrow appears to be very close - maybe 0.5-1m away. One more forward step (75cm) should reach it.\"}}],\"created\":1794213777,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":217,\"prompt_tokens\":2365,\"total_tokens\":2582,\"completion_tokens_details\":{\"reasoning_tokens\":59},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a dark red carpeted floor extending forward to a metal floor section at the far wall where the yellow arrow sign sits directly ahead. The arrow is very close now, just beyond the opening between the walls. Dark furniture is visible behind the arrow on the far wall.\", \"reasoning\": \"I am at x=5.75 and the yellow arrow is very close, appearing just ahead on the metal floor section. One more forward step of 75cm should bring me right to the arrow. My torso is at 0 degrees rotation (narrowest profile), which was fine through the opening. The path is clear and unobstructed.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "The image shows the yellow arrow very close ahead, just beyond the opening between walls. I'm at x=5.75 and the arrow appears to be very close - maybe 0.5-1m away. One more forward step (75cm) should reach it.",
+    "parsed": {
+      "scene_description": "The camera shows a dark red carpeted floor extending forward to a metal floor section at the far wall where the yellow arrow sign sits directly ahead. The arrow is very close now, just beyond the opening between the walls. Dark furniture is visible behind the arrow on the far wall.",
+      "reasoning": "I am at x=5.75 and the yellow arrow is very close, appearing just ahead on the metal floor section. One more forward step of 75cm should bring me right to the arrow. My torso is at 0 degrees rotation (narrowest profile), which was fine through the opening. The path is clear and unobstructed.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

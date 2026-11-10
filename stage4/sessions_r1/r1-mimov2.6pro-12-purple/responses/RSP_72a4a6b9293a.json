@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:27:30+08:00",
+    "latency_ms": 6064,
+    "payload_bytes": 397704,
+    "finish_reason": "stop",
+    "reasoning_tokens": 46,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"fdcdb669-687f-4149-8219-2dee0c44c21b_e5098ac61e2c4f8eb9eb893977083b87\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches straight ahead toward a wall opening where a small purple four-pointed star is visible at the end. The floor on either side has yellow zigzag patterns, and the walls are decorated with colorful abstract shapes. The path appears clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The purple star is directly ahead along the walkway with no obstacles in the path. The walkway leads straight to the opening where the star is located. I should move forward to approach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image shows a red carpet walkway leading to an opening in a wall with the purple four-pointed star visible at the end. The path is straight ahead with no visible obstacles. I should move forward toward the star.\"}}],\"created\":1794137250,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":171,\"prompt_tokens\":1925,\"total_tokens\":2096,\"completion_tokens_details\":{\"reasoning_tokens\":46},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches straight ahead toward a wall opening where a small purple four-pointed star is visible at the end. The floor on either side has yellow zigzag patterns, and the walls are decorated with colorful abstract shapes. The path appears clear and unobstructed.\", \"reasoning\": \"The purple star is directly ahead along the walkway with no obstacles in the path. The walkway leads straight to the opening where the star is located. I should move forward to approach it.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The image shows a red carpet walkway leading to an opening in a wall with the purple four-pointed star visible at the end. The path is straight ahead with no visible obstacles. I should move forward toward the star.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches straight ahead toward a wall opening where a small purple four-pointed star is visible at the end. The floor on either side has yellow zigzag patterns, and the walls are decorated with colorful abstract shapes. The path appears clear and unobstructed.",
+      "reasoning": "The purple star is directly ahead along the walkway with no obstacles in the path. The walkway leads straight to the opening where the star is located. I should move forward to approach it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

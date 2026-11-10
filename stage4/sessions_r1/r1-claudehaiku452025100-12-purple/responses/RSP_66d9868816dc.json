@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:41:23+08:00",
+    "latency_ms": 8954,
+    "payload_bytes": 377016,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_n6idu6pmzcw4v3sav46d5pj6yah7qwvlalot4onccyt2qewftp7a\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145283,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a long corridor with a red textured floor stretching ahead toward the far wall. The purple four-pointed star is clearly visible on the far wall in the center of my view, glowing brightly. The walls on both sides have colorful graffiti-style artwork with blue and yellow patterns. There are yellow and white geometric shapes on the left side of the floor. The path ahead is clear and unobstructed. I am currently at position x=1.250, having moved forward 75cm from my starting position.\\\",\\n  \\\"reasoning\\\": \\\"The purple four-pointed star is my target and is clearly visible straight ahead on the far wall. My walking direction is fixed toward it. The path is completely clear with no obstacles blocking my way. I should continue moving forward along the x-axis to reach the star. Each forward action moves me 75cm closer to the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2434,\"completion_tokens\":223,\"total_tokens\":2657,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2434,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":223,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2434,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a long corridor with a red textured floor stretching ahead toward the far wall. The purple four-pointed star is clearly visible on the far wall in the center of my view, glowing brightly. The walls on both sides have colorful graffiti-style artwork with blue and yellow patterns. There are yellow and white geometric shapes on the left side of the floor. The path ahead is clear and unobstructed. I am currently at position x=1.250, having moved forward 75cm from my starting position.\",\n  \"reasoning\": \"The purple four-pointed star is my target and is clearly visible straight ahead on the far wall. My walking direction is fixed toward it. The path is completely clear with no obstacles blocking my way. I should continue moving forward along the x-axis to reach the star. Each forward action moves me 75cm closer to the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a long corridor with a red textured floor stretching ahead toward the far wall. The purple four-pointed star is clearly visible on the far wall in the center of my view, glowing brightly. The walls on both sides have colorful graffiti-style artwork with blue and yellow patterns. There are yellow and white geometric shapes on the left side of the floor. The path ahead is clear and unobstructed. I am currently at position x=1.250, having moved forward 75cm from my starting position.",
+      "reasoning": "The purple four-pointed star is my target and is clearly visible straight ahead on the far wall. My walking direction is fixed toward it. The path is completely clear with no obstacles blocking my way. I should continue moving forward along the x-axis to reach the star. Each forward action moves me 75cm closer to the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

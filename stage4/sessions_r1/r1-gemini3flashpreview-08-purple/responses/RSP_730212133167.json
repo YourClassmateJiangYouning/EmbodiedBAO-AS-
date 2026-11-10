@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:49:23+08:00",
+    "latency_ms": 6643,
+    "payload_bytes": 356328,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081049182453951798268d9d6OZXvKfMk\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134963,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down a long red carpet towards a narrow vertical opening in a wall. Through the opening, a glowing purple four-pointed star is visible on a far wall. The walls on either side of the opening have a geometric pattern with zig-zags and shapes.\\\",\\n  \\\"reasoning\\\": \\\"I am still a significant distance from the opening. To pass through it successfully, I will eventually need to know my body's width and orientation, but for now, the most efficient action is to continue moving forward to close the distance to the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2162,\"completion_tokens\":142,\"total_tokens\":2304,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2162,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":142,\"totalTokenCount\":2304,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1073}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":142}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1073,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":142,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down a long red carpet towards a narrow vertical opening in a wall. Through the opening, a glowing purple four-pointed star is visible on a far wall. The walls on either side of the opening have a geometric pattern with zig-zags and shapes.\",\n  \"reasoning\": \"I am still a significant distance from the opening. To pass through it successfully, I will eventually need to know my body's width and orientation, but for now, the most efficient action is to continue moving forward to close the distance to the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down a long red carpet towards a narrow vertical opening in a wall. Through the opening, a glowing purple four-pointed star is visible on a far wall. The walls on either side of the opening have a geometric pattern with zig-zags and shapes.",
+      "reasoning": "I am still a significant distance from the opening. To pass through it successfully, I will eventually need to know my body's width and orientation, but for now, the most efficient action is to continue moving forward to close the distance to the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

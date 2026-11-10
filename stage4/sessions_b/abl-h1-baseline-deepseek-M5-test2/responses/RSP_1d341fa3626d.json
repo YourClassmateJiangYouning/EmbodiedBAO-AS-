@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:36:43+08:00",
+    "latency_ms": 3427,
+    "payload_bytes": 382500,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"21522c0b-425d-4af2-ad88-41393affa3ec\",\"object\":\"chat.completion\",\"created\":1794217002,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A long red carpet stretches ahead toward a dark doorway on the far wall, with a small purple four-pointed star visible in the opening. Patterned walls flank the carpet on both sides.\\\", \\\"reasoning\\\": \\\"The purple star is straight ahead along my walking direction, and the path appears clear. Walking forward moves me 75cm closer each step toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1562,\"completion_tokens\":93,\"total_tokens\":1655,\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":1562},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A long red carpet stretches ahead toward a dark doorway on the far wall, with a small purple four-pointed star visible in the opening. Patterned walls flank the carpet on both sides.\", \"reasoning\": \"The purple star is straight ahead along my walking direction, and the path appears clear. Walking forward moves me 75cm closer each step toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpet stretches ahead toward a dark doorway on the far wall, with a small purple four-pointed star visible in the opening. Patterned walls flank the carpet on both sides.",
+      "reasoning": "The purple star is straight ahead along my walking direction, and the path appears clear. Walking forward moves me 75cm closer each step toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:22:09+08:00",
+    "latency_ms": 13242,
+    "payload_bytes": 411773,
+    "finish_reason": "stop",
+    "reasoning_tokens": 109,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"d8ce15d9-a1d6-4e94-b6d7-87cd4b8abbb2_7008bcf77152422796154bcbf9fb9673\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A low, forward-facing camera view down a red carpeted walkway marked with white and yellow rectangular floor tiles. Two decorated wall panels flank a narrow central opening in the middle distance; through the opening a bright green rectangle is visible on the floor near a dark-clothed chair/sofa. The path is clear and aligned with the opening, torso rotation is 0 (narrowest profile).\\\", \\\"reasoning\\\": \\\"The green rectangle is straight ahead through the narrow gap. My torso is at 0 degrees, presenting my narrowest profile to the opening. The previous forward move succeeded without collision, so the gap is passable at current orientation. I should keep moving straight toward the goal without turning, since turning would widen my body and risk snagging on the opening edges.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue. We are at x=1.25 after 2 steps (look_down, forward). Green rectangle visible in distance, opening appears to be ahead — walls with narrow gap. The green rectangle seems centered in the opening. Forward takes us toward it. We should keep going forward. Torso rotation 0 = narrowest profile. Continue forward.\\n\\nWe should maybe do look_down occasionally to check clearance, but the path looks clear. The gap between wall panels ahead looks narrow-ish but centered. Just go forward.\"}}],\"created\":1794212528,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":290,\"prompt_tokens\":2061,\"total_tokens\":2351,\"completion_tokens_details\":{\"reasoning_tokens\":109},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A low, forward-facing camera view down a red carpeted walkway marked with white and yellow rectangular floor tiles. Two decorated wall panels flank a narrow central opening in the middle distance; through the opening a bright green rectangle is visible on the floor near a dark-clothed chair/sofa. The path is clear and aligned with the opening, torso rotation is 0 (narrowest profile).\", \"reasoning\": \"The green rectangle is straight ahead through the narrow gap. My torso is at 0 degrees, presenting my narrowest profile to the opening. The previous forward move succeeded without collision, so the gap is passable at current orientation. I should keep moving straight toward the goal without turning, since turning would widen my body and risk snagging on the opening edges.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "We need to continue. We are at x=1.25 after 2 steps (look_down, forward). Green rectangle visible in distance, opening appears to be ahead — walls with narrow gap. The green rectangle seems centered in the opening. Forward takes us toward it. We should keep going forward. Torso rotation 0 = narrowest profile. Continue forward.\n\nWe should maybe do look_down occasionally to check clearance, but the path looks clear. The gap between wall panels ahead looks narrow-ish but centered. Just go forward.",
+    "parsed": {
+      "scene_description": "A low, forward-facing camera view down a red carpeted walkway marked with white and yellow rectangular floor tiles. Two decorated wall panels flank a narrow central opening in the middle distance; through the opening a bright green rectangle is visible on the floor near a dark-clothed chair/sofa. The path is clear and aligned with the opening, torso rotation is 0 (narrowest profile).",
+      "reasoning": "The green rectangle is straight ahead through the narrow gap. My torso is at 0 degrees, presenting my narrowest profile to the opening. The previous forward move succeeded without collision, so the gap is passable at current orientation. I should keep moving straight toward the goal without turning, since turning would widen my body and risk snagging on the opening edges.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

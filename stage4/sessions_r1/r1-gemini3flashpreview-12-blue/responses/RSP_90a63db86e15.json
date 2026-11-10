@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:21:27+08:00",
+    "latency_ms": 6512,
+    "payload_bytes": 248479,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081021219107386608268d9d6k5E4sx8C\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133287,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight ahead down a red carpeted path. In the distance, a blue triangle is visible through a narrow opening between two walls decorated with geometric patterns. The wall on the left has a black cloth draped over it. I am currently at position x=5.75.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=5.75 and my torso is rotated 45 degrees to minimize my width. I am very close to the narrow opening. I will continue moving forward to pass through the gap and reach the blue triangle on the far wall. I have 18 steps remaining, which is more than enough to reach the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2767,\"completion_tokens\":164,\"total_tokens\":2931,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2767,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":164,\"totalTokenCount\":2931,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1678}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":164}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1678,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":164,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight ahead down a red carpeted path. In the distance, a blue triangle is visible through a narrow opening between two walls decorated with geometric patterns. The wall on the left has a black cloth draped over it. I am currently at position x=5.75.\",\n  \"reasoning\": \"I am at x=5.75 and my torso is rotated 45 degrees to minimize my width. I am very close to the narrow opening. I will continue moving forward to pass through the gap and reach the blue triangle on the far wall. I have 18 steps remaining, which is more than enough to reach the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight ahead down a red carpeted path. In the distance, a blue triangle is visible through a narrow opening between two walls decorated with geometric patterns. The wall on the left has a black cloth draped over it. I am currently at position x=5.75.",
+      "reasoning": "I am at x=5.75 and my torso is rotated 45 degrees to minimize my width. I am very close to the narrow opening. I will continue moving forward to pass through the gap and reach the blue triangle on the far wall. I have 18 steps remaining, which is more than enough to reach the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:21:17+08:00",
+    "latency_ms": 7304,
+    "payload_bytes": 242589,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead into a doorway between two patterned walls. The opening is clear and directly ahead, and a bright green rectangle (the goal) is positioned just beyond the threshold on the floor. The path appears unobstructed.\\\", \\\"reasoning\\\": \\\"The green goal is directly ahead through a clear doorway. Walking direction is already aligned toward it, and no rotation is needed. Advancing will bring me closer to or into contact with the green rectangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.83}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205275,\"id\":\"chatcmpl-EiD2huv3nDocdu8eoZwTKJ59V616e\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":123,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":516,\"engine_ttlt_ms\":1512,\"pre_inference_ms\":394,\"service_tbt_ms\":8,\"service_ttft_ms\":1134,\"service_ttlt_ms\":2123,\"user_visible_ttft_ms\":740},\"prompt_tokens\":1915,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2038}}\n",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead into a doorway between two patterned walls. The opening is clear and directly ahead, and a bright green rectangle (the goal) is positioned just beyond the threshold on the floor. The path appears unobstructed.\", \"reasoning\": \"The green goal is directly ahead through a clear doorway. Walking direction is already aligned toward it, and no rotation is needed. Advancing will bring me closer to or into contact with the green rectangle.\", \"action\": \"forward\", \"confidence\": 0.83}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead into a doorway between two patterned walls. The opening is clear and directly ahead, and a bright green rectangle (the goal) is positioned just beyond the threshold on the floor. The path appears unobstructed.",
+      "reasoning": "The green goal is directly ahead through a clear doorway. Walking direction is already aligned toward it, and no rotation is needed. Advancing will bring me closer to or into contact with the green rectangle.",
+      "action": "forward",
+      "confidence": 0.83
+    },
+    "action": "forward"
+  }
+]

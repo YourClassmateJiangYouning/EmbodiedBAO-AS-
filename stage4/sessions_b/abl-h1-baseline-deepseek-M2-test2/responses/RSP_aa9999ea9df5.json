@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:35:16+08:00",
+    "latency_ms": 3081,
+    "payload_bytes": 427921,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"75a064b6-4929-4754-bb9b-382fd1a5e6fd\",\"object\":\"chat.completion\",\"created\":1794216916,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a far wall with a red circle target visible in the distance, flanked by patterned walls and a wooden chair on the right.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the walking direction, and the path appears clear. Walking forward moves me 75cm closer to the target each step, so I should proceed forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1544,\"completion_tokens\":96,\"total_tokens\":1640,\"prompt_tokens_details\":{\"cached_tokens\":0},\"prompt_cache_hit_tokens\":0,\"prompt_cache_miss_tokens\":1544},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a far wall with a red circle target visible in the distance, flanked by patterned walls and a wooden chair on the right.\", \"reasoning\": \"The red circle is directly ahead along the walking direction, and the path appears clear. Walking forward moves me 75cm closer to the target each step, so I should proceed forward.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a far wall with a red circle target visible in the distance, flanked by patterned walls and a wooden chair on the right.",
+      "reasoning": "The red circle is directly ahead along the walking direction, and the path appears clear. Walking forward moves me 75cm closer to the target each step, so I should proceed forward.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

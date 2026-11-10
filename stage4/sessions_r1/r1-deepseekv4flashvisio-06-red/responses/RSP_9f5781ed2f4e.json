@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:16:24+08:00",
+    "latency_ms": 2362,
+    "payload_bytes": 166341,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"6fc9f937-af68-468f-b77e-8c8507c303fb\",\"object\":\"chat.completion\",\"created\":1794208583,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle on its dark panel fills most of the view, very close ahead, with a wall edge visible on the left.\\\", \\\"reasoning\\\": \\\"The goal circle is directly ahead and extremely close; the last two forward steps succeeded after backing up and turning, so continuing forward should reach the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.8}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3074,\"completion_tokens\":81,\"total_tokens\":3155,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2434},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle on its dark panel fills most of the view, very close ahead, with a wall edge visible on the left.\", \"reasoning\": \"The goal circle is directly ahead and extremely close; the last two forward steps succeeded after backing up and turning, so continuing forward should reach the red circle.\", \"action\": \"forward\", \"confidence\": 0.8}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle on its dark panel fills most of the view, very close ahead, with a wall edge visible on the left.",
+      "reasoning": "The goal circle is directly ahead and extremely close; the last two forward steps succeeded after backing up and turning, so continuing forward should reach the red circle.",
+      "action": "forward",
+      "confidence": 0.8
+    },
+    "action": "forward"
+  }
+]

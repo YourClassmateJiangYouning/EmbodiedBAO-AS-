@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:25:24+08:00",
+    "latency_ms": 6436,
+    "payload_bytes": 164594,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_m6oauo5nou6eh6dhx43kgnld5z7wa66k2flm3yjzmlczt7q3mddq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198325,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the red circle target clearly visible on the far wall ahead, centered in my view. There is a wall panel obstacle directly in front of me blocking the forward path. The left side of the scene shows a purple-lit wall surface, and the right side shows blue lighting. The obstacle appears to be a structural panel that is preventing direct forward movement.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=7.250 with my torso rotated 45 degrees to the left. Forward movement has been blocked three times (steps 9, 13, 15) by a wall_panel obstacle. My walking direction is fixed toward the red circle, so turning my torso does not change where forward takes me—it only changes my body width. Since I've tried turning left three times and forward is still blocked, I need to try a different approach. I should turn right instead to rotate my body the opposite direction and attempt to navigate around the obstacle from the right side.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.7\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3530,\"completion_tokens\":241,\"total_tokens\":3771,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3530,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":241,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3530,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the red circle target clearly visible on the far wall ahead, centered in my view. There is a wall panel obstacle directly in front of me blocking the forward path. The left side of the scene shows a purple-lit wall surface, and the right side shows blue lighting. The obstacle appears to be a structural panel that is preventing direct forward movement.\",\n  \"reasoning\": \"I am at x=7.250 with my torso rotated 45 degrees to the left. Forward movement has been blocked three times (steps 9, 13, 15) by a wall_panel obstacle. My walking direction is fixed toward the red circle, so turning my torso does not change where forward takes me—it only changes my body width. Since I've tried turning left three times and forward is still blocked, I need to try a different approach. I should turn right instead to rotate my body the opposite direction and attempt to navigate around the obstacle from the right side.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.7\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the red circle target clearly visible on the far wall ahead, centered in my view. There is a wall panel obstacle directly in front of me blocking the forward path. The left side of the scene shows a purple-lit wall surface, and the right side shows blue lighting. The obstacle appears to be a structural panel that is preventing direct forward movement.",
+      "reasoning": "I am at x=7.250 with my torso rotated 45 degrees to the left. Forward movement has been blocked three times (steps 9, 13, 15) by a wall_panel obstacle. My walking direction is fixed toward the red circle, so turning my torso does not change where forward takes me—it only changes my body width. Since I've tried turning left three times and forward is still blocked, I need to try a different approach. I should turn right instead to rotate my body the opposite direction and attempt to navigate around the obstacle from the right side.",
+      "action": "turn_right",
+      "confidence": 0.7
+    },
+    "action": "turn_right"
+  }
+]

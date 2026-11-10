@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:36:48+08:00",
+    "latency_ms": 6972,
+    "payload_bytes": 284286,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_azgkdez77tnkku7mvhbutslkhevtcby7ubcvjdhveehmotb4scjq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145008,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The camera shows a close-up view of the green rectangle target on the far wall. The green rectangle is now very large in the frame, filling most of the view, indicating I am extremely close to it. The rectangle appears to be a display or screen with a bright green surface. My robot body is visible at the top of the frame, showing I am very near the target. The floor and surrounding area are visible with warm lighting.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=8.0m and have taken 10 forward steps. The green rectangle is now extremely close and dominates my view, indicating I am nearly at the target location. One more forward step should bring me to the green rectangle on the far wall, completing the task. The path remains clear and unobstructed.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3046,\"completion_tokens\":202,\"total_tokens\":3248,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3046,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":202,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3046,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The camera shows a close-up view of the green rectangle target on the far wall. The green rectangle is now very large in the frame, filling most of the view, indicating I am extremely close to it. The rectangle appears to be a display or screen with a bright green surface. My robot body is visible at the top of the frame, showing I am very near the target. The floor and surrounding area are visible with warm lighting.\",\n  \"reasoning\": \"I am at position x=8.0m and have taken 10 forward steps. The green rectangle is now extremely close and dominates my view, indicating I am nearly at the target location. One more forward step should bring me to the green rectangle on the far wall, completing the task. The path remains clear and unobstructed.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a close-up view of the green rectangle target on the far wall. The green rectangle is now very large in the frame, filling most of the view, indicating I am extremely close to it. The rectangle appears to be a display or screen with a bright green surface. My robot body is visible at the top of the frame, showing I am very near the target. The floor and surrounding area are visible with warm lighting.",
+      "reasoning": "I am at position x=8.0m and have taken 10 forward steps. The green rectangle is now extremely close and dominates my view, indicating I am nearly at the target location. One more forward step should bring me to the green rectangle on the far wall, completing the task. The path remains clear and unobstructed.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

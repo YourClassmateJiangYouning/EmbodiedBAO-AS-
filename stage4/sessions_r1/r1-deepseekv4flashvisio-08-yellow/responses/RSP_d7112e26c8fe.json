@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:05+08:00",
+    "latency_ms": 2507,
+    "payload_bytes": 244409,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"9f6bbe29-c0b5-4919-964e-6989b6001873\",\"object\":\"chat.completion\",\"created\":1794208144,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpet leading forward through a narrow doorway opening, with the yellow arrow visible on the far wall just beyond the opening. The doorway appears somewhat narrow, with patterned walls on either side.\\\", \\\"reasoning\\\": \\\"The yellow arrow is straight ahead and my walking direction points directly at it. I have been moving forward successfully. However, the doorway ahead looks narrow, so before proceeding through I should check my body width with a downward glance to ensure I can fit without getting stuck.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1917,\"completion_tokens\":119,\"total_tokens\":2036,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1149},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpet leading forward through a narrow doorway opening, with the yellow arrow visible on the far wall just beyond the opening. The doorway appears somewhat narrow, with patterned walls on either side.\", \"reasoning\": \"The yellow arrow is straight ahead and my walking direction points directly at it. I have been moving forward successfully. However, the doorway ahead looks narrow, so before proceeding through I should check my body width with a downward glance to ensure I can fit without getting stuck.\", \"action\": \"look_down\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpet leading forward through a narrow doorway opening, with the yellow arrow visible on the far wall just beyond the opening. The doorway appears somewhat narrow, with patterned walls on either side.",
+      "reasoning": "The yellow arrow is straight ahead and my walking direction points directly at it. I have been moving forward successfully. However, the doorway ahead looks narrow, so before proceeding through I should check my body width with a downward glance to ensure I can fit without getting stuck.",
+      "action": "look_down",
+      "confidence": 0.7
+    },
+    "action": "look_down"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:36:07+08:00",
+    "latency_ms": 8156,
+    "payload_bytes": 285293,
+    "finish_reason": "stop",
+    "reasoning_tokens": 84,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"d890ae6d-f1e8-4583-a69f-fd390601cc77_0bb222865b674f7ea7212657ba1a283c\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead down a red carpeted walkway toward a narrow opening in a wall with colorful geometric art. The red circle is visible through the opening in the distance. The carpet fills the foreground.\\\", \\\"reasoning\\\": \\\"My torso is rotated 30 degrees left. My body is wide (top plate extends beyond wheels), so I should rotate further to present my narrow depth dimension to the narrow opening before entering. Turning needs room, so I should finish turning now while still outside the opening.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.7}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The opening appears narrow. I've turned 30 degrees left (2 turns). I need to turn more to present narrow profile. \\\"you cannot turn once your shoulders are inside the opening\\\" - so I should turn before entering. Maybe continue turning left to 90 degrees (6 turns total). Let me turn left more. Actually maybe 90 degrees is fully narrow. Let me continue turning left.\"}}],\"created\":1794137766,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":208,\"prompt_tokens\":2431,\"total_tokens\":2639,\"completion_tokens_details\":{\"reasoning_tokens\":84},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead down a red carpeted walkway toward a narrow opening in a wall with colorful geometric art. The red circle is visible through the opening in the distance. The carpet fills the foreground.\", \"reasoning\": \"My torso is rotated 30 degrees left. My body is wide (top plate extends beyond wheels), so I should rotate further to present my narrow depth dimension to the narrow opening before entering. Turning needs room, so I should finish turning now while still outside the opening.\", \"action\": \"turn_left\", \"confidence\": 0.7}",
+    "reasoning_content": "The opening appears narrow. I've turned 30 degrees left (2 turns). I need to turn more to present narrow profile. \"you cannot turn once your shoulders are inside the opening\" - so I should turn before entering. Maybe continue turning left to 90 degrees (6 turns total). Let me turn left more. Actually maybe 90 degrees is fully narrow. Let me continue turning left.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead down a red carpeted walkway toward a narrow opening in a wall with colorful geometric art. The red circle is visible through the opening in the distance. The carpet fills the foreground.",
+      "reasoning": "My torso is rotated 30 degrees left. My body is wide (top plate extends beyond wheels), so I should rotate further to present my narrow depth dimension to the narrow opening before entering. Turning needs room, so I should finish turning now while still outside the opening.",
+      "action": "turn_left",
+      "confidence": 0.7
+    },
+    "action": "turn_left"
+  }
+]

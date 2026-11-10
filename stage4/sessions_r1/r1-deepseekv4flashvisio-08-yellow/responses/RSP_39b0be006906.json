@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:10:03+08:00",
+    "latency_ms": 2489,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"3f5b413a-71b8-4537-97e8-993fd803936a\",\"object\":\"chat.completion\",\"created\":1794208202,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is very close and centered, mounted low on a dark panel just ahead; the red carpet is visible below.\\\", \\\"reasoning\\\": \\\"The arrow is extremely close and centered. My torso is at 15 degrees after the last left turn, which widens my body against the narrow opening. I should rotate back toward 0 degrees to align my body before attempting forward again.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3085,\"completion_tokens\":99,\"total_tokens\":3184,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2445},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is very close and centered, mounted low on a dark panel just ahead; the red carpet is visible below.\", \"reasoning\": \"The arrow is extremely close and centered. My torso is at 15 degrees after the last left turn, which widens my body against the narrow opening. I should rotate back toward 0 degrees to align my body before attempting forward again.\", \"action\": \"turn_left\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is very close and centered, mounted low on a dark panel just ahead; the red carpet is visible below.",
+      "reasoning": "The arrow is extremely close and centered. My torso is at 15 degrees after the last left turn, which widens my body against the narrow opening. I should rotate back toward 0 degrees to align my body before attempting forward again.",
+      "action": "turn_left",
+      "confidence": 0.6
+    },
+    "action": "turn_left"
+  }
+]

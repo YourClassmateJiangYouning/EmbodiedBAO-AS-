@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:25:38+08:00",
+    "latency_ms": 4445,
+    "payload_bytes": 215919,
+    "finish_reason": "stop",
+    "reasoning_tokens": 25,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"86360661-b9b5-4d3f-a8e3-ea6b3342877e_8d660735c8ab4b989ebb2410d3bb794b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star glows brightly on the far wall just ahead through the dark opening between patterned walls. A red carpet leads directly forward to it. The opening appears reachable in one or two more steps.\\\", \\\"reasoning\\\": \\\"I'm at x=6.5 and the star is very close, directly ahead through the opening. My torso is at 0 degrees (narrowest orientation), ideal for passing through. The path on the carpet is clear, so I should continue moving forward toward the star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"I'm at x=6.5, the star is very close now, visible through the opening. Continue forward.\"}}],\"created\":1794205538,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":153,\"prompt_tokens\":2517,\"total_tokens\":2670,\"completion_tokens_details\":{\"reasoning_tokens\":25},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star glows brightly on the far wall just ahead through the dark opening between patterned walls. A red carpet leads directly forward to it. The opening appears reachable in one or two more steps.\", \"reasoning\": \"I'm at x=6.5 and the star is very close, directly ahead through the opening. My torso is at 0 degrees (narrowest orientation), ideal for passing through. The path on the carpet is clear, so I should continue moving forward toward the star.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "I'm at x=6.5, the star is very close now, visible through the opening. Continue forward.",
+    "parsed": {
+      "scene_description": "The purple four-pointed star glows brightly on the far wall just ahead through the dark opening between patterned walls. A red carpet leads directly forward to it. The opening appears reachable in one or two more steps.",
+      "reasoning": "I'm at x=6.5 and the star is very close, directly ahead through the opening. My torso is at 0 degrees (narrowest orientation), ideal for passing through. The path on the carpet is clear, so I should continue moving forward toward the star.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:27:24+08:00",
+    "latency_ms": 14185,
+    "payload_bytes": 251439,
+    "finish_reason": "stop",
+    "reasoning_tokens": 18,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"d93194c7-97c4-4f61-a983-94c4c7b41d88_a3eee810c0824a98be040009be9cc92a\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle on the far wall is now very close and large in view, filling much of the frame on a dark panel, with the floor immediately in front and some draped dark material above the wall opening.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead and extremely close after 9 forward steps (6.75m traveled from x=8). My torso is at rotation 0, aligned with the walking direction which always points at the goal. No obstacle remains between me and the triangle; one more forward step should bring me to it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The blue triangle is very close and large. One more forward step should reach it.\"}}],\"created\":1794137243,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":153,\"prompt_tokens\":2536,\"total_tokens\":2689,\"completion_tokens_details\":{\"reasoning_tokens\":18},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The blue triangle on the far wall is now very close and large in view, filling much of the frame on a dark panel, with the floor immediately in front and some draped dark material above the wall opening.\", \"reasoning\": \"The blue triangle is directly ahead and extremely close after 9 forward steps (6.75m traveled from x=8). My torso is at rotation 0, aligned with the walking direction which always points at the goal. No obstacle remains between me and the triangle; one more forward step should bring me to it.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The blue triangle is very close and large. One more forward step should reach it.",
+    "parsed": {
+      "scene_description": "The blue triangle on the far wall is now very close and large in view, filling much of the frame on a dark panel, with the floor immediately in front and some draped dark material above the wall opening.",
+      "reasoning": "The blue triangle is directly ahead and extremely close after 9 forward steps (6.75m traveled from x=8). My torso is at rotation 0, aligned with the walking direction which always points at the goal. No obstacle remains between me and the triangle; one more forward step should bring me to it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

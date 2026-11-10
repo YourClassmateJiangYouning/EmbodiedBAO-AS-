@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:34:04+08:00",
+    "latency_ms": 11451,
+    "payload_bytes": 337838,
+    "finish_reason": "stop",
+    "reasoning_tokens": 78,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"08e85ec2-060c-4fe3-a899-f9f689bdae2d_74eb6152aba1473b82b49e07aa810960\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading straight ahead toward a narrow dark opening in a patterned wall. The purple four-pointed star is visible just at the opening, very close now. The wall has colorful geometric patterns with zigzags and shapes. The floor to the left of the carpet has bright yellow and patterned tiles.\\\",\\\"reasoning\\\": \\\"My torso is rotated 90 degrees, presenting my thin depth dimension to the narrow opening. The star is now very close, just at the opening ahead. I should continue moving forward to pass through the opening and reach the star.\\\",\\\"action\\\": \\\"forward\\\",\\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The star is near. Position x=2.75 after 3 forward steps... wait, 2 forwards at 0.75 each = 1.5, plus one more = 2.25? Position says 2.75. Hmm, maybe started at 1.25. Anyway, the star appears very close. Keep moving forward.\"}}],\"created\":1794144844,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":217,\"prompt_tokens\":2636,\"total_tokens\":2853,\"completion_tokens_details\":{\"reasoning_tokens\":78},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted walkway leading straight ahead toward a narrow dark opening in a patterned wall. The purple four-pointed star is visible just at the opening, very close now. The wall has colorful geometric patterns with zigzags and shapes. The floor to the left of the carpet has bright yellow and patterned tiles.\",\"reasoning\": \"My torso is rotated 90 degrees, presenting my thin depth dimension to the narrow opening. The star is now very close, just at the opening ahead. I should continue moving forward to pass through the opening and reach the star.\",\"action\": \"forward\",\"confidence\": 0.9}",
+    "reasoning_content": "The star is near. Position x=2.75 after 3 forward steps... wait, 2 forwards at 0.75 each = 1.5, plus one more = 2.25? Position says 2.75. Hmm, maybe started at 1.25. Anyway, the star appears very close. Keep moving forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading straight ahead toward a narrow dark opening in a patterned wall. The purple four-pointed star is visible just at the opening, very close now. The wall has colorful geometric patterns with zigzags and shapes. The floor to the left of the carpet has bright yellow and patterned tiles.",
+      "reasoning": "My torso is rotated 90 degrees, presenting my thin depth dimension to the narrow opening. The star is now very close, just at the opening ahead. I should continue moving forward to pass through the opening and reach the star.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

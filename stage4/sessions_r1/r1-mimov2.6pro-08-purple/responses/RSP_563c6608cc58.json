@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:23:07+08:00",
+    "latency_ms": 7314,
+    "payload_bytes": 383490,
+    "finish_reason": "stop",
+    "reasoning_tokens": 16,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"04e05ca3-f674-4ee7-b0f2-9cf278f37e97_e732a9b9f0584c73a312ca62fb113f7a\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretching forward toward a dark opening in a patterned wall, where a purple four-pointed star glows. Sunlit patterned floor tiles flank the carpet on both sides.\\\", \\\"reasoning\\\": \\\"The purple star is visible straight ahead through the opening. The path is clear, so I should move forward toward it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me start moving forward toward the purple star. The path looks clear.\"}}],\"created\":1794205387,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":109,\"prompt_tokens\":1925,\"total_tokens\":2034,\"completion_tokens_details\":{\"reasoning_tokens\":16},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretching forward toward a dark opening in a patterned wall, where a purple four-pointed star glows. Sunlit patterned floor tiles flank the carpet on both sides.\", \"reasoning\": \"The purple star is visible straight ahead through the opening. The path is clear, so I should move forward toward it.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "Let me start moving forward toward the purple star. The path looks clear.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretching forward toward a dark opening in a patterned wall, where a purple four-pointed star glows. Sunlit patterned floor tiles flank the carpet on both sides.",
+      "reasoning": "The purple star is visible straight ahead through the opening. The path is clear, so I should move forward toward it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

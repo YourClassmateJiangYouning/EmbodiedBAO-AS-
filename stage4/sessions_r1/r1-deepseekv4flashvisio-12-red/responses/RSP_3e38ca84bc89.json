@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:00:46+08:00",
+    "latency_ms": 2772,
+    "payload_bytes": 285334,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"860c5eea-f9ad-479c-9bca-632d4176b673\",\"object\":\"chat.completion\",\"created\":1794207644,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted floor leads straight ahead to a narrow opening between two patterned wall panels, with the red circle visible on the far wall through the gap. The opening appears narrow relative to the robot's body.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the fixed walking direction. My torso is rotated 15 degrees right, narrowing the profile presented to the gap. I have already turned once; turning further right would narrow the presented width more, but I am still outside the opening and can continue advancing. Since the gap looks narrow, I should turn right once more to reduce my presented width before entering, as turning becomes impossible once shoulders are inside.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2073,\"completion_tokens\":153,\"total_tokens\":2226,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1561},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted floor leads straight ahead to a narrow opening between two patterned wall panels, with the red circle visible on the far wall through the gap. The opening appears narrow relative to the robot's body.\", \"reasoning\": \"The red circle is directly ahead along the fixed walking direction. My torso is rotated 15 degrees right, narrowing the profile presented to the gap. I have already turned once; turning further right would narrow the presented width more, but I am still outside the opening and can continue advancing. Since the gap looks narrow, I should turn right once more to reduce my presented width before entering, as turning becomes impossible once shoulders are inside.\", \"action\": \"turn_right\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted floor leads straight ahead to a narrow opening between two patterned wall panels, with the red circle visible on the far wall through the gap. The opening appears narrow relative to the robot's body.",
+      "reasoning": "The red circle is directly ahead along the fixed walking direction. My torso is rotated 15 degrees right, narrowing the profile presented to the gap. I have already turned once; turning further right would narrow the presented width more, but I am still outside the opening and can continue advancing. Since the gap looks narrow, I should turn right once more to reduce my presented width before entering, as turning becomes impossible once shoulders are inside.",
+      "action": "turn_right",
+      "confidence": 0.6
+    },
+    "action": "turn_right"
+  }
+]

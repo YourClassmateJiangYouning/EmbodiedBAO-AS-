@@ -1,0 +1,52 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:41:43+08:00",
+    "latency_ms": 5025,
+    "payload_bytes": 263946,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T16:41:49+08:00",
+    "latency_ms": 5026,
+    "payload_bytes": 263946,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 3,
+    "started_at": "2026-11-09T16:42:00+08:00",
+    "latency_ms": 10854,
+    "payload_bytes": 263946,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090841558621765128268d9d6KFEOudFF\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213720,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight down a red carpeted walkway towards a blue triangle on a dark far wall. Two patterned walls create a narrow opening ahead. The current position is x=4.25, and the torso rotation is 30.0 degrees.\\\",\\n  \\\"reasoning\\\": \\\"My current torso rotation is 30.0 degrees. To pass through the narrow opening between the patterned walls, I need to present my narrowest profile, which occurs when my torso is rotated to 90 degrees. I will continue turning left to increase the rotation angle from 30 towards 90.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2777,\"completion_tokens\":154,\"total_tokens\":2931,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2777,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":154,\"totalTokenCount\":2931,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1688},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":154}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1688,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":154,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight down a red carpeted walkway towards a blue triangle on a dark far wall. Two patterned walls create a narrow opening ahead. The current position is x=4.25, and the torso rotation is 30.0 degrees.\",\n  \"reasoning\": \"My current torso rotation is 30.0 degrees. To pass through the narrow opening between the patterned walls, I need to present my narrowest profile, which occurs when my torso is rotated to 90 degrees. I will continue turning left to increase the rotation angle from 30 towards 90.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red carpeted walkway towards a blue triangle on a dark far wall. Two patterned walls create a narrow opening ahead. The current position is x=4.25, and the torso rotation is 30.0 degrees.",
+      "reasoning": "My current torso rotation is 30.0 degrees. To pass through the narrow opening between the patterned walls, I need to present my narrowest profile, which occurs when my torso is rotated to 90 degrees. I will continue turning left to increase the rotation angle from 30 towards 90.",
+      "action": "turn_left",
+      "confidence": 1.0
+    },
+    "action": "turn_left"
+  }
+]

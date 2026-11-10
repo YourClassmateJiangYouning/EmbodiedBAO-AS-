@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:13:52+08:00",
+    "latency_ms": 2748,
+    "payload_bytes": 323329,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"85ede625-71c2-4698-8410-93e963671b65\",\"object\":\"chat.completion\",\"created\":1794208431,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading toward a dark doorway on the far wall, with a bright green rectangle visible inside the opening. The opening appears narrow, and the patterned wall is on the left.\\\", \\\"reasoning\\\": \\\"The green target is straight ahead through the narrow opening. My torso is rotated 30 degrees right, presenting a slimmer profile, and I have already moved forward three times toward the opening. Continuing forward should bring me through the doorway toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.8}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2057,\"completion_tokens\":116,\"total_tokens\":2173,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1545},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading toward a dark doorway on the far wall, with a bright green rectangle visible inside the opening. The opening appears narrow, and the patterned wall is on the left.\", \"reasoning\": \"The green target is straight ahead through the narrow opening. My torso is rotated 30 degrees right, presenting a slimmer profile, and I have already moved forward three times toward the opening. Continuing forward should bring me through the doorway toward the target.\", \"action\": \"forward\", \"confidence\": 0.8}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading toward a dark doorway on the far wall, with a bright green rectangle visible inside the opening. The opening appears narrow, and the patterned wall is on the left.",
+      "reasoning": "The green target is straight ahead through the narrow opening. My torso is rotated 30 degrees right, presenting a slimmer profile, and I have already moved forward three times toward the opening. Continuing forward should bring me through the doorway toward the target.",
+      "action": "forward",
+      "confidence": 0.8
+    },
+    "action": "forward"
+  }
+]

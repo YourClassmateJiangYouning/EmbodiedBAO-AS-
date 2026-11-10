@@ -1,0 +1,52 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:21:12+08:00",
+    "latency_ms": 2732,
+    "payload_bytes": 160591,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T12:21:16+08:00",
+    "latency_ms": 3894,
+    "payload_bytes": 160591,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 3,
+    "started_at": "2026-11-09T12:21:24+08:00",
+    "latency_ms": 7405,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_bnqlj7blpd4msyia76clb5tw7fhafv3axvbjgwcnriijnhwv4pqq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198084,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the green rectangle target on the far wall ahead, centered in my view. The room is dark with purple-tinted walls on the sides. There appears to be a curved wall or obstacle structure in the foreground at the bottom of the image. The green rectangle is clearly visible and is my destination. I am currently at position x=7.250 with my torso rotated 0 degrees (neutral orientation after the turn_right at step 17).\\\",\\n  \\\"reasoning\\\": \\\"I have been stuck at x=7.250 for several steps, blocked by wall_panel obstacles when attempting to move forward. My previous attempts included: forward (blocked), turn_right, forward (blocked), turn_left, backward, turn_left, forward, forward (blocked), turn_right. The last two steps (18-19) were invalid. I need to try a different approach. Since I'm at torso rotation 0 degrees (neutral) after step 17's turn_right, I should attempt to move forward again to see if the path is now clear, or try turning to navigate around the obstacle differently. Let me try forward to test if I can progress.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.35\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3687,\"completion_tokens\":285,\"total_tokens\":3972,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3687,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":285,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3687,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the green rectangle target on the far wall ahead, centered in my view. The room is dark with purple-tinted walls on the sides. There appears to be a curved wall or obstacle structure in the foreground at the bottom of the image. The green rectangle is clearly visible and is my destination. I am currently at position x=7.250 with my torso rotated 0 degrees (neutral orientation after the turn_right at step 17).\",\n  \"reasoning\": \"I have been stuck at x=7.250 for several steps, blocked by wall_panel obstacles when attempting to move forward. My previous attempts included: forward (blocked), turn_right, forward (blocked), turn_left, backward, turn_left, forward, forward (blocked), turn_right. The last two steps (18-19) were invalid. I need to try a different approach. Since I'm at torso rotation 0 degrees (neutral) after step 17's turn_right, I should attempt to move forward again to see if the path is now clear, or try turning to navigate around the obstacle differently. Let me try forward to test if I can progress.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.35\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the green rectangle target on the far wall ahead, centered in my view. The room is dark with purple-tinted walls on the sides. There appears to be a curved wall or obstacle structure in the foreground at the bottom of the image. The green rectangle is clearly visible and is my destination. I am currently at position x=7.250 with my torso rotated 0 degrees (neutral orientation after the turn_right at step 17).",
+      "reasoning": "I have been stuck at x=7.250 for several steps, blocked by wall_panel obstacles when attempting to move forward. My previous attempts included: forward (blocked), turn_right, forward (blocked), turn_left, backward, turn_left, forward, forward (blocked), turn_right. The last two steps (18-19) were invalid. I need to try a different approach. Since I'm at torso rotation 0 degrees (neutral) after step 17's turn_right, I should attempt to move forward again to see if the path is now clear, or try turning to navigate around the obstacle differently. Let me try forward to test if I can progress.",
+      "action": "forward",
+      "confidence": 0.35
+    },
+    "action": "forward"
+  }
+]

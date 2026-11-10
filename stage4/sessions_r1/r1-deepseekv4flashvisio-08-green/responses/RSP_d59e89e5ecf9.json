@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:06:53+08:00",
+    "latency_ms": 2756,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"35882338-f9cc-4e3c-bb76-5beed0eff6ea\",\"object\":\"chat.completion\",\"created\":1794208011,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is visible directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path appears clear up to the target, though previous forward steps were blocked by a wall panel.\\\", \\\"reasoning\\\": \\\"Forward has been blocked repeatedly at many torso rotations, but the target is extremely close and centered. Since turning has not helped, I should try turning right further to reduce presented width differently, or attempt forward once more. Given the target is right in front, I'll try forward again to see if the blockage has cleared.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.3}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2944,\"completion_tokens\":133,\"total_tokens\":3077,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":2176},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is visible directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path appears clear up to the target, though previous forward steps were blocked by a wall panel.\", \"reasoning\": \"Forward has been blocked repeatedly at many torso rotations, but the target is extremely close and centered. Since turning has not helped, I should try turning right further to reduce presented width differently, or attempt forward once more. Given the target is right in front, I'll try forward again to see if the blockage has cleared.\", \"action\": \"forward\", \"confidence\": 0.3}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is visible directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path appears clear up to the target, though previous forward steps were blocked by a wall panel.",
+      "reasoning": "Forward has been blocked repeatedly at many torso rotations, but the target is extremely close and centered. Since turning has not helped, I should try turning right further to reduce presented width differently, or attempt forward once more. Given the target is right in front, I'll try forward again to see if the blockage has cleared.",
+      "action": "forward",
+      "confidence": 0.3
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:52:09+08:00",
+    "latency_ms": 11949,
+    "payload_bytes": 323329,
+    "finish_reason": "stop",
+    "reasoning_tokens": 32,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"eeaf9260-f215-4db9-b647-d1162c78c36d_53a17911df2f4c5a93f117639a6fd699\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpet leading straight ahead toward a doorway in the far wall. The green rectangle is visible through the opening at the far wall. The floor on the left has a patterned design with geometric shapes, and the walls are decorated with abstract patterns. The path along the carpet is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The green rectangle remains directly ahead through the doorway opening. My torso rotation is 0 degrees, which minimizes the width I present to the opening, and I cannot turn once inside the opening anyway. The path along the red carpet is clear, so I should continue moving straight forward toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is still ahead through the doorway. I should continue forward. Torso rotation is 0, which minimizes width. Keep moving forward.\"}}],\"created\":1794207128,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":188,\"prompt_tokens\":2254,\"total_tokens\":2442,\"completion_tokens_details\":{\"reasoning_tokens\":32},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpet leading straight ahead toward a doorway in the far wall. The green rectangle is visible through the opening at the far wall. The floor on the left has a patterned design with geometric shapes, and the walls are decorated with abstract patterns. The path along the carpet is clear and unobstructed.\", \"reasoning\": \"The green rectangle remains directly ahead through the doorway opening. My torso rotation is 0 degrees, which minimizes the width I present to the opening, and I cannot turn once inside the opening anyway. The path along the red carpet is clear, so I should continue moving straight forward toward the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The green rectangle is still ahead through the doorway. I should continue forward. Torso rotation is 0, which minimizes width. Keep moving forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpet leading straight ahead toward a doorway in the far wall. The green rectangle is visible through the opening at the far wall. The floor on the left has a patterned design with geometric shapes, and the walls are decorated with abstract patterns. The path along the carpet is clear and unobstructed.",
+      "reasoning": "The green rectangle remains directly ahead through the doorway opening. My torso rotation is 0 degrees, which minimizes the width I present to the opening, and I cannot turn once inside the opening anyway. The path along the red carpet is clear, so I should continue moving straight forward toward the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

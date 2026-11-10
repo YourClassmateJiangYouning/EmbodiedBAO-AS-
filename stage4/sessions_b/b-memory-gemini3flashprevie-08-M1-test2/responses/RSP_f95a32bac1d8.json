@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:25:38+08:00",
+    "latency_ms": 5635,
+    "payload_bytes": 430107,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090825345070480958268d9d6r9pzpVjA\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212739,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"I am at the beginning of a red carpet walkway. In the distance, there is a narrow opening between two patterned walls, and beyond that opening, a small green rectangle is visible on the far wall. There are white markers on the floor along both sides of the red carpet.\\\",\\n  \\\"reasoning\\\": \\\"The goal is to reach the green rectangle. I am currently at the start of the path (x=0.5). I need to move forward to approach the narrow opening. Before I reach the gap, I will need to check my body width to ensure I can fit through.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2534,\"completion_tokens\":148,\"total_tokens\":2682,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2534,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":148,\"totalTokenCount\":2682,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1445},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":148}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1445,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":148,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"I am at the beginning of a red carpet walkway. In the distance, there is a narrow opening between two patterned walls, and beyond that opening, a small green rectangle is visible on the far wall. There are white markers on the floor along both sides of the red carpet.\",\n  \"reasoning\": \"The goal is to reach the green rectangle. I am currently at the start of the path (x=0.5). I need to move forward to approach the narrow opening. Before I reach the gap, I will need to check my body width to ensure I can fit through.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I am at the beginning of a red carpet walkway. In the distance, there is a narrow opening between two patterned walls, and beyond that opening, a small green rectangle is visible on the far wall. There are white markers on the floor along both sides of the red carpet.",
+      "reasoning": "The goal is to reach the green rectangle. I am currently at the start of the path (x=0.5). I need to move forward to approach the narrow opening. Before I reach the gap, I will need to check my body width to ensure I can fit through.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:24:00+08:00",
+    "latency_ms": 10339,
+    "payload_bytes": 430107,
+    "finish_reason": "stop",
+    "reasoning_tokens": 43,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"8555bdf2-bc5f-4bb5-a76c-5ff3f8f6cbf9_47a628d6a6be4093956d38a94962c98d\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet walkway leads straight ahead toward the far wall where a green rectangle sits on the floor near a dark draped object and yellow furniture. White paper strips line both sides of the carpet. The green target is centered directly ahead and appears fairly close.\\\",\\\"reasoning\\\": \\\"Torso rotation is 0 degrees which presents my minimum width to the opening. The green rectangle is directly ahead and centered. The path on the red carpet is clear, so I should continue moving straight forward toward the target.\\\",\\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is ahead on the floor. Current position x=0.5, torso rotation 0. Steps remaining: 30 total. The green box looks close. Let me just move forward.\"}}],\"created\":1794212640,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":164,\"prompt_tokens\":3192,\"total_tokens\":3356,\"completion_tokens_details\":{\"reasoning_tokens\":43},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet walkway leads straight ahead toward the far wall where a green rectangle sits on the floor near a dark draped object and yellow furniture. White paper strips line both sides of the carpet. The green target is centered directly ahead and appears fairly close.\",\"reasoning\": \"Torso rotation is 0 degrees which presents my minimum width to the opening. The green rectangle is directly ahead and centered. The path on the red carpet is clear, so I should continue moving straight forward toward the target.\",\"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The green rectangle is ahead on the floor. Current position x=0.5, torso rotation 0. Steps remaining: 30 total. The green box looks close. Let me just move forward.",
+    "parsed": {
+      "scene_description": "A red carpet walkway leads straight ahead toward the far wall where a green rectangle sits on the floor near a dark draped object and yellow furniture. White paper strips line both sides of the carpet. The green target is centered directly ahead and appears fairly close.",
+      "reasoning": "Torso rotation is 0 degrees which presents my minimum width to the opening. The green rectangle is directly ahead and centered. The path on the red carpet is clear, so I should continue moving straight forward toward the target.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

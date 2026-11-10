@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:40:52+08:00",
+    "latency_ms": 6309,
+    "payload_bytes": 333940,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081040476083536948268d9d6xf6O1Sba\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134453,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down a red carpeted walkway towards a narrow opening in a wall. A red circle is visible on the far wall through the opening. The walls are decorated with geometric patterns. I am currently at x=2.75, and my torso is rotated 15 degrees to the right.\\\",\\n  \\\"reasoning\\\": \\\"I need to reach the red circle. The opening ahead is narrow, and my previous 'look_down' action indicated that my body is wide. To fit through, I must rotate my torso to a 90-degree angle (profile view). I have already started rotating (currently at 15 degrees). I will continue rotating while moving forward to save steps, as I am still some distance from the gap.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2371,\"completion_tokens\":186,\"total_tokens\":2557,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2371,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":186,\"totalTokenCount\":2557,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1282}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":186}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1282,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":186,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down a red carpeted walkway towards a narrow opening in a wall. A red circle is visible on the far wall through the opening. The walls are decorated with geometric patterns. I am currently at x=2.75, and my torso is rotated 15 degrees to the right.\",\n  \"reasoning\": \"I need to reach the red circle. The opening ahead is narrow, and my previous 'look_down' action indicated that my body is wide. To fit through, I must rotate my torso to a 90-degree angle (profile view). I have already started rotating (currently at 15 degrees). I will continue rotating while moving forward to save steps, as I am still some distance from the gap.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down a red carpeted walkway towards a narrow opening in a wall. A red circle is visible on the far wall through the opening. The walls are decorated with geometric patterns. I am currently at x=2.75, and my torso is rotated 15 degrees to the right.",
+      "reasoning": "I need to reach the red circle. The opening ahead is narrow, and my previous 'look_down' action indicated that my body is wide. To fit through, I must rotate my torso to a 90-degree angle (profile view). I have already started rotating (currently at 15 degrees). I will continue rotating while moving forward to save steps, as I am still some distance from the gap.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

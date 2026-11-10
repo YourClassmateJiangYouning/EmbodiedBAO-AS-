@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:18:53+08:00",
+    "latency_ms": 2818,
+    "payload_bytes": 380160,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"8a2c04db-f4e4-4df9-ba8c-d27320e4c53e\",\"object\":\"chat.completion\",\"created\":1794208732,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches straight ahead toward a dark doorway on the far wall, where a small purple four-pointed star is visible. To the left is a lighter patterned floor area with a black border line running parallel to the red carpet.\\\", \\\"reasoning\\\": \\\"The star is directly ahead along the red carpet, and the walking direction is fixed toward it. The path appears clear, so moving forward repeatedly will bring me closer to the goal. No turning is needed since the star is centered ahead.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1559,\"completion_tokens\":121,\"total_tokens\":1680,\"prompt_tokens_details\":{\"cached_tokens\":1408},\"prompt_cache_hit_tokens\":1408,\"prompt_cache_miss_tokens\":151},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches straight ahead toward a dark doorway on the far wall, where a small purple four-pointed star is visible. To the left is a lighter patterned floor area with a black border line running parallel to the red carpet.\", \"reasoning\": \"The star is directly ahead along the red carpet, and the walking direction is fixed toward it. The path appears clear, so moving forward repeatedly will bring me closer to the goal. No turning is needed since the star is centered ahead.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches straight ahead toward a dark doorway on the far wall, where a small purple four-pointed star is visible. To the left is a lighter patterned floor area with a black border line running parallel to the red carpet.",
+      "reasoning": "The star is directly ahead along the red carpet, and the walking direction is fixed toward it. The path appears clear, so moving forward repeatedly will bring me closer to the goal. No turning is needed since the star is centered ahead.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:26:04+08:00",
+    "latency_ms": 8022,
+    "payload_bytes": 242096,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A narrow corridor ends at a wall panel with a bright red circle near floor level directly ahead. The red circle appears very close, slightly recessed at the end of the carpeted path. Side panels/walls flank the opening.\\\", \\\"reasoning\\\": \\\"The goal red circle is immediately ahead at the wall, and previous forward attempts were blocked indicating I’m already at the wall. To ensure reaching/contacting the red circle, move forward toward it until blocked again.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.71}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205561,\"id\":\"chatcmpl-EiD7JThq5OIfIDPrjHMDsvZ6cSAPr\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":120,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":507,\"engine_ttlt_ms\":1474,\"pre_inference_ms\":380,\"service_tbt_ms\":8,\"service_ttft_ms\":1044,\"service_ttlt_ms\":2001,\"user_visible_ttft_ms\":664},\"prompt_tokens\":2362,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2482}}\n",
+    "content": "{\"scene_description\": \"A narrow corridor ends at a wall panel with a bright red circle near floor level directly ahead. The red circle appears very close, slightly recessed at the end of the carpeted path. Side panels/walls flank the opening.\", \"reasoning\": \"The goal red circle is immediately ahead at the wall, and previous forward attempts were blocked indicating I’m already at the wall. To ensure reaching/contacting the red circle, move forward toward it until blocked again.\", \"action\": \"forward\", \"confidence\": 0.71}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A narrow corridor ends at a wall panel with a bright red circle near floor level directly ahead. The red circle appears very close, slightly recessed at the end of the carpeted path. Side panels/walls flank the opening.",
+      "reasoning": "The goal red circle is immediately ahead at the wall, and previous forward attempts were blocked indicating I’m already at the wall. To ensure reaching/contacting the red circle, move forward toward it until blocked again.",
+      "action": "forward",
+      "confidence": 0.71
+    },
+    "action": "forward"
+  }
+]

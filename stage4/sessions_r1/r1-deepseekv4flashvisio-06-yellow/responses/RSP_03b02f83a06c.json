@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:16:30+08:00",
+    "latency_ms": 2483,
+    "payload_bytes": 362235,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"b2ea45f5-2a0a-45b6-934b-aace49fbf8ea\",\"object\":\"chat.completion\",\"created\":1794208589,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a dark doorway in a patterned wall; a yellow arrow is visible through the opening, slightly right of center. The path ahead appears clear.\\\", \\\"reasoning\\\": \\\"The yellow arrow is visible straight ahead through the doorway and the path is clear. My torso is at 0 degrees, so my body width is aligned with the opening. I should check my width with a downward glance before entering the narrow doorway, since I cannot turn once my shoulders are inside.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.8}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1637,\"completion_tokens\":122,\"total_tokens\":1759,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":869},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a dark doorway in a patterned wall; a yellow arrow is visible through the opening, slightly right of center. The path ahead appears clear.\", \"reasoning\": \"The yellow arrow is visible straight ahead through the doorway and the path is clear. My torso is at 0 degrees, so my body width is aligned with the opening. I should check my width with a downward glance before entering the narrow doorway, since I cannot turn once my shoulders are inside.\", \"action\": \"look_down\", \"confidence\": 0.8}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a dark doorway in a patterned wall; a yellow arrow is visible through the opening, slightly right of center. The path ahead appears clear.",
+      "reasoning": "The yellow arrow is visible straight ahead through the doorway and the path is clear. My torso is at 0 degrees, so my body width is aligned with the opening. I should check my width with a downward glance before entering the narrow doorway, since I cannot turn once my shoulders are inside.",
+      "action": "look_down",
+      "confidence": 0.8
+    },
+    "action": "look_down"
+  }
+]

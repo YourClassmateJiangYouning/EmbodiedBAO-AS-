@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:23:18+08:00",
+    "latency_ms": 3622,
+    "payload_bytes": 263946,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"562d2b57-78e9-45a0-9410-baad22feb2e0\",\"object\":\"chat.completion\",\"created\":1794212597,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading straight ahead to a blue triangle on the far wall, framed by patterned wall panels on both sides. The path appears clear and the triangle is directly ahead.\\\", \\\"reasoning\\\": \\\"The blue triangle is straight ahead along the fixed walking direction and the path is unobstructed. The torso is at 0 degrees, so no turning is needed; moving forward reduces the remaining distance to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2596,\"completion_tokens\":107,\"total_tokens\":2703,\"prompt_tokens_details\":{\"cached_tokens\":1280},\"prompt_cache_hit_tokens\":1280,\"prompt_cache_miss_tokens\":1316},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading straight ahead to a blue triangle on the far wall, framed by patterned wall panels on both sides. The path appears clear and the triangle is directly ahead.\", \"reasoning\": \"The blue triangle is straight ahead along the fixed walking direction and the path is unobstructed. The torso is at 0 degrees, so no turning is needed; moving forward reduces the remaining distance to the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading straight ahead to a blue triangle on the far wall, framed by patterned wall panels on both sides. The path appears clear and the triangle is directly ahead.",
+      "reasoning": "The blue triangle is straight ahead along the fixed walking direction and the path is unobstructed. The torso is at 0 degrees, so no turning is needed; moving forward reduces the remaining distance to the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

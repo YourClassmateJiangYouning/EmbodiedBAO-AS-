@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:05:06+08:00",
+    "latency_ms": 2714,
+    "payload_bytes": 248764,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"37aa3502-5e18-4555-963e-9d864a907593\",\"object\":\"chat.completion\",\"created\":1794207904,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpet leading toward a doorway opening with a blue triangle on a black panel just beyond it. The opening is framed by patterned walls on the left and a blue wall on the right. The path ahead appears clear and aligned with the walking direction.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead through the opening, and the path is unobstructed. Continuing forward advances toward the goal without needing any turning, which avoids shoulder-clearance issues near the opening.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2014,\"completion_tokens\":117,\"total_tokens\":2131,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1374},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpet leading toward a doorway opening with a blue triangle on a black panel just beyond it. The opening is framed by patterned walls on the left and a blue wall on the right. The path ahead appears clear and aligned with the walking direction.\", \"reasoning\": \"The blue triangle is directly ahead through the opening, and the path is unobstructed. Continuing forward advances toward the goal without needing any turning, which avoids shoulder-clearance issues near the opening.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpet leading toward a doorway opening with a blue triangle on a black panel just beyond it. The opening is framed by patterned walls on the left and a blue wall on the right. The path ahead appears clear and aligned with the walking direction.",
+      "reasoning": "The blue triangle is directly ahead through the opening, and the path is unobstructed. Continuing forward advances toward the goal without needing any turning, which avoids shoulder-clearance issues near the opening.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

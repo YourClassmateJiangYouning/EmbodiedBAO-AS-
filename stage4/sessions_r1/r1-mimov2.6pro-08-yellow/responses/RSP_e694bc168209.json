@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:05:13+08:00",
+    "latency_ms": 5220,
+    "payload_bytes": 370372,
+    "finish_reason": "stop",
+    "reasoning_tokens": 11,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"85a1cf1e-45e8-43f9-89a2-e9c42eefa94c_60930449bb864e41a9bb9ad0a48a2429\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a dark opening in a wall decorated with colorful geometric patterns. A yellow arrow points right at the opening. To the left are reflective floor tiles with light patterns. The path ahead is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The path ahead is completely clear along the red carpet toward the yellow arrow. The opening appears wide enough for passage. No obstacles or narrow gaps requiring torso rotation are visible. Continue forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear, just keep moving forward.\"}}],\"created\":1794204313,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":129,\"prompt_tokens\":1982,\"total_tokens\":2111,\"completion_tokens_details\":{\"reasoning_tokens\":11},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a dark opening in a wall decorated with colorful geometric patterns. A yellow arrow points right at the opening. To the left are reflective floor tiles with light patterns. The path ahead is clear and unobstructed.\", \"reasoning\": \"The path ahead is completely clear along the red carpet toward the yellow arrow. The opening appears wide enough for passage. No obstacles or narrow gaps requiring torso rotation are visible. Continue forward.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear, just keep moving forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a dark opening in a wall decorated with colorful geometric patterns. A yellow arrow points right at the opening. To the left are reflective floor tiles with light patterns. The path ahead is clear and unobstructed.",
+      "reasoning": "The path ahead is completely clear along the red carpet toward the yellow arrow. The opening appears wide enough for passage. No obstacles or narrow gaps requiring torso rotation are visible. Continue forward.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

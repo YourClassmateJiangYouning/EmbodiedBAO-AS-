@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:58:56+08:00",
+    "latency_ms": 9365,
+    "payload_bytes": 383069,
+    "finish_reason": "stop",
+    "reasoning_tokens": 87,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"4de23090-7df4-44ac-8945-8c0e0d73c750_fd77326278b44400b18abc26e1295d5b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpeted walkway stretching toward a dark doorway on the far wall, with the blue triangle visible just beyond the threshold. Patterned walls flank the opening, and there is clear carpet between me and the doorway.\\\", \\\"reasoning\\\": \\\"I'm at 60 degrees torso rotation after 4 turn_right actions. Per the successful traversal, I need to reach 90 degrees so my thinner front-to-back dimension faces the opening. That requires 2 more turn_right actions, and the doorway is still well ahead, so I can safely continue rotating.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to reach 90 degrees torso rotation per successful traversal. Currently at 60 degrees after 4 turns... wait, 4 turn_right steps would be 60 degrees (0, 15, 30, 45... hmm 4 steps of 15 = 60). Need 2 more to reach 90. So continue turn_right.\\n\\nWe should continue turning.\"}}],\"created\":1794214736,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":223,\"prompt_tokens\":2967,\"total_tokens\":3190,\"completion_tokens_details\":{\"reasoning_tokens\":87},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpeted walkway stretching toward a dark doorway on the far wall, with the blue triangle visible just beyond the threshold. Patterned walls flank the opening, and there is clear carpet between me and the doorway.\", \"reasoning\": \"I'm at 60 degrees torso rotation after 4 turn_right actions. Per the successful traversal, I need to reach 90 degrees so my thinner front-to-back dimension faces the opening. That requires 2 more turn_right actions, and the doorway is still well ahead, so I can safely continue rotating.\", \"action\": \"turn_right\", \"confidence\": 0.85}",
+    "reasoning_content": "We need to reach 90 degrees torso rotation per successful traversal. Currently at 60 degrees after 4 turns... wait, 4 turn_right steps would be 60 degrees (0, 15, 30, 45... hmm 4 steps of 15 = 60). Need 2 more to reach 90. So continue turn_right.\n\nWe should continue turning.",
+    "parsed": {
+      "scene_description": "Red carpeted walkway stretching toward a dark doorway on the far wall, with the blue triangle visible just beyond the threshold. Patterned walls flank the opening, and there is clear carpet between me and the doorway.",
+      "reasoning": "I'm at 60 degrees torso rotation after 4 turn_right actions. Per the successful traversal, I need to reach 90 degrees so my thinner front-to-back dimension faces the opening. That requires 2 more turn_right actions, and the doorway is still well ahead, so I can safely continue rotating.",
+      "action": "turn_right",
+      "confidence": 0.85
+    },
+    "action": "turn_right"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:28:02+08:00",
+    "latency_ms": 8239,
+    "payload_bytes": 372094,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090827583872937138268d9d6vb4ufutQ\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212883,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The image shows a red carpeted walkway leading towards a red circle on a black background at the far end. There are patterned walls on both sides of the path, creating a narrow opening ahead. White rectangular markers are placed along the edges of the red carpet.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 15 degrees to prepare for the narrow opening. I am still at x=2.75, and the gap appears to be several steps away. I will continue to rotate my torso to a sharper angle (e.g., 45 or 90 degrees) to ensure I can pass through the narrowest part of the opening without getting stuck.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2422,\"completion_tokens\":170,\"total_tokens\":2592,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2422,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":170,\"totalTokenCount\":2592,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1333},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":170}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1333,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":170,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The image shows a red carpeted walkway leading towards a red circle on a black background at the far end. There are patterned walls on both sides of the path, creating a narrow opening ahead. White rectangular markers are placed along the edges of the red carpet.\",\n  \"reasoning\": \"I have already rotated my torso to 15 degrees to prepare for the narrow opening. I am still at x=2.75, and the gap appears to be several steps away. I will continue to rotate my torso to a sharper angle (e.g., 45 or 90 degrees) to ensure I can pass through the narrowest part of the opening without getting stuck.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The image shows a red carpeted walkway leading towards a red circle on a black background at the far end. There are patterned walls on both sides of the path, creating a narrow opening ahead. White rectangular markers are placed along the edges of the red carpet.",
+      "reasoning": "I have already rotated my torso to 15 degrees to prepare for the narrow opening. I am still at x=2.75, and the gap appears to be several steps away. I will continue to rotate my torso to a sharper angle (e.g., 45 or 90 degrees) to ensure I can pass through the narrowest part of the opening without getting stuck.",
+      "action": "turn_left",
+      "confidence": 0.9
+    },
+    "action": "turn_left"
+  }
+]

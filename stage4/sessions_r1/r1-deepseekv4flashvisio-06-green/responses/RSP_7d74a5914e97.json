@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:14:53+08:00",
+    "latency_ms": 2953,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5f19912d-0bc2-4793-8fe2-f13bc216b1ec\",\"object\":\"chat.completion\",\"created\":1794208491,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle fills the center of the view, very close ahead, with a dark wall panel above it and narrow side walls framing a tight opening. The floor is visible below the target.\\\", \\\"reasoning\\\": \\\"Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The target is extremely close and centered, suggesting the robot is right at the opening but the wall panel above the green rectangle is blocking further forward motion. Since turning changes body width but not walking direction, and forward keeps getting blocked, I should back up to gain clearance and then try a different torso orientation, or check my width with a downward glance to find the slimmest profile. With only 3 steps left, I'll back up to create room and then attempt forward again.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.35}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3272,\"completion_tokens\":186,\"total_tokens\":3458,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2632},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green rectangle fills the center of the view, very close ahead, with a dark wall panel above it and narrow side walls framing a tight opening. The floor is visible below the target.\", \"reasoning\": \"Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The target is extremely close and centered, suggesting the robot is right at the opening but the wall panel above the green rectangle is blocking further forward motion. Since turning changes body width but not walking direction, and forward keeps getting blocked, I should back up to gain clearance and then try a different torso orientation, or check my width with a downward glance to find the slimmest profile. With only 3 steps left, I'll back up to create room and then attempt forward again.\", \"action\": \"backward\", \"confidence\": 0.35}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green rectangle fills the center of the view, very close ahead, with a dark wall panel above it and narrow side walls framing a tight opening. The floor is visible below the target.",
+      "reasoning": "Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The target is extremely close and centered, suggesting the robot is right at the opening but the wall panel above the green rectangle is blocking further forward motion. Since turning changes body width but not walking direction, and forward keeps getting blocked, I should back up to gain clearance and then try a different torso orientation, or check my width with a downward glance to find the slimmest profile. With only 3 steps left, I'll back up to create room and then attempt forward again.",
+      "action": "backward",
+      "confidence": 0.35
+    },
+    "action": "backward"
+  }
+]

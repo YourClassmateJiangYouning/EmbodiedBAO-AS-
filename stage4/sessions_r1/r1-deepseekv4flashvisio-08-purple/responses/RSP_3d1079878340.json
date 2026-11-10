@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:12:34+08:00",
+    "latency_ms": 2733,
+    "payload_bytes": 166724,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ec069afd-cede-4b4a-9dba-271e875a5276\",\"object\":\"chat.completion\",\"created\":1794208353,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star glows brightly on a raised panel directly ahead, with the red carpet leading up to it. The star appears very close, filling much of the view.\\\", \\\"reasoning\\\": \\\"The star is directly ahead and appears close. Forward was blocked earlier at step 9, but after backing up and moving forward again, I should try advancing once more to get as close as possible to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2220,\"completion_tokens\":104,\"total_tokens\":2324,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1580},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star glows brightly on a raised panel directly ahead, with the red carpet leading up to it. The star appears very close, filling much of the view.\", \"reasoning\": \"The star is directly ahead and appears close. Forward was blocked earlier at step 9, but after backing up and moving forward again, I should try advancing once more to get as close as possible to the goal.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star glows brightly on a raised panel directly ahead, with the red carpet leading up to it. The star appears very close, filling much of the view.",
+      "reasoning": "The star is directly ahead and appears close. Forward was blocked earlier at step 9, but after backing up and moving forward again, I should try advancing once more to get as close as possible to the goal.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

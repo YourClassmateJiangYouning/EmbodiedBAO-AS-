@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:50:31+08:00",
+    "latency_ms": 8573,
+    "payload_bytes": 361646,
+    "finish_reason": "stop",
+    "reasoning_tokens": 91,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"c91bb981-a5dc-429a-8787-65d1c0281663_b96c2997140245468970c7fa7bbe8778\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading straight ahead to a doorway in a wall decorated with abstract patterns. Through the doorway opening, a green rectangle is visible on the far wall. To the left is a light-colored patterned floor. The path along the red carpet is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The green rectangle is directly ahead through the doorway. The red carpet leads straight toward it. I've already moved forward once successfully. The doorway opening may be narrow, so I should consider checking my body width with look_down before entering, but I'm still some distance away. Continuing forward is the clear next step to make progress toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is visible ahead through the doorway. The red carpet leads toward it. I've taken 1 step forward. I should continue moving forward toward the green rectangle. The doorway opening appears to be ahead. I should probably check my width before entering the doorway, but let me just continue forward for now.\\n\\nActually, the doorway looks somewhat narrow. Let me continue forward and maybe check width with look_down when closer. For now, forward.\"}}],\"created\":1794207031,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":252,\"prompt_tokens\":2004,\"total_tokens\":2256,\"completion_tokens_details\":{\"reasoning_tokens\":91},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted walkway leading straight ahead to a doorway in a wall decorated with abstract patterns. Through the doorway opening, a green rectangle is visible on the far wall. To the left is a light-colored patterned floor. The path along the red carpet is clear and unobstructed.\", \"reasoning\": \"The green rectangle is directly ahead through the doorway. The red carpet leads straight toward it. I've already moved forward once successfully. The doorway opening may be narrow, so I should consider checking my body width with look_down before entering, but I'm still some distance away. Continuing forward is the clear next step to make progress toward the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The green rectangle is visible ahead through the doorway. The red carpet leads toward it. I've taken 1 step forward. I should continue moving forward toward the green rectangle. The doorway opening appears to be ahead. I should probably check my width before entering the doorway, but let me just continue forward for now.\n\nActually, the doorway looks somewhat narrow. Let me continue forward and maybe check width with look_down when closer. For now, forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading straight ahead to a doorway in a wall decorated with abstract patterns. Through the doorway opening, a green rectangle is visible on the far wall. To the left is a light-colored patterned floor. The path along the red carpet is clear and unobstructed.",
+      "reasoning": "The green rectangle is directly ahead through the doorway. The red carpet leads straight toward it. I've already moved forward once successfully. The doorway opening may be narrow, so I should consider checking my body width with look_down before entering, but I'm still some distance away. Continuing forward is the clear next step to make progress toward the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

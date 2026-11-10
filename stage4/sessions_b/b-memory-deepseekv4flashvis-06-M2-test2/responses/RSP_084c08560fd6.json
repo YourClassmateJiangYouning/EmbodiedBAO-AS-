@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:22:06+08:00",
+    "latency_ms": 2266,
+    "payload_bytes": 293742,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"84834376-a7e8-4ab7-9310-ac5b61dde928\",\"object\":\"chat.completion\",\"created\":1794212525,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle is visible directly ahead on a dark panel at the far wall, with a clear red carpeted path leading toward it and no obstacles in the way.\\\", \\\"reasoning\\\": \\\"The goal is directly ahead along the fixed walking direction and the path is clear, so continuing forward advances toward the red circle, consistent with the prior successful traversal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3003,\"completion_tokens\":89,\"total_tokens\":3092,\"prompt_tokens_details\":{\"cached_tokens\":1664},\"prompt_cache_hit_tokens\":1664,\"prompt_cache_miss_tokens\":1339},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle is visible directly ahead on a dark panel at the far wall, with a clear red carpeted path leading toward it and no obstacles in the way.\", \"reasoning\": \"The goal is directly ahead along the fixed walking direction and the path is clear, so continuing forward advances toward the red circle, consistent with the prior successful traversal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle is visible directly ahead on a dark panel at the far wall, with a clear red carpeted path leading toward it and no obstacles in the way.",
+      "reasoning": "The goal is directly ahead along the fixed walking direction and the path is clear, so continuing forward advances toward the red circle, consistent with the prior successful traversal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

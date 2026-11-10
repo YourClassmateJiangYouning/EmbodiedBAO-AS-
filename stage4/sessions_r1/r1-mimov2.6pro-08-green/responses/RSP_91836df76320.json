@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:25:09+08:00",
+    "latency_ms": 6363,
+    "payload_bytes": 370954,
+    "finish_reason": "stop",
+    "reasoning_tokens": 38,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"3dc71e4d-2333-4c8a-9c34-085311274c7d_f6fdc7025d37485ea0dd6a6f16e7f464\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a far wall decorated with purple/beige geometric patterns. In the center of the far wall there is a narrow dark opening with a green rectangle visible at floor level beyond it. The carpet is clear ahead of me.\\\", \\\"reasoning\\\": \\\"The green rectangle is visible straight ahead through the narrow opening. My torso remains at 0 degrees rotation (narrowest profile), and the path is clear. I should continue moving forward toward the opening and the green rectangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is ahead through an opening. I need to keep moving forward. The opening looks narrow but my torso is at 0 degrees (narrowest profile). Continue forward.\"}}],\"created\":1794198309,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":166,\"prompt_tokens\":2062,\"total_tokens\":2228,\"completion_tokens_details\":{\"reasoning_tokens\":38},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a far wall decorated with purple/beige geometric patterns. In the center of the far wall there is a narrow dark opening with a green rectangle visible at floor level beyond it. The carpet is clear ahead of me.\", \"reasoning\": \"The green rectangle is visible straight ahead through the narrow opening. My torso remains at 0 degrees rotation (narrowest profile), and the path is clear. I should continue moving forward toward the opening and the green rectangle.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The green rectangle is ahead through an opening. I need to keep moving forward. The opening looks narrow but my torso is at 0 degrees (narrowest profile). Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a far wall decorated with purple/beige geometric patterns. In the center of the far wall there is a narrow dark opening with a green rectangle visible at floor level beyond it. The carpet is clear ahead of me.",
+      "reasoning": "The green rectangle is visible straight ahead through the narrow opening. My torso remains at 0 degrees rotation (narrowest profile), and the path is clear. I should continue moving forward toward the opening and the green rectangle.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

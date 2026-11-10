@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:30:22+08:00",
+    "latency_ms": 7350,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_k543skuojt33iatkvo35rgjpydpnz7dmjhpov7kg4ssjvehvbbla\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198622,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The camera shows a bright yellow arrow pointing to the right on a dark wall. The arrow is clearly visible and well-lit against the dark background. On the left side of the image, there appears to be a pink/reddish wall or panel. The arrow is my target destination on the far wall.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=7.250 with my torso rotated 60 degrees to the left. I have been blocked by a wall_panel obstacle when trying to move forward directly. On step 22, I moved forward and successfully progressed. The yellow arrow is clearly visible ahead on the far wall. My walking direction is fixed toward that arrow. I should continue moving forward toward the yellow arrow target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.75\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":4076,\"completion_tokens\":191,\"total_tokens\":4267,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":4076,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":191,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":4076,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The camera shows a bright yellow arrow pointing to the right on a dark wall. The arrow is clearly visible and well-lit against the dark background. On the left side of the image, there appears to be a pink/reddish wall or panel. The arrow is my target destination on the far wall.\",\n  \"reasoning\": \"I am at position x=7.250 with my torso rotated 60 degrees to the left. I have been blocked by a wall_panel obstacle when trying to move forward directly. On step 22, I moved forward and successfully progressed. The yellow arrow is clearly visible ahead on the far wall. My walking direction is fixed toward that arrow. I should continue moving forward toward the yellow arrow target.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.75\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a bright yellow arrow pointing to the right on a dark wall. The arrow is clearly visible and well-lit against the dark background. On the left side of the image, there appears to be a pink/reddish wall or panel. The arrow is my target destination on the far wall.",
+      "reasoning": "I am at position x=7.250 with my torso rotated 60 degrees to the left. I have been blocked by a wall_panel obstacle when trying to move forward directly. On step 22, I moved forward and successfully progressed. The yellow arrow is clearly visible ahead on the far wall. My walking direction is fixed toward that arrow. I should continue moving forward toward the yellow arrow target.",
+      "action": "forward",
+      "confidence": 0.75
+    },
+    "action": "forward"
+  }
+]

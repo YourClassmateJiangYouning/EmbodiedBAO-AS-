@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:36:08+08:00",
+    "latency_ms": 7344,
+    "payload_bytes": 279661,
+    "finish_reason": "stop",
+    "reasoning_tokens": 43,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"6b597572-8452-4240-b6ad-dbfa49384995_fce0e650ae6a4a2fa6069f4db4356200\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead along the walking direction. The red carpet ends at a light-colored floor, and just ahead on that floor sits a black rectangular board with a large glowing red circle on it. Behind it are dark draped fabric and a tan leather sofa. The red circle is very close, roughly one step away.\\\", \\\"reasoning\\\": \\\"I am at x=7.25 with my torso at 90° (the narrow profile that allowed passage), and the red circle is immediately ahead on the floor, appearing large and close. The previous forward step moved me from 6.5 to 7.25 successfully. One more forward step should bring me to the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We're at x=7.25, red circle appears close. One more forward should reach it. 13 steps used... actually 17 steps taken, limit 30. Forward.\"}}],\"created\":1794213368,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":206,\"prompt_tokens\":4104,\"total_tokens\":4310,\"completion_tokens_details\":{\"reasoning_tokens\":43},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead along the walking direction. The red carpet ends at a light-colored floor, and just ahead on that floor sits a black rectangular board with a large glowing red circle on it. Behind it are dark draped fabric and a tan leather sofa. The red circle is very close, roughly one step away.\", \"reasoning\": \"I am at x=7.25 with my torso at 90° (the narrow profile that allowed passage), and the red circle is immediately ahead on the floor, appearing large and close. The previous forward step moved me from 6.5 to 7.25 successfully. One more forward step should bring me to the red circle.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "We're at x=7.25, red circle appears close. One more forward should reach it. 13 steps used... actually 17 steps taken, limit 30. Forward.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead along the walking direction. The red carpet ends at a light-colored floor, and just ahead on that floor sits a black rectangular board with a large glowing red circle on it. Behind it are dark draped fabric and a tan leather sofa. The red circle is very close, roughly one step away.",
+      "reasoning": "I am at x=7.25 with my torso at 90° (the narrow profile that allowed passage), and the red circle is immediately ahead on the floor, appearing large and close. The previous forward step moved me from 6.5 to 7.25 successfully. One more forward step should bring me to the red circle.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:20:26+08:00",
+    "latency_ms": 9859,
+    "payload_bytes": 397699,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081020182940783538268d9d68k6DyHXu\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133227,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. At the far end of the carpet, visible through the opening, is a small blue triangle on the floor. White rectangular markers line the edges of the red carpet.\\\",\\n  \\\"reasoning\\\": \\\"I have rotated my torso to 30 degrees to reduce my profile width. I am still quite far from the opening (x=0.5). I will continue to rotate to 45 degrees to further minimize my width before I start moving forward, ensuring I can pass through the narrow gap ahead.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2218,\"completion_tokens\":152,\"total_tokens\":2370,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2218,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":152,\"totalTokenCount\":2370,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1129}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":152}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1129,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":152,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. At the far end of the carpet, visible through the opening, is a small blue triangle on the floor. White rectangular markers line the edges of the red carpet.\",\n  \"reasoning\": \"I have rotated my torso to 30 degrees to reduce my profile width. I am still quite far from the opening (x=0.5). I will continue to rotate to 45 degrees to further minimize my width before I start moving forward, ensuring I can pass through the narrow gap ahead.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. At the far end of the carpet, visible through the opening, is a small blue triangle on the floor. White rectangular markers line the edges of the red carpet.",
+      "reasoning": "I have rotated my torso to 30 degrees to reduce my profile width. I am still quite far from the opening (x=0.5). I will continue to rotate to 45 degrees to further minimize my width before I start moving forward, ensuring I can pass through the narrow gap ahead.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:25:52+08:00",
+    "latency_ms": 6672,
+    "payload_bytes": 314927,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090425469425326548268d9d6Og9oSsSY\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794198352,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight down a red carpeted walkway. In the distance, there is a narrow opening between two patterned walls. Through the opening, a yellow arrow pointing to the right is visible on a dark far wall.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at position x=3.5 and my torso is rotated to 90 degrees (profile view), which is the narrowest orientation to fit through the gap. I need to continue moving forward to reach the yellow arrow on the far wall. I will keep moving forward until I pass through the opening.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2790,\"completion_tokens\":144,\"total_tokens\":2934,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2790,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":144,\"totalTokenCount\":2934,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1701}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":144}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1701,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":144,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight down a red carpeted walkway. In the distance, there is a narrow opening between two patterned walls. Through the opening, a yellow arrow pointing to the right is visible on a dark far wall.\",\n  \"reasoning\": \"I am currently at position x=3.5 and my torso is rotated to 90 degrees (profile view), which is the narrowest orientation to fit through the gap. I need to continue moving forward to reach the yellow arrow on the far wall. I will keep moving forward until I pass through the opening.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red carpeted walkway. In the distance, there is a narrow opening between two patterned walls. Through the opening, a yellow arrow pointing to the right is visible on a dark far wall.",
+      "reasoning": "I am currently at position x=3.5 and my torso is rotated to 90 degrees (profile view), which is the narrowest orientation to fit through the gap. I need to continue moving forward to reach the yellow arrow on the far wall. I will keep moving forward until I pass through the opening.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

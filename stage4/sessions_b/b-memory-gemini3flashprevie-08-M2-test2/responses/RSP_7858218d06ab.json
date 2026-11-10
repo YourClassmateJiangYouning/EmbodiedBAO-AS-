@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:32:54+08:00",
+    "latency_ms": 8860,
+    "payload_bytes": 396561,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090832466867016468268d9d6QY2jsOCs\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213174,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera view shows a long red carpet leading towards a narrow opening between two patterned walls. Beyond the opening, a red circle is visible on a dark surface. The robot is currently positioned on the red carpet, facing the opening.\\\",\\n  \\\"reasoning\\\": \\\"My current torso rotation is 60 degrees. To safely pass through the narrow gap ahead, I need to reach a 90-degree orientation (profile view). I must complete this rotation before I reach the opening, as turning is restricted once my shoulders enter the gap. I will continue rotating to the right.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3093,\"completion_tokens\":147,\"total_tokens\":3240,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3093,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":147,\"totalTokenCount\":3240,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2004},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":147}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2004,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":147,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera view shows a long red carpet leading towards a narrow opening between two patterned walls. Beyond the opening, a red circle is visible on a dark surface. The robot is currently positioned on the red carpet, facing the opening.\",\n  \"reasoning\": \"My current torso rotation is 60 degrees. To safely pass through the narrow gap ahead, I need to reach a 90-degree orientation (profile view). I must complete this rotation before I reach the opening, as turning is restricted once my shoulders enter the gap. I will continue rotating to the right.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera view shows a long red carpet leading towards a narrow opening between two patterned walls. Beyond the opening, a red circle is visible on a dark surface. The robot is currently positioned on the red carpet, facing the opening.",
+      "reasoning": "My current torso rotation is 60 degrees. To safely pass through the narrow gap ahead, I need to reach a 90-degree orientation (profile view). I must complete this rotation before I reach the opening, as turning is restricted once my shoulders enter the gap. I will continue rotating to the right.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:37:34+08:00",
+    "latency_ms": 11380,
+    "payload_bytes": 427921,
+    "finish_reason": "stop",
+    "reasoning_tokens": 30,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ba2ec912-28e8-49f2-93c9-e287d43826b2_e374fce9f33b494eae8b7d733347ef22\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpet leads forward toward the far wall where the red circle is visible through the narrow opening. The path is clear, and I am still at a distance from the opening.\\\",\\\"reasoning\\\": \\\"Torso is at 30 degrees left after 2 turn_left actions. Based on the successful traversal, I need 6 turn_left actions total (90 degrees) before moving forward through the narrow opening. I still need 4 more turn_left actions.\\\",\\\"action\\\": \\\"turn_left\\\",\\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need 6 turn_left total, have 2 done (torso 30°). Need 4 more turn_left. Continue.\"}}],\"created\":1794213454,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":144,\"prompt_tokens\":2897,\"total_tokens\":3041,\"completion_tokens_details\":{\"reasoning_tokens\":30},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpet leads forward toward the far wall where the red circle is visible through the narrow opening. The path is clear, and I am still at a distance from the opening.\",\"reasoning\": \"Torso is at 30 degrees left after 2 turn_left actions. Based on the successful traversal, I need 6 turn_left actions total (90 degrees) before moving forward through the narrow opening. I still need 4 more turn_left actions.\",\"action\": \"turn_left\",\"confidence\": 0.92}",
+    "reasoning_content": "We need 6 turn_left total, have 2 done (torso 30°). Need 4 more turn_left. Continue.",
+    "parsed": {
+      "scene_description": "Red carpet leads forward toward the far wall where the red circle is visible through the narrow opening. The path is clear, and I am still at a distance from the opening.",
+      "reasoning": "Torso is at 30 degrees left after 2 turn_left actions. Based on the successful traversal, I need 6 turn_left actions total (90 degrees) before moving forward through the narrow opening. I still need 4 more turn_left actions.",
+      "action": "turn_left",
+      "confidence": 0.92
+    },
+    "action": "turn_left"
+  }
+]

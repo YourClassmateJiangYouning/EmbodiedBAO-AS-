@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:23:36+08:00",
+    "latency_ms": 2448,
+    "payload_bytes": 170250,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a0734050-c19c-4ab5-98ee-1ea9534c77c2\",\"object\":\"chat.completion\",\"created\":1794212615,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle on the far wall is directly ahead and fills much of the view, appearing very close. The path ahead looks clear.\\\", \\\"reasoning\\\": \\\"The goal is straight ahead along the fixed walking direction and very close. The torso is at 0 degrees, so no turning is needed; moving forward should reach the blue triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2848,\"completion_tokens\":87,\"total_tokens\":2935,\"prompt_tokens_details\":{\"cached_tokens\":1280},\"prompt_cache_hit_tokens\":1280,\"prompt_cache_miss_tokens\":1568},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle on the far wall is directly ahead and fills much of the view, appearing very close. The path ahead looks clear.\", \"reasoning\": \"The goal is straight ahead along the fixed walking direction and very close. The torso is at 0 degrees, so no turning is needed; moving forward should reach the blue triangle.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle on the far wall is directly ahead and fills much of the view, appearing very close. The path ahead looks clear.",
+      "reasoning": "The goal is straight ahead along the fixed walking direction and very close. The torso is at 0 degrees, so no turning is needed; moving forward should reach the blue triangle.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

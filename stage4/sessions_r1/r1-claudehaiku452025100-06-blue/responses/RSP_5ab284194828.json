@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:14:19+08:00",
+    "latency_ms": 7043,
+    "payload_bytes": 177406,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_ma6pluz5rlqj3dukcwqehyjb3iafi5ijdpakhwx4kzo3mvhyn3iq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794204859,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the blue triangle target clearly on the far wall, centered in my view. It's displayed on a dark panel/screen. The walkway extends ahead toward the triangle. On the left side, there's a patterned wall with geometric designs. On the right side, there are purple-tinted walls. The space appears to be an enclosed corridor or hallway leading to the triangle.\\\",\\n  \\\"reasoning\\\": \\\"I've been blocked by a wall_panel obstacle at x=7.250 for the last 4 steps (steps 9, 11, 13 all blocked by wall_panel). My torso is at 0 degrees rotation. The blue triangle is clearly visible and directly ahead along my walking direction. Since forward movement has been consistently blocked, I need to try rotating my torso to change my body's width profile to fit through the obstacle. I'll try turning left to narrow my profile in that direction.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 0.6\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3375,\"completion_tokens\":235,\"total_tokens\":3610,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3375,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":235,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3375,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the blue triangle target clearly on the far wall, centered in my view. It's displayed on a dark panel/screen. The walkway extends ahead toward the triangle. On the left side, there's a patterned wall with geometric designs. On the right side, there are purple-tinted walls. The space appears to be an enclosed corridor or hallway leading to the triangle.\",\n  \"reasoning\": \"I've been blocked by a wall_panel obstacle at x=7.250 for the last 4 steps (steps 9, 11, 13 all blocked by wall_panel). My torso is at 0 degrees rotation. The blue triangle is clearly visible and directly ahead along my walking direction. Since forward movement has been consistently blocked, I need to try rotating my torso to change my body's width profile to fit through the obstacle. I'll try turning left to narrow my profile in that direction.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 0.6\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the blue triangle target clearly on the far wall, centered in my view. It's displayed on a dark panel/screen. The walkway extends ahead toward the triangle. On the left side, there's a patterned wall with geometric designs. On the right side, there are purple-tinted walls. The space appears to be an enclosed corridor or hallway leading to the triangle.",
+      "reasoning": "I've been blocked by a wall_panel obstacle at x=7.250 for the last 4 steps (steps 9, 11, 13 all blocked by wall_panel). My torso is at 0 degrees rotation. The blue triangle is clearly visible and directly ahead along my walking direction. Since forward movement has been consistently blocked, I need to try rotating my torso to change my body's width profile to fit through the obstacle. I'll try turning left to narrow my profile in that direction.",
+      "action": "turn_left",
+      "confidence": 0.6
+    },
+    "action": "turn_left"
+  }
+]

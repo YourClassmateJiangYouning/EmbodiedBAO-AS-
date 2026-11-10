@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:54:08+08:00",
+    "latency_ms": 9231,
+    "payload_bytes": 196859,
+    "finish_reason": "stop",
+    "reasoning_tokens": 26,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e0fee491-8242-4899-b0ee-d7d4d09a078a_438b6fa345194ebaa1ff0338338d5441\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted floor stretches ahead toward a dark far wall where a glowing blue triangle sits on a white platform. The doorway/opening edges are visible at left and right; the path is clear and the triangle appears close ahead.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead and appears very close now, sitting on the platform at the far wall. The path remains clear along the red carpet, and my torso is at 0 degrees presenting the narrowest profile. One or two more forward steps should reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The blue triangle appears close ahead on the far wall. The path is clear, torso at 0 degrees. Continue forward.\"}}],\"created\":1794214447,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":155,\"prompt_tokens\":2412,\"total_tokens\":2567,\"completion_tokens_details\":{\"reasoning_tokens\":26},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted floor stretches ahead toward a dark far wall where a glowing blue triangle sits on a white platform. The doorway/opening edges are visible at left and right; the path is clear and the triangle appears close ahead.\", \"reasoning\": \"The blue triangle is directly ahead and appears very close now, sitting on the platform at the far wall. The path remains clear along the red carpet, and my torso is at 0 degrees presenting the narrowest profile. One or two more forward steps should reach the goal.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "The blue triangle appears close ahead on the far wall. The path is clear, torso at 0 degrees. Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted floor stretches ahead toward a dark far wall where a glowing blue triangle sits on a white platform. The doorway/opening edges are visible at left and right; the path is clear and the triangle appears close ahead.",
+      "reasoning": "The blue triangle is directly ahead and appears very close now, sitting on the platform at the far wall. The path remains clear along the red carpet, and my torso is at 0 degrees presenting the narrowest profile. One or two more forward steps should reach the goal.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

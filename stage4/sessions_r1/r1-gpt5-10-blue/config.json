@@ -1,0 +1,38 @@
+{
+  "session_id": "r1-gpt5-10-blue",
+  "scene": "R1",
+  "marker": "M4",
+  "marker_descriptor": "blue triangle",
+  "body_name": "a small wheeled robot",
+  "mode": "A",
+  "model": "gpt-5",
+  "a_s": 1.0,
+  "robot_shoulder_m": 0.57,
+  "move_step_m": 0.75,
+  "channel_width_m": 0.57,
+  "max_steps": 30,
+  "image_size": 1024,
+  "memory_id": null,
+  "disable_thinking": true,
+  "timeout_s": 90.0,
+  "sim_geometry": {
+    "start_x_m": 0.5,
+    "wall_x_m": 8.0,
+    "start_distance_m": 7.5,
+    "straight_steps_to_wall": 10,
+    "move_step_m": 0.75,
+    "turn_step_deg": 15.0,
+    "camera_turn_step_deg": 30.0,
+    "camera_pitch_step_deg": 45.0,
+    "eye_height_m": 1.68,
+    "eye_pitch_deg": 15.0,
+    "shoulder_width_m": 0.57,
+    "torso_thickness_m": 0.22,
+    "start_yaw_deg": 0.0,
+    "max_steps": 30
+  },
+  "started_at": "2026-11-09T12:31:23+08:00",
+  "request_params": {
+    "reasoning_effort": "none"
+  }
+}

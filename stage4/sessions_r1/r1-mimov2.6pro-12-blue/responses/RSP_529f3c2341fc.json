@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:24:18+08:00",
+    "latency_ms": 5404,
+    "payload_bytes": 291239,
+    "finish_reason": "stop",
+    "reasoning_tokens": 18,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"225406ac-0ce9-4eeb-a36f-b40fa454e734_3fff1ec79fda4cbb96c6270d55806f71\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted floor stretches forward toward a wall opening where a blue triangle sits on the floor. The opening is framed by decorated wall panels. The path is clear and straight ahead.\\\", \\\"reasoning\\\": \\\"The path remains clear and straight toward the blue triangle at the far wall opening. I've moved forward 3.75 meters so far with no obstacles. I should continue advancing toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path ahead is clear, red carpet leading to blue triangle. Keep moving forward.\"}}],\"created\":1794137058,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":123,\"prompt_tokens\":2172,\"total_tokens\":2295,\"completion_tokens_details\":{\"reasoning_tokens\":18},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted floor stretches forward toward a wall opening where a blue triangle sits on the floor. The opening is framed by decorated wall panels. The path is clear and straight ahead.\", \"reasoning\": \"The path remains clear and straight toward the blue triangle at the far wall opening. I've moved forward 3.75 meters so far with no obstacles. I should continue advancing toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path ahead is clear, red carpet leading to blue triangle. Keep moving forward.",
+    "parsed": {
+      "scene_description": "A red carpeted floor stretches forward toward a wall opening where a blue triangle sits on the floor. The opening is framed by decorated wall panels. The path is clear and straight ahead.",
+      "reasoning": "The path remains clear and straight toward the blue triangle at the far wall opening. I've moved forward 3.75 meters so far with no obstacles. I should continue advancing toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

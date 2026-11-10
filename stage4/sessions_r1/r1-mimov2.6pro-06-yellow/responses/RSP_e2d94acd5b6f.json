@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:31:14+08:00",
+    "latency_ms": 10396,
+    "payload_bytes": 245159,
+    "finish_reason": "stop",
+    "reasoning_tokens": 235,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"b4e3e777-ab88-4f08-9141-ef68a564fe58_10104f1360374e29a605e92de1d0ee37\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\":\\\"The camera shows the red carpet leading toward a narrow dark opening in a wall panel. A yellow arrow pointing right is visible on the far wall through the opening. Decorated wall panels with geometric patterns flank the opening on both sides. The robot is at x=6.5, backed up from the opening where it was previously blocked at x=7.25.\\\",\\\"reasoning\\\":\\\"I need to continue rotating my torso to 90 degrees to present my thinnest profile to the narrow opening. Currently at 30 degrees after two turn_left actions. I need 4 more turn_left actions to reach 90 degrees. I'm at x=6.5 with room to turn since I'm clear of the opening.\\\",\\\"action\\\":\\\"turn_left\\\",\\\"confidence\\\":0.8}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me continue rotating left. Current torso rotation is 30 degrees (after two turn_left actions from 0). I need to rotate to 90 degrees total to present my thin side. So I need 6 more turn_left actions (30 -> 45 -> 60 -> 75 -> 90... wait, 30 + 6*15 = 120. No.\\n\\nLet me recount. Started at 0 degrees. \\n- step 13: turn_left -> 15 degrees\\n- step 14: turn_left -> 30 degrees\\n\\nCurrent state says torso rotation: 30.0 degrees. I need to get to 90 degrees to present my thinnest profile. That's 4 more turn_left actions (30 + 4*15 = 90).\\n\\nBut wait - \\\"you cannot turn once your shoulders are inside the opening.\\\" I'm at x=6.5 which should be clear of the opening (blocked at x=7.25). So I should be able to turn.\\n\\nLet me continue with turn_left.\"}}],\"created\":1794209474,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":401,\"prompt_tokens\":2911,\"total_tokens\":3312,\"completion_tokens_details\":{\"reasoning_tokens\":235},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\":\"The camera shows the red carpet leading toward a narrow dark opening in a wall panel. A yellow arrow pointing right is visible on the far wall through the opening. Decorated wall panels with geometric patterns flank the opening on both sides. The robot is at x=6.5, backed up from the opening where it was previously blocked at x=7.25.\",\"reasoning\":\"I need to continue rotating my torso to 90 degrees to present my thinnest profile to the narrow opening. Currently at 30 degrees after two turn_left actions. I need 4 more turn_left actions to reach 90 degrees. I'm at x=6.5 with room to turn since I'm clear of the opening.\",\"action\":\"turn_left\",\"confidence\":0.8}",
+    "reasoning_content": "Let me continue rotating left. Current torso rotation is 30 degrees (after two turn_left actions from 0). I need to rotate to 90 degrees total to present my thin side. So I need 6 more turn_left actions (30 -> 45 -> 60 -> 75 -> 90... wait, 30 + 6*15 = 120. No.\n\nLet me recount. Started at 0 degrees. \n- step 13: turn_left -> 15 degrees\n- step 14: turn_left -> 30 degrees\n\nCurrent state says torso rotation: 30.0 degrees. I need to get to 90 degrees to present my thinnest profile. That's 4 more turn_left actions (30 + 4*15 = 90).\n\nBut wait - \"you cannot turn once your shoulders are inside the opening.\" I'm at x=6.5 which should be clear of the opening (blocked at x=7.25). So I should be able to turn.\n\nLet me continue with turn_left.",
+    "parsed": {
+      "scene_description": "The camera shows the red carpet leading toward a narrow dark opening in a wall panel. A yellow arrow pointing right is visible on the far wall through the opening. Decorated wall panels with geometric patterns flank the opening on both sides. The robot is at x=6.5, backed up from the opening where it was previously blocked at x=7.25.",
+      "reasoning": "I need to continue rotating my torso to 90 degrees to present my thinnest profile to the narrow opening. Currently at 30 degrees after two turn_left actions. I need 4 more turn_left actions to reach 90 degrees. I'm at x=6.5 with room to turn since I'm clear of the opening.",
+      "action": "turn_left",
+      "confidence": 0.8
+    },
+    "action": "turn_left"
+  }
+]

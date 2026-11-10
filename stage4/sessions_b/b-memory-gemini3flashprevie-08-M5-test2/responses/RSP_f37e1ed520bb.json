@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:05:43+08:00",
+    "latency_ms": 37893,
+    "payload_bytes": 170937,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090905065829302428268d9d6uJZmnekT\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794215143,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera view shows the robot is now very close to the purple four-pointed star, which is centered in the frame. The robot has passed through the narrow opening and is on the final stretch of the red carpet, with the target star directly ahead on a dark surface.\\\", \\\"reasoning\\\": \\\"I have successfully navigated through the narrow gap with my torso rotated to 90 degrees. I am now very close to the target. I will continue moving forward to reach the purple star and complete the task.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3731,\"completion_tokens\":122,\"total_tokens\":3853,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3731,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":122,\"totalTokenCount\":3853,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2642}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":122}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2642,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":122,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera view shows the robot is now very close to the purple four-pointed star, which is centered in the frame. The robot has passed through the narrow opening and is on the final stretch of the red carpet, with the target star directly ahead on a dark surface.\", \"reasoning\": \"I have successfully navigated through the narrow gap with my torso rotated to 90 degrees. I am now very close to the target. I will continue moving forward to reach the purple star and complete the task.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera view shows the robot is now very close to the purple four-pointed star, which is centered in the frame. The robot has passed through the narrow opening and is on the final stretch of the red carpet, with the target star directly ahead on a dark surface.",
+      "reasoning": "I have successfully navigated through the narrow gap with my torso rotated to 90 degrees. I am now very close to the target. I will continue moving forward to reach the purple star and complete the task.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:23:40+08:00",
+    "latency_ms": 8097,
+    "payload_bytes": 280091,
+    "finish_reason": "stop",
+    "reasoning_tokens": 44,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"34070b45-cba4-4407-bce1-065c96b7a21f_8464e522c2454f2499617c951fabe0ab\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle is now very close and large in view, lying on the floor directly ahead, just beyond a narrow gap between a dark draped panel on the left and a tan sofa on the right. The floor ahead is light-colored and a red carpet is visible at the bottom of the frame.\\\", \\\"reasoning\\\": \\\"After 8 forward steps at torso rotation 0 degrees (narrowest profile), the green rectangle is directly ahead and appears to be within one more step. My position is x=7.25, and the target is straight ahead. Continuing forward should bring me to the green rectangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=7.25 after 8 forward steps (steps 1-9, 8 forward). Green rectangle appears very close, on the floor ahead. One more forward should reach it.\"}}],\"created\":1794212619,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":189,\"prompt_tokens\":2535,\"total_tokens\":2724,\"completion_tokens_details\":{\"reasoning_tokens\":44},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The green rectangle is now very close and large in view, lying on the floor directly ahead, just beyond a narrow gap between a dark draped panel on the left and a tan sofa on the right. The floor ahead is light-colored and a red carpet is visible at the bottom of the frame.\", \"reasoning\": \"After 8 forward steps at torso rotation 0 degrees (narrowest profile), the green rectangle is directly ahead and appears to be within one more step. My position is x=7.25, and the target is straight ahead. Continuing forward should bring me to the green rectangle.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "We are at x=7.25 after 8 forward steps (steps 1-9, 8 forward). Green rectangle appears very close, on the floor ahead. One more forward should reach it.",
+    "parsed": {
+      "scene_description": "The green rectangle is now very close and large in view, lying on the floor directly ahead, just beyond a narrow gap between a dark draped panel on the left and a tan sofa on the right. The floor ahead is light-colored and a red carpet is visible at the bottom of the frame.",
+      "reasoning": "After 8 forward steps at torso rotation 0 degrees (narrowest profile), the green rectangle is directly ahead and appears to be within one more step. My position is x=7.25, and the target is straight ahead. Continuing forward should bring me to the green rectangle.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

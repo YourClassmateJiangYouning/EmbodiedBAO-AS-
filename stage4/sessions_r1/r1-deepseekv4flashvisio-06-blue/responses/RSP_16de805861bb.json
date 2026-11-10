@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:17:57+08:00",
+    "latency_ms": 2625,
+    "payload_bytes": 383349,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"6de52387-b490-48b3-aa35-db1db7c01681\",\"object\":\"chat.completion\",\"created\":1794208675,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a far wall with a dark doorway opening; a small blue triangle is visible inside the opening. To the left is a lighter patterned floor area with a black border line.\\\", \\\"reasoning\\\": \\\"The blue triangle is straight ahead along the walking direction, and the path appears clear. Moving forward reduces distance to the goal; no turning is needed since the opening is aligned with the walking direction.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1541,\"completion_tokens\":106,\"total_tokens\":1647,\"prompt_tokens_details\":{\"cached_tokens\":1407},\"prompt_cache_hit_tokens\":1407,\"prompt_cache_miss_tokens\":134},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a far wall with a dark doorway opening; a small blue triangle is visible inside the opening. To the left is a lighter patterned floor area with a black border line.\", \"reasoning\": \"The blue triangle is straight ahead along the walking direction, and the path appears clear. Moving forward reduces distance to the goal; no turning is needed since the opening is aligned with the walking direction.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a far wall with a dark doorway opening; a small blue triangle is visible inside the opening. To the left is a lighter patterned floor area with a black border line.",
+      "reasoning": "The blue triangle is straight ahead along the walking direction, and the path appears clear. Moving forward reduces distance to the goal; no turning is needed since the opening is aligned with the walking direction.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

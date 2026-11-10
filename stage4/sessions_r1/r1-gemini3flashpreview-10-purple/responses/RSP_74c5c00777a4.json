@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:37:10+08:00",
+    "latency_ms": 6292,
+    "payload_bytes": 289491,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081037054654092968268d9d6Zq7ZXQOn\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134230,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera view shows a red carpeted path leading directly to a narrow opening between two patterned walls. Beyond the opening, a purple four-pointed star is visible on a dark background. The robot is currently positioned at x=4.25, very close to the gap.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees, which is my narrowest profile, to fit through the narrow gap. I am now at x=4.25 and the opening is immediately in front of me. I will continue moving forward to pass through the gap and reach the purple star.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2820,\"completion_tokens\":153,\"total_tokens\":2973,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2820,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":153,\"totalTokenCount\":2973,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1731}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":153}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1731,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":153,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera view shows a red carpeted path leading directly to a narrow opening between two patterned walls. Beyond the opening, a purple four-pointed star is visible on a dark background. The robot is currently positioned at x=4.25, very close to the gap.\",\n  \"reasoning\": \"I have already rotated my torso to 90 degrees, which is my narrowest profile, to fit through the narrow gap. I am now at x=4.25 and the opening is immediately in front of me. I will continue moving forward to pass through the gap and reach the purple star.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera view shows a red carpeted path leading directly to a narrow opening between two patterned walls. Beyond the opening, a purple four-pointed star is visible on a dark background. The robot is currently positioned at x=4.25, very close to the gap.",
+      "reasoning": "I have already rotated my torso to 90 degrees, which is my narrowest profile, to fit through the narrow gap. I am now at x=4.25 and the opening is immediately in front of me. I will continue moving forward to pass through the gap and reach the purple star.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

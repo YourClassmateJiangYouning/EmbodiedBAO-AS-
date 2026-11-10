@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:25:39+08:00",
+    "latency_ms": 6882,
+    "payload_bytes": 164594,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_wgbvshpzrrvoxwbwv7fa7mfdxhosm7m66vd5v6q54upjwhkfqa2q\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198339,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The red circle target is clearly visible on the far wall ahead, centered in the view. There is a dark wall panel or obstacle visible on the left side of the image. The space appears to be a corridor or room with walls on both sides. The red circle remains the primary target on the far wall.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=7.250 with my torso rotated 30 degrees to the left (after turning right once from 45 degrees at step 16). Forward movement has been blocked three times by a wall_panel obstacle. My walking direction is fixed toward the red circle. I have tried turning left multiple times and turning right once. The obstacle appears to be blocking the direct forward path. I should continue turning right to rotate my body further and attempt to navigate around the wall_panel obstacle by presenting a narrower profile to it.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.65\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3687,\"completion_tokens\":220,\"total_tokens\":3907,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3687,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":220,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3687,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The red circle target is clearly visible on the far wall ahead, centered in the view. There is a dark wall panel or obstacle visible on the left side of the image. The space appears to be a corridor or room with walls on both sides. The red circle remains the primary target on the far wall.\",\n  \"reasoning\": \"I am at position x=7.250 with my torso rotated 30 degrees to the left (after turning right once from 45 degrees at step 16). Forward movement has been blocked three times by a wall_panel obstacle. My walking direction is fixed toward the red circle. I have tried turning left multiple times and turning right once. The obstacle appears to be blocking the direct forward path. I should continue turning right to rotate my body further and attempt to navigate around the wall_panel obstacle by presenting a narrower profile to it.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.65\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle target is clearly visible on the far wall ahead, centered in the view. There is a dark wall panel or obstacle visible on the left side of the image. The space appears to be a corridor or room with walls on both sides. The red circle remains the primary target on the far wall.",
+      "reasoning": "I am at position x=7.250 with my torso rotated 30 degrees to the left (after turning right once from 45 degrees at step 16). Forward movement has been blocked three times by a wall_panel obstacle. My walking direction is fixed toward the red circle. I have tried turning left multiple times and turning right once. The obstacle appears to be blocking the direct forward path. I should continue turning right to rotate my body further and attempt to navigate around the wall_panel obstacle by presenting a narrower profile to it.",
+      "action": "turn_right",
+      "confidence": 0.65
+    },
+    "action": "turn_right"
+  }
+]

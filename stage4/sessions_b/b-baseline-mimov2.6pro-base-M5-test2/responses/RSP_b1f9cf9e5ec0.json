@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:04:23+08:00",
+    "latency_ms": 6945,
+    "payload_bytes": 164582,
+    "finish_reason": "stop",
+    "reasoning_tokens": 18,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"0e324448-ec77-4f08-9639-8d56300a3681_df061ab0dca74557904b707f00fc0bc2\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star on a dark rectangular plaque on the far wall fills the center of the view, very close and slightly below eye level, with dark surroundings above and floor visible at the bottom.\\\", \\\"reasoning\\\": \\\"The star is directly ahead and extremely close after 9 forward moves. My torso is at 0 degrees (narrowest orientation). One more forward step of 75cm should bring me right up to the star on the wall to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The star is right ahead, very close. One more forward step should reach it.\"}}],\"created\":1794215063,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":139,\"prompt_tokens\":2691,\"total_tokens\":2830,\"completion_tokens_details\":{\"reasoning_tokens\":18},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star on a dark rectangular plaque on the far wall fills the center of the view, very close and slightly below eye level, with dark surroundings above and floor visible at the bottom.\", \"reasoning\": \"The star is directly ahead and extremely close after 9 forward moves. My torso is at 0 degrees (narrowest orientation). One more forward step of 75cm should bring me right up to the star on the wall to reach it.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The star is right ahead, very close. One more forward step should reach it.",
+    "parsed": {
+      "scene_description": "The purple four-pointed star on a dark rectangular plaque on the far wall fills the center of the view, very close and slightly below eye level, with dark surroundings above and floor visible at the bottom.",
+      "reasoning": "The star is directly ahead and extremely close after 9 forward moves. My torso is at 0 degrees (narrowest orientation). One more forward step of 75cm should bring me right up to the star on the wall to reach it.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

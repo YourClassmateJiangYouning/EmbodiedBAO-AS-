@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:38:59+08:00",
+    "latency_ms": 7317,
+    "payload_bytes": 290533,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_jvlrsytr3ddzanud5yohhaag7ham3og4dhrrh7iclylzpkqctgea\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145139,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a long walkway with a dark red/maroon textured floor stretching ahead. The yellow arrow target is clearly visible on the far wall, centered in my view and pointing to the right. The walls on either side have tan/beige colored panels with purple geometric designs. There are no obstacles blocking my path forward. The arrow appears to be at a moderate distance ahead.\\\",\\n  \\\"reasoning\\\": \\\"I'm at position x=4.250 after 5 forward steps. The yellow arrow is clearly visible and unobstructed on the far wall ahead. My torso is at 0 degrees rotation (aligned with my walking direction), and there are no obstacles in the walkway. The most efficient action to reach the yellow arrow is to continue walking forward. I have 25 steps remaining out of my 30-step limit, so I have ample opportunity to reach the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2690,\"completion_tokens\":225,\"total_tokens\":2915,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2690,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":225,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2690,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a long walkway with a dark red/maroon textured floor stretching ahead. The yellow arrow target is clearly visible on the far wall, centered in my view and pointing to the right. The walls on either side have tan/beige colored panels with purple geometric designs. There are no obstacles blocking my path forward. The arrow appears to be at a moderate distance ahead.\",\n  \"reasoning\": \"I'm at position x=4.250 after 5 forward steps. The yellow arrow is clearly visible and unobstructed on the far wall ahead. My torso is at 0 degrees rotation (aligned with my walking direction), and there are no obstacles in the walkway. The most efficient action to reach the yellow arrow is to continue walking forward. I have 25 steps remaining out of my 30-step limit, so I have ample opportunity to reach the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a long walkway with a dark red/maroon textured floor stretching ahead. The yellow arrow target is clearly visible on the far wall, centered in my view and pointing to the right. The walls on either side have tan/beige colored panels with purple geometric designs. There are no obstacles blocking my path forward. The arrow appears to be at a moderate distance ahead.",
+      "reasoning": "I'm at position x=4.250 after 5 forward steps. The yellow arrow is clearly visible and unobstructed on the far wall ahead. My torso is at 0 degrees rotation (aligned with my walking direction), and there are no obstacles in the walkway. The most efficient action to reach the yellow arrow is to continue walking forward. I have 25 steps remaining out of my 30-step limit, so I have ample opportunity to reach the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

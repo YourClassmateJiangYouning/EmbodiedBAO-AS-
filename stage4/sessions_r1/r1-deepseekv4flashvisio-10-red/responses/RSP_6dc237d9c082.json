@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:03:56+08:00",
+    "latency_ms": 2342,
+    "payload_bytes": 239535,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"856d1f8d-4ae3-47b4-95d0-d05dcf984e38\",\"object\":\"chat.completion\",\"created\":1794207835,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red circle on a black panel ahead on the far wall, with a narrow opening between a dark curtain on the left and a blue patterned wall on the right. The floor is red carpet leading up to the target.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the fixed walking direction and the path appears clear. Continuing forward moves me closer to the target; no turning is needed since forward always heads toward the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1999,\"completion_tokens\":110,\"total_tokens\":2109,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1231},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red circle on a black panel ahead on the far wall, with a narrow opening between a dark curtain on the left and a blue patterned wall on the right. The floor is red carpet leading up to the target.\", \"reasoning\": \"The red circle is directly ahead along the fixed walking direction and the path appears clear. Continuing forward moves me closer to the target; no turning is needed since forward always heads toward the red circle.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red circle on a black panel ahead on the far wall, with a narrow opening between a dark curtain on the left and a blue patterned wall on the right. The floor is red carpet leading up to the target.",
+      "reasoning": "The red circle is directly ahead along the fixed walking direction and the path appears clear. Continuing forward moves me closer to the target; no turning is needed since forward always heads toward the red circle.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

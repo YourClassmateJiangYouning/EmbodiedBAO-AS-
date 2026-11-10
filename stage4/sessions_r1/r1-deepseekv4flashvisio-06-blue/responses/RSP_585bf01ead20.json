@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:18:37+08:00",
+    "latency_ms": 2604,
+    "payload_bytes": 177406,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"783c0aa2-047a-47e4-a6d3-74a3f075a9d2\",\"object\":\"chat.completion\",\"created\":1794208716,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle goal is visible straight ahead on the far wall, framed by a narrow opening with walls on either side. The path along the floor appears clear up to the opening.\\\", \\\"reasoning\\\": \\\"Forward was blocked at step 10, likely because my wide side faced the narrow opening. I have been rotating left to present a thinner profile; at 45 degrees the diagonal width is reduced. Continuing to turn toward 90 degrees should minimize the width presented to the opening, after which forward should succeed.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2383,\"completion_tokens\":122,\"total_tokens\":2505,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1743},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle goal is visible straight ahead on the far wall, framed by a narrow opening with walls on either side. The path along the floor appears clear up to the opening.\", \"reasoning\": \"Forward was blocked at step 10, likely because my wide side faced the narrow opening. I have been rotating left to present a thinner profile; at 45 degrees the diagonal width is reduced. Continuing to turn toward 90 degrees should minimize the width presented to the opening, after which forward should succeed.\", \"action\": \"turn_left\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle goal is visible straight ahead on the far wall, framed by a narrow opening with walls on either side. The path along the floor appears clear up to the opening.",
+      "reasoning": "Forward was blocked at step 10, likely because my wide side faced the narrow opening. I have been rotating left to present a thinner profile; at 45 degrees the diagonal width is reduced. Continuing to turn toward 90 degrees should minimize the width presented to the opening, after which forward should succeed.",
+      "action": "turn_left",
+      "confidence": 0.7
+    },
+    "action": "turn_left"
+  }
+]

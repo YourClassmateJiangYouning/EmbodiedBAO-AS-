@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:25:15+08:00",
+    "latency_ms": 5544,
+    "payload_bytes": 359505,
+    "finish_reason": "stop",
+    "reasoning_tokens": 36,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"4164e07e-17d4-4c88-bbed-74de09f2e987_a80f85c73670495bb513818b77199f9a\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads forward to a wall with geometric patterns and a dark narrow opening in the center. Through the opening, a green rectangle is visible on the far wall. The floor on either side of the carpet is light-colored with geometric tiles.\\\", \\\"reasoning\\\": \\\"The green rectangle is clearly visible straight ahead through the narrow opening. My torso remains at 0 degrees rotation, presenting my narrowest profile, which is ideal for fitting through the opening. The path is clear on the carpet, so I should keep advancing toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is visible through the opening ahead. The path is clear along the red carpet. Torso is at 0 degrees (narrowest profile). Continue forward.\"}}],\"created\":1794198315,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":172,\"prompt_tokens\":2119,\"total_tokens\":2291,\"completion_tokens_details\":{\"reasoning_tokens\":36},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads forward to a wall with geometric patterns and a dark narrow opening in the center. Through the opening, a green rectangle is visible on the far wall. The floor on either side of the carpet is light-colored with geometric tiles.\", \"reasoning\": \"The green rectangle is clearly visible straight ahead through the narrow opening. My torso remains at 0 degrees rotation, presenting my narrowest profile, which is ideal for fitting through the opening. The path is clear on the carpet, so I should keep advancing toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The green rectangle is visible through the opening ahead. The path is clear along the red carpet. Torso is at 0 degrees (narrowest profile). Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads forward to a wall with geometric patterns and a dark narrow opening in the center. Through the opening, a green rectangle is visible on the far wall. The floor on either side of the carpet is light-colored with geometric tiles.",
+      "reasoning": "The green rectangle is clearly visible straight ahead through the narrow opening. My torso remains at 0 degrees rotation, presenting my narrowest profile, which is ideal for fitting through the opening. The path is clear on the carpet, so I should keep advancing toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

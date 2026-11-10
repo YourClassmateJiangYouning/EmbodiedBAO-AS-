@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:05:54+08:00",
+    "latency_ms": 2561,
+    "payload_bytes": 335133,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"036c0786-9c07-4858-8620-f309d58e0f26\",\"object\":\"chat.completion\",\"created\":1794207953,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a dark doorway on the far wall, with a small green rectangle visible at the base of the opening. Patterned walls flank the corridor on both sides.\\\", \\\"reasoning\\\": \\\"The green target is directly ahead along the fixed walking direction and the path appears clear, so continuing forward reduces the distance to the goal. No turning is needed since forward always heads toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1732,\"completion_tokens\":104,\"total_tokens\":1836,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":964},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a dark doorway on the far wall, with a small green rectangle visible at the base of the opening. Patterned walls flank the corridor on both sides.\", \"reasoning\": \"The green target is directly ahead along the fixed walking direction and the path appears clear, so continuing forward reduces the distance to the goal. No turning is needed since forward always heads toward the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a dark doorway on the far wall, with a small green rectangle visible at the base of the opening. Patterned walls flank the corridor on both sides.",
+      "reasoning": "The green target is directly ahead along the fixed walking direction and the path appears clear, so continuing forward reduces the distance to the goal. No turning is needed since forward always heads toward the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

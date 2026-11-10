@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:22:17+08:00",
+    "latency_ms": 9789,
+    "payload_bytes": 316547,
+    "finish_reason": "stop",
+    "reasoning_tokens": 60,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"bcd0628c-3368-462b-95fc-c43f53bb2698_9cfc5e0a8bbf46c6bfc29c8d5ad6413e\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading straight ahead toward a narrow opening between two decorated wall panels. A yellow arrow sits on the floor at the far wall inside the opening, pointing right. The path ahead is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"My torso is rotated 90 degrees presenting my thinnest profile, and I've been successfully moving forward through the gap toward the yellow arrow. The path ahead remains clear with the arrow visible at the far wall, so I should continue forward to close the remaining distance.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to reach yellow arrow at far wall. We've turned to 90° and moved forward. Image shows red carpet leading to opening with yellow arrow on floor at far wall. Continue forward.\\n\\nSteps remaining: 30 - 11 = 19. Continue forward.\"}}],\"created\":1794136937,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":196,\"prompt_tokens\":2670,\"total_tokens\":2866,\"completion_tokens_details\":{\"reasoning_tokens\":60},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted walkway leading straight ahead toward a narrow opening between two decorated wall panels. A yellow arrow sits on the floor at the far wall inside the opening, pointing right. The path ahead is clear and unobstructed.\", \"reasoning\": \"My torso is rotated 90 degrees presenting my thinnest profile, and I've been successfully moving forward through the gap toward the yellow arrow. The path ahead remains clear with the arrow visible at the far wall, so I should continue forward to close the remaining distance.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We need to reach yellow arrow at far wall. We've turned to 90° and moved forward. Image shows red carpet leading to opening with yellow arrow on floor at far wall. Continue forward.\n\nSteps remaining: 30 - 11 = 19. Continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading straight ahead toward a narrow opening between two decorated wall panels. A yellow arrow sits on the floor at the far wall inside the opening, pointing right. The path ahead is clear and unobstructed.",
+      "reasoning": "My torso is rotated 90 degrees presenting my thinnest profile, and I've been successfully moving forward through the gap toward the yellow arrow. The path ahead remains clear with the arrow visible at the far wall, so I should continue forward to close the remaining distance.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

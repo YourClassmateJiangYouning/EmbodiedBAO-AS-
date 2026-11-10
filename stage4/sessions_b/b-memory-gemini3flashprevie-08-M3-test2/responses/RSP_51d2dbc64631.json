@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:38:13+08:00",
+    "latency_ms": 7587,
+    "payload_bytes": 371265,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090838083772496328268d9d60mDeOiBg\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213494,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The image shows a long red carpet leading towards a narrow opening between two walls decorated with geometric patterns. A yellow arrow is visible on the floor in the distance, pointing to the right, just beyond the opening.\\\",\\n  \\\"reasoning\\\": \\\"I have moved forward once. Before I get too close to the narrow opening, I need to check my body's width and orientation to ensure I can pass through. I will use 'look_down' to see my current profile.\\\",\\n  \\\"action\\\": \\\"look_down\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2717,\"completion_tokens\":127,\"total_tokens\":2844,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2717,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":127,\"totalTokenCount\":2844,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1628},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":127}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1628,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":127,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The image shows a long red carpet leading towards a narrow opening between two walls decorated with geometric patterns. A yellow arrow is visible on the floor in the distance, pointing to the right, just beyond the opening.\",\n  \"reasoning\": \"I have moved forward once. Before I get too close to the narrow opening, I need to check my body's width and orientation to ensure I can pass through. I will use 'look_down' to see my current profile.\",\n  \"action\": \"look_down\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The image shows a long red carpet leading towards a narrow opening between two walls decorated with geometric patterns. A yellow arrow is visible on the floor in the distance, pointing to the right, just beyond the opening.",
+      "reasoning": "I have moved forward once. Before I get too close to the narrow opening, I need to check my body's width and orientation to ensure I can pass through. I will use 'look_down' to see my current profile.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

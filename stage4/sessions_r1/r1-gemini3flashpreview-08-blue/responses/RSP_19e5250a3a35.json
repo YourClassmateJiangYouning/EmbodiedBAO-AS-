@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:47:31+08:00",
+    "latency_ms": 9283,
+    "payload_bytes": 366549,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081047273127896018268d9d6S2U4BU8r\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134852,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking straight down a red carpeted walkway towards a narrow opening in a wall decorated with geometric patterns. A blue triangle is visible on the far wall through the opening. The robot is currently at position x=1.25, and its torso is rotated 75 degrees to the right.\\\", \\\"reasoning\\\": \\\"I have rotated my torso to 75 degrees to minimize my width. I need to check if this rotation is sufficient to pass through the narrow opening ahead. I will use 'look_down' to see my current profile relative to the walking direction before I move any closer to the gap.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2695,\"completion_tokens\":148,\"total_tokens\":2843,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2695,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":148,\"totalTokenCount\":2843,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1606}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":148}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1606,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":148,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking straight down a red carpeted walkway towards a narrow opening in a wall decorated with geometric patterns. A blue triangle is visible on the far wall through the opening. The robot is currently at position x=1.25, and its torso is rotated 75 degrees to the right.\", \"reasoning\": \"I have rotated my torso to 75 degrees to minimize my width. I need to check if this rotation is sufficient to pass through the narrow opening ahead. I will use 'look_down' to see my current profile relative to the walking direction before I move any closer to the gap.\", \"action\": \"look_down\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red carpeted walkway towards a narrow opening in a wall decorated with geometric patterns. A blue triangle is visible on the far wall through the opening. The robot is currently at position x=1.25, and its torso is rotated 75 degrees to the right.",
+      "reasoning": "I have rotated my torso to 75 degrees to minimize my width. I need to check if this rotation is sufficient to pass through the narrow opening ahead. I will use 'look_down' to see my current profile relative to the walking direction before I move any closer to the gap.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

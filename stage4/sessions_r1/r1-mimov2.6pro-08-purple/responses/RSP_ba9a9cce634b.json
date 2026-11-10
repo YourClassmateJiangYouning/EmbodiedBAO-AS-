@@ -1,0 +1,52 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:44:48+08:00",
+    "latency_ms": 90008,
+    "payload_bytes": 166724,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "TimeoutError: timed out",
+    "json_mode": null,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T14:46:18+08:00",
+    "latency_ms": 90010,
+    "payload_bytes": 166724,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "TimeoutError: timed out",
+    "json_mode": null,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 3,
+    "started_at": "2026-11-09T14:46:33+08:00",
+    "latency_ms": 14376,
+    "payload_bytes": 166724,
+    "finish_reason": "stop",
+    "reasoning_tokens": 280,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n{\"id\":\"5db3d3c7-82e7-4a82-afa9-7b7e6aaaf2f2_4ff399069f7b4c20a547f525b2b303e6\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star glows on a dark panel on the far wall, centered ahead. A red carpet leads toward it, but the robot is stopped at x=7.25 against a wall_panel/threshold just before the star. The image is taken with the normal forward view; torso rotation is currently 30 degrees left.\\\", \\\"reasoning\\\": \\\"Forward has been blocked at x=7.25 with torso rotations of 0 and 30 degrees, so the body's presented width is too wide for the opening. Rotating further reduces the projected width (W*cos(theta)) or presents the body's thinner dimension, so I should turn left more and retry forward. I have 12 steps left, so I'll turn to 45 degrees and attempt to advance.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.55}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Blocked at x=7.25 with torso at 0 and 30 degrees. Turning increases width... wait, turning reduces projected width: W*cos(theta) if width is perpendicular. But blocking persists. Maybe the barrier is the wall panel and the opening needs torso rotated to pass through (e.g., narrow doorway requires rotated body to fit thickness?). Actually turning changes \\\"how wide your body is\\\" presented to what's ahead. Rotating 0° presents the full width; rotating reduces projected width as cos(theta). But blocked at 30° too. Maybe the gap requires being thinner — turning more could help. Try turning more left (45°) then forward. Or the opening may be too narrow entirely and we can't pass — but the star is on the far wall through the opening.\\n\\nWait — \\\"you cannot turn once your shoulders are inside the opening\\\". We're at 7.25, blocked. Perhaps we need to rotate to 90° so that the body thickness (narrower dimension) faces forward. Let's turn more left and try forward.\\n\\nWe have 12 steps remaining. Let's turn left (to 45), try forward. If blocked, continue.\\n\\nActually maybe look_down to see body width first at current rotation 30. But we know widths. Let's just turn left more and forward.\"}}],\"created\":1794206792,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":467,\"prompt_tokens\":3064,\"total_tokens\":3531,\"completion_tokens_details\":{\"reasoning_tokens\":280},\"prompt_tokens_details\":{\"cached_tokens\":2944,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star glows on a dark panel on the far wall, centered ahead. A red carpet leads toward it, but the robot is stopped at x=7.25 against a wall_panel/threshold just before the star. The image is taken with the normal forward view; torso rotation is currently 30 degrees left.\", \"reasoning\": \"Forward has been blocked at x=7.25 with torso rotations of 0 and 30 degrees, so the body's presented width is too wide for the opening. Rotating further reduces the projected width (W*cos(theta)) or presents the body's thinner dimension, so I should turn left more and retry forward. I have 12 steps left, so I'll turn to 45 degrees and attempt to advance.\", \"action\": \"turn_left\", \"confidence\": 0.55}",
+    "reasoning_content": "Blocked at x=7.25 with torso at 0 and 30 degrees. Turning increases width... wait, turning reduces projected width: W*cos(theta) if width is perpendicular. But blocking persists. Maybe the barrier is the wall panel and the opening needs torso rotated to pass through (e.g., narrow doorway requires rotated body to fit thickness?). Actually turning changes \"how wide your body is\" presented to what's ahead. Rotating 0° presents the full width; rotating reduces projected width as cos(theta). But blocked at 30° too. Maybe the gap requires being thinner — turning more could help. Try turning more left (45°) then forward. Or the opening may be too narrow entirely and we can't pass — but the star is on the far wall through the opening.\n\nWait — \"you cannot turn once your shoulders are inside the opening\". We're at 7.25, blocked. Perhaps we need to rotate to 90° so that the body thickness (narrower dimension) faces forward. Let's turn more left and try forward.\n\nWe have 12 steps remaining. Let's turn left (to 45), try forward. If blocked, continue.\n\nActually maybe look_down to see body width first at current rotation 30. But we know widths. Let's just turn left more and forward.",
+    "parsed": {
+      "scene_description": "The purple four-pointed star glows on a dark panel on the far wall, centered ahead. A red carpet leads toward it, but the robot is stopped at x=7.25 against a wall_panel/threshold just before the star. The image is taken with the normal forward view; torso rotation is currently 30 degrees left.",
+      "reasoning": "Forward has been blocked at x=7.25 with torso rotations of 0 and 30 degrees, so the body's presented width is too wide for the opening. Rotating further reduces the projected width (W*cos(theta)) or presents the body's thinner dimension, so I should turn left more and retry forward. I have 12 steps left, so I'll turn to 45 degrees and attempt to advance.",
+      "action": "turn_left",
+      "confidence": 0.55
+    },
+    "action": "turn_left"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:04:07+08:00",
+    "latency_ms": 2608,
+    "payload_bytes": 368746,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5b25392d-1217-4876-89b1-c914b414db20\",\"object\":\"chat.completion\",\"created\":1794207846,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpet path leads straight ahead toward a dark doorway on the far wall, with a yellow arrow visible just above the opening. The path is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The yellow arrow is directly ahead along the fixed walking direction, and the red carpet corridor is clear. Continuing forward advances toward the goal without needing any turns.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1628,\"completion_tokens\":90,\"total_tokens\":1718,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":860},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpet path leads straight ahead toward a dark doorway on the far wall, with a yellow arrow visible just above the opening. The path is clear and unobstructed.\", \"reasoning\": \"The yellow arrow is directly ahead along the fixed walking direction, and the red carpet corridor is clear. Continuing forward advances toward the goal without needing any turns.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpet path leads straight ahead toward a dark doorway on the far wall, with a yellow arrow visible just above the opening. The path is clear and unobstructed.",
+      "reasoning": "The yellow arrow is directly ahead along the fixed walking direction, and the red carpet corridor is clear. Continuing forward advances toward the goal without needing any turns.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

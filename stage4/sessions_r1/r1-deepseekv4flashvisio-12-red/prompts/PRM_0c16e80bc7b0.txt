@@ -1,0 +1,34 @@
+You are a small wheeled robot. Your task is to reach the red circle on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the red circle on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the red circle on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the red circle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the red circle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the red circle you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+Current state:
+- position (x, y, z): [4.250, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 30.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (9 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: forward -> executed | your reasoning: The red circle is directly ahead along the walking direction, and the path looks unobstructed. Moving forward advances me toward the goal. I should check my body width before entering the narrow opening, but first I can make progress with…
+- step 1: look_down -> executed | your reasoning: The red circle is directly ahead along the fixed walking direction. Before entering the narrow opening, I should check my body width using look_down, since turning is impossible once shoulders are inside the opening. This glance is safe an…
+- step 2: forward -> executed | your reasoning: I have now seen my body width via the downward glance. The torso rotation is 0 degrees, so this width faces the opening directly. The body looks wide (wheels plus tray), so I should consider whether the opening ahead is wide enough; howeve…
+- step 3: forward -> executed | your reasoning: The red circle is directly ahead along the fixed walking direction. The opening looks narrow, and my body is wide with torso rotation at 0 degrees, so I should verify width before entering. However, I have already looked down once and made…
+- step 4: look_down -> executed | your reasoning: The red circle is directly ahead along the fixed walking direction. The opening is narrow, and my torso rotation is 0 degrees, so my wide body faces the gap directly. Before entering, I should verify my body width with a downward glance to…
+- step 5: turn_right -> executed | your reasoning: The downward view confirms my body is quite wide (wheels plus tray). The opening ahead is narrow, and with torso rotation at 0 degrees this wide profile faces the gap directly. Turning is impossible once shoulders are inside, so I should r…
+- step 6: forward -> executed | your reasoning: The red circle is directly ahead through the narrow opening. My torso is rotated 15 degrees right, which narrows the profile I present to the gap. I have already turned once; continuing to turn right further narrows my presented width, but…
+- step 7: forward -> executed | your reasoning: The red circle is directly ahead along the fixed walking direction, and the opening is visible with clear floor leading to it. My torso is rotated 15 degrees right, narrowing my presented width, and I have already made progress toward the…
+- step 8: turn_right -> executed | your reasoning: The red circle is directly ahead along the fixed walking direction. My torso is rotated 15 degrees right, narrowing the profile presented to the gap. I have already turned once; turning further right would narrow the presented width more,…
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

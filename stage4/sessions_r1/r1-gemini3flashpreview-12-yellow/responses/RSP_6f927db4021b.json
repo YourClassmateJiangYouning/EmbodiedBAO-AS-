@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:19:48+08:00",
+    "latency_ms": 9045,
+    "payload_bytes": 261736,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081019404030512428268d9d6Aq205P9W\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133188,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a large yellow arrow pointing to the right on a black rectangular sign, placed on the floor. Behind the sign is a dark, draped fabric and a tan-colored piece of furniture. In the foreground, there is a red carpeted area.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=7.25 and have successfully navigated through the narrow opening with my torso rotated to 90 degrees. The yellow arrow is now directly in front of me. I will continue moving forward to reach it.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3092,\"completion_tokens\":134,\"total_tokens\":3226,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3092,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":134,\"totalTokenCount\":3226,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2003}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":134}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2003,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":134,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a large yellow arrow pointing to the right on a black rectangular sign, placed on the floor. Behind the sign is a dark, draped fabric and a tan-colored piece of furniture. In the foreground, there is a red carpeted area.\",\n  \"reasoning\": \"I am at x=7.25 and have successfully navigated through the narrow opening with my torso rotated to 90 degrees. The yellow arrow is now directly in front of me. I will continue moving forward to reach it.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a large yellow arrow pointing to the right on a black rectangular sign, placed on the floor. Behind the sign is a dark, draped fabric and a tan-colored piece of furniture. In the foreground, there is a red carpeted area.",
+      "reasoning": "I am at x=7.25 and have successfully navigated through the narrow opening with my torso rotated to 90 degrees. The yellow arrow is now directly in front of me. I will continue moving forward to reach it.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

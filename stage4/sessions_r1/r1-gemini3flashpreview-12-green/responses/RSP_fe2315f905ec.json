@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:14:43+08:00",
+    "latency_ms": 8264,
+    "payload_bytes": 286265,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081014358994457388268d9d6DYSNP9Lg\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794132883,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted path leading towards a green rectangle on a far wall. I have passed through the narrow opening between two decorated panels and am now in a more open area with the target clearly visible ahead.\\\", \\\"reasoning\\\": \\\"I am at x=4.25 and have successfully cleared the narrow opening with my torso rotated to 90 degrees. The green rectangle is directly ahead. I will continue moving forward to reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2825,\"completion_tokens\":112,\"total_tokens\":2937,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2825,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":112,\"totalTokenCount\":2937,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1736}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":112}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1736,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":112,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted path leading towards a green rectangle on a far wall. I have passed through the narrow opening between two decorated panels and am now in a more open area with the target clearly visible ahead.\", \"reasoning\": \"I am at x=4.25 and have successfully cleared the narrow opening with my torso rotated to 90 degrees. The green rectangle is directly ahead. I will continue moving forward to reach the goal.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted path leading towards a green rectangle on a far wall. I have passed through the narrow opening between two decorated panels and am now in a more open area with the target clearly visible ahead.",
+      "reasoning": "I am at x=4.25 and have successfully cleared the narrow opening with my torso rotated to 90 degrees. The green rectangle is directly ahead. I will continue moving forward to reach the goal.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

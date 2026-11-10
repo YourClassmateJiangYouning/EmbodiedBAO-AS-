@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:19:39+08:00",
+    "latency_ms": 6050,
+    "payload_bytes": 241502,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081019338568907268268d9d6lepu18AT\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133179,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking straight ahead at a yellow arrow pointing right, positioned on the floor against a dark background. I am currently on a red carpeted surface, and there is a narrow opening formed by two walls on either side. The yellow arrow is just beyond this opening.\\\", \\\"reasoning\\\": \\\"I am at x=6.5 and my torso is rotated to 90 degrees, which is my narrowest profile. I am entering the narrow gap. I will continue moving forward to pass through the opening and reach the yellow arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3029,\"completion_tokens\":129,\"total_tokens\":3158,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3029,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":129,\"totalTokenCount\":3158,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1940}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":129}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1940,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":129,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking straight ahead at a yellow arrow pointing right, positioned on the floor against a dark background. I am currently on a red carpeted surface, and there is a narrow opening formed by two walls on either side. The yellow arrow is just beyond this opening.\", \"reasoning\": \"I am at x=6.5 and my torso is rotated to 90 degrees, which is my narrowest profile. I am entering the narrow gap. I will continue moving forward to pass through the opening and reach the yellow arrow.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight ahead at a yellow arrow pointing right, positioned on the floor against a dark background. I am currently on a red carpeted surface, and there is a narrow opening formed by two walls on either side. The yellow arrow is just beyond this opening.",
+      "reasoning": "I am at x=6.5 and my torso is rotated to 90 degrees, which is my narrowest profile. I am entering the narrow gap. I will continue moving forward to pass through the opening and reach the yellow arrow.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

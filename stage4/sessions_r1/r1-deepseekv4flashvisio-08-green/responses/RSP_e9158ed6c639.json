@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:07:12+08:00",
+    "latency_ms": 2397,
+    "payload_bytes": 210305,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a41ea83f-2135-4579-95be-b7be0dc393f5\",\"object\":\"chat.completion\",\"created\":1794208031,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle sits on a raised ledge just ahead, framed by a narrow opening between a striped wall panel on the left and a blue patterned panel on the right. The dark red carpet fills the foreground.\\\", \\\"reasoning\\\": \\\"Forward has been blocked repeatedly at many torso rotations, and the target is on a raised ledge slightly above the floor. Backing up gave clearance, and I have now turned right to 15 degrees. The opening is narrow, so I should try forward again from this backed-up position to see if the clearance allows passage onto the ledge.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.35}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3345,\"completion_tokens\":133,\"total_tokens\":3478,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2705},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle sits on a raised ledge just ahead, framed by a narrow opening between a striped wall panel on the left and a blue patterned panel on the right. The dark red carpet fills the foreground.\", \"reasoning\": \"Forward has been blocked repeatedly at many torso rotations, and the target is on a raised ledge slightly above the floor. Backing up gave clearance, and I have now turned right to 15 degrees. The opening is narrow, so I should try forward again from this backed-up position to see if the clearance allows passage onto the ledge.\", \"action\": \"forward\", \"confidence\": 0.35}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle sits on a raised ledge just ahead, framed by a narrow opening between a striped wall panel on the left and a blue patterned panel on the right. The dark red carpet fills the foreground.",
+      "reasoning": "Forward has been blocked repeatedly at many torso rotations, and the target is on a raised ledge slightly above the floor. Backing up gave clearance, and I have now turned right to 15 degrees. The opening is narrow, so I should try forward again from this backed-up position to see if the clearance allows passage onto the ledge.",
+      "action": "forward",
+      "confidence": 0.35
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:26:50+08:00",
+    "latency_ms": 5025,
+    "payload_bytes": 347868,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-08T21:26:58+08:00",
+    "latency_ms": 8688,
+    "payload_bytes": 347868,
+    "finish_reason": "stop",
+    "reasoning_tokens": 30,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"c105d0bc-66e0-434d-a7d2-634c1bfa1994_217b86fa38ca4c8c834fb848e795ff16\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpet path leading straight ahead toward a dark narrow opening in the far wall, with a blue triangle visible just beyond the opening. A patterned floor with yellow/white tiles and zigzag shapes is visible on the left side, and decorative patterned walls flank the path.\\\", \\\"reasoning\\\": \\\"My torso remains at 90 degrees presenting my thinnest profile to the narrow opening ahead. The path along the red carpet is clear and I'm approaching the opening. I should continue moving forward to get closer to the blue triangle through the opening.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red carpet path leads forward to the opening with blue triangle. Torso at 90 degrees, thinnest profile. Continue forward.\"}}],\"created\":1794144418,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":164,\"prompt_tokens\":2533,\"total_tokens\":2697,\"completion_tokens_details\":{\"reasoning_tokens\":30},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpet path leading straight ahead toward a dark narrow opening in the far wall, with a blue triangle visible just beyond the opening. A patterned floor with yellow/white tiles and zigzag shapes is visible on the left side, and decorative patterned walls flank the path.\", \"reasoning\": \"My torso remains at 90 degrees presenting my thinnest profile to the narrow opening ahead. The path along the red carpet is clear and I'm approaching the opening. I should continue moving forward to get closer to the blue triangle through the opening.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "The red carpet path leads forward to the opening with blue triangle. Torso at 90 degrees, thinnest profile. Continue forward.",
+    "parsed": {
+      "scene_description": "Red carpet path leading straight ahead toward a dark narrow opening in the far wall, with a blue triangle visible just beyond the opening. A patterned floor with yellow/white tiles and zigzag shapes is visible on the left side, and decorative patterned walls flank the path.",
+      "reasoning": "My torso remains at 90 degrees presenting my thinnest profile to the narrow opening ahead. The path along the red carpet is clear and I'm approaching the opening. I should continue moving forward to get closer to the blue triangle through the opening.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

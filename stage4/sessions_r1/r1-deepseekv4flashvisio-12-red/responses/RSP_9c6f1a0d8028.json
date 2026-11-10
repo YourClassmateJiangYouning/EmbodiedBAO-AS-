@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:00:33+08:00",
+    "latency_ms": 2753,
+    "payload_bytes": 340993,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"23403368-58f2-42e5-811e-9908f0d29304\",\"object\":\"chat.completion\",\"created\":1794207631,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted floor stretches ahead toward a narrow opening between two patterned walls, with a red circle visible on the far wall through the gap. The opening appears narrow relative to the robot's body width.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the fixed walking direction. The opening is narrow, and my torso rotation is 0 degrees, so my wide body faces the gap directly. Before entering, I should verify my body width with a downward glance to decide whether I need to rotate my torso to fit through.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1825,\"completion_tokens\":127,\"total_tokens\":1952,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1185},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted floor stretches ahead toward a narrow opening between two patterned walls, with a red circle visible on the far wall through the gap. The opening appears narrow relative to the robot's body width.\", \"reasoning\": \"The red circle is directly ahead along the fixed walking direction. The opening is narrow, and my torso rotation is 0 degrees, so my wide body faces the gap directly. Before entering, I should verify my body width with a downward glance to decide whether I need to rotate my torso to fit through.\", \"action\": \"look_down\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted floor stretches ahead toward a narrow opening between two patterned walls, with a red circle visible on the far wall through the gap. The opening appears narrow relative to the robot's body width.",
+      "reasoning": "The red circle is directly ahead along the fixed walking direction. The opening is narrow, and my torso rotation is 0 degrees, so my wide body faces the gap directly. Before entering, I should verify my body width with a downward glance to decide whether I need to rotate my torso to fit through.",
+      "action": "look_down",
+      "confidence": 0.7
+    },
+    "action": "look_down"
+  }
+]

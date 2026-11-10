@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:37:18+08:00",
+    "latency_ms": 7290,
+    "payload_bytes": 330088,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090837136077652688268d9d6qKNh7bQE\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213438,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading toward a narrow opening between two patterned walls. A yellow arrow is visible on the far wall through the opening, pointing to the right.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees to present my slimmest profile. I am currently at position x=2.75 and need to continue moving forward to pass through the narrow gap and reach the yellow arrow target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3184,\"completion_tokens\":120,\"total_tokens\":3304,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3184,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":120,\"totalTokenCount\":3304,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2095}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":120}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2095,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":120,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a red carpeted walkway leading toward a narrow opening between two patterned walls. A yellow arrow is visible on the far wall through the opening, pointing to the right.\",\n  \"reasoning\": \"I have already rotated my torso to 90 degrees to present my slimmest profile. I am currently at position x=2.75 and need to continue moving forward to pass through the narrow gap and reach the yellow arrow target.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading toward a narrow opening between two patterned walls. A yellow arrow is visible on the far wall through the opening, pointing to the right.",
+      "reasoning": "I have already rotated my torso to 90 degrees to present my slimmest profile. I am currently at position x=2.75 and need to continue moving forward to pass through the narrow gap and reach the yellow arrow target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

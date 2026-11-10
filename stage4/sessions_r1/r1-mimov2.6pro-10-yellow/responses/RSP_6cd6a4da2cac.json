@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:39:27+08:00",
+    "latency_ms": 8485,
+    "payload_bytes": 331424,
+    "finish_reason": "stop",
+    "reasoning_tokens": 32,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"95b797c8-f1be-456a-81e0-00956193fa3a_367c1ac0c5bd492e94adbe3841f6de54\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet leads straight ahead toward a dark opening in the far wall, where a yellow arrow points to the right at the doorway. The floor is covered with a patterned, colorful carpet on the sides, and the walls have abstract geometric patterns. The path directly ahead is clear with no obstacles.\\\", \\\"reasoning\\\": \\\"The yellow arrow is visible at the far wall doorway directly ahead. The red carpet path remains clear with no obstacles. I should continue moving forward toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The yellow arrow is visible ahead at the dark doorway in the far wall. The path is clear — the red carpet leads straight there. Keep moving forward.\"}}],\"created\":1794137966,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":153,\"prompt_tokens\":2084,\"total_tokens\":2237,\"completion_tokens_details\":{\"reasoning_tokens\":32},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet leads straight ahead toward a dark opening in the far wall, where a yellow arrow points to the right at the doorway. The floor is covered with a patterned, colorful carpet on the sides, and the walls have abstract geometric patterns. The path directly ahead is clear with no obstacles.\", \"reasoning\": \"The yellow arrow is visible at the far wall doorway directly ahead. The red carpet path remains clear with no obstacles. I should continue moving forward toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The yellow arrow is visible ahead at the dark doorway in the far wall. The path is clear — the red carpet leads straight there. Keep moving forward.",
+    "parsed": {
+      "scene_description": "A red carpet leads straight ahead toward a dark opening in the far wall, where a yellow arrow points to the right at the doorway. The floor is covered with a patterned, colorful carpet on the sides, and the walls have abstract geometric patterns. The path directly ahead is clear with no obstacles.",
+      "reasoning": "The yellow arrow is visible at the far wall doorway directly ahead. The red carpet path remains clear with no obstacles. I should continue moving forward toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

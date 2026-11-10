@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:13:11+08:00",
+    "latency_ms": 2370,
+    "payload_bytes": 166724,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"6d8dc141-75aa-4c42-a110-edd05b4bffa2\",\"object\":\"chat.completion\",\"created\":1794208390,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star glows brightly on a raised panel directly ahead, with the red carpet leading up to it. The star appears very close, filling much of the view.\\\", \\\"reasoning\\\": \\\"Forward has been repeatedly blocked by the wall panel holding the star, and I am already as close as physically possible. The star is directly ahead and appears reachable, so the goal is effectively achieved; further forward attempts will not improve the outcome.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3088,\"completion_tokens\":110,\"total_tokens\":3198,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2448},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star glows brightly on a raised panel directly ahead, with the red carpet leading up to it. The star appears very close, filling much of the view.\", \"reasoning\": \"Forward has been repeatedly blocked by the wall panel holding the star, and I am already as close as physically possible. The star is directly ahead and appears reachable, so the goal is effectively achieved; further forward attempts will not improve the outcome.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star glows brightly on a raised panel directly ahead, with the red carpet leading up to it. The star appears very close, filling much of the view.",
+      "reasoning": "Forward has been repeatedly blocked by the wall panel holding the star, and I am already as close as physically possible. The star is directly ahead and appears reachable, so the goal is effectively achieved; further forward attempts will not improve the outcome.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

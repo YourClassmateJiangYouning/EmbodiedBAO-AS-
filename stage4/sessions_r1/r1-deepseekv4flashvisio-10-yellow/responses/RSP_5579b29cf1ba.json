@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:04:25+08:00",
+    "latency_ms": 2569,
+    "payload_bytes": 248424,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"d193ea05-e1d3-44fa-975e-a27c224eebc2\",\"object\":\"chat.completion\",\"created\":1794207864,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpet leading toward a dark opening in the far wall, with a yellow arrow pointing right mounted just above the carpet at the opening. Patterned walls flank the opening on both sides.\\\", \\\"reasoning\\\": \\\"The yellow arrow is directly ahead along the fixed walking direction, and the red carpet path to the opening is clear. Continuing forward advances toward the goal without needing any turns.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1842,\"completion_tokens\":99,\"total_tokens\":1941,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1074},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpet leading toward a dark opening in the far wall, with a yellow arrow pointing right mounted just above the carpet at the opening. Patterned walls flank the opening on both sides.\", \"reasoning\": \"The yellow arrow is directly ahead along the fixed walking direction, and the red carpet path to the opening is clear. Continuing forward advances toward the goal without needing any turns.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpet leading toward a dark opening in the far wall, with a yellow arrow pointing right mounted just above the carpet at the opening. Patterned walls flank the opening on both sides.",
+      "reasoning": "The yellow arrow is directly ahead along the fixed walking direction, and the red carpet path to the opening is clear. Continuing forward advances toward the goal without needing any turns.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

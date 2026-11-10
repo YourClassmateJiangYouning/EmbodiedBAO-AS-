@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:19:04+08:00",
+    "latency_ms": 5447,
+    "payload_bytes": 284089,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_tglmhh3t74xqn5tkc5ohkv6raxy2cmnto2a63r64ou5s35ua6bta\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794197944,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a dark opening/doorway ahead with the green rectangle target clearly visible on the far wall inside it. The foreground shows a dark reddish-brown floor surface. The opening appears to be a passage or corridor entrance. The green rectangle is my target destination on the far wall.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=4.250, having taken 5 forward steps. The green rectangle target is clearly visible on the far wall inside the dark opening ahead. The path forward appears clear and unobstructed. I should continue walking forward toward the target. The opening is ahead and I need to pass through it to reach the green rectangle on the far wall.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2682,\"completion_tokens\":179,\"total_tokens\":2861,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2682,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":179,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2682,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a dark opening/doorway ahead with the green rectangle target clearly visible on the far wall inside it. The foreground shows a dark reddish-brown floor surface. The opening appears to be a passage or corridor entrance. The green rectangle is my target destination on the far wall.\",\n  \"reasoning\": \"I am at position x=4.250, having taken 5 forward steps. The green rectangle target is clearly visible on the far wall inside the dark opening ahead. The path forward appears clear and unobstructed. I should continue walking forward toward the target. The opening is ahead and I need to pass through it to reach the green rectangle on the far wall.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a dark opening/doorway ahead with the green rectangle target clearly visible on the far wall inside it. The foreground shows a dark reddish-brown floor surface. The opening appears to be a passage or corridor entrance. The green rectangle is my target destination on the far wall.",
+      "reasoning": "I am at position x=4.250, having taken 5 forward steps. The green rectangle target is clearly visible on the far wall inside the dark opening ahead. The path forward appears clear and unobstructed. I should continue walking forward toward the target. The opening is ahead and I need to pass through it to reach the green rectangle on the far wall.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

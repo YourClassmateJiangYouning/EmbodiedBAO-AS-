@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:37:42+08:00",
+    "latency_ms": 5730,
+    "payload_bytes": 261878,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081037375258730098268d9d6p7f2Eyi5\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134262,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows the purple four-pointed star on a black rectangular board directly ahead. The robot is on a red carpeted floor, and the star is positioned on the floor just past the edge of the carpet. A dark cloth or curtain hangs in the background.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=7.25 and have successfully navigated through the narrow opening. The purple star is now very close. I will continue moving forward to reach it.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3086,\"completion_tokens\":123,\"total_tokens\":3209,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3086,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":123,\"totalTokenCount\":3209,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1997},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":123}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1997,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":123,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows the purple four-pointed star on a black rectangular board directly ahead. The robot is on a red carpeted floor, and the star is positioned on the floor just past the edge of the carpet. A dark cloth or curtain hangs in the background.\",\n  \"reasoning\": \"I am at x=7.25 and have successfully navigated through the narrow opening. The purple star is now very close. I will continue moving forward to reach it.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows the purple four-pointed star on a black rectangular board directly ahead. The robot is on a red carpeted floor, and the star is positioned on the floor just past the edge of the carpet. A dark cloth or curtain hangs in the background.",
+      "reasoning": "I am at x=7.25 and have successfully navigated through the narrow opening. The purple star is now very close. I will continue moving forward to reach it.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

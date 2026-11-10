@@ -1,0 +1,47 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:03:10+08:00",
+    "latency_ms": 3659,
+    "payload_bytes": 333940,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "json_mode": null,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T14:03:13+08:00",
+    "latency_ms": 2648,
+    "payload_bytes": 333940,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 3,
+    "started_at": "2026-11-09T14:03:17+08:00",
+    "latency_ms": 3655,
+    "payload_bytes": 333940,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  }
+]

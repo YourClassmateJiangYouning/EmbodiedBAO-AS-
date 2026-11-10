@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:04:22+08:00",
+    "latency_ms": 7885,
+    "payload_bytes": 215858,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A narrow doorway ahead with a red carpet leading up to a wall panel. A large red circle is centered on a small black plaque at floor level directly in front.\\\", \\\"reasoning\\\": \\\"My walking direction points straight toward the red circle. Previous forward steps at x≈6.5m sometimes contacted the wall panel, but I just stepped backward to create space. One more forward step should close the gap to reach the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.64}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204259,\"id\":\"chatcmpl-EiCmJwwgOsSJYl39mzhB9ROLrVtXi\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":115,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":11,\"engine_ttft_ms\":316,\"engine_ttlt_ms\":1552,\"pre_inference_ms\":414,\"service_tbt_ms\":11,\"service_ttft_ms\":1065,\"service_ttlt_ms\":2296,\"user_visible_ttft_ms\":651},\"prompt_tokens\":2654,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2769}}\n",
+    "content": "{\"scene_description\": \"A narrow doorway ahead with a red carpet leading up to a wall panel. A large red circle is centered on a small black plaque at floor level directly in front.\", \"reasoning\": \"My walking direction points straight toward the red circle. Previous forward steps at x≈6.5m sometimes contacted the wall panel, but I just stepped backward to create space. One more forward step should close the gap to reach the red circle.\", \"action\": \"forward\", \"confidence\": 0.64}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A narrow doorway ahead with a red carpet leading up to a wall panel. A large red circle is centered on a small black plaque at floor level directly in front.",
+      "reasoning": "My walking direction points straight toward the red circle. Previous forward steps at x≈6.5m sometimes contacted the wall panel, but I just stepped backward to create space. One more forward step should close the gap to reach the red circle.",
+      "action": "forward",
+      "confidence": 0.64
+    },
+    "action": "forward"
+  }
+]

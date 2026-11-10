@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:17:34+08:00",
+    "latency_ms": 2700,
+    "payload_bytes": 173192,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"24f03081-c2fe-47bb-a04a-631d65102cc0\",\"object\":\"chat.completion\",\"created\":1794208653,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is very close and centered ahead, mounted on a low dark panel that blocks direct forward motion. The floor and side walls are visible around it.\\\", \\\"reasoning\\\": \\\"Forward steps are repeatedly blocked by the low wall_panel holding the arrow. Turning does not change walking direction, so it cannot steer around the obstacle. Backing up then moving forward succeeded once, suggesting the panel is passable at a slightly different distance. I just backed up and moved forward, and the last forward was blocked, so I should back up again to reset the distance and try forward once more.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2960,\"completion_tokens\":140,\"total_tokens\":3100,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2320},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is very close and centered ahead, mounted on a low dark panel that blocks direct forward motion. The floor and side walls are visible around it.\", \"reasoning\": \"Forward steps are repeatedly blocked by the low wall_panel holding the arrow. Turning does not change walking direction, so it cannot steer around the obstacle. Backing up then moving forward succeeded once, suggesting the panel is passable at a slightly different distance. I just backed up and moved forward, and the last forward was blocked, so I should back up again to reset the distance and try forward once more.\", \"action\": \"backward\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is very close and centered ahead, mounted on a low dark panel that blocks direct forward motion. The floor and side walls are visible around it.",
+      "reasoning": "Forward steps are repeatedly blocked by the low wall_panel holding the arrow. Turning does not change walking direction, so it cannot steer around the obstacle. Backing up then moving forward succeeded once, suggesting the panel is passable at a slightly different distance. I just backed up and moved forward, and the last forward was blocked, so I should back up again to reset the distance and try forward once more.",
+      "action": "backward",
+      "confidence": 0.4
+    },
+    "action": "backward"
+  }
+]

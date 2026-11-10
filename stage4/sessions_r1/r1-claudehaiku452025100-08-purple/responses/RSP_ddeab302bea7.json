@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:35:04+08:00",
+    "latency_ms": 7973,
+    "payload_bytes": 334239,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_kmghrodjgcqtxhrhkeewtivkf7hsfh6pfmj4fztk2j4pfov2lsda\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198904,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the purple four-pointed star clearly visible on the far wall, centered in my view straight ahead. The red carpet extends forward in front of me with clear visibility. The path is unobstructed and leads directly toward the star. The walls on either side show decorative patterns. I am currently at position x=2.750, having made 3 forward steps already.\\\",\\n  \\\"reasoning\\\": \\\"The purple four-pointed star is my target and is clearly visible straight ahead down my walking direction. The red carpet provides a clear, unobstructed path forward. There are no obstacles blocking my way. I should continue moving forward toward the star. Each forward action moves me 75cm closer to the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2570,\"completion_tokens\":186,\"total_tokens\":2756,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2570,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":186,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2570,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the purple four-pointed star clearly visible on the far wall, centered in my view straight ahead. The red carpet extends forward in front of me with clear visibility. The path is unobstructed and leads directly toward the star. The walls on either side show decorative patterns. I am currently at position x=2.750, having made 3 forward steps already.\",\n  \"reasoning\": \"The purple four-pointed star is my target and is clearly visible straight ahead down my walking direction. The red carpet provides a clear, unobstructed path forward. There are no obstacles blocking my way. I should continue moving forward toward the star. Each forward action moves me 75cm closer to the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the purple four-pointed star clearly visible on the far wall, centered in my view straight ahead. The red carpet extends forward in front of me with clear visibility. The path is unobstructed and leads directly toward the star. The walls on either side show decorative patterns. I am currently at position x=2.750, having made 3 forward steps already.",
+      "reasoning": "The purple four-pointed star is my target and is clearly visible straight ahead down my walking direction. The red carpet provides a clear, unobstructed path forward. There are no obstacles blocking my way. I should continue moving forward toward the star. Each forward action moves me 75cm closer to the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

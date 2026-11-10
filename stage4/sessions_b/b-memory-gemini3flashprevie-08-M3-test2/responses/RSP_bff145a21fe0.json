@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:39:30+08:00",
+    "latency_ms": 4403,
+    "payload_bytes": 242941,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090839268632682018268d9d65NJdGU5u\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213570,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking straight ahead down a red carpeted path. A yellow arrow is visible on the floor in the distance, pointing right. There is a narrow opening between two decorated walls that I am currently passing through.\\\", \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees to minimize my width and am currently at position x=5.0. I need to continue moving forward along the red carpet to pass through the opening and reach the yellow arrow on the far wall.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3515,\"completion_tokens\":120,\"total_tokens\":3635,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3515,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":120,\"totalTokenCount\":3635,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2426}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":120}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2426,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":120,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking straight ahead down a red carpeted path. A yellow arrow is visible on the floor in the distance, pointing right. There is a narrow opening between two decorated walls that I am currently passing through.\", \"reasoning\": \"I have already rotated my torso to 90 degrees to minimize my width and am currently at position x=5.0. I need to continue moving forward along the red carpet to pass through the opening and reach the yellow arrow on the far wall.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight ahead down a red carpeted path. A yellow arrow is visible on the floor in the distance, pointing right. There is a narrow opening between two decorated walls that I am currently passing through.",
+      "reasoning": "I have already rotated my torso to 90 degrees to minimize my width and am currently at position x=5.0. I need to continue moving forward along the red carpet to pass through the opening and reach the yellow arrow on the far wall.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

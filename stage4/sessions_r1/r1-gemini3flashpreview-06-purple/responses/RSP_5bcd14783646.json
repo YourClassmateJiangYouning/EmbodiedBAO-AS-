@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:01:55+08:00",
+    "latency_ms": 6526,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081101503749509988268d9d6PcbsXGE4\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135716,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper at the front, with two large black wheels on either side. The body is wider than it is deep, and currently oriented at 0 degrees rotation relative to the forward direction.\\\",\\n  \\\"reasoning\\\": \\\"Looking down shows that my body is very wide at 0 degrees rotation due to the white bumper and wheels. To fit through any narrow openings ahead, I will likely need to rotate my torso to present a narrower profile. I will start moving forward toward the goal while I have space to maneuver.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2109,\"completion_tokens\":155,\"total_tokens\":2264,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2109,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":155,\"totalTokenCount\":2264,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1020},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":155}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1020,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":155,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper at the front, with two large black wheels on either side. The body is wider than it is deep, and currently oriented at 0 degrees rotation relative to the forward direction.\",\n  \"reasoning\": \"Looking down shows that my body is very wide at 0 degrees rotation due to the white bumper and wheels. To fit through any narrow openings ahead, I will likely need to rotate my torso to present a narrower profile. I will start moving forward toward the goal while I have space to maneuver.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper at the front, with two large black wheels on either side. The body is wider than it is deep, and currently oriented at 0 degrees rotation relative to the forward direction.",
+      "reasoning": "Looking down shows that my body is very wide at 0 degrees rotation due to the white bumper and wheels. To fit through any narrow openings ahead, I will likely need to rotate my torso to present a narrower profile. I will start moving forward toward the goal while I have space to maneuver.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:22:44+08:00",
+    "latency_ms": 3573,
+    "payload_bytes": 238101,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"bca105f9-1b72-4619-9998-616c5353d3c6\",\"object\":\"chat.completion\",\"created\":1794212563,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading toward a dark opening in the far wall, with the blue triangle visible ahead through the gap between two patterned wall panels.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along my fixed walking direction and the opening is aligned with my torso at 0 degrees, the narrowest presentation. Continuing forward advances me toward the goal with ample steps remaining.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1956,\"completion_tokens\":98,\"total_tokens\":2054,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1188},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading toward a dark opening in the far wall, with the blue triangle visible ahead through the gap between two patterned wall panels.\", \"reasoning\": \"The blue triangle is directly ahead along my fixed walking direction and the opening is aligned with my torso at 0 degrees, the narrowest presentation. Continuing forward advances me toward the goal with ample steps remaining.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading toward a dark opening in the far wall, with the blue triangle visible ahead through the gap between two patterned wall panels.",
+      "reasoning": "The blue triangle is directly ahead along my fixed walking direction and the opening is aligned with my torso at 0 degrees, the narrowest presentation. Continuing forward advances me toward the goal with ample steps remaining.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:47:00+08:00",
+    "latency_ms": 8358,
+    "payload_bytes": 386232,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_vgjsccxjxkgtfv54pfzeg62xpkyt4a3m6346buvvlk2b5i6jcy3q\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145621,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I am in an indoor space with a red carpet stretching ahead toward a far wall. The wall has graffiti-style artwork in blue and purple. I can see a blue triangle on the far wall, which is my target destination. The triangle appears to be mounted on or part of the wall structure in the center-upper area. To my left is a lighter colored floor (yellow/cream), and the space appears to be an art gallery or similar venue. The path ahead is clear and unobstructed.\\\",\\n  \\\"reasoning\\\": \\\"My task is to reach the blue triangle on the far wall. I am currently at position x=0.500 (near the start of the walkway), and the triangle is visible ahead on the far wall. My walking direction is fixed toward that wall. There are no obstacles blocking my path on the red carpet. The most direct approach is to move forward repeatedly until I reach the wall where the triangle is located. I should begin by walking forward.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2303,\"completion_tokens\":240,\"total_tokens\":2543,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2303,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":240,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2303,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I am in an indoor space with a red carpet stretching ahead toward a far wall. The wall has graffiti-style artwork in blue and purple. I can see a blue triangle on the far wall, which is my target destination. The triangle appears to be mounted on or part of the wall structure in the center-upper area. To my left is a lighter colored floor (yellow/cream), and the space appears to be an art gallery or similar venue. The path ahead is clear and unobstructed.\",\n  \"reasoning\": \"My task is to reach the blue triangle on the far wall. I am currently at position x=0.500 (near the start of the walkway), and the triangle is visible ahead on the far wall. My walking direction is fixed toward that wall. There are no obstacles blocking my path on the red carpet. The most direct approach is to move forward repeatedly until I reach the wall where the triangle is located. I should begin by walking forward.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I am in an indoor space with a red carpet stretching ahead toward a far wall. The wall has graffiti-style artwork in blue and purple. I can see a blue triangle on the far wall, which is my target destination. The triangle appears to be mounted on or part of the wall structure in the center-upper area. To my left is a lighter colored floor (yellow/cream), and the space appears to be an art gallery or similar venue. The path ahead is clear and unobstructed.",
+      "reasoning": "My task is to reach the blue triangle on the far wall. I am currently at position x=0.500 (near the start of the walkway), and the triangle is visible ahead on the far wall. My walking direction is fixed toward that wall. There are no obstacles blocking my path on the red carpet. The most direct approach is to move forward repeatedly until I reach the wall where the triangle is located. I should begin by walking forward.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

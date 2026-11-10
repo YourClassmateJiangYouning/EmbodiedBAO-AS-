@@ -1,0 +1,50 @@
+You are a small wheeled robot. Your task is to reach the purple four-pointed star on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the purple four-pointed star on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the purple four-pointed star on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the purple four-pointed star, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the purple four-pointed star, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the purple four-pointed star you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+A previous successful traversal by the same model in this same scene and marker:
+
+1. forward -> executed  |  The purple star is directly ahead along the red carpet with no obstacles. I just need to keep walking forward toward it.
+2. forward -> executed  |  I should continue moving forward along the carpet. As I get closer to the opening, I may need to check my width (via look_down) and rotate my torso to fit through the gap. For now 
+3. look_down -> executed  |  Before reaching the opening, I should check my body width via look_down to determine if I need to rotate my torso to fit through, since turning is only possible before my shoulders
+4. turn_right -> executed  |  I cannot turn once my shoulders enter the opening, so I must rotate my torso now to 90 degrees (in 15-degree increments) to present my thin profile to the opening, then walk forwar
+5. turn_right -> executed  |  I still have room well before the opening, so turning now is allowed. I will continue rotating right, then verify with look_down before walking through.
+6. turn_right -> executed  |  My torso is currently rotated 30 degrees to the right. I must continue rotating right toward 90 degrees before my shoulders enter the opening. I still have room to turn since I hav
+7. turn_right -> executed  |  My torso is at 45 degrees. Turning reduces projected width (W·cosθ + D·sinθ) as long as D < W. I should continue turning right toward 90 degrees before entering the opening. Then I
+8. turn_right -> executed  |  My torso is at 60 degrees rotation. Projected width = W·cos(θ)+D·sin(θ) is still decreasing as I approach 90° since D<W. I have room to turn before shoulders enter the opening (sti
+9. turn_right -> executed  |  My torso is at 75 degrees. I must complete this before my shoulders enter the opening.
+10. forward -> executed  |  The turning phase is complete (9 steps used: 2 forward, 1 look_down, 6 turn_right, with the last turn bringing me to 90 degrees as confirmed by current state). Now I simply need to
+11. forward -> executed  |  The star is now very close, just at the opening ahead. I should continue moving forward to pass through the opening and reach the star.
+12. forward -> executed  |  The star is right at the opening, so I simply continue walking forward to reach it. No further turning is needed (and turning would be blocked once my shoulders are in the opening 
+13. forward -> executed  |  The star is directly ahead and very close. I simply need to keep walking forward to reach it.
+14. forward -> executed  |  The star is very close ahead through the opening. I should continue moving forward to reach it.
+15. forward -> executed  |  The star is now very close, just through the opening ahead. I simply need to continue forward to reach the star.
+16. forward -> executed  |  The star is just ahead through the opening, so I continue walking forward to reach it.
+17. forward -> executed  |  The star is nearly within reach straight ahead. I continue forward to reach the star.
+18. forward -> executed
+
+Current state:
+- position (x, y, z): [2.000, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 15.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (4 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: forward -> executed | your reasoning: The purple star is directly ahead at the far end of the carpet through the opening. The path is clear and my torso rotation is 0 degrees, so my body is aligned normally. I simply need to continue walking forward to reach the star.
+- step 1: forward -> executed | your reasoning: Mirroring the previous successful traversal: after my first forward (x=1.25), I take one more forward to approach the opening, then look_down to check body width, then rotate the torso 6x15=90 degrees before my shoulders reach the opening…
+- step 2: look_down -> executed | your reasoning: Mirroring the previous successful traversal: after two forward steps toward the opening, I now glance down to measure my body width and thickness before turning my torso to present a thinner profile to the opening. x=2.0 means I still have…
+- step 3: turn_right -> executed | your reasoning: The glance confirms my body is wide but thin from the side. Following the successful traversal pattern, I must rotate the torso 90 degrees (6 x turn_right of 15°) before my shoulders enter the opening, so that my thin profile fits through…
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:03:10+08:00",
+    "latency_ms": 16183,
+    "payload_bytes": 299877,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090902567510298238268d9d60uxrFgui\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794214991,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading toward a narrow opening between two walls decorated with purple geometric patterns. In the distance, through the opening, a purple four-pointed star is visible on a dark background.\\\",\\n  \\\"reasoning\\\": \\\"I have moved forward four times and am approaching the gap. Before I get too close to the opening, I need to check my current body width and orientation to determine if I need to rotate to fit through. I will use look_down to see my body's dimensions relative to my walking direction.\\\",\\n  \\\"action\\\": \\\"look_down\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3007,\"completion_tokens\":140,\"total_tokens\":3147,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3007,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":140,\"totalTokenCount\":3147,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1918}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":140}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1918,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":140,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading toward a narrow opening between two walls decorated with purple geometric patterns. In the distance, through the opening, a purple four-pointed star is visible on a dark background.\",\n  \"reasoning\": \"I have moved forward four times and am approaching the gap. Before I get too close to the opening, I need to check my current body width and orientation to determine if I need to rotate to fit through. I will use look_down to see my body's dimensions relative to my walking direction.\",\n  \"action\": \"look_down\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading toward a narrow opening between two walls decorated with purple geometric patterns. In the distance, through the opening, a purple four-pointed star is visible on a dark background.",
+      "reasoning": "I have moved forward four times and am approaching the gap. Before I get too close to the opening, I need to check my current body width and orientation to determine if I need to rotate to fit through. I will use look_down to see my body's dimensions relative to my walking direction.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

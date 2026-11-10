@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:20:42+08:00",
+    "latency_ms": 13112,
+    "payload_bytes": 285334,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A straight red carpeted walkway leads to a far wall with a bright red circle on a dark square panel at floor level in the center. The passage appears clear; patterned wall panels flank the walkway, and there are a few white sheets on the left side floor but they do not obstruct the central path.\\\", \\\"reasoning\\\": \\\"The goal (red circle) is straight ahead and the central path is unobstructed. Moving forward advances directly toward the target; no turning or looking down is needed.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.79}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198034,\"id\":\"chatcmpl-EiB9uHYvJE8iJWAxX65OvvMs11K9s\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":128,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":11,\"engine_ttft_ms\":375,\"engine_ttlt_ms\":1755,\"pre_inference_ms\":340,\"service_tbt_ms\":11,\"service_ttft_ms\":1045,\"service_ttlt_ms\":2420,\"user_visible_ttft_ms\":704},\"prompt_tokens\":1772,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1900}}\n",
+    "content": "{\"scene_description\": \"A straight red carpeted walkway leads to a far wall with a bright red circle on a dark square panel at floor level in the center. The passage appears clear; patterned wall panels flank the walkway, and there are a few white sheets on the left side floor but they do not obstruct the central path.\", \"reasoning\": \"The goal (red circle) is straight ahead and the central path is unobstructed. Moving forward advances directly toward the target; no turning or looking down is needed.\", \"action\": \"forward\", \"confidence\": 0.79}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight red carpeted walkway leads to a far wall with a bright red circle on a dark square panel at floor level in the center. The passage appears clear; patterned wall panels flank the walkway, and there are a few white sheets on the left side floor but they do not obstruct the central path.",
+      "reasoning": "The goal (red circle) is straight ahead and the central path is unobstructed. Moving forward advances directly toward the target; no turning or looking down is needed.",
+      "action": "forward",
+      "confidence": 0.79
+    },
+    "action": "forward"
+  }
+]

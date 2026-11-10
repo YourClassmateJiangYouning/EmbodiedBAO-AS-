@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:35:36+08:00",
+    "latency_ms": 10716,
+    "payload_bytes": 315709,
+    "finish_reason": "stop",
+    "reasoning_tokens": 95,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"b434c22e-d663-4e96-9c39-3896096388a7_312b6b342f064de2811b78599cb70e34\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted path leading forward through an opening between two wall panels with colorful designs. Through the opening, a red circle marker is visible on the far wall, with some furniture (covered items and a brown chair) behind it. The carpet path is clear and unobstructed ahead.\\\", \\\"reasoning\\\": \\\"The red circle is clearly visible directly ahead through the opening. My torso is at 90° rotation (narrow profile), and I'm at x=4.25 having successfully passed through the opening in previous forward steps. The path is clear and the circle appears close but still needs one or two more forward steps to reach. I should continue moving forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Looking at the image, I can see the red circle on the far wall ahead through the opening. The carpet path is clear. My position is x=4.25, and I'm at 90° torso rotation. The red circle appears to be directly ahead and relatively close. I should continue moving forward to reach it.\\n\\nThe red circle is visible in the distance through the opening. I need to keep moving forward. Let me continue with forward actions.\"}}],\"created\":1794213335,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":259,\"prompt_tokens\":3825,\"total_tokens\":4084,\"completion_tokens_details\":{\"reasoning_tokens\":95},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted path leading forward through an opening between two wall panels with colorful designs. Through the opening, a red circle marker is visible on the far wall, with some furniture (covered items and a brown chair) behind it. The carpet path is clear and unobstructed ahead.\", \"reasoning\": \"The red circle is clearly visible directly ahead through the opening. My torso is at 90° rotation (narrow profile), and I'm at x=4.25 having successfully passed through the opening in previous forward steps. The path is clear and the circle appears close but still needs one or two more forward steps to reach. I should continue moving forward.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "Looking at the image, I can see the red circle on the far wall ahead through the opening. The carpet path is clear. My position is x=4.25, and I'm at 90° torso rotation. The red circle appears to be directly ahead and relatively close. I should continue moving forward to reach it.\n\nThe red circle is visible in the distance through the opening. I need to keep moving forward. Let me continue with forward actions.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted path leading forward through an opening between two wall panels with colorful designs. Through the opening, a red circle marker is visible on the far wall, with some furniture (covered items and a brown chair) behind it. The carpet path is clear and unobstructed ahead.",
+      "reasoning": "The red circle is clearly visible directly ahead through the opening. My torso is at 90° rotation (narrow profile), and I'm at x=4.25 having successfully passed through the opening in previous forward steps. The path is clear and the circle appears close but still needs one or two more forward steps to reach. I should continue moving forward.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

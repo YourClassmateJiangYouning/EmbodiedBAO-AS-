@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:05:20+08:00",
+    "latency_ms": 5777,
+    "payload_bytes": 354658,
+    "finish_reason": "stop",
+    "reasoning_tokens": 47,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"fa8c1f64-0846-416c-ab60-4d7c420f8ba3_9198636652164fbd8ff08cd78596f3f3\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a dark opening in the far wall, where a yellow arrow points right at the wall. The floor to the sides is a colorful checkered pattern, and walls have abstract purple/green graphics. Path ahead is clear of obstacles.\\\",\\\"reasoning\\\": \\\"The path is clear along the red carpet toward the yellow arrow. Continue advancing forward toward the opening at the far wall.\\\",\\\"action\\\": \\\"forward\\\",\\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue forward. Path seems clear along red carpet toward yellow arrow near a dark doorway. Need to be careful: eventually there may be a narrow opening requiring turning to reduce width. Let's just continue forward and observe.\"}}],\"created\":1794204319,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":152,\"prompt_tokens\":2031,\"total_tokens\":2183,\"completion_tokens_details\":{\"reasoning_tokens\":47},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a dark opening in the far wall, where a yellow arrow points right at the wall. The floor to the sides is a colorful checkered pattern, and walls have abstract purple/green graphics. Path ahead is clear of obstacles.\",\"reasoning\": \"The path is clear along the red carpet toward the yellow arrow. Continue advancing forward toward the opening at the far wall.\",\"action\": \"forward\",\"confidence\": 0.95}",
+    "reasoning_content": "We need to continue forward. Path seems clear along red carpet toward yellow arrow near a dark doorway. Need to be careful: eventually there may be a narrow opening requiring turning to reduce width. Let's just continue forward and observe.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a dark opening in the far wall, where a yellow arrow points right at the wall. The floor to the sides is a colorful checkered pattern, and walls have abstract purple/green graphics. Path ahead is clear of obstacles.",
+      "reasoning": "The path is clear along the red carpet toward the yellow arrow. Continue advancing forward toward the opening at the far wall.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

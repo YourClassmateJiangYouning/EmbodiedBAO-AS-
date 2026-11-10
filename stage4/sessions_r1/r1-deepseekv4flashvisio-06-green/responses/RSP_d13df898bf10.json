@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:14:42+08:00",
+    "latency_ms": 2970,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"3cf78352-f92f-4595-938d-ea0423e56ba4\",\"object\":\"chat.completion\",\"created\":1794208481,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is large and centered directly ahead, filling much of the view, with a dark wall panel above it and narrow side walls framing a tight opening. The robot appears very close to the target, with the floor visible below.\\\", \\\"reasoning\\\": \\\"Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The target is very close and centered, suggesting the robot is right at the opening but the wall panel above the green rectangle is blocking forward motion. Since turning left to 0 degrees was just executed, I should try forward once more to see if the narrower profile allows passage; if blocked again, the issue is likely the wall panel itself rather than torso width.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3060,\"completion_tokens\":170,\"total_tokens\":3230,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2420},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is large and centered directly ahead, filling much of the view, with a dark wall panel above it and narrow side walls framing a tight opening. The robot appears very close to the target, with the floor visible below.\", \"reasoning\": \"Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The target is very close and centered, suggesting the robot is right at the opening but the wall panel above the green rectangle is blocking forward motion. Since turning left to 0 degrees was just executed, I should try forward once more to see if the narrower profile allows passage; if blocked again, the issue is likely the wall panel itself rather than torso width.\", \"action\": \"forward\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is large and centered directly ahead, filling much of the view, with a dark wall panel above it and narrow side walls framing a tight opening. The robot appears very close to the target, with the floor visible below.",
+      "reasoning": "Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The target is very close and centered, suggesting the robot is right at the opening but the wall panel above the green rectangle is blocking forward motion. Since turning left to 0 degrees was just executed, I should try forward once more to see if the narrower profile allows passage; if blocked again, the issue is likely the wall panel itself rather than torso width.",
+      "action": "forward",
+      "confidence": 0.4
+    },
+    "action": "forward"
+  }
+]

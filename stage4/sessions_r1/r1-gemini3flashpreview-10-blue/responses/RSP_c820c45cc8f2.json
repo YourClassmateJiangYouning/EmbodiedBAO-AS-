@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:34:52+08:00",
+    "latency_ms": 5681,
+    "payload_bytes": 292152,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081034483458763648268d9d6iOMs7VlM\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134093,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a red carpeted path leading to a narrow opening between two decorated walls. Beyond the opening, a blue triangle is visible on the far wall. I am currently at position x=4.25, very close to the gap.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees, which presents my narrowest profile (front-to-back thickness) to the gap. I am now at the entrance of the narrow opening. I will continue moving forward to pass through the gap and reach the blue triangle.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2866,\"completion_tokens\":142,\"total_tokens\":3008,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2866,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":142,\"totalTokenCount\":3008,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1777},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":142}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1777,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":142,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a red carpeted path leading to a narrow opening between two decorated walls. Beyond the opening, a blue triangle is visible on the far wall. I am currently at position x=4.25, very close to the gap.\",\n  \"reasoning\": \"I have already rotated my torso to 90 degrees, which presents my narrowest profile (front-to-back thickness) to the gap. I am now at the entrance of the narrow opening. I will continue moving forward to pass through the gap and reach the blue triangle.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted path leading to a narrow opening between two decorated walls. Beyond the opening, a blue triangle is visible on the far wall. I am currently at position x=4.25, very close to the gap.",
+      "reasoning": "I have already rotated my torso to 90 degrees, which presents my narrowest profile (front-to-back thickness) to the gap. I am now at the entrance of the narrow opening. I will continue moving forward to pass through the gap and reach the blue triangle.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:19:13+08:00",
+    "latency_ms": 3227,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"628f9963-8ad8-4020-893b-bc7d78fcf3b6\",\"object\":\"chat.completion\",\"created\":1794208752,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"Looking down at my own body from the front: I see a wide white chassis with two large black wheels on either side, a tray on top, and a bundle of cables in the center. My body presents a fairly wide profile, roughly the width of the two wheels plus the chassis.\\\", \\\"reasoning\\\": \\\"The look_down view shows my body is quite wide, with wheels sticking out on both sides. The opening ahead looked narrow, so I should check whether my current torso rotation (0 degrees, wheels facing sideways) fits. Since I cannot see the opening width precisely from this glance, the safest next step is to continue forward cautiously and observe whether I pass through, or turn my torso to narrow my presented width if needed. Given the star is straight ahead and the path was clear, I will proceed forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1912,\"completion_tokens\":183,\"total_tokens\":2095,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1144},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"Looking down at my own body from the front: I see a wide white chassis with two large black wheels on either side, a tray on top, and a bundle of cables in the center. My body presents a fairly wide profile, roughly the width of the two wheels plus the chassis.\", \"reasoning\": \"The look_down view shows my body is quite wide, with wheels sticking out on both sides. The opening ahead looked narrow, so I should check whether my current torso rotation (0 degrees, wheels facing sideways) fits. Since I cannot see the opening width precisely from this glance, the safest next step is to continue forward cautiously and observe whether I pass through, or turn my torso to narrow my presented width if needed. Given the star is straight ahead and the path was clear, I will proceed forward.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "Looking down at my own body from the front: I see a wide white chassis with two large black wheels on either side, a tray on top, and a bundle of cables in the center. My body presents a fairly wide profile, roughly the width of the two wheels plus the chassis.",
+      "reasoning": "The look_down view shows my body is quite wide, with wheels sticking out on both sides. The opening ahead looked narrow, so I should check whether my current torso rotation (0 degrees, wheels facing sideways) fits. Since I cannot see the opening width precisely from this glance, the safest next step is to continue forward cautiously and observe whether I pass through, or turn my torso to narrow my presented width if needed. Given the star is straight ahead and the path was clear, I will proceed forward.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

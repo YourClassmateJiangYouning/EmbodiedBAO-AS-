@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:31:47+08:00",
+    "latency_ms": 5005,
+    "payload_bytes": 384228,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-08T18:31:53+08:00",
+    "latency_ms": 6003,
+    "payload_bytes": 384228,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081031485861943008268d9d6S7GEKRFG\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133913,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The image shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor inside the dark opening. To the right, a wooden stool leg is partially visible.\\\",\\n  \\\"reasoning\\\": \\\"My current torso rotation is 60.0 degrees. To fit through the narrow opening ahead, I need to reach a 90-degree rotation to present my narrowest profile (sideways). I will continue turning to the right in 15-degree increments.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2359,\"completion_tokens\":138,\"total_tokens\":2497,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2359,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":138,\"totalTokenCount\":2497,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1270}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":138}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1270,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":138,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The image shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor inside the dark opening. To the right, a wooden stool leg is partially visible.\",\n  \"reasoning\": \"My current torso rotation is 60.0 degrees. To fit through the narrow opening ahead, I need to reach a 90-degree rotation to present my narrowest profile (sideways). I will continue turning to the right in 15-degree increments.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The image shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor inside the dark opening. To the right, a wooden stool leg is partially visible.",
+      "reasoning": "My current torso rotation is 60.0 degrees. To fit through the narrow opening ahead, I need to reach a 90-degree rotation to present my narrowest profile (sideways). I will continue turning to the right in 15-degree increments.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

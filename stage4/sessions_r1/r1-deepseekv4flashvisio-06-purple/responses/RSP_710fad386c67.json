@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:19:17+08:00",
+    "latency_ms": 2779,
+    "payload_bytes": 257628,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"d777eccd-aac9-486b-b3c6-0bf8a36d9bf3\",\"object\":\"chat.completion\",\"created\":1794208755,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is visible ahead through a narrow dark opening in the far wall, with the red carpet leading up to it. The opening appears narrow relative to the walls on either side.\\\", \\\"reasoning\\\": \\\"The star is directly ahead and the path is clear. The opening looked narrow, but my torso is at 0 degrees and I have already moved forward through similar space successfully. Continuing forward is the most direct way to reach the star, and I can reassess if I fail to pass through.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1975,\"completion_tokens\":123,\"total_tokens\":2098,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1335},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is visible ahead through a narrow dark opening in the far wall, with the red carpet leading up to it. The opening appears narrow relative to the walls on either side.\", \"reasoning\": \"The star is directly ahead and the path is clear. The opening looked narrow, but my torso is at 0 degrees and I have already moved forward through similar space successfully. Continuing forward is the most direct way to reach the star, and I can reassess if I fail to pass through.\", \"action\": \"forward\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is visible ahead through a narrow dark opening in the far wall, with the red carpet leading up to it. The opening appears narrow relative to the walls on either side.",
+      "reasoning": "The star is directly ahead and the path is clear. The opening looked narrow, but my torso is at 0 degrees and I have already moved forward through similar space successfully. Continuing forward is the most direct way to reach the star, and I can reassess if I fail to pass through.",
+      "action": "forward",
+      "confidence": 0.7
+    },
+    "action": "forward"
+  }
+]

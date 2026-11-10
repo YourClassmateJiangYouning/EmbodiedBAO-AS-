@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:52:55+08:00",
+    "latency_ms": 7567,
+    "payload_bytes": 361646,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081052492572209308268d9d6HtEtgv5m\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135175,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight down a red carpeted walkway. To the left is a white floor with purple and blue geometric patterns. At the end of the walkway, there is a narrow vertical opening between two patterned walls, through which a bright green rectangle is visible on the far wall.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees, which is the narrowest profile (thickness) to fit through the gap. I am currently at x=1.25. I need to continue moving forward to reach the green rectangle at the end of the path.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2562,\"completion_tokens\":148,\"total_tokens\":2710,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2562,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":148,\"totalTokenCount\":2710,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1473}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":148}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1473,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":148,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight down a red carpeted walkway. To the left is a white floor with purple and blue geometric patterns. At the end of the walkway, there is a narrow vertical opening between two patterned walls, through which a bright green rectangle is visible on the far wall.\",\n  \"reasoning\": \"I have already rotated my torso to 90 degrees, which is the narrowest profile (thickness) to fit through the gap. I am currently at x=1.25. I need to continue moving forward to reach the green rectangle at the end of the path.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red carpeted walkway. To the left is a white floor with purple and blue geometric patterns. At the end of the walkway, there is a narrow vertical opening between two patterned walls, through which a bright green rectangle is visible on the far wall.",
+      "reasoning": "I have already rotated my torso to 90 degrees, which is the narrowest profile (thickness) to fit through the gap. I am currently at x=1.25. I need to continue moving forward to reach the green rectangle at the end of the path.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

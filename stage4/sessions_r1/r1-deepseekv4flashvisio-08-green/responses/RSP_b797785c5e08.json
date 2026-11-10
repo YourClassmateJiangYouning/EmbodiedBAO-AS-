@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:05:45+08:00",
+    "latency_ms": 2681,
+    "payload_bytes": 384902,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"971db2f6-da75-452f-9188-0d4e3c57001f\",\"object\":\"chat.completion\",\"created\":1794207944,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A long red carpet stretches straight ahead toward a far wall with a dark doorway opening; a small green rectangle is visible inside the opening. Patterned flooring is on the left, and the path ahead appears clear.\\\", \\\"reasoning\\\": \\\"The green target is straight ahead along the walking direction, and the corridor looks unobstructed. Moving forward reduces distance to the goal. No turning is needed since forward always heads toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1541,\"completion_tokens\":105,\"total_tokens\":1646,\"prompt_tokens_details\":{\"cached_tokens\":1407},\"prompt_cache_hit_tokens\":1407,\"prompt_cache_miss_tokens\":134},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A long red carpet stretches straight ahead toward a far wall with a dark doorway opening; a small green rectangle is visible inside the opening. Patterned flooring is on the left, and the path ahead appears clear.\", \"reasoning\": \"The green target is straight ahead along the walking direction, and the corridor looks unobstructed. Moving forward reduces distance to the goal. No turning is needed since forward always heads toward the target.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpet stretches straight ahead toward a far wall with a dark doorway opening; a small green rectangle is visible inside the opening. Patterned flooring is on the left, and the path ahead appears clear.",
+      "reasoning": "The green target is straight ahead along the walking direction, and the corridor looks unobstructed. Moving forward reduces distance to the goal. No turning is needed since forward always heads toward the target.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:13:23+08:00",
+    "latency_ms": 2747,
+    "payload_bytes": 382550,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"b8545726-8a9b-4222-bff5-9d7bc1d6afcf\",\"object\":\"chat.completion\",\"created\":1794208401,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a far wall with a green rectangle visible through a narrow dark opening. To the left is a lighter patterned floor area separated by a dark edge line.\\\", \\\"reasoning\\\": \\\"The green target is straight ahead along the walking direction. The opening appears narrow, so I should check my body width before entering. First, glance down to see my width relative to the opening.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1541,\"completion_tokens\":103,\"total_tokens\":1644,\"prompt_tokens_details\":{\"cached_tokens\":1407},\"prompt_cache_hit_tokens\":1407,\"prompt_cache_miss_tokens\":134},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a far wall with a green rectangle visible through a narrow dark opening. To the left is a lighter patterned floor area separated by a dark edge line.\", \"reasoning\": \"The green target is straight ahead along the walking direction. The opening appears narrow, so I should check my body width before entering. First, glance down to see my width relative to the opening.\", \"action\": \"look_down\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a far wall with a green rectangle visible through a narrow dark opening. To the left is a lighter patterned floor area separated by a dark edge line.",
+      "reasoning": "The green target is straight ahead along the walking direction. The opening appears narrow, so I should check my body width before entering. First, glance down to see my width relative to the opening.",
+      "action": "look_down",
+      "confidence": 0.7
+    },
+    "action": "look_down"
+  }
+]

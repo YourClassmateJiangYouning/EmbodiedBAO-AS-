@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:25:18+08:00",
+    "latency_ms": 6175,
+    "payload_bytes": 162766,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_kicli3zzjqjtzquadd4d6l7z5yw7wm3jdvg467dvb2cd2ziwnqca\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794212718,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The camera shows a bright yellow arrow pointing to the right on a dark background. The arrow is clearly visible on what appears to be a sign or panel mounted on the far wall. The arrow is well-lit and stands out prominently against the dark surroundings. The path ahead appears clear with no visible obstacles blocking the direct route forward.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=8.000 with torso rotation at 0 degrees, perfectly aligned with my walking direction toward the yellow arrow target. I have successfully completed 10 forward steps in this episode without obstruction. The yellow arrow is clearly visible straight ahead on the far wall. The path forward on the red carpet appears completely clear with no obstacles visible. I should continue moving forward toward the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":4387,\"completion_tokens\":196,\"total_tokens\":4583,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":4387,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":196,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":4387,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The camera shows a bright yellow arrow pointing to the right on a dark background. The arrow is clearly visible on what appears to be a sign or panel mounted on the far wall. The arrow is well-lit and stands out prominently against the dark surroundings. The path ahead appears clear with no visible obstacles blocking the direct route forward.\",\n  \"reasoning\": \"I am at position x=8.000 with torso rotation at 0 degrees, perfectly aligned with my walking direction toward the yellow arrow target. I have successfully completed 10 forward steps in this episode without obstruction. The yellow arrow is clearly visible straight ahead on the far wall. The path forward on the red carpet appears completely clear with no obstacles visible. I should continue moving forward toward the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a bright yellow arrow pointing to the right on a dark background. The arrow is clearly visible on what appears to be a sign or panel mounted on the far wall. The arrow is well-lit and stands out prominently against the dark surroundings. The path ahead appears clear with no visible obstacles blocking the direct route forward.",
+      "reasoning": "I am at position x=8.000 with torso rotation at 0 degrees, perfectly aligned with my walking direction toward the yellow arrow target. I have successfully completed 10 forward steps in this episode without obstruction. The yellow arrow is clearly visible straight ahead on the far wall. The path forward on the red carpet appears completely clear with no obstacles visible. I should continue moving forward toward the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

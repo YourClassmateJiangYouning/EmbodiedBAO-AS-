@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:38:51+08:00",
+    "latency_ms": 7061,
+    "payload_bytes": 316547,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_pj776qp52buna7aof2dsgoguodkxmjyladgofeijrm5huvxccqca\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145131,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a long walkway with a dark red/maroon textured floor stretching ahead toward a far wall. The yellow arrow target is clearly visible on the far wall, centered in my view and elevated slightly above the floor. The walls on both sides have colorful murals with geometric patterns in blue, orange, and other colors. The path ahead is clear and unobstructed. I'm at position x=3.500, having made good progress toward the target.\\\",\\n  \\\"reasoning\\\": \\\"I have a clear, straight path forward to the yellow arrow on the far wall. My torso remains at 0 degrees rotation (aligned with my walking direction), and there are no obstacles visible in the walkway. The yellow arrow is clearly visible and centered in my view. I should continue walking forward to reach it. I have 26 steps remaining (30 - 4 already taken), which should be sufficient to reach the far wall.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2624,\"completion_tokens\":234,\"total_tokens\":2858,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2624,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":234,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2624,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a long walkway with a dark red/maroon textured floor stretching ahead toward a far wall. The yellow arrow target is clearly visible on the far wall, centered in my view and elevated slightly above the floor. The walls on both sides have colorful murals with geometric patterns in blue, orange, and other colors. The path ahead is clear and unobstructed. I'm at position x=3.500, having made good progress toward the target.\",\n  \"reasoning\": \"I have a clear, straight path forward to the yellow arrow on the far wall. My torso remains at 0 degrees rotation (aligned with my walking direction), and there are no obstacles visible in the walkway. The yellow arrow is clearly visible and centered in my view. I should continue walking forward to reach it. I have 26 steps remaining (30 - 4 already taken), which should be sufficient to reach the far wall.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a long walkway with a dark red/maroon textured floor stretching ahead toward a far wall. The yellow arrow target is clearly visible on the far wall, centered in my view and elevated slightly above the floor. The walls on both sides have colorful murals with geometric patterns in blue, orange, and other colors. The path ahead is clear and unobstructed. I'm at position x=3.500, having made good progress toward the target.",
+      "reasoning": "I have a clear, straight path forward to the yellow arrow on the far wall. My torso remains at 0 degrees rotation (aligned with my walking direction), and there are no obstacles visible in the walkway. The yellow arrow is clearly visible and centered in my view. I should continue walking forward to reach it. I have 26 steps remaining (30 - 4 already taken), which should be sufficient to reach the far wall.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

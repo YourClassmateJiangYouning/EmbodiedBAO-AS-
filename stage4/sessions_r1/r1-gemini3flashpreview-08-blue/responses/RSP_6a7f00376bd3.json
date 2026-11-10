@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:46:55+08:00",
+    "latency_ms": 6983,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081046496619270328268d9d6cnheRgSP\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134815,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down at the robot's own body on a red carpet. A wide white foam bumper is visible at the front, extending significantly to the left and right. Two black wheels are visible on either side of the robot's chassis. The torso is currently rotated 30 degrees to the right relative to the walking direction.\\\",\\n  \\\"reasoning\\\": \\\"Looking down at my body, the white bumper is still presenting a very wide profile relative to the forward path. To fit through a narrow opening, I need to rotate my torso further to align the long axis of the bumper more closely with my walking direction. I will continue turning right to further reduce my effective width.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2360,\"completion_tokens\":169,\"total_tokens\":2529,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2360,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":169,\"totalTokenCount\":2529,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1271}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":169}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1271,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":169,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down at the robot's own body on a red carpet. A wide white foam bumper is visible at the front, extending significantly to the left and right. Two black wheels are visible on either side of the robot's chassis. The torso is currently rotated 30 degrees to the right relative to the walking direction.\",\n  \"reasoning\": \"Looking down at my body, the white bumper is still presenting a very wide profile relative to the forward path. To fit through a narrow opening, I need to rotate my torso further to align the long axis of the bumper more closely with my walking direction. I will continue turning right to further reduce my effective width.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body on a red carpet. A wide white foam bumper is visible at the front, extending significantly to the left and right. Two black wheels are visible on either side of the robot's chassis. The torso is currently rotated 30 degrees to the right relative to the walking direction.",
+      "reasoning": "Looking down at my body, the white bumper is still presenting a very wide profile relative to the forward path. To fit through a narrow opening, I need to rotate my torso further to align the long axis of the bumper more closely with my walking direction. I will continue turning right to further reduce my effective width.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

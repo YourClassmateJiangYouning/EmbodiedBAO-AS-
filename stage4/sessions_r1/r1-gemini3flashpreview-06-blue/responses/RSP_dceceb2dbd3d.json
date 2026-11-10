@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:59:53+08:00",
+    "latency_ms": 6454,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081059477151734698268d9d6t7elOrEG\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135593,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down at the robot's own body on a red carpet. The robot has a wide, white rectangular bumper at the front and two large wheels on the sides. The body is significantly wider than it is deep.\\\",\\n  \\\"reasoning\\\": \\\"Looking down reveals that my current torso rotation (0.0 degrees) presents my maximum width (the bumper and wheels) to the opening ahead. To fit through a narrow gap, I need to rotate my torso so that my narrower dimension (the thickness/depth of the body) is facing forward. I will begin rotating to the left.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2155,\"completion_tokens\":152,\"total_tokens\":2307,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2155,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":152,\"totalTokenCount\":2307,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1066}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":152}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1066,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":152,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down at the robot's own body on a red carpet. The robot has a wide, white rectangular bumper at the front and two large wheels on the sides. The body is significantly wider than it is deep.\",\n  \"reasoning\": \"Looking down reveals that my current torso rotation (0.0 degrees) presents my maximum width (the bumper and wheels) to the opening ahead. To fit through a narrow gap, I need to rotate my torso so that my narrower dimension (the thickness/depth of the body) is facing forward. I will begin rotating to the left.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body on a red carpet. The robot has a wide, white rectangular bumper at the front and two large wheels on the sides. The body is significantly wider than it is deep.",
+      "reasoning": "Looking down reveals that my current torso rotation (0.0 degrees) presents my maximum width (the bumper and wheels) to the opening ahead. To fit through a narrow gap, I need to rotate my torso so that my narrower dimension (the thickness/depth of the body) is facing forward. I will begin rotating to the left.",
+      "action": "turn_left",
+      "confidence": 0.9
+    },
+    "action": "turn_left"
+  }
+]

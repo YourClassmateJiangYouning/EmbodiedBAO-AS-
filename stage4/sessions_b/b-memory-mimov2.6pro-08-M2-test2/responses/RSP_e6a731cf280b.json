@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:38:54+08:00",
+    "latency_ms": 9687,
+    "payload_bytes": 396561,
+    "finish_reason": "stop",
+    "reasoning_tokens": 34,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"e1c16f3c-a1dc-407a-9abc-9dd5353153c8_eb201e82c8a24100bf6d322be7c43d17\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted path leads forward toward a narrow opening between two colorful walls. Through the opening, the red circle is visible on the far wall at the end of the walkway. White rectangular markers line both sides of the carpet. The path ahead is clear.\\\", \\\"reasoning\\\": \\\"The red circle is clearly visible through the opening ahead but still appears at a moderate distance. My torso remains rotated 90 degrees to present my shallow depth for passing through the narrow opening. The path is clear, so I continue advancing with forward steps toward the circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at position x=2.0, need to reach red circle. The image shows red circle still some distance ahead at the far wall. Continue forward.\"}}],\"created\":1794213534,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":169,\"prompt_tokens\":3289,\"total_tokens\":3458,\"completion_tokens_details\":{\"reasoning_tokens\":34},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted path leads forward toward a narrow opening between two colorful walls. Through the opening, the red circle is visible on the far wall at the end of the walkway. White rectangular markers line both sides of the carpet. The path ahead is clear.\", \"reasoning\": \"The red circle is clearly visible through the opening ahead but still appears at a moderate distance. My torso remains rotated 90 degrees to present my shallow depth for passing through the narrow opening. The path is clear, so I continue advancing with forward steps toward the circle.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "We are at position x=2.0, need to reach red circle. The image shows red circle still some distance ahead at the far wall. Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted path leads forward toward a narrow opening between two colorful walls. Through the opening, the red circle is visible on the far wall at the end of the walkway. White rectangular markers line both sides of the carpet. The path ahead is clear.",
+      "reasoning": "The red circle is clearly visible through the opening ahead but still appears at a moderate distance. My torso remains rotated 90 degrees to present my shallow depth for passing through the narrow opening. The path is clear, so I continue advancing with forward steps toward the circle.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

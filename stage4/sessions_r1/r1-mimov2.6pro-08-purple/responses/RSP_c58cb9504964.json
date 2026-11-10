@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:25:33+08:00",
+    "latency_ms": 22021,
+    "payload_bytes": 234308,
+    "finish_reason": "stop",
+    "reasoning_tokens": 72,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n\n{\"id\":\"cf0af404-693c-4fba-9d6e-29e9b4a09614_c821ca0139de4353a41b4627ddabe9c3\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red-carpeted floor leading straight ahead to a dark opening in the far wall. Through the opening, a glowing purple four-pointed star is visible on a dark panel. On either side of the opening are decorated wall panels (left with diagonal stripes, right with geometric shapes). The star appears close ahead now.\\\", \\\"reasoning\\\": \\\"I am at x=5.75, very close to the opening where the purple star sits. My torso rotation is 0 degrees (narrowest orientation), which is ideal for passing through. The path is clear on the carpet, and the star is directly ahead. I should continue forward to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=5.75, close to the opening with the star. The star appears close ahead. We need to keep going forward. We should check if we're near the opening. The star is visible through the dark opening. Continue forward.\\n\\nTorso is at 0 degrees (narrowest), good. Keep going forward.\"}}],\"created\":1794205533,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":231,\"prompt_tokens\":2445,\"total_tokens\":2676,\"completion_tokens_details\":{\"reasoning_tokens\":72},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red-carpeted floor leading straight ahead to a dark opening in the far wall. Through the opening, a glowing purple four-pointed star is visible on a dark panel. On either side of the opening are decorated wall panels (left with diagonal stripes, right with geometric shapes). The star appears close ahead now.\", \"reasoning\": \"I am at x=5.75, very close to the opening where the purple star sits. My torso rotation is 0 degrees (narrowest orientation), which is ideal for passing through. The path is clear on the carpet, and the star is directly ahead. I should continue forward to reach it.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We are at x=5.75, close to the opening with the star. The star appears close ahead. We need to keep going forward. We should check if we're near the opening. The star is visible through the dark opening. Continue forward.\n\nTorso is at 0 degrees (narrowest), good. Keep going forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red-carpeted floor leading straight ahead to a dark opening in the far wall. Through the opening, a glowing purple four-pointed star is visible on a dark panel. On either side of the opening are decorated wall panels (left with diagonal stripes, right with geometric shapes). The star appears close ahead now.",
+      "reasoning": "I am at x=5.75, very close to the opening where the purple star sits. My torso rotation is 0 degrees (narrowest orientation), which is ideal for passing through. The path is clear on the carpet, and the star is directly ahead. I should continue forward to reach it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:38:01+08:00",
+    "latency_ms": 6699,
+    "payload_bytes": 370954,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081037556982586348268d9d6BMeX2MKj\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134281,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"I am on a red carpeted walkway. Ahead, there is a narrow opening between two patterned walls. Beyond the opening, a green rectangle is visible on the far wall. I am currently at x=1.250 with a torso rotation of 0.0 degrees.\\\", \\\"reasoning\\\": \\\"I need to pass through the narrow opening to reach the green rectangle. Before I get too close to the gap, I must determine my body's width and orientation to see if I can fit through at my current rotation or if I need to turn. I will use look_down to inspect my body dimensions.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2088,\"completion_tokens\":147,\"total_tokens\":2235,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2088,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":147,\"totalTokenCount\":2235,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":999},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":147}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":999,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":147,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"I am on a red carpeted walkway. Ahead, there is a narrow opening between two patterned walls. Beyond the opening, a green rectangle is visible on the far wall. I am currently at x=1.250 with a torso rotation of 0.0 degrees.\", \"reasoning\": \"I need to pass through the narrow opening to reach the green rectangle. Before I get too close to the gap, I must determine my body's width and orientation to see if I can fit through at my current rotation or if I need to turn. I will use look_down to inspect my body dimensions.\", \"action\": \"look_down\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I am on a red carpeted walkway. Ahead, there is a narrow opening between two patterned walls. Beyond the opening, a green rectangle is visible on the far wall. I am currently at x=1.250 with a torso rotation of 0.0 degrees.",
+      "reasoning": "I need to pass through the narrow opening to reach the green rectangle. Before I get too close to the gap, I must determine my body's width and orientation to see if I can fit through at my current rotation or if I need to turn. I will use look_down to inspect my body dimensions.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

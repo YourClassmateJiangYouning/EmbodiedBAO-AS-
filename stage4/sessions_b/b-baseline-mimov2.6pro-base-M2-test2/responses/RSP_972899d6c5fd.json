@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:29:59+08:00",
+    "latency_ms": 8089,
+    "payload_bytes": 281807,
+    "finish_reason": "stop",
+    "reasoning_tokens": 27,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f2a23943-450d-4ff2-b08f-12d2b10e08c2_be292b7cc2ab410a88b0bf7ff9f61106\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The red circle is immediately ahead, displayed on a black panel leaning against the far wall on the floor. The panel appears very close, filling the central lower portion of the view, with a brown couch behind it.\\\", \\\"reasoning\\\": \\\"I have moved forward 10 times and am at x=8.00. The red circle is right in front of me, appearing to be within one final step. Moving forward one more step should bring me directly onto the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red circle appears very close, directly in front. Position x=8.0. One more forward step should reach it.\"}}],\"created\":1794212999,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":149,\"prompt_tokens\":2503,\"total_tokens\":2652,\"completion_tokens_details\":{\"reasoning_tokens\":27},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The red circle is immediately ahead, displayed on a black panel leaning against the far wall on the floor. The panel appears very close, filling the central lower portion of the view, with a brown couch behind it.\", \"reasoning\": \"I have moved forward 10 times and am at x=8.00. The red circle is right in front of me, appearing to be within one final step. Moving forward one more step should bring me directly onto the target.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The red circle appears very close, directly in front. Position x=8.0. One more forward step should reach it.",
+    "parsed": {
+      "scene_description": "The red circle is immediately ahead, displayed on a black panel leaning against the far wall on the floor. The panel appears very close, filling the central lower portion of the view, with a brown couch behind it.",
+      "reasoning": "I have moved forward 10 times and am at x=8.00. The red circle is right in front of me, appearing to be within one final step. Moving forward one more step should bring me directly onto the target.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

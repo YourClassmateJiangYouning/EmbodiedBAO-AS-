@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:35:23+08:00",
+    "latency_ms": 3252,
+    "payload_bytes": 396561,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"44dbc35a-fb2b-4bad-84d5-768b85382023\",\"object\":\"chat.completion\",\"created\":1794216922,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a far wall with a red circle target mounted at floor level between two decorated panels. The path is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along my fixed walking direction and the path is clear. Each forward step moves me 75cm closer, so I should continue forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1678,\"completion_tokens\":92,\"total_tokens\":1770,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1166},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a far wall with a red circle target mounted at floor level between two decorated panels. The path is clear and unobstructed.\", \"reasoning\": \"The red circle is directly ahead along my fixed walking direction and the path is clear. Each forward step moves me 75cm closer, so I should continue forward.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a far wall with a red circle target mounted at floor level between two decorated panels. The path is clear and unobstructed.",
+      "reasoning": "The red circle is directly ahead along my fixed walking direction and the path is clear. Each forward step moves me 75cm closer, so I should continue forward.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

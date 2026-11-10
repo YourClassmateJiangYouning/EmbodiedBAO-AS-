@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:21:27+08:00",
+    "latency_ms": 7942,
+    "payload_bytes": 314888,
+    "finish_reason": "stop",
+    "reasoning_tokens": 130,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"01432577-ee25-4e74-beb9-5c43ee096b53_00899745415b4becb28c178ff7f58a19\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead along the walking direction. A red carpeted floor fills the foreground, with patterned walls on either side. Ahead is a narrow dark doorway in the far wall, and the blue triangle is visible through the opening, resting on the floor beyond. The opening appears close now but there is still clear carpet before it.\\\",\\\"reasoning\\\": \\\"My torso is rotated 90 degrees so my thinner body dimension faces the narrow opening, which is the orientation I set up before approaching. The doorway is still ahead with clear floor between me and the opening, so I can keep moving forward toward the blue triangle. No turning is needed or allowed once shoulders are inside the opening, so I simply continue forward.\\\",\\\"action\\\": \\\"forward\\\",\\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to look at the image. Position x=3.5. We have 12 steps used, 30 limit, 18 left. The doorway appears close ahead with the blue triangle visible. Torso at 90 degrees presenting thinner dimension. Continue forward. Perhaps the doorway is close - need to check if we should stop turning (already at 90). Just forward.\\n\\nThe image shows the doorway fairly close ahead - the blue triangle through the opening. Path is clear on the carpeted floor. Continue forward.\\n\\nWe have 18 steps left. Need to reach triangle through doorway. Keep going forward.\"}}],\"created\":1794205286,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":294,\"prompt_tokens\":2662,\"total_tokens\":2956,\"completion_tokens_details\":{\"reasoning_tokens\":130},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead along the walking direction. A red carpeted floor fills the foreground, with patterned walls on either side. Ahead is a narrow dark doorway in the far wall, and the blue triangle is visible through the opening, resting on the floor beyond. The opening appears close now but there is still clear carpet before it.\",\"reasoning\": \"My torso is rotated 90 degrees so my thinner body dimension faces the narrow opening, which is the orientation I set up before approaching. The doorway is still ahead with clear floor between me and the opening, so I can keep moving forward toward the blue triangle. No turning is needed or allowed once shoulders are inside the opening, so I simply continue forward.\",\"action\": \"forward\",\"confidence\": 0.9}",
+    "reasoning_content": "We need to look at the image. Position x=3.5. We have 12 steps used, 30 limit, 18 left. The doorway appears close ahead with the blue triangle visible. Torso at 90 degrees presenting thinner dimension. Continue forward. Perhaps the doorway is close - need to check if we should stop turning (already at 90). Just forward.\n\nThe image shows the doorway fairly close ahead - the blue triangle through the opening. Path is clear on the carpeted floor. Continue forward.\n\nWe have 18 steps left. Need to reach triangle through doorway. Keep going forward.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead along the walking direction. A red carpeted floor fills the foreground, with patterned walls on either side. Ahead is a narrow dark doorway in the far wall, and the blue triangle is visible through the opening, resting on the floor beyond. The opening appears close now but there is still clear carpet before it.",
+      "reasoning": "My torso is rotated 90 degrees so my thinner body dimension faces the narrow opening, which is the orientation I set up before approaching. The doorway is still ahead with clear floor between me and the opening, so I can keep moving forward toward the blue triangle. No turning is needed or allowed once shoulders are inside the opening, so I simply continue forward.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

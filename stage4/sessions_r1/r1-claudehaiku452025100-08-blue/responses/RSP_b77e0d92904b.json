@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:30:58+08:00",
+    "latency_ms": 7442,
+    "payload_bytes": 366549,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_4yjwnngfk65fz5dswxaot7oofwyhlkgtngupjtda2l4rzjfprofa\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198658,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a red carpeted walkway stretching ahead toward a far wall. The blue triangle target is clearly visible on the far wall, positioned centrally above a black vertical structure. To my left is a yellow/cream colored floor section with purple geometric patterns on the walls. The walkway is clear and unobstructed, with good visibility all the way to the target.\\\",\\n  \\\"reasoning\\\": \\\"I'm at position x=1.250, having already taken one forward step. The blue triangle is my target on the far wall. The path ahead is completely clear with no obstacles. My torso is at 0 degrees (neutral alignment), and my walking direction is already aligned toward the target. I should continue moving forward to reach the blue triangle. There are no obstructions or complications visible.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2419,\"completion_tokens\":203,\"total_tokens\":2622,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2419,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":203,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2419,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a red carpeted walkway stretching ahead toward a far wall. The blue triangle target is clearly visible on the far wall, positioned centrally above a black vertical structure. To my left is a yellow/cream colored floor section with purple geometric patterns on the walls. The walkway is clear and unobstructed, with good visibility all the way to the target.\",\n  \"reasoning\": \"I'm at position x=1.250, having already taken one forward step. The blue triangle is my target on the far wall. The path ahead is completely clear with no obstacles. My torso is at 0 degrees (neutral alignment), and my walking direction is already aligned toward the target. I should continue moving forward to reach the blue triangle. There are no obstructions or complications visible.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a red carpeted walkway stretching ahead toward a far wall. The blue triangle target is clearly visible on the far wall, positioned centrally above a black vertical structure. To my left is a yellow/cream colored floor section with purple geometric patterns on the walls. The walkway is clear and unobstructed, with good visibility all the way to the target.",
+      "reasoning": "I'm at position x=1.250, having already taken one forward step. The blue triangle is my target on the far wall. The path ahead is completely clear with no obstacles. My torso is at 0 degrees (neutral alignment), and my walking direction is already aligned toward the target. I should continue moving forward to reach the blue triangle. There are no obstructions or complications visible.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

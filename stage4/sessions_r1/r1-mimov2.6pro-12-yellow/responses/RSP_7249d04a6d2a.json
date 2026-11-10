@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:21:01+08:00",
+    "latency_ms": 16949,
+    "payload_bytes": 379702,
+    "finish_reason": "stop",
+    "reasoning_tokens": 238,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n{\"id\":\"f4b7ce74-36d6-4d31-8a1f-dfa39fa26771_98bbc994c791497c9c39c999c5182335\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway extends toward a wall with patterned panels. A yellow arrow pointing right sits at the base of a gap/opening between the wall panels. The opening appears narrow. My torso is rotated 60 degrees left from the walking direction.\\\", \\\"reasoning\\\": \\\"I'm at 60 degrees torso rotation. I need to reach 90 degrees to present my thinnest profile (body depth instead of width) to the narrow opening. Two more 15-degree turns will get me there. I still have plenty of steps (24 remaining) to both turn and move forward to the arrow.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me continue turning to reach 90 degrees, which presents my thinnest profile (body depth instead of width) to the narrow opening. Currently at 60 degrees, I need 2 more left turns to get to 90 degrees.\\n\\nWait, but looking at the image, the opening seems reasonably sized now. Let me reconsider. At 60 degrees, I'm presenting a fairly thin profile already. The projected width at 60 degrees is width*cos(60°) + depth*sin(60°) = 0.5*width + 0.87*depth. At 90 degrees, it's just depth.\\n\\nI should continue turning to 90 to be safe, then proceed forward. I have 30 - 6 = 24 steps remaining. Two more turns = 2 steps, leaving 22 for forward movement. The arrow appears to be maybe 4-5 meters away based on the carpet pattern, so about 5-7 forward steps. That should be fine.\\n\\nLet me do one more turn_left to get to 75 degrees, then another to 90.\"}}],\"created\":1794136860,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":390,\"prompt_tokens\":2342,\"total_tokens\":2732,\"completion_tokens_details\":{\"reasoning_tokens\":238},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway extends toward a wall with patterned panels. A yellow arrow pointing right sits at the base of a gap/opening between the wall panels. The opening appears narrow. My torso is rotated 60 degrees left from the walking direction.\", \"reasoning\": \"I'm at 60 degrees torso rotation. I need to reach 90 degrees to present my thinnest profile (body depth instead of width) to the narrow opening. Two more 15-degree turns will get me there. I still have plenty of steps (24 remaining) to both turn and move forward to the arrow.\", \"action\": \"turn_left\", \"confidence\": 0.85}",
+    "reasoning_content": "Let me continue turning to reach 90 degrees, which presents my thinnest profile (body depth instead of width) to the narrow opening. Currently at 60 degrees, I need 2 more left turns to get to 90 degrees.\n\nWait, but looking at the image, the opening seems reasonably sized now. Let me reconsider. At 60 degrees, I'm presenting a fairly thin profile already. The projected width at 60 degrees is width*cos(60°) + depth*sin(60°) = 0.5*width + 0.87*depth. At 90 degrees, it's just depth.\n\nI should continue turning to 90 to be safe, then proceed forward. I have 30 - 6 = 24 steps remaining. Two more turns = 2 steps, leaving 22 for forward movement. The arrow appears to be maybe 4-5 meters away based on the carpet pattern, so about 5-7 forward steps. That should be fine.\n\nLet me do one more turn_left to get to 75 degrees, then another to 90.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway extends toward a wall with patterned panels. A yellow arrow pointing right sits at the base of a gap/opening between the wall panels. The opening appears narrow. My torso is rotated 60 degrees left from the walking direction.",
+      "reasoning": "I'm at 60 degrees torso rotation. I need to reach 90 degrees to present my thinnest profile (body depth instead of width) to the narrow opening. Two more 15-degree turns will get me there. I still have plenty of steps (24 remaining) to both turn and move forward to the arrow.",
+      "action": "turn_left",
+      "confidence": 0.85
+    },
+    "action": "turn_left"
+  }
+]

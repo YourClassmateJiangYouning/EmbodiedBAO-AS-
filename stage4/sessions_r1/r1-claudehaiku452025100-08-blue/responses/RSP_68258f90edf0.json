@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:31:30+08:00",
+    "latency_ms": 7627,
+    "payload_bytes": 287352,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_hou5jjkc5fgqiu6tqb3zius3eerlaubuuv6qo3w4rx3wp4pbvfiq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198690,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the blue triangle target clearly on the far wall, centered in my view. It's positioned in the upper-middle portion of the image against a dark background. The walkway ahead is a dark red/maroon colored floor with visible texture. There are decorative walls on either side with geometric patterns in orange, purple, and other colors. The path forward appears clear and unobstructed.\\\",\\n  \\\"reasoning\\\": \\\"I'm at position x=4.250, having completed 5 forward steps. The blue triangle is clearly visible and directly ahead on the far wall. My torso is at 0 degrees (neutral alignment), and my walking direction is perfectly aligned toward the target. The path ahead is completely clear with no obstacles blocking my way. I should continue moving forward to reach the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2695,\"completion_tokens\":204,\"total_tokens\":2899,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2695,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":204,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2695,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the blue triangle target clearly on the far wall, centered in my view. It's positioned in the upper-middle portion of the image against a dark background. The walkway ahead is a dark red/maroon colored floor with visible texture. There are decorative walls on either side with geometric patterns in orange, purple, and other colors. The path forward appears clear and unobstructed.\",\n  \"reasoning\": \"I'm at position x=4.250, having completed 5 forward steps. The blue triangle is clearly visible and directly ahead on the far wall. My torso is at 0 degrees (neutral alignment), and my walking direction is perfectly aligned toward the target. The path ahead is completely clear with no obstacles blocking my way. I should continue moving forward to reach the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the blue triangle target clearly on the far wall, centered in my view. It's positioned in the upper-middle portion of the image against a dark background. The walkway ahead is a dark red/maroon colored floor with visible texture. There are decorative walls on either side with geometric patterns in orange, purple, and other colors. The path forward appears clear and unobstructed.",
+      "reasoning": "I'm at position x=4.250, having completed 5 forward steps. The blue triangle is clearly visible and directly ahead on the far wall. My torso is at 0 degrees (neutral alignment), and my walking direction is perfectly aligned toward the target. The path ahead is completely clear with no obstacles blocking my way. I should continue moving forward to reach the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

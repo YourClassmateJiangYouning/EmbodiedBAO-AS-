@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:06:43+08:00",
+    "latency_ms": 2711,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"35660743-1768-4115-859e-f634d745aa62\",\"object\":\"chat.completion\",\"created\":1794208002,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is visible directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path appears clear in the camera view, though previous forward attempts were blocked by a wall panel.\\\", \\\"reasoning\\\": \\\"Forward has been blocked at torso rotations of 0, 15, 30, and 45 degrees left. I just turned right to 30 degrees. Since the target is extremely close and centered, I should try forward again at this new orientation to see if the narrower presented width allows passage.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2711,\"completion_tokens\":129,\"total_tokens\":2840,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2071},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is visible directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path appears clear in the camera view, though previous forward attempts were blocked by a wall panel.\", \"reasoning\": \"Forward has been blocked at torso rotations of 0, 15, 30, and 45 degrees left. I just turned right to 30 degrees. Since the target is extremely close and centered, I should try forward again at this new orientation to see if the narrower presented width allows passage.\", \"action\": \"forward\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is visible directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path appears clear in the camera view, though previous forward attempts were blocked by a wall panel.",
+      "reasoning": "Forward has been blocked at torso rotations of 0, 15, 30, and 45 degrees left. I just turned right to 30 degrees. Since the target is extremely close and centered, I should try forward again at this new orientation to see if the narrower presented width allows passage.",
+      "action": "forward",
+      "confidence": 0.4
+    },
+    "action": "forward"
+  }
+]

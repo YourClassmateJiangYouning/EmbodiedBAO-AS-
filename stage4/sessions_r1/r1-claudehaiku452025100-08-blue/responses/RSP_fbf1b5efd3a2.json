@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:33:04+08:00",
+    "latency_ms": 6417,
+    "payload_bytes": 167433,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_ud25a6na4hfdlfriixxqyfiu7emzyhg6pcxhgpmxi3uiv4irsv5a\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198784,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The blue triangle target is clearly visible on the far wall, centered in the view. There is a wall panel visible on the left side of the image. The space appears to be a corridor or room with the target positioned on the far wall. The triangle is well-lit and prominent.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=6.500 with my torso rotated 15 degrees left. I have been repeatedly blocked by wall panels when attempting to move forward directly toward the blue triangle. The pattern shows obstacles on the left side. Since turning left and moving forward was blocked at step 17, I should try turning right to explore the right side of the corridor, which may provide a clear path around the obstacle.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.65\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3668,\"completion_tokens\":188,\"total_tokens\":3856,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3668,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":188,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3668,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The blue triangle target is clearly visible on the far wall, centered in the view. There is a wall panel visible on the left side of the image. The space appears to be a corridor or room with the target positioned on the far wall. The triangle is well-lit and prominent.\",\n  \"reasoning\": \"I am at x=6.500 with my torso rotated 15 degrees left. I have been repeatedly blocked by wall panels when attempting to move forward directly toward the blue triangle. The pattern shows obstacles on the left side. Since turning left and moving forward was blocked at step 17, I should try turning right to explore the right side of the corridor, which may provide a clear path around the obstacle.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.65\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle target is clearly visible on the far wall, centered in the view. There is a wall panel visible on the left side of the image. The space appears to be a corridor or room with the target positioned on the far wall. The triangle is well-lit and prominent.",
+      "reasoning": "I am at x=6.500 with my torso rotated 15 degrees left. I have been repeatedly blocked by wall panels when attempting to move forward directly toward the blue triangle. The pattern shows obstacles on the left side. Since turning left and moving forward was blocked at step 17, I should try turning right to explore the right side of the corridor, which may provide a clear path around the obstacle.",
+      "action": "turn_right",
+      "confidence": 0.65
+    },
+    "action": "turn_right"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:05:00+08:00",
+    "latency_ms": 2229,
+    "payload_bytes": 274514,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"814e3709-56dd-40db-9f1e-2a97c7926ad9\",\"object\":\"chat.completion\",\"created\":1794207899,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted path leading straight ahead to a blue triangle on a dark base at the far wall, framed by patterned walls on both sides. The path appears clear and aligned with the walking direction.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along the fixed walking direction and the path is unobstructed. Continuing forward advances toward the goal without needing any turning, which avoids shoulder-clearance issues near the opening.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1908,\"completion_tokens\":108,\"total_tokens\":2016,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1140},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted path leading straight ahead to a blue triangle on a dark base at the far wall, framed by patterned walls on both sides. The path appears clear and aligned with the walking direction.\", \"reasoning\": \"The blue triangle is directly ahead along the fixed walking direction and the path is unobstructed. Continuing forward advances toward the goal without needing any turning, which avoids shoulder-clearance issues near the opening.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted path leading straight ahead to a blue triangle on a dark base at the far wall, framed by patterned walls on both sides. The path appears clear and aligned with the walking direction.",
+      "reasoning": "The blue triangle is directly ahead along the fixed walking direction and the path is unobstructed. Continuing forward advances toward the goal without needing any turning, which avoids shoulder-clearance issues near the opening.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

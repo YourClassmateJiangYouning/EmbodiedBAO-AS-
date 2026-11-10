@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:49:46+08:00",
+    "latency_ms": 7735,
+    "payload_bytes": 334239,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081049394612912628268d9d6tGeHYrOf\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134986,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight down a red carpeted path towards a narrow opening in a wall decorated with geometric patterns. Beyond the opening, a bright purple four-pointed star is visible on a dark background.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso 15 degrees to the right (from 30 to 15, as the previous action was turn_right and the current state is 15). To minimize my width for the narrow gap, I should continue rotating until my torso is at 90 degrees or -90 degrees relative to the walking direction. I will continue turning right to reach a more profile orientation before I get too close to the opening where turning is restricted.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2362,\"completion_tokens\":175,\"total_tokens\":2537,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2362,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":175,\"totalTokenCount\":2537,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1273},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":175}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1273,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":175,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight down a red carpeted path towards a narrow opening in a wall decorated with geometric patterns. Beyond the opening, a bright purple four-pointed star is visible on a dark background.\",\n  \"reasoning\": \"I have already rotated my torso 15 degrees to the right (from 30 to 15, as the previous action was turn_right and the current state is 15). To minimize my width for the narrow gap, I should continue rotating until my torso is at 90 degrees or -90 degrees relative to the walking direction. I will continue turning right to reach a more profile orientation before I get too close to the opening where turning is restricted.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red carpeted path towards a narrow opening in a wall decorated with geometric patterns. Beyond the opening, a bright purple four-pointed star is visible on a dark background.",
+      "reasoning": "I have already rotated my torso 15 degrees to the right (from 30 to 15, as the previous action was turn_right and the current state is 15). To minimize my width for the narrow gap, I should continue rotating until my torso is at 90 degrees or -90 degrees relative to the walking direction. I will continue turning right to reach a more profile orientation before I get too close to the opening where turning is restricted.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

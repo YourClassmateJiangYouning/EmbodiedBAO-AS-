@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:18:11+08:00",
+    "latency_ms": 6469,
+    "payload_bytes": 386357,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081018060669393128268d9d6Euw3mxWb\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133091,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading towards a narrow opening in a wall. At the end of the carpet, through the opening, a yellow arrow points to the right. The walls are decorated with purple and blue geometric patterns.\\\",\\n  \\\"reasoning\\\": \\\"My previous turn_right action brought my torso rotation to 15.0 degrees (starting from 30.0 in the previous step's logic, though the state now says 15.0). I need to continue rotating my torso to reach a 90-degree angle relative to the walking direction to present the narrowest profile for the opening. I will continue turning right.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2156,\"completion_tokens\":164,\"total_tokens\":2320,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2156,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":164,\"totalTokenCount\":2320,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1067},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":164}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1067,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":164,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading towards a narrow opening in a wall. At the end of the carpet, through the opening, a yellow arrow points to the right. The walls are decorated with purple and blue geometric patterns.\",\n  \"reasoning\": \"My previous turn_right action brought my torso rotation to 15.0 degrees (starting from 30.0 in the previous step's logic, though the state now says 15.0). I need to continue rotating my torso to reach a 90-degree angle relative to the walking direction to present the narrowest profile for the opening. I will continue turning right.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading towards a narrow opening in a wall. At the end of the carpet, through the opening, a yellow arrow points to the right. The walls are decorated with purple and blue geometric patterns.",
+      "reasoning": "My previous turn_right action brought my torso rotation to 15.0 degrees (starting from 30.0 in the previous step's logic, though the state now says 15.0). I need to continue rotating my torso to reach a 90-degree angle relative to the walking direction to present the narrowest profile for the opening. I will continue turning right.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

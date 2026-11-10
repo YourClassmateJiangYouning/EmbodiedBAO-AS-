@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:23:30+08:00",
+    "latency_ms": 10737,
+    "payload_bytes": 343286,
+    "finish_reason": "stop",
+    "reasoning_tokens": 95,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"20ff90cb-6479-4f49-8880-6c37d9df1434_6bbd43f3798143b2bca42a6da95976fb\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet stretches ahead on the right toward a dark opening in a patterned far wall; the yellow arrow marks the opening to the left of center, with colorful geometric floor tiles on the left side.\\\", \\\"reasoning\\\": \\\"The yellow arrow is visible ahead at the opening in the far wall, and the red carpet leads straight to it. Two forward steps have already been taken successfully with no obstacles; the path remains clear, so I continue moving forward toward the arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue forward. The opening ahead might be narrow — the task mentions turning requires room and shoulders inside opening. But we haven't needed to turn. Just keep moving forward toward the arrow.\\n\\nThe yellow arrow appears on the wall to the left of the opening? Actually the arrow is pointing right, placed at the opening. The opening is a dark doorway in the wall. We should continue forward through the red carpet toward the opening.\\n\\nLet's just go forward.\"}}],\"created\":1794209009,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":214,\"prompt_tokens\":2043,\"total_tokens\":2257,\"completion_tokens_details\":{\"reasoning_tokens\":95},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet stretches ahead on the right toward a dark opening in a patterned far wall; the yellow arrow marks the opening to the left of center, with colorful geometric floor tiles on the left side.\", \"reasoning\": \"The yellow arrow is visible ahead at the opening in the far wall, and the red carpet leads straight to it. Two forward steps have already been taken successfully with no obstacles; the path remains clear, so I continue moving forward toward the arrow.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "We need to continue forward. The opening ahead might be narrow — the task mentions turning requires room and shoulders inside opening. But we haven't needed to turn. Just keep moving forward toward the arrow.\n\nThe yellow arrow appears on the wall to the left of the opening? Actually the arrow is pointing right, placed at the opening. The opening is a dark doorway in the wall. We should continue forward through the red carpet toward the opening.\n\nLet's just go forward.",
+    "parsed": {
+      "scene_description": "A red carpet stretches ahead on the right toward a dark opening in a patterned far wall; the yellow arrow marks the opening to the left of center, with colorful geometric floor tiles on the left side.",
+      "reasoning": "The yellow arrow is visible ahead at the opening in the far wall, and the red carpet leads straight to it. Two forward steps have already been taken successfully with no obstacles; the path remains clear, so I continue moving forward toward the arrow.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

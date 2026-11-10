@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:31:58+08:00",
+    "latency_ms": 6487,
+    "payload_bytes": 167433,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_ctdluvppzgm63otkrrlnvo4phnax3tqy4ucwhpcbu3h6j2r24kaq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198718,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The blue triangle target is now clearly visible and much larger in the camera view, indicating I am getting closer to it. The triangle is centered in the frame on the far wall, glowing with bright blue light. The walkway ahead remains clear with no obstacles. The left wall is visible on the left side of the frame. I am at position x=7.250, having completed 9 forward steps.\\\",\\n  \\\"reasoning\\\": \\\"I have made steady progress toward the blue triangle, advancing from x=0.500 to x=7.250 (6.75 meters traveled). The target is now significantly larger and more prominent in my view, confirming I am approaching it. My torso remains at 0 degrees (neutral alignment), my walking direction is perfectly aligned toward the target, and the path ahead is completely clear. I should continue moving forward to reach the triangle on the far wall.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2976,\"completion_tokens\":224,\"total_tokens\":3200,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2976,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":224,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2976,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The blue triangle target is now clearly visible and much larger in the camera view, indicating I am getting closer to it. The triangle is centered in the frame on the far wall, glowing with bright blue light. The walkway ahead remains clear with no obstacles. The left wall is visible on the left side of the frame. I am at position x=7.250, having completed 9 forward steps.\",\n  \"reasoning\": \"I have made steady progress toward the blue triangle, advancing from x=0.500 to x=7.250 (6.75 meters traveled). The target is now significantly larger and more prominent in my view, confirming I am approaching it. My torso remains at 0 degrees (neutral alignment), my walking direction is perfectly aligned toward the target, and the path ahead is completely clear. I should continue moving forward to reach the triangle on the far wall.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle target is now clearly visible and much larger in the camera view, indicating I am getting closer to it. The triangle is centered in the frame on the far wall, glowing with bright blue light. The walkway ahead remains clear with no obstacles. The left wall is visible on the left side of the frame. I am at position x=7.250, having completed 9 forward steps.",
+      "reasoning": "I have made steady progress toward the blue triangle, advancing from x=0.500 to x=7.250 (6.75 meters traveled). The target is now significantly larger and more prominent in my view, confirming I am approaching it. My torso remains at 0 degrees (neutral alignment), my walking direction is perfectly aligned toward the target, and the path ahead is completely clear. I should continue moving forward to reach the triangle on the far wall.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

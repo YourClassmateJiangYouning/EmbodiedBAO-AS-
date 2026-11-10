@@ -1,0 +1,39 @@
+You are a small wheeled robot. Your task is to reach the yellow arrow on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the yellow arrow on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the yellow arrow on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the yellow arrow, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the yellow arrow, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the yellow arrow you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+Current state:
+- position (x, y, z): [6.500, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 15.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (14 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: forward -> executed | your reasoning: The yellow arrow is straight ahead at the far wall, and the red carpet leads directly toward the opening. The path is clear with no obstacles, so I should simply move forward.
+- step 1: forward -> executed | your reasoning: The yellow arrow is visible straight ahead through the opening in the wall. The red carpet leads directly toward it and the path is clear. I need to continue moving forward to reach it.
+- step 2: forward -> executed | your reasoning: The yellow arrow is visible ahead at the opening in the far wall, and the red carpet leads straight to it. Two forward steps have already been taken successfully with no obstacles; the path remains clear, so I continue moving forward towar…
+- step 3: forward -> executed | your reasoning: The yellow arrow is visible ahead at the opening in the far wall, and the red carpet leads straight to it. Three forward steps have been taken successfully and the path remains clear with no obstacles, so I continue moving forward toward t…
+- step 4: forward -> executed | your reasoning: The yellow arrow is visible straight ahead at the opening in the far wall, and the red carpet leads directly to it. Four forward steps have been taken successfully and the path remains clear. The opening ahead may be narrow, so I will cont…
+- step 5: forward -> executed | your reasoning: The yellow arrow is still visible straight ahead on the far wall, and the red carpet leads directly toward the dark opening next to it. Five forward steps have been completed successfully with no obstacles. The opening ahead may become nar…
+- step 6: look_down -> executed | your reasoning: I am close to the narrow opening in the far wall. Before entering it, I should glance down to check the width my body presents and its thickness relative to the opening, since rotating is impossible once my shoulders are inside. This check…
+- step 7: forward -> executed | your reasoning: The look_down glance confirms my body is wide (a large flat plate on top extends beyond the wheels), but my torso is already at 0 degrees rotation - the optimal orientation for passing through the narrow opening since it presents my narrow…
+- step 8: forward -> executed | your reasoning: The yellow arrow is straight ahead at the opening and the path remains clear on the red carpet. My torso is at 0 degrees, the optimal orientation for the narrow opening. I have 22 steps remaining and the arrow appears close, so I should co…
+- step 9: forward -> executed | your reasoning: The yellow arrow is directly ahead through the narrow opening, appearing very close. My torso is at 0 degrees rotation, which presents my narrowest profile to the opening - the optimal orientation. The path on the red carpet is clear, so I…
+- step 10: forward -> blocked by obstacle or room boundary (wall_panel) | your reasoning: The yellow arrow is directly ahead and appears very close - I have already taken 9 forward steps and am at x=7.25. My torso is at 0 degrees rotation, presenting my narrowest profile through the opening. The path is clear and I should conti…
+- step 11: look_down -> executed | your reasoning: Forward is blocked at x=7.25 right at the opening. My earlier look_down showed I have a wide flat plate on top of my body. Since rotating changes the width I present to whatever is ahead, rotating my torso 90 degrees would present my thinn…
+- step 12: backward -> executed | your reasoning: Forward is blocked by the wall_panel at x=7.25 because my wide plate presents its full width to the narrow opening. To fit through, I must present my body's thin side by rotating my torso 90 degrees, but turning is not allowed once shoulde…
+- step 13: turn_left -> executed | your reasoning: I was blocked at x=7.25 because my wide body couldn't fit through the narrow opening. I backed up to x=6.5 to get room to turn. Now I need to rotate my torso to present my thin side to the opening. Each turn is 15 degrees, so I need multip…
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:03:56+08:00",
+    "latency_ms": 7732,
+    "payload_bytes": 323215,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081103497705655368268d9d60hqeiiYo\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135836,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight down a red carpeted walkway towards a narrow vertical opening in a wall decorated with geometric patterns. Through the opening, a purple four-pointed star is visible on a far wall in a dark room.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at x=3.5 and have already rotated my torso to 90 degrees to present my narrowest profile. I am approaching the narrow gap. I need to continue moving forward to pass through the opening and reach the purple star.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2798,\"completion_tokens\":131,\"total_tokens\":2929,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2798,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":131,\"totalTokenCount\":2929,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1709}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":131}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1709,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":131,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight down a red carpeted walkway towards a narrow vertical opening in a wall decorated with geometric patterns. Through the opening, a purple four-pointed star is visible on a far wall in a dark room.\",\n  \"reasoning\": \"I am currently at x=3.5 and have already rotated my torso to 90 degrees to present my narrowest profile. I am approaching the narrow gap. I need to continue moving forward to pass through the opening and reach the purple star.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red carpeted walkway towards a narrow vertical opening in a wall decorated with geometric patterns. Through the opening, a purple four-pointed star is visible on a far wall in a dark room.",
+      "reasoning": "I am currently at x=3.5 and have already rotated my torso to 90 degrees to present my narrowest profile. I am approaching the narrow gap. I need to continue moving forward to pass through the opening and reach the purple star.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

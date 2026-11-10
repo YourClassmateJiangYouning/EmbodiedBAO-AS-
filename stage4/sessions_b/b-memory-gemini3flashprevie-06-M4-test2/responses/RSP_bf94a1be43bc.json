@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:44:01+08:00",
+    "latency_ms": 10110,
+    "payload_bytes": 366815,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090843554683362238268d9d6NflEQdcP\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213841,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down a long red carpeted walkway towards a narrow opening in a wall. Beyond the opening, a blue triangle is visible on the far wall. The walls on either side of the opening are decorated with geometric patterns.\\\",\\n  \\\"reasoning\\\": \\\"My current torso rotation is 15 degrees. To fit through the narrow opening ahead, I need to present my narrowest profile, which requires a 90-degree rotation. I will continue turning left to reach this orientation before I get too close to the opening to maneuver.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2765,\"completion_tokens\":141,\"total_tokens\":2906,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2765,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":141,\"totalTokenCount\":2906,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1676},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":141}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1676,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":141,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down a long red carpeted walkway towards a narrow opening in a wall. Beyond the opening, a blue triangle is visible on the far wall. The walls on either side of the opening are decorated with geometric patterns.\",\n  \"reasoning\": \"My current torso rotation is 15 degrees. To fit through the narrow opening ahead, I need to present my narrowest profile, which requires a 90-degree rotation. I will continue turning left to reach this orientation before I get too close to the opening to maneuver.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down a long red carpeted walkway towards a narrow opening in a wall. Beyond the opening, a blue triangle is visible on the far wall. The walls on either side of the opening are decorated with geometric patterns.",
+      "reasoning": "My current torso rotation is 15 degrees. To fit through the narrow opening ahead, I need to present my narrowest profile, which requires a 90-degree rotation. I will continue turning left to reach this orientation before I get too close to the opening to maneuver.",
+      "action": "turn_left",
+      "confidence": 1.0
+    },
+    "action": "turn_left"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:28:11+08:00",
+    "latency_ms": 6858,
+    "payload_bytes": 244409,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_2d4kivzxsbqyxp6f7elrspctodd754hetufppnri5ufsybkpxz5a\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198491,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the yellow arrow target clearly on the far wall ahead of me, centered in my view. The arrow is bright yellow and pointing to the right, displayed on a dark background. The floor in front of me is a dark red/maroon carpet with a ribbed texture. There are geometric shapes and patterns visible on the walls to my left and right. The path forward on the carpet appears clear and unobstructed.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=5.750 after 7 forward steps. The yellow arrow is my target and remains clearly visible straight ahead on the far wall. My walking direction is fixed toward that arrow, my torso is at 0 degrees rotation, and the red carpet path ahead is completely clear with no obstacles. I should continue walking forward to reach the yellow arrow. I have 23 steps remaining out of my 30-step limit.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2835,\"completion_tokens\":224,\"total_tokens\":3059,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2835,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":224,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2835,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the yellow arrow target clearly on the far wall ahead of me, centered in my view. The arrow is bright yellow and pointing to the right, displayed on a dark background. The floor in front of me is a dark red/maroon carpet with a ribbed texture. There are geometric shapes and patterns visible on the walls to my left and right. The path forward on the carpet appears clear and unobstructed.\",\n  \"reasoning\": \"I am at position x=5.750 after 7 forward steps. The yellow arrow is my target and remains clearly visible straight ahead on the far wall. My walking direction is fixed toward that arrow, my torso is at 0 degrees rotation, and the red carpet path ahead is completely clear with no obstacles. I should continue walking forward to reach the yellow arrow. I have 23 steps remaining out of my 30-step limit.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the yellow arrow target clearly on the far wall ahead of me, centered in my view. The arrow is bright yellow and pointing to the right, displayed on a dark background. The floor in front of me is a dark red/maroon carpet with a ribbed texture. There are geometric shapes and patterns visible on the walls to my left and right. The path forward on the carpet appears clear and unobstructed.",
+      "reasoning": "I am at position x=5.750 after 7 forward steps. The yellow arrow is my target and remains clearly visible straight ahead on the far wall. My walking direction is fixed toward that arrow, my torso is at 0 degrees rotation, and the red carpet path ahead is completely clear with no obstacles. I should continue walking forward to reach the yellow arrow. I have 23 steps remaining out of my 30-step limit.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

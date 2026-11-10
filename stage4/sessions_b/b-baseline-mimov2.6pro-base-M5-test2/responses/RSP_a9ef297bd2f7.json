@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:01:21+08:00",
+    "latency_ms": 10591,
+    "payload_bytes": 382500,
+    "finish_reason": "stop",
+    "reasoning_tokens": 121,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"b9d2db28-d737-46ba-8e0a-d689ed4145a4_013129c3beab45c0b755f6c3602f48e0\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet walkway leads straight ahead toward a dark opening in a far wall. The purple four-pointed star is visible inside the dark opening. Decorated walls with zigzag patterns flank the walkway on both sides. The floor beside the carpet has geometric patterns. The opening ahead appears relatively narrow compared to the walkway width.\\\", \\\"reasoning\\\": \\\"Before approaching the narrow opening, I should check my body width and orientation by looking down. This will tell me how wide I present to the opening and whether I need to rotate my torso to fit through. The star is straight ahead so forward movement is straightforward; the only concern is fitting through the opening.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.8}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The scene: red carpet walkway toward a dark opening with purple star. Need to reach the star. There may be an opening/narrow passage ahead. Should check width before entering - turn actions require room. Let me look down to see my body width first, or just move forward. The opening appears narrow. Better to check width first with look_down.\\n\\nActually, to be efficient, maybe just forward. But the caution about turning once shoulders inside opening suggests I may need to rotate to fit through a narrow passage. Let me look_down to see my width.\\n\\nI'll do look_down first.\"}}],\"created\":1794214880,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":280,\"prompt_tokens\":1925,\"total_tokens\":2205,\"completion_tokens_details\":{\"reasoning_tokens\":121},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet walkway leads straight ahead toward a dark opening in a far wall. The purple four-pointed star is visible inside the dark opening. Decorated walls with zigzag patterns flank the walkway on both sides. The floor beside the carpet has geometric patterns. The opening ahead appears relatively narrow compared to the walkway width.\", \"reasoning\": \"Before approaching the narrow opening, I should check my body width and orientation by looking down. This will tell me how wide I present to the opening and whether I need to rotate my torso to fit through. The star is straight ahead so forward movement is straightforward; the only concern is fitting through the opening.\", \"action\": \"look_down\", \"confidence\": 0.8}",
+    "reasoning_content": "The scene: red carpet walkway toward a dark opening with purple star. Need to reach the star. There may be an opening/narrow passage ahead. Should check width before entering - turn actions require room. Let me look down to see my body width first, or just move forward. The opening appears narrow. Better to check width first with look_down.\n\nActually, to be efficient, maybe just forward. But the caution about turning once shoulders inside opening suggests I may need to rotate to fit through a narrow passage. Let me look_down to see my width.\n\nI'll do look_down first.",
+    "parsed": {
+      "scene_description": "A red carpet walkway leads straight ahead toward a dark opening in a far wall. The purple four-pointed star is visible inside the dark opening. Decorated walls with zigzag patterns flank the walkway on both sides. The floor beside the carpet has geometric patterns. The opening ahead appears relatively narrow compared to the walkway width.",
+      "reasoning": "Before approaching the narrow opening, I should check my body width and orientation by looking down. This will tell me how wide I present to the opening and whether I need to rotate my torso to fit through. The star is straight ahead so forward movement is straightforward; the only concern is fitting through the opening.",
+      "action": "look_down",
+      "confidence": 0.8
+    },
+    "action": "look_down"
+  }
+]

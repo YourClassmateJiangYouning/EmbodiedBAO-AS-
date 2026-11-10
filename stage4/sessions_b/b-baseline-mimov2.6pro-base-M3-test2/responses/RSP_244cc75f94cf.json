@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:41:40+08:00",
+    "latency_ms": 9589,
+    "payload_bytes": 298450,
+    "finish_reason": "stop",
+    "reasoning_tokens": 107,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"46393a23-2ab3-4a06-905a-091e03ecf265_95d4ba24d9b743dab093516275721602\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a dark opening between two patterned walls. A yellow arrow is visible on the far wall through the opening. The path is clear with no obstacles on the carpet.\\\", \\\"reasoning\\\": \\\"The yellow arrow is still visible straight ahead through the opening. The path is clear and I need to keep moving forward. I'm at x=3.5 and still approaching the opening between the walls. No need to turn or look down yet.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The scene shows a red carpeted walkway leading to a dark opening with a yellow arrow visible on the far wall. The path is clear. I've moved 4 steps forward already (x=3.5). The yellow arrow appears to be at the end of the hallway. I should continue moving forward.\\n\\nThe opening ahead looks narrow - there are walls on both sides. I might need to check my width before entering. But let me keep moving forward since the path seems clear and I'm not at the opening yet.\"}}],\"created\":1794213700,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":227,\"prompt_tokens\":2115,\"total_tokens\":2342,\"completion_tokens_details\":{\"reasoning_tokens\":107},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a dark opening between two patterned walls. A yellow arrow is visible on the far wall through the opening. The path is clear with no obstacles on the carpet.\", \"reasoning\": \"The yellow arrow is still visible straight ahead through the opening. The path is clear and I need to keep moving forward. I'm at x=3.5 and still approaching the opening between the walls. No need to turn or look down yet.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The scene shows a red carpeted walkway leading to a dark opening with a yellow arrow visible on the far wall. The path is clear. I've moved 4 steps forward already (x=3.5). The yellow arrow appears to be at the end of the hallway. I should continue moving forward.\n\nThe opening ahead looks narrow - there are walls on both sides. I might need to check my width before entering. But let me keep moving forward since the path seems clear and I'm not at the opening yet.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a dark opening between two patterned walls. A yellow arrow is visible on the far wall through the opening. The path is clear with no obstacles on the carpet.",
+      "reasoning": "The yellow arrow is still visible straight ahead through the opening. The path is clear and I need to keep moving forward. I'm at x=3.5 and still approaching the opening between the walls. No need to turn or look down yet.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

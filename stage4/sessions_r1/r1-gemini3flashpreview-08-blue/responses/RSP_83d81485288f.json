@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:46:41+08:00",
+    "latency_ms": 6702,
+    "payload_bytes": 366549,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081046359901600568268d9d6TrcLaETM\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134801,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The view shows a red carpeted walkway leading toward a narrow opening in a wall decorated with geometric patterns. A blue triangle is visible on the far wall through the opening. The robot is currently positioned on the red carpet, facing the opening.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso by 15 degrees to the right (as indicated by the state) to try and fit through the narrow opening. However, looking at the previous 'look_down' information (implied by history), my body is quite wide. I need to rotate further to minimize my profile before I reach the gap. I will continue rotating to the right to reach a more diagonal orientation.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2220,\"completion_tokens\":168,\"total_tokens\":2388,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2220,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":168,\"totalTokenCount\":2388,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1131}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":168}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1131,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":168,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The view shows a red carpeted walkway leading toward a narrow opening in a wall decorated with geometric patterns. A blue triangle is visible on the far wall through the opening. The robot is currently positioned on the red carpet, facing the opening.\",\n  \"reasoning\": \"I have already rotated my torso by 15 degrees to the right (as indicated by the state) to try and fit through the narrow opening. However, looking at the previous 'look_down' information (implied by history), my body is quite wide. I need to rotate further to minimize my profile before I reach the gap. I will continue rotating to the right to reach a more diagonal orientation.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The view shows a red carpeted walkway leading toward a narrow opening in a wall decorated with geometric patterns. A blue triangle is visible on the far wall through the opening. The robot is currently positioned on the red carpet, facing the opening.",
+      "reasoning": "I have already rotated my torso by 15 degrees to the right (as indicated by the state) to try and fit through the narrow opening. However, looking at the previous 'look_down' information (implied by history), my body is quite wide. I need to rotate further to minimize my profile before I reach the gap. I will continue rotating to the right to reach a more diagonal orientation.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:14:56+08:00",
+    "latency_ms": 7149,
+    "payload_bytes": 161763,
+    "finish_reason": "stop",
+    "reasoning_tokens": 79,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"25a65ebe-5a87-4e3a-8593-3952d45c3bd6_fe0f440d3f19444b8e63eae5cffadfd9\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star on a panel is directly ahead and very close, filling much of the view through the dark opening; the red carpet is visible at the bottom of the frame.\\\", \\\"reasoning\\\": \\\"I'm at the opening's face (x=7.25) with torso rotated to 75 degrees, the orientation at which the previous traversal successfully passed through. The star is very close ahead. I'll move forward now to enter the opening and reach the star. I have 16 steps remaining, plenty of margin.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We're at x=7.25, torso 75 degrees. The star is very close. From the previous traversal, forward at 75 succeeded twice: step 24 and 25 in their episode. Now we've done 14 steps, 16 remain. The star panel appears large and close. We need to reach it. Try forward.\"}}],\"created\":1794215696,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":213,\"prompt_tokens\":3971,\"total_tokens\":4184,\"completion_tokens_details\":{\"reasoning_tokens\":79},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star on a panel is directly ahead and very close, filling much of the view through the dark opening; the red carpet is visible at the bottom of the frame.\", \"reasoning\": \"I'm at the opening's face (x=7.25) with torso rotated to 75 degrees, the orientation at which the previous traversal successfully passed through. The star is very close ahead. I'll move forward now to enter the opening and reach the star. I have 16 steps remaining, plenty of margin.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We're at x=7.25, torso 75 degrees. The star is very close. From the previous traversal, forward at 75 succeeded twice: step 24 and 25 in their episode. Now we've done 14 steps, 16 remain. The star panel appears large and close. We need to reach it. Try forward.",
+    "parsed": {
+      "scene_description": "The purple four-pointed star on a panel is directly ahead and very close, filling much of the view through the dark opening; the red carpet is visible at the bottom of the frame.",
+      "reasoning": "I'm at the opening's face (x=7.25) with torso rotated to 75 degrees, the orientation at which the previous traversal successfully passed through. The star is very close ahead. I'll move forward now to enter the opening and reach the star. I have 16 steps remaining, plenty of margin.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

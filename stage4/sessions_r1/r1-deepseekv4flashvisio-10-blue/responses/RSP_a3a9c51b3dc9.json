@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:04:49+08:00",
+    "latency_ms": 3057,
+    "payload_bytes": 360448,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5624bf04-1e63-413e-b28c-6d73670cb8eb\",\"object\":\"chat.completion\",\"created\":1794207888,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches straight ahead toward a dark opening in the far wall, where a small blue triangle is visible at floor level. Patterned walls flank the opening on both sides.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along the fixed walking direction, and the red path appears clear and aligned with the opening. Continuing forward advances toward the goal; no turning is needed, which avoids shoulder-clearance issues near the opening.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1686,\"completion_tokens\":110,\"total_tokens\":1796,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":918},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches straight ahead toward a dark opening in the far wall, where a small blue triangle is visible at floor level. Patterned walls flank the opening on both sides.\", \"reasoning\": \"The blue triangle is directly ahead along the fixed walking direction, and the red path appears clear and aligned with the opening. Continuing forward advances toward the goal; no turning is needed, which avoids shoulder-clearance issues near the opening.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches straight ahead toward a dark opening in the far wall, where a small blue triangle is visible at floor level. Patterned walls flank the opening on both sides.",
+      "reasoning": "The blue triangle is directly ahead along the fixed walking direction, and the red path appears clear and aligned with the opening. Continuing forward advances toward the goal; no turning is needed, which avoids shoulder-clearance issues near the opening.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

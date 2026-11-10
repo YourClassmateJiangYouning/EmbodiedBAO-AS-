@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:41:31+08:00",
+    "latency_ms": 6889,
+    "payload_bytes": 330088,
+    "finish_reason": "stop",
+    "reasoning_tokens": 16,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ac9f30de-55f8-4d12-8a37-a93147c653d9_8ceb0f549e3e45b4ae05bf073cae7c46\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted path leads straight toward a dark opening in the far wall where a yellow arrow points to the right. Patterned walls flank the path on both sides, with patterned floor visible beyond the carpet edges. The path is clear of obstacles.\\\", \\\"reasoning\\\": \\\"The yellow arrow is directly ahead and the path remains clear. I've already moved forward three times with no issues. Continue moving forward toward the arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear, red carpet leads to yellow arrow. Continue forward.\"}}],\"created\":1794213690,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":125,\"prompt_tokens\":2073,\"total_tokens\":2198,\"completion_tokens_details\":{\"reasoning_tokens\":16},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted path leads straight toward a dark opening in the far wall where a yellow arrow points to the right. Patterned walls flank the path on both sides, with patterned floor visible beyond the carpet edges. The path is clear of obstacles.\", \"reasoning\": \"The yellow arrow is directly ahead and the path remains clear. I've already moved forward three times with no issues. Continue moving forward toward the arrow.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear, red carpet leads to yellow arrow. Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted path leads straight toward a dark opening in the far wall where a yellow arrow points to the right. Patterned walls flank the path on both sides, with patterned floor visible beyond the carpet edges. The path is clear of obstacles.",
+      "reasoning": "The yellow arrow is directly ahead and the path remains clear. I've already moved forward three times with no issues. Continue moving forward toward the arrow.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

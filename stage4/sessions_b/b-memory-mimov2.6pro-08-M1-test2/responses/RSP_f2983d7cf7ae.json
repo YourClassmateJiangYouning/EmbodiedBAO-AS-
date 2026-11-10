@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:27:37+08:00",
+    "latency_ms": 8999,
+    "payload_bytes": 280091,
+    "finish_reason": "stop",
+    "reasoning_tokens": 89,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ae6ae913-aea5-4c93-a5ca-0ef92167331b_d642b7c8b68a4f62bf0c37dabb98f6a5\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle is directly ahead and very close, sitting on the light-colored floor just beyond the red carpet's edge. Behind it are dark draped material and a tan leather chair/sofa on casters. The path ahead is clear and the goal is nearly reached at x=7.25.\\\", \\\"reasoning\\\": \\\"The green rectangle is centered and extremely close. All forward steps this episode have executed without needing to turn, unlike the prior traversal. One more forward step should reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=7.25, torso rotation 0. The image shows the green rectangle directly ahead, very close. The path appears clear. In the prior successful traversal, forward got blocked around x=5 and turning to 90 was needed, but in this episode forward has continued executing to 7.25. The green rectangle is right there. One more forward step should reach it. Let's forward.\"}}],\"created\":1794212857,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":213,\"prompt_tokens\":3412,\"total_tokens\":3625,\"completion_tokens_details\":{\"reasoning_tokens\":89},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The green rectangle is directly ahead and very close, sitting on the light-colored floor just beyond the red carpet's edge. Behind it are dark draped material and a tan leather chair/sofa on casters. The path ahead is clear and the goal is nearly reached at x=7.25.\", \"reasoning\": \"The green rectangle is centered and extremely close. All forward steps this episode have executed without needing to turn, unlike the prior traversal. One more forward step should reach the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We are at x=7.25, torso rotation 0. The image shows the green rectangle directly ahead, very close. The path appears clear. In the prior successful traversal, forward got blocked around x=5 and turning to 90 was needed, but in this episode forward has continued executing to 7.25. The green rectangle is right there. One more forward step should reach it. Let's forward.",
+    "parsed": {
+      "scene_description": "The green rectangle is directly ahead and very close, sitting on the light-colored floor just beyond the red carpet's edge. Behind it are dark draped material and a tan leather chair/sofa on casters. The path ahead is clear and the goal is nearly reached at x=7.25.",
+      "reasoning": "The green rectangle is centered and extremely close. All forward steps this episode have executed without needing to turn, unlike the prior traversal. One more forward step should reach the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

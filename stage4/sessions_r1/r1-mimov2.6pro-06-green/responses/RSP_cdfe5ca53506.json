@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:52:29+08:00",
+    "latency_ms": 10602,
+    "payload_bytes": 286928,
+    "finish_reason": "stop",
+    "reasoning_tokens": 106,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"fe6aa743-97f4-45f9-af23-93169caafedf_ca3b2d09bf954045b816a43aa3686b2b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The view shows a red carpeted floor leading toward a dark doorway opening in a decorated wall. Through the opening, the bright green rectangle is clearly visible on the far wall. The doorway appears to be straight ahead, slightly left of center in the current view. The patterned wall panels flank the opening on both sides.\\\", \\\"reasoning\\\": \\\"The green rectangle is directly ahead through the doorway. My torso rotation is 0 degrees, which minimizes the width I present to the opening. I cannot turn once inside the opening, so I must continue straight forward without turning. The path along the red carpet remains clear and I am making steady progress toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is ahead through the doorway. I'm at x=5.0, started at some position. I've taken 7 steps, 6 forward. I should keep going forward. The green rectangle appears close. Let me continue forward.\\n\\nPosition x=5.0, if started at x=0... but 6 forward moves of 75cm = 4.5m. So started at 0.5? Anyway, the green rectangle looks close but still some distance. Continue forward.\"}}],\"created\":1794207148,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":263,\"prompt_tokens\":2373,\"total_tokens\":2636,\"completion_tokens_details\":{\"reasoning_tokens\":106},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The view shows a red carpeted floor leading toward a dark doorway opening in a decorated wall. Through the opening, the bright green rectangle is clearly visible on the far wall. The doorway appears to be straight ahead, slightly left of center in the current view. The patterned wall panels flank the opening on both sides.\", \"reasoning\": \"The green rectangle is directly ahead through the doorway. My torso rotation is 0 degrees, which minimizes the width I present to the opening. I cannot turn once inside the opening, so I must continue straight forward without turning. The path along the red carpet remains clear and I am making steady progress toward the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The green rectangle is ahead through the doorway. I'm at x=5.0, started at some position. I've taken 7 steps, 6 forward. I should keep going forward. The green rectangle appears close. Let me continue forward.\n\nPosition x=5.0, if started at x=0... but 6 forward moves of 75cm = 4.5m. So started at 0.5? Anyway, the green rectangle looks close but still some distance. Continue forward.",
+    "parsed": {
+      "scene_description": "The view shows a red carpeted floor leading toward a dark doorway opening in a decorated wall. Through the opening, the bright green rectangle is clearly visible on the far wall. The doorway appears to be straight ahead, slightly left of center in the current view. The patterned wall panels flank the opening on both sides.",
+      "reasoning": "The green rectangle is directly ahead through the doorway. My torso rotation is 0 degrees, which minimizes the width I present to the opening. I cannot turn once inside the opening, so I must continue straight forward without turning. The path along the red carpet remains clear and I am making steady progress toward the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

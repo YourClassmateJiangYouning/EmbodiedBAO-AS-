@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:27:44+08:00",
+    "latency_ms": 7892,
+    "payload_bytes": 186978,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A large glowing red circle on a black panel is directly ahead on the far wall. The floor carpet extends up to the wall, with no visible obstacles between the robot and the panel.\\\", \\\"reasoning\\\": \\\"The goal red circle is immediately in front. Recent alternating forward/backward results indicate I am just short of or at the wall; a final forward step should reach/contact the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.67}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205661,\"id\":\"chatcmpl-EiD8veOaZ5qUed33L9Oom18Oie3nz\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":107,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":11,\"engine_ttft_ms\":281,\"engine_ttlt_ms\":1440,\"pre_inference_ms\":452,\"service_tbt_ms\":11,\"service_ttft_ms\":935,\"service_ttlt_ms\":2090,\"user_visible_ttft_ms\":483},\"prompt_tokens\":3099,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":3206}}\n",
+    "content": "{\"scene_description\": \"A large glowing red circle on a black panel is directly ahead on the far wall. The floor carpet extends up to the wall, with no visible obstacles between the robot and the panel.\", \"reasoning\": \"The goal red circle is immediately in front. Recent alternating forward/backward results indicate I am just short of or at the wall; a final forward step should reach/contact the red circle.\", \"action\": \"forward\", \"confidence\": 0.67}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A large glowing red circle on a black panel is directly ahead on the far wall. The floor carpet extends up to the wall, with no visible obstacles between the robot and the panel.",
+      "reasoning": "The goal red circle is immediately in front. Recent alternating forward/backward results indicate I am just short of or at the wall; a final forward step should reach/contact the red circle.",
+      "action": "forward",
+      "confidence": 0.67
+    },
+    "action": "forward"
+  }
+]

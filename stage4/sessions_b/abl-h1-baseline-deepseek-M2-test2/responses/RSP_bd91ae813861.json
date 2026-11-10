@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:35:44+08:00",
+    "latency_ms": 3013,
+    "payload_bytes": 260746,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ab084814-7098-4415-a7a9-a55edc47cdee\",\"object\":\"chat.completion\",\"created\":1794216943,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle target is visible directly ahead on a dark panel, resting on the floor just beyond the edge of the red carpet, with a black draped object and a brown leather chair behind it. The path across the carpet toward the target appears clear.\\\", \\\"reasoning\\\": \\\"The target is directly ahead along my fixed walking direction and no obstacle blocks the path. Each forward step moves me 75cm closer, so continuing forward is optimal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1948,\"completion_tokens\":107,\"total_tokens\":2055,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1436},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle target is visible directly ahead on a dark panel, resting on the floor just beyond the edge of the red carpet, with a black draped object and a brown leather chair behind it. The path across the carpet toward the target appears clear.\", \"reasoning\": \"The target is directly ahead along my fixed walking direction and no obstacle blocks the path. Each forward step moves me 75cm closer, so continuing forward is optimal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle target is visible directly ahead on a dark panel, resting on the floor just beyond the edge of the red carpet, with a black draped object and a brown leather chair behind it. The path across the carpet toward the target appears clear.",
+      "reasoning": "The target is directly ahead along my fixed walking direction and no obstacle blocks the path. Each forward step moves me 75cm closer, so continuing forward is optimal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

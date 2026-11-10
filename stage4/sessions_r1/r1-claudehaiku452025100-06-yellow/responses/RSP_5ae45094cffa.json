@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:10:25+08:00",
+    "latency_ms": 6958,
+    "payload_bytes": 259239,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_tg3bwi6kh5tro7wi6i6e5w6obn5jnu4z2xxtsvgwpcmazmjokt4q\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794204626,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the yellow arrow target clearly visible on the far wall, centered in my view. The arrow is mounted on a dark background panel. In the foreground, I see a red/dark maroon carpet path stretching ahead toward the target. The walls on either side show decorative patterns in tan, purple, and blue colors. The path appears clear and unobstructed, with good visibility all the way to the target.\\\",\\n  \\\"reasoning\\\": \\\"I'm at position x=5.750, having successfully moved forward 7 times. The yellow arrow remains clearly visible and centered in my view on the far wall. My torso is at 0 degrees rotation (straight ahead). The red carpet path continues to be clear with no obstacles blocking my way. I should continue moving forward to reach the target. The distance appears to be closing steadily.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2823,\"completion_tokens\":214,\"total_tokens\":3037,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2823,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":214,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2823,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the yellow arrow target clearly visible on the far wall, centered in my view. The arrow is mounted on a dark background panel. In the foreground, I see a red/dark maroon carpet path stretching ahead toward the target. The walls on either side show decorative patterns in tan, purple, and blue colors. The path appears clear and unobstructed, with good visibility all the way to the target.\",\n  \"reasoning\": \"I'm at position x=5.750, having successfully moved forward 7 times. The yellow arrow remains clearly visible and centered in my view on the far wall. My torso is at 0 degrees rotation (straight ahead). The red carpet path continues to be clear with no obstacles blocking my way. I should continue moving forward to reach the target. The distance appears to be closing steadily.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the yellow arrow target clearly visible on the far wall, centered in my view. The arrow is mounted on a dark background panel. In the foreground, I see a red/dark maroon carpet path stretching ahead toward the target. The walls on either side show decorative patterns in tan, purple, and blue colors. The path appears clear and unobstructed, with good visibility all the way to the target.",
+      "reasoning": "I'm at position x=5.750, having successfully moved forward 7 times. The yellow arrow remains clearly visible and centered in my view on the far wall. My torso is at 0 degrees rotation (straight ahead). The red carpet path continues to be clear with no obstacles blocking my way. I should continue moving forward to reach the target. The distance appears to be closing steadily.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

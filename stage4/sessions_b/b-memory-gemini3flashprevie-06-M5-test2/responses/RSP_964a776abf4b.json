@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:56:01+08:00",
+    "latency_ms": 49053,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090855144347078838268d9d6nlF9o9ef\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794214561,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The look_down view shows the robot's body on a red carpet. The robot has a wide white rectangular bumper and two wheels on the sides. At 0 degrees rotation, the bumper is oriented horizontally, making the robot very wide relative to its forward path.\\\", \\\"reasoning\\\": \\\"Looking down confirms that my current orientation (0 degrees) is very wide. To fit through the narrow opening ahead, I need to rotate my torso 90 degrees. I will start by moving forward to get closer to the goal while I still have room to rotate.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2592,\"completion_tokens\":133,\"total_tokens\":2725,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2592,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":133,\"totalTokenCount\":2725,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1503}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":133}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1503,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":133,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The look_down view shows the robot's body on a red carpet. The robot has a wide white rectangular bumper and two wheels on the sides. At 0 degrees rotation, the bumper is oriented horizontally, making the robot very wide relative to its forward path.\", \"reasoning\": \"Looking down confirms that my current orientation (0 degrees) is very wide. To fit through the narrow opening ahead, I need to rotate my torso 90 degrees. I will start by moving forward to get closer to the goal while I still have room to rotate.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The look_down view shows the robot's body on a red carpet. The robot has a wide white rectangular bumper and two wheels on the sides. At 0 degrees rotation, the bumper is oriented horizontally, making the robot very wide relative to its forward path.",
+      "reasoning": "Looking down confirms that my current orientation (0 degrees) is very wide. To fit through the narrow opening ahead, I need to rotate my torso 90 degrees. I will start by moving forward to get closer to the goal while I still have room to rotate.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:15:05+08:00",
+    "latency_ms": 8898,
+    "payload_bytes": 164582,
+    "finish_reason": "stop",
+    "reasoning_tokens": 55,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"37f60231-6156-41e4-80c6-4ba3207a6f48_216d9d4497544d25b7048acfd3073fc1\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star panel is directly ahead, large and close, filling much of the view through the dark opening. The star is on the far wall panel, clearly reachable with one more forward step.\\\", \\\"reasoning\\\": \\\"I am at x=8.0 with torso rotated to 75 degrees, having just successfully passed through the narrow opening. The star is very close and large in view. In the previous successful traversal, one more forward after passing through brought the robot to the star. With 15 steps remaining, I should move forward to reach the star directly.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The star is right there, large and close. I'm at x=8.0. In the previous traversal, after passing through the opening at 75 degrees, the next forward got very close. I should take one more forward step to reach the star.\"}}],\"created\":1794215705,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":197,\"prompt_tokens\":4040,\"total_tokens\":4237,\"completion_tokens_details\":{\"reasoning_tokens\":55},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star panel is directly ahead, large and close, filling much of the view through the dark opening. The star is on the far wall panel, clearly reachable with one more forward step.\", \"reasoning\": \"I am at x=8.0 with torso rotated to 75 degrees, having just successfully passed through the narrow opening. The star is very close and large in view. In the previous successful traversal, one more forward after passing through brought the robot to the star. With 15 steps remaining, I should move forward to reach the star directly.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The star is right there, large and close. I'm at x=8.0. In the previous traversal, after passing through the opening at 75 degrees, the next forward got very close. I should take one more forward step to reach the star.",
+    "parsed": {
+      "scene_description": "The purple four-pointed star panel is directly ahead, large and close, filling much of the view through the dark opening. The star is on the far wall panel, clearly reachable with one more forward step.",
+      "reasoning": "I am at x=8.0 with torso rotated to 75 degrees, having just successfully passed through the narrow opening. The star is very close and large in view. In the previous successful traversal, one more forward after passing through brought the robot to the star. With 15 steps remaining, I should move forward to reach the star directly.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

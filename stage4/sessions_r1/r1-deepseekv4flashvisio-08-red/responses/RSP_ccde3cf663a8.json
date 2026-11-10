@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:08:22+08:00",
+    "latency_ms": 2817,
+    "payload_bytes": 215858,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f54e9a21-4e08-45d9-873f-3a5453a8704a\",\"object\":\"chat.completion\",\"created\":1794208101,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle sits on a raised dark panel directly ahead, with a dark red carpeted floor leading up to it. The panel appears slightly elevated above the floor, and the opening is flanked by patterned walls on both sides.\\\", \\\"reasoning\\\": \\\"Forward has been blocked repeatedly at multiple torso rotations, and backing up only allowed one forward step before blocking again. The goal is on a raised panel, so I need more clearance to climb the ledge. Backing up further should give room to build momentum or reposition before attempting forward again.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.5}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2782,\"completion_tokens\":128,\"total_tokens\":2910,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2142},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle sits on a raised dark panel directly ahead, with a dark red carpeted floor leading up to it. The panel appears slightly elevated above the floor, and the opening is flanked by patterned walls on both sides.\", \"reasoning\": \"Forward has been blocked repeatedly at multiple torso rotations, and backing up only allowed one forward step before blocking again. The goal is on a raised panel, so I need more clearance to climb the ledge. Backing up further should give room to build momentum or reposition before attempting forward again.\", \"action\": \"backward\", \"confidence\": 0.5}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle sits on a raised dark panel directly ahead, with a dark red carpeted floor leading up to it. The panel appears slightly elevated above the floor, and the opening is flanked by patterned walls on both sides.",
+      "reasoning": "Forward has been blocked repeatedly at multiple torso rotations, and backing up only allowed one forward step before blocking again. The goal is on a raised panel, so I need more clearance to climb the ledge. Backing up further should give room to build momentum or reposition before attempting forward again.",
+      "action": "backward",
+      "confidence": 0.5
+    },
+    "action": "backward"
+  }
+]

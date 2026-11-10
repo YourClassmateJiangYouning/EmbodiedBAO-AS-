@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:09:36+08:00",
+    "latency_ms": 6850,
+    "payload_bytes": 287352,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A straight red carpeted path leads toward a small doorway in the far wall. The doorway opening is centered and unobstructed, and beyond it a bright blue triangle is visible near the floor. The walkway appears clear with patterned walls on both sides.\\\", \\\"reasoning\\\": \\\"The goal blue triangle is straight ahead through a clear doorway and the path is unobstructed. Continuing forward will bring me closer efficiently without needing to adjust torso orientation.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.86}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204574,\"id\":\"chatcmpl-EiCrOR2HDjdndznnDoaVF92XouNqe\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":116,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":388,\"engine_ttlt_ms\":1321,\"pre_inference_ms\":387,\"service_tbt_ms\":8,\"service_ttft_ms\":939,\"service_ttlt_ms\":1851,\"user_visible_ttft_ms\":552},\"prompt_tokens\":1739,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1855}}\n",
+    "content": "{\"scene_description\": \"A straight red carpeted path leads toward a small doorway in the far wall. The doorway opening is centered and unobstructed, and beyond it a bright blue triangle is visible near the floor. The walkway appears clear with patterned walls on both sides.\", \"reasoning\": \"The goal blue triangle is straight ahead through a clear doorway and the path is unobstructed. Continuing forward will bring me closer efficiently without needing to adjust torso orientation.\", \"action\": \"forward\", \"confidence\": 0.86}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight red carpeted path leads toward a small doorway in the far wall. The doorway opening is centered and unobstructed, and beyond it a bright blue triangle is visible near the floor. The walkway appears clear with patterned walls on both sides.",
+      "reasoning": "The goal blue triangle is straight ahead through a clear doorway and the path is unobstructed. Continuing forward will bring me closer efficiently without needing to adjust torso orientation.",
+      "action": "forward",
+      "confidence": 0.86
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:27:57+08:00",
+    "latency_ms": 7189,
+    "payload_bytes": 337198,
+    "finish_reason": "stop",
+    "reasoning_tokens": 21,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"50d6a58c-25e1-46d1-ab06-141c4c126d44_33b2516816d94a76a07fbab7e91996d0\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches straight ahead toward a dark opening in a wall decorated with colorful geometric shapes. The purple four-pointed star is visible centered in the opening at the far end. The path is clear with no obstacles.\\\", \\\"reasoning\\\": \\\"The purple star remains directly ahead with the path clear. I should continue moving forward along the carpet to approach the opening where the star is located.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear, straight red carpet toward the purple star at the opening. Keep moving forward.\"}}],\"created\":1794137276,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":125,\"prompt_tokens\":2097,\"total_tokens\":2222,\"completion_tokens_details\":{\"reasoning_tokens\":21},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches straight ahead toward a dark opening in a wall decorated with colorful geometric shapes. The purple four-pointed star is visible centered in the opening at the far end. The path is clear with no obstacles.\", \"reasoning\": \"The purple star remains directly ahead with the path clear. I should continue moving forward along the carpet to approach the opening where the star is located.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear, straight red carpet toward the purple star at the opening. Keep moving forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches straight ahead toward a dark opening in a wall decorated with colorful geometric shapes. The purple four-pointed star is visible centered in the opening at the far end. The path is clear with no obstacles.",
+      "reasoning": "The purple star remains directly ahead with the path clear. I should continue moving forward along the carpet to approach the opening where the star is located.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

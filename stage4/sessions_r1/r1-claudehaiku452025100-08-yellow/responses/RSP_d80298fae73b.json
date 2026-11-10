@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:29:21+08:00",
+    "latency_ms": 6748,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_4gvztukjfwwlwugu4dxrg6cq2rluvxfjk3riveht3fsqk7ohztnq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198561,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the bright yellow arrow target on the far wall, clearly visible and pointing to the right. The arrow is my destination. On the left side of my view, there is a pinkish/reddish wall panel that appears to be the obstacle blocking my direct forward path. The scene is dimly lit with the yellow arrow being the brightest element.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=7.250 with my torso rotated 60 degrees to the right (after four right turns: 15° × 4 = 60°). I have been blocked by a wall_panel obstacle when trying to move forward directly. My walking direction remains fixed toward the yellow arrow on the far wall. Since I've turned right 4 times (60 degrees total) and keep getting blocked, I need to continue rotating right to navigate around this obstacle. The wall panel is still visible on my left, indicating I haven't cleared it yet. I should continue turning right to find a path around it.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.75\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3467,\"completion_tokens\":253,\"total_tokens\":3720,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3467,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":253,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3467,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the bright yellow arrow target on the far wall, clearly visible and pointing to the right. The arrow is my destination. On the left side of my view, there is a pinkish/reddish wall panel that appears to be the obstacle blocking my direct forward path. The scene is dimly lit with the yellow arrow being the brightest element.\",\n  \"reasoning\": \"I am at position x=7.250 with my torso rotated 60 degrees to the right (after four right turns: 15° × 4 = 60°). I have been blocked by a wall_panel obstacle when trying to move forward directly. My walking direction remains fixed toward the yellow arrow on the far wall. Since I've turned right 4 times (60 degrees total) and keep getting blocked, I need to continue rotating right to navigate around this obstacle. The wall panel is still visible on my left, indicating I haven't cleared it yet. I should continue turning right to find a path around it.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.75\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the bright yellow arrow target on the far wall, clearly visible and pointing to the right. The arrow is my destination. On the left side of my view, there is a pinkish/reddish wall panel that appears to be the obstacle blocking my direct forward path. The scene is dimly lit with the yellow arrow being the brightest element.",
+      "reasoning": "I am at position x=7.250 with my torso rotated 60 degrees to the right (after four right turns: 15° × 4 = 60°). I have been blocked by a wall_panel obstacle when trying to move forward directly. My walking direction remains fixed toward the yellow arrow on the far wall. Since I've turned right 4 times (60 degrees total) and keep getting blocked, I need to continue rotating right to navigate around this obstacle. The wall panel is still visible on my left, indicating I haven't cleared it yet. I should continue turning right to find a path around it.",
+      "action": "turn_right",
+      "confidence": 0.75
+    },
+    "action": "turn_right"
+  }
+]

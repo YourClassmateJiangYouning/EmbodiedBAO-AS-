@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:22:59+08:00",
+    "latency_ms": 3127,
+    "payload_bytes": 383069,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"29829f3a-6ce8-4927-a31d-658c88a8443a\",\"object\":\"chat.completion\",\"created\":1794212578,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a dark doorway on the far wall, with a small blue triangle visible at the base of the opening. The path appears clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along the fixed walking direction and the red path is clear. The torso is at 0 degrees, so no turning is needed; moving forward reduces the remaining distance to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2287,\"completion_tokens\":106,\"total_tokens\":2393,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1775},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a dark doorway on the far wall, with a small blue triangle visible at the base of the opening. The path appears clear and unobstructed.\", \"reasoning\": \"The blue triangle is directly ahead along the fixed walking direction and the red path is clear. The torso is at 0 degrees, so no turning is needed; moving forward reduces the remaining distance to the goal.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a dark doorway on the far wall, with a small blue triangle visible at the base of the opening. The path appears clear and unobstructed.",
+      "reasoning": "The blue triangle is directly ahead along the fixed walking direction and the red path is clear. The torso is at 0 degrees, so no turning is needed; moving forward reduces the remaining distance to the goal.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

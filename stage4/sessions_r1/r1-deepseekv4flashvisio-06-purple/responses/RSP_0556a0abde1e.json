@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:18:56+08:00",
+    "latency_ms": 2144,
+    "payload_bytes": 364679,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"63ebaeda-a0bd-4fdb-9961-83e694f9962f\",\"object\":\"chat.completion\",\"created\":1794208735,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpet stretches straight ahead toward a dark doorway on the far wall, with a purple four-pointed star visible in the opening. Patterned walls flank the carpet on both sides.\\\", \\\"reasoning\\\": \\\"The star is directly ahead along the red carpet and the path is clear. Continuing forward moves me closer to the goal without needing any turns.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1657,\"completion_tokens\":89,\"total_tokens\":1746,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":889},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpet stretches straight ahead toward a dark doorway on the far wall, with a purple four-pointed star visible in the opening. Patterned walls flank the carpet on both sides.\", \"reasoning\": \"The star is directly ahead along the red carpet and the path is clear. Continuing forward moves me closer to the goal without needing any turns.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpet stretches straight ahead toward a dark doorway on the far wall, with a purple four-pointed star visible in the opening. Patterned walls flank the carpet on both sides.",
+      "reasoning": "The star is directly ahead along the red carpet and the path is clear. Continuing forward moves me closer to the goal without needing any turns.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

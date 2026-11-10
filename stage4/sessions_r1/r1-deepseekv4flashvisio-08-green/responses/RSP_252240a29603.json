@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:05:48+08:00",
+    "latency_ms": 2614,
+    "payload_bytes": 370954,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"47ee84ac-b6ad-4762-bc61-dcc61128df29\",\"object\":\"chat.completion\",\"created\":1794207947,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A long red carpet stretches straight ahead toward a far wall with a dark doorway opening; a small green rectangle sits at the base of the opening, centered ahead. The path appears clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The green target is directly ahead along the fixed walking direction, and the corridor is clear. Continuing forward reduces distance to the goal; no turning is needed since forward always heads toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1631,\"completion_tokens\":103,\"total_tokens\":1734,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":863},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A long red carpet stretches straight ahead toward a far wall with a dark doorway opening; a small green rectangle sits at the base of the opening, centered ahead. The path appears clear and unobstructed.\", \"reasoning\": \"The green target is directly ahead along the fixed walking direction, and the corridor is clear. Continuing forward reduces distance to the goal; no turning is needed since forward always heads toward the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpet stretches straight ahead toward a far wall with a dark doorway opening; a small green rectangle sits at the base of the opening, centered ahead. The path appears clear and unobstructed.",
+      "reasoning": "The green target is directly ahead along the fixed walking direction, and the corridor is clear. Continuing forward reduces distance to the goal; no turning is needed since forward always heads toward the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

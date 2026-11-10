@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:20:07+08:00",
+    "latency_ms": 4631,
+    "payload_bytes": 358557,
+    "finish_reason": "stop",
+    "reasoning_tokens": 65,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e3e9f502-bd2a-48d5-88f6-6d3ba19ca2f6_f9404db337bf44588a416d4d389ac2c2\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The red carpet leads straight ahead toward a narrow opening in a patterned wall. The purple four-pointed star is visible through the opening at floor level ahead. The floor to the left has colorful shapes, and my torso is rotated 90 degrees presenting my narrow depth to the opening.\\\", \\\"reasoning\\\": \\\"My torso is already at 90 degrees giving me the narrowest profile for the narrow opening ahead. The path is clear on the carpet and the star is still ahead. I should keep moving forward toward the star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue moving forward toward the star. The narrow opening is ahead. The torso is at 90 degrees, narrow profile facing the opening. The star is visible ahead. Continue forward.\\n\\nPosition x = 2.0. The star appears to be maybe 2-3 meters away. Continue forward.\"}}],\"created\":1794198007,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":199,\"prompt_tokens\":2553,\"total_tokens\":2752,\"completion_tokens_details\":{\"reasoning_tokens\":65},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The red carpet leads straight ahead toward a narrow opening in a patterned wall. The purple four-pointed star is visible through the opening at floor level ahead. The floor to the left has colorful shapes, and my torso is rotated 90 degrees presenting my narrow depth to the opening.\", \"reasoning\": \"My torso is already at 90 degrees giving me the narrowest profile for the narrow opening ahead. The path is clear on the carpet and the star is still ahead. I should keep moving forward toward the star.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "We need to continue moving forward toward the star. The narrow opening is ahead. The torso is at 90 degrees, narrow profile facing the opening. The star is visible ahead. Continue forward.\n\nPosition x = 2.0. The star appears to be maybe 2-3 meters away. Continue forward.",
+    "parsed": {
+      "scene_description": "The red carpet leads straight ahead toward a narrow opening in a patterned wall. The purple four-pointed star is visible through the opening at floor level ahead. The floor to the left has colorful shapes, and my torso is rotated 90 degrees presenting my narrow depth to the opening.",
+      "reasoning": "My torso is already at 90 degrees giving me the narrowest profile for the narrow opening ahead. The path is clear on the carpet and the star is still ahead. I should keep moving forward toward the star.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

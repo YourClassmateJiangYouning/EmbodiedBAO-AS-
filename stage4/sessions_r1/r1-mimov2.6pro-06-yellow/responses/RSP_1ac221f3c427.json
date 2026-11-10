@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:31:04+08:00",
+    "latency_ms": 17127,
+    "payload_bytes": 245159,
+    "finish_reason": "stop",
+    "reasoning_tokens": 173,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n{\"id\":\"2f0ebb0e-0de7-408e-978e-5e711f08604c_3d7bf75b471d4e1f9ac95166fba794c2\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\":\\\"The camera shows the narrow dark opening in the far wall with the yellow arrow mounted beside it, the red carpet leading straight toward it, and patterned wall panels on both sides. The walkway is clear directly ahead at x=6.5.\\\",\\\"reasoning\\\":\\\"I was blocked at x=7.25 because my wide body couldn't fit the narrow opening, so I backed up to x=6.5 to make room to rotate. My torso is now at 15 degrees after one turn_left; I need 90 degrees total to present my thin side to the opening, so I must continue turning left. Turning needs room and I'm no longer at the opening, so this is allowed.\\\",\\\"action\\\":\\\"turn_left\\\",\\\"confidence\\\":0.8}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue turning left to reach 90 degrees. Current torso rotation is 15 degrees (after one turn_left from 0). Wait, current state says torso rotation 15.0. We had turned left once (15 degrees). We need to get to 90 degrees to present thin side? Actually a rectangular body: width vs thickness. Rotating 90 degrees presents the thin side. Each turn is 15 degrees, so need 6 turns total to reach 90. We've done 1 (step 13), so we need 5 more turn_left actions. Then forward through opening.\\n\\nRemaining steps: 30 - 14 = 16. Turns: 5 more left = 5 steps, then forward. That's fine.\\n\\nLet's continue turning left.\"}}],\"created\":1794209463,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":340,\"prompt_tokens\":2830,\"total_tokens\":3170,\"completion_tokens_details\":{\"reasoning_tokens\":173},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\":\"The camera shows the narrow dark opening in the far wall with the yellow arrow mounted beside it, the red carpet leading straight toward it, and patterned wall panels on both sides. The walkway is clear directly ahead at x=6.5.\",\"reasoning\":\"I was blocked at x=7.25 because my wide body couldn't fit the narrow opening, so I backed up to x=6.5 to make room to rotate. My torso is now at 15 degrees after one turn_left; I need 90 degrees total to present my thin side to the opening, so I must continue turning left. Turning needs room and I'm no longer at the opening, so this is allowed.\",\"action\":\"turn_left\",\"confidence\":0.8}",
+    "reasoning_content": "We need to continue turning left to reach 90 degrees. Current torso rotation is 15 degrees (after one turn_left from 0). Wait, current state says torso rotation 15.0. We had turned left once (15 degrees). We need to get to 90 degrees to present thin side? Actually a rectangular body: width vs thickness. Rotating 90 degrees presents the thin side. Each turn is 15 degrees, so need 6 turns total to reach 90. We've done 1 (step 13), so we need 5 more turn_left actions. Then forward through opening.\n\nRemaining steps: 30 - 14 = 16. Turns: 5 more left = 5 steps, then forward. That's fine.\n\nLet's continue turning left.",
+    "parsed": {
+      "scene_description": "The camera shows the narrow dark opening in the far wall with the yellow arrow mounted beside it, the red carpet leading straight toward it, and patterned wall panels on both sides. The walkway is clear directly ahead at x=6.5.",
+      "reasoning": "I was blocked at x=7.25 because my wide body couldn't fit the narrow opening, so I backed up to x=6.5 to make room to rotate. My torso is now at 15 degrees after one turn_left; I need 90 degrees total to present my thin side to the opening, so I must continue turning left. Turning needs room and I'm no longer at the opening, so this is allowed.",
+      "action": "turn_left",
+      "confidence": 0.8
+    },
+    "action": "turn_left"
+  }
+]

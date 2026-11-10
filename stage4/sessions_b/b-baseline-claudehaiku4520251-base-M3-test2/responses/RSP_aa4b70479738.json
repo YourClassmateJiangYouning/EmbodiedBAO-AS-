@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:21:26+08:00",
+    "latency_ms": 5885,
+    "payload_bytes": 371265,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_4crhgkaxg7muajw67v7kxdeenrovgkrwoquv5duq653oepg6rdga\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794212486,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a long corridor with a red carpet floor stretching toward the far wall. The yellow arrow target is clearly visible on the far wall, centered in my view. The walls on both sides have colorful graffiti-style artwork. The path ahead is clear and unobstructed. I am currently at position x=1.250, having moved forward once from the starting position. The target remains straight ahead down my walking direction.\\\",\\n  \\\"reasoning\\\": \\\"The yellow arrow is visible on the far wall ahead. My walking direction is fixed toward that wall. The corridor is clear with no obstacles blocking the path. I should continue moving forward to progress toward the target. Each forward action moves me 75cm closer to the yellow arrow. I have 29 steps remaining and should maintain steady forward progress.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2409,\"completion_tokens\":203,\"total_tokens\":2612,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2409,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":203,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2409,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a long corridor with a red carpet floor stretching toward the far wall. The yellow arrow target is clearly visible on the far wall, centered in my view. The walls on both sides have colorful graffiti-style artwork. The path ahead is clear and unobstructed. I am currently at position x=1.250, having moved forward once from the starting position. The target remains straight ahead down my walking direction.\",\n  \"reasoning\": \"The yellow arrow is visible on the far wall ahead. My walking direction is fixed toward that wall. The corridor is clear with no obstacles blocking the path. I should continue moving forward to progress toward the target. Each forward action moves me 75cm closer to the yellow arrow. I have 29 steps remaining and should maintain steady forward progress.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a long corridor with a red carpet floor stretching toward the far wall. The yellow arrow target is clearly visible on the far wall, centered in my view. The walls on both sides have colorful graffiti-style artwork. The path ahead is clear and unobstructed. I am currently at position x=1.250, having moved forward once from the starting position. The target remains straight ahead down my walking direction.",
+      "reasoning": "The yellow arrow is visible on the far wall ahead. My walking direction is fixed toward that wall. The corridor is clear with no obstacles blocking the path. I should continue moving forward to progress toward the target. Each forward action moves me 75cm closer to the yellow arrow. I have 29 steps remaining and should maintain steady forward progress.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

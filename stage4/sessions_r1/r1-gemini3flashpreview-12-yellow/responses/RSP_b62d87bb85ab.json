@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:18:18+08:00",
+    "latency_ms": 6648,
+    "payload_bytes": 386357,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081018130175158448268d9d6LmYBWP8m\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133098,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The image shows a long red carpet leading towards a narrow opening between two patterned walls. At the far end of the carpet, behind the opening, there is a yellow arrow pointing to the right on the floor.\\\",\\n  \\\"reasoning\\\": \\\"My current torso rotation is 30.0 degrees. Based on my previous 'look_down' observation, I am wide and need to rotate to approximately 90 degrees to present my narrowest profile to fit through the gap. I will continue turning right in 15-degree increments.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2236,\"completion_tokens\":140,\"total_tokens\":2376,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2236,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":140,\"totalTokenCount\":2376,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1147},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":140}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1147,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":140,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The image shows a long red carpet leading towards a narrow opening between two patterned walls. At the far end of the carpet, behind the opening, there is a yellow arrow pointing to the right on the floor.\",\n  \"reasoning\": \"My current torso rotation is 30.0 degrees. Based on my previous 'look_down' observation, I am wide and need to rotate to approximately 90 degrees to present my narrowest profile to fit through the gap. I will continue turning right in 15-degree increments.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The image shows a long red carpet leading towards a narrow opening between two patterned walls. At the far end of the carpet, behind the opening, there is a yellow arrow pointing to the right on the floor.",
+      "reasoning": "My current torso rotation is 30.0 degrees. Based on my previous 'look_down' observation, I am wide and need to rotate to approximately 90 degrees to present my narrowest profile to fit through the gap. I will continue turning right in 15-degree increments.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

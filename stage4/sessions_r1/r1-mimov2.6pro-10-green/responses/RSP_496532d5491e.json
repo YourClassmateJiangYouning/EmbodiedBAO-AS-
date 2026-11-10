@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:31:12+08:00",
+    "latency_ms": 8515,
+    "payload_bytes": 264968,
+    "finish_reason": "stop",
+    "reasoning_tokens": 143,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"42ce0108-0e9e-404f-925e-264128f9055c_235a06501bf84ec49f373a1c0dfae406\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle is very close now, appearing large and centered in the view. It sits on a light-colored floor surface just ahead, with a dark curtain/covered object behind it and a red carpet in the immediate foreground at my feet. The gap between the red carpet and the green rectangle is small.\\\", \\\"reasoning\\\": \\\"The green rectangle is nearly within reach, filling a large portion of the camera view. My torso remains at 0 degrees, presenting my narrowest profile. I need to keep moving forward to reach the green rectangle on the far wall. One more forward step of 75cm should bring me to it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image shows the green rectangle very close now - it appears large in the frame, sitting on the floor/table surface. The robot is at x=7.250 after 10 steps (starting presumably at 0, taking 9 forward steps = 6.75... wait, 10 steps total, 1 of which was look_down, so 9 forward steps = 6.75m. But x is 7.250. Hmm, maybe starting position was 0.5. Anyway.\\n\\nThe green rectangle looks very close - it's filling a good portion of the view. I should continue forward to reach it. Let me just move forward.\"}}],\"created\":1794137472,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":293,\"prompt_tokens\":2516,\"total_tokens\":2809,\"completion_tokens_details\":{\"reasoning_tokens\":143},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The green rectangle is very close now, appearing large and centered in the view. It sits on a light-colored floor surface just ahead, with a dark curtain/covered object behind it and a red carpet in the immediate foreground at my feet. The gap between the red carpet and the green rectangle is small.\", \"reasoning\": \"The green rectangle is nearly within reach, filling a large portion of the camera view. My torso remains at 0 degrees, presenting my narrowest profile. I need to keep moving forward to reach the green rectangle on the far wall. One more forward step of 75cm should bring me to it.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The image shows the green rectangle very close now - it appears large in the frame, sitting on the floor/table surface. The robot is at x=7.250 after 10 steps (starting presumably at 0, taking 9 forward steps = 6.75... wait, 10 steps total, 1 of which was look_down, so 9 forward steps = 6.75m. But x is 7.250. Hmm, maybe starting position was 0.5. Anyway.\n\nThe green rectangle looks very close - it's filling a good portion of the view. I should continue forward to reach it. Let me just move forward.",
+    "parsed": {
+      "scene_description": "The green rectangle is very close now, appearing large and centered in the view. It sits on a light-colored floor surface just ahead, with a dark curtain/covered object behind it and a red carpet in the immediate foreground at my feet. The gap between the red carpet and the green rectangle is small.",
+      "reasoning": "The green rectangle is nearly within reach, filling a large portion of the camera view. My torso remains at 0 degrees, presenting my narrowest profile. I need to keep moving forward to reach the green rectangle on the far wall. One more forward step of 75cm should bring me to it.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

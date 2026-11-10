@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:07:54+08:00",
+    "latency_ms": 2733,
+    "payload_bytes": 164594,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"9e2afd0d-31f4-47da-a2e1-127b2b5853f8\",\"object\":\"chat.completion\",\"created\":1794208072,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle is visible directly ahead on a raised panel, but the path forward is blocked by a wall panel/ledge just in front of it. The camera view shows the goal very close but slightly above the floor level.\\\", \\\"reasoning\\\": \\\"Forward has been blocked twice by the wall panel even after turning right to 15 degrees. The goal is close but the body is too wide or misaligned to pass. I should continue rotating my torso to reduce the presented width and try forward again, since turning does not change walking direction or view.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2190,\"completion_tokens\":131,\"total_tokens\":2321,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1422},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle is visible directly ahead on a raised panel, but the path forward is blocked by a wall panel/ledge just in front of it. The camera view shows the goal very close but slightly above the floor level.\", \"reasoning\": \"Forward has been blocked twice by the wall panel even after turning right to 15 degrees. The goal is close but the body is too wide or misaligned to pass. I should continue rotating my torso to reduce the presented width and try forward again, since turning does not change walking direction or view.\", \"action\": \"turn_right\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle is visible directly ahead on a raised panel, but the path forward is blocked by a wall panel/ledge just in front of it. The camera view shows the goal very close but slightly above the floor level.",
+      "reasoning": "Forward has been blocked twice by the wall panel even after turning right to 15 degrees. The goal is close but the body is too wide or misaligned to pass. I should continue rotating my torso to reduce the presented width and try forward again, since turning does not change walking direction or view.",
+      "action": "turn_right",
+      "confidence": 0.6
+    },
+    "action": "turn_right"
+  }
+]

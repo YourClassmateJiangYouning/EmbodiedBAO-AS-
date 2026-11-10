@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:41:38+08:00",
+    "latency_ms": 14117,
+    "payload_bytes": 259504,
+    "finish_reason": "stop",
+    "reasoning_tokens": 145,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"5be466cb-d812-4e83-9687-03bd6bfd5f13_926588f3a0f346feab9b3c5f41dc225a\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the yellow arrow sign directly ahead and very close, filling much of the lower portion of the view. The sign is a large yellow arrow pointing right on a dark rectangular board, resting on the floor at the far wall. The wall and floor are visible around it, with no obstacles between me and the sign.\\\", \\\"reasoning\\\": \\\"I am at x=8.0 and the yellow arrow sign is directly in front of me and very close. My torso rotation is 0 degrees, so my body is aligned with the walking direction. The path is clear; one more forward step of 75cm should bring me right to the yellow arrow at the far wall.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=8.0. Need to reach the yellow arrow on the far wall. The camera image shows the yellow arrow sign very close, directly ahead. It looks like we're right at the wall/sign. One more forward step of 75cm should reach it. Let's check history: 11 steps taken, 9 forwards total (steps 0-3, 6-10). Starting x=... Position now 8.0. Hmm, 9 forward steps of 0.75 = 6.75, so started at 1.25? Anyway, the sign appears very close — likely one more forward reaches it.\\n\\nConfidence high.\"}}],\"created\":1794138097,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":306,\"prompt_tokens\":2571,\"total_tokens\":2877,\"completion_tokens_details\":{\"reasoning_tokens\":145},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows the yellow arrow sign directly ahead and very close, filling much of the lower portion of the view. The sign is a large yellow arrow pointing right on a dark rectangular board, resting on the floor at the far wall. The wall and floor are visible around it, with no obstacles between me and the sign.\", \"reasoning\": \"I am at x=8.0 and the yellow arrow sign is directly in front of me and very close. My torso rotation is 0 degrees, so my body is aligned with the walking direction. The path is clear; one more forward step of 75cm should bring me right to the yellow arrow at the far wall.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "We are at x=8.0. Need to reach the yellow arrow on the far wall. The camera image shows the yellow arrow sign very close, directly ahead. It looks like we're right at the wall/sign. One more forward step of 75cm should reach it. Let's check history: 11 steps taken, 9 forwards total (steps 0-3, 6-10). Starting x=... Position now 8.0. Hmm, 9 forward steps of 0.75 = 6.75, so started at 1.25? Anyway, the sign appears very close — likely one more forward reaches it.\n\nConfidence high.",
+    "parsed": {
+      "scene_description": "The camera shows the yellow arrow sign directly ahead and very close, filling much of the lower portion of the view. The sign is a large yellow arrow pointing right on a dark rectangular board, resting on the floor at the far wall. The wall and floor are visible around it, with no obstacles between me and the sign.",
+      "reasoning": "I am at x=8.0 and the yellow arrow sign is directly in front of me and very close. My torso rotation is 0 degrees, so my body is aligned with the walking direction. The path is clear; one more forward step of 75cm should bring me right to the yellow arrow at the far wall.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

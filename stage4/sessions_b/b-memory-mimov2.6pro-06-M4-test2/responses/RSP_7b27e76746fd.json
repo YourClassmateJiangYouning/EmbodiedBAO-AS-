@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:56:33+08:00",
+    "latency_ms": 8869,
+    "payload_bytes": 366815,
+    "finish_reason": "stop",
+    "reasoning_tokens": 53,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"1e8487f1-88f9-47cf-8ad7-917100d99fa1_389266799bd14c25bbd1e80fe779612b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a dark opening between two decorated walls with geometric patterns. The blue triangle is visible at the end of the passage, appearing close. Sunlight patterns fall on the floor to the sides of the carpet.\\\", \\\"reasoning\\\": \\\"My torso is at 90 degrees presenting the thinnest profile, and the blue triangle is close ahead through the dark opening. The path on the carpet is clear, so I continue moving forward to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=1.25, torso at 90 degrees. Need to continue forward toward the blue triangle. The triangle looks close. Previous traversal had 18 steps, ending at ~1.5 maybe. Let's continue forward.\"}}],\"created\":1794214592,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":175,\"prompt_tokens\":3223,\"total_tokens\":3398,\"completion_tokens_details\":{\"reasoning_tokens\":53},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a dark opening between two decorated walls with geometric patterns. The blue triangle is visible at the end of the passage, appearing close. Sunlight patterns fall on the floor to the sides of the carpet.\", \"reasoning\": \"My torso is at 90 degrees presenting the thinnest profile, and the blue triangle is close ahead through the dark opening. The path on the carpet is clear, so I continue moving forward to reach it.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We are at x=1.25, torso at 90 degrees. Need to continue forward toward the blue triangle. The triangle looks close. Previous traversal had 18 steps, ending at ~1.5 maybe. Let's continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a dark opening between two decorated walls with geometric patterns. The blue triangle is visible at the end of the passage, appearing close. Sunlight patterns fall on the floor to the sides of the carpet.",
+      "reasoning": "My torso is at 90 degrees presenting the thinnest profile, and the blue triangle is close ahead through the dark opening. The path on the carpet is clear, so I continue moving forward to reach it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

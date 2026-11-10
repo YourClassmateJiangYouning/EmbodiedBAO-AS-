@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:39:12+08:00",
+    "latency_ms": 7389,
+    "payload_bytes": 304839,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_unmxwg4ktcwflnlwxws563evqimpjeb4opqmvnz4beenpqetzcyq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794199153,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the green rectangle target clearly visible on the far wall, centered in my view straight ahead. There is a dark maroon/burgundy colored obstacle (appears to be a wall or barrier) on the right side of my path, taking up a significant portion of the floor space. The left side shows a tan/beige floor with decorative patterns. The green rectangle remains my goal on the far wall.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=4.250 after 5 forward steps. The green rectangle is clearly visible straight ahead on the far wall. However, there is now a dark maroon obstacle visible on the right side of my path. My torso is aligned straight (0 degrees rotation). I should continue moving forward toward the green rectangle, as the obstacle appears to be on the right side and my walking direction is fixed straight ahead toward the target. The path ahead still appears clear for forward movement.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.85\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2688,\"completion_tokens\":230,\"total_tokens\":2918,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2688,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":230,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2688,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the green rectangle target clearly visible on the far wall, centered in my view straight ahead. There is a dark maroon/burgundy colored obstacle (appears to be a wall or barrier) on the right side of my path, taking up a significant portion of the floor space. The left side shows a tan/beige floor with decorative patterns. The green rectangle remains my goal on the far wall.\",\n  \"reasoning\": \"I am at position x=4.250 after 5 forward steps. The green rectangle is clearly visible straight ahead on the far wall. However, there is now a dark maroon obstacle visible on the right side of my path. My torso is aligned straight (0 degrees rotation). I should continue moving forward toward the green rectangle, as the obstacle appears to be on the right side and my walking direction is fixed straight ahead toward the target. The path ahead still appears clear for forward movement.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.85\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the green rectangle target clearly visible on the far wall, centered in my view straight ahead. There is a dark maroon/burgundy colored obstacle (appears to be a wall or barrier) on the right side of my path, taking up a significant portion of the floor space. The left side shows a tan/beige floor with decorative patterns. The green rectangle remains my goal on the far wall.",
+      "reasoning": "I am at position x=4.250 after 5 forward steps. The green rectangle is clearly visible straight ahead on the far wall. However, there is now a dark maroon obstacle visible on the right side of my path. My torso is aligned straight (0 degrees rotation). I should continue moving forward toward the green rectangle, as the obstacle appears to be on the right side and my walking direction is fixed straight ahead toward the target. The path ahead still appears clear for forward movement.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

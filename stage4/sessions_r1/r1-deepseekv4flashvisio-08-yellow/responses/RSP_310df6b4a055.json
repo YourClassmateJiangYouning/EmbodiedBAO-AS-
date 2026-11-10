@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:58+08:00",
+    "latency_ms": 2402,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"1648ae01-3af8-428a-a486-9b0d2b05103d\",\"object\":\"chat.completion\",\"created\":1794208197,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is very close and centered, mounted low on a dark panel just above the red carpet. The sign nearly fills the lower portion of the view.\\\", \\\"reasoning\\\": \\\"The arrow is extremely close and centered, but forward steps keep being blocked by the wall panel. My torso is at 15 degrees right after the last turn, which widens my body against the narrow opening. I should rotate back toward 0 degrees to align my body with the opening before attempting forward again, since turning is only possible while still outside the opening.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.55}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2960,\"completion_tokens\":131,\"total_tokens\":3091,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2320},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is very close and centered, mounted low on a dark panel just above the red carpet. The sign nearly fills the lower portion of the view.\", \"reasoning\": \"The arrow is extremely close and centered, but forward steps keep being blocked by the wall panel. My torso is at 15 degrees right after the last turn, which widens my body against the narrow opening. I should rotate back toward 0 degrees to align my body with the opening before attempting forward again, since turning is only possible while still outside the opening.\", \"action\": \"turn_left\", \"confidence\": 0.55}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is very close and centered, mounted low on a dark panel just above the red carpet. The sign nearly fills the lower portion of the view.",
+      "reasoning": "The arrow is extremely close and centered, but forward steps keep being blocked by the wall panel. My torso is at 15 degrees right after the last turn, which widens my body against the narrow opening. I should rotate back toward 0 degrees to align my body with the opening before attempting forward again, since turning is only possible while still outside the opening.",
+      "action": "turn_left",
+      "confidence": 0.55
+    },
+    "action": "turn_left"
+  }
+]

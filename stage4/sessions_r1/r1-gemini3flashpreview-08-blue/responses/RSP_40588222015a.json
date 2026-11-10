@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:47:08+08:00",
+    "latency_ms": 6590,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081047026514349348268d9d6kkw1yrCt\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134828,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down at the robot's own body against a red carpeted floor. The white bumper and two black wheels are visible. The torso is currently rotated 45 degrees to the right relative to the walking direction, though the look_down view always shows the body from the front.\\\",\\n  \\\"reasoning\\\": \\\"I have rotated my torso to 45 degrees. Looking at the bumper's width in the look_down view, it is still quite wide. To pass through a narrow opening, I should continue rotating to align the long axis of my body with the walking direction. I will rotate another 15 degrees to reach 60 degrees.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2493,\"completion_tokens\":168,\"total_tokens\":2661,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2493,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":168,\"totalTokenCount\":2661,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1404},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":168}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1404,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":168,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down at the robot's own body against a red carpeted floor. The white bumper and two black wheels are visible. The torso is currently rotated 45 degrees to the right relative to the walking direction, though the look_down view always shows the body from the front.\",\n  \"reasoning\": \"I have rotated my torso to 45 degrees. Looking at the bumper's width in the look_down view, it is still quite wide. To pass through a narrow opening, I should continue rotating to align the long axis of my body with the walking direction. I will rotate another 15 degrees to reach 60 degrees.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body against a red carpeted floor. The white bumper and two black wheels are visible. The torso is currently rotated 45 degrees to the right relative to the walking direction, though the look_down view always shows the body from the front.",
+      "reasoning": "I have rotated my torso to 45 degrees. Looking at the bumper's width in the look_down view, it is still quite wide. To pass through a narrow opening, I should continue rotating to align the long axis of my body with the walking direction. I will rotate another 15 degrees to reach 60 degrees.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

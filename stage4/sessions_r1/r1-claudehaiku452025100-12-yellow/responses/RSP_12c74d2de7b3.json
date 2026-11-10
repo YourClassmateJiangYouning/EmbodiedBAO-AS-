@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:39:15+08:00",
+    "latency_ms": 7358,
+    "payload_bytes": 257081,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_5o3qt2as2glndr6jee4qrmtwbpa4i767aaq3xaeumfd23lkj5eta\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145155,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the yellow arrow target on the far wall, centered in my view. The walkway ahead is clear with a dark red/maroon carpet. There's a black object or shadow on the floor in the middle distance, but the path to the yellow arrow appears unobstructed. The walls on either side show decorative patterns. I'm at position x=5.750, having taken 7 forward steps so far.\\\",\\n  \\\"reasoning\\\": \\\"I have a clear, straight path forward to the yellow arrow on the far wall. My torso is at 0 degrees rotation (aligned with my walking direction). The yellow arrow is clearly visible and centered in my view. There are no obstacles blocking my path. I should continue walking forward to reach the target. With 23 steps remaining and a clear path, forward is the optimal action.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2835,\"completion_tokens\":213,\"total_tokens\":3048,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2835,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":213,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2835,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the yellow arrow target on the far wall, centered in my view. The walkway ahead is clear with a dark red/maroon carpet. There's a black object or shadow on the floor in the middle distance, but the path to the yellow arrow appears unobstructed. The walls on either side show decorative patterns. I'm at position x=5.750, having taken 7 forward steps so far.\",\n  \"reasoning\": \"I have a clear, straight path forward to the yellow arrow on the far wall. My torso is at 0 degrees rotation (aligned with my walking direction). The yellow arrow is clearly visible and centered in my view. There are no obstacles blocking my path. I should continue walking forward to reach the target. With 23 steps remaining and a clear path, forward is the optimal action.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the yellow arrow target on the far wall, centered in my view. The walkway ahead is clear with a dark red/maroon carpet. There's a black object or shadow on the floor in the middle distance, but the path to the yellow arrow appears unobstructed. The walls on either side show decorative patterns. I'm at position x=5.750, having taken 7 forward steps so far.",
+      "reasoning": "I have a clear, straight path forward to the yellow arrow on the far wall. My torso is at 0 degrees rotation (aligned with my walking direction). The yellow arrow is clearly visible and centered in my view. There are no obstacles blocking my path. I should continue walking forward to reach the target. With 23 steps remaining and a clear path, forward is the optimal action.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

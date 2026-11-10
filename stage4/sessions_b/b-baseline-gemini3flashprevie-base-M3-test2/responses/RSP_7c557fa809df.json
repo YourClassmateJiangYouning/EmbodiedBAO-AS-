@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:35:22+08:00",
+    "latency_ms": 4858,
+    "payload_bytes": 201498,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090835189452334788268d9d6WDaS5NGH\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213323,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading to a yellow arrow on a dark background. To the left and right are the edges of a narrow opening that I am currently passing through. The yellow arrow is directly ahead.\\\", \\\"reasoning\\\": \\\"I am at position x=5.75 and have successfully navigated into the narrow gap with my torso rotated to 90 degrees. I need to continue moving forward to reach the yellow arrow on the far wall.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2968,\"completion_tokens\":113,\"total_tokens\":3081,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2968,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":113,\"totalTokenCount\":3081,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1879}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":113}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1879,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":113,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading to a yellow arrow on a dark background. To the left and right are the edges of a narrow opening that I am currently passing through. The yellow arrow is directly ahead.\", \"reasoning\": \"I am at position x=5.75 and have successfully navigated into the narrow gap with my torso rotated to 90 degrees. I need to continue moving forward to reach the yellow arrow on the far wall.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading to a yellow arrow on a dark background. To the left and right are the edges of a narrow opening that I am currently passing through. The yellow arrow is directly ahead.",
+      "reasoning": "I am at position x=5.75 and have successfully navigated into the narrow gap with my torso rotated to 90 degrees. I need to continue moving forward to reach the yellow arrow on the far wall.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

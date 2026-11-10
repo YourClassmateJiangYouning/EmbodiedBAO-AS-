@@ -1,0 +1,52 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:28:01+08:00",
+    "latency_ms": 90015,
+    "payload_bytes": 439542,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "TimeoutError: timed out",
+    "json_mode": null,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T12:29:31+08:00",
+    "latency_ms": 90008,
+    "payload_bytes": 439542,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "TimeoutError: timed out",
+    "json_mode": null,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 3,
+    "started_at": "2026-11-09T12:29:46+08:00",
+    "latency_ms": 14343,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 324,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n{\"id\":\"133a98a7-49b1-4ab8-8ec5-92e879adbea4_d946be813af74d11adbd8c90c875790e\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera is glancing down at the robot's own body: a wide white platform with plastic wrap on top, two large treaded wheels on each side, exposed camera modules, wires and metal framing, all sitting on red ribbed carpet. The body appears fairly wide relative to its length.\\\", \\\"reasoning\\\": \\\"My forward step at x=7.250 was blocked by a wall_panel. The down-glance shows my body is wide (platform with wheels on both sides) and currently at 0 degrees torso rotation, which should present my narrowest profile to the opening. Turning would only widen my footprint, so it shouldn't help. The block may be transient or a tight fit at the opening threshold - retrying forward is the most direct way to test whether I can push through toward the green rectangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.55}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image is a look_down view showing the robot's body - a white/transparent platform, wheels, cameras, cables. The body appears fairly wide. The forward step was blocked by wall_panel. I need to figure out how to proceed.\\n\\nSince I was blocked at x=7.250, maybe the opening is narrow and I need to align. But turning changes my width - at 0 degrees I'm already narrowest. The block might be that my body is too wide for the opening, or the opening requires me to turn? But turning makes me wider...\\n\\nActually, the description says turning changes how wide my body is. At 0 degrees (facing forward), my width is presumably the narrowest. Turning would make the diagonal wider. So turning doesn't help.\\n\\nMaybe I need to try forward again - sometimes collisions are transient. Or the opening is slightly offset and I need to... but z doesn't change with forward. Hmm.\\n\\nLet me try forward again to see if the block was transient. Or maybe try turn_left/turn_right to align better... but the opening might be angled? No - the eyes always look straight ahead.\\n\\nActually, maybe the wall panel is at a specific x, and I just need to push through slightly. Let me try forward again.\\n\\nAlternatively, maybe the green rectangle is on the far wall beyond an opening, and the current position is right at the opening edge. A forward step of 75cm might overshoot into something? No, forward is blocked.\\n\\nLet me just try forward again first. If blocked, then consider turning.\"}}],\"created\":1794198585,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":517,\"prompt_tokens\":2683,\"total_tokens\":3200,\"completion_tokens_details\":{\"reasoning_tokens\":324},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera is glancing down at the robot's own body: a wide white platform with plastic wrap on top, two large treaded wheels on each side, exposed camera modules, wires and metal framing, all sitting on red ribbed carpet. The body appears fairly wide relative to its length.\", \"reasoning\": \"My forward step at x=7.250 was blocked by a wall_panel. The down-glance shows my body is wide (platform with wheels on both sides) and currently at 0 degrees torso rotation, which should present my narrowest profile to the opening. Turning would only widen my footprint, so it shouldn't help. The block may be transient or a tight fit at the opening threshold - retrying forward is the most direct way to test whether I can push through toward the green rectangle.\", \"action\": \"forward\", \"confidence\": 0.55}",
+    "reasoning_content": "The image is a look_down view showing the robot's body - a white/transparent platform, wheels, cameras, cables. The body appears fairly wide. The forward step was blocked by wall_panel. I need to figure out how to proceed.\n\nSince I was blocked at x=7.250, maybe the opening is narrow and I need to align. But turning changes my width - at 0 degrees I'm already narrowest. The block might be that my body is too wide for the opening, or the opening requires me to turn? But turning makes me wider...\n\nActually, the description says turning changes how wide my body is. At 0 degrees (facing forward), my width is presumably the narrowest. Turning would make the diagonal wider. So turning doesn't help.\n\nMaybe I need to try forward again - sometimes collisions are transient. Or the opening is slightly offset and I need to... but z doesn't change with forward. Hmm.\n\nLet me try forward again to see if the block was transient. Or maybe try turn_left/turn_right to align better... but the opening might be angled? No - the eyes always look straight ahead.\n\nActually, maybe the wall panel is at a specific x, and I just need to push through slightly. Let me try forward again.\n\nAlternatively, maybe the green rectangle is on the far wall beyond an opening, and the current position is right at the opening edge. A forward step of 75cm might overshoot into something? No, forward is blocked.\n\nLet me just try forward again first. If blocked, then consider turning.",
+    "parsed": {
+      "scene_description": "The camera is glancing down at the robot's own body: a wide white platform with plastic wrap on top, two large treaded wheels on each side, exposed camera modules, wires and metal framing, all sitting on red ribbed carpet. The body appears fairly wide relative to its length.",
+      "reasoning": "My forward step at x=7.250 was blocked by a wall_panel. The down-glance shows my body is wide (platform with wheels on both sides) and currently at 0 degrees torso rotation, which should present my narrowest profile to the opening. Turning would only widen my footprint, so it shouldn't help. The block may be transient or a tight fit at the opening threshold - retrying forward is the most direct way to test whether I can push through toward the green rectangle.",
+      "action": "forward",
+      "confidence": 0.55
+    },
+    "action": "forward"
+  }
+]

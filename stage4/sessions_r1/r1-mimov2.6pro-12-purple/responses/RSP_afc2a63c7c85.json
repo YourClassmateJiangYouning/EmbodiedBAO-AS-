@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:29:22+08:00",
+    "latency_ms": 6563,
+    "payload_bytes": 252187,
+    "finish_reason": "stop",
+    "reasoning_tokens": 18,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"d8b609c8-34fb-4542-96cd-6c4958714e62_69158989c086442c81d63ae8f3845109\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star on a black rectangular plaque is directly ahead and very close, filling much of the view. The floor and a dark draped object are visible above it.\\\", \\\"reasoning\\\": \\\"The star is extremely close after 10 forward steps. One more forward step should bring me right to the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The star is directly ahead and very close. One more forward step should reach it.\"}}],\"created\":1794137361,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":106,\"prompt_tokens\":2487,\"total_tokens\":2593,\"completion_tokens_details\":{\"reasoning_tokens\":18},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star on a black rectangular plaque is directly ahead and very close, filling much of the view. The floor and a dark draped object are visible above it.\", \"reasoning\": \"The star is extremely close after 10 forward steps. One more forward step should bring me right to the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The star is directly ahead and very close. One more forward step should reach it.",
+    "parsed": {
+      "scene_description": "The purple four-pointed star on a black rectangular plaque is directly ahead and very close, filling much of the view. The floor and a dark draped object are visible above it.",
+      "reasoning": "The star is extremely close after 10 forward steps. One more forward step should bring me right to the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

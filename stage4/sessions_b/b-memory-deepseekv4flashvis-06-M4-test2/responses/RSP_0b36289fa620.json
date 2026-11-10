@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:23:03+08:00",
+    "latency_ms": 3405,
+    "payload_bytes": 366815,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"09a79f26-4d71-4cac-954e-7462ddaade99\",\"object\":\"chat.completion\",\"created\":1794212581,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a dark opening in the far wall, with the blue triangle visible at the base of the opening. Patterned walls flank the path on both sides.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along the fixed walking direction and the red path is clear. The torso is at 0 degrees, so no turning is needed; moving forward reduces the remaining distance to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2380,\"completion_tokens\":106,\"total_tokens\":2486,\"prompt_tokens_details\":{\"cached_tokens\":1280},\"prompt_cache_hit_tokens\":1280,\"prompt_cache_miss_tokens\":1100},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a dark opening in the far wall, with the blue triangle visible at the base of the opening. Patterned walls flank the path on both sides.\", \"reasoning\": \"The blue triangle is directly ahead along the fixed walking direction and the red path is clear. The torso is at 0 degrees, so no turning is needed; moving forward reduces the remaining distance to the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a dark opening in the far wall, with the blue triangle visible at the base of the opening. Patterned walls flank the path on both sides.",
+      "reasoning": "The blue triangle is directly ahead along the fixed walking direction and the red path is clear. The torso is at 0 degrees, so no turning is needed; moving forward reduces the remaining distance to the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

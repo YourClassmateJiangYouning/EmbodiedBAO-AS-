@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:18:48+08:00",
+    "latency_ms": 9485,
+    "payload_bytes": 361551,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A straight red-carpeted corridor leads to an opening in a patterned wall ahead. A bright green rectangle is visible lying on the floor just beyond the opening on the far wall. The path ahead is clear and centered, with some white sheets near the edges but not blocking the middle.\\\", \\\"reasoning\\\": \\\"The green rectangle (goal) is straight ahead with an unobstructed central path. Continuing forward moves closer efficiently without needing to turn or adjust width.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.84}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794197926,\"id\":\"chatcmpl-EiB8AGxjNo9JDtnVvV1OfzJ5Bc4LL\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":120,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":636,\"engine_ttlt_ms\":1594,\"pre_inference_ms\":340,\"service_tbt_ms\":8,\"service_ttft_ms\":1232,\"service_ttlt_ms\":2151,\"user_visible_ttft_ms\":892},\"prompt_tokens\":1606,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1726}}\n",
+    "content": "{\"scene_description\": \"A straight red-carpeted corridor leads to an opening in a patterned wall ahead. A bright green rectangle is visible lying on the floor just beyond the opening on the far wall. The path ahead is clear and centered, with some white sheets near the edges but not blocking the middle.\", \"reasoning\": \"The green rectangle (goal) is straight ahead with an unobstructed central path. Continuing forward moves closer efficiently without needing to turn or adjust width.\", \"action\": \"forward\", \"confidence\": 0.84}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight red-carpeted corridor leads to an opening in a patterned wall ahead. A bright green rectangle is visible lying on the floor just beyond the opening on the far wall. The path ahead is clear and centered, with some white sheets near the edges but not blocking the middle.",
+      "reasoning": "The green rectangle (goal) is straight ahead with an unobstructed central path. Continuing forward moves closer efficiently without needing to turn or adjust width.",
+      "action": "forward",
+      "confidence": 0.84
+    },
+    "action": "forward"
+  }
+]

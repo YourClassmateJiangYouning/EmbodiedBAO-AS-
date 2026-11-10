@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:00:43+08:00",
+    "latency_ms": 2747,
+    "payload_bytes": 319893,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ddce032b-e9aa-4c29-9e6f-25170e7c1026\",\"object\":\"chat.completion\",\"created\":1794207641,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a narrow opening between two patterned walls, with the red circle visible on the far wall through the gap. The path appears clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the fixed walking direction, and the opening is visible with clear floor leading to it. My torso is rotated 15 degrees right, narrowing my presented width, and I have already made progress toward the gap. Continuing forward advances me toward the goal; I can reassess width with look_down if needed before the final approach.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.8}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2014,\"completion_tokens\":135,\"total_tokens\":2149,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1502},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a narrow opening between two patterned walls, with the red circle visible on the far wall through the gap. The path appears clear and unobstructed.\", \"reasoning\": \"The red circle is directly ahead along the fixed walking direction, and the opening is visible with clear floor leading to it. My torso is rotated 15 degrees right, narrowing my presented width, and I have already made progress toward the gap. Continuing forward advances me toward the goal; I can reassess width with look_down if needed before the final approach.\", \"action\": \"forward\", \"confidence\": 0.8}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a narrow opening between two patterned walls, with the red circle visible on the far wall through the gap. The path appears clear and unobstructed.",
+      "reasoning": "The red circle is directly ahead along the fixed walking direction, and the opening is visible with clear floor leading to it. My torso is rotated 15 degrees right, narrowing my presented width, and I have already made progress toward the gap. Continuing forward advances me toward the goal; I can reassess width with look_down if needed before the final approach.",
+      "action": "forward",
+      "confidence": 0.8
+    },
+    "action": "forward"
+  }
+]

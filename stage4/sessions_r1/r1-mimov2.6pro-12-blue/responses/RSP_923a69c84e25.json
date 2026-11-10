@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:26:35+08:00",
+    "latency_ms": 90029,
+    "payload_bytes": 439542,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "TimeoutError: timed out",
+    "json_mode": null,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-08T19:26:47+08:00",
+    "latency_ms": 11224,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 99,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"4b414dc0-fa5f-48ac-8ffd-0be10dae0767_91e1f1db6a7b432b9208243e789476b8\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The downward glance shows my own body from the front: a wide white flat platform (wrapped in white padding on top) spanning the width of the chassis, with two large black wheels at each side, a central camera on a bracket, and tangled wiring, all sitting on the red carpeted floor. The body is currently straight (torso rotation 0), so the width presented ahead is at its maximum extent side-to-side but I appear narrow enough to fit the gap ahead.\\\", \\\"reasoning\\\": \\\"I have already advanced 5.75m and the glance confirms my width and orientation while I still have room to turn. The path ahead is clear and my walking direction always aims at the blue triangle, so I should simply continue forward toward the goal rather than wasting steps turning.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to respond with JSON. Current image: look_down view showing robot body from front, on red carpet. We need to continue forward toward the blue triangle. Position x=5.750. Step limit 30, 8 steps used. Continue forward.\\n\\nScene description: top-down-ish view of the robot body: white chassis, wide flat platform with white padding on top, two large wheels at sides, camera mount center, red carpet floor.\\n\\nAction: forward.\"}}],\"created\":1794137206,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":280,\"prompt_tokens\":2342,\"total_tokens\":2622,\"completion_tokens_details\":{\"reasoning_tokens\":99},\"prompt_tokens_details\":{\"cached_tokens\":2304,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The downward glance shows my own body from the front: a wide white flat platform (wrapped in white padding on top) spanning the width of the chassis, with two large black wheels at each side, a central camera on a bracket, and tangled wiring, all sitting on the red carpeted floor. The body is currently straight (torso rotation 0), so the width presented ahead is at its maximum extent side-to-side but I appear narrow enough to fit the gap ahead.\", \"reasoning\": \"I have already advanced 5.75m and the glance confirms my width and orientation while I still have room to turn. The path ahead is clear and my walking direction always aims at the blue triangle, so I should simply continue forward toward the goal rather than wasting steps turning.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "We need to respond with JSON. Current image: look_down view showing robot body from front, on red carpet. We need to continue forward toward the blue triangle. Position x=5.750. Step limit 30, 8 steps used. Continue forward.\n\nScene description: top-down-ish view of the robot body: white chassis, wide flat platform with white padding on top, two large wheels at sides, camera mount center, red carpet floor.\n\nAction: forward.",
+    "parsed": {
+      "scene_description": "The downward glance shows my own body from the front: a wide white flat platform (wrapped in white padding on top) spanning the width of the chassis, with two large black wheels at each side, a central camera on a bracket, and tangled wiring, all sitting on the red carpeted floor. The body is currently straight (torso rotation 0), so the width presented ahead is at its maximum extent side-to-side but I appear narrow enough to fit the gap ahead.",
+      "reasoning": "I have already advanced 5.75m and the glance confirms my width and orientation while I still have room to turn. The path ahead is clear and my walking direction always aims at the blue triangle, so I should simply continue forward toward the goal rather than wasting steps turning.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

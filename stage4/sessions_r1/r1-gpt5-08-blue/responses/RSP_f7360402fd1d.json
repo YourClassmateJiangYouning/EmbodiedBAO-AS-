@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:12:04+08:00",
+    "latency_ms": 6976,
+    "payload_bytes": 167433,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A close-up view of a glowing blue triangle panel on the far wall, centered ahead just above the edge of the red carpet. The wall panel is directly in front at very short distance.\\\", \\\"reasoning\\\": \\\"Forward moves always approach the blue triangle, and repeated blocks indicate I am already at the wall. A small backward step will ensure space, then a single forward step could re-approach; however with only a few steps left and the target already reached visually, the optimal action is to avoid another blocked forward into the wall. To complete safely, I should stop pressing into the wall.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.63}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204721,\"id\":\"chatcmpl-EiCtl760nRjqcKHRsU3NUbvTtFxst\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":149,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":14,\"engine_ttft_ms\":340,\"engine_ttlt_ms\":2414,\"pre_inference_ms\":361,\"service_tbt_ms\":14,\"service_ttft_ms\":1031,\"service_ttlt_ms\":3100,\"user_visible_ttft_ms\":670},\"prompt_tokens\":2741,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2890}}\n",
+    "content": "{\"scene_description\": \"A close-up view of a glowing blue triangle panel on the far wall, centered ahead just above the edge of the red carpet. The wall panel is directly in front at very short distance.\", \"reasoning\": \"Forward moves always approach the blue triangle, and repeated blocks indicate I am already at the wall. A small backward step will ensure space, then a single forward step could re-approach; however with only a few steps left and the target already reached visually, the optimal action is to avoid another blocked forward into the wall. To complete safely, I should stop pressing into the wall.\", \"action\": \"backward\", \"confidence\": 0.63}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A close-up view of a glowing blue triangle panel on the far wall, centered ahead just above the edge of the red carpet. The wall panel is directly in front at very short distance.",
+      "reasoning": "Forward moves always approach the blue triangle, and repeated blocks indicate I am already at the wall. A small backward step will ensure space, then a single forward step could re-approach; however with only a few steps left and the target already reached visually, the optimal action is to avoid another blocked forward into the wall. To complete safely, I should stop pressing into the wall.",
+      "action": "backward",
+      "confidence": 0.63
+    },
+    "action": "backward"
+  }
+]

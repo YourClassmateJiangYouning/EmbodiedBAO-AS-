@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:00:18+08:00",
+    "latency_ms": 3069,
+    "payload_bytes": 377050,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"4c229b29-d679-45cd-99df-0715c8a49e6e\",\"object\":\"chat.completion\",\"created\":1794207617,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a narrow opening in the far wall, where a red circle is visible. The opening appears narrow, flanked by patterned walls.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the fixed walking direction. Before entering the narrow opening, I should check my body width using look_down, since turning is impossible once shoulders are inside the opening. This glance is safe and doesn't change position.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.8}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1639,\"completion_tokens\":110,\"total_tokens\":1749,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":871},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a narrow opening in the far wall, where a red circle is visible. The opening appears narrow, flanked by patterned walls.\", \"reasoning\": \"The red circle is directly ahead along the fixed walking direction. Before entering the narrow opening, I should check my body width using look_down, since turning is impossible once shoulders are inside the opening. This glance is safe and doesn't change position.\", \"action\": \"look_down\", \"confidence\": 0.8}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a narrow opening in the far wall, where a red circle is visible. The opening appears narrow, flanked by patterned walls.",
+      "reasoning": "The red circle is directly ahead along the fixed walking direction. Before entering the narrow opening, I should check my body width using look_down, since turning is impossible once shoulders are inside the opening. This glance is safe and doesn't change position.",
+      "action": "look_down",
+      "confidence": 0.8
+    },
+    "action": "look_down"
+  }
+]

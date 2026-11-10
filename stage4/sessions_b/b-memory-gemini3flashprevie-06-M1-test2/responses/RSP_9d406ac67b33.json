@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:24:52+08:00",
+    "latency_ms": 5697,
+    "payload_bytes": 370372,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090824477650282258268d9d6v8bqTRu3\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212692,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading directly to a small green rectangle on the far wall. There are white markers on the floor to the left and right of the carpet. The robot is currently positioned on the carpet, facing the green rectangle.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees to present the narrowest profile, which is necessary to pass through the narrow opening ahead. I am currently at position x=2.75 and need to continue moving forward to reach the green rectangle at the end of the walkway. I will continue moving forward in 75cm increments.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3201,\"completion_tokens\":154,\"total_tokens\":3355,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3201,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":154,\"totalTokenCount\":3355,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2112},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":154}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2112,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":154,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading directly to a small green rectangle on the far wall. There are white markers on the floor to the left and right of the carpet. The robot is currently positioned on the carpet, facing the green rectangle.\",\n  \"reasoning\": \"I have already rotated my torso to 90 degrees to present the narrowest profile, which is necessary to pass through the narrow opening ahead. I am currently at position x=2.75 and need to continue moving forward to reach the green rectangle at the end of the walkway. I will continue moving forward in 75cm increments.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading directly to a small green rectangle on the far wall. There are white markers on the floor to the left and right of the carpet. The robot is currently positioned on the carpet, facing the green rectangle.",
+      "reasoning": "I have already rotated my torso to 90 degrees to present the narrowest profile, which is necessary to pass through the narrow opening ahead. I am currently at position x=2.75 and need to continue moving forward to reach the green rectangle at the end of the walkway. I will continue moving forward in 75cm increments.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:27:47+08:00",
+    "latency_ms": 5965,
+    "payload_bytes": 372094,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090827429137249168268d9d69hcP2dPD\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212868,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking down a red carpeted walkway towards a red circle on a black background at the far end. There are patterned walls on either side forming a narrow gap ahead. White rectangular markers are on the floor to the left and right.\\\", \\\"reasoning\\\": \\\"I am at x=2.75. The narrow opening between the patterned walls is getting closer. I need to determine if my current torso rotation (0.0 degrees) will allow me to pass through the gap. I will look down to see my body width relative to the path ahead.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2279,\"completion_tokens\":136,\"total_tokens\":2415,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2279,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":136,\"totalTokenCount\":2415,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1190}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":136}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1190,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":136,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking down a red carpeted walkway towards a red circle on a black background at the far end. There are patterned walls on either side forming a narrow gap ahead. White rectangular markers are on the floor to the left and right.\", \"reasoning\": \"I am at x=2.75. The narrow opening between the patterned walls is getting closer. I need to determine if my current torso rotation (0.0 degrees) will allow me to pass through the gap. I will look down to see my body width relative to the path ahead.\", \"action\": \"look_down\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down a red carpeted walkway towards a red circle on a black background at the far end. There are patterned walls on either side forming a narrow gap ahead. White rectangular markers are on the floor to the left and right.",
+      "reasoning": "I am at x=2.75. The narrow opening between the patterned walls is getting closer. I need to determine if my current torso rotation (0.0 degrees) will allow me to pass through the gap. I will look down to see my body width relative to the path ahead.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:41:24+08:00",
+    "latency_ms": 14815,
+    "payload_bytes": 353288,
+    "finish_reason": "stop",
+    "reasoning_tokens": 84,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n{\"id\":\"2c5a6ae5-7406-4b3e-8cfa-c61de7a6621c_4a17da79d36a42f6ada7d42e60230a8f\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leading toward a yellow arrow on a far wall with decorative panels on either side. The path is clear and unobstructed, with the arrow visible in the distance directly ahead along the walking direction.\\\", \\\"reasoning\\\": \\\"The path ahead is clear and the yellow arrow is visible straight ahead. I have already taken two steps forward and the camera confirms no obstacles. Continuing to move forward is the most direct way to reach the arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"First, I need to reach the yellow arrow on the far wall, and the path is clear. I've taken 2 steps forward already. The camera shows the red carpet leading to the arrow, no obstacles. I should continue moving forward to approach the arrow. The step limit is 30, so I can keep going. No need to turn or look down yet as everything seems straightforward. Just forward.\"}}],\"created\":1794213683,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":200,\"prompt_tokens\":2019,\"total_tokens\":2219,\"completion_tokens_details\":{\"reasoning_tokens\":84},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leading toward a yellow arrow on a far wall with decorative panels on either side. The path is clear and unobstructed, with the arrow visible in the distance directly ahead along the walking direction.\", \"reasoning\": \"The path ahead is clear and the yellow arrow is visible straight ahead. I have already taken two steps forward and the camera confirms no obstacles. Continuing to move forward is the most direct way to reach the arrow.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "First, I need to reach the yellow arrow on the far wall, and the path is clear. I've taken 2 steps forward already. The camera shows the red carpet leading to the arrow, no obstacles. I should continue moving forward to approach the arrow. The step limit is 30, so I can keep going. No need to turn or look down yet as everything seems straightforward. Just forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leading toward a yellow arrow on a far wall with decorative panels on either side. The path is clear and unobstructed, with the arrow visible in the distance directly ahead along the walking direction.",
+      "reasoning": "The path ahead is clear and the yellow arrow is visible straight ahead. I have already taken two steps forward and the camera confirms no obstacles. Continuing to move forward is the most direct way to reach the arrow.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

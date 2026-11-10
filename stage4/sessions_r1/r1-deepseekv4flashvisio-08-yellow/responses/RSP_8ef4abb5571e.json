@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:33+08:00",
+    "latency_ms": 2176,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"3f4dd3e3-fb85-45ad-aae3-4f5976757aba\",\"object\":\"chat.completion\",\"created\":1794208172,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is directly ahead and very close, mounted on a dark wall panel above the red carpet. The arrow appears centered in view.\\\", \\\"reasoning\\\": \\\"The arrow is directly ahead and close. My torso is now at 15 degrees after the left turns; I should rotate back to 0 degrees to align my body with the opening before attempting forward again, since turning is only possible while still outside the opening.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2471,\"completion_tokens\":106,\"total_tokens\":2577,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1703},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is directly ahead and very close, mounted on a dark wall panel above the red carpet. The arrow appears centered in view.\", \"reasoning\": \"The arrow is directly ahead and close. My torso is now at 15 degrees after the left turns; I should rotate back to 0 degrees to align my body with the opening before attempting forward again, since turning is only possible while still outside the opening.\", \"action\": \"turn_left\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is directly ahead and very close, mounted on a dark wall panel above the red carpet. The arrow appears centered in view.",
+      "reasoning": "The arrow is directly ahead and close. My torso is now at 15 degrees after the left turns; I should rotate back to 0 degrees to align my body with the opening before attempting forward again, since turning is only possible while still outside the opening.",
+      "action": "turn_left",
+      "confidence": 0.6
+    },
+    "action": "turn_left"
+  }
+]

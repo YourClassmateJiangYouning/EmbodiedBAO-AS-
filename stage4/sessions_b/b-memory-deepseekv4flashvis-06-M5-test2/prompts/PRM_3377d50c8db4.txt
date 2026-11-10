@@ -1,0 +1,54 @@
+You are a small wheeled robot. Your task is to reach the purple four-pointed star on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the purple four-pointed star on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the purple four-pointed star on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the purple four-pointed star, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the purple four-pointed star, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the purple four-pointed star you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+A previous successful traversal by the same model in this same scene and marker:
+
+1. forward -> executed  |  The star is directly ahead along the red carpet, and the walking direction is fixed toward it. The path appears clear, so moving forward repeatedly will bring me closer to the goal
+2. forward -> executed  |  The star is directly ahead along the red carpet and the path is clear. Continuing forward moves me closer to the goal without needing any turns.
+3. forward -> executed  |  The star is directly ahead along the red carpet and the path is unobstructed. Continuing forward moves me closer to the goal without needing any turns.
+4. forward -> executed  |  The star lies directly ahead along the red carpet and the path is clear. Continuing forward moves me closer to the goal without needing any turns.
+5. forward -> executed  |  The star is directly ahead along the red carpet and the path is clear. Continuing forward moves me closer to the goal without needing any turns.
+6. forward -> executed  |  The star is directly ahead along the red carpet and the path remains clear. Continuing forward moves me closer to the goal without needing any turns.
+7. look_down -> executed  |  Before proceeding through, I should check my body width with look_down to ensure I can fit through the gap without turning.
+8. forward -> executed  |  Given the star is straight ahead and the path was clear, I will proceed forward.
+9. forward -> executed  |  The star is directly ahead and the path is clear. Continuing forward is the most direct way to reach the star, and I can reassess if I fail to pass through.
+10. forward -> executed  |  The star is directly ahead along the fixed walking direction, and the opening is close. Since the torso is at 0 degrees and previous forward steps have been successful, continuing 
+11. forward -> blocked by obstacle or room boundary (wall_panel)  |  The star is directly ahead along the fixed walking direction and appears very close. Continuing forward should bring me to the goal without needing any turns.
+12. turn_right -> executed  |  I'll turn right repeatedly to align my thin side with the opening, then move forward.
+13. forward -> blocked by obstacle or room boundary (wall_panel)  |  Continuing to turn right toward 90 degrees would present my thinnest dimension to the gap, but the star is very close, so I should try forward again now that my orientation has cha
+14. turn_right -> executed  |  Continuing to turn right toward 90 degrees should present the slim profile and let me pass through.
+15. turn_right -> executed  |  The star is directly ahead and close.
+16. turn_right -> executed  |  Turning further right to 60 degrees should reduce the width presented to the opening, then I can try forward again.
+17. turn_right -> executed  |  One more turn_right should complete the alignment before trying forward again.
+18. turn_right -> executed
+19. forward -> executed  |  The star is just ahead, so attempting forward again should let me pass through the opening and reach the goal.
+20. forward -> executed  |  The star is directly ahead and appears close. One more forward step should bring me to the star.
+
+Current state:
+- position (x, y, z): [5.000, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 0.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (6 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: forward -> executed | your reasoning: The star is directly ahead along the fixed walking direction and the carpet path is unobstructed. Moving forward repeatedly will bring me closer to the goal, matching the previously successful traversal.
+- step 1: forward -> executed | your reasoning: The star is directly ahead along the fixed walking direction and the carpet path is clear. Moving forward repeatedly will bring me closer to the goal, matching the previously successful traversal.
+- step 2: forward -> executed | your reasoning: The star is directly ahead along the fixed walking direction and the carpet path is clear, matching the previously successful traversal. Continuing forward moves me closer to the goal.
+- step 3: forward -> executed | your reasoning: The star is directly ahead along the fixed walking direction and the carpet path is clear, matching the previously successful traversal. Continuing forward moves me closer to the goal.
+- step 4: forward -> executed | your reasoning: The star is directly ahead along the fixed walking direction and the carpet path is clear, matching the previously successful traversal. Continuing forward moves me closer to the goal.
+- step 5: forward -> executed | your reasoning: The star is directly ahead along the fixed walking direction and the carpet path appears clear, matching the previously successful traversal. Continuing forward moves me closer to the goal.
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:03:42+08:00",
+    "latency_ms": 10693,
+    "payload_bytes": 240166,
+    "finish_reason": "stop",
+    "reasoning_tokens": 130,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"52b3c97a-3467-406e-ba83-d7b3f4a8e8af_d6654caf7d784793a8de7c3d4247eef1\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is directly ahead on the floor, positioned in a dark opening between two patterned walls. A red carpet leads straight to the star. The star appears close, roughly one or two body-lengths away. The opening between the walls looks narrow but the path is clear.\\\", \\\"reasoning\\\": \\\"The star is directly ahead and very close now. My torso is at 0 degrees (narrowest orientation), which is optimal for the narrow opening. I should continue moving forward to reach the star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The purple star is directly ahead, relatively close now. The red carpet leads to it through a narrow opening between two patterned walls. I've already taken 7 steps. Position x=5.0, so I've moved 75cm * 7 = 5.25cm... wait, actually starting position might have been different. The star looks quite close - maybe 1-2 more forward steps needed. Let me just move forward to reach it.\\n\\nThe opening appears narrow but I've already passed through some of it based on my trajectory. The star is clearly visible ahead on the floor. Let me continue forward.\"}}],\"created\":1794215021,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":258,\"prompt_tokens\":2461,\"total_tokens\":2719,\"completion_tokens_details\":{\"reasoning_tokens\":130},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is directly ahead on the floor, positioned in a dark opening between two patterned walls. A red carpet leads straight to the star. The star appears close, roughly one or two body-lengths away. The opening between the walls looks narrow but the path is clear.\", \"reasoning\": \"The star is directly ahead and very close now. My torso is at 0 degrees (narrowest orientation), which is optimal for the narrow opening. I should continue moving forward to reach the star.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The purple star is directly ahead, relatively close now. The red carpet leads to it through a narrow opening between two patterned walls. I've already taken 7 steps. Position x=5.0, so I've moved 75cm * 7 = 5.25cm... wait, actually starting position might have been different. The star looks quite close - maybe 1-2 more forward steps needed. Let me just move forward to reach it.\n\nThe opening appears narrow but I've already passed through some of it based on my trajectory. The star is clearly visible ahead on the floor. Let me continue forward.",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is directly ahead on the floor, positioned in a dark opening between two patterned walls. A red carpet leads straight to the star. The star appears close, roughly one or two body-lengths away. The opening between the walls looks narrow but the path is clear.",
+      "reasoning": "The star is directly ahead and very close now. My torso is at 0 degrees (narrowest orientation), which is optimal for the narrow opening. I should continue moving forward to reach the star.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:07:57+08:00",
+    "latency_ms": 2646,
+    "payload_bytes": 164594,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"924c3842-10ce-493a-99f1-aed5a8bebf4f\",\"object\":\"chat.completion\",\"created\":1794208076,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle goal is visible directly ahead on a raised platform/panel, with a dark wall panel above it and a narrow opening around it. The robot is close but forward has been blocked twice by the wall panel.\\\", \\\"reasoning\\\": \\\"Forward has been blocked at torso rotations of 30 and 15 degrees. I just turned right again to 0 degrees (aligned with walking direction), which should present the narrowest profile through the opening. Trying forward now is the best test of whether alignment allows passage.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.5}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2254,\"completion_tokens\":123,\"total_tokens\":2377,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1486},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle goal is visible directly ahead on a raised platform/panel, with a dark wall panel above it and a narrow opening around it. The robot is close but forward has been blocked twice by the wall panel.\", \"reasoning\": \"Forward has been blocked at torso rotations of 30 and 15 degrees. I just turned right again to 0 degrees (aligned with walking direction), which should present the narrowest profile through the opening. Trying forward now is the best test of whether alignment allows passage.\", \"action\": \"forward\", \"confidence\": 0.5}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle goal is visible directly ahead on a raised platform/panel, with a dark wall panel above it and a narrow opening around it. The robot is close but forward has been blocked twice by the wall panel.",
+      "reasoning": "Forward has been blocked at torso rotations of 30 and 15 degrees. I just turned right again to 0 degrees (aligned with walking direction), which should present the narrowest profile through the opening. Trying forward now is the best test of whether alignment allows passage.",
+      "action": "forward",
+      "confidence": 0.5
+    },
+    "action": "forward"
+  }
+]

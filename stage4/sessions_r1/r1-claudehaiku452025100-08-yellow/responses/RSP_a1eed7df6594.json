@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:30:29+08:00",
+    "latency_ms": 6825,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_ekurfvzqufzqqvc6j2ylldzktkunkqxprb7p7ratlyc7ywkwvoka\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198629,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The camera shows a bright yellow arrow pointing to the right on a dark wall. The arrow is clearly visible and well-lit against the dark background. On the left side of the image, there appears to be a pink/reddish wall or panel. The arrow is my target destination on the far wall.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=7.250 with my torso rotated 60 degrees to the left. I have been blocked by wall_panel obstacles when trying to move forward directly. On step 22, I successfully moved forward, but step 23 was blocked again. My walking direction is fixed toward the yellow arrow. Since I've been stuck at this position for many steps and have tried multiple turning strategies, I should try turning right to explore a different path around the obstacle, as I haven't fully explored the right side yet with my current torso orientation.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.4\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":4159,\"completion_tokens\":225,\"total_tokens\":4384,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":4159,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":225,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":4159,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The camera shows a bright yellow arrow pointing to the right on a dark wall. The arrow is clearly visible and well-lit against the dark background. On the left side of the image, there appears to be a pink/reddish wall or panel. The arrow is my target destination on the far wall.\",\n  \"reasoning\": \"I am at position x=7.250 with my torso rotated 60 degrees to the left. I have been blocked by wall_panel obstacles when trying to move forward directly. On step 22, I successfully moved forward, but step 23 was blocked again. My walking direction is fixed toward the yellow arrow. Since I've been stuck at this position for many steps and have tried multiple turning strategies, I should try turning right to explore a different path around the obstacle, as I haven't fully explored the right side yet with my current torso orientation.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.4\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a bright yellow arrow pointing to the right on a dark wall. The arrow is clearly visible and well-lit against the dark background. On the left side of the image, there appears to be a pink/reddish wall or panel. The arrow is my target destination on the far wall.",
+      "reasoning": "I am at position x=7.250 with my torso rotated 60 degrees to the left. I have been blocked by wall_panel obstacles when trying to move forward directly. On step 22, I successfully moved forward, but step 23 was blocked again. My walking direction is fixed toward the yellow arrow. Since I've been stuck at this position for many steps and have tried multiple turning strategies, I should try turning right to explore a different path around the obstacle, as I haven't fully explored the right side yet with my current torso orientation.",
+      "action": "turn_right",
+      "confidence": 0.4
+    },
+    "action": "turn_right"
+  }
+]

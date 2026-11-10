@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:01:07+08:00",
+    "latency_ms": 2746,
+    "payload_bytes": 386357,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a7ff7ea3-d830-4ab7-86ca-4abc1675c7e1\",\"object\":\"chat.completion\",\"created\":1794207665,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a far wall with a doorway opening; a yellow arrow is visible on the wall near the opening. The path appears clear and straight ahead.\\\", \\\"reasoning\\\": \\\"The yellow arrow is directly ahead along the walking direction, and the path looks unobstructed. Moving forward advances toward the goal. Torso rotation is 0, so the body is aligned with the walkway; no turning is needed yet.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1541,\"completion_tokens\":110,\"total_tokens\":1651,\"prompt_tokens_details\":{\"cached_tokens\":1407},\"prompt_cache_hit_tokens\":1407,\"prompt_cache_miss_tokens\":134},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a far wall with a doorway opening; a yellow arrow is visible on the wall near the opening. The path appears clear and straight ahead.\", \"reasoning\": \"The yellow arrow is directly ahead along the walking direction, and the path looks unobstructed. Moving forward advances toward the goal. Torso rotation is 0, so the body is aligned with the walkway; no turning is needed yet.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a far wall with a doorway opening; a yellow arrow is visible on the wall near the opening. The path appears clear and straight ahead.",
+      "reasoning": "The yellow arrow is directly ahead along the walking direction, and the path looks unobstructed. Moving forward advances toward the goal. Torso rotation is 0, so the body is aligned with the walkway; no turning is needed yet.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

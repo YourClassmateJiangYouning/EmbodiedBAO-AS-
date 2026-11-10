@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:11:10+08:00",
+    "latency_ms": 2279,
+    "payload_bytes": 167433,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"568865d6-5466-43ce-9dcd-2fe2d466ca4e\",\"object\":\"chat.completion\",\"created\":1794208268,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle is directly ahead, mounted on a raised platform/ledge just in front of the robot, with a dark wall behind it and a red carpet below.\\\", \\\"reasoning\\\": \\\"The goal is very close and centered ahead. After backing up one step, the last forward step succeeded, so continuing forward should close the remaining gap to the triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2651,\"completion_tokens\":90,\"total_tokens\":2741,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2011},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle is directly ahead, mounted on a raised platform/ledge just in front of the robot, with a dark wall behind it and a red carpet below.\", \"reasoning\": \"The goal is very close and centered ahead. After backing up one step, the last forward step succeeded, so continuing forward should close the remaining gap to the triangle.\", \"action\": \"forward\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle is directly ahead, mounted on a raised platform/ledge just in front of the robot, with a dark wall behind it and a red carpet below.",
+      "reasoning": "The goal is very close and centered ahead. After backing up one step, the last forward step succeeded, so continuing forward should close the remaining gap to the triangle.",
+      "action": "forward",
+      "confidence": 0.7
+    },
+    "action": "forward"
+  }
+]

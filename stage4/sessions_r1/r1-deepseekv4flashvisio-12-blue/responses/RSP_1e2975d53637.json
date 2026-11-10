@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:02:10+08:00",
+    "latency_ms": 2737,
+    "payload_bytes": 242371,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"cdd00e89-e1df-4cb2-8203-5644b754bd81\",\"object\":\"chat.completion\",\"created\":1794207728,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading to a light-colored threshold, beyond which sits a black panel with a bright blue triangle on it. The doorway opening is framed by walls on the left and right, and the blue triangle is centered ahead.\\\", \\\"reasoning\\\": \\\"The blue triangle goal is directly ahead through the doorway. The torso is at 0 degrees, so body width is aligned with the opening, and prior downward glances confirmed the body width. Continuing forward advances toward the goal through the opening.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2131,\"completion_tokens\":121,\"total_tokens\":2252,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1491},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading to a light-colored threshold, beyond which sits a black panel with a bright blue triangle on it. The doorway opening is framed by walls on the left and right, and the blue triangle is centered ahead.\", \"reasoning\": \"The blue triangle goal is directly ahead through the doorway. The torso is at 0 degrees, so body width is aligned with the opening, and prior downward glances confirmed the body width. Continuing forward advances toward the goal through the opening.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading to a light-colored threshold, beyond which sits a black panel with a bright blue triangle on it. The doorway opening is framed by walls on the left and right, and the blue triangle is centered ahead.",
+      "reasoning": "The blue triangle goal is directly ahead through the doorway. The torso is at 0 degrees, so body width is aligned with the opening, and prior downward glances confirmed the body width. Continuing forward advances toward the goal through the opening.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:35:10+08:00",
+    "latency_ms": 10398,
+    "payload_bytes": 191441,
+    "finish_reason": "stop",
+    "reasoning_tokens": 35,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"5a403204-b548-4791-879b-b15e7623f67d_b64abcaf7ac94d8f9e70369b2307706c\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is directly ahead, close by, mounted on the far wall inside a narrow opening. Red carpet leads straight to it; the opening's side walls frame the view on left and right.\\\", \\\"reasoning\\\": \\\"The star is nearly within reach straight ahead. My torso remains at 90 degrees rotation, presenting my thin depth dimension to the narrow opening - the safe orientation to pass through. I continue forward to reach the star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The star is right ahead, very close. I should continue forward to reach it. Position x=7.25, star appears just ahead. Keep going forward.\"}}],\"created\":1794144910,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":150,\"prompt_tokens\":2992,\"total_tokens\":3142,\"completion_tokens_details\":{\"reasoning_tokens\":35},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is directly ahead, close by, mounted on the far wall inside a narrow opening. Red carpet leads straight to it; the opening's side walls frame the view on left and right.\", \"reasoning\": \"The star is nearly within reach straight ahead. My torso remains at 90 degrees rotation, presenting my thin depth dimension to the narrow opening - the safe orientation to pass through. I continue forward to reach the star.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The star is right ahead, very close. I should continue forward to reach it. Position x=7.25, star appears just ahead. Keep going forward.",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is directly ahead, close by, mounted on the far wall inside a narrow opening. Red carpet leads straight to it; the opening's side walls frame the view on left and right.",
+      "reasoning": "The star is nearly within reach straight ahead. My torso remains at 90 degrees rotation, presenting my thin depth dimension to the narrow opening - the safe orientation to pass through. I continue forward to reach the star.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:14:58+08:00",
+    "latency_ms": 14443,
+    "payload_bytes": 369687,
+    "finish_reason": "stop",
+    "reasoning_tokens": 152,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"51911fa5-e2e8-4d8b-91ad-6b2235b63fe9_3374a777080c425e812b69ee2f0287df\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead along the red carpeted walkway toward a wall decorated with abstract shapes and zigzags. A narrow dark doorway/gap in the wall is visible, with the red circle glowing just to the left of the gap opening. The walkway is clear; the left side shows a lighter floor area with colored shapes, and the right side of the carpet continues straight ahead toward the gap.\\\", \\\"reasoning\\\": \\\"My torso is turned 15 degrees left, which narrows my profile for the narrow gap ahead. The way forward is clear along the red carpet. I should continue moving forward toward the red circle rather than rotating further or moving back.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to move forward toward the red circle through the narrow gap. Torso is at 15 degrees left. The gap appears narrow; turning is needed to fit width-wise maybe. We already turned left 15 degrees. We could just move forward. The path: red carpet leads to gap with red circle. Just go forward repeatedly.\\n\\nDistance: we started at x=1.25 after 3 steps? Wait initial position was 1.25 after one forward (step 1). Actually current x=1.25, meaning we moved 75cm from 0.5? Anyway, wall appears maybe 2-3 meters away. Step limit 30, plenty.\\n\\nLet's just go forward.\"}}],\"created\":1794208498,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":310,\"prompt_tokens\":2138,\"total_tokens\":2448,\"completion_tokens_details\":{\"reasoning_tokens\":152},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead along the red carpeted walkway toward a wall decorated with abstract shapes and zigzags. A narrow dark doorway/gap in the wall is visible, with the red circle glowing just to the left of the gap opening. The walkway is clear; the left side shows a lighter floor area with colored shapes, and the right side of the carpet continues straight ahead toward the gap.\", \"reasoning\": \"My torso is turned 15 degrees left, which narrows my profile for the narrow gap ahead. The way forward is clear along the red carpet. I should continue moving forward toward the red circle rather than rotating further or moving back.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "We need to move forward toward the red circle through the narrow gap. Torso is at 15 degrees left. The gap appears narrow; turning is needed to fit width-wise maybe. We already turned left 15 degrees. We could just move forward. The path: red carpet leads to gap with red circle. Just go forward repeatedly.\n\nDistance: we started at x=1.25 after 3 steps? Wait initial position was 1.25 after one forward (step 1). Actually current x=1.25, meaning we moved 75cm from 0.5? Anyway, wall appears maybe 2-3 meters away. Step limit 30, plenty.\n\nLet's just go forward.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead along the red carpeted walkway toward a wall decorated with abstract shapes and zigzags. A narrow dark doorway/gap in the wall is visible, with the red circle glowing just to the left of the gap opening. The walkway is clear; the left side shows a lighter floor area with colored shapes, and the right side of the carpet continues straight ahead toward the gap.",
+      "reasoning": "My torso is turned 15 degrees left, which narrows my profile for the narrow gap ahead. The way forward is clear along the red carpet. I should continue moving forward toward the red circle rather than rotating further or moving back.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

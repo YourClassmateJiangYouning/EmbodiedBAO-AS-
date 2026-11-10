@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:41:02+08:00",
+    "latency_ms": 7125,
+    "payload_bytes": 263946,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090840582729675988268d9d6FrxCcAH7\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213662,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking down a red carpeted walkway towards a blue triangle on a dark far wall. Two patterned walls frame the path ahead, creating a narrow opening that I am approaching.\\\", \\\"reasoning\\\": \\\"I am at x=4.25 and getting closer to the opening between the two walls. Before I attempt to pass through, I need to check my body's width and orientation to ensure I can fit. I will use look_down to see my current profile.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2285,\"completion_tokens\":120,\"total_tokens\":2405,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2285,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":120,\"totalTokenCount\":2405,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1196}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":120}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1196,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":120,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking down a red carpeted walkway towards a blue triangle on a dark far wall. Two patterned walls frame the path ahead, creating a narrow opening that I am approaching.\", \"reasoning\": \"I am at x=4.25 and getting closer to the opening between the two walls. Before I attempt to pass through, I need to check my body's width and orientation to ensure I can fit. I will use look_down to see my current profile.\", \"action\": \"look_down\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down a red carpeted walkway towards a blue triangle on a dark far wall. Two patterned walls frame the path ahead, creating a narrow opening that I am approaching.",
+      "reasoning": "I am at x=4.25 and getting closer to the opening between the two walls. Before I attempt to pass through, I need to check my body's width and orientation to ensure I can fit. I will use look_down to see my current profile.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:23:27+08:00",
+    "latency_ms": 7514,
+    "payload_bytes": 242941,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_wz2kqrcilw2ivna26rcsbxka5h4m6n7yurnyol5cgmggqfjaxvna\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794212607,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the yellow arrow target clearly visible and centered on the far wall, positioned above a dark horizontal surface (appears to be a shelf or ledge). The red carpet floor extends forward toward the target. The path ahead appears clear with no visible obstacles blocking the direct route to the yellow arrow. The walls on either side show decorative elements with purple and blue patterns.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=5.000 with my torso at 0 degrees rotation, properly aligned with the yellow arrow target which is centered in my view. I have successfully moved forward 6 times in this episode without obstruction. The path forward remains clear and unobstructed. The yellow arrow is my target on the far wall, and continuing forward is the most direct route to reach it. I should continue moving forward.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3892,\"completion_tokens\":208,\"total_tokens\":4100,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3892,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":208,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3892,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the yellow arrow target clearly visible and centered on the far wall, positioned above a dark horizontal surface (appears to be a shelf or ledge). The red carpet floor extends forward toward the target. The path ahead appears clear with no visible obstacles blocking the direct route to the yellow arrow. The walls on either side show decorative elements with purple and blue patterns.\",\n  \"reasoning\": \"I am at position x=5.000 with my torso at 0 degrees rotation, properly aligned with the yellow arrow target which is centered in my view. I have successfully moved forward 6 times in this episode without obstruction. The path forward remains clear and unobstructed. The yellow arrow is my target on the far wall, and continuing forward is the most direct route to reach it. I should continue moving forward.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the yellow arrow target clearly visible and centered on the far wall, positioned above a dark horizontal surface (appears to be a shelf or ledge). The red carpet floor extends forward toward the target. The path ahead appears clear with no visible obstacles blocking the direct route to the yellow arrow. The walls on either side show decorative elements with purple and blue patterns.",
+      "reasoning": "I am at position x=5.000 with my torso at 0 degrees rotation, properly aligned with the yellow arrow target which is centered in my view. I have successfully moved forward 6 times in this episode without obstruction. The path forward remains clear and unobstructed. The yellow arrow is my target on the far wall, and continuing forward is the most direct route to reach it. I should continue moving forward.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

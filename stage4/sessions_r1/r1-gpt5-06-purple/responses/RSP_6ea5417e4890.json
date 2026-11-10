@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:40:22+08:00",
+    "latency_ms": 6965,
+    "payload_bytes": 191441,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A doorway ahead with a low lip/threshold between a red carpeted floor in the foreground and a dark smooth panel beyond. On the far wall, centered and close, is a glowing purple four-pointed star on a rectangular plaque.\\\", \\\"reasoning\\\": \\\"Only one step remains and repeated forwards at the threshold are blocked intermittently by the lip. A small backward move followed by a forward has helped before, but there is no time for a two-step sequence. The best chance to reach or touch the star in a single action is to attempt forward once more.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.56}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794206420,\"id\":\"chatcmpl-EiDLAjKumFedFPad4gLSrsGltGm6m\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":141,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":374,\"engine_ttlt_ms\":1671,\"pre_inference_ms\":407,\"service_tbt_ms\":9,\"service_ttft_ms\":919,\"service_ttlt_ms\":2200,\"user_visible_ttft_ms\":511},\"prompt_tokens\":3180,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":3321}}\n",
+    "content": "{\"scene_description\": \"A doorway ahead with a low lip/threshold between a red carpeted floor in the foreground and a dark smooth panel beyond. On the far wall, centered and close, is a glowing purple four-pointed star on a rectangular plaque.\", \"reasoning\": \"Only one step remains and repeated forwards at the threshold are blocked intermittently by the lip. A small backward move followed by a forward has helped before, but there is no time for a two-step sequence. The best chance to reach or touch the star in a single action is to attempt forward once more.\", \"action\": \"forward\", \"confidence\": 0.56}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A doorway ahead with a low lip/threshold between a red carpeted floor in the foreground and a dark smooth panel beyond. On the far wall, centered and close, is a glowing purple four-pointed star on a rectangular plaque.",
+      "reasoning": "Only one step remains and repeated forwards at the threshold are blocked intermittently by the lip. A small backward move followed by a forward has helped before, but there is no time for a two-step sequence. The best chance to reach or touch the star in a single action is to attempt forward once more.",
+      "action": "forward",
+      "confidence": 0.56
+    },
+    "action": "forward"
+  }
+]

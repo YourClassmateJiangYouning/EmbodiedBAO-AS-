@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:04:34+08:00",
+    "latency_ms": 3305,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"4f7d3b51-d3fd-48df-a436-adb52ae5ff5c\",\"object\":\"chat.completion\",\"created\":1794207872,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The downward glance shows the robot's own body from the front: two wheels on either side with a wide white platform/body spanning between them, plus a camera mast and cables in the center. The body width appears substantial relative to the narrow opening ahead.\\\", \\\"reasoning\\\": \\\"I have already advanced 8 forward steps (600cm) and am near the narrow opening. The look_down reveals my body is fairly wide, and turning is impossible once shoulders are inside the opening. Since my torso rotation is 0 degrees and the opening is straight ahead, I should proceed forward carefully; if the gap is too narrow I would need to turn before entering, but I have no confirmation of blockage yet. Continuing forward is the direct path to the arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2007,\"completion_tokens\":169,\"total_tokens\":2176,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1367},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The downward glance shows the robot's own body from the front: two wheels on either side with a wide white platform/body spanning between them, plus a camera mast and cables in the center. The body width appears substantial relative to the narrow opening ahead.\", \"reasoning\": \"I have already advanced 8 forward steps (600cm) and am near the narrow opening. The look_down reveals my body is fairly wide, and turning is impossible once shoulders are inside the opening. Since my torso rotation is 0 degrees and the opening is straight ahead, I should proceed forward carefully; if the gap is too narrow I would need to turn before entering, but I have no confirmation of blockage yet. Continuing forward is the direct path to the arrow.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The downward glance shows the robot's own body from the front: two wheels on either side with a wide white platform/body spanning between them, plus a camera mast and cables in the center. The body width appears substantial relative to the narrow opening ahead.",
+      "reasoning": "I have already advanced 8 forward steps (600cm) and am near the narrow opening. The look_down reveals my body is fairly wide, and turning is impossible once shoulders are inside the opening. Since my torso rotation is 0 degrees and the opening is straight ahead, I should proceed forward carefully; if the gap is too narrow I would need to turn before entering, but I have no confirmation of blockage yet. Continuing forward is the direct path to the arrow.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

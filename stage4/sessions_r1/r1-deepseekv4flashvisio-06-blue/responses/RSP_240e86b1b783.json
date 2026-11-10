@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:17:59+08:00",
+    "latency_ms": 2181,
+    "payload_bytes": 359664,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"952203ca-4a6b-483e-a068-ad2c5444721c\",\"object\":\"chat.completion\",\"created\":1794208679,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a dark doorway on the far wall, where a small blue triangle is visible. To the left is a lighter patterned floor area with a black border line.\\\", \\\"reasoning\\\": \\\"The blue triangle is straight ahead along the fixed walking direction, and the red path appears clear. Continuing forward reduces distance to the goal; no turning is needed since the doorway is aligned with the walking direction.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1631,\"completion_tokens\":106,\"total_tokens\":1737,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":863},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a dark doorway on the far wall, where a small blue triangle is visible. To the left is a lighter patterned floor area with a black border line.\", \"reasoning\": \"The blue triangle is straight ahead along the fixed walking direction, and the red path appears clear. Continuing forward reduces distance to the goal; no turning is needed since the doorway is aligned with the walking direction.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a dark doorway on the far wall, where a small blue triangle is visible. To the left is a lighter patterned floor area with a black border line.",
+      "reasoning": "The blue triangle is straight ahead along the fixed walking direction, and the red path appears clear. Continuing forward reduces distance to the goal; no turning is needed since the doorway is aligned with the walking direction.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

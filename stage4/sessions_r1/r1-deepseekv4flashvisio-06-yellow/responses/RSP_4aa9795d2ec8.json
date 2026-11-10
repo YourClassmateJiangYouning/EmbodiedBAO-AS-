@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:17:46+08:00",
+    "latency_ms": 2545,
+    "payload_bytes": 245159,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"d40a65d0-2269-487f-8226-d03b5f81c96b\",\"object\":\"chat.completion\",\"created\":1794208665,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is mounted low on a dark panel directly ahead, very close, with patterned walls on either side and a dark red carpeted floor in front.\\\", \\\"reasoning\\\": \\\"The arrow is extremely close and centered. Forward steps have been repeatedly blocked by the low wall_panel, but backing up then moving forward succeeded once (step 23), suggesting the panel is passable at a slightly different distance. I just backed up at step 25, so trying forward again may let me reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3211,\"completion_tokens\":123,\"total_tokens\":3334,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2571},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is mounted low on a dark panel directly ahead, very close, with patterned walls on either side and a dark red carpeted floor in front.\", \"reasoning\": \"The arrow is extremely close and centered. Forward steps have been repeatedly blocked by the low wall_panel, but backing up then moving forward succeeded once (step 23), suggesting the panel is passable at a slightly different distance. I just backed up at step 25, so trying forward again may let me reach the goal.\", \"action\": \"forward\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is mounted low on a dark panel directly ahead, very close, with patterned walls on either side and a dark red carpeted floor in front.",
+      "reasoning": "The arrow is extremely close and centered. Forward steps have been repeatedly blocked by the low wall_panel, but backing up then moving forward succeeded once (step 23), suggesting the panel is passable at a slightly different distance. I just backed up at step 25, so trying forward again may let me reach the goal.",
+      "action": "forward",
+      "confidence": 0.4
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:01:14+08:00",
+    "latency_ms": 6353,
+    "payload_bytes": 286556,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081101090089620818268d9d6lS7CGzpa\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135674,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight ahead down a walkway. On the left is a patterned wall, and on the right is a blue and white patterned wall. There is a narrow vertical opening between these two walls. Through the opening, a blue triangle is visible on a far wall in the distance. The floor is covered with a dark red carpet on the right and a patterned surface on the left.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at x=5.0 and my torso is rotated to 90 degrees, which is my thinnest profile. I am very close to the narrow gap. I need to continue moving forward to pass through the opening and reach the blue triangle on the far wall.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2903,\"completion_tokens\":170,\"total_tokens\":3073,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2903,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":170,\"totalTokenCount\":3073,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1814},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":170}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1814,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":170,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight ahead down a walkway. On the left is a patterned wall, and on the right is a blue and white patterned wall. There is a narrow vertical opening between these two walls. Through the opening, a blue triangle is visible on a far wall in the distance. The floor is covered with a dark red carpet on the right and a patterned surface on the left.\",\n  \"reasoning\": \"I am currently at x=5.0 and my torso is rotated to 90 degrees, which is my thinnest profile. I am very close to the narrow gap. I need to continue moving forward to pass through the opening and reach the blue triangle on the far wall.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight ahead down a walkway. On the left is a patterned wall, and on the right is a blue and white patterned wall. There is a narrow vertical opening between these two walls. Through the opening, a blue triangle is visible on a far wall in the distance. The floor is covered with a dark red carpet on the right and a patterned surface on the left.",
+      "reasoning": "I am currently at x=5.0 and my torso is rotated to 90 degrees, which is my thinnest profile. I am very close to the narrow gap. I need to continue moving forward to pass through the opening and reach the blue triangle on the far wall.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

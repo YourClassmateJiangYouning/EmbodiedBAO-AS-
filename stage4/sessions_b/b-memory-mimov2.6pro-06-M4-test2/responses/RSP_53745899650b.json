@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:55:48+08:00",
+    "latency_ms": 10454,
+    "payload_bytes": 383069,
+    "finish_reason": "stop",
+    "reasoning_tokens": 140,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"ac5d2e6f-adcb-4549-9d2b-7b766488eead_51fdc1d3de924b59b82cd1d9b31813bd\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the red carpet stretching forward toward a dark opening in the far wall, where the blue triangle is visible at floor level. The floor on either side has geometric patterns, and decorated walls flank the passage. The path ahead along the carpet is clear and the opening is still some distance away.\\\",\\\"reasoning\\\": \\\"My torso is at 45 degrees rotation. Following the successful previous traversal, I need to reach 90 degrees to present my thinnest profile before entering the tight opening. The opening is still well ahead (x=0.5), so I can safely continue rotating my torso left.\\\",\\\"action\\\": \\\"turn_left\\\",\\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at torso rotation 45, need to reach 90. Continue turning left twice more, then forward. Actually previous successful traversal: 6 turn_left to reach 90. We've done 3, so 3 more? Wait step1=15, step2=30, step3=45... hmm state says 45 after 3 turns, so each turn adds 15. We need 3 more turns to reach 90. But 30-step limit: 4 used, 26 left. Fine.\\n\\nBut maybe turn only needed before opening; opening far (x=0.5). Continue turning.\"}}],\"created\":1794214548,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":284,\"prompt_tokens\":2954,\"total_tokens\":3238,\"completion_tokens_details\":{\"reasoning_tokens\":140},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows the red carpet stretching forward toward a dark opening in the far wall, where the blue triangle is visible at floor level. The floor on either side has geometric patterns, and decorated walls flank the passage. The path ahead along the carpet is clear and the opening is still some distance away.\",\"reasoning\": \"My torso is at 45 degrees rotation. Following the successful previous traversal, I need to reach 90 degrees to present my thinnest profile before entering the tight opening. The opening is still well ahead (x=0.5), so I can safely continue rotating my torso left.\",\"action\": \"turn_left\",\"confidence\": 0.9}",
+    "reasoning_content": "We are at torso rotation 45, need to reach 90. Continue turning left twice more, then forward. Actually previous successful traversal: 6 turn_left to reach 90. We've done 3, so 3 more? Wait step1=15, step2=30, step3=45... hmm state says 45 after 3 turns, so each turn adds 15. We need 3 more turns to reach 90. But 30-step limit: 4 used, 26 left. Fine.\n\nBut maybe turn only needed before opening; opening far (x=0.5). Continue turning.",
+    "parsed": {
+      "scene_description": "The camera shows the red carpet stretching forward toward a dark opening in the far wall, where the blue triangle is visible at floor level. The floor on either side has geometric patterns, and decorated walls flank the passage. The path ahead along the carpet is clear and the opening is still some distance away.",
+      "reasoning": "My torso is at 45 degrees rotation. Following the successful previous traversal, I need to reach 90 degrees to present my thinnest profile before entering the tight opening. The opening is still well ahead (x=0.5), so I can safely continue rotating my torso left.",
+      "action": "turn_left",
+      "confidence": 0.9
+    },
+    "action": "turn_left"
+  }
+]

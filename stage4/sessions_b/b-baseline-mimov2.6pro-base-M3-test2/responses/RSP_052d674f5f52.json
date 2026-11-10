@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:42:46+08:00",
+    "latency_ms": 11942,
+    "payload_bytes": 242941,
+    "finish_reason": "stop",
+    "reasoning_tokens": 75,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"1fbeb8e2-bafb-40d1-833d-615667430e16_ab26a11ffe7f4da8b508bd8740209077\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading forward between two decorated walls (with blue/purple geometric patterns). Straight ahead, the yellow arrow marker is visible on the dark floor near the far wall, pointing right. The opening between the walls is directly ahead and the path is clear.\\\", \\\"reasoning\\\": \\\"The yellow arrow is clearly visible directly ahead, and the path along the red carpet is unobstructed. My torso is already aligned at 0 degrees (narrowest profile), and I've confirmed my body width via the earlier look_down. I should continue moving forward toward the arrow to close the remaining distance.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The current view shows the yellow arrow at the far wall, with walls on either side creating an opening. The red carpet leads toward the arrow. I've taken 7 steps already, mostly forward. I should continue moving forward toward the arrow.\\n\\nThe path is clear ahead, and the arrow is visible through the opening between the walls. Continuing forward is the right move.\"}}],\"created\":1794213766,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":229,\"prompt_tokens\":2298,\"total_tokens\":2527,\"completion_tokens_details\":{\"reasoning_tokens\":75},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading forward between two decorated walls (with blue/purple geometric patterns). Straight ahead, the yellow arrow marker is visible on the dark floor near the far wall, pointing right. The opening between the walls is directly ahead and the path is clear.\", \"reasoning\": \"The yellow arrow is clearly visible directly ahead, and the path along the red carpet is unobstructed. My torso is already aligned at 0 degrees (narrowest profile), and I've confirmed my body width via the earlier look_down. I should continue moving forward toward the arrow to close the remaining distance.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The current view shows the yellow arrow at the far wall, with walls on either side creating an opening. The red carpet leads toward the arrow. I've taken 7 steps already, mostly forward. I should continue moving forward toward the arrow.\n\nThe path is clear ahead, and the arrow is visible through the opening between the walls. Continuing forward is the right move.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading forward between two decorated walls (with blue/purple geometric patterns). Straight ahead, the yellow arrow marker is visible on the dark floor near the far wall, pointing right. The opening between the walls is directly ahead and the path is clear.",
+      "reasoning": "The yellow arrow is clearly visible directly ahead, and the path along the red carpet is unobstructed. My torso is already aligned at 0 degrees (narrowest profile), and I've confirmed my body width via the earlier look_down. I should continue moving forward toward the arrow to close the remaining distance.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:38:18+08:00",
+    "latency_ms": 23782,
+    "payload_bytes": 354416,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A straight red-carpeted corridor leads to an open doorway ahead. Beyond the doorway, a red circular target is visible low on a dark object against patterned walls. The path in the corridor to the doorway appears clear.\\\",\\\"reasoning\\\":\\\"The target is straight ahead and unobstructed along my walking direction. Moving forward will bring me closer efficiently.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.67}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794199096,\"id\":\"chatcmpl-EiBR2X3gT0dMC0ck4l64uzgkElvP6\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261027053535-fb88dfcf-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":92,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":12,\"engine_ttft_ms\":261,\"engine_ttlt_ms\":1340,\"pre_inference_ms\":441,\"service_tbt_ms\":12,\"service_ttft_ms\":926,\"service_ttlt_ms\":1988,\"user_visible_ttft_ms\":485},\"prompt_tokens\":1625,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1717}}\n",
+    "content": "{\"scene_description\":\"A straight red-carpeted corridor leads to an open doorway ahead. Beyond the doorway, a red circular target is visible low on a dark object against patterned walls. The path in the corridor to the doorway appears clear.\",\"reasoning\":\"The target is straight ahead and unobstructed along my walking direction. Moving forward will bring me closer efficiently.\",\"action\":\"forward\",\"confidence\":0.67}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight red-carpeted corridor leads to an open doorway ahead. Beyond the doorway, a red circular target is visible low on a dark object against patterned walls. The path in the corridor to the doorway appears clear.",
+      "reasoning": "The target is straight ahead and unobstructed along my walking direction. Moving forward will bring me closer efficiently.",
+      "action": "forward",
+      "confidence": 0.67
+    },
+    "action": "forward"
+  }
+]

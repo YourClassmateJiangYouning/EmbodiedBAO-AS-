@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:38:43+08:00",
+    "latency_ms": 5736,
+    "payload_bytes": 262355,
+    "finish_reason": "stop",
+    "reasoning_tokens": 39,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"528db457-bd50-4acf-bd82-d861c5b92257_e4091eb7cca84ebcab4ec2f0f478901c\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The red circle on a dark rectangular stand is now very close, directly ahead on the light-colored floor at the end of the red carpeted walkway. A dark draped object hangs above/behind it.\\\", \\\"reasoning\\\": \\\"The red circle target is directly ahead and very close. I am already rotated 90 degrees presenting my narrow profile. I should continue moving forward to reach the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red circle is very close now, on a dark stand on the floor. I should continue forward to reach it. It looks quite close — maybe one more forward step should reach it.\"}}],\"created\":1794137923,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":142,\"prompt_tokens\":2955,\"total_tokens\":3097,\"completion_tokens_details\":{\"reasoning_tokens\":39},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The red circle on a dark rectangular stand is now very close, directly ahead on the light-colored floor at the end of the red carpeted walkway. A dark draped object hangs above/behind it.\", \"reasoning\": \"The red circle target is directly ahead and very close. I am already rotated 90 degrees presenting my narrow profile. I should continue moving forward to reach the target.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The red circle is very close now, on a dark stand on the floor. I should continue forward to reach it. It looks quite close — maybe one more forward step should reach it.",
+    "parsed": {
+      "scene_description": "The red circle on a dark rectangular stand is now very close, directly ahead on the light-colored floor at the end of the red carpeted walkway. A dark draped object hangs above/behind it.",
+      "reasoning": "The red circle target is directly ahead and very close. I am already rotated 90 degrees presenting my narrow profile. I should continue moving forward to reach the target.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

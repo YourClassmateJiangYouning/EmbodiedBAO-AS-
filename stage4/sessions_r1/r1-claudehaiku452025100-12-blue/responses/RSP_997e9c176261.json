@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:40:21+08:00",
+    "latency_ms": 7260,
+    "payload_bytes": 317352,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_5j2zxw2hbtgow5twnevcf5q6ihyukkpyz6hi44zoxwxwfgwjyyyq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145221,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a clear corridor with a dark red/maroon textured floor stretching ahead. The blue triangle target is visible on the far wall, centered in my view and well-lit. The walls on both sides have colorful murals with abstract designs in orange, yellow, and purple tones. The path ahead is completely unobstructed and straight. My walking direction is fixed toward the blue triangle.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=3.500 after four forward steps. The blue triangle remains clearly visible on the far wall ahead. The corridor is completely clear with no obstacles blocking my path. My torso is at 0 degrees rotation, and my walking direction is fixed toward the target. I have 26 steps remaining. The most efficient action is to continue moving forward toward the blue triangle.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.98\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2617,\"completion_tokens\":209,\"total_tokens\":2826,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2617,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":209,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2617,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a clear corridor with a dark red/maroon textured floor stretching ahead. The blue triangle target is visible on the far wall, centered in my view and well-lit. The walls on both sides have colorful murals with abstract designs in orange, yellow, and purple tones. The path ahead is completely unobstructed and straight. My walking direction is fixed toward the blue triangle.\",\n  \"reasoning\": \"I am at position x=3.500 after four forward steps. The blue triangle remains clearly visible on the far wall ahead. The corridor is completely clear with no obstacles blocking my path. My torso is at 0 degrees rotation, and my walking direction is fixed toward the target. I have 26 steps remaining. The most efficient action is to continue moving forward toward the blue triangle.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.98\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a clear corridor with a dark red/maroon textured floor stretching ahead. The blue triangle target is visible on the far wall, centered in my view and well-lit. The walls on both sides have colorful murals with abstract designs in orange, yellow, and purple tones. The path ahead is completely unobstructed and straight. My walking direction is fixed toward the blue triangle.",
+      "reasoning": "I am at position x=3.500 after four forward steps. The blue triangle remains clearly visible on the far wall ahead. The corridor is completely clear with no obstacles blocking my path. My torso is at 0 degrees rotation, and my walking direction is fixed toward the target. I have 26 steps remaining. The most efficient action is to continue moving forward toward the blue triangle.",
+      "action": "forward",
+      "confidence": 0.98
+    },
+    "action": "forward"
+  }
+]

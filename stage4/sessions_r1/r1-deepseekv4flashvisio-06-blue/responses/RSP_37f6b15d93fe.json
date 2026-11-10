@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:18:19+08:00",
+    "latency_ms": 2670,
+    "payload_bytes": 232670,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a2d4f6f5-a744-428e-84c9-0adb3e5c1b86\",\"object\":\"chat.completion\",\"created\":1794208698,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the blue triangle on the far wall straight ahead, framed by a narrow dark opening between two patterned walls. The red carpet path leads directly toward the opening, which appears quite narrow relative to the robot's body.\\\", \\\"reasoning\\\": \\\"The doorway ahead looks narrow, and I have not yet verified my body width. Before attempting to pass through, I should use look_down to check the width I present to the opening, since turning is not possible once shoulders are inside.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.8}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2019,\"completion_tokens\":117,\"total_tokens\":2136,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1251},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows the blue triangle on the far wall straight ahead, framed by a narrow dark opening between two patterned walls. The red carpet path leads directly toward the opening, which appears quite narrow relative to the robot's body.\", \"reasoning\": \"The doorway ahead looks narrow, and I have not yet verified my body width. Before attempting to pass through, I should use look_down to check the width I present to the opening, since turning is not possible once shoulders are inside.\", \"action\": \"look_down\", \"confidence\": 0.8}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows the blue triangle on the far wall straight ahead, framed by a narrow dark opening between two patterned walls. The red carpet path leads directly toward the opening, which appears quite narrow relative to the robot's body.",
+      "reasoning": "The doorway ahead looks narrow, and I have not yet verified my body width. Before attempting to pass through, I should use look_down to check the width I present to the opening, since turning is not possible once shoulders are inside.",
+      "action": "look_down",
+      "confidence": 0.8
+    },
+    "action": "look_down"
+  }
+]

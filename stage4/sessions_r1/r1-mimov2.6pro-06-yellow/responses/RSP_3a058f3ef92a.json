@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:23:36+08:00",
+    "latency_ms": 5577,
+    "payload_bytes": 336378,
+    "finish_reason": "stop",
+    "reasoning_tokens": 17,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"191d85b5-d6f6-4a7f-a245-e1fea581f7f2_d8078cb89fa34c51a804abdfc5e3aae7\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet stretches ahead toward a dark opening in a decorated wall. A yellow arrow pointing right is visible near the opening. The floor to the left has colorful geometric patterns. The path ahead is clear with no obstacles.\\\", \\\"reasoning\\\": \\\"The yellow arrow is visible ahead at the opening in the far wall, and the red carpet leads straight to it. Three forward steps have been taken successfully and the path remains clear with no obstacles, so I continue moving forward toward the arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear, red carpet leads to the yellow arrow. Continue forward.\"}}],\"created\":1794209016,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":139,\"prompt_tokens\":2103,\"total_tokens\":2242,\"completion_tokens_details\":{\"reasoning_tokens\":17},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet stretches ahead toward a dark opening in a decorated wall. A yellow arrow pointing right is visible near the opening. The floor to the left has colorful geometric patterns. The path ahead is clear with no obstacles.\", \"reasoning\": \"The yellow arrow is visible ahead at the opening in the far wall, and the red carpet leads straight to it. Three forward steps have been taken successfully and the path remains clear with no obstacles, so I continue moving forward toward the arrow.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear, red carpet leads to the yellow arrow. Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpet stretches ahead toward a dark opening in a decorated wall. A yellow arrow pointing right is visible near the opening. The floor to the left has colorful geometric patterns. The path ahead is clear with no obstacles.",
+      "reasoning": "The yellow arrow is visible ahead at the opening in the far wall, and the red carpet leads straight to it. Three forward steps have been taken successfully and the path remains clear with no obstacles, so I continue moving forward toward the arrow.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

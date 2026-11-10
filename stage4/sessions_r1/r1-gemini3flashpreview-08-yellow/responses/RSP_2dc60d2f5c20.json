@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:27:03+08:00",
+    "latency_ms": 15482,
+    "payload_bytes": 164446,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090426493114857768268d9d6CfujcEYS\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794198423,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is now very close to the yellow arrow on the far wall. The arrow is large and centered in the view, indicating I have reached the target area.\\\", \\\"reasoning\\\": \\\"I am at position x=8.0, which is the final destination. I have successfully navigated through the narrow opening by rotating my torso to 90 degrees and moving forward. I will move forward one last time to ensure I am fully at the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3205,\"completion_tokens\":111,\"total_tokens\":3316,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3205,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":111,\"totalTokenCount\":3316,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2116}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":111}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2116,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":111,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is now very close to the yellow arrow on the far wall. The arrow is large and centered in the view, indicating I have reached the target area.\", \"reasoning\": \"I am at position x=8.0, which is the final destination. I have successfully navigated through the narrow opening by rotating my torso to 90 degrees and moving forward. I will move forward one last time to ensure I am fully at the target.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is now very close to the yellow arrow on the far wall. The arrow is large and centered in the view, indicating I have reached the target area.",
+      "reasoning": "I am at position x=8.0, which is the final destination. I have successfully navigated through the narrow opening by rotating my torso to 90 degrees and moving forward. I will move forward one last time to ensure I am fully at the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

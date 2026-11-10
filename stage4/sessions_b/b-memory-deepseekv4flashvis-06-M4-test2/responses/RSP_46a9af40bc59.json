@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:23:30+08:00",
+    "latency_ms": 2834,
+    "payload_bytes": 171622,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e54ada9c-189c-4857-b9d7-ae607f49d4eb\",\"object\":\"chat.completion\",\"created\":1794212609,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle is visible directly ahead on a low platform, with a clear red carpet path leading to it. The torso is at 0 degrees and the path appears unobstructed.\\\", \\\"reasoning\\\": \\\"The goal is straight ahead along the fixed walking direction and close. The path is clear, so continuing forward reduces the remaining distance to the blue triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2757,\"completion_tokens\":91,\"total_tokens\":2848,\"prompt_tokens_details\":{\"cached_tokens\":1280},\"prompt_cache_hit_tokens\":1280,\"prompt_cache_miss_tokens\":1477},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle is visible directly ahead on a low platform, with a clear red carpet path leading to it. The torso is at 0 degrees and the path appears unobstructed.\", \"reasoning\": \"The goal is straight ahead along the fixed walking direction and close. The path is clear, so continuing forward reduces the remaining distance to the blue triangle.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle is visible directly ahead on a low platform, with a clear red carpet path leading to it. The torso is at 0 degrees and the path appears unobstructed.",
+      "reasoning": "The goal is straight ahead along the fixed walking direction and close. The path is clear, so continuing forward reduces the remaining distance to the blue triangle.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:35:46+08:00",
+    "latency_ms": 9399,
+    "payload_bytes": 363219,
+    "finish_reason": "stop",
+    "reasoning_tokens": 179,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"f5736e66-5971-4cee-99c8-8098ced57504_92a5a9bfd70e4d858043eb2587136668\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads forward to a dark doorway in the far wall, where a red circle is visible. The walls on either side are covered in abstract geometric patterns. The doorway ahead appears potentially narrow, with the dark opening framed by two wall panels.\\\", \\\"reasoning\\\": \\\"The path ahead is clear along the red carpet toward the red circle. I should continue advancing. The doorway looks potentially narrow, so before entering it I should glance down to see my body width and plan accordingly. For now, moving forward is safe as I'm not yet near the opening.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.8}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image shows a red carpet path leading to a doorway with a red circle in it. The doorway appears narrow. I should continue moving forward toward it. But I should consider whether the door opening is narrow and might require turning sideways. The task says turning changes how wide body is. Let me look down at some point to see body width. But for now, the path is clear ahead; I can continue forward.\\n\\nThe doorway appears narrow - there's a dark opening between two walls. The red circle is inside/near the doorway. I should move forward and then check if I fit through the doorway. Let me do look_down first to see body width? Actually let me continue forward first to get closer, then look down before entering the opening.\\n\\nCurrent position x=1.25, one step taken. The doorway is still some distance away. Let me move forward again.\"}}],\"created\":1794198945,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":317,\"prompt_tokens\":2009,\"total_tokens\":2326,\"completion_tokens_details\":{\"reasoning_tokens\":179},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads forward to a dark doorway in the far wall, where a red circle is visible. The walls on either side are covered in abstract geometric patterns. The doorway ahead appears potentially narrow, with the dark opening framed by two wall panels.\", \"reasoning\": \"The path ahead is clear along the red carpet toward the red circle. I should continue advancing. The doorway looks potentially narrow, so before entering it I should glance down to see my body width and plan accordingly. For now, moving forward is safe as I'm not yet near the opening.\", \"action\": \"forward\", \"confidence\": 0.8}",
+    "reasoning_content": "The image shows a red carpet path leading to a doorway with a red circle in it. The doorway appears narrow. I should continue moving forward toward it. But I should consider whether the door opening is narrow and might require turning sideways. The task says turning changes how wide body is. Let me look down at some point to see body width. But for now, the path is clear ahead; I can continue forward.\n\nThe doorway appears narrow - there's a dark opening between two walls. The red circle is inside/near the doorway. I should move forward and then check if I fit through the doorway. Let me do look_down first to see body width? Actually let me continue forward first to get closer, then look down before entering the opening.\n\nCurrent position x=1.25, one step taken. The doorway is still some distance away. Let me move forward again.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads forward to a dark doorway in the far wall, where a red circle is visible. The walls on either side are covered in abstract geometric patterns. The doorway ahead appears potentially narrow, with the dark opening framed by two wall panels.",
+      "reasoning": "The path ahead is clear along the red carpet toward the red circle. I should continue advancing. The doorway looks potentially narrow, so before entering it I should glance down to see my body width and plan accordingly. For now, moving forward is safe as I'm not yet near the opening.",
+      "action": "forward",
+      "confidence": 0.8
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:00:31+08:00",
+    "latency_ms": 11904,
+    "payload_bytes": 196859,
+    "finish_reason": "stop",
+    "reasoning_tokens": 70,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"8b648b7f-1301-43d5-90f6-2405ca393792_d1d9019c9a9c4f82b49c396ecc9d26a7\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle is visible directly ahead on the far side, sitting on the floor past a strip of light-colored flooring. The red carpet fills the foreground, with some distance still remaining between me and the triangle. The doorway edges have been passed and the path is clear.\\\", \\\"reasoning\\\": \\\"My torso remains rotated 90 degrees, presenting the thin dimension toward the opening, matching the successful traversal. The blue triangle is directly ahead but there is still visible carpet between my body and it, so I continue forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We're at x=5.75, after 7 forward steps of 0.75 = 5.25... starting at 0.5? Anyway. The blue triangle appears close but there's still some carpet. Previous successful traversal had about 12-13 forwards after turning. Let's continue forward.\"}}],\"created\":1794214831,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":196,\"prompt_tokens\":3495,\"total_tokens\":3691,\"completion_tokens_details\":{\"reasoning_tokens\":70},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The blue triangle is visible directly ahead on the far side, sitting on the floor past a strip of light-colored flooring. The red carpet fills the foreground, with some distance still remaining between me and the triangle. The doorway edges have been passed and the path is clear.\", \"reasoning\": \"My torso remains rotated 90 degrees, presenting the thin dimension toward the opening, matching the successful traversal. The blue triangle is directly ahead but there is still visible carpet between my body and it, so I continue forward.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "We're at x=5.75, after 7 forward steps of 0.75 = 5.25... starting at 0.5? Anyway. The blue triangle appears close but there's still some carpet. Previous successful traversal had about 12-13 forwards after turning. Let's continue forward.",
+    "parsed": {
+      "scene_description": "The blue triangle is visible directly ahead on the far side, sitting on the floor past a strip of light-colored flooring. The red carpet fills the foreground, with some distance still remaining between me and the triangle. The doorway edges have been passed and the path is clear.",
+      "reasoning": "My torso remains rotated 90 degrees, presenting the thin dimension toward the opening, matching the successful traversal. The blue triangle is directly ahead but there is still visible carpet between my body and it, so I continue forward.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

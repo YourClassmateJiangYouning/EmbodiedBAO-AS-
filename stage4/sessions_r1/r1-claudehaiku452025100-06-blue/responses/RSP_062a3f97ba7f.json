@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:14:34+08:00",
+    "latency_ms": 6700,
+    "payload_bytes": 232670,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_hoxpjncxrsnn72oz3cztrl6fyjtuu6qoxwludehgkia55q4b4ara\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794204874,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the blue triangle target clearly on the far wall, centered in my view. The immediate foreground shows a dark red/maroon carpet or platform. There are wall panels visible on both sides - a tan/beige panel on the left with diagonal stripes and a purple panel on the right. The blue triangle is my goal and is directly ahead along my walking direction.\\\",\\n  \\\"reasoning\\\": \\\"I've been stuck at x=7.250 for many steps, blocked by a wall_panel when trying to move forward. I just moved backward to x=6.500 in step 15. My torso is rotated 15 degrees left. The wall_panel obstacle appears to be blocking the direct forward path. I should try turning my torso back to 0 degrees (straight ahead) to reset my orientation, then attempt to move forward again to see if the backward step helped me get around the obstacle.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.6\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3535,\"completion_tokens\":232,\"total_tokens\":3767,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3535,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":232,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3535,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the blue triangle target clearly on the far wall, centered in my view. The immediate foreground shows a dark red/maroon carpet or platform. There are wall panels visible on both sides - a tan/beige panel on the left with diagonal stripes and a purple panel on the right. The blue triangle is my goal and is directly ahead along my walking direction.\",\n  \"reasoning\": \"I've been stuck at x=7.250 for many steps, blocked by a wall_panel when trying to move forward. I just moved backward to x=6.500 in step 15. My torso is rotated 15 degrees left. The wall_panel obstacle appears to be blocking the direct forward path. I should try turning my torso back to 0 degrees (straight ahead) to reset my orientation, then attempt to move forward again to see if the backward step helped me get around the obstacle.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.6\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the blue triangle target clearly on the far wall, centered in my view. The immediate foreground shows a dark red/maroon carpet or platform. There are wall panels visible on both sides - a tan/beige panel on the left with diagonal stripes and a purple panel on the right. The blue triangle is my goal and is directly ahead along my walking direction.",
+      "reasoning": "I've been stuck at x=7.250 for many steps, blocked by a wall_panel when trying to move forward. I just moved backward to x=6.500 in step 15. My torso is rotated 15 degrees left. The wall_panel obstacle appears to be blocking the direct forward path. I should try turning my torso back to 0 degrees (straight ahead) to reset my orientation, then attempt to move forward again to see if the backward step helped me get around the obstacle.",
+      "action": "turn_right",
+      "confidence": 0.6
+    },
+    "action": "turn_right"
+  }
+]

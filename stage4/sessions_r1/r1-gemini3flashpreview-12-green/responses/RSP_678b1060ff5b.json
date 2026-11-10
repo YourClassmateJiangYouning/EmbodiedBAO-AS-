@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:15:10+08:00",
+    "latency_ms": 5228,
+    "payload_bytes": 279948,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081015067287742488268d9d6kmZkaBIY\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794132911,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a bright green rectangle directly ahead on the floor, positioned in front of a dark draped object. A red carpeted area is visible in the immediate foreground.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=7.25 and the green rectangle is very close. I will continue moving forward to reach the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3060,\"completion_tokens\":97,\"total_tokens\":3157,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3060,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":97,\"totalTokenCount\":3157,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1971},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":97}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1971,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":97,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a bright green rectangle directly ahead on the floor, positioned in front of a dark draped object. A red carpeted area is visible in the immediate foreground.\",\n  \"reasoning\": \"I am at x=7.25 and the green rectangle is very close. I will continue moving forward to reach the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a bright green rectangle directly ahead on the floor, positioned in front of a dark draped object. A red carpeted area is visible in the immediate foreground.",
+      "reasoning": "I am at x=7.25 and the green rectangle is very close. I will continue moving forward to reach the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

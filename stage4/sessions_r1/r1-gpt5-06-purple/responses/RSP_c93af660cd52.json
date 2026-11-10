@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:39:18+08:00",
+    "latency_ms": 7240,
+    "payload_bytes": 236765,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A red carpet leads straight ahead to a doorway. The carpet edge near the doorway is slightly raised/curled up, forming a small lip at the threshold onto a smooth gray floor panel. Beyond the doorway, on the far wall, a glowing purple four-pointed star is visible on a black square panel.\\\", \\\"reasoning\\\": \\\"Forward has been repeatedly blocked at the threshold lip. I already rotated my torso to 45 degrees right, which doesn’t change walking direction but may help width if the doorway were tight; however, the blockage is likely the low lip. I stepped backward last, so I should get a small run-up and then try forward again to overcome the lip.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.49}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794206355,\"id\":\"chatcmpl-EiDK7bk0ez2iZ5mvkjfekEx5thKKM\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":165,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":299,\"engine_ttlt_ms\":1637,\"pre_inference_ms\":328,\"service_tbt_ms\":8,\"service_ttft_ms\":996,\"service_ttlt_ms\":2315,\"user_visible_ttft_ms\":668},\"prompt_tokens\":2620,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2785}}\n",
+    "content": "{\"scene_description\": \"A red carpet leads straight ahead to a doorway. The carpet edge near the doorway is slightly raised/curled up, forming a small lip at the threshold onto a smooth gray floor panel. Beyond the doorway, on the far wall, a glowing purple four-pointed star is visible on a black square panel.\", \"reasoning\": \"Forward has been repeatedly blocked at the threshold lip. I already rotated my torso to 45 degrees right, which doesn’t change walking direction but may help width if the doorway were tight; however, the blockage is likely the low lip. I stepped backward last, so I should get a small run-up and then try forward again to overcome the lip.\", \"action\": \"forward\", \"confidence\": 0.49}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpet leads straight ahead to a doorway. The carpet edge near the doorway is slightly raised/curled up, forming a small lip at the threshold onto a smooth gray floor panel. Beyond the doorway, on the far wall, a glowing purple four-pointed star is visible on a black square panel.",
+      "reasoning": "Forward has been repeatedly blocked at the threshold lip. I already rotated my torso to 45 degrees right, which doesn’t change walking direction but may help width if the doorway were tight; however, the blockage is likely the low lip. I stepped backward last, so I should get a small run-up and then try forward again to overcome the lip.",
+      "action": "forward",
+      "confidence": 0.49
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:30:50+08:00",
+    "latency_ms": 9015,
+    "payload_bytes": 252967,
+    "finish_reason": "stop",
+    "reasoning_tokens": 89,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a8b74c33-7942-4bba-bf0a-aa009598caa2_76f98ea785114cbcb4c8e42f8243bbcc\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\":\\\"The camera shows a walkway covered in dark red carpet leading toward a narrow opening in the far wall. Through the opening, a bright green rectangle is visible on the far wall, now appearing quite close. The opening is flanked by decorated wall panels (white/purple on the left, blue/white on the right). A dark cloth hangs above the opening. The green rectangle appears large and centered in the opening, indicating the robot is getting close to the far wall.\\\",\\\"reasoning\\\":\\\"The green rectangle is directly ahead through the narrow opening and appears quite close now. My torso is at 0 degrees rotation presenting my narrowest profile, which is optimal for fitting through the opening. The path is clear on the carpet. I should continue moving forward to close the remaining distance.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me look at the current state and image. The green rectangle is ahead, through a narrow opening. The robot is at x=5.750, 8 steps taken. The path is clear. The green rectangle is getting closer - it's now quite visible and large. I should continue forward. The torso is at 0 rotation, which is the narrowest profile, ideal for the opening. Let me continue forward.\"}}],\"created\":1794137449,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":261,\"prompt_tokens\":2394,\"total_tokens\":2655,\"completion_tokens_details\":{\"reasoning_tokens\":89},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\":\"The camera shows a walkway covered in dark red carpet leading toward a narrow opening in the far wall. Through the opening, a bright green rectangle is visible on the far wall, now appearing quite close. The opening is flanked by decorated wall panels (white/purple on the left, blue/white on the right). A dark cloth hangs above the opening. The green rectangle appears large and centered in the opening, indicating the robot is getting close to the far wall.\",\"reasoning\":\"The green rectangle is directly ahead through the narrow opening and appears quite close now. My torso is at 0 degrees rotation presenting my narrowest profile, which is optimal for fitting through the opening. The path is clear on the carpet. I should continue moving forward to close the remaining distance.\",\"action\":\"forward\",\"confidence\":0.9}",
+    "reasoning_content": "Let me look at the current state and image. The green rectangle is ahead, through a narrow opening. The robot is at x=5.750, 8 steps taken. The path is clear. The green rectangle is getting closer - it's now quite visible and large. I should continue forward. The torso is at 0 rotation, which is the narrowest profile, ideal for the opening. Let me continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows a walkway covered in dark red carpet leading toward a narrow opening in the far wall. Through the opening, a bright green rectangle is visible on the far wall, now appearing quite close. The opening is flanked by decorated wall panels (white/purple on the left, blue/white on the right). A dark cloth hangs above the opening. The green rectangle appears large and centered in the opening, indicating the robot is getting close to the far wall.",
+      "reasoning": "The green rectangle is directly ahead through the narrow opening and appears quite close now. My torso is at 0 degrees rotation presenting my narrowest profile, which is optimal for fitting through the opening. The path is clear on the carpet. I should continue moving forward to close the remaining distance.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

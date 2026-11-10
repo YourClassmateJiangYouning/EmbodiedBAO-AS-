@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:01:53+08:00",
+    "latency_ms": 2434,
+    "payload_bytes": 291239,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f95c5cb4-c1ea-4435-8559-400cb1b0c944\",\"object\":\"chat.completion\",\"created\":1794207712,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading toward a far wall with a blue triangle mounted on a dark panel between two patterned wall sections. The blue triangle is straight ahead along the walking direction, and the path appears clear.\\\", \\\"reasoning\\\": \\\"The goal is directly ahead and the corridor is unobstructed. Torso is at 0 degrees, so body width is aligned with the corridor and no turning is needed. Continuing forward advances toward the blue triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1846,\"completion_tokens\":112,\"total_tokens\":1958,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1078},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading toward a far wall with a blue triangle mounted on a dark panel between two patterned wall sections. The blue triangle is straight ahead along the walking direction, and the path appears clear.\", \"reasoning\": \"The goal is directly ahead and the corridor is unobstructed. Torso is at 0 degrees, so body width is aligned with the corridor and no turning is needed. Continuing forward advances toward the blue triangle.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading toward a far wall with a blue triangle mounted on a dark panel between two patterned wall sections. The blue triangle is straight ahead along the walking direction, and the path appears clear.",
+      "reasoning": "The goal is directly ahead and the corridor is unobstructed. Torso is at 0 degrees, so body width is aligned with the corridor and no turning is needed. Continuing forward advances toward the blue triangle.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

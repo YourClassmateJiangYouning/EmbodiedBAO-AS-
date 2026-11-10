@@ -1,0 +1,47 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:48:00+08:00",
+    "latency_ms": 478810,
+    "payload_bytes": 215858,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "TimeoutError: timed out",
+    "json_mode": null,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T12:48:05+08:00",
+    "latency_ms": 4140,
+    "payload_bytes": 215858,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 3,
+    "started_at": "2026-11-09T12:52:15+08:00",
+    "latency_ms": 250077,
+    "payload_bytes": 215858,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "TimeoutError: timed out",
+    "json_mode": null,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  }
+]

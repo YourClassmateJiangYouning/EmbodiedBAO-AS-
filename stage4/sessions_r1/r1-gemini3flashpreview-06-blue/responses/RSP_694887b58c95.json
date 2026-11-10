@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:00:00+08:00",
+    "latency_ms": 6555,
+    "payload_bytes": 359664,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081059545021249258268d9d64o3dEUnq\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135600,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The view shows a red carpeted walkway on the right and a patterned floor on the left, leading toward a narrow vertical opening in a wall. A blue triangle is visible on the far wall through this opening.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 15 degrees to begin narrowing the profile I present to the gap. To pass through a narrow opening, I likely need to rotate further (closer to 90 degrees) to present my thinnest dimension. I will continue rotating before I get too close to the opening where rotation might be restricted.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2223,\"completion_tokens\":147,\"total_tokens\":2370,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2223,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":147,\"totalTokenCount\":2370,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1134},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":147}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1134,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":147,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The view shows a red carpeted walkway on the right and a patterned floor on the left, leading toward a narrow vertical opening in a wall. A blue triangle is visible on the far wall through this opening.\",\n  \"reasoning\": \"I have already rotated my torso to 15 degrees to begin narrowing the profile I present to the gap. To pass through a narrow opening, I likely need to rotate further (closer to 90 degrees) to present my thinnest dimension. I will continue rotating before I get too close to the opening where rotation might be restricted.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The view shows a red carpeted walkway on the right and a patterned floor on the left, leading toward a narrow vertical opening in a wall. A blue triangle is visible on the far wall through this opening.",
+      "reasoning": "I have already rotated my torso to 15 degrees to begin narrowing the profile I present to the gap. To pass through a narrow opening, I likely need to rotate further (closer to 90 degrees) to present my thinnest dimension. I will continue rotating before I get too close to the opening where rotation might be restricted.",
+      "action": "turn_left",
+      "confidence": 0.9
+    },
+    "action": "turn_left"
+  }
+]

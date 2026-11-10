@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:00:24+08:00",
+    "latency_ms": 8830,
+    "payload_bytes": 359664,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081100165515281558268d9d6EViSkieY\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135624,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The view shows a red carpeted walkway leading to a narrow vertical opening in a wall decorated with geometric patterns. Through the opening, a blue triangle is visible on the far wall. The robot is currently at x=1.25, approaching the gap.\\\",\\n  \\\"reasoning\\\": \\\"My torso rotation is currently 60 degrees. To fit through the narrow vertical gap, I need to present my thinnest profile, which occurs at a 90-degree rotation. I will continue turning left to reach that orientation before I get too close to the opening to rotate.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2434,\"completion_tokens\":147,\"total_tokens\":2581,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2434,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":147,\"totalTokenCount\":2581,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1345},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":147}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1345,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":147,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The view shows a red carpeted walkway leading to a narrow vertical opening in a wall decorated with geometric patterns. Through the opening, a blue triangle is visible on the far wall. The robot is currently at x=1.25, approaching the gap.\",\n  \"reasoning\": \"My torso rotation is currently 60 degrees. To fit through the narrow vertical gap, I need to present my thinnest profile, which occurs at a 90-degree rotation. I will continue turning left to reach that orientation before I get too close to the opening to rotate.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The view shows a red carpeted walkway leading to a narrow vertical opening in a wall decorated with geometric patterns. Through the opening, a blue triangle is visible on the far wall. The robot is currently at x=1.25, approaching the gap.",
+      "reasoning": "My torso rotation is currently 60 degrees. To fit through the narrow vertical gap, I need to present my thinnest profile, which occurs at a 90-degree rotation. I will continue turning left to reach that orientation before I get too close to the opening to rotate.",
+      "action": "turn_left",
+      "confidence": 1.0
+    },
+    "action": "turn_left"
+  }
+]

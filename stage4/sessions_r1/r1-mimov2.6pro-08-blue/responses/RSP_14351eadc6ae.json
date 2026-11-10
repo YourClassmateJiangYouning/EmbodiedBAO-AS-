@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:16:57+08:00",
+    "latency_ms": 9619,
+    "payload_bytes": 366549,
+    "finish_reason": "stop",
+    "reasoning_tokens": 217,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"83cffc21-2794-410c-95fa-d3dff99c5f2b_dc0ec260783749e0b8357ab21a0d69c1\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Looking down the red carpeted walkway toward a narrow doorway in the far wall, through which a blue triangle is visible on the floor. The wall is decorated with purple/green abstract shapes. The opening appears narrow and dark inside.\\\", \\\"reasoning\\\": \\\"I'm at 60 degrees torso rotation after 4 turn_right steps. My plan is to reach 90 degrees so my thinner front-to-back dimension faces the narrow opening when passing through. I need 2 more turn_right actions. The opening is still ahead and I'm not yet at the opening, so I can safely continue rotating.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=1.250, torso rotation 60 degrees. We were aiming for 90 degrees rotation before walking through the narrow opening. We've done 4 turn_right actions (from 0 to 60). We need 2 more to reach 90.\\n\\nThe image shows the carpeted walkway leading to the doorway with the blue triangle visible through it. The opening appears narrow. The path is clear ahead.\\n\\nWe need 2 more turn_right actions to reach 90 degrees. Let's continue turning right.\\n\\nWait - but there's a constraint: \\\"Rotating needs room, so you cannot turn once your shoulders are inside the opening\\\". We're at x=1.25, and the opening is ahead. We should still have room to turn. Let's continue turning.\\n\\nStep limit is 30, we've used 6. We have plenty of steps left.\\n\\nAction: turn_right to get to 75 degrees, then another turn_right to 90, then forward through the doorway.\"}}],\"created\":1794205016,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":362,\"prompt_tokens\":2351,\"total_tokens\":2713,\"completion_tokens_details\":{\"reasoning_tokens\":217},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Looking down the red carpeted walkway toward a narrow doorway in the far wall, through which a blue triangle is visible on the floor. The wall is decorated with purple/green abstract shapes. The opening appears narrow and dark inside.\", \"reasoning\": \"I'm at 60 degrees torso rotation after 4 turn_right steps. My plan is to reach 90 degrees so my thinner front-to-back dimension faces the narrow opening when passing through. I need 2 more turn_right actions. The opening is still ahead and I'm not yet at the opening, so I can safely continue rotating.\", \"action\": \"turn_right\", \"confidence\": 0.9}",
+    "reasoning_content": "We are at x=1.250, torso rotation 60 degrees. We were aiming for 90 degrees rotation before walking through the narrow opening. We've done 4 turn_right actions (from 0 to 60). We need 2 more to reach 90.\n\nThe image shows the carpeted walkway leading to the doorway with the blue triangle visible through it. The opening appears narrow. The path is clear ahead.\n\nWe need 2 more turn_right actions to reach 90 degrees. Let's continue turning right.\n\nWait - but there's a constraint: \"Rotating needs room, so you cannot turn once your shoulders are inside the opening\". We're at x=1.25, and the opening is ahead. We should still have room to turn. Let's continue turning.\n\nStep limit is 30, we've used 6. We have plenty of steps left.\n\nAction: turn_right to get to 75 degrees, then another turn_right to 90, then forward through the doorway.",
+    "parsed": {
+      "scene_description": "Looking down the red carpeted walkway toward a narrow doorway in the far wall, through which a blue triangle is visible on the floor. The wall is decorated with purple/green abstract shapes. The opening appears narrow and dark inside.",
+      "reasoning": "I'm at 60 degrees torso rotation after 4 turn_right steps. My plan is to reach 90 degrees so my thinner front-to-back dimension faces the narrow opening when passing through. I need 2 more turn_right actions. The opening is still ahead and I'm not yet at the opening, so I can safely continue rotating.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:26:36+08:00",
+    "latency_ms": 8721,
+    "payload_bytes": 370372,
+    "finish_reason": "stop",
+    "reasoning_tokens": 69,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"6be91024-3d3d-44e3-9347-8e6b68318021_1a0b9969698f46369608d1f6406b8b62\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading straight ahead toward an opening between two decorative panels. Through the opening, a green rectangle sits on the floor at the far wall, with a dark draped object and a tan couch visible behind it. White rectangular markers line both sides of the carpet. The path is clear and centered.\\\", \\\"reasoning\\\": \\\"I am at x=2.75 with torso rotation 0 degrees. The green rectangle is centered ahead and the carpet path is clear. The prior successful traversal showed forward steps work until near the opening (~x=5), where turning to 90 degrees was needed to squeeze through. I am not yet near the opening, so I should continue forward without turning, keeping my narrowest profile ready for the opening ahead.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Current position x=2.75, torso rotation 0. The green rectangle is ahead through an opening. In prior episode, forward was blocked around x~5. The prior successful traversal turned to 90 degrees before passing the opening. At x=2.75, still need to go forward more. Continue forward.\"}}],\"created\":1794212796,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":250,\"prompt_tokens\":3008,\"total_tokens\":3258,\"completion_tokens_details\":{\"reasoning_tokens\":69},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted walkway leading straight ahead toward an opening between two decorative panels. Through the opening, a green rectangle sits on the floor at the far wall, with a dark draped object and a tan couch visible behind it. White rectangular markers line both sides of the carpet. The path is clear and centered.\", \"reasoning\": \"I am at x=2.75 with torso rotation 0 degrees. The green rectangle is centered ahead and the carpet path is clear. The prior successful traversal showed forward steps work until near the opening (~x=5), where turning to 90 degrees was needed to squeeze through. I am not yet near the opening, so I should continue forward without turning, keeping my narrowest profile ready for the opening ahead.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "Current position x=2.75, torso rotation 0. The green rectangle is ahead through an opening. In prior episode, forward was blocked around x~5. The prior successful traversal turned to 90 degrees before passing the opening. At x=2.75, still need to go forward more. Continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading straight ahead toward an opening between two decorative panels. Through the opening, a green rectangle sits on the floor at the far wall, with a dark draped object and a tan couch visible behind it. White rectangular markers line both sides of the carpet. The path is clear and centered.",
+      "reasoning": "I am at x=2.75 with torso rotation 0 degrees. The green rectangle is centered ahead and the carpet path is clear. The prior successful traversal showed forward steps work until near the opening (~x=5), where turning to 90 degrees was needed to squeeze through. I am not yet near the opening, so I should continue forward without turning, keeping my narrowest profile ready for the opening ahead.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

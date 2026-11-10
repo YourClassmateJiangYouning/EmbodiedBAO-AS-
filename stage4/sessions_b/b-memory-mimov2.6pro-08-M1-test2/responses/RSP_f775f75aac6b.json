@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:26:43+08:00",
+    "latency_ms": 6839,
+    "payload_bytes": 347171,
+    "finish_reason": "stop",
+    "reasoning_tokens": 25,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"428a5ab8-d353-44e0-848a-3e7dd610f264_7815824d79ba4549b4724997249813f9\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted walkway extending straight ahead toward a green rectangle on the far wall, visible through an opening between decorated wall panels. White markers line the edges of the carpet. The path is clear and the green target is centered ahead.\\\", \\\"reasoning\\\": \\\"I am at x=3.5 with torso rotation 0 degrees. The green rectangle is centered ahead and the path is clear. The prior successful traversal showed forward steps work until near the opening (~x=5), where turning to 90 degrees was needed. I should continue forward without turning until I reach that point.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Current position x=3.5. Previous episode blocked around x=5. Green rectangle visible ahead. Continue forward.\"}}],\"created\":1794212803,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":172,\"prompt_tokens\":3077,\"total_tokens\":3249,\"completion_tokens_details\":{\"reasoning_tokens\":25},\"prompt_tokens_details\":{\"cached_tokens\":128,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted walkway extending straight ahead toward a green rectangle on the far wall, visible through an opening between decorated wall panels. White markers line the edges of the carpet. The path is clear and the green target is centered ahead.\", \"reasoning\": \"I am at x=3.5 with torso rotation 0 degrees. The green rectangle is centered ahead and the path is clear. The prior successful traversal showed forward steps work until near the opening (~x=5), where turning to 90 degrees was needed. I should continue forward without turning until I reach that point.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "Current position x=3.5. Previous episode blocked around x=5. Green rectangle visible ahead. Continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway extending straight ahead toward a green rectangle on the far wall, visible through an opening between decorated wall panels. White markers line the edges of the carpet. The path is clear and the green target is centered ahead.",
+      "reasoning": "I am at x=3.5 with torso rotation 0 degrees. The green rectangle is centered ahead and the path is clear. The prior successful traversal showed forward steps work until near the opening (~x=5), where turning to 90 degrees was needed. I should continue forward without turning until I reach that point.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

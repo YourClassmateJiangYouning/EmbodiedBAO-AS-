@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:32:58+08:00",
+    "latency_ms": 13229,
+    "payload_bytes": 342115,
+    "finish_reason": "stop",
+    "reasoning_tokens": 70,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"434ba20d-aa48-4860-b9b1-4332dc261532_2677519dda6745a3bf71d83cd2e057b8\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads forward toward a wall with a dark opening/doorway in the center. A red circle is visible through the opening, at floor level. The walls have colorful zigzag patterns. The path ahead on the carpet is clear.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead through an opening in the wall. The carpeted path is clear. I should continue forward toward the target. If the opening is narrow, I may need to check my width with look_down, but first let me continue moving forward since the path is clear.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red circle is ahead, visible through what appears to be an opening in a wall. The carpet path leads to it. There's a wall with a doorway/opening ahead. The red circle appears to be in/through a doorway. The path seems clear but I need to check if the opening is wide enough. Let me continue forward.\"}}],\"created\":1794137578,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":210,\"prompt_tokens\":2113,\"total_tokens\":2323,\"completion_tokens_details\":{\"reasoning_tokens\":70},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads forward toward a wall with a dark opening/doorway in the center. A red circle is visible through the opening, at floor level. The walls have colorful zigzag patterns. The path ahead on the carpet is clear.\", \"reasoning\": \"The red circle is directly ahead through an opening in the wall. The carpeted path is clear. I should continue forward toward the target. If the opening is narrow, I may need to check my width with look_down, but first let me continue moving forward since the path is clear.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "The red circle is ahead, visible through what appears to be an opening in a wall. The carpet path leads to it. There's a wall with a doorway/opening ahead. The red circle appears to be in/through a doorway. The path seems clear but I need to check if the opening is wide enough. Let me continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads forward toward a wall with a dark opening/doorway in the center. A red circle is visible through the opening, at floor level. The walls have colorful zigzag patterns. The path ahead on the carpet is clear.",
+      "reasoning": "The red circle is directly ahead through an opening in the wall. The carpeted path is clear. I should continue forward toward the target. If the opening is narrow, I may need to check my width with look_down, but first let me continue moving forward since the path is clear.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

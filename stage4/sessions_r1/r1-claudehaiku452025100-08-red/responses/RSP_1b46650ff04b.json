@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:24:47+08:00",
+    "latency_ms": 25076,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_6tcewyp356jabxe74scp4egj62xaswy73ctg6mc6uoaeqbve5lna\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198287,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"Looking down at my own body from the front. I can see my wheeled robot chassis with two large black tires on either side, a white/cream colored body, blue mechanical components, and various wiring. Above my body is a white panel or covering. The red carpet of the walkway is visible in the background. My torso rotation is at 0.0 degrees (straight ahead orientation).\\\",\\n  \\\"reasoning\\\": \\\"I am at x=7.250 and was blocked by a wall_panel when trying to move forward at step 9. The look_down action at step 10 shows my body from my own front view. I can see I am currently at 0.0 degrees torso rotation (not turned). Since forward is blocked by an obstacle, I need to rotate my torso to change my body width orientation and attempt to navigate around the obstacle. I should turn my torso to the left to narrow my profile in one direction, which will allow me to potentially squeeze past the wall_panel obstacle.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 0.75\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3108,\"completion_tokens\":255,\"total_tokens\":3363,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3108,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":255,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3108,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"Looking down at my own body from the front. I can see my wheeled robot chassis with two large black tires on either side, a white/cream colored body, blue mechanical components, and various wiring. Above my body is a white panel or covering. The red carpet of the walkway is visible in the background. My torso rotation is at 0.0 degrees (straight ahead orientation).\",\n  \"reasoning\": \"I am at x=7.250 and was blocked by a wall_panel when trying to move forward at step 9. The look_down action at step 10 shows my body from my own front view. I can see I am currently at 0.0 degrees torso rotation (not turned). Since forward is blocked by an obstacle, I need to rotate my torso to change my body width orientation and attempt to navigate around the obstacle. I should turn my torso to the left to narrow my profile in one direction, which will allow me to potentially squeeze past the wall_panel obstacle.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 0.75\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "Looking down at my own body from the front. I can see my wheeled robot chassis with two large black tires on either side, a white/cream colored body, blue mechanical components, and various wiring. Above my body is a white panel or covering. The red carpet of the walkway is visible in the background. My torso rotation is at 0.0 degrees (straight ahead orientation).",
+      "reasoning": "I am at x=7.250 and was blocked by a wall_panel when trying to move forward at step 9. The look_down action at step 10 shows my body from my own front view. I can see I am currently at 0.0 degrees torso rotation (not turned). Since forward is blocked by an obstacle, I need to rotate my torso to change my body width orientation and attempt to navigate around the obstacle. I should turn my torso to the left to narrow my profile in one direction, which will allow me to potentially squeeze past the wall_panel obstacle.",
+      "action": "turn_left",
+      "confidence": 0.75
+    },
+    "action": "turn_left"
+  }
+]

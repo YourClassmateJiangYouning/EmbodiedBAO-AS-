@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:52:55+08:00",
+    "latency_ms": 18675,
+    "payload_bytes": 242589,
+    "finish_reason": "stop",
+    "reasoning_tokens": 161,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"feb526c6-cd32-4f27-9a21-6a8a991ff19c_cd9ce418dd1040fdaa80bcfe25436def\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera view shows the doorway opening directly ahead, with the green rectangle on the far wall now appearing much larger and closer, centered in the opening. The red carpet leads straight to it, flanked by patterned walls on both sides. The dark interior of the opening surrounds the bright green target, which is nearly at the threshold.\\\",\\\"reasoning\\\": \\\"I am very close to the green rectangle after 8 forward steps (x should be ~0.5m from the wall). The target is directly ahead and centered in the opening. My torso rotation is 0 degrees, which minimizes my presented width for passing through the narrow opening, and turning is forbidden inside it anyway. I should continue moving straight forward toward the target.\\\",\\\"action\\\": \\\"forward\\\",\\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We started at x=6.5, each forward moves 75cm = 0.75m. After 8 forward steps (steps 0,1,3,4,5,6,7,8), x should be 6.5 - 8*0.75 = 6.5 - 6.0 = 0.5. Hmm wait, x is forward position... presumably decreasing toward wall? Actually x=6.5 might be distance to wall. The green rectangle appears very close now. The doorway looks very close — the green rectangle appears large in the image. Continue forward.\\n\\nActually, the doorway appears very near. The green rectangle seems quite close. One or two more forward steps should reach it. Let's do forward.\"}}],\"created\":1794207171,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":330,\"prompt_tokens\":2491,\"total_tokens\":2821,\"completion_tokens_details\":{\"reasoning_tokens\":161},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera view shows the doorway opening directly ahead, with the green rectangle on the far wall now appearing much larger and closer, centered in the opening. The red carpet leads straight to it, flanked by patterned walls on both sides. The dark interior of the opening surrounds the bright green target, which is nearly at the threshold.\",\"reasoning\": \"I am very close to the green rectangle after 8 forward steps (x should be ~0.5m from the wall). The target is directly ahead and centered in the opening. My torso rotation is 0 degrees, which minimizes my presented width for passing through the narrow opening, and turning is forbidden inside it anyway. I should continue moving straight forward toward the target.\",\"action\": \"forward\",\"confidence\": 0.95}",
+    "reasoning_content": "We started at x=6.5, each forward moves 75cm = 0.75m. After 8 forward steps (steps 0,1,3,4,5,6,7,8), x should be 6.5 - 8*0.75 = 6.5 - 6.0 = 0.5. Hmm wait, x is forward position... presumably decreasing toward wall? Actually x=6.5 might be distance to wall. The green rectangle appears very close now. The doorway looks very close — the green rectangle appears large in the image. Continue forward.\n\nActually, the doorway appears very near. The green rectangle seems quite close. One or two more forward steps should reach it. Let's do forward.",
+    "parsed": {
+      "scene_description": "The camera view shows the doorway opening directly ahead, with the green rectangle on the far wall now appearing much larger and closer, centered in the opening. The red carpet leads straight to it, flanked by patterned walls on both sides. The dark interior of the opening surrounds the bright green target, which is nearly at the threshold.",
+      "reasoning": "I am very close to the green rectangle after 8 forward steps (x should be ~0.5m from the wall). The target is directly ahead and centered in the opening. My torso rotation is 0 degrees, which minimizes my presented width for passing through the narrow opening, and turning is forbidden inside it anyway. I should continue moving straight forward toward the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

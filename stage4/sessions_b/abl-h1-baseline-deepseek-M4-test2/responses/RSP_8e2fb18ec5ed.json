@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:36:25+08:00",
+    "latency_ms": 4383,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"4ed79d6b-3259-4f57-9eec-a4ddf0414317\",\"object\":\"chat.completion\",\"created\":1794216984,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"Downward glance shows my own body from the front: a wide chassis with two large wheels on either side, wiring and a camera module in the center, resting on a red carpeted floor. The body's presented width spans roughly the full frame, wider than a narrow opening would comfortably admit.\\\", \\\"reasoning\\\": \\\"The downward view reveals my body is quite wide (wheels extend well beyond the central chassis). Since turning is impossible once shoulders are inside the opening, and my torso is currently at 0 degrees (width facing the opening squarely), I should verify the opening is wide enough. However, the glance clears on the next action, and forward is my only way to progress toward the blue triangle. Given the step budget (23 remaining) and that the path appeared clear, I'll proceed forward carefully.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1927,\"completion_tokens\":183,\"total_tokens\":2110,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1287},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"Downward glance shows my own body from the front: a wide chassis with two large wheels on either side, wiring and a camera module in the center, resting on a red carpeted floor. The body's presented width spans roughly the full frame, wider than a narrow opening would comfortably admit.\", \"reasoning\": \"The downward view reveals my body is quite wide (wheels extend well beyond the central chassis). Since turning is impossible once shoulders are inside the opening, and my torso is currently at 0 degrees (width facing the opening squarely), I should verify the opening is wide enough. However, the glance clears on the next action, and forward is my only way to progress toward the blue triangle. Given the step budget (23 remaining) and that the path appeared clear, I'll proceed forward carefully.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "Downward glance shows my own body from the front: a wide chassis with two large wheels on either side, wiring and a camera module in the center, resting on a red carpeted floor. The body's presented width spans roughly the full frame, wider than a narrow opening would comfortably admit.",
+      "reasoning": "The downward view reveals my body is quite wide (wheels extend well beyond the central chassis). Since turning is impossible once shoulders are inside the opening, and my torso is currently at 0 degrees (width facing the opening squarely), I should verify the opening is wide enough. However, the glance clears on the next action, and forward is my only way to progress toward the blue triangle. Given the step budget (23 remaining) and that the path appeared clear, I'll proceed forward carefully.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

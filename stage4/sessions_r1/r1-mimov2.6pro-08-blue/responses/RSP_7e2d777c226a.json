@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:17:09+08:00",
+    "latency_ms": 12185,
+    "payload_bytes": 366549,
+    "finish_reason": "stop",
+    "reasoning_tokens": 23,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"c8737b78-1aa4-4e85-94ee-127556c405e7_c50e90059b1c47d7b75d89c5fd3dbedf\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads toward a doorway in a decorated wall, through which the blue triangle is visible on the far wall. The floor is patterned with yellow tiles on the left side.\\\", \\\"reasoning\\\": \\\"Torso rotation is at 75 degrees. I need 2 more turn_right steps to reach 90 degrees so my thinner front-to-back dimension faces the narrow opening. The doorway is still ahead, so I can safely continue turning.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We're at 75 degrees, need 2 more turn_right to reach 90. Continue.\"}}],\"created\":1794205023,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":143,\"prompt_tokens\":2420,\"total_tokens\":2563,\"completion_tokens_details\":{\"reasoning_tokens\":23},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads toward a doorway in a decorated wall, through which the blue triangle is visible on the far wall. The floor is patterned with yellow tiles on the left side.\", \"reasoning\": \"Torso rotation is at 75 degrees. I need 2 more turn_right steps to reach 90 degrees so my thinner front-to-back dimension faces the narrow opening. The doorway is still ahead, so I can safely continue turning.\", \"action\": \"turn_right\", \"confidence\": 0.85}",
+    "reasoning_content": "We're at 75 degrees, need 2 more turn_right to reach 90. Continue.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads toward a doorway in a decorated wall, through which the blue triangle is visible on the far wall. The floor is patterned with yellow tiles on the left side.",
+      "reasoning": "Torso rotation is at 75 degrees. I need 2 more turn_right steps to reach 90 degrees so my thinner front-to-back dimension faces the narrow opening. The doorway is still ahead, so I can safely continue turning.",
+      "action": "turn_right",
+      "confidence": 0.85
+    },
+    "action": "turn_right"
+  }
+]

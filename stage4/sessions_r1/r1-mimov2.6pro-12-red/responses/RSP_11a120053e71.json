@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:17:23+08:00",
+    "latency_ms": 9264,
+    "payload_bytes": 264164,
+    "finish_reason": "stop",
+    "reasoning_tokens": 49,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"a6c4a035-2aba-4619-a4cd-299642d68d61_437f56c831af4ff5871b9400bf06d9fa\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The red circle on a black panel is directly ahead and very close, filling the center of the view. A dark curtain and a bench are visible behind the panel, and a red carpet and patterned floor edge run in the foreground. The narrow opening has been passed and the goal is nearly reached.\\\", \\\"reasoning\\\": \\\"The red circle is immediately ahead at x=7.25 after 10 steps of successful forward movement. My torso is at 0 degrees (minimum width) and I have already cleared the narrow opening. One more forward step of 75cm should bring me to the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to answer with a JSON. Current position x=7.25, very close to the target. The image shows the red circle right in front. Forward 75cm more likely reaches it. Let's do forward.\"}}],\"created\":1794136643,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":196,\"prompt_tokens\":2554,\"total_tokens\":2750,\"completion_tokens_details\":{\"reasoning_tokens\":49},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The red circle on a black panel is directly ahead and very close, filling the center of the view. A dark curtain and a bench are visible behind the panel, and a red carpet and patterned floor edge run in the foreground. The narrow opening has been passed and the goal is nearly reached.\", \"reasoning\": \"The red circle is immediately ahead at x=7.25 after 10 steps of successful forward movement. My torso is at 0 degrees (minimum width) and I have already cleared the narrow opening. One more forward step of 75cm should bring me to the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We need to answer with a JSON. Current position x=7.25, very close to the target. The image shows the red circle right in front. Forward 75cm more likely reaches it. Let's do forward.",
+    "parsed": {
+      "scene_description": "The red circle on a black panel is directly ahead and very close, filling the center of the view. A dark curtain and a bench are visible behind the panel, and a red carpet and patterned floor edge run in the foreground. The narrow opening has been passed and the goal is nearly reached.",
+      "reasoning": "The red circle is immediately ahead at x=7.25 after 10 steps of successful forward movement. My torso is at 0 degrees (minimum width) and I have already cleared the narrow opening. One more forward step of 75cm should bring me to the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:43:51+08:00",
+    "latency_ms": 12520,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090843436454685368268d9d6fOgsBhac\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213831,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper at the front, extending significantly past the wheels on both sides. The torso rotation is currently 0 degrees, meaning the full width of this bumper is facing the direction of travel.\\\",\\n  \\\"reasoning\\\": \\\"The look_down action reveals that my body is very wide due to the white bumper. To fit through the narrow opening ahead, I need to rotate my torso to present a narrower profile. I will begin turning left to reach a 90-degree orientation, as suggested by the successful traversal history.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2695,\"completion_tokens\":160,\"total_tokens\":2855,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2695,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":160,\"totalTokenCount\":2855,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1606},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":160}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1606,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":160,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper at the front, extending significantly past the wheels on both sides. The torso rotation is currently 0 degrees, meaning the full width of this bumper is facing the direction of travel.\",\n  \"reasoning\": \"The look_down action reveals that my body is very wide due to the white bumper. To fit through the narrow opening ahead, I need to rotate my torso to present a narrower profile. I will begin turning left to reach a 90-degree orientation, as suggested by the successful traversal history.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper at the front, extending significantly past the wheels on both sides. The torso rotation is currently 0 degrees, meaning the full width of this bumper is facing the direction of travel.",
+      "reasoning": "The look_down action reveals that my body is very wide due to the white bumper. To fit through the narrow opening ahead, I need to rotate my torso to present a narrower profile. I will begin turning left to reach a 90-degree orientation, as suggested by the successful traversal history.",
+      "action": "turn_left",
+      "confidence": 1.0
+    },
+    "action": "turn_left"
+  }
+]

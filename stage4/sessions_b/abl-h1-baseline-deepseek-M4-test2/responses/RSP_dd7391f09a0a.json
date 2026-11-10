@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:36:29+08:00",
+    "latency_ms": 3070,
+    "payload_bytes": 196859,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"525b7673-f4cf-4b99-a4dc-28f87c7c251b\",\"object\":\"chat.completion\",\"created\":1794216988,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a dark red carpeted floor leading toward a dark wall with a glowing blue triangle mounted on a low platform directly ahead. The path to the triangle appears clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along my fixed walking direction and the path is clear. I have already passed through the narrow opening, so continuing forward moves me 75cm closer to the goal each step, and I have ample step budget remaining.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1987,\"completion_tokens\":112,\"total_tokens\":2099,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1475},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a dark red carpeted floor leading toward a dark wall with a glowing blue triangle mounted on a low platform directly ahead. The path to the triangle appears clear and unobstructed.\", \"reasoning\": \"The blue triangle is directly ahead along my fixed walking direction and the path is clear. I have already passed through the narrow opening, so continuing forward moves me 75cm closer to the goal each step, and I have ample step budget remaining.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a dark red carpeted floor leading toward a dark wall with a glowing blue triangle mounted on a low platform directly ahead. The path to the triangle appears clear and unobstructed.",
+      "reasoning": "The blue triangle is directly ahead along my fixed walking direction and the path is clear. I have already passed through the narrow opening, so continuing forward moves me 75cm closer to the goal each step, and I have ample step budget remaining.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

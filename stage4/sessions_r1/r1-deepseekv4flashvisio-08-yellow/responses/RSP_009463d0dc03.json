@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:27+08:00",
+    "latency_ms": 2569,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"73e2455c-19e9-4387-b53b-9881ddfaed68\",\"object\":\"chat.completion\",\"created\":1794208166,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is very close and centered slightly right, mounted on a dark wall panel above the red carpet. The view is close-up, indicating the robot is right at the goal but blocked by the wall panel.\\\", \\\"reasoning\\\": \\\"Forward steps have been blocked by the wall panel twice. My torso is rotated 30 degrees right, which widens my body against the opening. Since turning is only possible before entering the opening and I am still outside it, I should rotate my torso back toward 0 degrees to align my narrow profile with the opening, then attempt forward again.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2344,\"completion_tokens\":138,\"total_tokens\":2482,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1576},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is very close and centered slightly right, mounted on a dark wall panel above the red carpet. The view is close-up, indicating the robot is right at the goal but blocked by the wall panel.\", \"reasoning\": \"Forward steps have been blocked by the wall panel twice. My torso is rotated 30 degrees right, which widens my body against the opening. Since turning is only possible before entering the opening and I am still outside it, I should rotate my torso back toward 0 degrees to align my narrow profile with the opening, then attempt forward again.\", \"action\": \"turn_left\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is very close and centered slightly right, mounted on a dark wall panel above the red carpet. The view is close-up, indicating the robot is right at the goal but blocked by the wall panel.",
+      "reasoning": "Forward steps have been blocked by the wall panel twice. My torso is rotated 30 degrees right, which widens my body against the opening. Since turning is only possible before entering the opening and I am still outside it, I should rotate my torso back toward 0 degrees to align my narrow profile with the opening, then attempt forward again.",
+      "action": "turn_left",
+      "confidence": 0.6
+    },
+    "action": "turn_left"
+  }
+]

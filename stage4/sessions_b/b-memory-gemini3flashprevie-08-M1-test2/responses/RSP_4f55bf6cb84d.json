@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:27:05+08:00",
+    "latency_ms": 5093,
+    "payload_bytes": 264283,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090827011002607108268d9d6iy8rJ5O4\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212825,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera view shows a red carpet in the foreground leading to a light-colored floor. In the center of the view, on the far wall, is a bright green rectangle. To the left of the rectangle is a black draped object, and to the right is a yellow armchair.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=6.5 and have successfully navigated through the narrow gap. The green rectangle is directly ahead and appears larger, indicating I am close to the goal. I will continue moving forward to reach it.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3595,\"completion_tokens\":137,\"total_tokens\":3732,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3595,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":137,\"totalTokenCount\":3732,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2506}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":137}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2506,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":137,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera view shows a red carpet in the foreground leading to a light-colored floor. In the center of the view, on the far wall, is a bright green rectangle. To the left of the rectangle is a black draped object, and to the right is a yellow armchair.\",\n  \"reasoning\": \"I am at position x=6.5 and have successfully navigated through the narrow gap. The green rectangle is directly ahead and appears larger, indicating I am close to the goal. I will continue moving forward to reach it.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera view shows a red carpet in the foreground leading to a light-colored floor. In the center of the view, on the far wall, is a bright green rectangle. To the left of the rectangle is a black draped object, and to the right is a yellow armchair.",
+      "reasoning": "I am at position x=6.5 and have successfully navigated through the narrow gap. The green rectangle is directly ahead and appears larger, indicating I am close to the goal. I will continue moving forward to reach it.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

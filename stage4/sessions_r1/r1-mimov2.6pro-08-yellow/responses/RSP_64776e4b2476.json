@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:07:33+08:00",
+    "latency_ms": 9934,
+    "payload_bytes": 264272,
+    "finish_reason": "stop",
+    "reasoning_tokens": 151,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"bb80f232-8a96-4db7-83d3-801377bc1d4d_e8582df8d2db49018df69ed8d178e6d0\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\":\\\"Red carpet leads toward a dark opening in the far wall with a yellow arrow pointing right at the opening's base. The opening appears narrow between decorative walls with geometric patterns. Floor tiles visible to the left of the carpet.\\\",\\\"reasoning\\\":\\\"I am at x=5.0, very close to the opening. My torso is already rotated 15 degrees to the right to present a narrower profile. I cannot turn once shoulders enter the opening, so the rotation is set. I need to continue forward to reach the opening and pass through.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.8}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The opening ahead appears narrow. I'm at x=5.0 now (7 forward steps at 75cm each). The yellow arrow is at the opening. The opening looks narrow - I need to be careful. My torso is rotated 15 degrees right. Let me continue forward but check width first?\\n\\nActually I've already done look_down and turned right. The opening is very close. Let me just go forward. The walls seem to pinch at the opening. I already have 15 degree rotation. Let me just move forward carefully.\\n\\nActually, the opening looks quite narrow - maybe another look_down to check? But I already did look_down. The torso is rotated 15 degrees right. Let me just go forward.\"}}],\"created\":1794204453,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":276,\"prompt_tokens\":2386,\"total_tokens\":2662,\"completion_tokens_details\":{\"reasoning_tokens\":151},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\":\"Red carpet leads toward a dark opening in the far wall with a yellow arrow pointing right at the opening's base. The opening appears narrow between decorative walls with geometric patterns. Floor tiles visible to the left of the carpet.\",\"reasoning\":\"I am at x=5.0, very close to the opening. My torso is already rotated 15 degrees to the right to present a narrower profile. I cannot turn once shoulders enter the opening, so the rotation is set. I need to continue forward to reach the opening and pass through.\",\"action\":\"forward\",\"confidence\":0.8}",
+    "reasoning_content": "The opening ahead appears narrow. I'm at x=5.0 now (7 forward steps at 75cm each). The yellow arrow is at the opening. The opening looks narrow - I need to be careful. My torso is rotated 15 degrees right. Let me continue forward but check width first?\n\nActually I've already done look_down and turned right. The opening is very close. Let me just go forward. The walls seem to pinch at the opening. I already have 15 degree rotation. Let me just move forward carefully.\n\nActually, the opening looks quite narrow - maybe another look_down to check? But I already did look_down. The torso is rotated 15 degrees right. Let me just go forward.",
+    "parsed": {
+      "scene_description": "Red carpet leads toward a dark opening in the far wall with a yellow arrow pointing right at the opening's base. The opening appears narrow between decorative walls with geometric patterns. Floor tiles visible to the left of the carpet.",
+      "reasoning": "I am at x=5.0, very close to the opening. My torso is already rotated 15 degrees to the right to present a narrower profile. I cannot turn once shoulders enter the opening, so the rotation is set. I need to continue forward to reach the opening and pass through.",
+      "action": "forward",
+      "confidence": 0.8
+    },
+    "action": "forward"
+  }
+]

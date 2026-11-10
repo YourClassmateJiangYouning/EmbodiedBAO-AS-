@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:18+08:00",
+    "latency_ms": 2567,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e1a75f0e-a04b-4fd5-beb3-89218317a700\",\"object\":\"chat.completion\",\"created\":1794208157,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is directly ahead and very close, mounted on a dark wall panel above the red carpet. The previous forward step was blocked by a wall panel, suggesting the robot is right at the sign but slightly misaligned or too close to the wall.\\\", \\\"reasoning\\\": \\\"The forward step was blocked by a wall_panel even though the arrow is directly ahead and close. Since the arrow appears slightly to the right of center in the view, a small right turn may align the body better with the opening, then attempt forward again to reach the goal.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2151,\"completion_tokens\":134,\"total_tokens\":2285,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1383},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is directly ahead and very close, mounted on a dark wall panel above the red carpet. The previous forward step was blocked by a wall panel, suggesting the robot is right at the sign but slightly misaligned or too close to the wall.\", \"reasoning\": \"The forward step was blocked by a wall_panel even though the arrow is directly ahead and close. Since the arrow appears slightly to the right of center in the view, a small right turn may align the body better with the opening, then attempt forward again to reach the goal.\", \"action\": \"turn_right\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is directly ahead and very close, mounted on a dark wall panel above the red carpet. The previous forward step was blocked by a wall panel, suggesting the robot is right at the sign but slightly misaligned or too close to the wall.",
+      "reasoning": "The forward step was blocked by a wall_panel even though the arrow is directly ahead and close. Since the arrow appears slightly to the right of center in the view, a small right turn may align the body better with the opening, then attempt forward again to reach the goal.",
+      "action": "turn_right",
+      "confidence": 0.4
+    },
+    "action": "turn_right"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:05:44+08:00",
+    "latency_ms": 4268,
+    "payload_bytes": 314927,
+    "finish_reason": "stop",
+    "reasoning_tokens": 17,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"33226d0b-d8ac-4283-aa43-c066244c9f6e_9e6b864a7e2144d890d9da6e0f687e4b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet walkway leads straight ahead toward a dark opening in the far wall, where a yellow arrow points right. The walls on either side are decorated with abstract purple and green patterns. The path is clear with no obstacles.\\\", \\\"reasoning\\\": \\\"The path ahead is clear along the red carpet toward the yellow arrow at the dark opening. I've taken 4 forward steps already and am at x=3.5. Continue advancing forward to reach the opening.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear; continue forward toward the yellow arrow at the dark opening.\"}}],\"created\":1794204344,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":133,\"prompt_tokens\":2131,\"total_tokens\":2264,\"completion_tokens_details\":{\"reasoning_tokens\":17},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet walkway leads straight ahead toward a dark opening in the far wall, where a yellow arrow points right. The walls on either side are decorated with abstract purple and green patterns. The path is clear with no obstacles.\", \"reasoning\": \"The path ahead is clear along the red carpet toward the yellow arrow at the dark opening. I've taken 4 forward steps already and am at x=3.5. Continue advancing forward to reach the opening.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear; continue forward toward the yellow arrow at the dark opening.",
+    "parsed": {
+      "scene_description": "A red carpet walkway leads straight ahead toward a dark opening in the far wall, where a yellow arrow points right. The walls on either side are decorated with abstract purple and green patterns. The path is clear with no obstacles.",
+      "reasoning": "The path ahead is clear along the red carpet toward the yellow arrow at the dark opening. I've taken 4 forward steps already and am at x=3.5. Continue advancing forward to reach the opening.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

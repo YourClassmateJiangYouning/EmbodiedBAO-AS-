@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:38:20+08:00",
+    "latency_ms": 7962,
+    "payload_bytes": 386357,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_26sy7fo5bwri2n3xppatme6qpw27fqa2qi5dndilft5hhzqqxwpa\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145100,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I'm in a hallway with a red carpet floor. The walls have blue geometric patterns on a tan/beige background. On the far wall, I can see a yellow arrow pointing to the right, visible in the dark opening/doorway ahead. The hallway appears clear and open with no obstacles blocking my path forward.\\\",\\n  \\\"reasoning\\\": \\\"My task is to reach the yellow arrow on the far wall. I'm currently at position x=0.500 (near the start of the walkway) and the yellow arrow is visible on the far wall ahead. The most direct path is to walk forward toward it. My torso is at 0 degrees rotation and my walking direction is fixed toward the far wall where the arrow is. There are no obstacles visible in my path, so I should proceed forward.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2303,\"completion_tokens\":205,\"total_tokens\":2508,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2303,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":205,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2303,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I'm in a hallway with a red carpet floor. The walls have blue geometric patterns on a tan/beige background. On the far wall, I can see a yellow arrow pointing to the right, visible in the dark opening/doorway ahead. The hallway appears clear and open with no obstacles blocking my path forward.\",\n  \"reasoning\": \"My task is to reach the yellow arrow on the far wall. I'm currently at position x=0.500 (near the start of the walkway) and the yellow arrow is visible on the far wall ahead. The most direct path is to walk forward toward it. My torso is at 0 degrees rotation and my walking direction is fixed toward the far wall where the arrow is. There are no obstacles visible in my path, so I should proceed forward.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I'm in a hallway with a red carpet floor. The walls have blue geometric patterns on a tan/beige background. On the far wall, I can see a yellow arrow pointing to the right, visible in the dark opening/doorway ahead. The hallway appears clear and open with no obstacles blocking my path forward.",
+      "reasoning": "My task is to reach the yellow arrow on the far wall. I'm currently at position x=0.500 (near the start of the walkway) and the yellow arrow is visible on the far wall ahead. The most direct path is to walk forward toward it. My torso is at 0 degrees rotation and my walking direction is fixed toward the far wall where the arrow is. There are no obstacles visible in my path, so I should proceed forward.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

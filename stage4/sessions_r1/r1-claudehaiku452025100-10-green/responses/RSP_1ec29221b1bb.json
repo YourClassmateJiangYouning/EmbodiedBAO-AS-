@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:43:59+08:00",
+    "latency_ms": 7765,
+    "payload_bytes": 276066,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_wohuycaizzioy6noahdt7ba3edgg7zhlmk6lukzmys3ujxkws3ka\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145439,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The camera shows a large bright green rectangle on the floor directly ahead, filling most of the lower portion of the view. The green rectangle appears to be a display or panel lying flat on a tan/beige colored floor. Above it, there is a dark object (possibly fabric or equipment) visible in the upper portion of the frame. The green rectangle is very close and prominent in the current view.\\\",\\n  \\\"reasoning\\\": \\\"I have moved forward 10 steps (7.5 meters total from starting position of 8.0m, now at approximately 15.5m forward). The green rectangle target is now extremely close and dominates my view. It appears to be on the floor rather than on the far wall as initially described, but it is clearly the target I need to reach. The path is clear and the target is directly ahead along my fixed walking direction. I should continue moving forward to reach it.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3006,\"completion_tokens\":225,\"total_tokens\":3231,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3006,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":225,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3006,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The camera shows a large bright green rectangle on the floor directly ahead, filling most of the lower portion of the view. The green rectangle appears to be a display or panel lying flat on a tan/beige colored floor. Above it, there is a dark object (possibly fabric or equipment) visible in the upper portion of the frame. The green rectangle is very close and prominent in the current view.\",\n  \"reasoning\": \"I have moved forward 10 steps (7.5 meters total from starting position of 8.0m, now at approximately 15.5m forward). The green rectangle target is now extremely close and dominates my view. It appears to be on the floor rather than on the far wall as initially described, but it is clearly the target I need to reach. The path is clear and the target is directly ahead along my fixed walking direction. I should continue moving forward to reach it.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a large bright green rectangle on the floor directly ahead, filling most of the lower portion of the view. The green rectangle appears to be a display or panel lying flat on a tan/beige colored floor. Above it, there is a dark object (possibly fabric or equipment) visible in the upper portion of the frame. The green rectangle is very close and prominent in the current view.",
+      "reasoning": "I have moved forward 10 steps (7.5 meters total from starting position of 8.0m, now at approximately 15.5m forward). The green rectangle target is now extremely close and dominates my view. It appears to be on the floor rather than on the far wall as initially described, but it is clearly the target I need to reach. The path is clear and the target is directly ahead along my fixed walking direction. I should continue moving forward to reach it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

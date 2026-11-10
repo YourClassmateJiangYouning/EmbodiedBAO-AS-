@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:18:50+08:00",
+    "latency_ms": 3529,
+    "payload_bytes": 168342,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e2268afb-2b10-4e2d-b671-10df0ea0c79f\",\"object\":\"chat.completion\",\"created\":1794208728,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the blue triangle glowing on a dark panel directly ahead, filling much of the view, with a dark wall/opening frame around it. The goal appears very close and centered along the walking direction.\\\", \\\"reasoning\\\": \\\"After rotating to 90 degrees to present the thin profile, the previous forward step executed successfully, indicating the narrow opening is now passable. The blue triangle is directly ahead and close, so continuing forward should reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2625,\"completion_tokens\":112,\"total_tokens\":2737,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1985},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows the blue triangle glowing on a dark panel directly ahead, filling much of the view, with a dark wall/opening frame around it. The goal appears very close and centered along the walking direction.\", \"reasoning\": \"After rotating to 90 degrees to present the thin profile, the previous forward step executed successfully, indicating the narrow opening is now passable. The blue triangle is directly ahead and close, so continuing forward should reach the goal.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows the blue triangle glowing on a dark panel directly ahead, filling much of the view, with a dark wall/opening frame around it. The goal appears very close and centered along the walking direction.",
+      "reasoning": "After rotating to 90 degrees to present the thin profile, the previous forward step executed successfully, indicating the narrow opening is now passable. The blue triangle is directly ahead and close, so continuing forward should reach the goal.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

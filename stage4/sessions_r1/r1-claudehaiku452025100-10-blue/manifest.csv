@@ -1,0 +1,2 @@
+episode_id,mode,model,scene,marker,a_s,channel_width_m,memory_id,started_at,finished_at,passed,total_steps,end_reason,invalid_count
+S4E_edd31fb89750,A,claude-haiku-4-5-20251001,R1,M4,1.0,0.57,,2026-11-08T21:46:52+08:00,2026-11-08T21:48:22+08:00,True,11,passed,0

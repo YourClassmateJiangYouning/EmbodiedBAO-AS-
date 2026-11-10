@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:17:40+08:00",
+    "latency_ms": 8241,
+    "payload_bytes": 386357,
+    "finish_reason": "stop",
+    "reasoning_tokens": 66,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"8db26e3f-117d-4dee-b700-bdb401f9feb1_c659262ab404408abce9ccef23171b29\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway extends forward toward a wall with graffiti-style patterns. There is a doorway/opening in the wall ahead, with a yellow arrow visible pointing right at the base of the opening. White papers/markers line the edges of the carpet.\\\", \\\"reasoning\\\": \\\"The opening ahead appears narrow relative to the walkway. Before approaching it, I should check my body width via look_down to determine if I need to turn my torso to fit through the opening. Turning requires room, so I should check while I'm still far from the opening.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.8}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image shows a red carpet leading toward an opening in a wall with a yellow arrow. The opening looks narrow-ish. I should look down to check my body width before approaching the opening, since turning requires room and I can't turn once shoulders are inside the opening.\\n\\nLet me just look down first to see my width.\"}}],\"created\":1794136660,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":202,\"prompt_tokens\":1907,\"total_tokens\":2109,\"completion_tokens_details\":{\"reasoning_tokens\":66},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway extends forward toward a wall with graffiti-style patterns. There is a doorway/opening in the wall ahead, with a yellow arrow visible pointing right at the base of the opening. White papers/markers line the edges of the carpet.\", \"reasoning\": \"The opening ahead appears narrow relative to the walkway. Before approaching it, I should check my body width via look_down to determine if I need to turn my torso to fit through the opening. Turning requires room, so I should check while I'm still far from the opening.\", \"action\": \"look_down\", \"confidence\": 0.8}",
+    "reasoning_content": "The image shows a red carpet leading toward an opening in a wall with a yellow arrow. The opening looks narrow-ish. I should look down to check my body width before approaching the opening, since turning requires room and I can't turn once shoulders are inside the opening.\n\nLet me just look down first to see my width.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway extends forward toward a wall with graffiti-style patterns. There is a doorway/opening in the wall ahead, with a yellow arrow visible pointing right at the base of the opening. White papers/markers line the edges of the carpet.",
+      "reasoning": "The opening ahead appears narrow relative to the walkway. Before approaching it, I should check my body width via look_down to determine if I need to turn my torso to fit through the opening. Turning requires room, so I should check while I'm still far from the opening.",
+      "action": "look_down",
+      "confidence": 0.8
+    },
+    "action": "look_down"
+  }
+]

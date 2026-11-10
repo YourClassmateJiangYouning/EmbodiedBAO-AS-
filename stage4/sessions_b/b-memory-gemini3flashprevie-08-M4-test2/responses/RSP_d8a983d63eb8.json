@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:46:25+08:00",
+    "latency_ms": 7259,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090846212455445758268d9d6c6SPCYjz\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213985,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The downward view shows the robot's body on a red carpet. A wide white bumper is mounted horizontally across the front, extending significantly beyond the width of the wheels. The torso rotation is currently 0.0 degrees, meaning the full width of this bumper is facing the direction of travel.\\\", \\\"reasoning\\\": \\\"The downward view confirms that the white bumper is very wide. To fit through the narrow opening ahead, I must rotate my torso to align the long axis of the bumper more closely with my walking direction. I will begin by turning right.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3064,\"completion_tokens\":133,\"total_tokens\":3197,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3064,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":133,\"totalTokenCount\":3197,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1975},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":133}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1975,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":133,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The downward view shows the robot's body on a red carpet. A wide white bumper is mounted horizontally across the front, extending significantly beyond the width of the wheels. The torso rotation is currently 0.0 degrees, meaning the full width of this bumper is facing the direction of travel.\", \"reasoning\": \"The downward view confirms that the white bumper is very wide. To fit through the narrow opening ahead, I must rotate my torso to align the long axis of the bumper more closely with my walking direction. I will begin by turning right.\", \"action\": \"turn_right\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The downward view shows the robot's body on a red carpet. A wide white bumper is mounted horizontally across the front, extending significantly beyond the width of the wheels. The torso rotation is currently 0.0 degrees, meaning the full width of this bumper is facing the direction of travel.",
+      "reasoning": "The downward view confirms that the white bumper is very wide. To fit through the narrow opening ahead, I must rotate my torso to align the long axis of the bumper more closely with my walking direction. I will begin by turning right.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

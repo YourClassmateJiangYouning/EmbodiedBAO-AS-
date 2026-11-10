@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:20:02+08:00",
+    "latency_ms": 6510,
+    "payload_bytes": 397699,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081019572113291678268d9d6dEuCCYfU\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133202,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"A long red carpet leads toward a narrow opening in a wall decorated with geometric patterns. A blue triangle is visible on the floor just beyond the opening. The opening appears quite narrow compared to the width of the carpet.\\\",\\n  \\\"reasoning\\\": \\\"I need to reach the blue triangle. Before I move forward and potentially get stuck in the narrow opening, I must determine my current body width and orientation. Using look_down will allow me to see my torso relative to the path ahead.\\\",\\n  \\\"action\\\": \\\"look_down\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1974,\"completion_tokens\":128,\"total_tokens\":2102,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":1974,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":128,\"totalTokenCount\":2102,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":885},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":128}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":885,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":128,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"A long red carpet leads toward a narrow opening in a wall decorated with geometric patterns. A blue triangle is visible on the floor just beyond the opening. The opening appears quite narrow compared to the width of the carpet.\",\n  \"reasoning\": \"I need to reach the blue triangle. Before I move forward and potentially get stuck in the narrow opening, I must determine my current body width and orientation. Using look_down will allow me to see my torso relative to the path ahead.\",\n  \"action\": \"look_down\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpet leads toward a narrow opening in a wall decorated with geometric patterns. A blue triangle is visible on the floor just beyond the opening. The opening appears quite narrow compared to the width of the carpet.",
+      "reasoning": "I need to reach the blue triangle. Before I move forward and potentially get stuck in the narrow opening, I must determine my current body width and orientation. Using look_down will allow me to see my torso relative to the path ahead.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

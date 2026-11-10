@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:46:37+08:00",
+    "latency_ms": 7817,
+    "payload_bytes": 205524,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_nj6osehqwumn7jgwgc7mu3q53pj4qypmv6jhq4wn3wz3mkxjgb5a\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145597,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The yellow arrow is clearly visible on the far wall, centered in my view. It appears to be mounted on a dark panel in the middle distance. The path ahead is completely clear with no obstacles. The floor is visible and appears to be a dark reddish-brown color. Walls on both sides show geometric patterns and colors (purple/blue on the left, pink/blue on the right). The arrow is my target destination.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=6.500 and have successfully moved forward 8 times without obstruction. The yellow arrow remains clearly visible and centered ahead on the far wall. My walking direction is fixed toward the arrow. The path is completely clear with no obstacles blocking my way. I have 22 steps remaining (30 - 8 taken). I should continue moving forward to reach the arrow.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2868,\"completion_tokens\":215,\"total_tokens\":3083,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2868,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":215,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2868,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The yellow arrow is clearly visible on the far wall, centered in my view. It appears to be mounted on a dark panel in the middle distance. The path ahead is completely clear with no obstacles. The floor is visible and appears to be a dark reddish-brown color. Walls on both sides show geometric patterns and colors (purple/blue on the left, pink/blue on the right). The arrow is my target destination.\",\n  \"reasoning\": \"I am at position x=6.500 and have successfully moved forward 8 times without obstruction. The yellow arrow remains clearly visible and centered ahead on the far wall. My walking direction is fixed toward the arrow. The path is completely clear with no obstacles blocking my way. I have 22 steps remaining (30 - 8 taken). I should continue moving forward to reach the arrow.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow is clearly visible on the far wall, centered in my view. It appears to be mounted on a dark panel in the middle distance. The path ahead is completely clear with no obstacles. The floor is visible and appears to be a dark reddish-brown color. Walls on both sides show geometric patterns and colors (purple/blue on the left, pink/blue on the right). The arrow is my target destination.",
+      "reasoning": "I am at position x=6.500 and have successfully moved forward 8 times without obstruction. The yellow arrow remains clearly visible and centered ahead on the far wall. My walking direction is fixed toward the arrow. The path is completely clear with no obstacles blocking my way. I have 22 steps remaining (30 - 8 taken). I should continue moving forward to reach the arrow.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

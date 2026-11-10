@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:55+08:00",
+    "latency_ms": 2605,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ac5c5a88-180d-4713-9b1a-e0cd5a4ad8b9\",\"object\":\"chat.completion\",\"created\":1794208193,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is now very large and close, filling much of the view just ahead and slightly below center, mounted on a dark panel above the red carpet. The path to it appears clear with no visible obstruction between me and the sign.\\\", \\\"reasoning\\\": \\\"The last forward step succeeded and the arrow is now extremely close, nearly filling the view. Continuing forward should bring me onto the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.8}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2911,\"completion_tokens\":100,\"total_tokens\":3011,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2271},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is now very large and close, filling much of the view just ahead and slightly below center, mounted on a dark panel above the red carpet. The path to it appears clear with no visible obstruction between me and the sign.\", \"reasoning\": \"The last forward step succeeded and the arrow is now extremely close, nearly filling the view. Continuing forward should bring me onto the goal.\", \"action\": \"forward\", \"confidence\": 0.8}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is now very large and close, filling much of the view just ahead and slightly below center, mounted on a dark panel above the red carpet. The path to it appears clear with no visible obstruction between me and the sign.",
+      "reasoning": "The last forward step succeeded and the arrow is now extremely close, nearly filling the view. Continuing forward should bring me onto the goal.",
+      "action": "forward",
+      "confidence": 0.8
+    },
+    "action": "forward"
+  }
+]

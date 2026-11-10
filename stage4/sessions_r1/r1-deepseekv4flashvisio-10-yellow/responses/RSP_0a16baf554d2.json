@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:04:37+08:00",
+    "latency_ms": 2591,
+    "payload_bytes": 250636,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ca40e1df-b46d-4828-b789-f83b827fbc59\",\"object\":\"chat.completion\",\"created\":1794207876,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a large yellow arrow on a black sign mounted on a light-colored wall/panel directly ahead, with the red carpet floor in the foreground. The arrow is very close and centered in view.\\\", \\\"reasoning\\\": \\\"The yellow arrow goal is directly ahead and appears very close, filling much of the view. My torso rotation is 0 degrees and the path is clear, so continuing forward should bring me to the goal without needing any turns.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2072,\"completion_tokens\":110,\"total_tokens\":2182,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1304},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a large yellow arrow on a black sign mounted on a light-colored wall/panel directly ahead, with the red carpet floor in the foreground. The arrow is very close and centered in view.\", \"reasoning\": \"The yellow arrow goal is directly ahead and appears very close, filling much of the view. My torso rotation is 0 degrees and the path is clear, so continuing forward should bring me to the goal without needing any turns.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a large yellow arrow on a black sign mounted on a light-colored wall/panel directly ahead, with the red carpet floor in the foreground. The arrow is very close and centered in view.",
+      "reasoning": "The yellow arrow goal is directly ahead and appears very close, filling much of the view. My torso rotation is 0 degrees and the path is clear, so continuing forward should bring me to the goal without needing any turns.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

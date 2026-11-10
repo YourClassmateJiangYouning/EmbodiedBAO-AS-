@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:37:07+08:00",
+    "latency_ms": 7690,
+    "payload_bytes": 323215,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A straight red carpeted walkway leads forward toward a rectangular doorway in the far wall. Beyond the doorway, a glowing purple four-pointed star is visible centered ahead. The path appears unobstructed and aligned with the doorway.\\\", \\\"reasoning\\\": \\\"The star is straight ahead through the doorway and the carpet path is clear. Continuing forward will bring me closer to and likely through the doorway toward the star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.78}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794206224,\"id\":\"chatcmpl-EiDI0vnKf7w2p5HC3FzBNi4iM2icx\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261011042431-15e79446-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":109,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":528,\"engine_ttlt_ms\":1394,\"pre_inference_ms\":505,\"service_tbt_ms\":8,\"service_ttft_ms\":1351,\"service_ttlt_ms\":2174,\"user_visible_ttft_ms\":846},\"prompt_tokens\":1730,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1839}}\n",
+    "content": "{\"scene_description\": \"A straight red carpeted walkway leads forward toward a rectangular doorway in the far wall. Beyond the doorway, a glowing purple four-pointed star is visible centered ahead. The path appears unobstructed and aligned with the doorway.\", \"reasoning\": \"The star is straight ahead through the doorway and the carpet path is clear. Continuing forward will bring me closer to and likely through the doorway toward the star.\", \"action\": \"forward\", \"confidence\": 0.78}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight red carpeted walkway leads forward toward a rectangular doorway in the far wall. Beyond the doorway, a glowing purple four-pointed star is visible centered ahead. The path appears unobstructed and aligned with the doorway.",
+      "reasoning": "The star is straight ahead through the doorway and the carpet path is clear. Continuing forward will bring me closer to and likely through the doorway toward the star.",
+      "action": "forward",
+      "confidence": 0.78
+    },
+    "action": "forward"
+  }
+]

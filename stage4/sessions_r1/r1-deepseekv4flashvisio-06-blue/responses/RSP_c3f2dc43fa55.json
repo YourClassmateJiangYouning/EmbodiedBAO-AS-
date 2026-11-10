@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:18:10+08:00",
+    "latency_ms": 2357,
+    "payload_bytes": 305686,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"262b421c-5123-4fad-8d6d-bdeb24ac380e\",\"object\":\"chat.completion\",\"created\":1794208689,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted path leading straight ahead toward a dark doorway, with the blue triangle visible on the far wall just beyond the opening. The patterned floor is to the left, and the doorway appears narrow relative to the path.\\\", \\\"reasoning\\\": \\\"The blue triangle is straight ahead along the fixed walking direction and the red path is clear. Continuing forward reduces the remaining distance to the goal; no turning is needed since the doorway is aligned with the walking direction.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1851,\"completion_tokens\":114,\"total_tokens\":1965,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1083},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted path leading straight ahead toward a dark doorway, with the blue triangle visible on the far wall just beyond the opening. The patterned floor is to the left, and the doorway appears narrow relative to the path.\", \"reasoning\": \"The blue triangle is straight ahead along the fixed walking direction and the red path is clear. Continuing forward reduces the remaining distance to the goal; no turning is needed since the doorway is aligned with the walking direction.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted path leading straight ahead toward a dark doorway, with the blue triangle visible on the far wall just beyond the opening. The patterned floor is to the left, and the doorway appears narrow relative to the path.",
+      "reasoning": "The blue triangle is straight ahead along the fixed walking direction and the red path is clear. Continuing forward reduces the remaining distance to the goal; no turning is needed since the doorway is aligned with the walking direction.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

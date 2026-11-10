@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:01:59+08:00",
+    "latency_ms": 3224,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5d844682-af32-4c72-b76e-780eb2de32bd\",\"object\":\"chat.completion\",\"created\":1794207718,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"Downward glance showing the robot's own body from the front: two wheels on either side, a wide white platform/tray on top, and a bundle of cables in the center. The body's overall width spans roughly the full frame, with the wheels defining the widest points.\\\", \\\"reasoning\\\": \\\"The downward view reveals my body width, which appears fairly wide due to the wheels and the white tray. I need to compare this width against the doorway opening ahead. Since I cannot see the doorway width in this glance, I should return to the normal forward view to assess the opening before committing to entering, and possibly turn my torso to narrow my presented width if needed.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.5}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1958,\"completion_tokens\":155,\"total_tokens\":2113,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1190},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"Downward glance showing the robot's own body from the front: two wheels on either side, a wide white platform/tray on top, and a bundle of cables in the center. The body's overall width spans roughly the full frame, with the wheels defining the widest points.\", \"reasoning\": \"The downward view reveals my body width, which appears fairly wide due to the wheels and the white tray. I need to compare this width against the doorway opening ahead. Since I cannot see the doorway width in this glance, I should return to the normal forward view to assess the opening before committing to entering, and possibly turn my torso to narrow my presented width if needed.\", \"action\": \"forward\", \"confidence\": 0.5}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "Downward glance showing the robot's own body from the front: two wheels on either side, a wide white platform/tray on top, and a bundle of cables in the center. The body's overall width spans roughly the full frame, with the wheels defining the widest points.",
+      "reasoning": "The downward view reveals my body width, which appears fairly wide due to the wheels and the white tray. I need to compare this width against the doorway opening ahead. Since I cannot see the doorway width in this glance, I should return to the normal forward view to assess the opening before committing to entering, and possibly turn my torso to narrow my presented width if needed.",
+      "action": "forward",
+      "confidence": 0.5
+    },
+    "action": "forward"
+  }
+]

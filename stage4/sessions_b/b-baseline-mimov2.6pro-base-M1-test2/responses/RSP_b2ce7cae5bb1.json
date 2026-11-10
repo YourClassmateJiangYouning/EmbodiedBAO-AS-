@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:23:21+08:00",
+    "latency_ms": 9614,
+    "payload_bytes": 267932,
+    "finish_reason": "stop",
+    "reasoning_tokens": 18,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"bfce3e74-ed02-4d9b-8b2b-397740b877f9_8049fdf9547c4751bb6de17753ee413d\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle is centered directly ahead on the light floor, appearing very close - just past the edge of the dark red carpet. Behind it are a black covered object and an orange armchair. The path ahead is clear.\\\", \\\"reasoning\\\": \\\"Six forward steps have been executed successfully with torso at 0 degrees (narrowest profile). The green rectangle is now very close and centered ahead. One more forward step should reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is very close now. Just one more forward step likely reaches it.\"}}],\"created\":1794212601,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":132,\"prompt_tokens\":2416,\"total_tokens\":2548,\"completion_tokens_details\":{\"reasoning_tokens\":18},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The green rectangle is centered directly ahead on the light floor, appearing very close - just past the edge of the dark red carpet. Behind it are a black covered object and an orange armchair. The path ahead is clear.\", \"reasoning\": \"Six forward steps have been executed successfully with torso at 0 degrees (narrowest profile). The green rectangle is now very close and centered ahead. One more forward step should reach it.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "The green rectangle is very close now. Just one more forward step likely reaches it.",
+    "parsed": {
+      "scene_description": "The green rectangle is centered directly ahead on the light floor, appearing very close - just past the edge of the dark red carpet. Behind it are a black covered object and an orange armchair. The path ahead is clear.",
+      "reasoning": "Six forward steps have been executed successfully with torso at 0 degrees (narrowest profile). The green rectangle is now very close and centered ahead. One more forward step should reach it.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

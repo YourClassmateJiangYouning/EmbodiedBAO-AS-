@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:34:39+08:00",
+    "latency_ms": 10259,
+    "payload_bytes": 383490,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_6i3j2r2kij3sdisxw3w34niscdcszpgx5d42ct4nj6tb6725dgya\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198877,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a red carpeted walkway stretching ahead toward a far wall. The purple four-pointed star is visible in the distance at the top center of the image, mounted on the dark wall. To my left is a yellow/cream colored floor with purple geometric patterns and designs. The walkway appears clear and unobstructed, providing a direct path forward to the target.\\\",\\n  \\\"reasoning\\\": \\\"I am at the starting position (x=0.5) and need to reach the purple four-pointed star on the far wall. The star is clearly visible straight ahead down my walking direction. The red carpet provides a clear, unobstructed path forward. My torso is at 0 degrees rotation, so I am aligned with my walking direction. The most direct approach is to walk forward along this carpet toward the star. There are no obstacles blocking the path.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2321,\"completion_tokens\":218,\"total_tokens\":2539,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2321,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":218,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2321,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a red carpeted walkway stretching ahead toward a far wall. The purple four-pointed star is visible in the distance at the top center of the image, mounted on the dark wall. To my left is a yellow/cream colored floor with purple geometric patterns and designs. The walkway appears clear and unobstructed, providing a direct path forward to the target.\",\n  \"reasoning\": \"I am at the starting position (x=0.5) and need to reach the purple four-pointed star on the far wall. The star is clearly visible straight ahead down my walking direction. The red carpet provides a clear, unobstructed path forward. My torso is at 0 degrees rotation, so I am aligned with my walking direction. The most direct approach is to walk forward along this carpet toward the star. There are no obstacles blocking the path.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a red carpeted walkway stretching ahead toward a far wall. The purple four-pointed star is visible in the distance at the top center of the image, mounted on the dark wall. To my left is a yellow/cream colored floor with purple geometric patterns and designs. The walkway appears clear and unobstructed, providing a direct path forward to the target.",
+      "reasoning": "I am at the starting position (x=0.5) and need to reach the purple four-pointed star on the far wall. The star is clearly visible straight ahead down my walking direction. The red carpet provides a clear, unobstructed path forward. My torso is at 0 degrees rotation, so I am aligned with my walking direction. The most direct approach is to walk forward along this carpet toward the star. There are no obstacles blocking the path.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

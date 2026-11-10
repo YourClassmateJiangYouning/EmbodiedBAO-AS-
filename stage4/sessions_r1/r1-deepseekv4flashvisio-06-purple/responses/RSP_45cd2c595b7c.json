@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:19:22+08:00",
+    "latency_ms": 2362,
+    "payload_bytes": 191441,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f8fb42f2-3fff-4931-b559-b855b5c178e3\",\"object\":\"chat.completion\",\"created\":1794208761,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is directly ahead on a dark panel at the far wall, with the red carpet leading up to it. The star appears close, filling a good portion of the view.\\\", \\\"reasoning\\\": \\\"The star is directly ahead along the fixed walking direction and appears very close. Continuing forward should bring me to the goal without needing any turns.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2093,\"completion_tokens\":92,\"total_tokens\":2185,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1325},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is directly ahead on a dark panel at the far wall, with the red carpet leading up to it. The star appears close, filling a good portion of the view.\", \"reasoning\": \"The star is directly ahead along the fixed walking direction and appears very close. Continuing forward should bring me to the goal without needing any turns.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is directly ahead on a dark panel at the far wall, with the red carpet leading up to it. The star appears close, filling a good portion of the view.",
+      "reasoning": "The star is directly ahead along the fixed walking direction and appears very close. Continuing forward should bring me to the goal without needing any turns.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

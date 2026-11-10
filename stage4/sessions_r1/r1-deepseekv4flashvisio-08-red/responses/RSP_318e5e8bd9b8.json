@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:08:19+08:00",
+    "latency_ms": 2935,
+    "payload_bytes": 164594,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"18923a15-56fe-4dd2-a9c8-f2e963c433b4\",\"object\":\"chat.completion\",\"created\":1794208098,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle sits on a raised panel/ledge directly ahead, with a dark wall above it and the floor below. The panel edge appears to be a low step in front of the goal.\\\", \\\"reasoning\\\": \\\"Forward has been blocked repeatedly at multiple torso rotations, and the goal is on a raised panel. Backing up once allowed one successful forward step before blocking again, suggesting the robot needs more clearance to climb the ledge. Backing up further to gain momentum/clearance is the best next move before attempting forward again.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.45}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2725,\"completion_tokens\":127,\"total_tokens\":2852,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2085},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle sits on a raised panel/ledge directly ahead, with a dark wall above it and the floor below. The panel edge appears to be a low step in front of the goal.\", \"reasoning\": \"Forward has been blocked repeatedly at multiple torso rotations, and the goal is on a raised panel. Backing up once allowed one successful forward step before blocking again, suggesting the robot needs more clearance to climb the ledge. Backing up further to gain momentum/clearance is the best next move before attempting forward again.\", \"action\": \"backward\", \"confidence\": 0.45}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle sits on a raised panel/ledge directly ahead, with a dark wall above it and the floor below. The panel edge appears to be a low step in front of the goal.",
+      "reasoning": "Forward has been blocked repeatedly at multiple torso rotations, and the goal is on a raised panel. Backing up once allowed one successful forward step before blocking again, suggesting the robot needs more clearance to climb the ledge. Backing up further to gain momentum/clearance is the best next move before attempting forward again.",
+      "action": "backward",
+      "confidence": 0.45
+    },
+    "action": "backward"
+  }
+]

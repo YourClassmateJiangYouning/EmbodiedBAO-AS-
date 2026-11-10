@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:16:25+08:00",
+    "latency_ms": 8207,
+    "payload_bytes": 186978,
+    "finish_reason": "stop",
+    "reasoning_tokens": 33,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"55a64df9-87e5-4ce3-bb6c-60fbc087c93e_6dc83aa4935549729f7b99779114256b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the red circle glowing on a dark panel straight ahead, seen through the narrow opening in the far wall. A dark red carpet leads toward it, with shadowed wall edges framing the gap on both sides. The opening looks like it is right at my current position, so I am at or just before the threshold.\\\",\\\"reasoning\\\": \\\"The red circle is directly ahead and the path through the opening is clear. My torso is turned 15 degrees left to narrow my profile for the gap. Since the opening is essentially upon me now and forward always advances toward the circle, I should continue forward to pass through and reach the circle. Turning is no longer possible or useful once shoulders are at the opening, so I must simply advance.\\\",\\\"action\\\": \\\"forward\\\",\\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to go forward. Position x=7.25, already at door. The image shows the red circle through the opening. Keep moving forward.\"}}],\"created\":1794208584,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":206,\"prompt_tokens\":2640,\"total_tokens\":2846,\"completion_tokens_details\":{\"reasoning_tokens\":33},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows the red circle glowing on a dark panel straight ahead, seen through the narrow opening in the far wall. A dark red carpet leads toward it, with shadowed wall edges framing the gap on both sides. The opening looks like it is right at my current position, so I am at or just before the threshold.\",\"reasoning\": \"The red circle is directly ahead and the path through the opening is clear. My torso is turned 15 degrees left to narrow my profile for the gap. Since the opening is essentially upon me now and forward always advances toward the circle, I should continue forward to pass through and reach the circle. Turning is no longer possible or useful once shoulders are at the opening, so I must simply advance.\",\"action\": \"forward\",\"confidence\": 0.9}",
+    "reasoning_content": "We need to go forward. Position x=7.25, already at door. The image shows the red circle through the opening. Keep moving forward.",
+    "parsed": {
+      "scene_description": "The camera shows the red circle glowing on a dark panel straight ahead, seen through the narrow opening in the far wall. A dark red carpet leads toward it, with shadowed wall edges framing the gap on both sides. The opening looks like it is right at my current position, so I am at or just before the threshold.",
+      "reasoning": "The red circle is directly ahead and the path through the opening is clear. My torso is turned 15 degrees left to narrow my profile for the gap. Since the opening is essentially upon me now and forward always advances toward the circle, I should continue forward to pass through and reach the circle. Turning is no longer possible or useful once shoulders are at the opening, so I must simply advance.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

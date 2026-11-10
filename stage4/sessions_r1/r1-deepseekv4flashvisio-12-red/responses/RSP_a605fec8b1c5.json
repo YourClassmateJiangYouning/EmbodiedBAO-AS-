@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:00:40+08:00",
+    "latency_ms": 2782,
+    "payload_bytes": 340993,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"27bb1ab4-068c-4438-93eb-15299234d6c5\",\"object\":\"chat.completion\",\"created\":1794207638,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted floor leads straight ahead to a narrow dark opening in the far wall, with a red circle visible inside the opening. Patterned walls flank the opening on both sides.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead through the narrow opening. My torso is rotated 15 degrees right, which narrows the profile I present to the gap. I have already turned once; continuing to turn right further narrows my presented width, but I should now advance toward the opening since forward always moves me toward the goal regardless of torso rotation.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1952,\"completion_tokens\":130,\"total_tokens\":2082,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1440},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted floor leads straight ahead to a narrow dark opening in the far wall, with a red circle visible inside the opening. Patterned walls flank the opening on both sides.\", \"reasoning\": \"The red circle is directly ahead through the narrow opening. My torso is rotated 15 degrees right, which narrows the profile I present to the gap. I have already turned once; continuing to turn right further narrows my presented width, but I should now advance toward the opening since forward always moves me toward the goal regardless of torso rotation.\", \"action\": \"forward\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted floor leads straight ahead to a narrow dark opening in the far wall, with a red circle visible inside the opening. Patterned walls flank the opening on both sides.",
+      "reasoning": "The red circle is directly ahead through the narrow opening. My torso is rotated 15 degrees right, which narrows the profile I present to the gap. I have already turned once; continuing to turn right further narrows my presented width, but I should now advance toward the opening since forward always moves me toward the goal regardless of torso rotation.",
+      "action": "forward",
+      "confidence": 0.7
+    },
+    "action": "forward"
+  }
+]

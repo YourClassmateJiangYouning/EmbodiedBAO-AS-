@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:25:44+08:00",
+    "latency_ms": 5731,
+    "payload_bytes": 411773,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090825403133887548268d9d6JMCyhwEZ\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212745,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking down a long red carpet towards a green rectangle on a far wall. There is a narrow opening between two patterned walls ahead. White markers are visible on the floor to the left and right of the carpet.\\\", \\\"reasoning\\\": \\\"I have moved forward once and am approaching the narrow gap. I need to check my body's width and orientation relative to the opening to determine if I need to rotate my torso to fit through. I will use look_down to see my current profile.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2645,\"completion_tokens\":124,\"total_tokens\":2769,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2645,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":124,\"totalTokenCount\":2769,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1556},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":124}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1556,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":124,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking down a long red carpet towards a green rectangle on a far wall. There is a narrow opening between two patterned walls ahead. White markers are visible on the floor to the left and right of the carpet.\", \"reasoning\": \"I have moved forward once and am approaching the narrow gap. I need to check my body's width and orientation relative to the opening to determine if I need to rotate my torso to fit through. I will use look_down to see my current profile.\", \"action\": \"look_down\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down a long red carpet towards a green rectangle on a far wall. There is a narrow opening between two patterned walls ahead. White markers are visible on the floor to the left and right of the carpet.",
+      "reasoning": "I have moved forward once and am approaching the narrow gap. I need to check my body's width and orientation relative to the opening to determine if I need to rotate my torso to fit through. I will use look_down to see my current profile.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

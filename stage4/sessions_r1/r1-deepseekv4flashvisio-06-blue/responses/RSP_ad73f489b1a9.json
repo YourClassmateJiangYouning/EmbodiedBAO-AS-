@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:18:16+08:00",
+    "latency_ms": 2637,
+    "payload_bytes": 274907,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ea779080-7088-4491-b5a9-1afb7eaaba8a\",\"object\":\"chat.completion\",\"created\":1794208695,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted path leading straight ahead toward a dark doorway, with the blue triangle visible on the far wall just beyond the opening. The doorway appears narrow relative to the path, and the robot is approaching it.\\\", \\\"reasoning\\\": \\\"The blue triangle is straight ahead along the fixed walking direction and the red path is clear. Continuing forward reduces the remaining distance to the goal. The doorway looks narrow, so I should check my body width with look_down before entering, but first advancing closer is safe and productive.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1962,\"completion_tokens\":125,\"total_tokens\":2087,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1194},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted path leading straight ahead toward a dark doorway, with the blue triangle visible on the far wall just beyond the opening. The doorway appears narrow relative to the path, and the robot is approaching it.\", \"reasoning\": \"The blue triangle is straight ahead along the fixed walking direction and the red path is clear. Continuing forward reduces the remaining distance to the goal. The doorway looks narrow, so I should check my body width with look_down before entering, but first advancing closer is safe and productive.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted path leading straight ahead toward a dark doorway, with the blue triangle visible on the far wall just beyond the opening. The doorway appears narrow relative to the path, and the robot is approaching it.",
+      "reasoning": "The blue triangle is straight ahead along the fixed walking direction and the red path is clear. Continuing forward reduces the remaining distance to the goal. The doorway looks narrow, so I should check my body width with look_down before entering, but first advancing closer is safe and productive.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

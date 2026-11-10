@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:25:25+08:00",
+    "latency_ms": 5979,
+    "payload_bytes": 376152,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081025208826621718268d9d68HrW6mq0\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133525,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"I am looking down a long red carpet towards a narrow opening in a wall. A small green rectangle is visible on the floor just beyond the opening. The walls are decorated with blue and purple geometric patterns.\\\", \\\"reasoning\\\": \\\"I have moved forward once and am still quite far from the opening. I need to determine my body's width and orientation to ensure I can pass through the narrow gap ahead. I will use look_down to see my body dimensions while I still have space to rotate if necessary.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2081,\"completion_tokens\":125,\"total_tokens\":2206,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2081,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":125,\"totalTokenCount\":2206,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":992},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":125}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":992,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":125,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"I am looking down a long red carpet towards a narrow opening in a wall. A small green rectangle is visible on the floor just beyond the opening. The walls are decorated with blue and purple geometric patterns.\", \"reasoning\": \"I have moved forward once and am still quite far from the opening. I need to determine my body's width and orientation to ensure I can pass through the narrow gap ahead. I will use look_down to see my body dimensions while I still have space to rotate if necessary.\", \"action\": \"look_down\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I am looking down a long red carpet towards a narrow opening in a wall. A small green rectangle is visible on the floor just beyond the opening. The walls are decorated with blue and purple geometric patterns.",
+      "reasoning": "I have moved forward once and am still quite far from the opening. I need to determine my body's width and orientation to ensure I can pass through the narrow gap ahead. I will use look_down to see my body dimensions while I still have space to rotate if necessary.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:06:51+08:00",
+    "latency_ms": 15453,
+    "payload_bytes": 262929,
+    "finish_reason": "stop",
+    "reasoning_tokens": 199,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n{\"id\":\"b0bc26d1-03ea-46ea-80b5-2b37cabf7446_aadd87c8e6744289902dad8ed916c3f1\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the green rectangle ahead on the light-colored floor at the end of a red carpeted corridor, framed by a narrow opening between a dark draped object on the left and a white patterned wall on the right. The green rectangle appears fairly close now, roughly 1-2 meters ahead, and the path is clear.\\\", \\\"reasoning\\\": \\\"The green rectangle is directly ahead and clearly visible through the opening. My torso rotation is 0 degrees, presenting minimal width, and I have already verified my body fits through the gap with an earlier look_down. Continuing forward along the fixed walking direction toward the goal is the correct move.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=6.5. Started at presumably 0. Each forward is 75cm = 0.75. 9 steps, 7 forwards so far (steps 0,2,3,4,5,6,7,8 = 8 forwards actually). Let's count: step0 forward, step1 look_down, step2 forward, step3 forward, step4 forward, step5 forward, step6 forward, step7 forward, step8 forward = 8 forwards. 8 * 0.75 = 6.0. Hmm, x = 6.5. Maybe started at 0.5. Anyway, the green rectangle appears near. The goal is the green rectangle on the far wall. In the image, the green rectangle is visible ahead, looks close. Continue forward.\\n\\nDistance to goal? The image shows the green rectangle fairly large, maybe 1-2 meters ahead. Continue forward.\"}}],\"created\":1794136011,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":351,\"prompt_tokens\":2488,\"total_tokens\":2839,\"completion_tokens_details\":{\"reasoning_tokens\":199},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows the green rectangle ahead on the light-colored floor at the end of a red carpeted corridor, framed by a narrow opening between a dark draped object on the left and a white patterned wall on the right. The green rectangle appears fairly close now, roughly 1-2 meters ahead, and the path is clear.\", \"reasoning\": \"The green rectangle is directly ahead and clearly visible through the opening. My torso rotation is 0 degrees, presenting minimal width, and I have already verified my body fits through the gap with an earlier look_down. Continuing forward along the fixed walking direction toward the goal is the correct move.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "We are at x=6.5. Started at presumably 0. Each forward is 75cm = 0.75. 9 steps, 7 forwards so far (steps 0,2,3,4,5,6,7,8 = 8 forwards actually). Let's count: step0 forward, step1 look_down, step2 forward, step3 forward, step4 forward, step5 forward, step6 forward, step7 forward, step8 forward = 8 forwards. 8 * 0.75 = 6.0. Hmm, x = 6.5. Maybe started at 0.5. Anyway, the green rectangle appears near. The goal is the green rectangle on the far wall. In the image, the green rectangle is visible ahead, looks close. Continue forward.\n\nDistance to goal? The image shows the green rectangle fairly large, maybe 1-2 meters ahead. Continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows the green rectangle ahead on the light-colored floor at the end of a red carpeted corridor, framed by a narrow opening between a dark draped object on the left and a white patterned wall on the right. The green rectangle appears fairly close now, roughly 1-2 meters ahead, and the path is clear.",
+      "reasoning": "The green rectangle is directly ahead and clearly visible through the opening. My torso rotation is 0 degrees, presenting minimal width, and I have already verified my body fits through the gap with an earlier look_down. Continuing forward along the fixed walking direction toward the goal is the correct move.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

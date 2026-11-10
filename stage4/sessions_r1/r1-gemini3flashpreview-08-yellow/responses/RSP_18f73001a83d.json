@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:19:05+08:00",
+    "latency_ms": 37638,
+    "payload_bytes": 370372,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090418302680875328268d9d6E7Rg8Rzm\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794197945,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The image shows a red carpeted walkway leading towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just inside the opening, pointing to the right.\\\",\\n  \\\"reasoning\\\": \\\"I have moved forward once and am still a fair distance from the opening. To ensure I can pass through the narrow gap safely, I need to know my body's current width and orientation relative to the opening. I will use 'look_down' to see my body's profile before I get too close to turn.\\\",\\n  \\\"action\\\": \\\"look_down\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2086,\"completion_tokens\":142,\"total_tokens\":2228,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2086,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":142,\"totalTokenCount\":2228,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":997}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":142}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":997,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":142,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The image shows a red carpeted walkway leading towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just inside the opening, pointing to the right.\",\n  \"reasoning\": \"I have moved forward once and am still a fair distance from the opening. To ensure I can pass through the narrow gap safely, I need to know my body's current width and orientation relative to the opening. I will use 'look_down' to see my body's profile before I get too close to turn.\",\n  \"action\": \"look_down\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The image shows a red carpeted walkway leading towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just inside the opening, pointing to the right.",
+      "reasoning": "I have moved forward once and am still a fair distance from the opening. To ensure I can pass through the narrow gap safely, I need to know my body's current width and orientation relative to the opening. I will use 'look_down' to see my body's profile before I get too close to turn.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

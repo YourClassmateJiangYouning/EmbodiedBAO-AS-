@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:11:19+08:00",
+    "latency_ms": 2471,
+    "payload_bytes": 212085,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"3f3a9e63-a5b5-4f84-8e2c-9819ae55d097\",\"object\":\"chat.completion\",\"created\":1794208277,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle sits on a raised platform directly ahead, framed by a dark doorway with patterned walls on either side. The red carpet leads up to the platform edge, which appears as a low ledge at wheel height.\\\", \\\"reasoning\\\": \\\"Forward steps keep getting blocked by the low ledge even at 0-degree torso rotation. Backing up then moving forward succeeded once before, so I'll repeat that pattern: back up to gain clearance, then attempt forward again toward the triangle.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.55}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2837,\"completion_tokens\":116,\"total_tokens\":2953,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2197},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle sits on a raised platform directly ahead, framed by a dark doorway with patterned walls on either side. The red carpet leads up to the platform edge, which appears as a low ledge at wheel height.\", \"reasoning\": \"Forward steps keep getting blocked by the low ledge even at 0-degree torso rotation. Backing up then moving forward succeeded once before, so I'll repeat that pattern: back up to gain clearance, then attempt forward again toward the triangle.\", \"action\": \"backward\", \"confidence\": 0.55}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle sits on a raised platform directly ahead, framed by a dark doorway with patterned walls on either side. The red carpet leads up to the platform edge, which appears as a low ledge at wheel height.",
+      "reasoning": "Forward steps keep getting blocked by the low ledge even at 0-degree torso rotation. Backing up then moving forward succeeded once before, so I'll repeat that pattern: back up to gain clearance, then attempt forward again toward the triangle.",
+      "action": "backward",
+      "confidence": 0.55
+    },
+    "action": "backward"
+  }
+]

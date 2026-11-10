@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:04:20+08:00",
+    "latency_ms": 9933,
+    "payload_bytes": 262341,
+    "finish_reason": "stop",
+    "reasoning_tokens": 123,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"2e824bd9-3460-4cd1-b1af-08954eb21288_62a19b38b5cf4d9187f69dded4cee93f\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead along the walking direction: a red carpet path leads forward to a dark doorway framed by patterned walls, and a bright red circle is visible through the opening in the middle of the view, still at some distance ahead on the far wall.\\\", \\\"reasoning\\\": \\\"My torso remains rotated 90 degrees so my shallow depth faces the narrow doorway, and the red circle is visible directly ahead through the opening. The path is clear and the circle is still some distance away, so I should continue advancing with forward steps. I have 12 steps left, which should be plenty to close the remaining distance.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Looking at the image: red carpet path leading to the red circle through a doorway. The red circle is ahead through a dark opening. Torso is at 90 degrees rotated (presenting shallow depth to the doorway). Position x=5.0. Steps used 18 of 30, 12 left.\\n\\nThe red circle appears somewhat close but still ahead. I should keep moving forward. The circle is visible through the doorway ahead. Distance unclear — the circle looks moderately sized in frame. Each forward is 75cm. I should just keep going forward.\\n\\nAction: forward.\"}}],\"created\":1794204260,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":273,\"prompt_tokens\":2870,\"total_tokens\":3143,\"completion_tokens_details\":{\"reasoning_tokens\":123},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead along the walking direction: a red carpet path leads forward to a dark doorway framed by patterned walls, and a bright red circle is visible through the opening in the middle of the view, still at some distance ahead on the far wall.\", \"reasoning\": \"My torso remains rotated 90 degrees so my shallow depth faces the narrow doorway, and the red circle is visible directly ahead through the opening. The path is clear and the circle is still some distance away, so I should continue advancing with forward steps. I have 12 steps left, which should be plenty to close the remaining distance.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "Looking at the image: red carpet path leading to the red circle through a doorway. The red circle is ahead through a dark opening. Torso is at 90 degrees rotated (presenting shallow depth to the doorway). Position x=5.0. Steps used 18 of 30, 12 left.\n\nThe red circle appears somewhat close but still ahead. I should keep moving forward. The circle is visible through the doorway ahead. Distance unclear — the circle looks moderately sized in frame. Each forward is 75cm. I should just keep going forward.\n\nAction: forward.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead along the walking direction: a red carpet path leads forward to a dark doorway framed by patterned walls, and a bright red circle is visible through the opening in the middle of the view, still at some distance ahead on the far wall.",
+      "reasoning": "My torso remains rotated 90 degrees so my shallow depth faces the narrow doorway, and the red circle is visible directly ahead through the opening. The path is clear and the circle is still some distance away, so I should continue advancing with forward steps. I have 12 steps left, which should be plenty to close the remaining distance.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

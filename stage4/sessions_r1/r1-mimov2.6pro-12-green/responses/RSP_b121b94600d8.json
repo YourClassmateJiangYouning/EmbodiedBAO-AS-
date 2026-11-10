@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:04:53+08:00",
+    "latency_ms": 9759,
+    "payload_bytes": 390745,
+    "finish_reason": "stop",
+    "reasoning_tokens": 15,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"9cb0c069-3a0b-48e1-bfe9-0b2fac7b20aa_0c1a5e0f64ae4232bd6691f3e20fd343\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leading straight ahead toward a dark opening in a far wall decorated with colorful abstract shapes. A green rectangle is visible at the far end of the walkway, centered on the path. The floor on either side of the carpet has white and yellow geometric patterns.\\\", \\\"reasoning\\\": \\\"The green rectangle is straight ahead on the walkway and the path is clear of obstacles. My torso is at 0 degrees, so my width is minimal for any upcoming opening. I should simply move forward toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear, green rectangle visible ahead. Just move forward.\"}}],\"created\":1794135893,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":145,\"prompt_tokens\":1907,\"total_tokens\":2052,\"completion_tokens_details\":{\"reasoning_tokens\":15},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leading straight ahead toward a dark opening in a far wall decorated with colorful abstract shapes. A green rectangle is visible at the far end of the walkway, centered on the path. The floor on either side of the carpet has white and yellow geometric patterns.\", \"reasoning\": \"The green rectangle is straight ahead on the walkway and the path is clear of obstacles. My torso is at 0 degrees, so my width is minimal for any upcoming opening. I should simply move forward toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear, green rectangle visible ahead. Just move forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leading straight ahead toward a dark opening in a far wall decorated with colorful abstract shapes. A green rectangle is visible at the far end of the walkway, centered on the path. The floor on either side of the carpet has white and yellow geometric patterns.",
+      "reasoning": "The green rectangle is straight ahead on the walkway and the path is clear of obstacles. My torso is at 0 degrees, so my width is minimal for any upcoming opening. I should simply move forward toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

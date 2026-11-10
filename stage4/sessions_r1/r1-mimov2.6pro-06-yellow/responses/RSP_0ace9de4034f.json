@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:25:01+08:00",
+    "latency_ms": 10864,
+    "payload_bytes": 245159,
+    "finish_reason": "stop",
+    "reasoning_tokens": 100,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"350c7b00-aaf5-4681-b5ec-d7651039ea77_4ddca7cc05b14281ba25fe23ac6a8950\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the red carpet leading directly forward to a dark narrow opening between two decorated wall panels. A bright yellow arrow pointing right is visible at the base of the far wall through the opening. The arrow appears just a step or two ahead, and the corridor walls frame the opening on both sides.\\\", \\\"reasoning\\\": \\\"The yellow arrow is directly ahead through the narrow opening, appearing very close. My torso is at 0 degrees rotation, which presents my narrowest profile to the opening - the optimal orientation. The path on the red carpet is clear, so I should continue moving forward toward the arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The yellow arrow is directly ahead at the opening. I've taken 8 steps (9 total). I need to keep moving forward to reach the arrow. The opening appears narrow but my torso is at 0 degrees which is optimal. Let me continue forward.\\n\\nPosition is x=6.5 after 7 forward steps (started presumably at some x). Each forward is 75cm. The arrow looks close - maybe 1-2 more forward steps. Let me just move forward.\"}}],\"created\":1794209100,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":248,\"prompt_tokens\":2465,\"total_tokens\":2713,\"completion_tokens_details\":{\"reasoning_tokens\":100},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows the red carpet leading directly forward to a dark narrow opening between two decorated wall panels. A bright yellow arrow pointing right is visible at the base of the far wall through the opening. The arrow appears just a step or two ahead, and the corridor walls frame the opening on both sides.\", \"reasoning\": \"The yellow arrow is directly ahead through the narrow opening, appearing very close. My torso is at 0 degrees rotation, which presents my narrowest profile to the opening - the optimal orientation. The path on the red carpet is clear, so I should continue moving forward toward the arrow.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The yellow arrow is directly ahead at the opening. I've taken 8 steps (9 total). I need to keep moving forward to reach the arrow. The opening appears narrow but my torso is at 0 degrees which is optimal. Let me continue forward.\n\nPosition is x=6.5 after 7 forward steps (started presumably at some x). Each forward is 75cm. The arrow looks close - maybe 1-2 more forward steps. Let me just move forward.",
+    "parsed": {
+      "scene_description": "The camera shows the red carpet leading directly forward to a dark narrow opening between two decorated wall panels. A bright yellow arrow pointing right is visible at the base of the far wall through the opening. The arrow appears just a step or two ahead, and the corridor walls frame the opening on both sides.",
+      "reasoning": "The yellow arrow is directly ahead through the narrow opening, appearing very close. My torso is at 0 degrees rotation, which presents my narrowest profile to the opening - the optimal orientation. The path on the red carpet is clear, so I should continue moving forward toward the arrow.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

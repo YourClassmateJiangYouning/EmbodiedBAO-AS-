@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:25:45+08:00",
+    "latency_ms": 9094,
+    "payload_bytes": 284089,
+    "finish_reason": "stop",
+    "reasoning_tokens": 75,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"0fe77870-1f98-48e4-8df2-144ab1f14e11_49967ac7fcf14728be7525c4008e32ba\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading toward a far wall with colorful geometric patterns. In the center of the far wall is a narrow dark opening through which a green rectangle is clearly visible. The path ahead is clear and straight toward the opening and green rectangle.\\\", \\\"reasoning\\\": \\\"The green rectangle is clearly visible through the narrow opening directly ahead. My torso remains at 0 degrees rotation, presenting my narrowest profile toward the opening. The path on the red carpet is clear and I am making steady progress toward the goal. I should continue moving forward without turning.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is visible straight ahead through a narrow opening in the far wall. Current position is x=4.25 after 5 forward steps. I need to continue forward toward the green rectangle. My torso rotation is 0 degrees, presenting the narrowest profile, which is ideal for passing through the opening. The path is clear.\\n\\nLet me continue forward.\"}}],\"created\":1794198344,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":215,\"prompt_tokens\":2300,\"total_tokens\":2515,\"completion_tokens_details\":{\"reasoning_tokens\":75},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading toward a far wall with colorful geometric patterns. In the center of the far wall is a narrow dark opening through which a green rectangle is clearly visible. The path ahead is clear and straight toward the opening and green rectangle.\", \"reasoning\": \"The green rectangle is clearly visible through the narrow opening directly ahead. My torso remains at 0 degrees rotation, presenting my narrowest profile toward the opening. The path on the red carpet is clear and I am making steady progress toward the goal. I should continue moving forward without turning.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The green rectangle is visible straight ahead through a narrow opening in the far wall. Current position is x=4.25 after 5 forward steps. I need to continue forward toward the green rectangle. My torso rotation is 0 degrees, presenting the narrowest profile, which is ideal for passing through the opening. The path is clear.\n\nLet me continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading toward a far wall with colorful geometric patterns. In the center of the far wall is a narrow dark opening through which a green rectangle is clearly visible. The path ahead is clear and straight toward the opening and green rectangle.",
+      "reasoning": "The green rectangle is clearly visible through the narrow opening directly ahead. My torso remains at 0 degrees rotation, presenting my narrowest profile toward the opening. The path on the red carpet is clear and I am making steady progress toward the goal. I should continue moving forward without turning.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

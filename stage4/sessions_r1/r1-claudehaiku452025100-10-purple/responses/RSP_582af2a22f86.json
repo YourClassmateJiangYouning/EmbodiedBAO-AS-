@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:49:04+08:00",
+    "latency_ms": 6759,
+    "payload_bytes": 315365,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_yk72l7vn5bkyof5px6jyn4nk2dmveopkk3neo4hqmykqdb5gietq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145744,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a red carpeted walkway stretching ahead toward the far wall. The purple four-pointed star is clearly visible on the far wall, centered in my view. The walkway is completely clear and unobstructed. The walls on either side show decorative patterns in tan/beige colors. I am currently at position x=3.500, having taken 4 forward steps of 75cm each.\\\",\\n  \\\"reasoning\\\": \\\"I have successfully moved forward 4 times and am now at x=3.500. The purple star remains clearly visible and centered on the far wall ahead. The walkway is completely clear with no obstacles. My walking direction is fixed toward the star. I should continue moving forward to reach it. The path is straight and unobstructed.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2640,\"completion_tokens\":201,\"total_tokens\":2841,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2640,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":201,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2640,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a red carpeted walkway stretching ahead toward the far wall. The purple four-pointed star is clearly visible on the far wall, centered in my view. The walkway is completely clear and unobstructed. The walls on either side show decorative patterns in tan/beige colors. I am currently at position x=3.500, having taken 4 forward steps of 75cm each.\",\n  \"reasoning\": \"I have successfully moved forward 4 times and am now at x=3.500. The purple star remains clearly visible and centered on the far wall ahead. The walkway is completely clear with no obstacles. My walking direction is fixed toward the star. I should continue moving forward to reach it. The path is straight and unobstructed.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a red carpeted walkway stretching ahead toward the far wall. The purple four-pointed star is clearly visible on the far wall, centered in my view. The walkway is completely clear and unobstructed. The walls on either side show decorative patterns in tan/beige colors. I am currently at position x=3.500, having taken 4 forward steps of 75cm each.",
+      "reasoning": "I have successfully moved forward 4 times and am now at x=3.500. The purple star remains clearly visible and centered on the far wall ahead. The walkway is completely clear with no obstacles. My walking direction is fixed toward the star. I should continue moving forward to reach it. The path is straight and unobstructed.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

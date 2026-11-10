@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:23:45+08:00",
+    "latency_ms": 5492,
+    "payload_bytes": 397699,
+    "finish_reason": "stop",
+    "reasoning_tokens": 15,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a2f1ea38-2efe-4de5-a051-2f37fbb1e716_7c226e38f3f14d348c00dc1cca5564f4\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a decorated wall with a blue triangle at the far end near an opening. Patterned walls with colorful zigzag designs line both sides, and scattered white papers lie on the floor along the left and right edges of the carpet.\\\", \\\"reasoning\\\": \\\"The path ahead is clear and straight toward the blue triangle on the far wall. No obstacles block the walkway, so I should simply move forward to approach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear ahead to the blue triangle. Just move forward.\"}}],\"created\":1794137025,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":131,\"prompt_tokens\":1907,\"total_tokens\":2038,\"completion_tokens_details\":{\"reasoning_tokens\":15},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a decorated wall with a blue triangle at the far end near an opening. Patterned walls with colorful zigzag designs line both sides, and scattered white papers lie on the floor along the left and right edges of the carpet.\", \"reasoning\": \"The path ahead is clear and straight toward the blue triangle on the far wall. No obstacles block the walkway, so I should simply move forward to approach the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear ahead to the blue triangle. Just move forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a decorated wall with a blue triangle at the far end near an opening. Patterned walls with colorful zigzag designs line both sides, and scattered white papers lie on the floor along the left and right edges of the carpet.",
+      "reasoning": "The path ahead is clear and straight toward the blue triangle on the far wall. No obstacles block the walkway, so I should simply move forward to approach the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

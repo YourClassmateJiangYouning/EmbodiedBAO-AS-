@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:46:27+08:00",
+    "latency_ms": 6255,
+    "payload_bytes": 366549,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081046221720792988268d9d6wmZuoqvh\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134787,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading toward a narrow opening in a patterned wall. A blue triangle is visible on the far wall through the opening. The opening appears quite narrow compared to the width of the walkway.\\\",\\n  \\\"reasoning\\\": \\\"I have moved forward once and am approaching the narrow opening. To ensure I can pass through without hitting the walls, I need to know my current body width and orientation. Using 'look_down' will allow me to see my torso dimensions relative to the path ahead.\\\",\\n  \\\"action\\\": \\\"look_down\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2084,\"completion_tokens\":135,\"total_tokens\":2219,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2084,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":135,\"totalTokenCount\":2219,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":995},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":135}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":995,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":135,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a red carpeted walkway leading toward a narrow opening in a patterned wall. A blue triangle is visible on the far wall through the opening. The opening appears quite narrow compared to the width of the walkway.\",\n  \"reasoning\": \"I have moved forward once and am approaching the narrow opening. To ensure I can pass through without hitting the walls, I need to know my current body width and orientation. Using 'look_down' will allow me to see my torso dimensions relative to the path ahead.\",\n  \"action\": \"look_down\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading toward a narrow opening in a patterned wall. A blue triangle is visible on the far wall through the opening. The opening appears quite narrow compared to the width of the walkway.",
+      "reasoning": "I have moved forward once and am approaching the narrow opening. To ensure I can pass through without hitting the walls, I need to know my current body width and orientation. Using 'look_down' will allow me to see my torso dimensions relative to the path ahead.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

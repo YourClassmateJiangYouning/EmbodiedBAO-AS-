@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:20:22+08:00",
+    "latency_ms": 7238,
+    "payload_bytes": 340993,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A straight red-carpeted walkway leads to a rectangular opening ahead. Beyond the opening, a red circle is visible centered on a black square target against a patterned wall. The passage appears clear and wide enough; no obstacles are in the path.\\\", \\\"reasoning\\\": \\\"My walking direction is already aligned toward the red circle, and the corridor is unobstructed. Continuing forward is the most direct way to reach the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.73}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198018,\"id\":\"chatcmpl-EiB9ehoNjw6Y7HWwsaH5yWHYPN04l\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":113,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":11,\"engine_ttft_ms\":322,\"engine_ttlt_ms\":1542,\"pre_inference_ms\":563,\"service_tbt_ms\":11,\"service_ttft_ms\":1247,\"service_ttlt_ms\":2457,\"user_visible_ttft_ms\":683},\"prompt_tokens\":1686,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1799}}\n",
+    "content": "{\"scene_description\": \"A straight red-carpeted walkway leads to a rectangular opening ahead. Beyond the opening, a red circle is visible centered on a black square target against a patterned wall. The passage appears clear and wide enough; no obstacles are in the path.\", \"reasoning\": \"My walking direction is already aligned toward the red circle, and the corridor is unobstructed. Continuing forward is the most direct way to reach the target.\", \"action\": \"forward\", \"confidence\": 0.73}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight red-carpeted walkway leads to a rectangular opening ahead. Beyond the opening, a red circle is visible centered on a black square target against a patterned wall. The passage appears clear and wide enough; no obstacles are in the path.",
+      "reasoning": "My walking direction is already aligned toward the red circle, and the corridor is unobstructed. Continuing forward is the most direct way to reach the target.",
+      "action": "forward",
+      "confidence": 0.73
+    },
+    "action": "forward"
+  }
+]

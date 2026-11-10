@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:35:25+08:00",
+    "latency_ms": 7105,
+    "payload_bytes": 179511,
+    "finish_reason": "stop",
+    "reasoning_tokens": 54,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"1d5e9ab0-adac-4eb3-8c62-1bdd6897d6bb_81a0caf148844d2c91b88f75e6e4a26c\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle on the far wall is very large and close, filling the lower half of the view, indicating I am nearly at the far wall. The dark wall panel surrounds it above and to the sides, with the floor visible in the foreground.\\\", \\\"reasoning\\\": \\\"At torso rotation 90°, my wide platform presents its shallowest depth to the narrow opening, which allowed the last forward step to succeed (x moved from 7.250 to 8.000). The green rectangle is now extremely close and centered. I should continue forward to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is very close and large in view. I'm at x=8.0 now (moved from 7.25 to 8.0 with the successful forward at step 21). The green rectangle is right there. Continue forward.\"}}],\"created\":1794198925,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":202,\"prompt_tokens\":3511,\"total_tokens\":3713,\"completion_tokens_details\":{\"reasoning_tokens\":54},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The green rectangle on the far wall is very large and close, filling the lower half of the view, indicating I am nearly at the far wall. The dark wall panel surrounds it above and to the sides, with the floor visible in the foreground.\", \"reasoning\": \"At torso rotation 90°, my wide platform presents its shallowest depth to the narrow opening, which allowed the last forward step to succeed (x moved from 7.250 to 8.000). The green rectangle is now extremely close and centered. I should continue forward to reach it.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The green rectangle is very close and large in view. I'm at x=8.0 now (moved from 7.25 to 8.0 with the successful forward at step 21). The green rectangle is right there. Continue forward.",
+    "parsed": {
+      "scene_description": "The green rectangle on the far wall is very large and close, filling the lower half of the view, indicating I am nearly at the far wall. The dark wall panel surrounds it above and to the sides, with the floor visible in the foreground.",
+      "reasoning": "At torso rotation 90°, my wide platform presents its shallowest depth to the narrow opening, which allowed the last forward step to succeed (x moved from 7.250 to 8.000). The green rectangle is now extremely close and centered. I should continue forward to reach it.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

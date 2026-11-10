@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:23:49+08:00",
+    "latency_ms": 9516,
+    "payload_bytes": 296801,
+    "finish_reason": "stop",
+    "reasoning_tokens": 57,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"d83c4978-a4b1-4509-ad6d-ad38c8e20d2c_0363dd31255e46e7a75cf61d1bc4b68f\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\n  \\\"scene_description\\\": \\\"The green rectangle is directly ahead and very close, occupying a large portion of the lower-center view. It lies flat on the floor right in front of me, with brown furniture and a dark cloth visible beyond it. I am nearly at the target.\\\",\\n  \\\"reasoning\\\": \\\"The green rectangle is immediately ahead and very close after 8 successful forward steps at torso rotation 0 degrees. It fills much of the lower view, suggesting I am within 75cm of it. One more forward step should place me at the green rectangle.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is right in front of me, very close. It looks like I'm just about at it. One more forward step should reach it. The image shows the green rectangle very large and close on the floor. Let me move forward one more step to reach it.\"}}],\"created\":1794212629,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":194,\"prompt_tokens\":2603,\"total_tokens\":2797,\"completion_tokens_details\":{\"reasoning_tokens\":57},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\n  \"scene_description\": \"The green rectangle is directly ahead and very close, occupying a large portion of the lower-center view. It lies flat on the floor right in front of me, with brown furniture and a dark cloth visible beyond it. I am nearly at the target.\",\n  \"reasoning\": \"The green rectangle is immediately ahead and very close after 8 successful forward steps at torso rotation 0 degrees. It fills much of the lower view, suggesting I am within 75cm of it. One more forward step should place me at the green rectangle.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}",
+    "reasoning_content": "The green rectangle is right in front of me, very close. It looks like I'm just about at it. One more forward step should reach it. The image shows the green rectangle very large and close on the floor. Let me move forward one more step to reach it.",
+    "parsed": {
+      "scene_description": "The green rectangle is directly ahead and very close, occupying a large portion of the lower-center view. It lies flat on the floor right in front of me, with brown furniture and a dark cloth visible beyond it. I am nearly at the target.",
+      "reasoning": "The green rectangle is immediately ahead and very close after 8 successful forward steps at torso rotation 0 degrees. It fills much of the lower view, suggesting I am within 75cm of it. One more forward step should place me at the green rectangle.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

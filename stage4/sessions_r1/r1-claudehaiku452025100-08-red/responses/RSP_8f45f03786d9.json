@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:26:25+08:00",
+    "latency_ms": 6953,
+    "payload_bytes": 164594,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_zspjxesnd37tvcws3bgze3yga7n6apehr7hlsz3nqxegnaklsksq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198385,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The red circle target is clearly visible on the far wall ahead, centered in the view. The scene shows a dark interior space with the illuminated red circle on a panel. There appears to be a wall structure on the left side (visible as a dark vertical edge). The path ahead appears clear toward the target.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=6.500 with torso rotated 30 degrees to the right. Step 23 was blocked by a wall_panel when trying to move forward. The history shows I've been stuck in a loop trying to navigate around an obstacle at x=7.250. The red circle is clearly visible and centered ahead. I need to try a different approach. Since turning right hasn't worked and I'm currently rotated 30 degrees right, I should try rotating back toward center (turn_left) to align my body better, then attempt forward movement with a different body orientation.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 0.45\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":4159,\"completion_tokens\":233,\"total_tokens\":4392,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":4159,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":233,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":4159,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The red circle target is clearly visible on the far wall ahead, centered in the view. The scene shows a dark interior space with the illuminated red circle on a panel. There appears to be a wall structure on the left side (visible as a dark vertical edge). The path ahead appears clear toward the target.\",\n  \"reasoning\": \"I am at x=6.500 with torso rotated 30 degrees to the right. Step 23 was blocked by a wall_panel when trying to move forward. The history shows I've been stuck in a loop trying to navigate around an obstacle at x=7.250. The red circle is clearly visible and centered ahead. I need to try a different approach. Since turning right hasn't worked and I'm currently rotated 30 degrees right, I should try rotating back toward center (turn_left) to align my body better, then attempt forward movement with a different body orientation.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 0.45\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle target is clearly visible on the far wall ahead, centered in the view. The scene shows a dark interior space with the illuminated red circle on a panel. There appears to be a wall structure on the left side (visible as a dark vertical edge). The path ahead appears clear toward the target.",
+      "reasoning": "I am at x=6.500 with torso rotated 30 degrees to the right. Step 23 was blocked by a wall_panel when trying to move forward. The history shows I've been stuck in a loop trying to navigate around an obstacle at x=7.250. The red circle is clearly visible and centered ahead. I need to try a different approach. Since turning right hasn't worked and I'm currently rotated 30 degrees right, I should try rotating back toward center (turn_left) to align my body better, then attempt forward movement with a different body orientation.",
+      "action": "turn_left",
+      "confidence": 0.45
+    },
+    "action": "turn_left"
+  }
+]

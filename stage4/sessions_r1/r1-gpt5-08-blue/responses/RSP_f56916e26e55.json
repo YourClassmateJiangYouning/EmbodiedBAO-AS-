@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:11:57+08:00",
+    "latency_ms": 6584,
+    "payload_bytes": 167433,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A large blue illuminated triangle on a panel directly ahead at the base of the far wall, very close to the front edge of the red carpet.\\\", \\\"reasoning\\\": \\\"The triangle panel is immediately in front; a small additional advance should bring the robot into contact with the target. Previous forward steps from similar positions sometimes hit the wall, but reaching requires moving up to it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.71}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204715,\"id\":\"chatcmpl-EiCtfnwxD09wG4l7kmJiOnHMb4cRV\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":103,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":397,\"engine_ttlt_ms\":1272,\"pre_inference_ms\":328,\"service_tbt_ms\":8,\"service_ttft_ms\":872,\"service_ttlt_ms\":1711,\"user_visible_ttft_ms\":544},\"prompt_tokens\":2679,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2782}}\n",
+    "content": "{\"scene_description\": \"A large blue illuminated triangle on a panel directly ahead at the base of the far wall, very close to the front edge of the red carpet.\", \"reasoning\": \"The triangle panel is immediately in front; a small additional advance should bring the robot into contact with the target. Previous forward steps from similar positions sometimes hit the wall, but reaching requires moving up to it.\", \"action\": \"forward\", \"confidence\": 0.71}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A large blue illuminated triangle on a panel directly ahead at the base of the far wall, very close to the front edge of the red carpet.",
+      "reasoning": "The triangle panel is immediately in front; a small additional advance should bring the robot into contact with the target. Previous forward steps from similar positions sometimes hit the wall, but reaching requires moving up to it.",
+      "action": "forward",
+      "confidence": 0.71
+    },
+    "action": "forward"
+  }
+]

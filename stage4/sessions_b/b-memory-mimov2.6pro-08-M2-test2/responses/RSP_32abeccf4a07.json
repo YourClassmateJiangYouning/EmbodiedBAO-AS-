@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:37:23+08:00",
+    "latency_ms": 11403,
+    "payload_bytes": 427921,
+    "finish_reason": "stop",
+    "reasoning_tokens": 134,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"22cd157d-6042-49b7-8ab8-24aba1ebd55a_8fd545702ac54803a2bd870eda47b5fb\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet stretches ahead toward a doorway/opening with a red circle visible at the far end. The carpet has white rectangular markings on both sides. Through the opening, a dark area and wooden furniture are visible. The robot is at the start of the carpet with x=0.5.\\\", \\\"reasoning\\\": \\\"I've already performed 1 turn_left (15 degrees). Based on the successful traversal, I need a total of 6 turn_left actions (90 degrees) so my shallow depth faces the narrow opening. I still need 5 more turn_left actions before moving forward. I have plenty of room to turn since I'm still far from the opening.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The camera shows the red carpet stretching ahead, with the red circle visible at the far end near a doorway/opening. I'm at x=0.5, torso rotation 15 degrees left. I need to continue rotating to 90 degrees (6 total turn_left actions), then proceed forward.\\n\\nCurrent steps taken: look_down, turn_left (15 deg). I need 5 more turn_left to reach 90 degrees.\\n\\nDistance to the opening: I'm at x=0.5, meaning I've barely moved forward. The previous traversal showed I can turn before reaching the opening since turning requires room.\\n\\nLet me continue turning left.\"}}],\"created\":1794213442,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":297,\"prompt_tokens\":2827,\"total_tokens\":3124,\"completion_tokens_details\":{\"reasoning_tokens\":134},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet stretches ahead toward a doorway/opening with a red circle visible at the far end. The carpet has white rectangular markings on both sides. Through the opening, a dark area and wooden furniture are visible. The robot is at the start of the carpet with x=0.5.\", \"reasoning\": \"I've already performed 1 turn_left (15 degrees). Based on the successful traversal, I need a total of 6 turn_left actions (90 degrees) so my shallow depth faces the narrow opening. I still need 5 more turn_left actions before moving forward. I have plenty of room to turn since I'm still far from the opening.\", \"action\": \"turn_left\", \"confidence\": 0.9}",
+    "reasoning_content": "The camera shows the red carpet stretching ahead, with the red circle visible at the far end near a doorway/opening. I'm at x=0.5, torso rotation 15 degrees left. I need to continue rotating to 90 degrees (6 total turn_left actions), then proceed forward.\n\nCurrent steps taken: look_down, turn_left (15 deg). I need 5 more turn_left to reach 90 degrees.\n\nDistance to the opening: I'm at x=0.5, meaning I've barely moved forward. The previous traversal showed I can turn before reaching the opening since turning requires room.\n\nLet me continue turning left.",
+    "parsed": {
+      "scene_description": "A red carpet stretches ahead toward a doorway/opening with a red circle visible at the far end. The carpet has white rectangular markings on both sides. Through the opening, a dark area and wooden furniture are visible. The robot is at the start of the carpet with x=0.5.",
+      "reasoning": "I've already performed 1 turn_left (15 degrees). Based on the successful traversal, I need a total of 6 turn_left actions (90 degrees) so my shallow depth faces the narrow opening. I still need 5 more turn_left actions before moving forward. I have plenty of room to turn since I'm still far from the opening.",
+      "action": "turn_left",
+      "confidence": 0.9
+    },
+    "action": "turn_left"
+  }
+]

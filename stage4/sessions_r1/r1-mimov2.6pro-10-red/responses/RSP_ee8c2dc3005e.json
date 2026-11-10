@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:31:42+08:00",
+    "latency_ms": 6969,
+    "payload_bytes": 375325,
+    "finish_reason": "stop",
+    "reasoning_tokens": 25,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"79b41521-d8e6-4a80-8f76-67a13bf84c9d_900971663cb147f5b27a4a1c0875fcbd\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead between two patterned walls (purple zigzag/snowflake patterns on light background). At the far end, through an opening, a red circle is visible on a dark object. The carpet is clear of obstacles, though there appears to be a slight step/ledge where the carpet ends near the opening.\\\", \\\"reasoning\\\": \\\"The path is clear and the red circle is directly ahead at the end of the carpeted walkway. No obstacles are visible, so continuing forward is the straightforward approach.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear ahead, red circle visible at the end of the carpeted walkway. Just keep moving forward.\"}}],\"created\":1794137501,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":156,\"prompt_tokens\":2009,\"total_tokens\":2165,\"completion_tokens_details\":{\"reasoning_tokens\":25},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead between two patterned walls (purple zigzag/snowflake patterns on light background). At the far end, through an opening, a red circle is visible on a dark object. The carpet is clear of obstacles, though there appears to be a slight step/ledge where the carpet ends near the opening.\", \"reasoning\": \"The path is clear and the red circle is directly ahead at the end of the carpeted walkway. No obstacles are visible, so continuing forward is the straightforward approach.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear ahead, red circle visible at the end of the carpeted walkway. Just keep moving forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead between two patterned walls (purple zigzag/snowflake patterns on light background). At the far end, through an opening, a red circle is visible on a dark object. The carpet is clear of obstacles, though there appears to be a slight step/ledge where the carpet ends near the opening.",
+      "reasoning": "The path is clear and the red circle is directly ahead at the end of the carpeted walkway. No obstacles are visible, so continuing forward is the straightforward approach.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

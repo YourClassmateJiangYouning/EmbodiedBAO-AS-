@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:21:49+08:00",
+    "latency_ms": 2506,
+    "payload_bytes": 427921,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a4a652a0-fd67-4345-a3ae-52bfc4fc13d1\",\"object\":\"chat.completion\",\"created\":1794212508,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A long red carpet stretches ahead toward a far wall with a red circle marker near the floor, flanked by patterned wall panels and a wooden chair on the right.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the fixed walking direction and the carpeted path appears clear, so moving forward advances toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2689,\"completion_tokens\":84,\"total_tokens\":2773,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":2177},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A long red carpet stretches ahead toward a far wall with a red circle marker near the floor, flanked by patterned wall panels and a wooden chair on the right.\", \"reasoning\": \"The red circle is directly ahead along the fixed walking direction and the carpeted path appears clear, so moving forward advances toward the goal.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpet stretches ahead toward a far wall with a red circle marker near the floor, flanked by patterned wall panels and a wooden chair on the right.",
+      "reasoning": "The red circle is directly ahead along the fixed walking direction and the carpeted path appears clear, so moving forward advances toward the goal.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:52:36+08:00",
+    "latency_ms": 7182,
+    "payload_bytes": 262049,
+    "finish_reason": "stop",
+    "reasoning_tokens": 63,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"af0875f0-ba38-496f-9f84-15a7adce736c_52daef12373e4004bb49ce72f12bac02\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera view shows the red carpeted floor extending toward a doorway opening in the far wall. Through the doorway, the green rectangle is visible sitting on the floor against the dark background. Decorated walls with purple geometric patterns line both sides. The green rectangle appears closer than before, but is still ahead through the opening.\\\", \\\"reasoning\\\": \\\"The green rectangle remains directly ahead through the doorway and is getting closer with each forward step. My torso rotation is 0 degrees, which minimizes the width I present to the opening, so I must keep moving straight without turning. Forward always takes me toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue moving forward toward the green rectangle. Currently at x=5.75, we have taken 8 steps (7 forward-ish). The green rectangle is ahead through the doorway. Keep forward.\\n\\nWe have 22 steps remaining. The green rectangle looks close. Let's continue forward.\"}}],\"created\":1794207156,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":209,\"prompt_tokens\":2433,\"total_tokens\":2642,\"completion_tokens_details\":{\"reasoning_tokens\":63},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera view shows the red carpeted floor extending toward a doorway opening in the far wall. Through the doorway, the green rectangle is visible sitting on the floor against the dark background. Decorated walls with purple geometric patterns line both sides. The green rectangle appears closer than before, but is still ahead through the opening.\", \"reasoning\": \"The green rectangle remains directly ahead through the doorway and is getting closer with each forward step. My torso rotation is 0 degrees, which minimizes the width I present to the opening, so I must keep moving straight without turning. Forward always takes me toward the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We need to continue moving forward toward the green rectangle. Currently at x=5.75, we have taken 8 steps (7 forward-ish). The green rectangle is ahead through the doorway. Keep forward.\n\nWe have 22 steps remaining. The green rectangle looks close. Let's continue forward.",
+    "parsed": {
+      "scene_description": "The camera view shows the red carpeted floor extending toward a doorway opening in the far wall. Through the doorway, the green rectangle is visible sitting on the floor against the dark background. Decorated walls with purple geometric patterns line both sides. The green rectangle appears closer than before, but is still ahead through the opening.",
+      "reasoning": "The green rectangle remains directly ahead through the doorway and is getting closer with each forward step. My torso rotation is 0 degrees, which minimizes the width I present to the opening, so I must keep moving straight without turning. Forward always takes me toward the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

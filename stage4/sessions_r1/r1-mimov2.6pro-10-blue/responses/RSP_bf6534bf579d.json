@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:43:27+08:00",
+    "latency_ms": 8154,
+    "payload_bytes": 247621,
+    "finish_reason": "stop",
+    "reasoning_tokens": 48,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"1566ad83-f5d7-4871-8426-6fd9dcffd0f3_59f08133bbac4c39a3df4f8cf6857a49\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The red carpet leads straight ahead to a narrow opening between decorated panels. Through the opening, the blue triangle sits on the floor on a dark backing, now quite close. The path is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead and appears very close now. My torso is at 0 degrees (narrowest profile), so I fit through the opening. I should continue forward toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The blue triangle is directly ahead, close now. Position x=5.75. The triangle appears just ahead through the opening. I should continue forward. Maybe one or two more forwards to reach it. Let me do forward.\"}}],\"created\":1794138206,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":158,\"prompt_tokens\":2424,\"total_tokens\":2582,\"completion_tokens_details\":{\"reasoning_tokens\":48},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The red carpet leads straight ahead to a narrow opening between decorated panels. Through the opening, the blue triangle sits on the floor on a dark backing, now quite close. The path is clear and unobstructed.\", \"reasoning\": \"The blue triangle is directly ahead and appears very close now. My torso is at 0 degrees (narrowest profile), so I fit through the opening. I should continue forward toward the target.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The blue triangle is directly ahead, close now. Position x=5.75. The triangle appears just ahead through the opening. I should continue forward. Maybe one or two more forwards to reach it. Let me do forward.",
+    "parsed": {
+      "scene_description": "The red carpet leads straight ahead to a narrow opening between decorated panels. Through the opening, the blue triangle sits on the floor on a dark backing, now quite close. The path is clear and unobstructed.",
+      "reasoning": "The blue triangle is directly ahead and appears very close now. My torso is at 0 degrees (narrowest profile), so I fit through the opening. I should continue forward toward the target.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

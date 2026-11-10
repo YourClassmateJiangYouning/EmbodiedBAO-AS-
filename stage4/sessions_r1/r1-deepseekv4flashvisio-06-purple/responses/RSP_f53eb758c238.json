@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:19:01+08:00",
+    "latency_ms": 2217,
+    "payload_bytes": 337838,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5ddfd70c-f578-4b8d-be03-372f8c1102f6\",\"object\":\"chat.completion\",\"created\":1794208740,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is visible ahead through a dark doorway at the end of the red carpet, which continues straight ahead with a clear, unobstructed path.\\\", \\\"reasoning\\\": \\\"The star lies directly ahead along the red carpet and the path is clear. Continuing forward moves me closer to the goal without needing any turns.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1739,\"completion_tokens\":86,\"total_tokens\":1825,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":971},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is visible ahead through a dark doorway at the end of the red carpet, which continues straight ahead with a clear, unobstructed path.\", \"reasoning\": \"The star lies directly ahead along the red carpet and the path is clear. Continuing forward moves me closer to the goal without needing any turns.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is visible ahead through a dark doorway at the end of the red carpet, which continues straight ahead with a clear, unobstructed path.",
+      "reasoning": "The star lies directly ahead along the red carpet and the path is clear. Continuing forward moves me closer to the goal without needing any turns.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

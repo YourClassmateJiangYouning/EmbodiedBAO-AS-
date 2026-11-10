@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:55:37+08:00",
+    "latency_ms": 9890,
+    "payload_bytes": 383069,
+    "finish_reason": "stop",
+    "reasoning_tokens": 92,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e80a3f2d-2126-4e40-83db-a07fad4c6f6a_1592f4da52e04782afb33d23ea76f503\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches forward toward a dark opening in the far wall, with the blue triangle visible through it. Patterned walls flank the carpet on both sides, with light-colored geometric shapes on the floor to the left and right edges of the carpet. The path is clear ahead.\\\", \\\"reasoning\\\": \\\"I'm at 30 degrees torso rotation, continuing the successful strategy of rotating to 90 degrees to present my thinnest profile before the tight opening. Still far from the opening (x=0.5), so I can safely keep turning left.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue turning left to reach 90 degrees. Currently at 30 degrees. Need 4 more turn_left steps to reach 90 (30→45→60→75→90). Then forward.\\n\\nActually let me think about step budget: 30 steps, 3 used. 27 remain. 4 turns + ~6 forwards = 10. Fine.\\n\\nContinue turning left.\"}}],\"created\":1794214537,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":234,\"prompt_tokens\":2888,\"total_tokens\":3122,\"completion_tokens_details\":{\"reasoning_tokens\":92},\"prompt_tokens_details\":{\"cached_tokens\":1408,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches forward toward a dark opening in the far wall, with the blue triangle visible through it. Patterned walls flank the carpet on both sides, with light-colored geometric shapes on the floor to the left and right edges of the carpet. The path is clear ahead.\", \"reasoning\": \"I'm at 30 degrees torso rotation, continuing the successful strategy of rotating to 90 degrees to present my thinnest profile before the tight opening. Still far from the opening (x=0.5), so I can safely keep turning left.\", \"action\": \"turn_left\", \"confidence\": 0.95}",
+    "reasoning_content": "We need to continue turning left to reach 90 degrees. Currently at 30 degrees. Need 4 more turn_left steps to reach 90 (30→45→60→75→90). Then forward.\n\nActually let me think about step budget: 30 steps, 3 used. 27 remain. 4 turns + ~6 forwards = 10. Fine.\n\nContinue turning left.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches forward toward a dark opening in the far wall, with the blue triangle visible through it. Patterned walls flank the carpet on both sides, with light-colored geometric shapes on the floor to the left and right edges of the carpet. The path is clear ahead.",
+      "reasoning": "I'm at 30 degrees torso rotation, continuing the successful strategy of rotating to 90 degrees to present my thinnest profile before the tight opening. Still far from the opening (x=0.5), so I can safely keep turning left.",
+      "action": "turn_left",
+      "confidence": 0.95
+    },
+    "action": "turn_left"
+  }
+]

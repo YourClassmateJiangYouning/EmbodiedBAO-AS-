@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:40:21+08:00",
+    "latency_ms": 6024,
+    "payload_bytes": 162766,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090840172275869678268d9d6764JHdYO\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213621,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking directly at a large yellow arrow pointing to the right, mounted on a dark rectangular board. The arrow is very close, filling a significant portion of the lower half of the frame. The background is dark and indistinct.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=8.0 and the yellow arrow is directly in front of me, appearing very large in the camera view. I have successfully navigated through the narrow gap with my torso rotated to 90 degrees. I will move forward one final time to ensure I have reached the target marker as per the successful traversal history.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3770,\"completion_tokens\":150,\"total_tokens\":3920,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3770,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":150,\"totalTokenCount\":3920,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2681}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":150}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2681,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":150,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking directly at a large yellow arrow pointing to the right, mounted on a dark rectangular board. The arrow is very close, filling a significant portion of the lower half of the frame. The background is dark and indistinct.\",\n  \"reasoning\": \"I am at position x=8.0 and the yellow arrow is directly in front of me, appearing very large in the camera view. I have successfully navigated through the narrow gap with my torso rotated to 90 degrees. I will move forward one final time to ensure I have reached the target marker as per the successful traversal history.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking directly at a large yellow arrow pointing to the right, mounted on a dark rectangular board. The arrow is very close, filling a significant portion of the lower half of the frame. The background is dark and indistinct.",
+      "reasoning": "I am at position x=8.0 and the yellow arrow is directly in front of me, appearing very large in the camera view. I have successfully navigated through the narrow gap with my torso rotated to 90 degrees. I will move forward one final time to ensure I have reached the target marker as per the successful traversal history.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:56:58+08:00",
+    "latency_ms": 9503,
+    "payload_bytes": 300072,
+    "finish_reason": "stop",
+    "reasoning_tokens": 49,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5cbc37a1-bc6d-4e09-b4a0-92c3f71d7561_f17b22e0365a45d4b7e2ebf71b3f6248\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead down the red carpet toward a dark opening in the far wall, where a bright blue triangle sits on the floor. Decorated walls with purple line patterns flank the walkway. The opening is close ahead; the carpet path is clear.\\\", \\\"reasoning\\\": \\\"My torso remains at 90 degrees, presenting my thinnest profile for the tight opening, matching the successful previous traversal. The blue triangle is close ahead through the dark opening and the carpet path is clear, so I continue moving forward to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue forward. The triangle is close, at x=3.5 after 4 forward moves... We have 11 steps used, limit 30. The blue triangle appears close but not reached. Continue forward.\"}}],\"created\":1794214618,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":184,\"prompt_tokens\":3398,\"total_tokens\":3582,\"completion_tokens_details\":{\"reasoning_tokens\":49},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead down the red carpet toward a dark opening in the far wall, where a bright blue triangle sits on the floor. Decorated walls with purple line patterns flank the walkway. The opening is close ahead; the carpet path is clear.\", \"reasoning\": \"My torso remains at 90 degrees, presenting my thinnest profile for the tight opening, matching the successful previous traversal. The blue triangle is close ahead through the dark opening and the carpet path is clear, so I continue moving forward to reach it.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We need to continue forward. The triangle is close, at x=3.5 after 4 forward moves... We have 11 steps used, limit 30. The blue triangle appears close but not reached. Continue forward.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead down the red carpet toward a dark opening in the far wall, where a bright blue triangle sits on the floor. Decorated walls with purple line patterns flank the walkway. The opening is close ahead; the carpet path is clear.",
+      "reasoning": "My torso remains at 90 degrees, presenting my thinnest profile for the tight opening, matching the successful previous traversal. The blue triangle is close ahead through the dark opening and the carpet path is clear, so I continue moving forward to reach it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

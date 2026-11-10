@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:41:23+08:00",
+    "latency_ms": 6590,
+    "payload_bytes": 250636,
+    "finish_reason": "stop",
+    "reasoning_tokens": 48,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a60427d3-8f28-4c1f-a98f-a9535c8282a6_3a7cd733d9e84c16b94953f868ff238f\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow on a black rectangular sign is directly ahead on the floor at the far wall doorway, very close. The red carpet leads straight to it. A dark curtain/drape hangs above and behind the sign, and a beige floor is visible on either side of the sign.\\\",\\\"reasoning\\\": \\\"The yellow arrow is directly in front of me and very close (x=7.25). My torso is at 0 degrees, aligned with my walking direction. The path is clear and I just need to move forward to reach the arrow at the far wall.\\\",\\\"action\\\": \\\"forward\\\",\\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The yellow arrow is directly ahead, very close. I'm at x=7.25. I should continue moving forward to reach it. The arrow appears to be right in front of me. Let me take another forward step.\"}}],\"created\":1794138083,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":182,\"prompt_tokens\":2504,\"total_tokens\":2686,\"completion_tokens_details\":{\"reasoning_tokens\":48},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The yellow arrow on a black rectangular sign is directly ahead on the floor at the far wall doorway, very close. The red carpet leads straight to it. A dark curtain/drape hangs above and behind the sign, and a beige floor is visible on either side of the sign.\",\"reasoning\": \"The yellow arrow is directly in front of me and very close (x=7.25). My torso is at 0 degrees, aligned with my walking direction. The path is clear and I just need to move forward to reach the arrow at the far wall.\",\"action\": \"forward\",\"confidence\": 0.95}",
+    "reasoning_content": "The yellow arrow is directly ahead, very close. I'm at x=7.25. I should continue moving forward to reach it. The arrow appears to be right in front of me. Let me take another forward step.",
+    "parsed": {
+      "scene_description": "The yellow arrow on a black rectangular sign is directly ahead on the floor at the far wall doorway, very close. The red carpet leads straight to it. A dark curtain/drape hangs above and behind the sign, and a beige floor is visible on either side of the sign.",
+      "reasoning": "The yellow arrow is directly in front of me and very close (x=7.25). My torso is at 0 degrees, aligned with my walking direction. The path is clear and I just need to move forward to reach the arrow at the far wall.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:09:50+08:00",
+    "latency_ms": 6795,
+    "payload_bytes": 241510,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A straight red carpeted walkway leads ahead toward a doorway. The opening is slightly narrowed by dark curtains or panels on both sides, but there is a clear central gap. On the far wall inside the opening, a glowing blue triangle is visible at a low height, centered slightly to the right of the walkway’s centerline. No obstacles are on the carpet in the path.\\\",\\\"reasoning\\\":\\\"The goal is straight ahead through a clear central gap, and forward motion continues to reduce distance to the blue triangle without needing torso rotation.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.72}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204587,\"id\":\"chatcmpl-EiCrbd4ITWl1UnGSlK2nihgoAzqfI\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":128,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":501,\"engine_ttlt_ms\":1560,\"pre_inference_ms\":380,\"service_tbt_ms\":8,\"service_ttft_ms\":1138,\"service_ttlt_ms\":2158,\"user_visible_ttft_ms\":758},\"prompt_tokens\":1816,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1944}}\n",
+    "content": "{\"scene_description\":\"A straight red carpeted walkway leads ahead toward a doorway. The opening is slightly narrowed by dark curtains or panels on both sides, but there is a clear central gap. On the far wall inside the opening, a glowing blue triangle is visible at a low height, centered slightly to the right of the walkway’s centerline. No obstacles are on the carpet in the path.\",\"reasoning\":\"The goal is straight ahead through a clear central gap, and forward motion continues to reduce distance to the blue triangle without needing torso rotation.\",\"action\":\"forward\",\"confidence\":0.72}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight red carpeted walkway leads ahead toward a doorway. The opening is slightly narrowed by dark curtains or panels on both sides, but there is a clear central gap. On the far wall inside the opening, a glowing blue triangle is visible at a low height, centered slightly to the right of the walkway’s centerline. No obstacles are on the carpet in the path.",
+      "reasoning": "The goal is straight ahead through a clear central gap, and forward motion continues to reduce distance to the blue triangle without needing torso rotation.",
+      "action": "forward",
+      "confidence": 0.72
+    },
+    "action": "forward"
+  }
+]

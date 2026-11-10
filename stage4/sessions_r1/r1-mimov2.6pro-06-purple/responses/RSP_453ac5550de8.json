@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:28:23+08:00",
+    "latency_ms": 7216,
+    "payload_bytes": 380160,
+    "finish_reason": "stop",
+    "reasoning_tokens": 72,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"c0494217-7be2-4096-8090-7dc3a5c194f1_304be49823084a3ea4f1353f18e5235e\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet runs straight ahead toward a far wall decorated with blue/yellow geometric patterns. A purple four-pointed star is visible at the far end near a dark opening in the wall. The left side shows a light patterned floor with shadow stripes. The walking path ahead is completely clear.\\\", \\\"reasoning\\\": \\\"The purple star is directly ahead along the red carpet with no obstacles. I just need to keep walking forward toward it. Each forward step covers 75cm, so I will continue moving forward until I reach the star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path ahead is clear — a red carpet leading straight to the purple star on the far wall. I should just move forward repeatedly. The star is visible at the far wall. Let me just go forward.\\n\\nThe star appears to be some distance away. Forward moves 75cm per step. Let me just do forward repeatedly until I reach it.\"}}],\"created\":1794144503,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":204,\"prompt_tokens\":1925,\"total_tokens\":2129,\"completion_tokens_details\":{\"reasoning_tokens\":72},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet runs straight ahead toward a far wall decorated with blue/yellow geometric patterns. A purple four-pointed star is visible at the far end near a dark opening in the wall. The left side shows a light patterned floor with shadow stripes. The walking path ahead is completely clear.\", \"reasoning\": \"The purple star is directly ahead along the red carpet with no obstacles. I just need to keep walking forward toward it. Each forward step covers 75cm, so I will continue moving forward until I reach the star.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path ahead is clear — a red carpet leading straight to the purple star on the far wall. I should just move forward repeatedly. The star is visible at the far wall. Let me just go forward.\n\nThe star appears to be some distance away. Forward moves 75cm per step. Let me just do forward repeatedly until I reach it.",
+    "parsed": {
+      "scene_description": "A red carpet runs straight ahead toward a far wall decorated with blue/yellow geometric patterns. A purple four-pointed star is visible at the far end near a dark opening in the wall. The left side shows a light patterned floor with shadow stripes. The walking path ahead is completely clear.",
+      "reasoning": "The purple star is directly ahead along the red carpet with no obstacles. I just need to keep walking forward toward it. Each forward step covers 75cm, so I will continue moving forward until I reach the star.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

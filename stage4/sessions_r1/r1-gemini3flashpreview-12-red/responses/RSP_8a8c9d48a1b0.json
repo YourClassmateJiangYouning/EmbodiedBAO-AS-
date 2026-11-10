@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:17:31+08:00",
+    "latency_ms": 8824,
+    "payload_bytes": 253010,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081017238668386178268d9d60kzQ37H2\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133051,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows the red circle on a black rectangular panel directly in front of the robot. The panel is sitting on a light-colored floor, and a dark fabric or wall is visible in the background above it.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=8.0 and the red circle is now very close, occupying a large portion of my field of view. I will move forward one more time to reach the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3146,\"completion_tokens\":118,\"total_tokens\":3264,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3146,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":118,\"totalTokenCount\":3264,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2057}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":118}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2057,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":118,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows the red circle on a black rectangular panel directly in front of the robot. The panel is sitting on a light-colored floor, and a dark fabric or wall is visible in the background above it.\",\n  \"reasoning\": \"I am at position x=8.0 and the red circle is now very close, occupying a large portion of my field of view. I will move forward one more time to reach the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows the red circle on a black rectangular panel directly in front of the robot. The panel is sitting on a light-colored floor, and a dark fabric or wall is visible in the background above it.",
+      "reasoning": "I am at position x=8.0 and the red circle is now very close, occupying a large portion of my field of view. I will move forward one more time to reach the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

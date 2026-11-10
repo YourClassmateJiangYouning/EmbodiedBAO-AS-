@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:19:32+08:00",
+    "latency_ms": 2631,
+    "payload_bytes": 191441,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"904cc3e7-606c-4063-9324-429070077050\",\"object\":\"chat.completion\",\"created\":1794208770,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is directly ahead on a dark panel, very close now, framed by a narrow opening between wall panels on the left and right. The red carpet leads up to it.\\\", \\\"reasoning\\\": \\\"Forward steps were blocked by the wall panel, likely because my wide body at 15 degrees still catches on the narrow opening. I need to rotate my torso further so my narrower thickness faces the gap. Continuing to turn right toward 90 degrees should present the slim profile and let me pass through.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2282,\"completion_tokens\":124,\"total_tokens\":2406,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1642},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is directly ahead on a dark panel, very close now, framed by a narrow opening between wall panels on the left and right. The red carpet leads up to it.\", \"reasoning\": \"Forward steps were blocked by the wall panel, likely because my wide body at 15 degrees still catches on the narrow opening. I need to rotate my torso further so my narrower thickness faces the gap. Continuing to turn right toward 90 degrees should present the slim profile and let me pass through.\", \"action\": \"turn_right\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is directly ahead on a dark panel, very close now, framed by a narrow opening between wall panels on the left and right. The red carpet leads up to it.",
+      "reasoning": "Forward steps were blocked by the wall panel, likely because my wide body at 15 degrees still catches on the narrow opening. I need to rotate my torso further so my narrower thickness faces the gap. Continuing to turn right toward 90 degrees should present the slim profile and let me pass through.",
+      "action": "turn_right",
+      "confidence": 0.6
+    },
+    "action": "turn_right"
+  }
+]

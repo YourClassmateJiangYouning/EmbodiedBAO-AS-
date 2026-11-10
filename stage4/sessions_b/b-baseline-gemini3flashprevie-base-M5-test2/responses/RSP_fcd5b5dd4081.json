@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:52:50+08:00",
+    "latency_ms": 9620,
+    "payload_bytes": 262365,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090852430676560468268d9d6sM4kB64k\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794214370,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera view shows a red carpeted path leading toward a narrow opening between two white walls decorated with purple geometric patterns. In the distance, centered in the opening, is a glowing purple four-pointed star on a dark background.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees, which is the narrowest profile for my body. I am currently at position x=4.25 and moving forward along the red carpet toward the purple star. I will continue to move forward to pass through the opening and reach the goal.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2833,\"completion_tokens\":142,\"total_tokens\":2975,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2833,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":142,\"totalTokenCount\":2975,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1744}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":142}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1744,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":142,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera view shows a red carpeted path leading toward a narrow opening between two white walls decorated with purple geometric patterns. In the distance, centered in the opening, is a glowing purple four-pointed star on a dark background.\",\n  \"reasoning\": \"I have already rotated my torso to 90 degrees, which is the narrowest profile for my body. I am currently at position x=4.25 and moving forward along the red carpet toward the purple star. I will continue to move forward to pass through the opening and reach the goal.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera view shows a red carpeted path leading toward a narrow opening between two white walls decorated with purple geometric patterns. In the distance, centered in the opening, is a glowing purple four-pointed star on a dark background.",
+      "reasoning": "I have already rotated my torso to 90 degrees, which is the narrowest profile for my body. I am currently at position x=4.25 and moving forward along the red carpet toward the purple star. I will continue to move forward to pass through the opening and reach the goal.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

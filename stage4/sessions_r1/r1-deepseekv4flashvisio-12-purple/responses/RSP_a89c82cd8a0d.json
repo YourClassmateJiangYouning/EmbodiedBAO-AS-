@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:02:30+08:00",
+    "latency_ms": 2311,
+    "payload_bytes": 314430,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"69234c4c-754d-4ab3-ab0a-1bf9f121cf52\",\"object\":\"chat.completion\",\"created\":1794207749,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a dark opening in the far wall, with the purple four-pointed star visible centered in the opening. Patterned walls flank the path on both sides.\\\", \\\"reasoning\\\": \\\"The star is directly ahead along the fixed walking direction and the path is clear. Continuing forward moves me closer to the goal; no turning is needed since the star remains centered.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1792,\"completion_tokens\":99,\"total_tokens\":1891,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1024},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a dark opening in the far wall, with the purple four-pointed star visible centered in the opening. Patterned walls flank the path on both sides.\", \"reasoning\": \"The star is directly ahead along the fixed walking direction and the path is clear. Continuing forward moves me closer to the goal; no turning is needed since the star remains centered.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a dark opening in the far wall, with the purple four-pointed star visible centered in the opening. Patterned walls flank the path on both sides.",
+      "reasoning": "The star is directly ahead along the fixed walking direction and the path is clear. Continuing forward moves me closer to the goal; no turning is needed since the star remains centered.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

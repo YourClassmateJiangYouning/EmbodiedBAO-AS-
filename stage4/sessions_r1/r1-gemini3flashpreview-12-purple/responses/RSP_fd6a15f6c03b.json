@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:23:46+08:00",
+    "latency_ms": 5733,
+    "payload_bytes": 238816,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081023417304578818268d9d6R5jMEx8x\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133426,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking straight ahead down a red carpeted walkway. A purple four-pointed star is visible on a black board at the end of the walkway. The robot is currently passing through a narrow opening between two walls.\\\", \\\"reasoning\\\": \\\"I am at x=6.5 and have successfully navigated through the narrowest part of the gap with my torso rotated to 90 degrees. I am now very close to the purple star. I will continue moving forward to reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3085,\"completion_tokens\":120,\"total_tokens\":3205,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3085,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":120,\"totalTokenCount\":3205,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1996},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":120}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1996,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":120,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking straight ahead down a red carpeted walkway. A purple four-pointed star is visible on a black board at the end of the walkway. The robot is currently passing through a narrow opening between two walls.\", \"reasoning\": \"I am at x=6.5 and have successfully navigated through the narrowest part of the gap with my torso rotated to 90 degrees. I am now very close to the purple star. I will continue moving forward to reach the goal.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight ahead down a red carpeted walkway. A purple four-pointed star is visible on a black board at the end of the walkway. The robot is currently passing through a narrow opening between two walls.",
+      "reasoning": "I am at x=6.5 and have successfully navigated through the narrowest part of the gap with my torso rotated to 90 degrees. I am now very close to the purple star. I will continue moving forward to reach the goal.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

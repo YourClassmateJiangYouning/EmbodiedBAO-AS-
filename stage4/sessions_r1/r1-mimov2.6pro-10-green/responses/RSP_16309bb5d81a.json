@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:29:28+08:00",
+    "latency_ms": 5491,
+    "payload_bytes": 389194,
+    "finish_reason": "stop",
+    "reasoning_tokens": 28,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f17aef55-2897-4826-83a7-4504a7c782f3_38c1a36eee774b9190538f0dc9cf7cca\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet walkway stretches straight ahead toward a wall with abstract geometric patterns. A bright green rectangle is visible on the far wall near a doorway/opening at the end of the carpet. The path is clear with no obstacles.\\\", \\\"reasoning\\\": \\\"The green rectangle is directly ahead along the walkway and the path is clear. My walking direction already points straight at it, so I simply need to move forward repeatedly to close the distance.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear: a red carpet walkway leading straight to the green rectangle on the far wall. I should just move forward.\"}}],\"created\":1794137367,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":140,\"prompt_tokens\":1907,\"total_tokens\":2047,\"completion_tokens_details\":{\"reasoning_tokens\":28},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet walkway stretches straight ahead toward a wall with abstract geometric patterns. A bright green rectangle is visible on the far wall near a doorway/opening at the end of the carpet. The path is clear with no obstacles.\", \"reasoning\": \"The green rectangle is directly ahead along the walkway and the path is clear. My walking direction already points straight at it, so I simply need to move forward repeatedly to close the distance.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear: a red carpet walkway leading straight to the green rectangle on the far wall. I should just move forward.",
+    "parsed": {
+      "scene_description": "A red carpet walkway stretches straight ahead toward a wall with abstract geometric patterns. A bright green rectangle is visible on the far wall near a doorway/opening at the end of the carpet. The path is clear with no obstacles.",
+      "reasoning": "The green rectangle is directly ahead along the walkway and the path is clear. My walking direction already points straight at it, so I simply need to move forward repeatedly to close the distance.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

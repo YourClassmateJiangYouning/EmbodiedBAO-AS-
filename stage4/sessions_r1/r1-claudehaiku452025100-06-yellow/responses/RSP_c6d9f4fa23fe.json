@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:09:35+08:00",
+    "latency_ms": 7923,
+    "payload_bytes": 362235,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_4xz7d643zeef76wvwwlnljtmrhryjkwlzctwnhwzutbzhlwjzy5q\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794204575,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I'm in a corridor with a yellow arrow target visible on the far wall, centered in my view. The floor transitions from a light yellow/cream colored section on the left to a dark red/maroon section on the right where I'm currently positioned. There's a dark opening or doorway on the far wall beneath the yellow arrow. The walls have purple graffiti-like markings. The yellow arrow is my target destination.\\\",\\n  \\\"reasoning\\\": \\\"I'm at position x=1.250, having moved forward once already. The yellow arrow is clearly visible and centered ahead of me. My torso is at 0 degrees rotation (straight ahead). The path forward appears clear and unobstructed. I should continue moving forward toward the yellow arrow on the far wall to complete my task.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2416,\"completion_tokens\":202,\"total_tokens\":2618,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2416,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":202,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2416,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I'm in a corridor with a yellow arrow target visible on the far wall, centered in my view. The floor transitions from a light yellow/cream colored section on the left to a dark red/maroon section on the right where I'm currently positioned. There's a dark opening or doorway on the far wall beneath the yellow arrow. The walls have purple graffiti-like markings. The yellow arrow is my target destination.\",\n  \"reasoning\": \"I'm at position x=1.250, having moved forward once already. The yellow arrow is clearly visible and centered ahead of me. My torso is at 0 degrees rotation (straight ahead). The path forward appears clear and unobstructed. I should continue moving forward toward the yellow arrow on the far wall to complete my task.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I'm in a corridor with a yellow arrow target visible on the far wall, centered in my view. The floor transitions from a light yellow/cream colored section on the left to a dark red/maroon section on the right where I'm currently positioned. There's a dark opening or doorway on the far wall beneath the yellow arrow. The walls have purple graffiti-like markings. The yellow arrow is my target destination.",
+      "reasoning": "I'm at position x=1.250, having moved forward once already. The yellow arrow is clearly visible and centered ahead of me. My torso is at 0 degrees rotation (straight ahead). The path forward appears clear and unobstructed. I should continue moving forward toward the yellow arrow on the far wall to complete my task.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

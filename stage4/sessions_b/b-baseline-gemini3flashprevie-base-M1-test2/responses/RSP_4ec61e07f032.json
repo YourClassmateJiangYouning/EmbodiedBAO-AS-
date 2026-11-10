@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:22:44+08:00",
+    "latency_ms": 5946,
+    "payload_bytes": 397400,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090822400527189098268d9d6XncAAmDF\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212564,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading towards a narrow opening between two patterned walls. At the far end of the opening, a green rectangle is visible on the floor against a dark background. White rectangular markers are placed along the sides of the red carpet.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees, which is the narrowest profile to fit through the gap. I am currently at x=2.0 and need to reach the green rectangle at the far end. I will continue moving forward to pass through the opening.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2621,\"completion_tokens\":142,\"total_tokens\":2763,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2621,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":142,\"totalTokenCount\":2763,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1532}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":142}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1532,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":142,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading towards a narrow opening between two patterned walls. At the far end of the opening, a green rectangle is visible on the floor against a dark background. White rectangular markers are placed along the sides of the red carpet.\",\n  \"reasoning\": \"I have already rotated my torso to 90 degrees, which is the narrowest profile to fit through the gap. I am currently at x=2.0 and need to reach the green rectangle at the far end. I will continue moving forward to pass through the opening.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading towards a narrow opening between two patterned walls. At the far end of the opening, a green rectangle is visible on the floor against a dark background. White rectangular markers are placed along the sides of the red carpet.",
+      "reasoning": "I have already rotated my torso to 90 degrees, which is the narrowest profile to fit through the gap. I am currently at x=2.0 and need to reach the green rectangle at the far end. I will continue moving forward to pass through the opening.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

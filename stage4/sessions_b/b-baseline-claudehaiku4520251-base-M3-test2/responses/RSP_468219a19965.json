@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:21:56+08:00",
+    "latency_ms": 7224,
+    "payload_bytes": 266330,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_fghu3hfombt3oeoptjkbirhgbhamlk5cdvfmdp3ul2qgtwujfzha\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794212516,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a corridor with a dark red/maroon textured floor stretching ahead. The yellow arrow target is clearly visible on the far wall, centered in my view, pointing to the right. The walls on both sides have decorative elements with purple outlines and colored shapes. The path ahead is completely clear with no obstacles blocking the way to the target.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=4.25 after 5 forward steps (each 75cm). The yellow arrow is clearly visible and directly ahead on the far wall. My walking direction is fixed toward that wall. The corridor remains completely clear with no obstacles. I should continue moving forward to progress toward the target. I have 25 steps remaining out of my 30-step limit.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2676,\"completion_tokens\":197,\"total_tokens\":2873,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2676,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":197,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2676,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a corridor with a dark red/maroon textured floor stretching ahead. The yellow arrow target is clearly visible on the far wall, centered in my view, pointing to the right. The walls on both sides have decorative elements with purple outlines and colored shapes. The path ahead is completely clear with no obstacles blocking the way to the target.\",\n  \"reasoning\": \"I am at position x=4.25 after 5 forward steps (each 75cm). The yellow arrow is clearly visible and directly ahead on the far wall. My walking direction is fixed toward that wall. The corridor remains completely clear with no obstacles. I should continue moving forward to progress toward the target. I have 25 steps remaining out of my 30-step limit.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a corridor with a dark red/maroon textured floor stretching ahead. The yellow arrow target is clearly visible on the far wall, centered in my view, pointing to the right. The walls on both sides have decorative elements with purple outlines and colored shapes. The path ahead is completely clear with no obstacles blocking the way to the target.",
+      "reasoning": "I am at position x=4.25 after 5 forward steps (each 75cm). The yellow arrow is clearly visible and directly ahead on the far wall. My walking direction is fixed toward that wall. The corridor remains completely clear with no obstacles. I should continue moving forward to progress toward the target. I have 25 steps remaining out of my 30-step limit.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

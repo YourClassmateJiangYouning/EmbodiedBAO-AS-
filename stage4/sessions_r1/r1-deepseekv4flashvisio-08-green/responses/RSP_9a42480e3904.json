@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:07:14+08:00",
+    "latency_ms": 2353,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"b765e63f-ecdb-46bd-b777-da5f5fd92b65\",\"object\":\"chat.completion\",\"created\":1794208033,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is directly ahead, close and centered, sitting on a raised ledge/surface just beyond a dark floor edge. The path forward appears clear now after backing up and turning.\\\", \\\"reasoning\\\": \\\"After backing up and turning right to 15 degrees, the last forward step succeeded, indicating clearance was regained. The target is very close and centered, so continuing forward should reduce the remaining distance to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3408,\"completion_tokens\":104,\"total_tokens\":3512,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2768},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is directly ahead, close and centered, sitting on a raised ledge/surface just beyond a dark floor edge. The path forward appears clear now after backing up and turning.\", \"reasoning\": \"After backing up and turning right to 15 degrees, the last forward step succeeded, indicating clearance was regained. The target is very close and centered, so continuing forward should reduce the remaining distance to the goal.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is directly ahead, close and centered, sitting on a raised ledge/surface just beyond a dark floor edge. The path forward appears clear now after backing up and turning.",
+      "reasoning": "After backing up and turning right to 15 degrees, the last forward step succeeded, indicating clearance was regained. The target is very close and centered, so continuing forward should reduce the remaining distance to the goal.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

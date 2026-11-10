@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:07:07+08:00",
+    "latency_ms": 6920,
+    "payload_bytes": 284286,
+    "finish_reason": "stop",
+    "reasoning_tokens": 19,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ff1a66bd-d87d-4bcb-b4ba-c4ce9ecc45a7_ebc2fdeae07b4f1d947d44161687af97\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle fills the lower portion of the view, lying flat and very close ahead on the floor, with a dark curtain and warm-lit wall behind it.\\\", \\\"reasoning\\\": \\\"The green rectangle is immediately ahead and fills most of the view, indicating I am nearly at the goal. My torso is at 0 degrees and the path is clear. One more forward step should bring me directly onto the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is right there, very large. One more forward step should reach it.\"}}],\"created\":1794136027,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":126,\"prompt_tokens\":2607,\"total_tokens\":2733,\"completion_tokens_details\":{\"reasoning_tokens\":19},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The green rectangle fills the lower portion of the view, lying flat and very close ahead on the floor, with a dark curtain and warm-lit wall behind it.\", \"reasoning\": \"The green rectangle is immediately ahead and fills most of the view, indicating I am nearly at the goal. My torso is at 0 degrees and the path is clear. One more forward step should bring me directly onto the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The green rectangle is right there, very large. One more forward step should reach it.",
+    "parsed": {
+      "scene_description": "The green rectangle fills the lower portion of the view, lying flat and very close ahead on the floor, with a dark curtain and warm-lit wall behind it.",
+      "reasoning": "The green rectangle is immediately ahead and fills most of the view, indicating I am nearly at the goal. My torso is at 0 degrees and the path is clear. One more forward step should bring me directly onto the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

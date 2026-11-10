@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:19:46+08:00",
+    "latency_ms": 2307,
+    "payload_bytes": 191441,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"91312526-fc56-464f-9cdb-aea0e280e7ef\",\"object\":\"chat.completion\",\"created\":1794208785,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is directly ahead on a dark panel, very close now, framed by a narrow opening between wall panels on the left and right.\\\", \\\"reasoning\\\": \\\"The torso has now been rotated to 90 degrees, presenting the narrowest profile to the gap. The star is just ahead, so attempting forward again should let me pass through the opening and reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2593,\"completion_tokens\":98,\"total_tokens\":2691,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1953},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is directly ahead on a dark panel, very close now, framed by a narrow opening between wall panels on the left and right.\", \"reasoning\": \"The torso has now been rotated to 90 degrees, presenting the narrowest profile to the gap. The star is just ahead, so attempting forward again should let me pass through the opening and reach the goal.\", \"action\": \"forward\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is directly ahead on a dark panel, very close now, framed by a narrow opening between wall panels on the left and right.",
+      "reasoning": "The torso has now been rotated to 90 degrees, presenting the narrowest profile to the gap. The star is just ahead, so attempting forward again should let me pass through the opening and reach the goal.",
+      "action": "forward",
+      "confidence": 0.7
+    },
+    "action": "forward"
+  }
+]

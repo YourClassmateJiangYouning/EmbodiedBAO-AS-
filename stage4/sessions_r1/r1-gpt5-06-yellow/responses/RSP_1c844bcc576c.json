@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:28:16+08:00",
+    "latency_ms": 7989,
+    "payload_bytes": 343286,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A long red carpet runs straight ahead toward a doorway in a patterned wall. Beyond the doorway, a yellow arrow pointing to the right is visible on the far wall. The corridor appears clear and unobstructed along the carpet.\\\", \\\"reasoning\\\": \\\"The target yellow arrow is straight ahead beyond the doorway, and the path on the carpet is clear. Continuing forward moves closer to the arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.77}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205693,\"id\":\"chatcmpl-EiD9RyDqqi78aVamjdkWD0vzirC2L\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":106,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":385,\"engine_ttlt_ms\":1272,\"pre_inference_ms\":401,\"service_tbt_ms\":8,\"service_ttft_ms\":972,\"service_ttlt_ms\":1823,\"user_visible_ttft_ms\":570},\"prompt_tokens\":1602,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1708}}\n",
+    "content": "{\"scene_description\": \"A long red carpet runs straight ahead toward a doorway in a patterned wall. Beyond the doorway, a yellow arrow pointing to the right is visible on the far wall. The corridor appears clear and unobstructed along the carpet.\", \"reasoning\": \"The target yellow arrow is straight ahead beyond the doorway, and the path on the carpet is clear. Continuing forward moves closer to the arrow.\", \"action\": \"forward\", \"confidence\": 0.77}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpet runs straight ahead toward a doorway in a patterned wall. Beyond the doorway, a yellow arrow pointing to the right is visible on the far wall. The corridor appears clear and unobstructed along the carpet.",
+      "reasoning": "The target yellow arrow is straight ahead beyond the doorway, and the path on the carpet is clear. Continuing forward moves closer to the arrow.",
+      "action": "forward",
+      "confidence": 0.77
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:28:16+08:00",
+    "latency_ms": 7353,
+    "payload_bytes": 168342,
+    "finish_reason": "stop",
+    "reasoning_tokens": 46,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"bc3c521d-20b5-4d58-a92e-ea2f36866972_9166ed9f79b34c33a05baec891c310d8\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle is now very large and centered directly ahead on the far wall, framed by the dark opening. The triangle panel fills most of the view, indicating I am right at the opening and very close to the goal. A white wall edge is visible at the left and the dark opening surrounds the triangle panel.\\\", \\\"reasoning\\\": \\\"I have been walking forward with my torso rotated 90 degrees to present my thinnest profile through the narrow opening. I'm at x=8.0 and the triangle is immediately ahead. I should continue forward to reach the blue triangle on the far wall.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We're at x=8.0. The blue triangle fills the view. Opening is right at us. One more forward should put us at 8.75, presumably reaching the triangle. Let's go forward.\"}}],\"created\":1794144496,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":191,\"prompt_tokens\":3048,\"total_tokens\":3239,\"completion_tokens_details\":{\"reasoning_tokens\":46},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The blue triangle is now very large and centered directly ahead on the far wall, framed by the dark opening. The triangle panel fills most of the view, indicating I am right at the opening and very close to the goal. A white wall edge is visible at the left and the dark opening surrounds the triangle panel.\", \"reasoning\": \"I have been walking forward with my torso rotated 90 degrees to present my thinnest profile through the narrow opening. I'm at x=8.0 and the triangle is immediately ahead. I should continue forward to reach the blue triangle on the far wall.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "We're at x=8.0. The blue triangle fills the view. Opening is right at us. One more forward should put us at 8.75, presumably reaching the triangle. Let's go forward.",
+    "parsed": {
+      "scene_description": "The blue triangle is now very large and centered directly ahead on the far wall, framed by the dark opening. The triangle panel fills most of the view, indicating I am right at the opening and very close to the goal. A white wall edge is visible at the left and the dark opening surrounds the triangle panel.",
+      "reasoning": "I have been walking forward with my torso rotated 90 degrees to present my thinnest profile through the narrow opening. I'm at x=8.0 and the triangle is immediately ahead. I should continue forward to reach the blue triangle on the far wall.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

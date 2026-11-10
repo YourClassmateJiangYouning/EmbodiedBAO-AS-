@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:23:39+08:00",
+    "latency_ms": 5148,
+    "payload_bytes": 244978,
+    "finish_reason": "stop",
+    "reasoning_tokens": 20,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"47688e6a-1955-437f-b82a-b572b9b38e57_c830e5e74aa742ebbb72ab5286d4257a\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow on its black rectangular board is directly ahead and very close, filling much of the lower camera view. Beyond it, a dark draped covering and the far wall are visible.\\\", \\\"reasoning\\\": \\\"The yellow arrow is directly in front of me, extremely close. A single forward step of 75cm should bring me to the arrow and complete the task.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The yellow arrow is right in front of me. One more forward step should complete the task.\"}}],\"created\":1794137019,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":118,\"prompt_tokens\":3027,\"total_tokens\":3145,\"completion_tokens_details\":{\"reasoning_tokens\":20},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The yellow arrow on its black rectangular board is directly ahead and very close, filling much of the lower camera view. Beyond it, a dark draped covering and the far wall are visible.\", \"reasoning\": \"The yellow arrow is directly in front of me, extremely close. A single forward step of 75cm should bring me to the arrow and complete the task.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The yellow arrow is right in front of me. One more forward step should complete the task.",
+    "parsed": {
+      "scene_description": "The yellow arrow on its black rectangular board is directly ahead and very close, filling much of the lower camera view. Beyond it, a dark draped covering and the far wall are visible.",
+      "reasoning": "The yellow arrow is directly in front of me, extremely close. A single forward step of 75cm should bring me to the arrow and complete the task.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:36:59+08:00",
+    "latency_ms": 2612,
+    "payload_bytes": 262365,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"d48be50e-d2e8-46bf-ad34-5d973aa4c3a3\",\"object\":\"chat.completion\",\"created\":1794217018,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpet leading straight ahead toward a purple four-pointed star on the far wall, framed by a narrow opening between two patterned walls. The path appears clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The star is directly ahead along my fixed walking direction, and the red carpet path is clear. Continuing forward moves me 75cm closer to the goal each step, so forward remains the correct action.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1855,\"completion_tokens\":104,\"total_tokens\":1959,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1343},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpet leading straight ahead toward a purple four-pointed star on the far wall, framed by a narrow opening between two patterned walls. The path appears clear and unobstructed.\", \"reasoning\": \"The star is directly ahead along my fixed walking direction, and the red carpet path is clear. Continuing forward moves me 75cm closer to the goal each step, so forward remains the correct action.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpet leading straight ahead toward a purple four-pointed star on the far wall, framed by a narrow opening between two patterned walls. The path appears clear and unobstructed.",
+      "reasoning": "The star is directly ahead along my fixed walking direction, and the red carpet path is clear. Continuing forward moves me 75cm closer to the goal each step, so forward remains the correct action.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

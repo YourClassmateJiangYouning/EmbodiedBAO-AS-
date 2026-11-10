@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:27:45+08:00",
+    "latency_ms": 6850,
+    "payload_bytes": 274907,
+    "finish_reason": "stop",
+    "reasoning_tokens": 32,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e0efb45a-e6eb-4d3e-9321-771a56a6b1dc_e2627450906440309f3e09d1acb99d35\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpet leads toward a narrow dark opening between two decorated walls with purple geometric patterns. A blue triangle sits on the floor just beyond the opening, slightly above the floor level. The opening appears narrow and I am close to entering it.\\\", \\\"reasoning\\\": \\\"My torso is at 90 degrees presenting my thinnest profile to fit through the narrow opening ahead. The blue triangle is clearly visible just beyond the opening and the path on the carpet is clear. I should continue forward to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The blue triangle is close ahead through a narrow opening. My torso is at 90 degrees presenting my thinnest profile. I should continue forward.\"}}],\"created\":1794144464,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":156,\"prompt_tokens\":2850,\"total_tokens\":3006,\"completion_tokens_details\":{\"reasoning_tokens\":32},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpet leads toward a narrow dark opening between two decorated walls with purple geometric patterns. A blue triangle sits on the floor just beyond the opening, slightly above the floor level. The opening appears narrow and I am close to entering it.\", \"reasoning\": \"My torso is at 90 degrees presenting my thinnest profile to fit through the narrow opening ahead. The blue triangle is clearly visible just beyond the opening and the path on the carpet is clear. I should continue forward to reach it.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The blue triangle is close ahead through a narrow opening. My torso is at 90 degrees presenting my thinnest profile. I should continue forward.",
+    "parsed": {
+      "scene_description": "Red carpet leads toward a narrow dark opening between two decorated walls with purple geometric patterns. A blue triangle sits on the floor just beyond the opening, slightly above the floor level. The opening appears narrow and I am close to entering it.",
+      "reasoning": "My torso is at 90 degrees presenting my thinnest profile to fit through the narrow opening ahead. The blue triangle is clearly visible just beyond the opening and the path on the carpet is clear. I should continue forward to reach it.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:06:18+08:00",
+    "latency_ms": 2923,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"c33a32da-a76b-419b-8565-e0fa59ec16ac\",\"object\":\"chat.completion\",\"created\":1794207977,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is visible directly ahead, close and slightly below eye level, resting on a light-colored surface. The surrounding area is dark, and the path forward appears blocked at the current position by a boundary or panel.\\\", \\\"reasoning\\\": \\\"The last forward step was blocked by a wall panel, yet the green target is very close and centered ahead. Since forward is blocked, I should try turning my torso to reduce my presented width and see if that allows passage, or attempt forward again after adjusting. Given the target is nearly reached, a small turn to align my narrower profile may help clear the obstruction.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2164,\"completion_tokens\":143,\"total_tokens\":2307,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1396},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is visible directly ahead, close and slightly below eye level, resting on a light-colored surface. The surrounding area is dark, and the path forward appears blocked at the current position by a boundary or panel.\", \"reasoning\": \"The last forward step was blocked by a wall panel, yet the green target is very close and centered ahead. Since forward is blocked, I should try turning my torso to reduce my presented width and see if that allows passage, or attempt forward again after adjusting. Given the target is nearly reached, a small turn to align my narrower profile may help clear the obstruction.\", \"action\": \"turn_left\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is visible directly ahead, close and slightly below eye level, resting on a light-colored surface. The surrounding area is dark, and the path forward appears blocked at the current position by a boundary or panel.",
+      "reasoning": "The last forward step was blocked by a wall panel, yet the green target is very close and centered ahead. Since forward is blocked, I should try turning my torso to reduce my presented width and see if that allows passage, or attempt forward again after adjusting. Given the target is nearly reached, a small turn to align my narrower profile may help clear the obstruction.",
+      "action": "turn_left",
+      "confidence": 0.4
+    },
+    "action": "turn_left"
+  }
+]

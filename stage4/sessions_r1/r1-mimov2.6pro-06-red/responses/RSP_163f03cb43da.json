@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:16:09+08:00",
+    "latency_ms": 7858,
+    "payload_bytes": 254117,
+    "finish_reason": "stop",
+    "reasoning_tokens": 45,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"c9be30c1-7a63-498a-951c-d0417259871f_b0ec52a385304b2082b001f47e762ddf\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The view shows a dark red carpeted path leading forward to a narrow doorway in a patterned wall. Through the doorway, a large red glowing circle is visible on the far wall, positioned centrally. The doorway appears narrow with white/beige panels on either side featuring purple and green geometric patterns. The path ahead is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead through the narrow opening. My torso remains turned 15 degrees left, narrowing my profile to fit through the gap. The carpeted path is clear. I should continue advancing toward the circle - 9 steps in, I've traveled roughly 5.25m and need to keep closing the distance to reach the wall.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red circle is ahead through a narrow opening. I'm at x=5.75. Keep moving forward. The torso is turned 15 degrees left already, which narrows the profile. Continue forward.\"}}],\"created\":1794208568,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":217,\"prompt_tokens\":2512,\"total_tokens\":2729,\"completion_tokens_details\":{\"reasoning_tokens\":45},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The view shows a dark red carpeted path leading forward to a narrow doorway in a patterned wall. Through the doorway, a large red glowing circle is visible on the far wall, positioned centrally. The doorway appears narrow with white/beige panels on either side featuring purple and green geometric patterns. The path ahead is clear and unobstructed.\", \"reasoning\": \"The red circle is directly ahead through the narrow opening. My torso remains turned 15 degrees left, narrowing my profile to fit through the gap. The carpeted path is clear. I should continue advancing toward the circle - 9 steps in, I've traveled roughly 5.25m and need to keep closing the distance to reach the wall.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "The red circle is ahead through a narrow opening. I'm at x=5.75. Keep moving forward. The torso is turned 15 degrees left already, which narrows the profile. Continue forward.",
+    "parsed": {
+      "scene_description": "The view shows a dark red carpeted path leading forward to a narrow doorway in a patterned wall. Through the doorway, a large red glowing circle is visible on the far wall, positioned centrally. The doorway appears narrow with white/beige panels on either side featuring purple and green geometric patterns. The path ahead is clear and unobstructed.",
+      "reasoning": "The red circle is directly ahead through the narrow opening. My torso remains turned 15 degrees left, narrowing my profile to fit through the gap. The carpeted path is clear. I should continue advancing toward the circle - 9 steps in, I've traveled roughly 5.25m and need to keep closing the distance to reach the wall.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

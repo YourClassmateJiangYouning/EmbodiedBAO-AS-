@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:24:42+08:00",
+    "latency_ms": 6344,
+    "payload_bytes": 397400,
+    "finish_reason": "stop",
+    "reasoning_tokens": 15,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"bd97a9fa-d6e6-422e-b261-eff374fa917a_4e3ef34aab2c4362ab5690cd1ec44cec\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet walkway stretches ahead with white paper strips along both edges. In the distance, a doorway opening between decorated wall panels shows a green rectangle standing on the floor at the far wall. The path is clear and centered.\\\", \\\"reasoning\\\": \\\"The green rectangle is directly ahead and centered through the doorway. Torso rotation is 0 degrees, presenting the minimum width for the opening. The previous episode confirmed forward progress at this position works, so continuing forward is the correct approach.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is directly ahead, still some distance. Continue forward.\"}}],\"created\":1794212682,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":138,\"prompt_tokens\":3347,\"total_tokens\":3485,\"completion_tokens_details\":{\"reasoning_tokens\":15},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet walkway stretches ahead with white paper strips along both edges. In the distance, a doorway opening between decorated wall panels shows a green rectangle standing on the floor at the far wall. The path is clear and centered.\", \"reasoning\": \"The green rectangle is directly ahead and centered through the doorway. Torso rotation is 0 degrees, presenting the minimum width for the opening. The previous episode confirmed forward progress at this position works, so continuing forward is the correct approach.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The green rectangle is directly ahead, still some distance. Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpet walkway stretches ahead with white paper strips along both edges. In the distance, a doorway opening between decorated wall panels shows a green rectangle standing on the floor at the far wall. The path is clear and centered.",
+      "reasoning": "The green rectangle is directly ahead and centered through the doorway. Torso rotation is 0 degrees, presenting the minimum width for the opening. The previous episode confirmed forward progress at this position works, so continuing forward is the correct approach.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

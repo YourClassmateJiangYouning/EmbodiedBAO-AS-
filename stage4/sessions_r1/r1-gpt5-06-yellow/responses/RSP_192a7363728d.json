@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:28:25+08:00",
+    "latency_ms": 9057,
+    "payload_bytes": 336378,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead to a narrow doorway in a patterned wall. The yellow arrow is visible just beyond the doorway, pointing to the right. The path on the carpet is clear with no obstacles.\\\", \\\"reasoning\\\": \\\"The target is straight ahead beyond the doorway and the carpet path remains unobstructed. Moving forward continues progress toward the arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.77}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205702,\"id\":\"chatcmpl-EiD9aqiENx7ZGfqKQBPGhWq3bl8N1\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":101,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":12,\"engine_ttft_ms\":331,\"engine_ttlt_ms\":1592,\"pre_inference_ms\":1204,\"service_tbt_ms\":12,\"service_ttft_ms\":1733,\"service_ttlt_ms\":2972,\"user_visible_ttft_ms\":529},\"prompt_tokens\":1642,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1743}}\n",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead to a narrow doorway in a patterned wall. The yellow arrow is visible just beyond the doorway, pointing to the right. The path on the carpet is clear with no obstacles.\", \"reasoning\": \"The target is straight ahead beyond the doorway and the carpet path remains unobstructed. Moving forward continues progress toward the arrow.\", \"action\": \"forward\", \"confidence\": 0.77}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead to a narrow doorway in a patterned wall. The yellow arrow is visible just beyond the doorway, pointing to the right. The path on the carpet is clear with no obstacles.",
+      "reasoning": "The target is straight ahead beyond the doorway and the carpet path remains unobstructed. Moving forward continues progress toward the arrow.",
+      "action": "forward",
+      "confidence": 0.77
+    },
+    "action": "forward"
+  }
+]

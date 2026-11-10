@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:23:06+08:00",
+    "latency_ms": 5599,
+    "payload_bytes": 166341,
+    "finish_reason": "stop",
+    "reasoning_tokens": 21,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"0892f1a8-a4f7-4136-8474-649d8b37530d_dc69f3f0c8bf45c5b83928d6a7f0a0a7\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The red circle is now very close, filling most of the view on a dark panel directly ahead. The opening has been passed and I am nearly at the target.\\\", \\\"reasoning\\\": \\\"At 90 degrees torso rotation my thin profile fit through the narrow opening and forward succeeded. The red circle is now immediately ahead and large in view, indicating I'm essentially at the wall. One more forward step should reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red circle is very close now, on a panel ahead. Just step forward to reach it.\"}}],\"created\":1794208985,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":133,\"prompt_tokens\":3456,\"total_tokens\":3589,\"completion_tokens_details\":{\"reasoning_tokens\":21},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The red circle is now very close, filling most of the view on a dark panel directly ahead. The opening has been passed and I am nearly at the target.\", \"reasoning\": \"At 90 degrees torso rotation my thin profile fit through the narrow opening and forward succeeded. The red circle is now immediately ahead and large in view, indicating I'm essentially at the wall. One more forward step should reach it.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The red circle is very close now, on a panel ahead. Just step forward to reach it.",
+    "parsed": {
+      "scene_description": "The red circle is now very close, filling most of the view on a dark panel directly ahead. The opening has been passed and I am nearly at the target.",
+      "reasoning": "At 90 degrees torso rotation my thin profile fit through the narrow opening and forward succeeded. The red circle is now immediately ahead and large in view, indicating I'm essentially at the wall. One more forward step should reach it.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

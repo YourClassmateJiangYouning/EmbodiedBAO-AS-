@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:14:49+08:00",
+    "latency_ms": 7641,
+    "payload_bytes": 215919,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A red carpet leads straight ahead to a doorway opening. Just beyond the threshold, centered, is a glowing purple four-pointed star on a black panel at the far wall. The path ahead appears clear; the star is directly in front and very close to the doorway edge.\\\", \\\"reasoning\\\": \\\"Recent forward steps were blocked by the wall panel, indicating I am at or pressing against the wall near the star. A small backward step created space previously, and then a forward step brought me close again but still resulted in blocks. To reach the star without pressing, I should take a single forward step toward it from my current slight setback.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.66}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204885,\"id\":\"chatcmpl-EiCwP0nkWNq0I77NTuBsIuK2EwLfe\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":156,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":11,\"engine_ttft_ms\":284,\"engine_ttlt_ms\":2019,\"pre_inference_ms\":372,\"service_tbt_ms\":11,\"service_ttft_ms\":1023,\"service_ttlt_ms\":2724,\"user_visible_ttft_ms\":652},\"prompt_tokens\":2268,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2424}}\n",
+    "content": "{\"scene_description\": \"A red carpet leads straight ahead to a doorway opening. Just beyond the threshold, centered, is a glowing purple four-pointed star on a black panel at the far wall. The path ahead appears clear; the star is directly in front and very close to the doorway edge.\", \"reasoning\": \"Recent forward steps were blocked by the wall panel, indicating I am at or pressing against the wall near the star. A small backward step created space previously, and then a forward step brought me close again but still resulted in blocks. To reach the star without pressing, I should take a single forward step toward it from my current slight setback.\", \"action\": \"forward\", \"confidence\": 0.66}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpet leads straight ahead to a doorway opening. Just beyond the threshold, centered, is a glowing purple four-pointed star on a black panel at the far wall. The path ahead appears clear; the star is directly in front and very close to the doorway edge.",
+      "reasoning": "Recent forward steps were blocked by the wall panel, indicating I am at or pressing against the wall near the star. A small backward step created space previously, and then a forward step brought me close again but still resulted in blocks. To reach the star without pressing, I should take a single forward step toward it from my current slight setback.",
+      "action": "forward",
+      "confidence": 0.66
+    },
+    "action": "forward"
+  }
+]

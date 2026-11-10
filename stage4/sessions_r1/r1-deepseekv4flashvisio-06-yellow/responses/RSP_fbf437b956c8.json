@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:17:00+08:00",
+    "latency_ms": 2584,
+    "payload_bytes": 173192,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"796cb2df-6ef4-4852-9216-9428e217c72d\",\"object\":\"chat.completion\",\"created\":1794208618,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is very close and centered ahead, mounted on a dark panel; the path forward appears blocked by a low wall/panel just below the sign.\\\", \\\"reasoning\\\": \\\"The last forward step was blocked by a wall_panel obstacle. The arrow is close but the sign panel sits low, blocking direct forward motion. I should check my body width and clearance with a downward glance before attempting another move, since turning is not possible once shoulders are inside the opening.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.5}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2248,\"completion_tokens\":116,\"total_tokens\":2364,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1480},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is very close and centered ahead, mounted on a dark panel; the path forward appears blocked by a low wall/panel just below the sign.\", \"reasoning\": \"The last forward step was blocked by a wall_panel obstacle. The arrow is close but the sign panel sits low, blocking direct forward motion. I should check my body width and clearance with a downward glance before attempting another move, since turning is not possible once shoulders are inside the opening.\", \"action\": \"look_down\", \"confidence\": 0.5}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is very close and centered ahead, mounted on a dark panel; the path forward appears blocked by a low wall/panel just below the sign.",
+      "reasoning": "The last forward step was blocked by a wall_panel obstacle. The arrow is close but the sign panel sits low, blocking direct forward motion. I should check my body width and clearance with a downward glance before attempting another move, since turning is not possible once shoulders are inside the opening.",
+      "action": "look_down",
+      "confidence": 0.5
+    },
+    "action": "look_down"
+  }
+]

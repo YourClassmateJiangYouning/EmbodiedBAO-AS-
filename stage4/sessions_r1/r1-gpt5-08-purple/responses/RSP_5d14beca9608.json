@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:16:32+08:00",
+    "latency_ms": 9166,
+    "payload_bytes": 166724,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A bright purple four-pointed star is directly ahead, illuminated on a wall panel at floor level, centered in view. The red carpeted floor ends just before the panel, and there is no visible obstruction between the robot and the star.\\\", \\\"reasoning\\\": \\\"The repeated blocks indicate I am at or just short of the wall panel. One final forward step should contact the star; walking direction is fixed toward it and the path is clear.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.69}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204989,\"id\":\"chatcmpl-EiCy5aeAwJA8DFz8NV94juTRsj3qc\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":117,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":372,\"engine_ttlt_ms\":1414,\"pre_inference_ms\":392,\"service_tbt_ms\":9,\"service_ttft_ms\":935,\"service_ttlt_ms\":1969,\"user_visible_ttft_ms\":543},\"prompt_tokens\":3023,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":3140}}\n",
+    "content": "{\"scene_description\": \"A bright purple four-pointed star is directly ahead, illuminated on a wall panel at floor level, centered in view. The red carpeted floor ends just before the panel, and there is no visible obstruction between the robot and the star.\", \"reasoning\": \"The repeated blocks indicate I am at or just short of the wall panel. One final forward step should contact the star; walking direction is fixed toward it and the path is clear.\", \"action\": \"forward\", \"confidence\": 0.69}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A bright purple four-pointed star is directly ahead, illuminated on a wall panel at floor level, centered in view. The red carpeted floor ends just before the panel, and there is no visible obstruction between the robot and the star.",
+      "reasoning": "The repeated blocks indicate I am at or just short of the wall panel. One final forward step should contact the star; walking direction is fixed toward it and the path is clear.",
+      "action": "forward",
+      "confidence": 0.69
+    },
+    "action": "forward"
+  }
+]

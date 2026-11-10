@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:19:29+08:00",
+    "latency_ms": 2764,
+    "payload_bytes": 191441,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e691df39-ab42-4c99-bf02-e23bfa38c00e\",\"object\":\"chat.completion\",\"created\":1794208767,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is directly ahead on a dark panel, very close now, framed by a narrow opening between wall panels on the left and right. The red carpet leads up to it.\\\", \\\"reasoning\\\": \\\"The star is just ahead but the last forward step was blocked by a wall panel, likely because my wide body at 0 degrees caught on the narrow opening. I have now turned right 15 degrees, presenting a slightly narrower profile. Continuing to turn right toward 90 degrees would present my thinnest dimension to the gap, but the star is very close, so I should try forward again now that my orientation has changed slightly.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.5}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2210,\"completion_tokens\":151,\"total_tokens\":2361,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1442},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is directly ahead on a dark panel, very close now, framed by a narrow opening between wall panels on the left and right. The red carpet leads up to it.\", \"reasoning\": \"The star is just ahead but the last forward step was blocked by a wall panel, likely because my wide body at 0 degrees caught on the narrow opening. I have now turned right 15 degrees, presenting a slightly narrower profile. Continuing to turn right toward 90 degrees would present my thinnest dimension to the gap, but the star is very close, so I should try forward again now that my orientation has changed slightly.\", \"action\": \"forward\", \"confidence\": 0.5}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is directly ahead on a dark panel, very close now, framed by a narrow opening between wall panels on the left and right. The red carpet leads up to it.",
+      "reasoning": "The star is just ahead but the last forward step was blocked by a wall panel, likely because my wide body at 0 degrees caught on the narrow opening. I have now turned right 15 degrees, presenting a slightly narrower profile. Continuing to turn right toward 90 degrees would present my thinnest dimension to the gap, but the star is very close, so I should try forward again now that my orientation has changed slightly.",
+      "action": "forward",
+      "confidence": 0.5
+    },
+    "action": "forward"
+  }
+]

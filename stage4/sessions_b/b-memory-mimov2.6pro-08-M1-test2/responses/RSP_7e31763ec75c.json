@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:26:27+08:00",
+    "latency_ms": 8936,
+    "payload_bytes": 397400,
+    "finish_reason": "stop",
+    "reasoning_tokens": 32,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"c6f46b2a-3398-4657-b838-81fd1fb04786_3f4ad4b396c44431acc55741c22c50b1\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpeted walkway with white geometric shapes on the floor leading to an opening between two decorated wall panels. Through the opening, a bright green rectangle is visible on the far wall, centered ahead. The path is clear.\\\", \\\"reasoning\\\": \\\"The green rectangle is visible straight ahead through the opening and the carpeted path is clear. At x=2.0 I still have distance to cover before the opening. Following the prior successful traversal, I should continue forward without turning until I approach the opening, where the torso orientation at 90 degrees (thin profile) proved necessary to pass.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Current position x=2.0, torso rotation 0. Green rectangle visible ahead through the opening. Path is clear on the carpet. Continue forward.\"}}],\"created\":1794212787,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":174,\"prompt_tokens\":2948,\"total_tokens\":3122,\"completion_tokens_details\":{\"reasoning_tokens\":32},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpeted walkway with white geometric shapes on the floor leading to an opening between two decorated wall panels. Through the opening, a bright green rectangle is visible on the far wall, centered ahead. The path is clear.\", \"reasoning\": \"The green rectangle is visible straight ahead through the opening and the carpeted path is clear. At x=2.0 I still have distance to cover before the opening. Following the prior successful traversal, I should continue forward without turning until I approach the opening, where the torso orientation at 90 degrees (thin profile) proved necessary to pass.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "Current position x=2.0, torso rotation 0. Green rectangle visible ahead through the opening. Path is clear on the carpet. Continue forward.",
+    "parsed": {
+      "scene_description": "Red carpeted walkway with white geometric shapes on the floor leading to an opening between two decorated wall panels. Through the opening, a bright green rectangle is visible on the far wall, centered ahead. The path is clear.",
+      "reasoning": "The green rectangle is visible straight ahead through the opening and the carpeted path is clear. At x=2.0 I still have distance to cover before the opening. Following the prior successful traversal, I should continue forward without turning until I approach the opening, where the torso orientation at 90 degrees (thin profile) proved necessary to pass.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

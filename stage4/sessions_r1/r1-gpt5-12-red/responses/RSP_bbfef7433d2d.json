@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:21:57+08:00",
+    "latency_ms": 8027,
+    "payload_bytes": 253010,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"The red circle is prominently displayed on a small black rectangular panel on the floor directly ahead, very close. The surrounding area appears clear with a draped dark fabric and furniture in the background, but no obstacle blocks the path to the circle.\\\", \\\"reasoning\\\": \\\"The target red circle is directly ahead and within close reach. Moving straight forward continues to reduce the remaining distance and should reach or contact the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.83}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198114,\"id\":\"chatcmpl-EiBBCbCAmlKbCYPONsd0DNlt6eXaN\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":110,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":15,\"engine_ttft_ms\":289,\"engine_ttlt_ms\":1975,\"pre_inference_ms\":399,\"service_tbt_ms\":15,\"service_ttft_ms\":972,\"service_ttlt_ms\":2652,\"user_visible_ttft_ms\":572},\"prompt_tokens\":2011,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2121}}\n",
+    "content": "{\"scene_description\": \"The red circle is prominently displayed on a small black rectangular panel on the floor directly ahead, very close. The surrounding area appears clear with a draped dark fabric and furniture in the background, but no obstacle blocks the path to the circle.\", \"reasoning\": \"The target red circle is directly ahead and within close reach. Moving straight forward continues to reduce the remaining distance and should reach or contact the target.\", \"action\": \"forward\", \"confidence\": 0.83}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle is prominently displayed on a small black rectangular panel on the floor directly ahead, very close. The surrounding area appears clear with a draped dark fabric and furniture in the background, but no obstacle blocks the path to the circle.",
+      "reasoning": "The target red circle is directly ahead and within close reach. Moving straight forward continues to reduce the remaining distance and should reach or contact the target.",
+      "action": "forward",
+      "confidence": 0.83
+    },
+    "action": "forward"
+  }
+]

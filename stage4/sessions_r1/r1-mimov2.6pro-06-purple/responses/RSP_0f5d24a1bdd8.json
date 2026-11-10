@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:34:59+08:00",
+    "latency_ms": 10554,
+    "payload_bytes": 236765,
+    "finish_reason": "stop",
+    "reasoning_tokens": 93,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"bf066db8-1308-4902-a719-5841e5ca34e0_836d758eed3c4bdc93508a3f2dac6bd1\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star sits on a panel just beyond a narrow opening in the wall, framed by patterned wall panels on either side, with a red carpet leading straight toward it. The star appears very close ahead.\\\", \\\"reasoning\\\": \\\"My torso remains at 90 degrees rotation, presenting my thin depth dimension to the narrow opening — the optimal orientation to pass through safely. The star is just ahead through the opening, so I continue walking forward to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We have position x=6.5 after 7 forward steps of 0.75 = 5.25? Hmm, position starts maybe at 1.25? Anyway. The star appears close ahead through the opening. Torso at 90 degrees, we need to keep moving forward. Steps used 15, limit 30. Continue forward.\\n\\nThe image shows the star just ahead at the opening. Continue forward.\"}}],\"created\":1794144899,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":214,\"prompt_tokens\":2933,\"total_tokens\":3147,\"completion_tokens_details\":{\"reasoning_tokens\":93},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star sits on a panel just beyond a narrow opening in the wall, framed by patterned wall panels on either side, with a red carpet leading straight toward it. The star appears very close ahead.\", \"reasoning\": \"My torso remains at 90 degrees rotation, presenting my thin depth dimension to the narrow opening — the optimal orientation to pass through safely. The star is just ahead through the opening, so I continue walking forward to reach it.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We have position x=6.5 after 7 forward steps of 0.75 = 5.25? Hmm, position starts maybe at 1.25? Anyway. The star appears close ahead through the opening. Torso at 90 degrees, we need to keep moving forward. Steps used 15, limit 30. Continue forward.\n\nThe image shows the star just ahead at the opening. Continue forward.",
+    "parsed": {
+      "scene_description": "The purple four-pointed star sits on a panel just beyond a narrow opening in the wall, framed by patterned wall panels on either side, with a red carpet leading straight toward it. The star appears very close ahead.",
+      "reasoning": "My torso remains at 90 degrees rotation, presenting my thin depth dimension to the narrow opening — the optimal orientation to pass through safely. The star is just ahead through the opening, so I continue walking forward to reach it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

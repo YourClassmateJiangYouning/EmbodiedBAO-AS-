@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:23:55+08:00",
+    "latency_ms": 3392,
+    "payload_bytes": 299877,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"89343295-6814-4ed1-ae0a-e5816387e526\",\"object\":\"chat.completion\",\"created\":1794212634,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpet path stretches straight ahead toward a dark opening in the far wall, with the purple four-pointed star visible in the center of the opening. Patterned walls flank the path on both sides.\\\", \\\"reasoning\\\": \\\"The star is directly ahead along my fixed walking direction and the carpet path is clear, so continuing forward advances me toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1753,\"completion_tokens\":91,\"total_tokens\":1844,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":985},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpet path stretches straight ahead toward a dark opening in the far wall, with the purple four-pointed star visible in the center of the opening. Patterned walls flank the path on both sides.\", \"reasoning\": \"The star is directly ahead along my fixed walking direction and the carpet path is clear, so continuing forward advances me toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpet path stretches straight ahead toward a dark opening in the far wall, with the purple four-pointed star visible in the center of the opening. Patterned walls flank the path on both sides.",
+      "reasoning": "The star is directly ahead along my fixed walking direction and the carpet path is clear, so continuing forward advances me toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

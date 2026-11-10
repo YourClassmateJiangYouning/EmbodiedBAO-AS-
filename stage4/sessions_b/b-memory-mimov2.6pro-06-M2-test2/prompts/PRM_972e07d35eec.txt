@@ -1,0 +1,54 @@
+You are a small wheeled robot. Your task is to reach the red circle on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the red circle on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the red circle on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the red circle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the red circle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the red circle you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+A previous successful traversal by the same model in this same scene and marker:
+
+1. look_down -> executed
+2. forward -> executed  |  I still don't know what obstacles or the doorway look like ahead, so I should now move forward — this clears the downward glance and shows me the normal forward view while making p
+3. turn_left -> executed  |  I cannot turn once my shoulders are inside the opening, so I should start rotating my torso now while I still have room. Each turn is 15 degrees, so I need 6 turns. I have 28 steps
+4. forward -> executed  |  The way forward is clear along the red carpet. I should continue moving forward toward the red circle rather than rotating further or moving back.
+5. forward -> executed  |  I should continue moving forward along the carpet toward the opening and the red circle.
+6. forward -> executed  |  The best action is to keep moving forward toward the circle.
+7. forward -> executed  |  The path on the red carpet is unobstructed, so I should continue moving forward toward the opening and the red circle. I still have room before reaching the opening, so I should ke
+8. forward -> executed  |  The red carpet path is unobstructed, so I should continue moving forward toward the opening and the red circle.
+9. forward -> executed  |  I should continue moving forward toward the circle.
+10. forward -> executed  |  My torso remains turned 15 degrees left, narrowing my profile to fit through the gap. The carpeted path is clear.
+11. forward -> executed  |  My torso is already turned 15 degrees left, narrowing my profile to fit through the gap, and further turning is not possible once my shoulders reach the opening. Continuing forward
+12. forward -> blocked by obstacle or room boundary (wall_panel)  |  The red circle is directly ahead and the path through the opening is clear. Since the opening is essentially upon me now and forward always advances toward the circle, I should con
+13. turn_left -> executed  |  I'll try turning left more to reduce my width. If my shoulders are already inside the opening preventing turning, I'll need to back up first. Let me try turn_left first since I mig
+14. forward -> blocked by obstacle or room boundary (wall_panel)  |  I have since turned left to 30 degrees, which narrows my profile further while still leaving the opening directly ahead. The red circle is just beyond the gap, so I attempt to adva
+15. turn_left -> executed  |  At 15 and 30 degrees torso rotation my forward motion was still blocked by the wall_panel, meaning my presented width still exceeds the opening. I cannot look_down usefully here wi
+16. turn_left -> executed  |  I need to continue narrowing my profile. Turning further left to 60° will reduce my projected width further. Since forward is blocked, I haven't entered the opening yet, so turning
+17. forward -> blocked by obstacle or room boundary (wall_panel)  |  The red circle is directly ahead through the opening. If 60 degrees still doesn't fit, I'll need to look_down to check my actual width, or turn even further to 75+ degrees.
+18. turn_left -> executed  |  At 60 degrees, my width presents as roughly width*cos(60°) + depth*sin(60°). Turning to 75 degrees will further reduce my projected width by rotating more toward presenting my body
+19. forward -> blocked by obstacle or room boundary (wall_panel)  |  Forward has been blocked at 15°, 30°, and 60° torso rotation. However, 75° may make the projected width worse than 60° since sin(75°) is larger than sin(60°). But I've already turn
+20. turn_left -> executed  |  Forward has been blocked by wall_panel at torso rotations of 15, 30, 60, and now 75 degrees. Projected width at angle θ is w·cosθ + d·sinθ; since f(θ) is maximized at θ=atan(d/w) a
+21. forward -> executed  |  With 10 steps left, the best move is to attempt forward now at this minimal profile.
+22. forward -> executed  |  The red circle is now immediately ahead and large in view, indicating I'm essentially at the wall. One more forward step should reach it.
+
+Current state:
+- position (x, y, z): [1.250, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 15.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (4 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: look_down -> executed | your reasoning: The episode has reset with my torso at 0°, and the opening is far ahead. Following the successful traversal, I should first glance down to measure my body width/thickness, then rotate my torso early (while I still have room outside the ope…
+- step 1: None -> invalid action response
+- step 2: turn_left -> executed | your reasoning: Only 2 steps used (one look_down, one invalid), so I have 28 left and the opening is still ahead. The previous successful traversal showed the robot must narrow its profile before reaching the opening, since once the shoulders are inside i…
+- step 3: forward -> executed | your reasoning: The carpet is clear ahead and the red circle is visible through the opening. My torso is already turned 15 degrees left (narrowing my profile), matching the successful traversal pattern. With 27 steps remaining and the opening still ahead,…
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:00:54+08:00",
+    "latency_ms": 2540,
+    "payload_bytes": 252541,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"edeb6075-d48e-4c82-ba36-fbeb9fe736e8\",\"object\":\"chat.completion\",\"created\":1794207653,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle is visible ahead on the far wall, framed by a narrow opening between a dark draped object on the left and a patterned panel on the right. The floor is red carpet, and the gap appears just wide enough to pass through.\\\", \\\"reasoning\\\": \\\"The goal is directly ahead along the fixed walking direction, and my torso is rotated 30 degrees right, narrowing the profile I present to the opening. I am close to the gap, so continuing forward should carry me through toward the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.8}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2249,\"completion_tokens\":122,\"total_tokens\":2371,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1737},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle is visible ahead on the far wall, framed by a narrow opening between a dark draped object on the left and a patterned panel on the right. The floor is red carpet, and the gap appears just wide enough to pass through.\", \"reasoning\": \"The goal is directly ahead along the fixed walking direction, and my torso is rotated 30 degrees right, narrowing the profile I present to the opening. I am close to the gap, so continuing forward should carry me through toward the red circle.\", \"action\": \"forward\", \"confidence\": 0.8}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle is visible ahead on the far wall, framed by a narrow opening between a dark draped object on the left and a patterned panel on the right. The floor is red carpet, and the gap appears just wide enough to pass through.",
+      "reasoning": "The goal is directly ahead along the fixed walking direction, and my torso is rotated 30 degrees right, narrowing the profile I present to the opening. I am close to the gap, so continuing forward should carry me through toward the red circle.",
+      "action": "forward",
+      "confidence": 0.8
+    },
+    "action": "forward"
+  }
+]

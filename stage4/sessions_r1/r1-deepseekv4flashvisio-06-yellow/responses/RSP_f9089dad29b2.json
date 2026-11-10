@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:17:07+08:00",
+    "latency_ms": 3002,
+    "payload_bytes": 173192,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f46faab2-c7d5-4bdd-8a47-691c1da4c9a1\",\"object\":\"chat.completion\",\"created\":1794208625,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is directly ahead, mounted on a low panel at body height, with the dark doorway opening above and around it. The sign panel sits low, blocking direct forward motion at floor level.\\\", \\\"reasoning\\\": \\\"The forward step was blocked by the low wall_panel holding the arrow sign. Turning only changes torso width orientation, not walking direction, so it cannot steer around the obstacle. Since the panel is low and the arrow is the goal, I should try moving forward again to see if the previous block was a boundary artifact, but first I need to verify clearance. Given the sign is the target and sits low, attempting forward once more is the most direct test.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2368,\"completion_tokens\":157,\"total_tokens\":2525,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1600},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is directly ahead, mounted on a low panel at body height, with the dark doorway opening above and around it. The sign panel sits low, blocking direct forward motion at floor level.\", \"reasoning\": \"The forward step was blocked by the low wall_panel holding the arrow sign. Turning only changes torso width orientation, not walking direction, so it cannot steer around the obstacle. Since the panel is low and the arrow is the goal, I should try moving forward again to see if the previous block was a boundary artifact, but first I need to verify clearance. Given the sign is the target and sits low, attempting forward once more is the most direct test.\", \"action\": \"forward\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is directly ahead, mounted on a low panel at body height, with the dark doorway opening above and around it. The sign panel sits low, blocking direct forward motion at floor level.",
+      "reasoning": "The forward step was blocked by the low wall_panel holding the arrow sign. Turning only changes torso width orientation, not walking direction, so it cannot steer around the obstacle. Since the panel is low and the arrow is the goal, I should try moving forward again to see if the previous block was a boundary artifact, but first I need to verify clearance. Given the sign is the target and sits low, attempting forward once more is the most direct test.",
+      "action": "forward",
+      "confidence": 0.4
+    },
+    "action": "forward"
+  }
+]

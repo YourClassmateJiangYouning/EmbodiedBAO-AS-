@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:28:49+08:00",
+    "latency_ms": 7621,
+    "payload_bytes": 350154,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090828433166970528268d9d6cZYMMriY\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212929,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading towards a red circle on a black background at the far end. There are patterned walls on both sides forming a narrow gap ahead. Several white rectangular markers are on the floor to the left and right.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at x=3.5 and my torso is rotated to 90 degrees, which is the narrowest profile. The gap between the patterned walls is still ahead of me. I will continue moving forward to pass through the opening and reach the red circle.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2869,\"completion_tokens\":139,\"total_tokens\":3008,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2869,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":139,\"totalTokenCount\":3008,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1780},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":139}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1780,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":139,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a red carpeted walkway leading towards a red circle on a black background at the far end. There are patterned walls on both sides forming a narrow gap ahead. Several white rectangular markers are on the floor to the left and right.\",\n  \"reasoning\": \"I am currently at x=3.5 and my torso is rotated to 90 degrees, which is the narrowest profile. The gap between the patterned walls is still ahead of me. I will continue moving forward to pass through the opening and reach the red circle.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading towards a red circle on a black background at the far end. There are patterned walls on both sides forming a narrow gap ahead. Several white rectangular markers are on the floor to the left and right.",
+      "reasoning": "I am currently at x=3.5 and my torso is rotated to 90 degrees, which is the narrowest profile. The gap between the patterned walls is still ahead of me. I will continue moving forward to pass through the opening and reach the red circle.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

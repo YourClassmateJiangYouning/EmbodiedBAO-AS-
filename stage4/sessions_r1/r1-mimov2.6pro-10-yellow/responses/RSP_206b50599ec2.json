@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:40:51+08:00",
+    "latency_ms": 6081,
+    "payload_bytes": 248424,
+    "finish_reason": "stop",
+    "reasoning_tokens": 47,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"684a9536-1b6f-4d9b-bd98-2bf43bd402e3_9e1425ded1464730947f6c20836d1d98\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading straight ahead toward a dark doorway in the far wall. A bright yellow arrow pointing right is visible at the doorway. Decorated walls with geometric patterns flank both sides. The path is clear with no obstacles.\\\", \\\"reasoning\\\": \\\"The yellow arrow is visible directly ahead at the far wall doorway. The red carpet path is clear with no obstacles. My body is aligned with my walking direction (torso rotation 0). I should continue moving forward toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me keep moving forward toward the yellow arrow at the doorway. The path is clear on the red carpet. I'm at x=5.0 and getting close to the doorway with the yellow arrow. Let me continue forward.\"}}],\"created\":1794138051,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":171,\"prompt_tokens\":2307,\"total_tokens\":2478,\"completion_tokens_details\":{\"reasoning_tokens\":47},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading straight ahead toward a dark doorway in the far wall. A bright yellow arrow pointing right is visible at the doorway. Decorated walls with geometric patterns flank both sides. The path is clear with no obstacles.\", \"reasoning\": \"The yellow arrow is visible directly ahead at the far wall doorway. The red carpet path is clear with no obstacles. My body is aligned with my walking direction (torso rotation 0). I should continue moving forward toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "Let me keep moving forward toward the yellow arrow at the doorway. The path is clear on the red carpet. I'm at x=5.0 and getting close to the doorway with the yellow arrow. Let me continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading straight ahead toward a dark doorway in the far wall. A bright yellow arrow pointing right is visible at the doorway. Decorated walls with geometric patterns flank both sides. The path is clear with no obstacles.",
+      "reasoning": "The yellow arrow is visible directly ahead at the far wall doorway. The red carpet path is clear with no obstacles. My body is aligned with my walking direction (torso rotation 0). I should continue moving forward toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

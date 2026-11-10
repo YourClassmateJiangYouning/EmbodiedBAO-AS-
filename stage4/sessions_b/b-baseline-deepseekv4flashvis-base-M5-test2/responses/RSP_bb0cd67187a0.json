@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:24:15+08:00",
+    "latency_ms": 3205,
+    "payload_bytes": 164582,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"c9e8c82a-5043-4f68-847c-a1da065051b5\",\"object\":\"chat.completion\",\"created\":1794212654,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star on its dark panel is now large and centered in view, filling much of the frame, indicating the robot is very close to the goal on the far wall.\\\", \\\"reasoning\\\": \\\"The star appears large and centered, so the robot is nearly at the goal. Continuing forward should complete the approach.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1979,\"completion_tokens\":85,\"total_tokens\":2064,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1211},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star on its dark panel is now large and centered in view, filling much of the frame, indicating the robot is very close to the goal on the far wall.\", \"reasoning\": \"The star appears large and centered, so the robot is nearly at the goal. Continuing forward should complete the approach.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star on its dark panel is now large and centered in view, filling much of the frame, indicating the robot is very close to the goal on the far wall.",
+      "reasoning": "The star appears large and centered, so the robot is nearly at the goal. Continuing forward should complete the approach.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

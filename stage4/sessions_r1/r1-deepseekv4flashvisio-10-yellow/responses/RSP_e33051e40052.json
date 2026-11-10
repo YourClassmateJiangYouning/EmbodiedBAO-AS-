@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:04:28+08:00",
+    "latency_ms": 2362,
+    "payload_bytes": 230181,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"af14c838-0bd6-4cc3-a6a3-a84a3836759e\",\"object\":\"chat.completion\",\"created\":1794207867,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpet leading toward a dark opening in the far wall, with a yellow arrow sign visible just beyond the opening. The opening appears narrow, framed by patterned walls on both sides.\\\", \\\"reasoning\\\": \\\"The yellow arrow is straight ahead along the fixed walking direction, and the red carpet path to the opening is clear. Continuing forward advances toward the goal. The opening looks narrow, but I have no indication my body is too wide yet; I can check with look_down if needed before entering.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1888,\"completion_tokens\":122,\"total_tokens\":2010,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1120},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpet leading toward a dark opening in the far wall, with a yellow arrow sign visible just beyond the opening. The opening appears narrow, framed by patterned walls on both sides.\", \"reasoning\": \"The yellow arrow is straight ahead along the fixed walking direction, and the red carpet path to the opening is clear. Continuing forward advances toward the goal. The opening looks narrow, but I have no indication my body is too wide yet; I can check with look_down if needed before entering.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpet leading toward a dark opening in the far wall, with a yellow arrow sign visible just beyond the opening. The opening appears narrow, framed by patterned walls on both sides.",
+      "reasoning": "The yellow arrow is straight ahead along the fixed walking direction, and the red carpet path to the opening is clear. Continuing forward advances toward the goal. The opening looks narrow, but I have no indication my body is too wide yet; I can check with look_down if needed before entering.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

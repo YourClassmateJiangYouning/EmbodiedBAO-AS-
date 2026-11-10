@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:32:19+08:00",
+    "latency_ms": 5811,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090832147844793668268d9d6Ja3j7Fgw\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213139,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper and two wheels on the sides. The torso rotation is currently 0 degrees, meaning the wide bumper is facing directly forward.\\\",\\n  \\\"reasoning\\\": \\\"I have confirmed that my body is quite wide relative to the walking direction. I need to move closer to the gap before I start the rotation sequence to fit through. I will take another step forward.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2762,\"completion_tokens\":125,\"total_tokens\":2887,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2762,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":125,\"totalTokenCount\":2887,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1673}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":125}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1673,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":125,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper and two wheels on the sides. The torso rotation is currently 0 degrees, meaning the wide bumper is facing directly forward.\",\n  \"reasoning\": \"I have confirmed that my body is quite wide relative to the walking direction. I need to move closer to the gap before I start the rotation sequence to fit through. I will take another step forward.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper and two wheels on the sides. The torso rotation is currently 0 degrees, meaning the wide bumper is facing directly forward.",
+      "reasoning": "I have confirmed that my body is quite wide relative to the walking direction. I need to move closer to the gap before I start the rotation sequence to fit through. I will take another step forward.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

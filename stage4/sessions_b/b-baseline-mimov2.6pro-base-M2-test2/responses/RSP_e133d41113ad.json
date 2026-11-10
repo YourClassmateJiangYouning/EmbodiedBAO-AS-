@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:28:44+08:00",
+    "latency_ms": 12063,
+    "payload_bytes": 350154,
+    "finish_reason": "stop",
+    "reasoning_tokens": 101,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"1247f4bf-f21c-4bf6-8efe-0be103253ec1_f85131d26d6d46f2b467865e9c5af895\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead with white paper sheets scattered on both sides. Straight ahead, a narrow opening between patterned walls reveals a dark square with a red circle on the far wall. The path is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead through the opening, and the carpeted path is clear. I have been moving forward successfully four times and should continue straight toward the target. No obstacles are visible in my path.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me analyze the image. I see a red carpeted walkway with white paper sheets on the left and right sides. There's a narrow opening ahead with a red circle on a dark square beyond it. The walkway leads to a gap/opening between two walls decorated with patterns. The path appears clear, so I should continue forward toward the red circle.\\n\\nThe red circle is visible straight ahead, at the far wall through a gap. The path is clear. I should continue moving forward.\"}}],\"created\":1794212923,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":221,\"prompt_tokens\":2151,\"total_tokens\":2372,\"completion_tokens_details\":{\"reasoning_tokens\":101},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead with white paper sheets scattered on both sides. Straight ahead, a narrow opening between patterned walls reveals a dark square with a red circle on the far wall. The path is clear and unobstructed.\", \"reasoning\": \"The red circle is directly ahead through the opening, and the carpeted path is clear. I have been moving forward successfully four times and should continue straight toward the target. No obstacles are visible in my path.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "Let me analyze the image. I see a red carpeted walkway with white paper sheets on the left and right sides. There's a narrow opening ahead with a red circle on a dark square beyond it. The walkway leads to a gap/opening between two walls decorated with patterns. The path appears clear, so I should continue forward toward the red circle.\n\nThe red circle is visible straight ahead, at the far wall through a gap. The path is clear. I should continue moving forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead with white paper sheets scattered on both sides. Straight ahead, a narrow opening between patterned walls reveals a dark square with a red circle on the far wall. The path is clear and unobstructed.",
+      "reasoning": "The red circle is directly ahead through the opening, and the carpeted path is clear. I have been moving forward successfully four times and should continue straight toward the target. No obstacles are visible in my path.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:57:54+08:00",
+    "latency_ms": 6857,
+    "payload_bytes": 302735,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081057480771421638268d9d6cmi5f2Sa\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135474,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking straight ahead down a red carpeted walkway. A narrow opening between two patterned walls is directly in front of the robot. Through the opening, a yellow arrow pointing right is visible on a dark far wall.\\\", \\\"reasoning\\\": \\\"I am at x=4.25 and my torso is rotated 90 degrees to present my narrowest profile. I am currently entering the narrow gap. I need to continue moving forward to pass through the opening and reach the yellow arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2858,\"completion_tokens\":120,\"total_tokens\":2978,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2858,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":120,\"totalTokenCount\":2978,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1769}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":120}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1769,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":120,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking straight ahead down a red carpeted walkway. A narrow opening between two patterned walls is directly in front of the robot. Through the opening, a yellow arrow pointing right is visible on a dark far wall.\", \"reasoning\": \"I am at x=4.25 and my torso is rotated 90 degrees to present my narrowest profile. I am currently entering the narrow gap. I need to continue moving forward to pass through the opening and reach the yellow arrow.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight ahead down a red carpeted walkway. A narrow opening between two patterned walls is directly in front of the robot. Through the opening, a yellow arrow pointing right is visible on a dark far wall.",
+      "reasoning": "I am at x=4.25 and my torso is rotated 90 degrees to present my narrowest profile. I am currently entering the narrow gap. I need to continue moving forward to pass through the opening and reach the yellow arrow.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

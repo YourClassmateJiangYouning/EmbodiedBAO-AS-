@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:44:10+08:00",
+    "latency_ms": 8034,
+    "payload_bytes": 366815,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090844050375511038268d9d632r6xeVd\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213850,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading toward a narrow opening in a wall decorated with geometric patterns. Beyond the opening, a blue triangle is visible on the far wall. The view is straight ahead along the walking path.\\\",\\n  \\\"reasoning\\\": \\\"My current torso rotation is 30 degrees. To pass through the narrow opening ahead, I need to reach a 90-degree rotation to present my thinnest profile. I will continue turning left in 15-degree increments until I reach 90 degrees before moving further forward.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2833,\"completion_tokens\":141,\"total_tokens\":2974,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2833,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":141,\"totalTokenCount\":2974,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1744},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":141}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1744,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":141,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading toward a narrow opening in a wall decorated with geometric patterns. Beyond the opening, a blue triangle is visible on the far wall. The view is straight ahead along the walking path.\",\n  \"reasoning\": \"My current torso rotation is 30 degrees. To pass through the narrow opening ahead, I need to reach a 90-degree rotation to present my thinnest profile. I will continue turning left in 15-degree increments until I reach 90 degrees before moving further forward.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading toward a narrow opening in a wall decorated with geometric patterns. Beyond the opening, a blue triangle is visible on the far wall. The view is straight ahead along the walking path.",
+      "reasoning": "My current torso rotation is 30 degrees. To pass through the narrow opening ahead, I need to reach a 90-degree rotation to present my thinnest profile. I will continue turning left in 15-degree increments until I reach 90 degrees before moving further forward.",
+      "action": "turn_left",
+      "confidence": 1.0
+    },
+    "action": "turn_left"
+  }
+]

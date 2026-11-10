@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:12+08:00",
+    "latency_ms": 2216,
+    "payload_bytes": 216006,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"cc09f76f-dd11-4958-ba34-cc18791f3cec\",\"object\":\"chat.completion\",\"created\":1794208151,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the yellow arrow on the far wall straight ahead, with the red carpet leading toward it and a dark doorway opening between patterned walls on either side.\\\", \\\"reasoning\\\": \\\"The yellow arrow is directly ahead and the path through the doorway appears clear. My torso is at 0 degrees, so my body is aligned with the opening. Continuing forward is the direct way to reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2040,\"completion_tokens\":99,\"total_tokens\":2139,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1272},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows the yellow arrow on the far wall straight ahead, with the red carpet leading toward it and a dark doorway opening between patterned walls on either side.\", \"reasoning\": \"The yellow arrow is directly ahead and the path through the doorway appears clear. My torso is at 0 degrees, so my body is aligned with the opening. Continuing forward is the direct way to reach the goal.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows the yellow arrow on the far wall straight ahead, with the red carpet leading toward it and a dark doorway opening between patterned walls on either side.",
+      "reasoning": "The yellow arrow is directly ahead and the path through the doorway appears clear. My torso is at 0 degrees, so my body is aligned with the opening. Continuing forward is the direct way to reach the goal.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

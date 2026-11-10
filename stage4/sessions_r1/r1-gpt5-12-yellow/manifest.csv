@@ -1,0 +1,2 @@
+episode_id,mode,model,scene,marker,a_s,channel_width_m,memory_id,started_at,finished_at,passed,total_steps,end_reason,invalid_count
+S4E_1561d5b4c694,A,gpt-5,R1,M3,1.2,0.684,,2026-11-09T12:21:57+08:00,2026-11-09T12:23:58+08:00,True,11,passed,0

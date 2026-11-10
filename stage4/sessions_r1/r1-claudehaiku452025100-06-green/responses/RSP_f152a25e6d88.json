@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:03:54+08:00",
+    "latency_ms": 5028,
+    "payload_bytes": 186112,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T14:04:00+08:00",
+    "latency_ms": 5843,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_vkob5gnkttz2fqxo2b2tv7slegew2wzexaolkbtecib4iku5ceya\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794204241,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The green rectangle target is clearly visible on the far wall, centered in the view. There is a dark wall panel or obstacle directly ahead blocking the forward path. The obstacle appears to be a vertical dark structure in front of the green rectangle. On the left side of the view, there are tan/beige colored walls with some geometric patterns. On the right side, there are darker surfaces. The green rectangle is the goal, but it is obscured/blocked by the dark obstacle in the immediate forward path.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=7.250 with my torso rotated 15 degrees right. My last forward attempt was blocked by a wall_panel. The green rectangle is visible but blocked by a dark obstacle directly ahead. I have tried turning right (step 11) and attempting forward (step 17), both blocked. I need to try a different approach. Since I'm stuck at this position with forward blocked, I should try turning left to rotate my torso back toward center or further left to see if there's a passage around the obstacle. Alternatively, I could try backward to retreat and find another route. Let me try turning left to rotate my torso back and reassess the geometry.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 0.4\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3340,\"completion_tokens\":293,\"total_tokens\":3633,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3340,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":293,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3340,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The green rectangle target is clearly visible on the far wall, centered in the view. There is a dark wall panel or obstacle directly ahead blocking the forward path. The obstacle appears to be a vertical dark structure in front of the green rectangle. On the left side of the view, there are tan/beige colored walls with some geometric patterns. On the right side, there are darker surfaces. The green rectangle is the goal, but it is obscured/blocked by the dark obstacle in the immediate forward path.\",\n  \"reasoning\": \"I am at position x=7.250 with my torso rotated 15 degrees right. My last forward attempt was blocked by a wall_panel. The green rectangle is visible but blocked by a dark obstacle directly ahead. I have tried turning right (step 11) and attempting forward (step 17), both blocked. I need to try a different approach. Since I'm stuck at this position with forward blocked, I should try turning left to rotate my torso back toward center or further left to see if there's a passage around the obstacle. Alternatively, I could try backward to retreat and find another route. Let me try turning left to rotate my torso back and reassess the geometry.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 0.4\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green rectangle target is clearly visible on the far wall, centered in the view. There is a dark wall panel or obstacle directly ahead blocking the forward path. The obstacle appears to be a vertical dark structure in front of the green rectangle. On the left side of the view, there are tan/beige colored walls with some geometric patterns. On the right side, there are darker surfaces. The green rectangle is the goal, but it is obscured/blocked by the dark obstacle in the immediate forward path.",
+      "reasoning": "I am at position x=7.250 with my torso rotated 15 degrees right. My last forward attempt was blocked by a wall_panel. The green rectangle is visible but blocked by a dark obstacle directly ahead. I have tried turning right (step 11) and attempting forward (step 17), both blocked. I need to try a different approach. Since I'm stuck at this position with forward blocked, I should try turning left to rotate my torso back toward center or further left to see if there's a passage around the obstacle. Alternatively, I could try backward to retreat and find another route. Let me try turning left to rotate my torso back and reassess the geometry.",
+      "action": "turn_left",
+      "confidence": 0.4
+    },
+    "action": "turn_left"
+  }
+]

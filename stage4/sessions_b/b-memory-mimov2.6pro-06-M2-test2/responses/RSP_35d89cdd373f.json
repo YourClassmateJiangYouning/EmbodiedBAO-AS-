@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:35:42+08:00",
+    "latency_ms": 6537,
+    "payload_bytes": 293742,
+    "finish_reason": "stop",
+    "reasoning_tokens": 28,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"bdb18efc-45cd-4a06-a750-90c3baa61f9f_687b6e46ac1a46bd9cd63a95c84c65f3\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The red circle on a black square board is directly ahead at close range on the far wall, with a dark red carpet leading to it and panels/sofa visible in the background.\\\", \\\"reasoning\\\": \\\"I am at x=5.0 with my torso at 90 degrees (narrow profile) and the red circle is immediately ahead, very close. The previous forward steps all succeeded through the opening. One more forward step should bring me to the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red circle is directly ahead, very close. I'm at x=5.0. One more forward step should reach it.\"}}],\"created\":1794213342,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":147,\"prompt_tokens\":3894,\"total_tokens\":4041,\"completion_tokens_details\":{\"reasoning_tokens\":28},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The red circle on a black square board is directly ahead at close range on the far wall, with a dark red carpet leading to it and panels/sofa visible in the background.\", \"reasoning\": \"I am at x=5.0 with my torso at 90 degrees (narrow profile) and the red circle is immediately ahead, very close. The previous forward steps all succeeded through the opening. One more forward step should bring me to the red circle.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The red circle is directly ahead, very close. I'm at x=5.0. One more forward step should reach it.",
+    "parsed": {
+      "scene_description": "The red circle on a black square board is directly ahead at close range on the far wall, with a dark red carpet leading to it and panels/sofa visible in the background.",
+      "reasoning": "I am at x=5.0 with my torso at 90 degrees (narrow profile) and the red circle is immediately ahead, very close. The previous forward steps all succeeded through the opening. One more forward step should bring me to the red circle.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

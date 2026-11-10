@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:41:52+08:00",
+    "latency_ms": 26563,
+    "payload_bytes": 313744,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081041273187287988268d9d60WbxiDT1\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134513,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking down a red carpeted walkway towards a narrow opening in a wall. Beyond the opening, a red circle is visible on a dark background. The walls are decorated with geometric patterns.\\\", \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees, which is the thinnest profile possible to fit through the narrow gap. I am currently at x=3.5 and need to continue moving forward to reach the opening and eventually the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2815,\"completion_tokens\":116,\"total_tokens\":2931,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2815,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":116,\"totalTokenCount\":2931,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1726},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":116}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1726,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":116,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking down a red carpeted walkway towards a narrow opening in a wall. Beyond the opening, a red circle is visible on a dark background. The walls are decorated with geometric patterns.\", \"reasoning\": \"I have already rotated my torso to 90 degrees, which is the thinnest profile possible to fit through the narrow gap. I am currently at x=3.5 and need to continue moving forward to reach the opening and eventually the red circle.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down a red carpeted walkway towards a narrow opening in a wall. Beyond the opening, a red circle is visible on a dark background. The walls are decorated with geometric patterns.",
+      "reasoning": "I have already rotated my torso to 90 degrees, which is the thinnest profile possible to fit through the narrow gap. I am currently at x=3.5 and need to continue moving forward to reach the opening and eventually the red circle.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

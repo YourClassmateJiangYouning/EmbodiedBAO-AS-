@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:13:11+08:00",
+    "latency_ms": 8043,
+    "payload_bytes": 305686,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_5omayrtgu6qmlrkh7xynah3rjgb5kusewslfj62maxrritoqv7jq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794204791,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the blue triangle target clearly on the far wall, centered in my view. There is a dark red/maroon carpet or floor section directly ahead of me, blocking the path. The carpet appears to be a raised platform or obstacle between my current position and the wall with the blue triangle. The beige/tan floor with decorative patterns is visible to my left. The blue triangle is clearly visible above the dark red obstacle.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=4.250 and have moved forward 5 times. The blue triangle is visible on the far wall ahead, but there is now a dark red carpet/platform obstacle directly in my path. I need to continue forward to reach the triangle. The obstacle appears to be on the floor level, so I should attempt to move forward over or through it. My torso is at 0 degrees rotation, aligned straight ahead. The path forward is still the correct direction toward the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.75\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2706,\"completion_tokens\":236,\"total_tokens\":2942,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2706,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":236,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2706,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the blue triangle target clearly on the far wall, centered in my view. There is a dark red/maroon carpet or floor section directly ahead of me, blocking the path. The carpet appears to be a raised platform or obstacle between my current position and the wall with the blue triangle. The beige/tan floor with decorative patterns is visible to my left. The blue triangle is clearly visible above the dark red obstacle.\",\n  \"reasoning\": \"I am at position x=4.250 and have moved forward 5 times. The blue triangle is visible on the far wall ahead, but there is now a dark red carpet/platform obstacle directly in my path. I need to continue forward to reach the triangle. The obstacle appears to be on the floor level, so I should attempt to move forward over or through it. My torso is at 0 degrees rotation, aligned straight ahead. The path forward is still the correct direction toward the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.75\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the blue triangle target clearly on the far wall, centered in my view. There is a dark red/maroon carpet or floor section directly ahead of me, blocking the path. The carpet appears to be a raised platform or obstacle between my current position and the wall with the blue triangle. The beige/tan floor with decorative patterns is visible to my left. The blue triangle is clearly visible above the dark red obstacle.",
+      "reasoning": "I am at position x=4.250 and have moved forward 5 times. The blue triangle is visible on the far wall ahead, but there is now a dark red carpet/platform obstacle directly in my path. I need to continue forward to reach the triangle. The obstacle appears to be on the floor level, so I should attempt to move forward over or through it. My torso is at 0 degrees rotation, aligned straight ahead. The path forward is still the correct direction toward the target.",
+      "action": "forward",
+      "confidence": 0.75
+    },
+    "action": "forward"
+  }
+]

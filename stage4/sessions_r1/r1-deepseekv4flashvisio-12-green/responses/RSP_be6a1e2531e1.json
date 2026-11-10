@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:59:58+08:00",
+    "latency_ms": 3049,
+    "payload_bytes": 266821,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"df730b04-c9d5-44d9-b341-e7ff7f23f963\",\"object\":\"chat.completion\",\"created\":1794207596,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading toward a narrow opening between two patterned wall panels. Through the opening, a bright green rectangle sits on the far wall, slightly left of center. The gap appears narrow relative to the robot's body width.\\\", \\\"reasoning\\\": \\\"The green target is visible directly ahead through the narrow opening. My torso is at 0 degrees, presenting my width squarely to the gap. Previous forward steps have kept the path clear, and I have 23 steps remaining. Continuing forward advances me toward the goal; I should watch for the opening's edges as I approach.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2007,\"completion_tokens\":139,\"total_tokens\":2146,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1239},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading toward a narrow opening between two patterned wall panels. Through the opening, a bright green rectangle sits on the far wall, slightly left of center. The gap appears narrow relative to the robot's body width.\", \"reasoning\": \"The green target is visible directly ahead through the narrow opening. My torso is at 0 degrees, presenting my width squarely to the gap. Previous forward steps have kept the path clear, and I have 23 steps remaining. Continuing forward advances me toward the goal; I should watch for the opening's edges as I approach.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading toward a narrow opening between two patterned wall panels. Through the opening, a bright green rectangle sits on the far wall, slightly left of center. The gap appears narrow relative to the robot's body width.",
+      "reasoning": "The green target is visible directly ahead through the narrow opening. My torso is at 0 degrees, presenting my width squarely to the gap. Previous forward steps have kept the path clear, and I have 23 steps remaining. Continuing forward advances me toward the goal; I should watch for the opening's edges as I approach.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

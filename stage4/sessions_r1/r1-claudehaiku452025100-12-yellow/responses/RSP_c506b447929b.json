@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:38:44+08:00",
+    "latency_ms": 8657,
+    "payload_bytes": 339134,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_kyjixjp6tjf7mezvzxmb3ijx6haxsm3fp7dwef5wko7sgcge3yxa\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145124,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a long red carpeted walkway stretching toward the far wall. The yellow arrow target is clearly visible on the far wall, centered in my view, indicating my walking direction is correctly aligned. The walls on either side show decorative patterns in tan/beige and dark blue. The path ahead is clear and unobstructed. I'm at position x=2.750, having made good progress toward the target.\\\",\\n  \\\"reasoning\\\": \\\"I have a clear, straight path forward to the yellow arrow on the far wall. My torso is at 0 degrees rotation (aligned with my walking direction), and there are no obstacles visible in the walkway. The yellow arrow remains centered in my view, confirming I'm on the correct heading. I should continue walking forward to reach the target. I have 27 steps remaining out of my 30-step limit, so I have ample opportunity to reach the goal.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2557,\"completion_tokens\":231,\"total_tokens\":2788,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2557,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":231,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2557,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a long red carpeted walkway stretching toward the far wall. The yellow arrow target is clearly visible on the far wall, centered in my view, indicating my walking direction is correctly aligned. The walls on either side show decorative patterns in tan/beige and dark blue. The path ahead is clear and unobstructed. I'm at position x=2.750, having made good progress toward the target.\",\n  \"reasoning\": \"I have a clear, straight path forward to the yellow arrow on the far wall. My torso is at 0 degrees rotation (aligned with my walking direction), and there are no obstacles visible in the walkway. The yellow arrow remains centered in my view, confirming I'm on the correct heading. I should continue walking forward to reach the target. I have 27 steps remaining out of my 30-step limit, so I have ample opportunity to reach the goal.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a long red carpeted walkway stretching toward the far wall. The yellow arrow target is clearly visible on the far wall, centered in my view, indicating my walking direction is correctly aligned. The walls on either side show decorative patterns in tan/beige and dark blue. The path ahead is clear and unobstructed. I'm at position x=2.750, having made good progress toward the target.",
+      "reasoning": "I have a clear, straight path forward to the yellow arrow on the far wall. My torso is at 0 degrees rotation (aligned with my walking direction), and there are no obstacles visible in the walkway. The yellow arrow remains centered in my view, confirming I'm on the correct heading. I should continue walking forward to reach the target. I have 27 steps remaining out of my 30-step limit, so I have ample opportunity to reach the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:30:40+08:00",
+    "latency_ms": 10011,
+    "payload_bytes": 269959,
+    "finish_reason": "stop",
+    "reasoning_tokens": 121,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"ac28e316-8052-40e1-9c53-8499b129789c_cf53e848044b4ab8ab30dfaf04ce0e73\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted path leading straight to a narrow opening in the far wall. Through the opening, the bright green rectangle sits on the floor ahead. Decorated wall panels flank the opening on both sides, and the path is clear directly ahead.\\\", \\\"reasoning\\\": \\\"The green rectangle is directly ahead through the narrow opening and every forward step closes distance. My torso remains at 0 degrees rotation, presenting my narrowest profile, which is optimal for fitting through the opening, and turning is restricted once inside anyway. The path is clear, so continuing forward is the correct action.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need 30 steps? Actually current is step 7 of 30. Position x=5.0, started at... well 6 forwards taken = 4.5m? Actually x is 5.000. Green rectangle appears close ahead through a narrow opening. We just keep forward. But careful: turning restricted once shoulders inside opening. Keep torso 0. Just continue forward.\\n\\nWe could look_down to check width, but already did at step 2. Keep going forward.\\n\\nDistance: green rectangle looks maybe 1-2m ahead. Continue forward.\"}}],\"created\":1794137440,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":264,\"prompt_tokens\":2338,\"total_tokens\":2602,\"completion_tokens_details\":{\"reasoning_tokens\":121},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted path leading straight to a narrow opening in the far wall. Through the opening, the bright green rectangle sits on the floor ahead. Decorated wall panels flank the opening on both sides, and the path is clear directly ahead.\", \"reasoning\": \"The green rectangle is directly ahead through the narrow opening and every forward step closes distance. My torso remains at 0 degrees rotation, presenting my narrowest profile, which is optimal for fitting through the opening, and turning is restricted once inside anyway. The path is clear, so continuing forward is the correct action.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We need 30 steps? Actually current is step 7 of 30. Position x=5.0, started at... well 6 forwards taken = 4.5m? Actually x is 5.000. Green rectangle appears close ahead through a narrow opening. We just keep forward. But careful: turning restricted once shoulders inside opening. Keep torso 0. Just continue forward.\n\nWe could look_down to check width, but already did at step 2. Keep going forward.\n\nDistance: green rectangle looks maybe 1-2m ahead. Continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted path leading straight to a narrow opening in the far wall. Through the opening, the bright green rectangle sits on the floor ahead. Decorated wall panels flank the opening on both sides, and the path is clear directly ahead.",
+      "reasoning": "The green rectangle is directly ahead through the narrow opening and every forward step closes distance. My torso remains at 0 degrees rotation, presenting my narrowest profile, which is optimal for fitting through the opening, and turning is restricted once inside anyway. The path is clear, so continuing forward is the correct action.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

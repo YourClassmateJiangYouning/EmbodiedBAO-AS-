@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:04:14+08:00",
+    "latency_ms": 8101,
+    "payload_bytes": 164594,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A dark far wall with a rectangular panel on the floor level ahead, showing a large red circle centered on it. The panel is directly in front, very close. The floor is a reddish carpet leading up to the panel; sides are narrow, and the path is straight.\\\", \\\"reasoning\\\": \\\"Forward steps have been repeatedly blocked, indicating I am already at the wall panel with the red circle. The target is immediately in front; another forward will likely remain blocked. To complete the approach safely and avoid futile blocks, I should step backward to create space, then reassess or re-approach if needed within the remaining steps.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.63}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204250,\"id\":\"chatcmpl-EiCmAPmypO99JCdMXPqYsUuNjMSsy\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":156,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":13,\"engine_ttft_ms\":310,\"engine_ttlt_ms\":2274,\"pre_inference_ms\":382,\"service_tbt_ms\":13,\"service_ttft_ms\":885,\"service_ttlt_ms\":2843,\"user_visible_ttft_ms\":503},\"prompt_tokens\":2598,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2754}}\n",
+    "content": "{\"scene_description\": \"A dark far wall with a rectangular panel on the floor level ahead, showing a large red circle centered on it. The panel is directly in front, very close. The floor is a reddish carpet leading up to the panel; sides are narrow, and the path is straight.\", \"reasoning\": \"Forward steps have been repeatedly blocked, indicating I am already at the wall panel with the red circle. The target is immediately in front; another forward will likely remain blocked. To complete the approach safely and avoid futile blocks, I should step backward to create space, then reassess or re-approach if needed within the remaining steps.\", \"action\": \"backward\", \"confidence\": 0.63}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A dark far wall with a rectangular panel on the floor level ahead, showing a large red circle centered on it. The panel is directly in front, very close. The floor is a reddish carpet leading up to the panel; sides are narrow, and the path is straight.",
+      "reasoning": "Forward steps have been repeatedly blocked, indicating I am already at the wall panel with the red circle. The target is immediately in front; another forward will likely remain blocked. To complete the approach safely and avoid futile blocks, I should step backward to create space, then reassess or re-approach if needed within the remaining steps.",
+      "action": "backward",
+      "confidence": 0.63
+    },
+    "action": "backward"
+  }
+]

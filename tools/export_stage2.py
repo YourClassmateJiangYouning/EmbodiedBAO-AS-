@@ -63,11 +63,29 @@ for path in sorted(glob.glob(os.path.join(ROOT, "results", "level0", "*", "stage
     if os.path.exists(log):
         timeout_lines = sum(1 for line in open(log, errors="ignore") if any(k in line for k in ("TimeoutError", "RemoteDisconnected", "REQUEST ERROR", "RETRY")))
     # Same scene / same marker, ordinary Stage 1 Level 0 baseline.
+    #
+    # FIND IT BY ITS marker_slot, NOT BY episode_{marker-1}: two assumptions in the old lookup were
+    # wrong.  The tag is not always `full_<model>-v8-actions-flipped-<scene>` (gpt-5 runs with
+    # `-effortnone` appended, because it needs reasoning_effort none), and the episode number is not
+    # guaranteed to equal marker-1.  With the literal path, all 15 gpt-5 baselines came back missing and
+    # were written as empty cells, which then reads as "baseline failed" in any tally -- the opposite of
+    # the truth, since every one of those baselines passed.
     marker = int(d.get("marker_slot") or 1)
-    base_path = os.path.join(ROOT, "results", "level0", d.get("model_name").replace("/", "-"),
-                             f"full_{d.get('model_name').replace('/', '-')}-v8-actions-flipped-{d.get('scene')}",
-                             f"episode_{marker - 1:03d}.json")
-    base = read_json(base_path)
+    model_dir = d.get("model_name").replace("/", "-")
+    prefix = f"full_{model_dir}-v8-actions-flipped-{d.get('scene')}"
+    candidates = sorted(glob.glob(os.path.join(ROOT, "results", "level0", model_dir, prefix + "*",
+                                               "episode_*.json")))
+    base = None
+    for candidate in candidates:
+        if candidate.endswith("_steps.json"):
+            continue
+        maybe = read_json(candidate)
+        if maybe and int(maybe.get("marker_slot") or -1) == marker:
+            base = maybe
+            break
+    if base is None:
+        print(f"WARNING: no Level 0 baseline for model={d.get('model_name')} scene={d.get('scene')} "
+              f"marker={marker}; the baseline columns will be empty for this pair", file=sys.stderr)
     base_actions = acts(base.get("action_sequence")) if base else []
     base_turns = sum(1 for x in base_actions if x in ("turn_left", "turn_right"))
     row = {

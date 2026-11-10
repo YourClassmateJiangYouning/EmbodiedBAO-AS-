@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:22:20+08:00",
+    "latency_ms": 2726,
+    "payload_bytes": 383069,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"41a0929e-9354-4986-b12c-c657e14db494\",\"object\":\"chat.completion\",\"created\":1794212539,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches straight ahead toward a dark doorway on the far wall, where a small blue triangle is visible. Patterned walls flank the walkway on both sides.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along the walking direction, and the path appears clear. Moving forward advances me toward the goal without needing any turns.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1541,\"completion_tokens\":90,\"total_tokens\":1631,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":901},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches straight ahead toward a dark doorway on the far wall, where a small blue triangle is visible. Patterned walls flank the walkway on both sides.\", \"reasoning\": \"The blue triangle is directly ahead along the walking direction, and the path appears clear. Moving forward advances me toward the goal without needing any turns.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches straight ahead toward a dark doorway on the far wall, where a small blue triangle is visible. Patterned walls flank the walkway on both sides.",
+      "reasoning": "The blue triangle is directly ahead along the walking direction, and the path appears clear. Moving forward advances me toward the goal without needing any turns.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

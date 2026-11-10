@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:35+08:00",
+    "latency_ms": 2266,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a19d8825-c0eb-44b1-a5cd-11351a562fb6\",\"object\":\"chat.completion\",\"created\":1794208174,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is directly ahead and very close, mounted on a dark wall panel above the red carpet. The view is nearly filled by the sign, indicating the robot is right in front of it.\\\", \\\"reasoning\\\": \\\"The arrow is directly ahead and extremely close. My torso is at 15 degrees after the last left turn; I should rotate back to 0 degrees to align my body with the opening before attempting forward again, since turning is only possible while still outside the opening.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2534,\"completion_tokens\":119,\"total_tokens\":2653,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1766},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is directly ahead and very close, mounted on a dark wall panel above the red carpet. The view is nearly filled by the sign, indicating the robot is right in front of it.\", \"reasoning\": \"The arrow is directly ahead and extremely close. My torso is at 15 degrees after the last left turn; I should rotate back to 0 degrees to align my body with the opening before attempting forward again, since turning is only possible while still outside the opening.\", \"action\": \"turn_left\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is directly ahead and very close, mounted on a dark wall panel above the red carpet. The view is nearly filled by the sign, indicating the robot is right in front of it.",
+      "reasoning": "The arrow is directly ahead and extremely close. My torso is at 15 degrees after the last left turn; I should rotate back to 0 degrees to align my body with the opening before attempting forward again, since turning is only possible while still outside the opening.",
+      "action": "turn_left",
+      "confidence": 0.6
+    },
+    "action": "turn_left"
+  }
+]

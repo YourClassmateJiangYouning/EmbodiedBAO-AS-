@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:39:15+08:00",
+    "latency_ms": 9185,
+    "payload_bytes": 311181,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081039069671795148268d9d6kVeVcoK0\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134355,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted path leading towards a narrow opening in a wall decorated with geometric patterns. Beyond the opening, a green rectangle is visible on the far wall. I am currently positioned at x=3.5, approaching the gap.\\\", \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees, which is my narrowest profile, to ensure I can fit through the narrow opening. I am moving forward to pass through the gap and reach the green rectangle. I will continue moving forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2792,\"completion_tokens\":125,\"total_tokens\":2917,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2792,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":125,\"totalTokenCount\":2917,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1703},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1703,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted path leading towards a narrow opening in a wall decorated with geometric patterns. Beyond the opening, a green rectangle is visible on the far wall. I am currently positioned at x=3.5, approaching the gap.\", \"reasoning\": \"I have already rotated my torso to 90 degrees, which is my narrowest profile, to ensure I can fit through the narrow opening. I am moving forward to pass through the gap and reach the green rectangle. I will continue moving forward.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted path leading towards a narrow opening in a wall decorated with geometric patterns. Beyond the opening, a green rectangle is visible on the far wall. I am currently positioned at x=3.5, approaching the gap.",
+      "reasoning": "I have already rotated my torso to 90 degrees, which is my narrowest profile, to ensure I can fit through the narrow opening. I am moving forward to pass through the gap and reach the green rectangle. I will continue moving forward.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

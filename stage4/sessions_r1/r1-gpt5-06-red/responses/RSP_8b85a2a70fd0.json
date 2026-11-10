@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:24:58+08:00",
+    "latency_ms": 6633,
+    "payload_bytes": 254117,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A straight corridor with a dark red carpet leads to a rectangular opening in the far wall. Inside the opening sits a bright red circular target on a small block. The passage edges are slightly narrowed by wall panels and a raised carpet edge curling up near the left side of the opening, but the path ahead is clear and aligned with the target.\\\",\\\"reasoning\\\":\\\"My walking direction is fixed toward the red circle and the corridor ahead appears unobstructed. Continuing forward will bring me closer to the target efficiently without needing to rotate, which doesn’t steer.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.74}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205496,\"id\":\"chatcmpl-EiD6GpPFQuAgdFl7JhmFAB9u8c6i3\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":132,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":504,\"engine_ttlt_ms\":1648,\"pre_inference_ms\":368,\"service_tbt_ms\":8,\"service_ttft_ms\":1138,\"service_ttlt_ms\":2231,\"user_visible_ttft_ms\":770},\"prompt_tokens\":1846,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1978}}\n",
+    "content": "{\"scene_description\":\"A straight corridor with a dark red carpet leads to a rectangular opening in the far wall. Inside the opening sits a bright red circular target on a small block. The passage edges are slightly narrowed by wall panels and a raised carpet edge curling up near the left side of the opening, but the path ahead is clear and aligned with the target.\",\"reasoning\":\"My walking direction is fixed toward the red circle and the corridor ahead appears unobstructed. Continuing forward will bring me closer to the target efficiently without needing to rotate, which doesn’t steer.\",\"action\":\"forward\",\"confidence\":0.74}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight corridor with a dark red carpet leads to a rectangular opening in the far wall. Inside the opening sits a bright red circular target on a small block. The passage edges are slightly narrowed by wall panels and a raised carpet edge curling up near the left side of the opening, but the path ahead is clear and aligned with the target.",
+      "reasoning": "My walking direction is fixed toward the red circle and the corridor ahead appears unobstructed. Continuing forward will bring me closer to the target efficiently without needing to rotate, which doesn’t steer.",
+      "action": "forward",
+      "confidence": 0.74
+    },
+    "action": "forward"
+  }
+]

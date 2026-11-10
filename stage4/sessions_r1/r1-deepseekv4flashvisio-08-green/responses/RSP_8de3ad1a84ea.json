@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:05:57+08:00",
+    "latency_ms": 2378,
+    "payload_bytes": 311181,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e445fd26-2fea-4b01-a7c2-2351c62d982e\",\"object\":\"chat.completion\",\"created\":1794207956,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted floor stretches ahead toward a dark opening in the far wall, with a small green rectangle visible inside the opening. Patterned walls flank the opening on both sides.\\\", \\\"reasoning\\\": \\\"The green target is straight ahead along the fixed walking direction and the path appears clear, so continuing forward reduces the distance to the goal. No turning is needed since forward always heads toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1783,\"completion_tokens\":99,\"total_tokens\":1882,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1015},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted floor stretches ahead toward a dark opening in the far wall, with a small green rectangle visible inside the opening. Patterned walls flank the opening on both sides.\", \"reasoning\": \"The green target is straight ahead along the fixed walking direction and the path appears clear, so continuing forward reduces the distance to the goal. No turning is needed since forward always heads toward the target.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted floor stretches ahead toward a dark opening in the far wall, with a small green rectangle visible inside the opening. Patterned walls flank the opening on both sides.",
+      "reasoning": "The green target is straight ahead along the fixed walking direction and the path appears clear, so continuing forward reduces the distance to the goal. No turning is needed since forward always heads toward the target.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

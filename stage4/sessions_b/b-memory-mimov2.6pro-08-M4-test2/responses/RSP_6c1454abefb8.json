@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:59:39+08:00",
+    "latency_ms": 9158,
+    "payload_bytes": 352226,
+    "finish_reason": "stop",
+    "reasoning_tokens": 28,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"01309d00-6fb5-4c0a-b4bc-0c88a8707a97_b351a8e82946471c9f2a55c24b1e9f36\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpeted walkway stretching toward a dark doorway on the far wall, with the blue triangle visible just beyond the opening. Decorative patterned walls flank the carpet on both sides. The path ahead is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"My torso is rotated 90 degrees presenting the thin dimension toward the doorway, following the successful traversal pattern. The blue triangle is clearly visible through the opening ahead with clear carpet between me and it. The path is unobstructed, so I continue walking forward toward the blue triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me just advance. The previous traversal continued forward many times. Current position x=2.0. Need to keep going forward.\"}}],\"created\":1794214779,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":162,\"prompt_tokens\":3221,\"total_tokens\":3383,\"completion_tokens_details\":{\"reasoning_tokens\":28},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpeted walkway stretching toward a dark doorway on the far wall, with the blue triangle visible just beyond the opening. Decorative patterned walls flank the carpet on both sides. The path ahead is clear and unobstructed.\", \"reasoning\": \"My torso is rotated 90 degrees presenting the thin dimension toward the doorway, following the successful traversal pattern. The blue triangle is clearly visible through the opening ahead with clear carpet between me and it. The path is unobstructed, so I continue walking forward toward the blue triangle.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "Let me just advance. The previous traversal continued forward many times. Current position x=2.0. Need to keep going forward.",
+    "parsed": {
+      "scene_description": "Red carpeted walkway stretching toward a dark doorway on the far wall, with the blue triangle visible just beyond the opening. Decorative patterned walls flank the carpet on both sides. The path ahead is clear and unobstructed.",
+      "reasoning": "My torso is rotated 90 degrees presenting the thin dimension toward the doorway, following the successful traversal pattern. The blue triangle is clearly visible through the opening ahead with clear carpet between me and it. The path is unobstructed, so I continue walking forward toward the blue triangle.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

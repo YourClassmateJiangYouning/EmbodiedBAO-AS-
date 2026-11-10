@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:54:25+08:00",
+    "latency_ms": 7453,
+    "payload_bytes": 380742,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081054194544296168268d9d6KNSWgZGc\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135266,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight down a red carpeted path towards a far wall. On the far wall, there is a narrow vertical opening with a bright red circle visible inside it. To the left of the red carpet is a white floor with purple geometric patterns. The torso rotation is currently 15.0 degrees.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated 15 degrees to the right from my starting position (which was 30 degrees, so I am now at 15). To minimize the width I present to the narrow opening ahead, I should continue rotating until my torso is at 90 degrees (sideways). This will allow me to pass through the gap more easily. I will perform another turn_right action.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2149,\"completion_tokens\":183,\"total_tokens\":2332,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2149,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":183,\"totalTokenCount\":2332,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1060}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":183}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1060,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":183,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight down a red carpeted path towards a far wall. On the far wall, there is a narrow vertical opening with a bright red circle visible inside it. To the left of the red carpet is a white floor with purple geometric patterns. The torso rotation is currently 15.0 degrees.\",\n  \"reasoning\": \"I have already rotated 15 degrees to the right from my starting position (which was 30 degrees, so I am now at 15). To minimize the width I present to the narrow opening ahead, I should continue rotating until my torso is at 90 degrees (sideways). This will allow me to pass through the gap more easily. I will perform another turn_right action.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red carpeted path towards a far wall. On the far wall, there is a narrow vertical opening with a bright red circle visible inside it. To the left of the red carpet is a white floor with purple geometric patterns. The torso rotation is currently 15.0 degrees.",
+      "reasoning": "I have already rotated 15 degrees to the right from my starting position (which was 30 degrees, so I am now at 15). To minimize the width I present to the narrow opening ahead, I should continue rotating until my torso is at 90 degrees (sideways). This will allow me to pass through the gap more easily. I will perform another turn_right action.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

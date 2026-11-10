@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:03:38+08:00",
+    "latency_ms": 3548,
+    "payload_bytes": 215858,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T14:03:49+08:00",
+    "latency_ms": 10276,
+    "payload_bytes": 215858,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A dark corridor ends at a wall panel directly ahead with a large red circle centered on a black rectangular plaque near floor level. A maroon carpeted runner leads straight to the panel, with slight edges and a small lip near the base. Side walls with geometric patterns frame the path. The red circle is close, almost at bumper height, and directly in front.\\\",\\\"reasoning\\\":\\\"The goal is to reach the red circle on the far wall. My walking direction is already aligned straight toward it. Although prior forward steps were blocked at the wall, the task is to reach the circle, which appears immediately ahead; advancing forward should bring my front to the target area and complete the objective.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.66}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204225,\"id\":\"chatcmpl-EiCllaTic4iZD6BVbZ7RvVYIaRQU7\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008215714-19515ff0-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":160,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":444,\"engine_ttlt_ms\":1957,\"pre_inference_ms\":325,\"service_tbt_ms\":9,\"service_ttft_ms\":981,\"service_ttlt_ms\":2467,\"user_visible_ttft_ms\":656},\"prompt_tokens\":2403,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2563}}\n",
+    "content": "{\"scene_description\":\"A dark corridor ends at a wall panel directly ahead with a large red circle centered on a black rectangular plaque near floor level. A maroon carpeted runner leads straight to the panel, with slight edges and a small lip near the base. Side walls with geometric patterns frame the path. The red circle is close, almost at bumper height, and directly in front.\",\"reasoning\":\"The goal is to reach the red circle on the far wall. My walking direction is already aligned straight toward it. Although prior forward steps were blocked at the wall, the task is to reach the circle, which appears immediately ahead; advancing forward should bring my front to the target area and complete the objective.\",\"action\":\"forward\",\"confidence\":0.66}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A dark corridor ends at a wall panel directly ahead with a large red circle centered on a black rectangular plaque near floor level. A maroon carpeted runner leads straight to the panel, with slight edges and a small lip near the base. Side walls with geometric patterns frame the path. The red circle is close, almost at bumper height, and directly in front.",
+      "reasoning": "The goal is to reach the red circle on the far wall. My walking direction is already aligned straight toward it. Although prior forward steps were blocked at the wall, the task is to reach the circle, which appears immediately ahead; advancing forward should bring my front to the target area and complete the objective.",
+      "action": "forward",
+      "confidence": 0.66
+    },
+    "action": "forward"
+  }
+]

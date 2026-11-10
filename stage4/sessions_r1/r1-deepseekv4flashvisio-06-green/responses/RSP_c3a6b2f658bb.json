@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:14:57+08:00",
+    "latency_ms": 3409,
+    "payload_bytes": 242589,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e926ab23-fe5f-46c7-bc9b-c8c162ffdec0\",\"object\":\"chat.completion\",\"created\":1794208494,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle is visible ahead through a narrow dark opening, with a dark red floor mat in the foreground and patterned walls on either side. The target appears close and slightly above the floor line.\\\", \\\"reasoning\\\": \\\"Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The blockage seems to be the wall panel/opening edges rather than torso width alone. I just backed up one step (step 27), so I now have room to rotate. Since turning is only possible when shoulders are not inside the opening, I should use this backed-up position to try a different torso orientation before attempting forward again. I have tried 0, 15, and 30 degrees right; I have not tried turning left past 0 (negative rotation). Turning left further may present a different profile that fits the opening.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.35}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3336,\"completion_tokens\":199,\"total_tokens\":3535,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2696},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green rectangle is visible ahead through a narrow dark opening, with a dark red floor mat in the foreground and patterned walls on either side. The target appears close and slightly above the floor line.\", \"reasoning\": \"Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The blockage seems to be the wall panel/opening edges rather than torso width alone. I just backed up one step (step 27), so I now have room to rotate. Since turning is only possible when shoulders are not inside the opening, I should use this backed-up position to try a different torso orientation before attempting forward again. I have tried 0, 15, and 30 degrees right; I have not tried turning left past 0 (negative rotation). Turning left further may present a different profile that fits the opening.\", \"action\": \"turn_left\", \"confidence\": 0.35}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green rectangle is visible ahead through a narrow dark opening, with a dark red floor mat in the foreground and patterned walls on either side. The target appears close and slightly above the floor line.",
+      "reasoning": "Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The blockage seems to be the wall panel/opening edges rather than torso width alone. I just backed up one step (step 27), so I now have room to rotate. Since turning is only possible when shoulders are not inside the opening, I should use this backed-up position to try a different torso orientation before attempting forward again. I have tried 0, 15, and 30 degrees right; I have not tried turning left past 0 (negative rotation). Turning left further may present a different profile that fits the opening.",
+      "action": "turn_left",
+      "confidence": 0.35
+    },
+    "action": "turn_left"
+  }
+]

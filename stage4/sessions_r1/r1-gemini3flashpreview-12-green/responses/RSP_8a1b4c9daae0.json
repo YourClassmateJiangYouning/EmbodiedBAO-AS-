@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:14:52+08:00",
+    "latency_ms": 8786,
+    "payload_bytes": 266821,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081014443425651478268d9d6MhNPdkPq\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794132892,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading toward a green rectangle on the far wall. I have passed through the narrow opening formed by the two patterned walls and am now in an open area. The green rectangle is clearly visible and centered in the distance.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=5.0 and have successfully cleared the narrow gap. My torso is still rotated at 90 degrees, but since I am now in the open space beyond the gap, I can continue moving forward toward the green rectangle. I will keep moving forward until I reach the goal.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2882,\"completion_tokens\":147,\"total_tokens\":3029,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2882,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":147,\"totalTokenCount\":3029,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1793}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":147}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1793,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":147,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a red carpeted floor leading toward a green rectangle on the far wall. I have passed through the narrow opening formed by the two patterned walls and am now in an open area. The green rectangle is clearly visible and centered in the distance.\",\n  \"reasoning\": \"I am at x=5.0 and have successfully cleared the narrow gap. My torso is still rotated at 90 degrees, but since I am now in the open space beyond the gap, I can continue moving forward toward the green rectangle. I will keep moving forward until I reach the goal.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading toward a green rectangle on the far wall. I have passed through the narrow opening formed by the two patterned walls and am now in an open area. The green rectangle is clearly visible and centered in the distance.",
+      "reasoning": "I am at x=5.0 and have successfully cleared the narrow gap. My torso is still rotated at 90 degrees, but since I am now in the open space beyond the gap, I can continue moving forward toward the green rectangle. I will keep moving forward until I reach the goal.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

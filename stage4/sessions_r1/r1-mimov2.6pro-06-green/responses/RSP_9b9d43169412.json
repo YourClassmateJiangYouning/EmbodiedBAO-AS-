@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:51:56+08:00",
+    "latency_ms": 7625,
+    "payload_bytes": 338932,
+    "finish_reason": "stop",
+    "reasoning_tokens": 152,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"7e078761-f45e-4d62-a229-e10cd4b7ca3c_61d102abcfe94c5c81bfe4cd16277e6a\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\":\\\"The red carpet runs straight ahead toward a doorway in the far wall, with the green rectangle visible through the opening. Patterned wall panels flank the opening, and there are no obstacles on the carpet ahead.\\\",\\\"reasoning\\\":\\\"The path remains clear and the green rectangle is directly ahead through the doorway. Torso rotation is 0 degrees, which minimizes my presented width, so I should keep moving straight forward without turning (turning is also forbidden once shoulders enter the opening).\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue forward. The green rectangle appears near the doorway ahead. We've moved 3 times forward (steps 0,1,3). Position x = 2.750? Wait, initial likely at x=... Hmm, each forward is 75cm = 0.75. Position x=2.75 seems odd — maybe initial x=0.5 and 3 forwards = 2.75? Actually 0.5+2.25 = 2.75. Hmm, forward increases x presumably toward wall. The green rectangle is ahead through the doorway. We should keep moving forward.\\n\\nThe doorway seems narrow-ish but the robot fits at 0 rotation. Continue forward.\"}}],\"created\":1794207116,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":268,\"prompt_tokens\":2195,\"total_tokens\":2463,\"completion_tokens_details\":{\"reasoning_tokens\":152},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\":\"The red carpet runs straight ahead toward a doorway in the far wall, with the green rectangle visible through the opening. Patterned wall panels flank the opening, and there are no obstacles on the carpet ahead.\",\"reasoning\":\"The path remains clear and the green rectangle is directly ahead through the doorway. Torso rotation is 0 degrees, which minimizes my presented width, so I should keep moving straight forward without turning (turning is also forbidden once shoulders enter the opening).\",\"action\":\"forward\",\"confidence\":0.92}",
+    "reasoning_content": "We need to continue forward. The green rectangle appears near the doorway ahead. We've moved 3 times forward (steps 0,1,3). Position x = 2.750? Wait, initial likely at x=... Hmm, each forward is 75cm = 0.75. Position x=2.75 seems odd — maybe initial x=0.5 and 3 forwards = 2.75? Actually 0.5+2.25 = 2.75. Hmm, forward increases x presumably toward wall. The green rectangle is ahead through the doorway. We should keep moving forward.\n\nThe doorway seems narrow-ish but the robot fits at 0 rotation. Continue forward.",
+    "parsed": {
+      "scene_description": "The red carpet runs straight ahead toward a doorway in the far wall, with the green rectangle visible through the opening. Patterned wall panels flank the opening, and there are no obstacles on the carpet ahead.",
+      "reasoning": "The path remains clear and the green rectangle is directly ahead through the doorway. Torso rotation is 0 degrees, which minimizes my presented width, so I should keep moving straight forward without turning (turning is also forbidden once shoulders enter the opening).",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

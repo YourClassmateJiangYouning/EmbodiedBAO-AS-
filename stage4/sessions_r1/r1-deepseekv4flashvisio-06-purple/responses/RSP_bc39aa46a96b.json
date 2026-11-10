@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:19:43+08:00",
+    "latency_ms": 2464,
+    "payload_bytes": 191441,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"1f0d6200-8938-4b26-a9fe-c13b3d9c6726\",\"object\":\"chat.completion\",\"created\":1794208782,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is directly ahead on a dark panel at the far wall, very close now. The red carpet leads up to it, with a narrow opening framed by wall panels on the left and right.\\\", \\\"reasoning\\\": \\\"The star is just ahead and the torso has been rotated to 75 degrees, presenting a narrower profile to the gap. One more turn_right reaches 90 degrees, the optimal orientation for passing through the narrow opening, then forward should reach the star.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2531,\"completion_tokens\":119,\"total_tokens\":2650,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1891},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is directly ahead on a dark panel at the far wall, very close now. The red carpet leads up to it, with a narrow opening framed by wall panels on the left and right.\", \"reasoning\": \"The star is just ahead and the torso has been rotated to 75 degrees, presenting a narrower profile to the gap. One more turn_right reaches 90 degrees, the optimal orientation for passing through the narrow opening, then forward should reach the star.\", \"action\": \"turn_right\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is directly ahead on a dark panel at the far wall, very close now. The red carpet leads up to it, with a narrow opening framed by wall panels on the left and right.",
+      "reasoning": "The star is just ahead and the torso has been rotated to 75 degrees, presenting a narrower profile to the gap. One more turn_right reaches 90 degrees, the optimal orientation for passing through the narrow opening, then forward should reach the star.",
+      "action": "turn_right",
+      "confidence": 0.7
+    },
+    "action": "turn_right"
+  }
+]

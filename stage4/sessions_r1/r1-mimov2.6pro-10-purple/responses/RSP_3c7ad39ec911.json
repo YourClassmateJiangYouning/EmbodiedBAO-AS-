@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:19:31+08:00",
+    "latency_ms": 9643,
+    "payload_bytes": 375158,
+    "finish_reason": "stop",
+    "reasoning_tokens": 108,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"947f4f68-59e8-45f3-bcbd-4e77f75591c7_e1d1fdcc64fb4eb69659f18a1f1d3d5c\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the red carpet extending straight ahead toward the far wall, where the purple four-pointed star sits just inside a narrow opening. The opening is framed by patterned wall panels on either side. The view is unchanged from before (eyes look along walking direction), and my torso is currently rotated 30 degrees to the right.\\\", \\\"reasoning\\\": \\\"I need to continue rotating my torso so the narrower body depth faces the narrow opening. I'm at 30 degrees and my target is 90 degrees (relative to walking direction), so I need 4 more turn_right actions. I'm still well before the opening (x=1.25), so I have room to keep turning. Turning doesn't change my walking direction, so I can finish orienting before moving forward.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue turning right to reach 90 degrees torso rotation. Currently at 30 degrees, need 4 more turn_right (30, 45, 60, 75, 90) → need 4 more turns. But we must not enter the opening with shoulders before turning complete. We're at x=1.25. Turning needs room; once shoulders are inside the opening, we cannot turn. So we should complete turning before moving forward much.\\n\\nContinue turn_right.\"}}],\"created\":1794197971,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":294,\"prompt_tokens\":2221,\"total_tokens\":2515,\"completion_tokens_details\":{\"reasoning_tokens\":108},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows the red carpet extending straight ahead toward the far wall, where the purple four-pointed star sits just inside a narrow opening. The opening is framed by patterned wall panels on either side. The view is unchanged from before (eyes look along walking direction), and my torso is currently rotated 30 degrees to the right.\", \"reasoning\": \"I need to continue rotating my torso so the narrower body depth faces the narrow opening. I'm at 30 degrees and my target is 90 degrees (relative to walking direction), so I need 4 more turn_right actions. I'm still well before the opening (x=1.25), so I have room to keep turning. Turning doesn't change my walking direction, so I can finish orienting before moving forward.\", \"action\": \"turn_right\", \"confidence\": 0.85}",
+    "reasoning_content": "We need to continue turning right to reach 90 degrees torso rotation. Currently at 30 degrees, need 4 more turn_right (30, 45, 60, 75, 90) → need 4 more turns. But we must not enter the opening with shoulders before turning complete. We're at x=1.25. Turning needs room; once shoulders are inside the opening, we cannot turn. So we should complete turning before moving forward much.\n\nContinue turn_right.",
+    "parsed": {
+      "scene_description": "The camera shows the red carpet extending straight ahead toward the far wall, where the purple four-pointed star sits just inside a narrow opening. The opening is framed by patterned wall panels on either side. The view is unchanged from before (eyes look along walking direction), and my torso is currently rotated 30 degrees to the right.",
+      "reasoning": "I need to continue rotating my torso so the narrower body depth faces the narrow opening. I'm at 30 degrees and my target is 90 degrees (relative to walking direction), so I need 4 more turn_right actions. I'm still well before the opening (x=1.25), so I have room to keep turning. Turning doesn't change my walking direction, so I can finish orienting before moving forward.",
+      "action": "turn_right",
+      "confidence": 0.85
+    },
+    "action": "turn_right"
+  }
+]

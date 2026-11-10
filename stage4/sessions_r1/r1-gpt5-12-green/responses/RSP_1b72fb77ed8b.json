@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:19:43+08:00",
+    "latency_ms": 9315,
+    "payload_bytes": 279948,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A bright green rectangular panel is directly ahead on the floor, centered and close. The surrounding floor is clear, with no visible obstacles between the robot and the green rectangle.\\\", \\\"reasoning\\\": \\\"The goal green rectangle is directly ahead and near; moving forward continues straight toward it without needing to turn or check width.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.74}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794197980,\"id\":\"chatcmpl-EiB92f63V3urizupvdODe1nVocaAH\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":91,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":14,\"engine_ttft_ms\":333,\"engine_ttlt_ms\":1616,\"pre_inference_ms\":421,\"service_tbt_ms\":14,\"service_ttft_ms\":1225,\"service_ttlt_ms\":2526,\"user_visible_ttft_ms\":804},\"prompt_tokens\":1880,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1971}}\n",
+    "content": "{\"scene_description\": \"A bright green rectangular panel is directly ahead on the floor, centered and close. The surrounding floor is clear, with no visible obstacles between the robot and the green rectangle.\", \"reasoning\": \"The goal green rectangle is directly ahead and near; moving forward continues straight toward it without needing to turn or check width.\", \"action\": \"forward\", \"confidence\": 0.74}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A bright green rectangular panel is directly ahead on the floor, centered and close. The surrounding floor is clear, with no visible obstacles between the robot and the green rectangle.",
+      "reasoning": "The goal green rectangle is directly ahead and near; moving forward continues straight toward it without needing to turn or check width.",
+      "action": "forward",
+      "confidence": 0.74
+    },
+    "action": "forward"
+  }
+]

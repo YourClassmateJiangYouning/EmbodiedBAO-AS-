@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:15:30+08:00",
+    "latency_ms": 6659,
+    "payload_bytes": 377050,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081015245394723708268d9d6vxvw8z96\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794132930,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"A red carpeted path leads toward a narrow opening between two patterned walls. In the distance, through the opening, a red circle is visible on a dark background. White papers are scattered along the left and right edges of the red carpet.\\\",\\n  \\\"reasoning\\\": \\\"I have moved forward once and am now at x=1.25. The opening ahead appears narrow. To determine if I can fit through or if I need to rotate my torso to present a slimmer profile, I must first understand my own body's width and thickness relative to the gap. I will use look_down to inspect my dimensions.\\\",\\n  \\\"action\\\": \\\"look_down\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2087,\"completion_tokens\":156,\"total_tokens\":2243,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2087,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":156,\"totalTokenCount\":2243,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":998}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":156}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":998,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":156,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"A red carpeted path leads toward a narrow opening between two patterned walls. In the distance, through the opening, a red circle is visible on a dark background. White papers are scattered along the left and right edges of the red carpet.\",\n  \"reasoning\": \"I have moved forward once and am now at x=1.25. The opening ahead appears narrow. To determine if I can fit through or if I need to rotate my torso to present a slimmer profile, I must first understand my own body's width and thickness relative to the gap. I will use look_down to inspect my dimensions.\",\n  \"action\": \"look_down\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted path leads toward a narrow opening between two patterned walls. In the distance, through the opening, a red circle is visible on a dark background. White papers are scattered along the left and right edges of the red carpet.",
+      "reasoning": "I have moved forward once and am now at x=1.25. The opening ahead appears narrow. To determine if I can fit through or if I need to rotate my torso to present a slimmer profile, I must first understand my own body's width and thickness relative to the gap. I will use look_down to inspect my dimensions.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

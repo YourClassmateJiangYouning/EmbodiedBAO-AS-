@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:39:07+08:00",
+    "latency_ms": 8046,
+    "payload_bytes": 268320,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_3d267vtz77lqdmz25ikjsjkt5v4xzlnnrymmefmf75eahf6llg5q\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145147,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the yellow arrow target clearly on the far wall, centered in my view. The walkway ahead is clear and unobstructed, with a dark red/maroon floor. The walls on either side show decorative patterns in tan and purple. The yellow arrow is well-lit and directly ahead along my walking direction. I'm at position x=5.000, and the arrow appears to be at approximately x=10.0 based on the distance it appears in the view.\\\",\\n  \\\"reasoning\\\": \\\"I have a clear, straight path forward to the yellow arrow. My torso is at 0 degrees rotation (aligned with my walking direction), and there are no obstacles visible in the walkway. The yellow arrow is centered in my view and clearly visible on the far wall. I have 24 steps remaining (30 - 6 taken). The most efficient action is to continue walking forward toward the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2767,\"completion_tokens\":230,\"total_tokens\":2997,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2767,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":230,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2767,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the yellow arrow target clearly on the far wall, centered in my view. The walkway ahead is clear and unobstructed, with a dark red/maroon floor. The walls on either side show decorative patterns in tan and purple. The yellow arrow is well-lit and directly ahead along my walking direction. I'm at position x=5.000, and the arrow appears to be at approximately x=10.0 based on the distance it appears in the view.\",\n  \"reasoning\": \"I have a clear, straight path forward to the yellow arrow. My torso is at 0 degrees rotation (aligned with my walking direction), and there are no obstacles visible in the walkway. The yellow arrow is centered in my view and clearly visible on the far wall. I have 24 steps remaining (30 - 6 taken). The most efficient action is to continue walking forward toward the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the yellow arrow target clearly on the far wall, centered in my view. The walkway ahead is clear and unobstructed, with a dark red/maroon floor. The walls on either side show decorative patterns in tan and purple. The yellow arrow is well-lit and directly ahead along my walking direction. I'm at position x=5.000, and the arrow appears to be at approximately x=10.0 based on the distance it appears in the view.",
+      "reasoning": "I have a clear, straight path forward to the yellow arrow. My torso is at 0 degrees rotation (aligned with my walking direction), and there are no obstacles visible in the walkway. The yellow arrow is centered in my view and clearly visible on the far wall. I have 24 steps remaining (30 - 6 taken). The most efficient action is to continue walking forward toward the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

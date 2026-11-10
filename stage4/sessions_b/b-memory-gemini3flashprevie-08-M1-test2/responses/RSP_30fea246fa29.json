@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:26:19+08:00",
+    "latency_ms": 5741,
+    "payload_bytes": 411773,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090826145952426398268d9d6WEg0563I\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212779,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down a long red carpeted path towards a green rectangle on the far wall. There is a narrow opening between two patterned walls ahead. To the right, a wooden ladder is partially visible.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at a torso rotation of 75 degrees. To ensure I can fit through the narrow gap ahead with my narrowest profile, I need to reach a 90-degree rotation. I will perform one more turn_right action to reach that orientation before moving forward into the opening.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3080,\"completion_tokens\":140,\"total_tokens\":3220,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3080,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":140,\"totalTokenCount\":3220,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1991}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":140}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1991,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":140,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down a long red carpeted path towards a green rectangle on the far wall. There is a narrow opening between two patterned walls ahead. To the right, a wooden ladder is partially visible.\",\n  \"reasoning\": \"I am currently at a torso rotation of 75 degrees. To ensure I can fit through the narrow gap ahead with my narrowest profile, I need to reach a 90-degree rotation. I will perform one more turn_right action to reach that orientation before moving forward into the opening.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down a long red carpeted path towards a green rectangle on the far wall. There is a narrow opening between two patterned walls ahead. To the right, a wooden ladder is partially visible.",
+      "reasoning": "I am currently at a torso rotation of 75 degrees. To ensure I can fit through the narrow gap ahead with my narrowest profile, I need to reach a 90-degree rotation. I will perform one more turn_right action to reach that orientation before moving forward into the opening.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

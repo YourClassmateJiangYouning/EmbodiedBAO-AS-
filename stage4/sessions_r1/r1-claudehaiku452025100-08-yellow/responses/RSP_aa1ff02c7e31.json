@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:30:35+08:00",
+    "latency_ms": 6545,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_bxzwddgtcfh6hmgjw4palhl2aw2y2cmeqxng26avbjzsrvcyucuq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198636,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The camera shows a bright yellow arrow pointing to the right on a dark wall ahead. The arrow is clearly visible and is my target destination. On the left side of the image, there appears to be a wall or panel structure. The environment is dimly lit with the yellow arrow being the most prominent feature.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=7.250 with my torso rotated 45 degrees to the right (after turning right on step 24). I have been blocked by wall_panel obstacles when trying to move forward directly. The yellow arrow is clearly visible ahead on the far wall. My walking direction is fixed toward that arrow. I need to continue navigating around the obstacle. Since I just turned right, I should try moving forward to see if this new torso orientation allows me to pass the obstacle that has been blocking me.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.45\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":4237,\"completion_tokens\":214,\"total_tokens\":4451,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":4237,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":214,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":4237,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The camera shows a bright yellow arrow pointing to the right on a dark wall ahead. The arrow is clearly visible and is my target destination. On the left side of the image, there appears to be a wall or panel structure. The environment is dimly lit with the yellow arrow being the most prominent feature.\",\n  \"reasoning\": \"I am at position x=7.250 with my torso rotated 45 degrees to the right (after turning right on step 24). I have been blocked by wall_panel obstacles when trying to move forward directly. The yellow arrow is clearly visible ahead on the far wall. My walking direction is fixed toward that arrow. I need to continue navigating around the obstacle. Since I just turned right, I should try moving forward to see if this new torso orientation allows me to pass the obstacle that has been blocking me.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.45\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a bright yellow arrow pointing to the right on a dark wall ahead. The arrow is clearly visible and is my target destination. On the left side of the image, there appears to be a wall or panel structure. The environment is dimly lit with the yellow arrow being the most prominent feature.",
+      "reasoning": "I am at position x=7.250 with my torso rotated 45 degrees to the right (after turning right on step 24). I have been blocked by wall_panel obstacles when trying to move forward directly. The yellow arrow is clearly visible ahead on the far wall. My walking direction is fixed toward that arrow. I need to continue navigating around the obstacle. Since I just turned right, I should try moving forward to see if this new torso orientation allows me to pass the obstacle that has been blocking me.",
+      "action": "forward",
+      "confidence": 0.45
+    },
+    "action": "forward"
+  }
+]

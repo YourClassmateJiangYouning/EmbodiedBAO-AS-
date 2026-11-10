@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:00:47+08:00",
+    "latency_ms": 15517,
+    "payload_bytes": 171622,
+    "finish_reason": "stop",
+    "reasoning_tokens": 14,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n{\"id\":\"0f41c120-ce52-48a5-83eb-c5aa164b028f_844702d674914045b399cf6a4ddb8696\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle on its stand sits directly ahead on the floor at the base of the dark wall, with dark red carpet between my body and it. The path is clear and the triangle is close but still separated by visible carpet.\\\", \\\"reasoning\\\": \\\"My torso is rotated 90 degrees, presenting the thin dimension toward the doorway, matching the successful traversal. The blue triangle is directly ahead and close, but there is still carpet between my body and it. I continue forward to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The blue triangle is directly ahead, fairly close. Continue forward.\"}}],\"created\":1794214847,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":139,\"prompt_tokens\":3553,\"total_tokens\":3692,\"completion_tokens_details\":{\"reasoning_tokens\":14},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The blue triangle on its stand sits directly ahead on the floor at the base of the dark wall, with dark red carpet between my body and it. The path is clear and the triangle is close but still separated by visible carpet.\", \"reasoning\": \"My torso is rotated 90 degrees, presenting the thin dimension toward the doorway, matching the successful traversal. The blue triangle is directly ahead and close, but there is still carpet between my body and it. I continue forward to reach it.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The blue triangle is directly ahead, fairly close. Continue forward.",
+    "parsed": {
+      "scene_description": "The blue triangle on its stand sits directly ahead on the floor at the base of the dark wall, with dark red carpet between my body and it. The path is clear and the triangle is close but still separated by visible carpet.",
+      "reasoning": "My torso is rotated 90 degrees, presenting the thin dimension toward the doorway, matching the successful traversal. The blue triangle is directly ahead and close, but there is still carpet between my body and it. I continue forward to reach it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

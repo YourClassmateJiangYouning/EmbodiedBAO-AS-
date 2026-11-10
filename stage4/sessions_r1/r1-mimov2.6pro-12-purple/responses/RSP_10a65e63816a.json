@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:27:49+08:00",
+    "latency_ms": 8855,
+    "payload_bytes": 360261,
+    "finish_reason": "stop",
+    "reasoning_tokens": 21,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ebfdb97f-fc97-401c-a8d9-a4e0d8280436_8f8ef749527448d89d70523f6fe108e1\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead to a narrow opening between two patterned walls with zigzag designs. The purple four-pointed star is visible centered in the opening at the far wall. Yellow and white papers are scattered along the sides of the carpet.\\\", \\\"reasoning\\\": \\\"The path ahead is clear and the star is directly ahead through the opening. The walkway is unobstructed, so I should continue moving forward toward the star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear red carpet straight to the opening with the purple star. Just keep going forward.\"}}],\"created\":1794137269,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":136,\"prompt_tokens\":2051,\"total_tokens\":2187,\"completion_tokens_details\":{\"reasoning_tokens\":21},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead to a narrow opening between two patterned walls with zigzag designs. The purple four-pointed star is visible centered in the opening at the far wall. Yellow and white papers are scattered along the sides of the carpet.\", \"reasoning\": \"The path ahead is clear and the star is directly ahead through the opening. The walkway is unobstructed, so I should continue moving forward toward the star.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear red carpet straight to the opening with the purple star. Just keep going forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead to a narrow opening between two patterned walls with zigzag designs. The purple four-pointed star is visible centered in the opening at the far wall. Yellow and white papers are scattered along the sides of the carpet.",
+      "reasoning": "The path ahead is clear and the star is directly ahead through the opening. The walkway is unobstructed, so I should continue moving forward toward the star.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

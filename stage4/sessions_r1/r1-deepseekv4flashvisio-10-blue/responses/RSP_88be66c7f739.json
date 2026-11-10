@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:04:43+08:00",
+    "latency_ms": 2272,
+    "payload_bytes": 386232,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"84474ccc-9e12-4bf0-8d80-c241dfa7b2e5\",\"object\":\"chat.completion\",\"created\":1794207882,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a far wall with a blue triangle visible through a narrow opening between patterned wall panels. The path appears clear and straight ahead.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along the walking direction, and the path looks unobstructed. Moving forward advances toward the goal. No turning is needed since the opening is aligned with the walking direction.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1541,\"completion_tokens\":98,\"total_tokens\":1639,\"prompt_tokens_details\":{\"cached_tokens\":1407},\"prompt_cache_hit_tokens\":1407,\"prompt_cache_miss_tokens\":134},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a far wall with a blue triangle visible through a narrow opening between patterned wall panels. The path appears clear and straight ahead.\", \"reasoning\": \"The blue triangle is directly ahead along the walking direction, and the path looks unobstructed. Moving forward advances toward the goal. No turning is needed since the opening is aligned with the walking direction.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a far wall with a blue triangle visible through a narrow opening between patterned wall panels. The path appears clear and straight ahead.",
+      "reasoning": "The blue triangle is directly ahead along the walking direction, and the path looks unobstructed. Moving forward advances toward the goal. No turning is needed since the opening is aligned with the walking direction.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

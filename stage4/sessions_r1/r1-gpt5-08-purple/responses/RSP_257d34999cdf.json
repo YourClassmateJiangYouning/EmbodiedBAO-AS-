@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:16:06+08:00",
+    "latency_ms": 8885,
+    "payload_bytes": 166724,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A close-up view of a glowing purple four-pointed star on a wall panel directly ahead at floor level. The star is centered and very near; the lower point touches just above the floor. The foreground shows dark red carpet leading right up to the panel.\\\",\\\"reasoning\\\":\\\"The star panel is directly in front and very close; forward motion always goes straight toward it. Despite prior occasional blocks at the wall, taking one more forward step should reach the target within the remaining steps.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.69}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204962,\"id\":\"chatcmpl-EiCxeViRs1KhRjR0FflL0ZT21d1pE\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":119,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":10,\"engine_ttft_ms\":368,\"engine_ttlt_ms\":1529,\"pre_inference_ms\":387,\"service_tbt_ms\":10,\"service_ttft_ms\":925,\"service_ttlt_ms\":2063,\"user_visible_ttft_ms\":538},\"prompt_tokens\":2852,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2971}}\n",
+    "content": "{\"scene_description\":\"A close-up view of a glowing purple four-pointed star on a wall panel directly ahead at floor level. The star is centered and very near; the lower point touches just above the floor. The foreground shows dark red carpet leading right up to the panel.\",\"reasoning\":\"The star panel is directly in front and very close; forward motion always goes straight toward it. Despite prior occasional blocks at the wall, taking one more forward step should reach the target within the remaining steps.\",\"action\":\"forward\",\"confidence\":0.69}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A close-up view of a glowing purple four-pointed star on a wall panel directly ahead at floor level. The star is centered and very near; the lower point touches just above the floor. The foreground shows dark red carpet leading right up to the panel.",
+      "reasoning": "The star panel is directly in front and very close; forward motion always goes straight toward it. Despite prior occasional blocks at the wall, taking one more forward step should reach the target within the remaining steps.",
+      "action": "forward",
+      "confidence": 0.69
+    },
+    "action": "forward"
+  }
+]

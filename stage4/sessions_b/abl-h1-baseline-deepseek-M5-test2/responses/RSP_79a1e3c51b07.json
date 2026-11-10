@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:37:17+08:00",
+    "latency_ms": 2557,
+    "payload_bytes": 164582,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f13462c4-5215-46f7-819a-bf45caf5b553\",\"object\":\"chat.completion\",\"created\":1794217036,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star on its dark panel fills the center of the view, appearing very large and close, indicating the robot is nearly at the goal on the far wall.\\\", \\\"reasoning\\\": \\\"After 10 forward steps the star is directly ahead and very close. One more forward step should bring the robot to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2099,\"completion_tokens\":86,\"total_tokens\":2185,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1587},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star on its dark panel fills the center of the view, appearing very large and close, indicating the robot is nearly at the goal on the far wall.\", \"reasoning\": \"After 10 forward steps the star is directly ahead and very close. One more forward step should bring the robot to the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star on its dark panel fills the center of the view, appearing very large and close, indicating the robot is nearly at the goal on the far wall.",
+      "reasoning": "After 10 forward steps the star is directly ahead and very close. One more forward step should bring the robot to the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

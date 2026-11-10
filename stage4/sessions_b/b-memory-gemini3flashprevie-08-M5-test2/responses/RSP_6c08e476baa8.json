@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:03:59+08:00",
+    "latency_ms": 12314,
+    "payload_bytes": 299877,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090903489356089198268d9d6sxNDpBWg\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794215039,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The view shows a red carpeted path leading toward a narrow opening between two walls decorated with geometric patterns. Beyond the opening, a purple four-pointed star is visible on the far wall in a dark room.\\\", \\\"reasoning\\\": \\\"My current torso rotation is 30 degrees. To minimize my width and safely pass through the narrow opening ahead, I need to reach a 90-degree rotation. I will continue using turn_right to increase the angle toward 90 degrees.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3212,\"completion_tokens\":121,\"total_tokens\":3333,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3212,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":121,\"totalTokenCount\":3333,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2123},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":121}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2123,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":121,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The view shows a red carpeted path leading toward a narrow opening between two walls decorated with geometric patterns. Beyond the opening, a purple four-pointed star is visible on the far wall in a dark room.\", \"reasoning\": \"My current torso rotation is 30 degrees. To minimize my width and safely pass through the narrow opening ahead, I need to reach a 90-degree rotation. I will continue using turn_right to increase the angle toward 90 degrees.\", \"action\": \"turn_right\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The view shows a red carpeted path leading toward a narrow opening between two walls decorated with geometric patterns. Beyond the opening, a purple four-pointed star is visible on the far wall in a dark room.",
+      "reasoning": "My current torso rotation is 30 degrees. To minimize my width and safely pass through the narrow opening ahead, I need to reach a 90-degree rotation. I will continue using turn_right to increase the angle toward 90 degrees.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

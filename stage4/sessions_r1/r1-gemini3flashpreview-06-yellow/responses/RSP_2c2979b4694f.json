@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:59:26+08:00",
+    "latency_ms": 5263,
+    "payload_bytes": 173192,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081059223639454098268d9d6huZAjDpu\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135566,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a large yellow arrow pointing to the right, mounted on a dark wall at the end of a narrow corridor. The robot is currently inside the narrow passage, with walls visible on the left and right.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=7.25 and have been moving forward through the narrow gap with my torso rotated to 90 degrees. The yellow arrow is directly ahead. I will continue moving forward to reach the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3116,\"completion_tokens\":123,\"total_tokens\":3239,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3116,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":123,\"totalTokenCount\":3239,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2027}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":123}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2027,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":123,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a large yellow arrow pointing to the right, mounted on a dark wall at the end of a narrow corridor. The robot is currently inside the narrow passage, with walls visible on the left and right.\",\n  \"reasoning\": \"I am at x=7.25 and have been moving forward through the narrow gap with my torso rotated to 90 degrees. The yellow arrow is directly ahead. I will continue moving forward to reach the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a large yellow arrow pointing to the right, mounted on a dark wall at the end of a narrow corridor. The robot is currently inside the narrow passage, with walls visible on the left and right.",
+      "reasoning": "I am at x=7.25 and have been moving forward through the narrow gap with my torso rotated to 90 degrees. The yellow arrow is directly ahead. I will continue moving forward to reach the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

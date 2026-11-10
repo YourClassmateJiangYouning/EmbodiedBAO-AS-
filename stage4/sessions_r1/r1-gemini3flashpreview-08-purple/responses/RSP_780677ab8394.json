@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:50:12+08:00",
+    "latency_ms": 6321,
+    "payload_bytes": 334239,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081050072590285398268d9d6S2ZAGPZY\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135012,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight down a red carpeted path towards a narrow opening in a wall decorated with geometric patterns. A purple four-pointed star is visible through the opening on the far wall.\\\",\\n  \\\"reasoning\\\": \\\"My current torso rotation is 75 degrees. To minimize my width and safely pass through the narrow opening ahead, I need to reach a 90-degree rotation where my depth becomes my width. I will continue turning right to reach that orientation before moving forward into the gap.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2649,\"completion_tokens\":133,\"total_tokens\":2782,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2649,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":133,\"totalTokenCount\":2782,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1560}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":133}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1560,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":133,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight down a red carpeted path towards a narrow opening in a wall decorated with geometric patterns. A purple four-pointed star is visible through the opening on the far wall.\",\n  \"reasoning\": \"My current torso rotation is 75 degrees. To minimize my width and safely pass through the narrow opening ahead, I need to reach a 90-degree rotation where my depth becomes my width. I will continue turning right to reach that orientation before moving forward into the gap.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red carpeted path towards a narrow opening in a wall decorated with geometric patterns. A purple four-pointed star is visible through the opening on the far wall.",
+      "reasoning": "My current torso rotation is 75 degrees. To minimize my width and safely pass through the narrow opening ahead, I need to reach a 90-degree rotation where my depth becomes my width. I will continue turning right to reach that orientation before moving forward into the gap.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

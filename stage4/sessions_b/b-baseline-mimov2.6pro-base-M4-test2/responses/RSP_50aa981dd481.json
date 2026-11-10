@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:53:49+08:00",
+    "latency_ms": 9732,
+    "payload_bytes": 263946,
+    "finish_reason": "stop",
+    "reasoning_tokens": 77,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"c2a5d7aa-47e5-4d50-affa-12071e8066af_96e48c3d7d2846c7b0ebe946cd1e789f\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The red carpet stretches ahead toward a doorway framed by patterned panels, with the blue triangle glowing on the floor at the far wall, directly centered in the walking direction.\\\", \\\"reasoning\\\": \\\"The path is clear and the blue triangle is directly ahead through the opening. My torso remains at 0 degrees, presenting the narrowest profile for the doorway. Forward continues toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need 24 steps left, position 4.25 after 6 steps (started 0.25? Actually x=4.25 after 6 steps of 75cm = 4.5, so started at -0.25... whatever). The blue triangle is ahead at the far wall through the opening. Keep moving forward.\"}}],\"created\":1794214429,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":177,\"prompt_tokens\":2304,\"total_tokens\":2481,\"completion_tokens_details\":{\"reasoning_tokens\":77},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The red carpet stretches ahead toward a doorway framed by patterned panels, with the blue triangle glowing on the floor at the far wall, directly centered in the walking direction.\", \"reasoning\": \"The path is clear and the blue triangle is directly ahead through the opening. My torso remains at 0 degrees, presenting the narrowest profile for the doorway. Forward continues toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We need 24 steps left, position 4.25 after 6 steps (started 0.25? Actually x=4.25 after 6 steps of 75cm = 4.5, so started at -0.25... whatever). The blue triangle is ahead at the far wall through the opening. Keep moving forward.",
+    "parsed": {
+      "scene_description": "The red carpet stretches ahead toward a doorway framed by patterned panels, with the blue triangle glowing on the floor at the far wall, directly centered in the walking direction.",
+      "reasoning": "The path is clear and the blue triangle is directly ahead through the opening. My torso remains at 0 degrees, presenting the narrowest profile for the doorway. Forward continues toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

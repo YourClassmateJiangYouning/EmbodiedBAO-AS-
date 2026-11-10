@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:32:31+08:00",
+    "latency_ms": 49225,
+    "payload_bytes": 361853,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-08T19:32:45+08:00",
+    "latency_ms": 12904,
+    "payload_bytes": 361853,
+    "finish_reason": "stop",
+    "reasoning_tokens": 67,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"c004f15e-919b-4c77-ba0b-bfe9831fb9a2_d9d5e485e8614481a7f17350cbdf9670\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a far wall with patterned wallpaper. A small red circle is visible at the end of the carpet near the wall, with some dark object and bags behind it. The path is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the carpeted path and remains visible after two forward steps. The path is clear, so continuing forward is the straightforward approach. The circle appears to be several meters away, so multiple forward steps will be needed.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red circle is visible ahead at the far wall, a dark red small circle. The carpet path leads straight toward it. Continue moving forward. The circle appears some distance away - looks like maybe 3-4 meters. Each forward step is 75cm. I have 28 steps remaining. Keep going forward.\"}}],\"created\":1794137565,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":197,\"prompt_tokens\":2055,\"total_tokens\":2252,\"completion_tokens_details\":{\"reasoning_tokens\":67},\"prompt_tokens_details\":{\"cached_tokens\":2048,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a far wall with patterned wallpaper. A small red circle is visible at the end of the carpet near the wall, with some dark object and bags behind it. The path is clear and unobstructed.\", \"reasoning\": \"The red circle is directly ahead along the carpeted path and remains visible after two forward steps. The path is clear, so continuing forward is the straightforward approach. The circle appears to be several meters away, so multiple forward steps will be needed.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The red circle is visible ahead at the far wall, a dark red small circle. The carpet path leads straight toward it. Continue moving forward. The circle appears some distance away - looks like maybe 3-4 meters. Each forward step is 75cm. I have 28 steps remaining. Keep going forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a far wall with patterned wallpaper. A small red circle is visible at the end of the carpet near the wall, with some dark object and bags behind it. The path is clear and unobstructed.",
+      "reasoning": "The red circle is directly ahead along the carpeted path and remains visible after two forward steps. The path is clear, so continuing forward is the straightforward approach. The circle appears to be several meters away, so multiple forward steps will be needed.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

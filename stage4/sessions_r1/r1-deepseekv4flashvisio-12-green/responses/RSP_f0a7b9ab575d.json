@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:59:36+08:00",
+    "latency_ms": 2652,
+    "payload_bytes": 390745,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"8b21341e-8c54-4a5a-b148-8f321a7916c2\",\"object\":\"chat.completion\",\"created\":1794207575,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a far wall with a green rectangle visible through a narrow opening between patterned panels. The path appears clear and straight ahead.\\\", \\\"reasoning\\\": \\\"The green target is directly ahead along the walking direction, and the path looks unobstructed. Moving forward advances toward the goal. Since the opening may be narrow, I should check my body width before entering, but first I can advance along the open carpet.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1541,\"completion_tokens\":109,\"total_tokens\":1650,\"prompt_tokens_details\":{\"cached_tokens\":1407},\"prompt_cache_hit_tokens\":1407,\"prompt_cache_miss_tokens\":134},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a far wall with a green rectangle visible through a narrow opening between patterned panels. The path appears clear and straight ahead.\", \"reasoning\": \"The green target is directly ahead along the walking direction, and the path looks unobstructed. Moving forward advances toward the goal. Since the opening may be narrow, I should check my body width before entering, but first I can advance along the open carpet.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a far wall with a green rectangle visible through a narrow opening between patterned panels. The path appears clear and straight ahead.",
+      "reasoning": "The green target is directly ahead along the walking direction, and the path looks unobstructed. Moving forward advances toward the goal. Since the opening may be narrow, I should check my body width before entering, but first I can advance along the open carpet.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

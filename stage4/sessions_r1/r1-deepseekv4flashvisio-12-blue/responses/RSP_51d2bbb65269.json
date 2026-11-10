@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:01:47+08:00",
+    "latency_ms": 2447,
+    "payload_bytes": 339401,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"48046fdc-c893-4e82-bc8c-39a11cc3fe88\",\"object\":\"chat.completion\",\"created\":1794207706,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted corridor leads straight ahead to a dark doorway on the far wall, with a blue triangle visible inside the opening. The path is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along the fixed walking direction, and the corridor is clear. Continuing forward advances toward the goal. Torso remains at 0 degrees, so no turning is needed yet.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1742,\"completion_tokens\":99,\"total_tokens\":1841,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":974},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted corridor leads straight ahead to a dark doorway on the far wall, with a blue triangle visible inside the opening. The path is clear and unobstructed.\", \"reasoning\": \"The blue triangle is directly ahead along the fixed walking direction, and the corridor is clear. Continuing forward advances toward the goal. Torso remains at 0 degrees, so no turning is needed yet.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted corridor leads straight ahead to a dark doorway on the far wall, with a blue triangle visible inside the opening. The path is clear and unobstructed.",
+      "reasoning": "The blue triangle is directly ahead along the fixed walking direction, and the corridor is clear. Continuing forward advances toward the goal. Torso remains at 0 degrees, so no turning is needed yet.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

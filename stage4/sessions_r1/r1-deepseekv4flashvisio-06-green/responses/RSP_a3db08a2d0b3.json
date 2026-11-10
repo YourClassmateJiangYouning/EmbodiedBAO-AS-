@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:14:22+08:00",
+    "latency_ms": 2607,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a4d645da-eecb-41e6-bd5e-4a9269387a3b\",\"object\":\"chat.completion\",\"created\":1794208461,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is visible straight ahead, filling much of the view, with a narrow opening framed by wall panels on the left and right. The robot is very close to the opening.\\\", \\\"reasoning\\\": \\\"Forward was blocked at torso rotations of 0 and 30 degrees right, but 15 degrees right has not yet been tried. The torso is now at 15 degrees right, so I should attempt forward to see if this orientation fits through the opening.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.5}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2643,\"completion_tokens\":113,\"total_tokens\":2756,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2003},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is visible straight ahead, filling much of the view, with a narrow opening framed by wall panels on the left and right. The robot is very close to the opening.\", \"reasoning\": \"Forward was blocked at torso rotations of 0 and 30 degrees right, but 15 degrees right has not yet been tried. The torso is now at 15 degrees right, so I should attempt forward to see if this orientation fits through the opening.\", \"action\": \"forward\", \"confidence\": 0.5}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is visible straight ahead, filling much of the view, with a narrow opening framed by wall panels on the left and right. The robot is very close to the opening.",
+      "reasoning": "Forward was blocked at torso rotations of 0 and 30 degrees right, but 15 degrees right has not yet been tried. The torso is now at 15 degrees right, so I should attempt forward to see if this orientation fits through the opening.",
+      "action": "forward",
+      "confidence": 0.5
+    },
+    "action": "forward"
+  }
+]

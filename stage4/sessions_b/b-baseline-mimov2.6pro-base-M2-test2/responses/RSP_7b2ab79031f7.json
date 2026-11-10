@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:29:24+08:00",
+    "latency_ms": 8432,
+    "payload_bytes": 267491,
+    "finish_reason": "stop",
+    "reasoning_tokens": 73,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"695e3693-f060-4dfe-a5cf-a3169545ad44_e070a35039064258a3f28c596e1edcd2\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The red circle on a black panel is directly ahead on the carpeted walkway, very close now. Beyond it is a lighter floor area, a dark covered object, and a mustard-colored armchair against the far wall. The carpeted path is clear and the opening is wide.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead and very close. The path remains clear and I have successfully moved forward 7 steps. I should continue forward to reach the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red circle is directly ahead and appears close. I've moved 7 steps forward already (5.75m). The carpet path is clear and the red circle is directly ahead near the wall. Continue forward.\\n\\nLooking at the image, the red circle appears to be quite close now - maybe 1-2 meters away. Let me continue forward.\"}}],\"created\":1794212964,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":193,\"prompt_tokens\":2322,\"total_tokens\":2515,\"completion_tokens_details\":{\"reasoning_tokens\":73},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The red circle on a black panel is directly ahead on the carpeted walkway, very close now. Beyond it is a lighter floor area, a dark covered object, and a mustard-colored armchair against the far wall. The carpeted path is clear and the opening is wide.\", \"reasoning\": \"The red circle is directly ahead and very close. The path remains clear and I have successfully moved forward 7 steps. I should continue forward to reach the target.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "The red circle is directly ahead and appears close. I've moved 7 steps forward already (5.75m). The carpet path is clear and the red circle is directly ahead near the wall. Continue forward.\n\nLooking at the image, the red circle appears to be quite close now - maybe 1-2 meters away. Let me continue forward.",
+    "parsed": {
+      "scene_description": "The red circle on a black panel is directly ahead on the carpeted walkway, very close now. Beyond it is a lighter floor area, a dark covered object, and a mustard-colored armchair against the far wall. The carpeted path is clear and the opening is wide.",
+      "reasoning": "The red circle is directly ahead and very close. The path remains clear and I have successfully moved forward 7 steps. I should continue forward to reach the target.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

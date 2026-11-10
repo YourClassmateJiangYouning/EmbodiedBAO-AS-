@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:55:27+08:00",
+    "latency_ms": 7296,
+    "payload_bytes": 383069,
+    "finish_reason": "stop",
+    "reasoning_tokens": 71,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"efdb72e6-94d0-4a6a-bfea-6b2134f16f79_e4b95cfc417c4428acfb1412bf1bab48\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpet walkway stretching ahead toward a dark rectangular opening in the far wall, with a glowing blue triangle visible at the base of the opening. Patterned walls flank the carpet on both sides. The path is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"My torso is at 15 degrees. Following the successful strategy, I need to rotate to 90 degrees to present my thinnest profile before the tight opening. I'm still at x=0.5, far from the opening, so I can safely continue turning left.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The scene shows a red carpet walkway leading toward a dark opening with the blue triangle visible. The path is clear. I'm at x=0.5, torso at 15 degrees. I need to continue rotating left to reach 90 degrees before the opening. I'm still early along the walkway so I can continue turning.\"}}],\"created\":1794214527,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":212,\"prompt_tokens\":2817,\"total_tokens\":3029,\"completion_tokens_details\":{\"reasoning_tokens\":71},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpet walkway stretching ahead toward a dark rectangular opening in the far wall, with a glowing blue triangle visible at the base of the opening. Patterned walls flank the carpet on both sides. The path is clear and unobstructed.\", \"reasoning\": \"My torso is at 15 degrees. Following the successful strategy, I need to rotate to 90 degrees to present my thinnest profile before the tight opening. I'm still at x=0.5, far from the opening, so I can safely continue turning left.\", \"action\": \"turn_left\", \"confidence\": 0.95}",
+    "reasoning_content": "The scene shows a red carpet walkway leading toward a dark opening with the blue triangle visible. The path is clear. I'm at x=0.5, torso at 15 degrees. I need to continue rotating left to reach 90 degrees before the opening. I'm still early along the walkway so I can continue turning.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpet walkway stretching ahead toward a dark rectangular opening in the far wall, with a glowing blue triangle visible at the base of the opening. Patterned walls flank the carpet on both sides. The path is clear and unobstructed.",
+      "reasoning": "My torso is at 15 degrees. Following the successful strategy, I need to rotate to 90 degrees to present my thinnest profile before the tight opening. I'm still at x=0.5, far from the opening, so I can safely continue turning left.",
+      "action": "turn_left",
+      "confidence": 0.95
+    },
+    "action": "turn_left"
+  }
+]

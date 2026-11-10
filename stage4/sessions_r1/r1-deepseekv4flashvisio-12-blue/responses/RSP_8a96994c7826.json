@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:02:06+08:00",
+    "latency_ms": 3131,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"bc7cf404-f52e-4b07-8b6c-e754a7cae88b\",\"object\":\"chat.completion\",\"created\":1794207725,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"Downward glance showing the robot's own body: a white tray on top, two dark wheels on either side, and a central camera/wiring assembly, all over a red carpeted floor. The body width including wheels appears fairly wide.\\\", \\\"reasoning\\\": \\\"I have already glanced down twice and confirmed my body width. The doorway ahead is the only obstacle, and turning is impossible once inside, so I should proceed forward through the opening toward the blue triangle rather than repeatedly checking. Torso is at 0 degrees, aligned with the corridor.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2075,\"completion_tokens\":129,\"total_tokens\":2204,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1435},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"Downward glance showing the robot's own body: a white tray on top, two dark wheels on either side, and a central camera/wiring assembly, all over a red carpeted floor. The body width including wheels appears fairly wide.\", \"reasoning\": \"I have already glanced down twice and confirmed my body width. The doorway ahead is the only obstacle, and turning is impossible once inside, so I should proceed forward through the opening toward the blue triangle rather than repeatedly checking. Torso is at 0 degrees, aligned with the corridor.\", \"action\": \"forward\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "Downward glance showing the robot's own body: a white tray on top, two dark wheels on either side, and a central camera/wiring assembly, all over a red carpeted floor. The body width including wheels appears fairly wide.",
+      "reasoning": "I have already glanced down twice and confirmed my body width. The doorway ahead is the only obstacle, and turning is impossible once inside, so I should proceed forward through the opening toward the blue triangle rather than repeatedly checking. Torso is at 0 degrees, aligned with the corridor.",
+      "action": "forward",
+      "confidence": 0.7
+    },
+    "action": "forward"
+  }
+]

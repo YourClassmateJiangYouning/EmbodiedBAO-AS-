@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:10:39+08:00",
+    "latency_ms": 7337,
+    "payload_bytes": 167433,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A close-up view of the far wall panel directly ahead with a glowing blue triangle centered on it. The red carpet ends just before the base of the wall panel. The robot is right in front of the wall; there is no gap to move further forward.\\\", \\\"reasoning\\\": \\\"Forward steps are blocked by the wall panel, indicating I am already at the target wall with the blue triangle. No turning is needed since direction is fixed and there’s no doorway to navigate. Staying here satisfies reaching the blue triangle; avoid further blocked forward attempts.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.67}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204636,\"id\":\"chatcmpl-EiCsOHmYGH87pTbYs70Lmt503FOo7\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261027053535-fb88dfcf-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":138,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":15,\"engine_ttft_ms\":271,\"engine_ttlt_ms\":2371,\"pre_inference_ms\":398,\"service_tbt_ms\":15,\"service_ttft_ms\":948,\"service_ttlt_ms\":3041,\"user_visible_ttft_ms\":549},\"prompt_tokens\":2141,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2279}}\n",
+    "content": "{\"scene_description\": \"A close-up view of the far wall panel directly ahead with a glowing blue triangle centered on it. The red carpet ends just before the base of the wall panel. The robot is right in front of the wall; there is no gap to move further forward.\", \"reasoning\": \"Forward steps are blocked by the wall panel, indicating I am already at the target wall with the blue triangle. No turning is needed since direction is fixed and there’s no doorway to navigate. Staying here satisfies reaching the blue triangle; avoid further blocked forward attempts.\", \"action\": \"backward\", \"confidence\": 0.67}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A close-up view of the far wall panel directly ahead with a glowing blue triangle centered on it. The red carpet ends just before the base of the wall panel. The robot is right in front of the wall; there is no gap to move further forward.",
+      "reasoning": "Forward steps are blocked by the wall panel, indicating I am already at the target wall with the blue triangle. No turning is needed since direction is fixed and there’s no doorway to navigate. Staying here satisfies reaching the blue triangle; avoid further blocked forward attempts.",
+      "action": "backward",
+      "confidence": 0.67
+    },
+    "action": "backward"
+  }
+]

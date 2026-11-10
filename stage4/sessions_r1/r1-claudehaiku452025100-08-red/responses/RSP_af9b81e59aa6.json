@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:26:10+08:00",
+    "latency_ms": 7142,
+    "payload_bytes": 215858,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_aw2dtcw46qw2k766wxekhhtu55tjtax34kawr3fxksxcyx5yil7a\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198371,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the red circle target on the far wall ahead, centered in the view. There is a dark wall panel or obstacle directly in front of me blocking the direct path forward. The red circle is visible above/beyond this dark obstacle. The floor in front shows a dark striped pattern. My torso is rotated 30 degrees to the right based on the state.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=6.500 after stepping backward at step 21. My torso is rotated 30 degrees to the right. Forward movement has been blocked 4 times by a wall_panel obstacle. The red circle target is still visible on the far wall ahead. Since I just moved backward, I should try moving forward again to see if the backward step helped me navigate around the obstacle, or I need to continue adjusting my torso rotation to find a passage. Let me try forward again.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.35\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3994,\"completion_tokens\":227,\"total_tokens\":4221,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3994,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":227,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3994,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the red circle target on the far wall ahead, centered in the view. There is a dark wall panel or obstacle directly in front of me blocking the direct path forward. The red circle is visible above/beyond this dark obstacle. The floor in front shows a dark striped pattern. My torso is rotated 30 degrees to the right based on the state.\",\n  \"reasoning\": \"I am at x=6.500 after stepping backward at step 21. My torso is rotated 30 degrees to the right. Forward movement has been blocked 4 times by a wall_panel obstacle. The red circle target is still visible on the far wall ahead. Since I just moved backward, I should try moving forward again to see if the backward step helped me navigate around the obstacle, or I need to continue adjusting my torso rotation to find a passage. Let me try forward again.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.35\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the red circle target on the far wall ahead, centered in the view. There is a dark wall panel or obstacle directly in front of me blocking the direct path forward. The red circle is visible above/beyond this dark obstacle. The floor in front shows a dark striped pattern. My torso is rotated 30 degrees to the right based on the state.",
+      "reasoning": "I am at x=6.500 after stepping backward at step 21. My torso is rotated 30 degrees to the right. Forward movement has been blocked 4 times by a wall_panel obstacle. The red circle target is still visible on the far wall ahead. Since I just moved backward, I should try moving forward again to see if the backward step helped me navigate around the obstacle, or I need to continue adjusting my torso rotation to find a passage. Let me try forward again.",
+      "action": "forward",
+      "confidence": 0.35
+    },
+    "action": "forward"
+  }
+]

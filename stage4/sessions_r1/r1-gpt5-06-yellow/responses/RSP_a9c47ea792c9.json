@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:30:37+08:00",
+    "latency_ms": 7162,
+    "payload_bytes": 173192,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A bright yellow right-pointing arrow sign is directly ahead on the far wall, very close. The lower edge of the wall panel and the doorway sides are visible; the carpeted floor is in front.\\\", \\\"reasoning\\\": \\\"Forward attempts are blocked by the wall panel, indicating I am already at the wall where the arrow is. The goal (reach the yellow arrow) is achieved; no further forward motion is possible or needed.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.63}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205835,\"id\":\"chatcmpl-EiDBjJpx4Urs9qtzo0FYeUBGOCeft\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":116,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":13,\"engine_ttft_ms\":290,\"engine_ttlt_ms\":1807,\"pre_inference_ms\":306,\"service_tbt_ms\":13,\"service_ttft_ms\":819,\"service_ttlt_ms\":2317,\"user_visible_ttft_ms\":512},\"prompt_tokens\":2364,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2480}}\n",
+    "content": "{\"scene_description\": \"A bright yellow right-pointing arrow sign is directly ahead on the far wall, very close. The lower edge of the wall panel and the doorway sides are visible; the carpeted floor is in front.\", \"reasoning\": \"Forward attempts are blocked by the wall panel, indicating I am already at the wall where the arrow is. The goal (reach the yellow arrow) is achieved; no further forward motion is possible or needed.\", \"action\": \"backward\", \"confidence\": 0.63}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A bright yellow right-pointing arrow sign is directly ahead on the far wall, very close. The lower edge of the wall panel and the doorway sides are visible; the carpeted floor is in front.",
+      "reasoning": "Forward attempts are blocked by the wall panel, indicating I am already at the wall where the arrow is. The goal (reach the yellow arrow) is achieved; no further forward motion is possible or needed.",
+      "action": "backward",
+      "confidence": 0.63
+    },
+    "action": "backward"
+  }
+]

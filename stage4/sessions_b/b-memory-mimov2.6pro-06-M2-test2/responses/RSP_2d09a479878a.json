@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:35:25+08:00",
+    "latency_ms": 11075,
+    "payload_bytes": 350154,
+    "finish_reason": "stop",
+    "reasoning_tokens": 43,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"bdac2e82-a679-4f75-839f-4fe8e83cbff9_5e29a22817d84a0ba4447b547ba21421\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpet leads straight ahead through a gap between two decorated panels to a small black square with a glowing red circle at floor level on the far wall. White paper markers lie on the carpet edges. The red circle appears close and centered.\\\", \\\"reasoning\\\": \\\"I am at x=3.5 with torso at 90° (narrow profile) and the red circle is immediately ahead at floor level. The previous forward steps succeeded through the opening; continuing forward should reach the circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"I'm at x=3.5, the red circle is very close ahead. Need one more forward step likely. Actually the circle looks close but maybe needs 2 steps. Let me just go forward.\"}}],\"created\":1794213324,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":164,\"prompt_tokens\":3765,\"total_tokens\":3929,\"completion_tokens_details\":{\"reasoning_tokens\":43},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpet leads straight ahead through a gap between two decorated panels to a small black square with a glowing red circle at floor level on the far wall. White paper markers lie on the carpet edges. The red circle appears close and centered.\", \"reasoning\": \"I am at x=3.5 with torso at 90° (narrow profile) and the red circle is immediately ahead at floor level. The previous forward steps succeeded through the opening; continuing forward should reach the circle.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "I'm at x=3.5, the red circle is very close ahead. Need one more forward step likely. Actually the circle looks close but maybe needs 2 steps. Let me just go forward.",
+    "parsed": {
+      "scene_description": "Red carpet leads straight ahead through a gap between two decorated panels to a small black square with a glowing red circle at floor level on the far wall. White paper markers lie on the carpet edges. The red circle appears close and centered.",
+      "reasoning": "I am at x=3.5 with torso at 90° (narrow profile) and the red circle is immediately ahead at floor level. The previous forward steps succeeded through the opening; continuing forward should reach the circle.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

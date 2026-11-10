@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:26:01+08:00",
+    "latency_ms": 7666,
+    "payload_bytes": 233876,
+    "finish_reason": "stop",
+    "reasoning_tokens": 93,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"19e64562-d51a-4e41-a285-9022db484bd2_bb91181e86ab4a788a8f9bc4e0661595\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead along the walking direction. A narrow opening in the far wall is directly ahead, with the green rectangle visible just beyond/through it on a raised floor. Red carpet covers the floor in front of me, flanked by patterned walls with geometric shapes on the left and right. The green rectangle appears close and centered in the opening.\\\", \\\"reasoning\\\": \\\"My torso remains at 0 degrees rotation (narrowest profile), which is ideal for the narrow opening ahead. The green rectangle is centered and close. I should continue walking straight forward without turning, as turning would only widen my body and risk getting stuck at the opening.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We're at x=5.75, been moving forward steadily. The green rectangle is ahead through a narrow opening. Keep going forward. Position 5.75 after 8 steps... started maybe at x=... 5.75 + 7 steps * 0.75 = started at 0.5? Anyway, continue forward.\\n\\nThe image shows the green rectangle through a narrow opening ahead, closer now. Continue forward.\"}}],\"created\":1794198361,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":247,\"prompt_tokens\":2421,\"total_tokens\":2668,\"completion_tokens_details\":{\"reasoning_tokens\":93},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead along the walking direction. A narrow opening in the far wall is directly ahead, with the green rectangle visible just beyond/through it on a raised floor. Red carpet covers the floor in front of me, flanked by patterned walls with geometric shapes on the left and right. The green rectangle appears close and centered in the opening.\", \"reasoning\": \"My torso remains at 0 degrees rotation (narrowest profile), which is ideal for the narrow opening ahead. The green rectangle is centered and close. I should continue walking straight forward without turning, as turning would only widen my body and risk getting stuck at the opening.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We're at x=5.75, been moving forward steadily. The green rectangle is ahead through a narrow opening. Keep going forward. Position 5.75 after 8 steps... started maybe at x=... 5.75 + 7 steps * 0.75 = started at 0.5? Anyway, continue forward.\n\nThe image shows the green rectangle through a narrow opening ahead, closer now. Continue forward.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead along the walking direction. A narrow opening in the far wall is directly ahead, with the green rectangle visible just beyond/through it on a raised floor. Red carpet covers the floor in front of me, flanked by patterned walls with geometric shapes on the left and right. The green rectangle appears close and centered in the opening.",
+      "reasoning": "My torso remains at 0 degrees rotation (narrowest profile), which is ideal for the narrow opening ahead. The green rectangle is centered and close. I should continue walking straight forward without turning, as turning would only widen my body and risk getting stuck at the opening.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

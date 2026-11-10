@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:04:05+08:00",
+    "latency_ms": 9250,
+    "payload_bytes": 164594,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"Directly ahead at floor level is a wall panel featuring a large red circle centered on it. The panel is very close in front of the robot at the end of a corridor; the path is straight and unobstructed except for the wall itself.\\\",\\\"reasoning\\\":\\\"The red circle target is immediately ahead on the wall panel. Previous forward attempts at this position were blocked, indicating the wall boundary is right in front. A small backward step creates space, then a forward step can re-approach if needed; however, to reach the circle, closing distance is necessary and we are already aligned. Given limited steps remaining, attempt to advance and make contact.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.56}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204241,\"id\":\"chatcmpl-EiCm1NYAEeXa9IVaBUzb4C1g515ym\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":154,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":13,\"engine_ttft_ms\":284,\"engine_ttlt_ms\":2274,\"pre_inference_ms\":424,\"service_tbt_ms\":13,\"service_ttft_ms\":1034,\"service_ttlt_ms\":3018,\"user_visible_ttft_ms\":610},\"prompt_tokens\":2530,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2684}}\n",
+    "content": "{\"scene_description\":\"Directly ahead at floor level is a wall panel featuring a large red circle centered on it. The panel is very close in front of the robot at the end of a corridor; the path is straight and unobstructed except for the wall itself.\",\"reasoning\":\"The red circle target is immediately ahead on the wall panel. Previous forward attempts at this position were blocked, indicating the wall boundary is right in front. A small backward step creates space, then a forward step can re-approach if needed; however, to reach the circle, closing distance is necessary and we are already aligned. Given limited steps remaining, attempt to advance and make contact.\",\"action\":\"forward\",\"confidence\":0.56}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "Directly ahead at floor level is a wall panel featuring a large red circle centered on it. The panel is very close in front of the robot at the end of a corridor; the path is straight and unobstructed except for the wall itself.",
+      "reasoning": "The red circle target is immediately ahead on the wall panel. Previous forward attempts at this position were blocked, indicating the wall boundary is right in front. A small backward step creates space, then a forward step can re-approach if needed; however, to reach the circle, closing distance is necessary and we are already aligned. Given limited steps remaining, attempt to advance and make contact.",
+      "action": "forward",
+      "confidence": 0.56
+    },
+    "action": "forward"
+  }
+]

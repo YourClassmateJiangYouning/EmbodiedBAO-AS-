@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:10:48+08:00",
+    "latency_ms": 2383,
+    "payload_bytes": 167433,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"3e008da0-caa5-476f-a070-28a212e91d0a\",\"object\":\"chat.completion\",\"created\":1794208247,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle is directly ahead, very close, mounted on a dark panel on the far wall. The floor in front is visible with a dark red carpet edge on the left.\\\", \\\"reasoning\\\": \\\"The previous forward step was blocked by a wall panel, but the goal triangle appears very close and slightly low. The blockage may be due to the torso being rotated 15 degrees, presenting a wide profile to a narrow gap. Straightening the torso back to 0 degrees should reduce the presented width and allow passage forward toward the triangle.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2194,\"completion_tokens\":128,\"total_tokens\":2322,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1426},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle is directly ahead, very close, mounted on a dark panel on the far wall. The floor in front is visible with a dark red carpet edge on the left.\", \"reasoning\": \"The previous forward step was blocked by a wall panel, but the goal triangle appears very close and slightly low. The blockage may be due to the torso being rotated 15 degrees, presenting a wide profile to a narrow gap. Straightening the torso back to 0 degrees should reduce the presented width and allow passage forward toward the triangle.\", \"action\": \"turn_right\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle is directly ahead, very close, mounted on a dark panel on the far wall. The floor in front is visible with a dark red carpet edge on the left.",
+      "reasoning": "The previous forward step was blocked by a wall panel, but the goal triangle appears very close and slightly low. The blockage may be due to the torso being rotated 15 degrees, presenting a wide profile to a narrow gap. Straightening the torso back to 0 degrees should reduce the presented width and allow passage forward toward the triangle.",
+      "action": "turn_right",
+      "confidence": 0.6
+    },
+    "action": "turn_right"
+  }
+]

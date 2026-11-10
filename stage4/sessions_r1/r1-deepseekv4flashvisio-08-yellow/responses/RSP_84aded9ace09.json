@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:10:11+08:00",
+    "latency_ms": 2445,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"6664da0d-eab3-44a3-abf4-176a5e9fbcdf\",\"object\":\"chat.completion\",\"created\":1794208210,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is very close and centered, mounted low on a dark wall panel above the red carpet; the sign fills much of the lower view.\\\", \\\"reasoning\\\": \\\"Forward steps keep being blocked by the wall panel even with the torso aligned at 0 degrees, and the arrow is extremely close. The sign is mounted low, so the goal may be reached by getting as close as possible rather than passing through. With only one step left, attempting forward once more is the best chance to reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3287,\"completion_tokens\":123,\"total_tokens\":3410,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2647},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is very close and centered, mounted low on a dark wall panel above the red carpet; the sign fills much of the lower view.\", \"reasoning\": \"Forward steps keep being blocked by the wall panel even with the torso aligned at 0 degrees, and the arrow is extremely close. The sign is mounted low, so the goal may be reached by getting as close as possible rather than passing through. With only one step left, attempting forward once more is the best chance to reach the goal.\", \"action\": \"forward\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is very close and centered, mounted low on a dark wall panel above the red carpet; the sign fills much of the lower view.",
+      "reasoning": "Forward steps keep being blocked by the wall panel even with the torso aligned at 0 degrees, and the arrow is extremely close. The sign is mounted low, so the goal may be reached by getting as close as possible rather than passing through. With only one step left, attempting forward once more is the best chance to reach the goal.",
+      "action": "forward",
+      "confidence": 0.4
+    },
+    "action": "forward"
+  }
+]

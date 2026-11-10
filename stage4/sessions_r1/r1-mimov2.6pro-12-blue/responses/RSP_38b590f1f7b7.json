@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:24:12+08:00",
+    "latency_ms": 5354,
+    "payload_bytes": 317352,
+    "finish_reason": "stop",
+    "reasoning_tokens": 10,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"6be0df64-f162-4ac7-8bb2-a38b791b3bd8_36c5e71447bd455782ae3ec078ba274c\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward an opening in a decorated wall, where a blue triangle sits on the far wall. The path is clear with no obstacles.\\\", \\\"reasoning\\\": \\\"The path remains clear and straight toward the blue triangle visible through the wall opening. I have moved forward 3 meters so far and should continue advancing.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear, keep going forward.\"}}],\"created\":1794137052,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":102,\"prompt_tokens\":2130,\"total_tokens\":2232,\"completion_tokens_details\":{\"reasoning_tokens\":10},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward an opening in a decorated wall, where a blue triangle sits on the far wall. The path is clear with no obstacles.\", \"reasoning\": \"The path remains clear and straight toward the blue triangle visible through the wall opening. I have moved forward 3 meters so far and should continue advancing.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear, keep going forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward an opening in a decorated wall, where a blue triangle sits on the far wall. The path is clear with no obstacles.",
+      "reasoning": "The path remains clear and straight toward the blue triangle visible through the wall opening. I have moved forward 3 meters so far and should continue advancing.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

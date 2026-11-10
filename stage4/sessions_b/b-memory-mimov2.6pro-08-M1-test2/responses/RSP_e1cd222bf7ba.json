@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:25:55+08:00",
+    "latency_ms": 7727,
+    "payload_bytes": 430107,
+    "finish_reason": "stop",
+    "reasoning_tokens": 93,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"01a31e2f-1198-400f-a32a-86dc925492ef_26f70fd3498b45ef8bf6b3619ba27985\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted corridor leads straight ahead toward an opening between decorated wall panels, with the green rectangle visible directly ahead at the far end. The carpet path is clear.\\\", \\\"reasoning\\\": \\\"The green rectangle is directly ahead and close. The path is clear, so I should continue forward without turning. Turning would only widen my body and risk getting stuck at the opening.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"{\\\"scene_description\\\": \\\"Red carpeted corridor leading to an opening in a decorated wall, with the green rectangle visible ahead at the far end; the path is clear.\\\", \\\"reasoning\\\": \\\"The green rectangle is straight ahead and the path is clear on the carpet. I should continue forward without turning, as turning would only widen my body. The goal appears to be just ahead.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"}}],\"created\":1794212755,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":190,\"prompt_tokens\":2804,\"total_tokens\":2994,\"completion_tokens_details\":{\"reasoning_tokens\":93},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted corridor leads straight ahead toward an opening between decorated wall panels, with the green rectangle visible directly ahead at the far end. The carpet path is clear.\", \"reasoning\": \"The green rectangle is directly ahead and close. The path is clear, so I should continue forward without turning. Turning would only widen my body and risk getting stuck at the opening.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "{\"scene_description\": \"Red carpeted corridor leading to an opening in a decorated wall, with the green rectangle visible ahead at the far end; the path is clear.\", \"reasoning\": \"The green rectangle is straight ahead and the path is clear on the carpet. I should continue forward without turning, as turning would only widen my body. The goal appears to be just ahead.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "parsed": {
+      "scene_description": "A red carpeted corridor leads straight ahead toward an opening between decorated wall panels, with the green rectangle visible directly ahead at the far end. The carpet path is clear.",
+      "reasoning": "The green rectangle is directly ahead and close. The path is clear, so I should continue forward without turning. Turning would only widen my body and risk getting stuck at the opening.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

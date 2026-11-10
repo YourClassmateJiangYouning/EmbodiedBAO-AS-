@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:17:37+08:00",
+    "latency_ms": 2549,
+    "payload_bytes": 245159,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"caf782b4-edac-4be7-b4a1-5099dfdcc6f6\",\"object\":\"chat.completion\",\"created\":1794208656,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is mounted on a low dark panel directly ahead, very close, with patterned walls on either side and a dark red carpeted floor in front. The sign panel sits low, blocking direct forward motion at body height.\\\", \\\"reasoning\\\": \\\"Forward steps keep being blocked by the low wall_panel holding the arrow, and turning cannot steer around it since walking direction is fixed. Backing up then moving forward succeeded once, so I just backed up; trying forward again may let me reach the goal if the panel is passable at this distance.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.35}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3018,\"completion_tokens\":132,\"total_tokens\":3150,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2378},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is mounted on a low dark panel directly ahead, very close, with patterned walls on either side and a dark red carpeted floor in front. The sign panel sits low, blocking direct forward motion at body height.\", \"reasoning\": \"Forward steps keep being blocked by the low wall_panel holding the arrow, and turning cannot steer around it since walking direction is fixed. Backing up then moving forward succeeded once, so I just backed up; trying forward again may let me reach the goal if the panel is passable at this distance.\", \"action\": \"forward\", \"confidence\": 0.35}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is mounted on a low dark panel directly ahead, very close, with patterned walls on either side and a dark red carpeted floor in front. The sign panel sits low, blocking direct forward motion at body height.",
+      "reasoning": "Forward steps keep being blocked by the low wall_panel holding the arrow, and turning cannot steer around it since walking direction is fixed. Backing up then moving forward succeeded once, so I just backed up; trying forward again may let me reach the goal if the panel is passable at this distance.",
+      "action": "forward",
+      "confidence": 0.35
+    },
+    "action": "forward"
+  }
+]

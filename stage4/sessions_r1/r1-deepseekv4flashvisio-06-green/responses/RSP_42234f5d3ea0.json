@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:14:10+08:00",
+    "latency_ms": 2700,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"4d068d4b-7d8f-4f2b-acae-ebeea63966d7\",\"object\":\"chat.completion\",\"created\":1794208448,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle is large and directly ahead, filling much of the view, but the last forward step was blocked by a wall panel, suggesting the body is too wide or misaligned to pass through the opening at the current torso rotation.\\\", \\\"reasoning\\\": \\\"Forward was blocked despite the target being close. The torso is rotated 30 degrees right, which may be presenting a wide diagonal profile to the narrow opening. I should adjust the torso rotation to better align the narrowest profile with the opening before trying forward again.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.5}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2384,\"completion_tokens\":125,\"total_tokens\":2509,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1744},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green rectangle is large and directly ahead, filling much of the view, but the last forward step was blocked by a wall panel, suggesting the body is too wide or misaligned to pass through the opening at the current torso rotation.\", \"reasoning\": \"Forward was blocked despite the target being close. The torso is rotated 30 degrees right, which may be presenting a wide diagonal profile to the narrow opening. I should adjust the torso rotation to better align the narrowest profile with the opening before trying forward again.\", \"action\": \"turn_left\", \"confidence\": 0.5}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green rectangle is large and directly ahead, filling much of the view, but the last forward step was blocked by a wall panel, suggesting the body is too wide or misaligned to pass through the opening at the current torso rotation.",
+      "reasoning": "Forward was blocked despite the target being close. The torso is rotated 30 degrees right, which may be presenting a wide diagonal profile to the narrow opening. I should adjust the torso rotation to better align the narrowest profile with the opening before trying forward again.",
+      "action": "turn_left",
+      "confidence": 0.5
+    },
+    "action": "turn_left"
+  }
+]

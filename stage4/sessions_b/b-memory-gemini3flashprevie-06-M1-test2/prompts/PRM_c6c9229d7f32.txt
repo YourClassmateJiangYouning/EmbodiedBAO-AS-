@@ -1,0 +1,51 @@
+You are a small wheeled robot. Your task is to reach the green rectangle on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the green rectangle on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the green rectangle on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the green rectangle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the green rectangle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the green rectangle you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+A previous successful traversal by the same model in this same scene and marker:
+
+1. look_down -> executed  |  The goal is the green rectangle at the end. Looking down will provide this information.
+2. turn_right -> executed  |  I will start by rotating to the right to see how the profile changes relative to my walking direction.
+3. turn_right -> executed  |  I have already rotated my torso to 15 degrees. I will perform another turn_right action to reach 0 degrees, then continue turning.
+4. turn_right -> executed  |  My current torso rotation is 30 degrees. I will continue rotating to the right in 15-degree increments.
+5. turn_right -> executed  |  My current torso rotation is 45 degrees. I will continue rotating to the right in 15-degree increments to reach that goal.
+6. turn_right -> executed  |  My current torso rotation is 60 degrees. I will continue rotating to the right in 15-degree increments to reach that goal.
+7. turn_right -> executed  |  My current torso rotation is 75 degrees. I will perform one more turn_right action to reach that 90-degree target before moving forward.
+8. forward -> executed  |  I will now begin moving forward toward the green rectangle.
+9. forward -> executed  |  I need to continue moving forward to reach the green rectangle at the end of the path.
+10. forward -> executed
+11. forward -> executed  |  I will continue to move forward to pass through the opening and reach the goal.
+12. forward -> executed  |  I need to continue moving forward to pass through the opening and reach the green rectangle.
+13. forward -> executed
+14. forward -> executed  |  I am very close to the opening and need to continue moving forward to pass through it and reach the green rectangle.
+15. forward -> executed  |  I must continue moving forward to pass through the opening and reach the green rectangle.
+16. forward -> executed  |  I have successfully entered the gap. I need to continue moving forward to reach the green rectangle at the end of the path.
+17. forward -> executed  |  I need to continue moving forward to reach the green rectangle target on the far wall.
+18. forward -> executed  |  The green rectangle is now very close. I will continue moving forward to reach the target.
+
+Current state:
+- position (x, y, z): [0.500, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 60.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (5 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: look_down -> executed | your reasoning: To pass through the narrow opening ahead, I need to minimize my width relative to the walking direction. I will first look down to assess my current body profile and orientation.
+- step 1: turn_right -> executed | your reasoning: Looking down confirms that at 0 degrees rotation, the robot is very wide due to the bumper and wheels. To pass through a narrow opening, I need to rotate the torso to present a narrower profile. I will begin rotating the torso to the right…
+- step 2: turn_right -> executed | your reasoning: My current torso rotation is 15 degrees. To pass through the narrow opening ahead, I need to present the narrowest possible profile, which occurs at a 90-degree rotation. I will continue rotating my torso to the right in 15-degree incremen…
+- step 3: turn_right -> executed | your reasoning: My current torso rotation is 30 degrees. To pass through the narrow opening ahead, I need to reach a 90-degree rotation to present the narrowest profile. I will continue rotating my torso to the right in 15-degree increments.
+- step 4: turn_right -> executed | your reasoning: My current torso rotation is 45 degrees. To pass through the narrow opening ahead, I need to reach a 90-degree rotation to present the narrowest profile. I will continue rotating my torso to the right in 15-degree increments.
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

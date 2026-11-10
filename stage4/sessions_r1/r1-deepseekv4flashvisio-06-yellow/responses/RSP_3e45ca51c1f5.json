@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:17:16+08:00",
+    "latency_ms": 2388,
+    "payload_bytes": 245159,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"8789435a-d455-474a-9c65-407c878e0d25\",\"object\":\"chat.completion\",\"created\":1794208635,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is mounted on a low dark panel directly ahead, with a dark doorway behind it and patterned walls on either side. The floor is dark red carpet.\\\", \\\"reasoning\\\": \\\"Forward steps have been repeatedly blocked by the low wall_panel holding the arrow, and turning does not change walking direction. The arrow is very close but the panel blocks direct forward motion. I just stepped backward, so I should try moving forward again to see if the position change allows progress toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2572,\"completion_tokens\":119,\"total_tokens\":2691,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1932},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is mounted on a low dark panel directly ahead, with a dark doorway behind it and patterned walls on either side. The floor is dark red carpet.\", \"reasoning\": \"Forward steps have been repeatedly blocked by the low wall_panel holding the arrow, and turning does not change walking direction. The arrow is very close but the panel blocks direct forward motion. I just stepped backward, so I should try moving forward again to see if the position change allows progress toward the goal.\", \"action\": \"forward\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is mounted on a low dark panel directly ahead, with a dark doorway behind it and patterned walls on either side. The floor is dark red carpet.",
+      "reasoning": "Forward steps have been repeatedly blocked by the low wall_panel holding the arrow, and turning does not change walking direction. The arrow is very close but the panel blocks direct forward motion. I just stepped backward, so I should try moving forward again to see if the position change allows progress toward the goal.",
+      "action": "forward",
+      "confidence": 0.4
+    },
+    "action": "forward"
+  }
+]

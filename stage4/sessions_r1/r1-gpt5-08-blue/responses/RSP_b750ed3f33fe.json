@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:11:50+08:00",
+    "latency_ms": 7947,
+    "payload_bytes": 212085,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A close view of a glowing blue triangle panel centered ahead at the base of the far wall, slightly recessed under a dark overhang. The red carpet leads directly to it, with a small raised lip at the wall edge.\\\", \\\"reasoning\\\": \\\"The target blue triangle is directly ahead at close range. Forward movement always goes toward it; a single forward step should reach/contact the triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.78}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204707,\"id\":\"chatcmpl-EiCtX5H54SSbpukzjfK5kLqii6o41\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":106,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":12,\"engine_ttft_ms\":319,\"engine_ttlt_ms\":1630,\"pre_inference_ms\":484,\"service_tbt_ms\":12,\"service_ttft_ms\":1197,\"service_ttlt_ms\":2501,\"user_visible_ttft_ms\":713},\"prompt_tokens\":2639,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2745}}\n",
+    "content": "{\"scene_description\": \"A close view of a glowing blue triangle panel centered ahead at the base of the far wall, slightly recessed under a dark overhang. The red carpet leads directly to it, with a small raised lip at the wall edge.\", \"reasoning\": \"The target blue triangle is directly ahead at close range. Forward movement always goes toward it; a single forward step should reach/contact the triangle.\", \"action\": \"forward\", \"confidence\": 0.78}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A close view of a glowing blue triangle panel centered ahead at the base of the far wall, slightly recessed under a dark overhang. The red carpet leads directly to it, with a small raised lip at the wall edge.",
+      "reasoning": "The target blue triangle is directly ahead at close range. Forward movement always goes toward it; a single forward step should reach/contact the triangle.",
+      "action": "forward",
+      "confidence": 0.78
+    },
+    "action": "forward"
+  }
+]

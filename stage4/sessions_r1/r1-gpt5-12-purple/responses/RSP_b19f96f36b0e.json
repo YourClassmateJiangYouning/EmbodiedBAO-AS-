@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:26:35+08:00",
+    "latency_ms": 7474,
+    "payload_bytes": 288548,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A straight corridor with a red carpet leads to a rectangular opening ahead. Beyond the opening, a black sign with a glowing purple four-pointed star is centered and clearly visible. The passageway appears unobstructed, with patterned walls on both sides and some white sheets on the left floor area, but the central path is clear.\\\", \\\"reasoning\\\": \\\"The goal star is straight ahead and the central corridor remains clear. Continuing forward moves me closer efficiently without needing torso adjustments.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.7}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198392,\"id\":\"chatcmpl-EiBFgOAYRPOw1tiA1RnwMw8iwE2Jd\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261027053535-fb88dfcf-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":123,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":13,\"engine_ttft_ms\":241,\"engine_ttlt_ms\":1832,\"pre_inference_ms\":370,\"service_tbt_ms\":13,\"service_ttft_ms\":876,\"service_ttlt_ms\":2461,\"user_visible_ttft_ms\":506},\"prompt_tokens\":1744,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1867}}\n",
+    "content": "{\"scene_description\": \"A straight corridor with a red carpet leads to a rectangular opening ahead. Beyond the opening, a black sign with a glowing purple four-pointed star is centered and clearly visible. The passageway appears unobstructed, with patterned walls on both sides and some white sheets on the left floor area, but the central path is clear.\", \"reasoning\": \"The goal star is straight ahead and the central corridor remains clear. Continuing forward moves me closer efficiently without needing torso adjustments.\", \"action\": \"forward\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight corridor with a red carpet leads to a rectangular opening ahead. Beyond the opening, a black sign with a glowing purple four-pointed star is centered and clearly visible. The passageway appears unobstructed, with patterned walls on both sides and some white sheets on the left floor area, but the central path is clear.",
+      "reasoning": "The goal star is straight ahead and the central corridor remains clear. Continuing forward moves me closer efficiently without needing torso adjustments.",
+      "action": "forward",
+      "confidence": 0.7
+    },
+    "action": "forward"
+  }
+]

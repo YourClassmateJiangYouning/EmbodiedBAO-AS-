@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:02:17+08:00",
+    "latency_ms": 6380,
+    "payload_bytes": 364679,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081102117434990798268d9d66rDhJnu4\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135737,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading to a narrow vertical opening in a patterned wall. Through the opening, a purple four-pointed star is visible on the far wall. The robot is currently at x=1.25, still some distance from the gap.\\\", \\\"reasoning\\\": \\\"My torso rotation is currently 30.0 degrees. To fit through the narrow vertical gap ahead, I need to rotate my torso to a 90-degree angle to present my narrowest profile. I will continue rotating to the right before I get too close to the opening.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2323,\"completion_tokens\":140,\"total_tokens\":2463,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2323,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":140,\"totalTokenCount\":2463,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1234}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":140}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1234,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":140,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted walkway leading to a narrow vertical opening in a patterned wall. Through the opening, a purple four-pointed star is visible on the far wall. The robot is currently at x=1.25, still some distance from the gap.\", \"reasoning\": \"My torso rotation is currently 30.0 degrees. To fit through the narrow vertical gap ahead, I need to rotate my torso to a 90-degree angle to present my narrowest profile. I will continue rotating to the right before I get too close to the opening.\", \"action\": \"turn_right\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading to a narrow vertical opening in a patterned wall. Through the opening, a purple four-pointed star is visible on the far wall. The robot is currently at x=1.25, still some distance from the gap.",
+      "reasoning": "My torso rotation is currently 30.0 degrees. To fit through the narrow vertical gap ahead, I need to rotate my torso to a 90-degree angle to present my narrowest profile. I will continue rotating to the right before I get too close to the opening.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

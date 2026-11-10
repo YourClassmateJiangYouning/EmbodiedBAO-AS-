@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:27:54+08:00",
+    "latency_ms": 6142,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090827495329883128268d9d6jiN3Rkxd\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212874,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking down at the robot's own body on a red carpet. A wide white foam bumper is visible at the front, extending significantly beyond the width of the two black wheels. The robot's internal wiring and chassis are also visible.\\\", \\\"reasoning\\\": \\\"Looking down confirms that my body is very wide at a 0-degree rotation due to the foam bumper. To pass through the narrow opening ahead, I need to rotate my torso to present a thinner profile. I will start rotating now before I reach the gap.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2354,\"completion_tokens\":131,\"total_tokens\":2485,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2354,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":131,\"totalTokenCount\":2485,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1265},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":131}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1265,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":131,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking down at the robot's own body on a red carpet. A wide white foam bumper is visible at the front, extending significantly beyond the width of the two black wheels. The robot's internal wiring and chassis are also visible.\", \"reasoning\": \"Looking down confirms that my body is very wide at a 0-degree rotation due to the foam bumper. To pass through the narrow opening ahead, I need to rotate my torso to present a thinner profile. I will start rotating now before I reach the gap.\", \"action\": \"turn_left\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body on a red carpet. A wide white foam bumper is visible at the front, extending significantly beyond the width of the two black wheels. The robot's internal wiring and chassis are also visible.",
+      "reasoning": "Looking down confirms that my body is very wide at a 0-degree rotation due to the foam bumper. To pass through the narrow opening ahead, I need to rotate my torso to present a thinner profile. I will start rotating now before I reach the gap.",
+      "action": "turn_left",
+      "confidence": 1.0
+    },
+    "action": "turn_left"
+  }
+]

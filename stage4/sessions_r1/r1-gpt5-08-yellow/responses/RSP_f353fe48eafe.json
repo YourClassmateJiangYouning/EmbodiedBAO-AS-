@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:07:38+08:00",
+    "latency_ms": 8621,
+    "payload_bytes": 216006,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A dark doorway or opening is directly ahead with a glowing yellow right-pointing arrow sign placed low at the base of the far wall/opening. A red carpet leads up to the threshold, with its left edge slightly peeled up. Panels with patterns frame the opening on both sides. The arrow is very close, just beyond the carpet edge.\\\", \\\"reasoning\\\": \\\"The arrow is immediately ahead at the far wall/threshold; previous forwards at this range were blocked because I was already at the wall. From the current x position slightly back from contact, one more forward step should bring me right up to or into contact with the arrow location.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.73}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204454,\"id\":\"chatcmpl-EiCpSA3pbQExgGEE2mpfIuSyiCnU1\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261011042431-15e79446-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":156,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":11,\"engine_ttft_ms\":504,\"engine_ttlt_ms\":2246,\"pre_inference_ms\":486,\"service_tbt_ms\":11,\"service_ttft_ms\":1471,\"service_ttlt_ms\":3171,\"user_visible_ttft_ms\":985},\"prompt_tokens\":2583,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2739}}\n",
+    "content": "{\"scene_description\": \"A dark doorway or opening is directly ahead with a glowing yellow right-pointing arrow sign placed low at the base of the far wall/opening. A red carpet leads up to the threshold, with its left edge slightly peeled up. Panels with patterns frame the opening on both sides. The arrow is very close, just beyond the carpet edge.\", \"reasoning\": \"The arrow is immediately ahead at the far wall/threshold; previous forwards at this range were blocked because I was already at the wall. From the current x position slightly back from contact, one more forward step should bring me right up to or into contact with the arrow location.\", \"action\": \"forward\", \"confidence\": 0.73}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A dark doorway or opening is directly ahead with a glowing yellow right-pointing arrow sign placed low at the base of the far wall/opening. A red carpet leads up to the threshold, with its left edge slightly peeled up. Panels with patterns frame the opening on both sides. The arrow is very close, just beyond the carpet edge.",
+      "reasoning": "The arrow is immediately ahead at the far wall/threshold; previous forwards at this range were blocked because I was already at the wall. From the current x position slightly back from contact, one more forward step should bring me right up to or into contact with the arrow location.",
+      "action": "forward",
+      "confidence": 0.73
+    },
+    "action": "forward"
+  }
+]

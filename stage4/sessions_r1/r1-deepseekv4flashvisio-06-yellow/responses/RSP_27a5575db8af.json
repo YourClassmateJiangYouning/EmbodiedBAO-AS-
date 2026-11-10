@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:17:48+08:00",
+    "latency_ms": 2283,
+    "payload_bytes": 173192,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"49c4f95c-9dc7-4e24-8351-5e28eba58ea9\",\"object\":\"chat.completion\",\"created\":1794208667,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is directly ahead and very close, mounted on a low dark panel that blocks the path at body height. The floor and side walls are visible around it.\\\", \\\"reasoning\\\": \\\"The arrow is extremely close and centered, but forward steps are repeatedly blocked by the low wall_panel. Backing up then moving forward has succeeded intermittently, so I will back up once more to reset distance before attempting a final forward approach.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.5}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3271,\"completion_tokens\":109,\"total_tokens\":3380,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2631},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is directly ahead and very close, mounted on a low dark panel that blocks the path at body height. The floor and side walls are visible around it.\", \"reasoning\": \"The arrow is extremely close and centered, but forward steps are repeatedly blocked by the low wall_panel. Backing up then moving forward has succeeded intermittently, so I will back up once more to reset distance before attempting a final forward approach.\", \"action\": \"backward\", \"confidence\": 0.5}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is directly ahead and very close, mounted on a low dark panel that blocks the path at body height. The floor and side walls are visible around it.",
+      "reasoning": "The arrow is extremely close and centered, but forward steps are repeatedly blocked by the low wall_panel. Backing up then moving forward has succeeded intermittently, so I will back up once more to reset distance before attempting a final forward approach.",
+      "action": "backward",
+      "confidence": 0.5
+    },
+    "action": "backward"
+  }
+]

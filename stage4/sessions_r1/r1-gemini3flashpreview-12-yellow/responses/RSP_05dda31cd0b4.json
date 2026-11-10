@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:17:38+08:00",
+    "latency_ms": 6022,
+    "payload_bytes": 386357,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081017330247339168268d9d6XG1VNkoD\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133058,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"A long red carpet leads toward a narrow opening between two patterned walls. A yellow arrow is visible on the floor at the far end of the carpet, pointing to the right. The opening appears quite narrow compared to the width of the carpet.\\\",\\n  \\\"reasoning\\\": \\\"I need to reach the yellow arrow. Before I approach the narrow opening, I must determine my body's width and orientation to ensure I can fit through. I will use 'look_down' to see my current profile.\\\",\\n  \\\"action\\\": \\\"look_down\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1974,\"completion_tokens\":131,\"total_tokens\":2105,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":1974,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":131,\"totalTokenCount\":2105,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":885},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":131}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":885,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":131,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"A long red carpet leads toward a narrow opening between two patterned walls. A yellow arrow is visible on the floor at the far end of the carpet, pointing to the right. The opening appears quite narrow compared to the width of the carpet.\",\n  \"reasoning\": \"I need to reach the yellow arrow. Before I approach the narrow opening, I must determine my body's width and orientation to ensure I can fit through. I will use 'look_down' to see my current profile.\",\n  \"action\": \"look_down\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpet leads toward a narrow opening between two patterned walls. A yellow arrow is visible on the floor at the far end of the carpet, pointing to the right. The opening appears quite narrow compared to the width of the carpet.",
+      "reasoning": "I need to reach the yellow arrow. Before I approach the narrow opening, I must determine my body's width and orientation to ensure I can fit through. I will use 'look_down' to see my current profile.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

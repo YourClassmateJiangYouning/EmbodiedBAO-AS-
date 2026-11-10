@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:15+08:00",
+    "latency_ms": 2485,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"53ed9dd5-ccfc-4591-b257-ee50cb67f10b\",\"object\":\"chat.completion\",\"created\":1794208154,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is now large and close, mounted on the far wall directly ahead, with the red carpet leading up to it. The doorway has been passed and the path to the arrow is clear.\\\", \\\"reasoning\\\": \\\"The yellow arrow is directly ahead and very close. My torso is aligned at 0 degrees and the path is clear, so continuing forward should bring me to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2095,\"completion_tokens\":99,\"total_tokens\":2194,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1327},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is now large and close, mounted on the far wall directly ahead, with the red carpet leading up to it. The doorway has been passed and the path to the arrow is clear.\", \"reasoning\": \"The yellow arrow is directly ahead and very close. My torso is aligned at 0 degrees and the path is clear, so continuing forward should bring me to the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is now large and close, mounted on the far wall directly ahead, with the red carpet leading up to it. The doorway has been passed and the path to the arrow is clear.",
+      "reasoning": "The yellow arrow is directly ahead and very close. My torso is aligned at 0 degrees and the path is clear, so continuing forward should bring me to the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

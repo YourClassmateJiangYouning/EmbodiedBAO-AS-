@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:18:26+08:00",
+    "latency_ms": 2296,
+    "payload_bytes": 177406,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"98d39de8-4e37-474d-b6f3-4ccac13e28e3\",\"object\":\"chat.completion\",\"created\":1794208705,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle on the far wall is now large and close, centered ahead through a narrow opening between dark walls. The red path leads directly to it.\\\", \\\"reasoning\\\": \\\"The goal is very close and aligned with the walking direction. Continuing forward should reach the blue triangle; no turning is needed.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2143,\"completion_tokens\":80,\"total_tokens\":2223,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1375},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle on the far wall is now large and close, centered ahead through a narrow opening between dark walls. The red path leads directly to it.\", \"reasoning\": \"The goal is very close and aligned with the walking direction. Continuing forward should reach the blue triangle; no turning is needed.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle on the far wall is now large and close, centered ahead through a narrow opening between dark walls. The red path leads directly to it.",
+      "reasoning": "The goal is very close and aligned with the walking direction. Continuing forward should reach the blue triangle; no turning is needed.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

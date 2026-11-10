@@ -1,0 +1,52 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:28:30+08:00",
+    "latency_ms": 90012,
+    "payload_bytes": 439542,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "TimeoutError: timed out",
+    "json_mode": null,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T15:30:01+08:00",
+    "latency_ms": 90009,
+    "payload_bytes": 439542,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "TimeoutError: timed out",
+    "json_mode": null,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 3,
+    "started_at": "2026-11-09T15:30:18+08:00",
+    "latency_ms": 16673,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 302,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n{\"id\":\"1d8185a4-145f-494d-a2b8-c5faf87602d7_0df847f7b5884709a944ec3f791b20a2\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The look_down glance shows my own body from the front: a wide flat white plate on top extending well beyond the two wheels, sitting on the red carpet. The wide plate is what is blocking the narrow opening ahead, since at 0 degrees rotation it presents its full width.\\\", \\\"reasoning\\\": \\\"Forward is blocked by the wall_panel at x=7.25 because my wide plate presents its full width to the narrow opening. To fit through, I must present my body's thin side by rotating my torso 90 degrees, but turning is not allowed once shoulders are inside the opening. So I must first back up to gain room to turn, then rotate 90 degrees (6 x 15 degrees), then move forward again.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.7}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are blocked at the opening. The look_down shows a wide flat plate. The problem: the opening is too narrow for the current width. We need to rotate the torso so the narrow side faces the opening. But turning is not allowed once shoulders are inside the opening. Since we're blocked at x=7.25, we might need to back up to gain room to turn, then turn 90 degrees so the narrow profile passes through.\\n\\nWe cannot turn once shoulders are inside the opening. So we should back up first (backward), then turn, then go forward. Let's do backward first.\\n\\nActually the state says head extra downward pitch is 45 - the look_down is currently showing. So this image is the look_down view showing our wide plate body. The next action clears the glance.\\n\\nPlan: back up one step, then turn left/right 90 degrees (6 turns of 15 degrees) to present thin profile, then forward. But turn is 15 degrees each, 6 steps to reach 90. Steps remaining: 30-12 = 18. Back up 1, turn 6, forward 1 = 8 steps. Feasible.\\n\\nBut wait - rotation only changes width presented to what's ahead. Turning 90 degrees presents thickness instead of width. The plate is wide but the body thickness might be smaller. Let's back up first to make room for turning.\\n\\nAction: backward.\"}}],\"created\":1794209418,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":476,\"prompt_tokens\":2679,\"total_tokens\":3155,\"completion_tokens_details\":{\"reasoning_tokens\":302},\"prompt_tokens_details\":{\"cached_tokens\":2560,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The look_down glance shows my own body from the front: a wide flat white plate on top extending well beyond the two wheels, sitting on the red carpet. The wide plate is what is blocking the narrow opening ahead, since at 0 degrees rotation it presents its full width.\", \"reasoning\": \"Forward is blocked by the wall_panel at x=7.25 because my wide plate presents its full width to the narrow opening. To fit through, I must present my body's thin side by rotating my torso 90 degrees, but turning is not allowed once shoulders are inside the opening. So I must first back up to gain room to turn, then rotate 90 degrees (6 x 15 degrees), then move forward again.\", \"action\": \"backward\", \"confidence\": 0.7}",
+    "reasoning_content": "We are blocked at the opening. The look_down shows a wide flat plate. The problem: the opening is too narrow for the current width. We need to rotate the torso so the narrow side faces the opening. But turning is not allowed once shoulders are inside the opening. Since we're blocked at x=7.25, we might need to back up to gain room to turn, then turn 90 degrees so the narrow profile passes through.\n\nWe cannot turn once shoulders are inside the opening. So we should back up first (backward), then turn, then go forward. Let's do backward first.\n\nActually the state says head extra downward pitch is 45 - the look_down is currently showing. So this image is the look_down view showing our wide plate body. The next action clears the glance.\n\nPlan: back up one step, then turn left/right 90 degrees (6 turns of 15 degrees) to present thin profile, then forward. But turn is 15 degrees each, 6 steps to reach 90. Steps remaining: 30-12 = 18. Back up 1, turn 6, forward 1 = 8 steps. Feasible.\n\nBut wait - rotation only changes width presented to what's ahead. Turning 90 degrees presents thickness instead of width. The plate is wide but the body thickness might be smaller. Let's back up first to make room for turning.\n\nAction: backward.",
+    "parsed": {
+      "scene_description": "The look_down glance shows my own body from the front: a wide flat white plate on top extending well beyond the two wheels, sitting on the red carpet. The wide plate is what is blocking the narrow opening ahead, since at 0 degrees rotation it presents its full width.",
+      "reasoning": "Forward is blocked by the wall_panel at x=7.25 because my wide plate presents its full width to the narrow opening. To fit through, I must present my body's thin side by rotating my torso 90 degrees, but turning is not allowed once shoulders are inside the opening. So I must first back up to gain room to turn, then rotate 90 degrees (6 x 15 degrees), then move forward again.",
+      "action": "backward",
+      "confidence": 0.7
+    },
+    "action": "backward"
+  }
+]

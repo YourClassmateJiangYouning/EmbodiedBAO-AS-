@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:05:42+08:00",
+    "latency_ms": 1979,
+    "payload_bytes": 256909,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"c020d03b-31c0-4420-ae03-bb026d0f1a93\",\"object\":\"chat.completion\",\"created\":1794207941,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is directly ahead and very close, filling the lower center of the view on a dark mat against the light floor.\\\", \\\"reasoning\\\": \\\"The star is immediately in front along the fixed walking direction. One more forward step should reach it; no turning is needed.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2049,\"completion_tokens\":78,\"total_tokens\":2127,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1281},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is directly ahead and very close, filling the lower center of the view on a dark mat against the light floor.\", \"reasoning\": \"The star is immediately in front along the fixed walking direction. One more forward step should reach it; no turning is needed.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is directly ahead and very close, filling the lower center of the view on a dark mat against the light floor.",
+      "reasoning": "The star is immediately in front along the fixed walking direction. One more forward step should reach it; no turning is needed.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:46:09+08:00",
+    "latency_ms": 8877,
+    "payload_bytes": 383069,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090846042150439728268d9d6gLIZGKpk\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213970,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"A red carpeted path leads toward a narrow opening in a wall decorated with geometric patterns. A blue triangle is visible on the floor through the opening. The robot is currently at the start of the path with a 0-degree torso rotation.\\\",\\n  \\\"reasoning\\\": \\\"The goal is to reach the blue triangle. I need to move forward, but I also need to ensure I can fit through the narrow opening ahead. I will start by moving forward to get closer while I prepare to adjust my torso rotation.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2900,\"completion_tokens\":132,\"total_tokens\":3032,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2900,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":132,\"totalTokenCount\":3032,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1811},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":132}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1811,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":132,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"A red carpeted path leads toward a narrow opening in a wall decorated with geometric patterns. A blue triangle is visible on the floor through the opening. The robot is currently at the start of the path with a 0-degree torso rotation.\",\n  \"reasoning\": \"The goal is to reach the blue triangle. I need to move forward, but I also need to ensure I can fit through the narrow opening ahead. I will start by moving forward to get closer while I prepare to adjust my torso rotation.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted path leads toward a narrow opening in a wall decorated with geometric patterns. A blue triangle is visible on the floor through the opening. The robot is currently at the start of the path with a 0-degree torso rotation.",
+      "reasoning": "The goal is to reach the blue triangle. I need to move forward, but I also need to ensure I can fit through the narrow opening ahead. I will start by moving forward to get closer while I prepare to adjust my torso rotation.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

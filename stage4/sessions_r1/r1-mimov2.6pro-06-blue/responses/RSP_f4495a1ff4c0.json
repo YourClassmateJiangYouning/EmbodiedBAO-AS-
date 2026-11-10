@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:26:12+08:00",
+    "latency_ms": 5003,
+    "payload_bytes": 383349,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-08T21:26:30+08:00",
+    "latency_ms": 17083,
+    "payload_bytes": 383349,
+    "finish_reason": "stop",
+    "reasoning_tokens": 378,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n{\"id\":\"d632198d-69b1-4f70-8de8-9875fe1127bc_437a300194464bfead81370477b9da8b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a dark narrow opening in the far wall, where a small blue triangle is visible beyond. The floor to the left has a colorful patterned design with white and purple shapes. The opening appears narrow and appears to require the robot to present a thin profile to pass through.\\\", \\\"reasoning\\\": \\\"I'm at 75 degrees torso rotation after 5 turn_left steps, aiming to reach 90 degrees to present my thinnest profile perpendicular to the walking direction before entering the narrow opening. One more turn_left reaches 90 degrees, and I'm still well before the opening, so turning is permitted. After reaching 90 degrees I will proceed forward through the opening.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The camera shows a red carpet walkway ahead toward a dark narrow opening with a blue triangle visible beyond it. My torso is at 75 degrees rotation. I need to present the thinnest profile when passing through the opening. To be thin, I want torso at 90 degrees (perpendicular to walking direction). I'm at 75, so one more turn_left to reach 90. But wait - \\\"turn_left\\\" is described as rotating 15 degrees to the left. Currently at 75 degrees - presumably rotations were done with turn_left giving positive angles? The state says torso rotation 75.0 degrees. To reach 90, one more turn_left should give 90. But can I turn once shoulders are inside the opening? I'm not yet at the opening, so turning is fine.\\n\\nLet me do one more turn_left to reach 90 degrees, then proceed forward through the opening.\\n\\nActually, wait. Let me think about which direction of rotation makes the body narrower. If rotating left gives positive angle values, and I started at 0 and did 5 turn_lefts to get to 75, then one more turn_left gives 90 degrees - the thinnest profile (body perpendicular to travel direction).\\n\\nThe scene: red carpet walkway ahead, patterned floor on left, dark narrow opening in the far wall with blue triangle visible through it. I should turn once more to reach 90 degrees, then go forward.\\n\\nBut actually - the instructions say \\\"Rotating needs room, so you cannot turn once your shoulders are inside the opening.\\\" I'm still approaching, so I can turn. Let me do the final turn to 90 degrees.\\n\\nConfidence: the opening looks narrow. Reaching 90 degrees gives minimal width. I'll do turn_left.\"}}],\"created\":1794144389,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":549,\"prompt_tokens\":2342,\"total_tokens\":2891,\"completion_tokens_details\":{\"reasoning_tokens\":378},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a dark narrow opening in the far wall, where a small blue triangle is visible beyond. The floor to the left has a colorful patterned design with white and purple shapes. The opening appears narrow and appears to require the robot to present a thin profile to pass through.\", \"reasoning\": \"I'm at 75 degrees torso rotation after 5 turn_left steps, aiming to reach 90 degrees to present my thinnest profile perpendicular to the walking direction before entering the narrow opening. One more turn_left reaches 90 degrees, and I'm still well before the opening, so turning is permitted. After reaching 90 degrees I will proceed forward through the opening.\", \"action\": \"turn_left\", \"confidence\": 0.85}",
+    "reasoning_content": "The camera shows a red carpet walkway ahead toward a dark narrow opening with a blue triangle visible beyond it. My torso is at 75 degrees rotation. I need to present the thinnest profile when passing through the opening. To be thin, I want torso at 90 degrees (perpendicular to walking direction). I'm at 75, so one more turn_left to reach 90. But wait - \"turn_left\" is described as rotating 15 degrees to the left. Currently at 75 degrees - presumably rotations were done with turn_left giving positive angles? The state says torso rotation 75.0 degrees. To reach 90, one more turn_left should give 90. But can I turn once shoulders are inside the opening? I'm not yet at the opening, so turning is fine.\n\nLet me do one more turn_left to reach 90 degrees, then proceed forward through the opening.\n\nActually, wait. Let me think about which direction of rotation makes the body narrower. If rotating left gives positive angle values, and I started at 0 and did 5 turn_lefts to get to 75, then one more turn_left gives 90 degrees - the thinnest profile (body perpendicular to travel direction).\n\nThe scene: red carpet walkway ahead, patterned floor on left, dark narrow opening in the far wall with blue triangle visible through it. I should turn once more to reach 90 degrees, then go forward.\n\nBut actually - the instructions say \"Rotating needs room, so you cannot turn once your shoulders are inside the opening.\" I'm still approaching, so I can turn. Let me do the final turn to 90 degrees.\n\nConfidence: the opening looks narrow. Reaching 90 degrees gives minimal width. I'll do turn_left.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a dark narrow opening in the far wall, where a small blue triangle is visible beyond. The floor to the left has a colorful patterned design with white and purple shapes. The opening appears narrow and appears to require the robot to present a thin profile to pass through.",
+      "reasoning": "I'm at 75 degrees torso rotation after 5 turn_left steps, aiming to reach 90 degrees to present my thinnest profile perpendicular to the walking direction before entering the narrow opening. One more turn_left reaches 90 degrees, and I'm still well before the opening, so turning is permitted. After reaching 90 degrees I will proceed forward through the opening.",
+      "action": "turn_left",
+      "confidence": 0.85
+    },
+    "action": "turn_left"
+  }
+]

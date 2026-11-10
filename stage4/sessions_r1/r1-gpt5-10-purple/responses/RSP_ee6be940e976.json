@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:33:59+08:00",
+    "latency_ms": 5222,
+    "payload_bytes": 261878,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A purple four-pointed star on a black sign is directly ahead on the far wall, low to the ground. The floor is clear with a red mat in the foreground and open space between the robot and the star.\\\", \\\"reasoning\\\": \\\"The goal star is straight ahead with no visible obstruction; moving forward brings me closer along the fixed walking direction.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.86}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198837,\"id\":\"chatcmpl-EiBMrZSYZGvExeM60lWvbYAxjWQYv\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":99,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":380,\"engine_ttlt_ms\":1201,\"pre_inference_ms\":413,\"service_tbt_ms\":8,\"service_ttft_ms\":961,\"service_ttlt_ms\":1760,\"user_visible_ttft_ms\":548},\"prompt_tokens\":1971,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2070}}\n",
+    "content": "{\"scene_description\": \"A purple four-pointed star on a black sign is directly ahead on the far wall, low to the ground. The floor is clear with a red mat in the foreground and open space between the robot and the star.\", \"reasoning\": \"The goal star is straight ahead with no visible obstruction; moving forward brings me closer along the fixed walking direction.\", \"action\": \"forward\", \"confidence\": 0.86}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A purple four-pointed star on a black sign is directly ahead on the far wall, low to the ground. The floor is clear with a red mat in the foreground and open space between the robot and the star.",
+      "reasoning": "The goal star is straight ahead with no visible obstruction; moving forward brings me closer along the fixed walking direction.",
+      "action": "forward",
+      "confidence": 0.86
+    },
+    "action": "forward"
+  }
+]

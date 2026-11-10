@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:35:41+08:00",
+    "latency_ms": 5573,
+    "payload_bytes": 162766,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090835363685899288268d9d64vRXkWXi\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213341,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is now very close to the yellow arrow, which is mounted on a dark rectangular board against a dark wall. The arrow points to the right and is brightly illuminated.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=8.0, having successfully navigated through the narrow gap with my torso rotated to 90 degrees. I am now directly in front of the yellow arrow, which was my target. I will move forward one last time to reach the goal.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3133,\"completion_tokens\":125,\"total_tokens\":3258,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3133,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":125,\"totalTokenCount\":3258,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2044},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":125}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2044,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":125,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is now very close to the yellow arrow, which is mounted on a dark rectangular board against a dark wall. The arrow points to the right and is brightly illuminated.\",\n  \"reasoning\": \"I am at position x=8.0, having successfully navigated through the narrow gap with my torso rotated to 90 degrees. I am now directly in front of the yellow arrow, which was my target. I will move forward one last time to reach the goal.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is now very close to the yellow arrow, which is mounted on a dark rectangular board against a dark wall. The arrow points to the right and is brightly illuminated.",
+      "reasoning": "I am at position x=8.0, having successfully navigated through the narrow gap with my torso rotated to 90 degrees. I am now directly in front of the yellow arrow, which was my target. I will move forward one last time to reach the goal.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

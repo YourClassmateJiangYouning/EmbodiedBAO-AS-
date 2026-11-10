@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:22:39+08:00",
+    "latency_ms": 10166,
+    "payload_bytes": 212085,
+    "finish_reason": "stop",
+    "reasoning_tokens": 106,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"8ecde82c-bf7c-426b-9677-282c0d720691_61969ba4668346c4a1098bc944d4f082\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead down the walkway toward the blue triangle, which is now very close, sitting on a dark panel on the far wall just beyond the narrow doorway opening. Patterned wall panels frame the opening on the left and right, and the red carpeted floor is clear and unobstructed between me and the threshold.\\\", \\\"reasoning\\\": \\\"I am right at the opening with the torso rotated 90 degrees so my thinner front-to-back dimension faces the narrow doorway. The blue triangle is just beyond the threshold on a clear carpeted path, so I continue walking forward toward it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We're at x=6.5, 16 steps taken, 14 left. The blue triangle appears very close ahead, just through the opening. Torso is at 90 degrees presenting the thinner dimension. We are basically at the doorway. Maybe one or two more forwards. The triangle looks like it might be right in front. Let's move forward.\\n\\nThe view shows the blue triangle on the far wall just ahead, with the doorway frames on both sides. The floor is clear. Continue forward.\"}}],\"created\":1794205359,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":251,\"prompt_tokens\":2907,\"total_tokens\":3158,\"completion_tokens_details\":{\"reasoning_tokens\":106},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead down the walkway toward the blue triangle, which is now very close, sitting on a dark panel on the far wall just beyond the narrow doorway opening. Patterned wall panels frame the opening on the left and right, and the red carpeted floor is clear and unobstructed between me and the threshold.\", \"reasoning\": \"I am right at the opening with the torso rotated 90 degrees so my thinner front-to-back dimension faces the narrow doorway. The blue triangle is just beyond the threshold on a clear carpeted path, so I continue walking forward toward it.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "We're at x=6.5, 16 steps taken, 14 left. The blue triangle appears very close ahead, just through the opening. Torso is at 90 degrees presenting the thinner dimension. We are basically at the doorway. Maybe one or two more forwards. The triangle looks like it might be right in front. Let's move forward.\n\nThe view shows the blue triangle on the far wall just ahead, with the doorway frames on both sides. The floor is clear. Continue forward.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead down the walkway toward the blue triangle, which is now very close, sitting on a dark panel on the far wall just beyond the narrow doorway opening. Patterned wall panels frame the opening on the left and right, and the red carpeted floor is clear and unobstructed between me and the threshold.",
+      "reasoning": "I am right at the opening with the torso rotated 90 degrees so my thinner front-to-back dimension faces the narrow doorway. The blue triangle is just beyond the threshold on a clear carpeted path, so I continue walking forward toward it.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

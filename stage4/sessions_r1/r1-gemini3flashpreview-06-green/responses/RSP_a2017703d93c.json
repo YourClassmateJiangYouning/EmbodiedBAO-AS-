@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:52:47+08:00",
+    "latency_ms": 7224,
+    "payload_bytes": 382550,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081052416199246908268d9d6TuiKXGbK\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135167,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The view shows a long red carpeted walkway leading to a narrow opening in a wall decorated with geometric patterns. Through the opening, a bright green rectangle is visible on the far wall. The floor to the left of the carpet has a white and purple pattern.\\\",\\n  \\\"reasoning\\\": \\\"I have successfully rotated my torso to 90 degrees, which presents my narrowest profile (thickness) to the opening ahead. I am currently at position x=0.5. I will now begin moving forward toward the green rectangle.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2501,\"completion_tokens\":135,\"total_tokens\":2636,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2501,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":135,\"totalTokenCount\":2636,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1412},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":135}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1412,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":135,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The view shows a long red carpeted walkway leading to a narrow opening in a wall decorated with geometric patterns. Through the opening, a bright green rectangle is visible on the far wall. The floor to the left of the carpet has a white and purple pattern.\",\n  \"reasoning\": \"I have successfully rotated my torso to 90 degrees, which presents my narrowest profile (thickness) to the opening ahead. I am currently at position x=0.5. I will now begin moving forward toward the green rectangle.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The view shows a long red carpeted walkway leading to a narrow opening in a wall decorated with geometric patterns. Through the opening, a bright green rectangle is visible on the far wall. The floor to the left of the carpet has a white and purple pattern.",
+      "reasoning": "I have successfully rotated my torso to 90 degrees, which presents my narrowest profile (thickness) to the opening ahead. I am currently at position x=0.5. I will now begin moving forward toward the green rectangle.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

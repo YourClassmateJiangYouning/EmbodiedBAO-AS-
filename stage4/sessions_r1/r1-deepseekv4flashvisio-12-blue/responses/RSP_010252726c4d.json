@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:02:03+08:00",
+    "latency_ms": 3024,
+    "payload_bytes": 248479,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"cc3df78d-8aa5-4570-a18d-09239ab1de51\",\"object\":\"chat.completion\",\"created\":1794207721,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead along the walking direction at the blue triangle on the far wall, which sits in a narrow doorway between two decorated wall panels. The floor is covered in dark red carpet, and the doorway opening appears fairly narrow relative to the robot's body width.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead and the doorway is the only obstacle. My body width from the earlier downward glance seemed wide, so I should verify the doorway clearance before advancing. Since turning is impossible once shoulders are inside the opening, I will check my width again with a downward glance to compare against the visible doorway width.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2019,\"completion_tokens\":143,\"total_tokens\":2162,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1251},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead along the walking direction at the blue triangle on the far wall, which sits in a narrow doorway between two decorated wall panels. The floor is covered in dark red carpet, and the doorway opening appears fairly narrow relative to the robot's body width.\", \"reasoning\": \"The blue triangle is directly ahead and the doorway is the only obstacle. My body width from the earlier downward glance seemed wide, so I should verify the doorway clearance before advancing. Since turning is impossible once shoulders are inside the opening, I will check my width again with a downward glance to compare against the visible doorway width.\", \"action\": \"look_down\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead along the walking direction at the blue triangle on the far wall, which sits in a narrow doorway between two decorated wall panels. The floor is covered in dark red carpet, and the doorway opening appears fairly narrow relative to the robot's body width.",
+      "reasoning": "The blue triangle is directly ahead and the doorway is the only obstacle. My body width from the earlier downward glance seemed wide, so I should verify the doorway clearance before advancing. Since turning is impossible once shoulders are inside the opening, I will check my width again with a downward glance to compare against the visible doorway width.",
+      "action": "look_down",
+      "confidence": 0.6
+    },
+    "action": "look_down"
+  }
+]

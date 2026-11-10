@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:22:38+08:00",
+    "latency_ms": 6957,
+    "payload_bytes": 378741,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_7vsmgnqmhi7u2334npeckmdc65yzuiss3o5plxkonip7my56htbq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794212558,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a red carpet path stretching forward toward a far wall. The yellow arrow target is clearly visible and centered on the far wall, appearing to be in a dark opening or doorway. The path ahead is clear and unobstructed. My torso is at 0 degrees rotation (straight ahead). The walls on either side show colorful graffiti-style artwork.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=0.500 with my torso at 0 degrees rotation, facing directly toward the yellow arrow on the far wall. The path forward is clear with no obstacles visible. The yellow arrow is centered in my view, indicating I am properly aligned with my walking direction. I should continue moving forward to reach the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3441,\"completion_tokens\":193,\"total_tokens\":3634,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3441,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":193,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3441,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a red carpet path stretching forward toward a far wall. The yellow arrow target is clearly visible and centered on the far wall, appearing to be in a dark opening or doorway. The path ahead is clear and unobstructed. My torso is at 0 degrees rotation (straight ahead). The walls on either side show colorful graffiti-style artwork.\",\n  \"reasoning\": \"I am at position x=0.500 with my torso at 0 degrees rotation, facing directly toward the yellow arrow on the far wall. The path forward is clear with no obstacles visible. The yellow arrow is centered in my view, indicating I am properly aligned with my walking direction. I should continue moving forward to reach the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a red carpet path stretching forward toward a far wall. The yellow arrow target is clearly visible and centered on the far wall, appearing to be in a dark opening or doorway. The path ahead is clear and unobstructed. My torso is at 0 degrees rotation (straight ahead). The walls on either side show colorful graffiti-style artwork.",
+      "reasoning": "I am at position x=0.500 with my torso at 0 degrees rotation, facing directly toward the yellow arrow on the far wall. The path forward is clear with no obstacles visible. The yellow arrow is centered in my view, indicating I am properly aligned with my walking direction. I should continue moving forward to reach the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

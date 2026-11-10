@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:32:16+08:00",
+    "latency_ms": 6845,
+    "payload_bytes": 173192,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A doorway directly ahead with a glowing yellow right-pointing arrow sign mounted low on the far wall. The arrow is very close, just beyond a dark floor/carpet edge; side walls are near, indicating I’m at the threshold or already near the wall.\\\",\\\"reasoning\\\":\\\"Forward steps previously alternated between executing and being blocked at the wall, indicating I am essentially at the arrow. With one step remaining, a small forward move should bring me fully to the wall/arrow if there is any remaining gap; if blocked, that still confirms contact at the target location.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.63}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205933,\"id\":\"chatcmpl-EiDDJR6xoxKVUJLM83xgKRy2szHxn\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":137,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":511,\"engine_ttlt_ms\":1721,\"pre_inference_ms\":328,\"service_tbt_ms\":9,\"service_ttft_ms\":1053,\"service_ttlt_ms\":2224,\"user_visible_ttft_ms\":725},\"prompt_tokens\":2974,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":3111}}\n",
+    "content": "{\"scene_description\":\"A doorway directly ahead with a glowing yellow right-pointing arrow sign mounted low on the far wall. The arrow is very close, just beyond a dark floor/carpet edge; side walls are near, indicating I’m at the threshold or already near the wall.\",\"reasoning\":\"Forward steps previously alternated between executing and being blocked at the wall, indicating I am essentially at the arrow. With one step remaining, a small forward move should bring me fully to the wall/arrow if there is any remaining gap; if blocked, that still confirms contact at the target location.\",\"action\":\"forward\",\"confidence\":0.63}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A doorway directly ahead with a glowing yellow right-pointing arrow sign mounted low on the far wall. The arrow is very close, just beyond a dark floor/carpet edge; side walls are near, indicating I’m at the threshold or already near the wall.",
+      "reasoning": "Forward steps previously alternated between executing and being blocked at the wall, indicating I am essentially at the arrow. With one step remaining, a small forward move should bring me fully to the wall/arrow if there is any remaining gap; if blocked, that still confirms contact at the target location.",
+      "action": "forward",
+      "confidence": 0.63
+    },
+    "action": "forward"
+  }
+]

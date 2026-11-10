@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:07:52+08:00",
+    "latency_ms": 9151,
+    "payload_bytes": 299877,
+    "finish_reason": "stop",
+    "reasoning_tokens": 57,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"224cad6e-eecb-4b3c-b984-13b5d0634d44_0fd341e718eb44c6af0032ed3d3d70c2\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the red carpet extending forward to a dark opening in the far wall where the purple four-pointed star glows, with patterned walls on either side. The star appears close ahead through the opening.\\\", \\\"reasoning\\\": \\\"My torso is rotated 90 degrees presenting my thin profile to the opening, matching the successful traversal. The star is very close ahead through the opening; I simply continue walking forward to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The star is ahead, distance seems close. x=3.5, previous successful traversal went... in previous traversal step 18 forward at similar position reached star. We're at step 11 now, 3.5m. Star looks close. Keep forward.\"}}],\"created\":1794215272,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":168,\"prompt_tokens\":3450,\"total_tokens\":3618,\"completion_tokens_details\":{\"reasoning_tokens\":57},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows the red carpet extending forward to a dark opening in the far wall where the purple four-pointed star glows, with patterned walls on either side. The star appears close ahead through the opening.\", \"reasoning\": \"My torso is rotated 90 degrees presenting my thin profile to the opening, matching the successful traversal. The star is very close ahead through the opening; I simply continue walking forward to reach it.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The star is ahead, distance seems close. x=3.5, previous successful traversal went... in previous traversal step 18 forward at similar position reached star. We're at step 11 now, 3.5m. Star looks close. Keep forward.",
+    "parsed": {
+      "scene_description": "The camera shows the red carpet extending forward to a dark opening in the far wall where the purple four-pointed star glows, with patterned walls on either side. The star appears close ahead through the opening.",
+      "reasoning": "My torso is rotated 90 degrees presenting my thin profile to the opening, matching the successful traversal. The star is very close ahead through the opening; I simply continue walking forward to reach it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

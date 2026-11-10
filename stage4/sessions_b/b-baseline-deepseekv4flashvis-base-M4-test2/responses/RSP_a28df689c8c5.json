@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:22:24+08:00",
+    "latency_ms": 3159,
+    "payload_bytes": 366815,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"7390cf08-753f-4042-911f-a5af1dab1b37\",\"object\":\"chat.completion\",\"created\":1794212542,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a dark opening in the far wall, with a small blue triangle visible at the base of the opening. Patterned walls flank the walkway on both sides.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along my fixed walking direction, and the path is clear. Continuing forward advances me toward the goal without needing any turns.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1621,\"completion_tokens\":95,\"total_tokens\":1716,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":853},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a dark opening in the far wall, with a small blue triangle visible at the base of the opening. Patterned walls flank the walkway on both sides.\", \"reasoning\": \"The blue triangle is directly ahead along my fixed walking direction, and the path is clear. Continuing forward advances me toward the goal without needing any turns.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a dark opening in the far wall, with a small blue triangle visible at the base of the opening. Patterned walls flank the walkway on both sides.",
+      "reasoning": "The blue triangle is directly ahead along my fixed walking direction, and the path is clear. Continuing forward advances me toward the goal without needing any turns.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

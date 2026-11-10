@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:03:27+08:00",
+    "latency_ms": 2531,
+    "payload_bytes": 264968,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ec75f202-b7de-40ca-9df3-9511ae12b365\",\"object\":\"chat.completion\",\"created\":1794207806,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle is now large and close, lying on the floor just ahead beyond the edge of the red carpet. The path is clear.\\\", \\\"reasoning\\\": \\\"The target is directly ahead and appears very close after 9 forward steps. Continuing forward should bring the robot onto the green rectangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2011,\"completion_tokens\":78,\"total_tokens\":2089,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1371},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green rectangle is now large and close, lying on the floor just ahead beyond the edge of the red carpet. The path is clear.\", \"reasoning\": \"The target is directly ahead and appears very close after 9 forward steps. Continuing forward should bring the robot onto the green rectangle.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green rectangle is now large and close, lying on the floor just ahead beyond the edge of the red carpet. The path is clear.",
+      "reasoning": "The target is directly ahead and appears very close after 9 forward steps. Continuing forward should bring the robot onto the green rectangle.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

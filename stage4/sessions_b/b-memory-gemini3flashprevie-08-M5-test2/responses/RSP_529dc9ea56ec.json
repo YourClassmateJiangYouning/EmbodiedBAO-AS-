@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:03:40+08:00",
+    "latency_ms": 29053,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090903147068495398268d9d6mdxEcfWf\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794215020,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white foam bumper and two large wheels on either side. The torso rotation is currently 0.0 degrees, meaning the wide bumper is oriented perpendicular to the walking direction.\\\", \\\"reasoning\\\": \\\"Looking down reveals that at 0 degrees rotation, my body is at its widest due to the foam bumper. To fit through the narrow opening ahead, I need to rotate my torso to a 90-degree angle to present my narrowest profile. I will begin this process by turning right.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3078,\"completion_tokens\":143,\"total_tokens\":3221,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3078,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":143,\"totalTokenCount\":3221,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1989}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":143}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1989,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":143,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white foam bumper and two large wheels on either side. The torso rotation is currently 0.0 degrees, meaning the wide bumper is oriented perpendicular to the walking direction.\", \"reasoning\": \"Looking down reveals that at 0 degrees rotation, my body is at its widest due to the foam bumper. To fit through the narrow opening ahead, I need to rotate my torso to a 90-degree angle to present my narrowest profile. I will begin this process by turning right.\", \"action\": \"turn_right\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body on a red carpet. The robot has a wide white foam bumper and two large wheels on either side. The torso rotation is currently 0.0 degrees, meaning the wide bumper is oriented perpendicular to the walking direction.",
+      "reasoning": "Looking down reveals that at 0 degrees rotation, my body is at its widest due to the foam bumper. To fit through the narrow opening ahead, I need to rotate my torso to a 90-degree angle to present my narrowest profile. I will begin this process by turning right.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

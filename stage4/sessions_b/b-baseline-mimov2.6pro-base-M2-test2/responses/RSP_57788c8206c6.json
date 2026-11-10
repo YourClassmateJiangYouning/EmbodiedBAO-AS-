@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:27:55+08:00",
+    "latency_ms": 11392,
+    "payload_bytes": 427921,
+    "finish_reason": "stop",
+    "reasoning_tokens": 10,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"92cbaf5a-430c-4771-bcc8-c9787414d563_67a1e799e853430ba3d81ad3f6f95fef\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a far wall where a red circle is visible in a gap between two patterned wall panels. White rectangular markers line both edges of the carpet. The path ahead is completely clear of obstacles.\\\", \\\"reasoning\\\": \\\"The red circle is straight ahead along the walkway and the path is clear. The walkway appears wide enough for normal forward movement, so I should proceed straight toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear, just go forward.\"}}],\"created\":1794212875,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":120,\"prompt_tokens\":1907,\"total_tokens\":2027,\"completion_tokens_details\":{\"reasoning_tokens\":10},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a far wall where a red circle is visible in a gap between two patterned wall panels. White rectangular markers line both edges of the carpet. The path ahead is completely clear of obstacles.\", \"reasoning\": \"The red circle is straight ahead along the walkway and the path is clear. The walkway appears wide enough for normal forward movement, so I should proceed straight toward the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear, just go forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a far wall where a red circle is visible in a gap between two patterned wall panels. White rectangular markers line both edges of the carpet. The path ahead is completely clear of obstacles.",
+      "reasoning": "The red circle is straight ahead along the walkway and the path is clear. The walkway appears wide enough for normal forward movement, so I should proceed straight toward the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

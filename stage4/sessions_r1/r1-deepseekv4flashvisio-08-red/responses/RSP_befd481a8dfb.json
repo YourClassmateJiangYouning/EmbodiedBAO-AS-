@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:08:28+08:00",
+    "latency_ms": 2691,
+    "payload_bytes": 215858,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"dbb82b5b-e4e6-4260-bc71-01f944198b44\",\"object\":\"chat.completion\",\"created\":1794208107,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle sits on a raised dark panel directly ahead, with a dark red carpeted floor leading up to it. The panel edge forms a small ledge in front of the goal, and side walls flank the approach.\\\", \\\"reasoning\\\": \\\"The goal is directly ahead and close. The last forward step succeeded after backing up, so continuing forward may bring the robot onto the panel and reach the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2900,\"completion_tokens\":101,\"total_tokens\":3001,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2260},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle sits on a raised dark panel directly ahead, with a dark red carpeted floor leading up to it. The panel edge forms a small ledge in front of the goal, and side walls flank the approach.\", \"reasoning\": \"The goal is directly ahead and close. The last forward step succeeded after backing up, so continuing forward may bring the robot onto the panel and reach the red circle.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle sits on a raised dark panel directly ahead, with a dark red carpeted floor leading up to it. The panel edge forms a small ledge in front of the goal, and side walls flank the approach.",
+      "reasoning": "The goal is directly ahead and close. The last forward step succeeded after backing up, so continuing forward may bring the robot onto the panel and reach the red circle.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

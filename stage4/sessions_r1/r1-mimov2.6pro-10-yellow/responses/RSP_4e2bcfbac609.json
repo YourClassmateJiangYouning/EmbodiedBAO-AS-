@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:39:18+08:00",
+    "latency_ms": 7747,
+    "payload_bytes": 352435,
+    "finish_reason": "stop",
+    "reasoning_tokens": 21,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"57dc1aaa-6944-4296-83d0-cb0d8a376184_8466d806f8c14a09a90cc05248e1dd10\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet walkway leads straight ahead toward a dark doorway in the far wall where a yellow arrow points right. The floor on the sides has colorful patterned tiles, and the walls feature decorative geometric shapes.\\\", \\\"reasoning\\\": \\\"The path ahead remains clear with the yellow arrow visible in the distance at the far wall doorway. No obstacles are present, so I should continue moving forward toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear. The yellow arrow is on the far wall ahead. I should continue forward.\"}}],\"created\":1794137958,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":125,\"prompt_tokens\":2038,\"total_tokens\":2163,\"completion_tokens_details\":{\"reasoning_tokens\":21},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet walkway leads straight ahead toward a dark doorway in the far wall where a yellow arrow points right. The floor on the sides has colorful patterned tiles, and the walls feature decorative geometric shapes.\", \"reasoning\": \"The path ahead remains clear with the yellow arrow visible in the distance at the far wall doorway. No obstacles are present, so I should continue moving forward toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear. The yellow arrow is on the far wall ahead. I should continue forward.",
+    "parsed": {
+      "scene_description": "A red carpet walkway leads straight ahead toward a dark doorway in the far wall where a yellow arrow points right. The floor on the sides has colorful patterned tiles, and the walls feature decorative geometric shapes.",
+      "reasoning": "The path ahead remains clear with the yellow arrow visible in the distance at the far wall doorway. No obstacles are present, so I should continue moving forward toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:35:27+08:00",
+    "latency_ms": 3055,
+    "payload_bytes": 372094,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5c077350-a0de-4a24-8b36-40151b54ee9d\",\"object\":\"chat.completion\",\"created\":1794216926,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading straight ahead to a far wall with a red circle target centered in view. The path is clear with no obstacles between the robot and the target.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the fixed walking direction and the path is unobstructed. Each forward step moves 75cm closer, so continuing forward is optimal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1723,\"completion_tokens\":97,\"total_tokens\":1820,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1211},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted walkway leading straight ahead to a far wall with a red circle target centered in view. The path is clear with no obstacles between the robot and the target.\", \"reasoning\": \"The red circle is directly ahead along the fixed walking direction and the path is unobstructed. Each forward step moves 75cm closer, so continuing forward is optimal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading straight ahead to a far wall with a red circle target centered in view. The path is clear with no obstacles between the robot and the target.",
+      "reasoning": "The red circle is directly ahead along the fixed walking direction and the path is unobstructed. Each forward step moves 75cm closer, so continuing forward is optimal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

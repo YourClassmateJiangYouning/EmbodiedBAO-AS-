@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:03:31+08:00",
+    "latency_ms": 16283,
+    "payload_bytes": 262365,
+    "finish_reason": "stop",
+    "reasoning_tokens": 111,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n{\"id\":\"f6380340-83ea-4692-b542-6f6d0f5310b5_b255f4208fff4dbd9220cd9b3e15c9b6\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted floor stretches ahead toward a wall with patterned panels on either side. A purple four-pointed star sits on the far wall within a dark rectangular opening. The opening appears comfortably wide relative to the visible path, and the carpet leads straight to it.\\\", \\\"reasoning\\\": \\\"The star is directly ahead through the opening, the path is clear, and my torso is at 0 degrees (narrowest orientation). Previous checks confirmed the body is widest side-on, so keeping rotation at 0 is safest for the narrow opening. I should keep advancing toward the star with forward steps.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The star is ahead, opening visible. Position x = 4.25 (forward reduces distance? Actually x is forward position along walkway; starting position unknown... it says x changes only with forward/backward. Forward takes toward the star. We've moved 5 forwards = 375cm... but x = 4.25? Perhaps x is distance to wall? Unclear. The star appears some distance ahead. Just continue forward.\\n\\nThe opening looks fairly wide. Torso is at 0 degrees. Continue forward.\"}}],\"created\":1794215010,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":255,\"prompt_tokens\":2395,\"total_tokens\":2650,\"completion_tokens_details\":{\"reasoning_tokens\":111},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted floor stretches ahead toward a wall with patterned panels on either side. A purple four-pointed star sits on the far wall within a dark rectangular opening. The opening appears comfortably wide relative to the visible path, and the carpet leads straight to it.\", \"reasoning\": \"The star is directly ahead through the opening, the path is clear, and my torso is at 0 degrees (narrowest orientation). Previous checks confirmed the body is widest side-on, so keeping rotation at 0 is safest for the narrow opening. I should keep advancing toward the star with forward steps.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "The star is ahead, opening visible. Position x = 4.25 (forward reduces distance? Actually x is forward position along walkway; starting position unknown... it says x changes only with forward/backward. Forward takes toward the star. We've moved 5 forwards = 375cm... but x = 4.25? Perhaps x is distance to wall? Unclear. The star appears some distance ahead. Just continue forward.\n\nThe opening looks fairly wide. Torso is at 0 degrees. Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted floor stretches ahead toward a wall with patterned panels on either side. A purple four-pointed star sits on the far wall within a dark rectangular opening. The opening appears comfortably wide relative to the visible path, and the carpet leads straight to it.",
+      "reasoning": "The star is directly ahead through the opening, the path is clear, and my torso is at 0 degrees (narrowest orientation). Previous checks confirmed the body is widest side-on, so keeping rotation at 0 is safest for the narrow opening. I should keep advancing toward the star with forward steps.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

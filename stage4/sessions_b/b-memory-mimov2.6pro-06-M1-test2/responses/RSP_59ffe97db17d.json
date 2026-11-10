@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:24:51+08:00",
+    "latency_ms": 9459,
+    "payload_bytes": 370372,
+    "finish_reason": "stop",
+    "reasoning_tokens": 43,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"650bd1ab-d8bc-4f00-8350-043e5d53313b_e888295ccb7941159dff5f8ce92606e7\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpet leading straight ahead toward a doorway opening in the far wall. The green rectangle is directly ahead, centered in the opening, at the far wall. White marker shapes line both sides of the carpet. The path is clear with no visible obstacles in the immediate foreground.\\\", \\\"reasoning\\\": \\\"The green rectangle is directly ahead through the doorway opening. Torso rotation is 0 degrees, presenting minimum width for passage. Three forward steps have been executed successfully so far. Based on the previous successful traversal, I should continue moving straight forward toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is directly ahead at the far wall through the doorway opening. The path along the red carpet is clear. Torso rotation is 0 degrees, presenting minimum width. Forward is the correct action.\"}}],\"created\":1794212691,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":181,\"prompt_tokens\":3403,\"total_tokens\":3584,\"completion_tokens_details\":{\"reasoning_tokens\":43},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpet leading straight ahead toward a doorway opening in the far wall. The green rectangle is directly ahead, centered in the opening, at the far wall. White marker shapes line both sides of the carpet. The path is clear with no visible obstacles in the immediate foreground.\", \"reasoning\": \"The green rectangle is directly ahead through the doorway opening. Torso rotation is 0 degrees, presenting minimum width for passage. Three forward steps have been executed successfully so far. Based on the previous successful traversal, I should continue moving straight forward toward the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The green rectangle is directly ahead at the far wall through the doorway opening. The path along the red carpet is clear. Torso rotation is 0 degrees, presenting minimum width. Forward is the correct action.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpet leading straight ahead toward a doorway opening in the far wall. The green rectangle is directly ahead, centered in the opening, at the far wall. White marker shapes line both sides of the carpet. The path is clear with no visible obstacles in the immediate foreground.",
+      "reasoning": "The green rectangle is directly ahead through the doorway opening. Torso rotation is 0 degrees, presenting minimum width for passage. Three forward steps have been executed successfully so far. Based on the previous successful traversal, I should continue moving straight forward toward the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

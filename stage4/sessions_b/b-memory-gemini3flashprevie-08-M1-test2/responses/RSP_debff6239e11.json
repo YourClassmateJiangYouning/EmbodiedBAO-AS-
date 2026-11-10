@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:25:56+08:00",
+    "latency_ms": 5111,
+    "payload_bytes": 411773,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090825519508373948268d9d6l4HrgTrs\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212756,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading towards a narrow opening between two patterned walls. In the distance, beyond the opening, a small green rectangle is visible on the far wall. The current torso rotation is 15.0 degrees.\\\",\\n  \\\"reasoning\\\": \\\"I have started rotating my torso to the right to fit through the narrow gap. My goal is to reach a 90-degree rotation so that my narrowest profile faces the opening. I am currently at 15 degrees, so I will continue to turn right in 15-degree increments.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2783,\"completion_tokens\":147,\"total_tokens\":2930,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2783,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":147,\"totalTokenCount\":2930,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1694},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":147}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1694,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":147,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading towards a narrow opening between two patterned walls. In the distance, beyond the opening, a small green rectangle is visible on the far wall. The current torso rotation is 15.0 degrees.\",\n  \"reasoning\": \"I have started rotating my torso to the right to fit through the narrow gap. My goal is to reach a 90-degree rotation so that my narrowest profile faces the opening. I am currently at 15 degrees, so I will continue to turn right in 15-degree increments.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading towards a narrow opening between two patterned walls. In the distance, beyond the opening, a small green rectangle is visible on the far wall. The current torso rotation is 15.0 degrees.",
+      "reasoning": "I have started rotating my torso to the right to fit through the narrow gap. My goal is to reach a 90-degree rotation so that my narrowest profile faces the opening. I am currently at 15 degrees, so I will continue to turn right in 15-degree increments.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

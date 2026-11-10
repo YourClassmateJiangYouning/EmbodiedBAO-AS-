@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:35:53+08:00",
+    "latency_ms": 9887,
+    "payload_bytes": 267491,
+    "finish_reason": "stop",
+    "reasoning_tokens": 43,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"9f149bee-e7ad-476e-8776-7412712e6334_8754468a2c7b4898b58d65217211929b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The red carpet stretches ahead to a wall opening where a black square with a red circle sits on the floor, very close directly ahead. Behind it are draped black fabric and a yellow chair. The carpeted path is clear all the way to the target.\\\", \\\"reasoning\\\": \\\"I am at x=5.75 with the red circle immediately ahead and large in view. My torso is at 90°, the narrow profile that allowed passage through the opening. The previous four forward steps all succeeded. One more forward step should bring me directly onto the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red circle is directly ahead, very close. x=5.75. One more forward step should reach it. Steps remaining: 30-15=15. Action: forward.\"}}],\"created\":1794213352,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":182,\"prompt_tokens\":3961,\"total_tokens\":4143,\"completion_tokens_details\":{\"reasoning_tokens\":43},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The red carpet stretches ahead to a wall opening where a black square with a red circle sits on the floor, very close directly ahead. Behind it are draped black fabric and a yellow chair. The carpeted path is clear all the way to the target.\", \"reasoning\": \"I am at x=5.75 with the red circle immediately ahead and large in view. My torso is at 90°, the narrow profile that allowed passage through the opening. The previous four forward steps all succeeded. One more forward step should bring me directly onto the red circle.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The red circle is directly ahead, very close. x=5.75. One more forward step should reach it. Steps remaining: 30-15=15. Action: forward.",
+    "parsed": {
+      "scene_description": "The red carpet stretches ahead to a wall opening where a black square with a red circle sits on the floor, very close directly ahead. Behind it are draped black fabric and a yellow chair. The carpeted path is clear all the way to the target.",
+      "reasoning": "I am at x=5.75 with the red circle immediately ahead and large in view. My torso is at 90°, the narrow profile that allowed passage through the opening. The previous four forward steps all succeeded. One more forward step should bring me directly onto the red circle.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

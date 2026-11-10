@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:15:52+08:00",
+    "latency_ms": 9681,
+    "payload_bytes": 305039,
+    "finish_reason": "stop",
+    "reasoning_tokens": 38,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"754ac82e-7f57-4813-9a39-06cf659678f7_8ef544a907344e7a9f01d62aa226abff\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet leads straight ahead toward a narrow doorway in a wall decorated with abstract patterns (zigzags, geometric shapes in purple, blue, and beige). The red circle is visible through the dark opening in the wall, centered in the doorway. The left side shows a lighter patterned floor. The path on the red carpet is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The red circle is clearly visible through the narrow opening straight ahead. My torso remains turned 15 degrees left to narrow my profile for the gap. The red carpet path is unobstructed, so I should continue moving forward toward the opening and the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me continue moving forward toward the red circle through the narrow opening. The torso is turned 15 degrees left to narrow my profile. The path is clear along the red carpet.\"}}],\"created\":1794208551,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":196,\"prompt_tokens\":2391,\"total_tokens\":2587,\"completion_tokens_details\":{\"reasoning_tokens\":38},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet leads straight ahead toward a narrow doorway in a wall decorated with abstract patterns (zigzags, geometric shapes in purple, blue, and beige). The red circle is visible through the dark opening in the wall, centered in the doorway. The left side shows a lighter patterned floor. The path on the red carpet is clear and unobstructed.\", \"reasoning\": \"The red circle is clearly visible through the narrow opening straight ahead. My torso remains turned 15 degrees left to narrow my profile for the gap. The red carpet path is unobstructed, so I should continue moving forward toward the opening and the red circle.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "Let me continue moving forward toward the red circle through the narrow opening. The torso is turned 15 degrees left to narrow my profile. The path is clear along the red carpet.",
+    "parsed": {
+      "scene_description": "A red carpet leads straight ahead toward a narrow doorway in a wall decorated with abstract patterns (zigzags, geometric shapes in purple, blue, and beige). The red circle is visible through the dark opening in the wall, centered in the doorway. The left side shows a lighter patterned floor. The path on the red carpet is clear and unobstructed.",
+      "reasoning": "The red circle is clearly visible through the narrow opening straight ahead. My torso remains turned 15 degrees left to narrow my profile for the gap. The red carpet path is unobstructed, so I should continue moving forward toward the opening and the red circle.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

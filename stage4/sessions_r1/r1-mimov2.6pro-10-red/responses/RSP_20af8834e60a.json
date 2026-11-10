@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:38:51+08:00",
+    "latency_ms": 8124,
+    "payload_bytes": 255577,
+    "finish_reason": "stop",
+    "reasoning_tokens": 36,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f5ce18e6-9290-4b32-a739-99b651b0efd2_19b1face6fc441d59d7bdb168c2cef39\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The red circle target is now very close, appearing large and directly ahead on a dark panel lying on the light-colored floor. A dark cloth or drape hangs in the background above the target. The path is clear and the target is nearly within reach.\\\", \\\"reasoning\\\": \\\"The red circle is large and directly ahead, indicating I am very close to the target. My torso remains rotated at 90 degrees presenting a narrow profile. One more forward step should bring me to the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red circle is very close, right ahead on the floor with a dark panel. It looks like the target is right in front. I should continue forward to reach it.\"}}],\"created\":1794137931,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":159,\"prompt_tokens\":3002,\"total_tokens\":3161,\"completion_tokens_details\":{\"reasoning_tokens\":36},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The red circle target is now very close, appearing large and directly ahead on a dark panel lying on the light-colored floor. A dark cloth or drape hangs in the background above the target. The path is clear and the target is nearly within reach.\", \"reasoning\": \"The red circle is large and directly ahead, indicating I am very close to the target. My torso remains rotated at 90 degrees presenting a narrow profile. One more forward step should bring me to the red circle.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "The red circle is very close, right ahead on the floor with a dark panel. It looks like the target is right in front. I should continue forward to reach it.",
+    "parsed": {
+      "scene_description": "The red circle target is now very close, appearing large and directly ahead on a dark panel lying on the light-colored floor. A dark cloth or drape hangs in the background above the target. The path is clear and the target is nearly within reach.",
+      "reasoning": "The red circle is large and directly ahead, indicating I am very close to the target. My torso remains rotated at 90 degrees presenting a narrow profile. One more forward step should bring me to the red circle.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

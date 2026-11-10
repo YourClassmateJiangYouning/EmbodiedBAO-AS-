@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:37:59+08:00",
+    "latency_ms": 4885,
+    "payload_bytes": 162766,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090837561243510898268d9d6d5uARNmo\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213480,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking directly at a large yellow arrow pointing to the right, mounted on a dark rectangular panel. The panel is positioned on the floor against a dark wall. The robot is very close to the target.\\\",\\n  \\\"reasoning\\\": \\\"I have successfully navigated through the narrow gap and am now at position x=8.0, which is directly in front of the yellow arrow target. I will move forward one more time to reach the final destination.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3621,\"completion_tokens\":121,\"total_tokens\":3742,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3621,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":121,\"totalTokenCount\":3742,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2532},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":121}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2532,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":121,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking directly at a large yellow arrow pointing to the right, mounted on a dark rectangular panel. The panel is positioned on the floor against a dark wall. The robot is very close to the target.\",\n  \"reasoning\": \"I have successfully navigated through the narrow gap and am now at position x=8.0, which is directly in front of the yellow arrow target. I will move forward one more time to reach the final destination.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking directly at a large yellow arrow pointing to the right, mounted on a dark rectangular panel. The panel is positioned on the floor against a dark wall. The robot is very close to the target.",
+      "reasoning": "I have successfully navigated through the narrow gap and am now at position x=8.0, which is directly in front of the yellow arrow target. I will move forward one more time to reach the final destination.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

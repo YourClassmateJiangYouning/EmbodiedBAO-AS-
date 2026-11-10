@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:07:20+08:00",
+    "latency_ms": 2441,
+    "payload_bytes": 363219,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ffa7f718-ce64-4da5-aae3-526e2020a18a\",\"object\":\"chat.completion\",\"created\":1794208039,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a dark doorway in the far wall, where a red circle is visible. Patterned walls flank the path on both sides.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the fixed walking direction, and the path is clear. Continuing forward advances toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1620,\"completion_tokens\":84,\"total_tokens\":1704,\"prompt_tokens_details\":{\"cached_tokens\":1408},\"prompt_cache_hit_tokens\":1408,\"prompt_cache_miss_tokens\":212},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a dark doorway in the far wall, where a red circle is visible. Patterned walls flank the path on both sides.\", \"reasoning\": \"The red circle is directly ahead along the fixed walking direction, and the path is clear. Continuing forward advances toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a dark doorway in the far wall, where a red circle is visible. Patterned walls flank the path on both sides.",
+      "reasoning": "The red circle is directly ahead along the fixed walking direction, and the path is clear. Continuing forward advances toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

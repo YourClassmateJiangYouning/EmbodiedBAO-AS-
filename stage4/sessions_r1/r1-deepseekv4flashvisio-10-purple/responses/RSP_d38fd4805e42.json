@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:05:14+08:00",
+    "latency_ms": 2356,
+    "payload_bytes": 387593,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"fa5b8758-ba5f-4488-adde-d5a59c6c242f\",\"object\":\"chat.completion\",\"created\":1794207913,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches straight ahead toward a far wall with patterned panels. A purple four-pointed star is visible ahead near the base of the wall, slightly left of center. The path appears clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The star is directly ahead along the walking direction, and the path is clear. Moving forward repeatedly will bring me closer to the goal. No turning is needed since forward always heads toward the star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1559,\"completion_tokens\":110,\"total_tokens\":1669,\"prompt_tokens_details\":{\"cached_tokens\":1408},\"prompt_cache_hit_tokens\":1408,\"prompt_cache_miss_tokens\":151},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches straight ahead toward a far wall with patterned panels. A purple four-pointed star is visible ahead near the base of the wall, slightly left of center. The path appears clear and unobstructed.\", \"reasoning\": \"The star is directly ahead along the walking direction, and the path is clear. Moving forward repeatedly will bring me closer to the goal. No turning is needed since forward always heads toward the star.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches straight ahead toward a far wall with patterned panels. A purple four-pointed star is visible ahead near the base of the wall, slightly left of center. The path appears clear and unobstructed.",
+      "reasoning": "The star is directly ahead along the walking direction, and the path is clear. Moving forward repeatedly will bring me closer to the goal. No turning is needed since forward always heads toward the star.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

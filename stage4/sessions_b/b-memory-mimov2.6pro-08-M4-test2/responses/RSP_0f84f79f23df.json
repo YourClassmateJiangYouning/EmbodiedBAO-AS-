@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:59:59+08:00",
+    "latency_ms": 10609,
+    "payload_bytes": 300072,
+    "finish_reason": "stop",
+    "reasoning_tokens": 59,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"337358e5-7080-4ff9-b7d9-eb62ccf5065c_1e3380e00ff94b7e951a6da9ccfe3f98\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpeted walkway stretching ahead toward a dark doorway on the far wall where a blue triangle sits on the floor; decorative patterned walls flank the passage.\\\", \\\"reasoning\\\": \\\"My torso is rotated 90 degrees presenting my thinner dimension toward the opening. The blue triangle is still visible through the doorway with clear carpet between me and it, so I continue advancing.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need 25 steps left. Continue forward toward triangle. Current position x=3.5, 10 steps used. The triangle is visible through doorway, still ahead. Keep forward.\\n\\nScene: red carpet walkway, blue triangle visible through dark doorway ahead, decorative walls.\"}}],\"created\":1794214798,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":156,\"prompt_tokens\":3332,\"total_tokens\":3488,\"completion_tokens_details\":{\"reasoning_tokens\":59},\"prompt_tokens_details\":{\"cached_tokens\":1280,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpeted walkway stretching ahead toward a dark doorway on the far wall where a blue triangle sits on the floor; decorative patterned walls flank the passage.\", \"reasoning\": \"My torso is rotated 90 degrees presenting my thinner dimension toward the opening. The blue triangle is still visible through the doorway with clear carpet between me and it, so I continue advancing.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "We need 25 steps left. Continue forward toward triangle. Current position x=3.5, 10 steps used. The triangle is visible through doorway, still ahead. Keep forward.\n\nScene: red carpet walkway, blue triangle visible through dark doorway ahead, decorative walls.",
+    "parsed": {
+      "scene_description": "Red carpeted walkway stretching ahead toward a dark doorway on the far wall where a blue triangle sits on the floor; decorative patterned walls flank the passage.",
+      "reasoning": "My torso is rotated 90 degrees presenting my thinner dimension toward the opening. The blue triangle is still visible through the doorway with clear carpet between me and it, so I continue advancing.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

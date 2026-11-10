@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:25:18+08:00",
+    "latency_ms": 6687,
+    "payload_bytes": 164594,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_3vfrl3ljabvefvqoobua6bv45a7uobz372ql3mlfspiz5zrml6aq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198318,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The red circle target is clearly visible on the far wall ahead, centered in the view. There is a dark wall panel or obstacle visible on the left side of the image. The path ahead appears to have some obstruction, but the target remains visible and centered on the far wall.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=7.250 with my torso rotated 45 degrees to the left (after three left turns of 15 degrees each from steps 11-14). Forward movement has been blocked twice by a wall_panel obstacle. My walking direction is fixed toward the red circle. Since I've turned my torso left to rotate my body narrower, I should now attempt to move forward again to see if I can pass through the obstacle with my narrower profile, or if I need to continue turning or try a different approach.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.6\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3443,\"completion_tokens\":213,\"total_tokens\":3656,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3443,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":213,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3443,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The red circle target is clearly visible on the far wall ahead, centered in the view. There is a dark wall panel or obstacle visible on the left side of the image. The path ahead appears to have some obstruction, but the target remains visible and centered on the far wall.\",\n  \"reasoning\": \"I am at x=7.250 with my torso rotated 45 degrees to the left (after three left turns of 15 degrees each from steps 11-14). Forward movement has been blocked twice by a wall_panel obstacle. My walking direction is fixed toward the red circle. Since I've turned my torso left to rotate my body narrower, I should now attempt to move forward again to see if I can pass through the obstacle with my narrower profile, or if I need to continue turning or try a different approach.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.6\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle target is clearly visible on the far wall ahead, centered in the view. There is a dark wall panel or obstacle visible on the left side of the image. The path ahead appears to have some obstruction, but the target remains visible and centered on the far wall.",
+      "reasoning": "I am at x=7.250 with my torso rotated 45 degrees to the left (after three left turns of 15 degrees each from steps 11-14). Forward movement has been blocked twice by a wall_panel obstacle. My walking direction is fixed toward the red circle. Since I've turned my torso left to rotate my body narrower, I should now attempt to move forward again to see if I can pass through the obstacle with my narrower profile, or if I need to continue turning or try a different approach.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

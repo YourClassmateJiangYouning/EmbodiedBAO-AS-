@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:18:29+08:00",
+    "latency_ms": 2585,
+    "payload_bytes": 177406,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"d9584e4d-db11-4849-a3dc-409598af9158\",\"object\":\"chat.completion\",\"created\":1794208707,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle is visible straight ahead on the far wall, but the forward step was blocked by a wall panel, indicating the opening is too narrow for my current body orientation.\\\", \\\"reasoning\\\": \\\"Forward is blocked, likely because my wide side faces the narrow opening. Rotating my torso 90 degrees would present my thinner profile, but I can only turn 15 degrees per step and cannot turn once shoulders are inside the opening. I am not yet inside, so I should begin turning to narrow my profile before attempting forward again.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.5}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2190,\"completion_tokens\":127,\"total_tokens\":2317,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1422},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle is visible straight ahead on the far wall, but the forward step was blocked by a wall panel, indicating the opening is too narrow for my current body orientation.\", \"reasoning\": \"Forward is blocked, likely because my wide side faces the narrow opening. Rotating my torso 90 degrees would present my thinner profile, but I can only turn 15 degrees per step and cannot turn once shoulders are inside the opening. I am not yet inside, so I should begin turning to narrow my profile before attempting forward again.\", \"action\": \"turn_left\", \"confidence\": 0.5}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle is visible straight ahead on the far wall, but the forward step was blocked by a wall panel, indicating the opening is too narrow for my current body orientation.",
+      "reasoning": "Forward is blocked, likely because my wide side faces the narrow opening. Rotating my torso 90 degrees would present my thinner profile, but I can only turn 15 degrees per step and cannot turn once shoulders are inside the opening. I am not yet inside, so I should begin turning to narrow my profile before attempting forward again.",
+      "action": "turn_left",
+      "confidence": 0.5
+    },
+    "action": "turn_left"
+  }
+]

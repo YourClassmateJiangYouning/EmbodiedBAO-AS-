@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:26:51+08:00",
+    "latency_ms": 6660,
+    "payload_bytes": 255540,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A straight carpeted corridor extends ahead. The purple four-pointed star is visible centered on a small black sign at the far end, with clear open floor between here and the star. Decorative panels stand to the sides but do not obstruct the path.\\\", \\\"reasoning\\\": \\\"The path ahead is clear and aligned with the star. Moving straight forward will bring me closer efficiently without needing any torso rotation or width check.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.73}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198408,\"id\":\"chatcmpl-EiBFwqHyqbSUK9QipTgjjRblrKZi2\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":111,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":11,\"engine_ttft_ms\":282,\"engine_ttlt_ms\":1518,\"pre_inference_ms\":480,\"service_tbt_ms\":11,\"service_ttft_ms\":1129,\"service_ttlt_ms\":2359,\"user_visible_ttft_ms\":648},\"prompt_tokens\":1818,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1929}}\n",
+    "content": "{\"scene_description\": \"A straight carpeted corridor extends ahead. The purple four-pointed star is visible centered on a small black sign at the far end, with clear open floor between here and the star. Decorative panels stand to the sides but do not obstruct the path.\", \"reasoning\": \"The path ahead is clear and aligned with the star. Moving straight forward will bring me closer efficiently without needing any torso rotation or width check.\", \"action\": \"forward\", \"confidence\": 0.73}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight carpeted corridor extends ahead. The purple four-pointed star is visible centered on a small black sign at the far end, with clear open floor between here and the star. Decorative panels stand to the sides but do not obstruct the path.",
+      "reasoning": "The path ahead is clear and aligned with the star. Moving straight forward will bring me closer efficiently without needing any torso rotation or width check.",
+      "action": "forward",
+      "confidence": 0.73
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:59:38+08:00",
+    "latency_ms": 2329,
+    "payload_bytes": 376732,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"0be12c33-985f-4992-b8b0-ebe4e5c98933\",\"object\":\"chat.completion\",\"created\":1794207577,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a narrow opening in the far wall, where a small green rectangle sits on the floor. The opening appears narrow, flanked by patterned walls.\\\", \\\"reasoning\\\": \\\"The green target is directly ahead through a narrow opening. Before entering, I should check my body width with look_down to ensure I can fit through the gap, since turning is impossible once shoulders are inside.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.8}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1641,\"completion_tokens\":105,\"total_tokens\":1746,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":873},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a narrow opening in the far wall, where a small green rectangle sits on the floor. The opening appears narrow, flanked by patterned walls.\", \"reasoning\": \"The green target is directly ahead through a narrow opening. Before entering, I should check my body width with look_down to ensure I can fit through the gap, since turning is impossible once shoulders are inside.\", \"action\": \"look_down\", \"confidence\": 0.8}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a narrow opening in the far wall, where a small green rectangle sits on the floor. The opening appears narrow, flanked by patterned walls.",
+      "reasoning": "The green target is directly ahead through a narrow opening. Before entering, I should check my body width with look_down to ensure I can fit through the gap, since turning is impossible once shoulders are inside.",
+      "action": "look_down",
+      "confidence": 0.8
+    },
+    "action": "look_down"
+  }
+]

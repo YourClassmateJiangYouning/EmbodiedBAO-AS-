@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:15:45+08:00",
+    "latency_ms": 6651,
+    "payload_bytes": 377050,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081015396649736908268d9d6R87iRYqo\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794132945,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The view shows a long red carpet leading toward a narrow opening between two patterned walls. In the distance, beyond the opening, a red circle is visible on a dark background. The floor to the sides of the carpet is blue with white rectangular markers.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso by 15 degrees to the right. To minimize the width I present to the narrow opening ahead, I should continue rotating until my torso is at a 90-degree angle relative to the walking direction. This will allow me to pass through the gap sideways. I will perform another turn_right action.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2227,\"completion_tokens\":156,\"total_tokens\":2383,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2227,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":156,\"totalTokenCount\":2383,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1138}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":156}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1138,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":156,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The view shows a long red carpet leading toward a narrow opening between two patterned walls. In the distance, beyond the opening, a red circle is visible on a dark background. The floor to the sides of the carpet is blue with white rectangular markers.\",\n  \"reasoning\": \"I have already rotated my torso by 15 degrees to the right. To minimize the width I present to the narrow opening ahead, I should continue rotating until my torso is at a 90-degree angle relative to the walking direction. This will allow me to pass through the gap sideways. I will perform another turn_right action.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The view shows a long red carpet leading toward a narrow opening between two patterned walls. In the distance, beyond the opening, a red circle is visible on a dark background. The floor to the sides of the carpet is blue with white rectangular markers.",
+      "reasoning": "I have already rotated my torso by 15 degrees to the right. To minimize the width I present to the narrow opening ahead, I should continue rotating until my torso is at a 90-degree angle relative to the walking direction. This will allow me to pass through the gap sideways. I will perform another turn_right action.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

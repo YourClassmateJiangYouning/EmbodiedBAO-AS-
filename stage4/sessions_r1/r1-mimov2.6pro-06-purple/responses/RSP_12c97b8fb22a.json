@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:28:49+08:00",
+    "latency_ms": 5014,
+    "payload_bytes": 345209,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-08T21:28:58+08:00",
+    "latency_ms": 8783,
+    "payload_bytes": 345209,
+    "finish_reason": "stop",
+    "reasoning_tokens": 173,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"79259650-de8f-4d7c-818c-7b0fe9eb81b5_42dea012a62e4417a1c415bebf846c57\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet runs ahead toward a wall decorated with geometric patterns, with a narrow dark opening centered in the wall and the purple four-pointed star visible just beyond it. To the left is a brightly lit patterned floor area.\\\", \\\"reasoning\\\": \\\"The star is through a narrow opening ahead. Before reaching the opening, I should check my body width via look_down to determine if I need to rotate my torso to fit through, since turning is only possible before my shoulders enter the opening.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.8}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The star is straight ahead through a narrow opening. Before the opening, I should check my body width with look_down to see if I can fit, then rotate if needed. But look_down might be smart now since we're getting close to the opening. Actually, position x=2.0. The opening seems a few meters away. Let me just continue forward and then check width before entering. But \\\"you cannot turn once your shoulders are inside the opening\\\" - so I should check width and turn before entering. Let me do look_down first to assess, then decide.\\n\\nActually, continuing forward is safe until we get close. But if we need to turn, we need room. The opening is narrow; we may need to turn to fit through (reduce width). Let me look_down now to see body dimensions while there's still room to turn.\"}}],\"created\":1794144538,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":297,\"prompt_tokens\":2085,\"total_tokens\":2382,\"completion_tokens_details\":{\"reasoning_tokens\":173},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet runs ahead toward a wall decorated with geometric patterns, with a narrow dark opening centered in the wall and the purple four-pointed star visible just beyond it. To the left is a brightly lit patterned floor area.\", \"reasoning\": \"The star is through a narrow opening ahead. Before reaching the opening, I should check my body width via look_down to determine if I need to rotate my torso to fit through, since turning is only possible before my shoulders enter the opening.\", \"action\": \"look_down\", \"confidence\": 0.8}",
+    "reasoning_content": "The star is straight ahead through a narrow opening. Before the opening, I should check my body width with look_down to see if I can fit, then rotate if needed. But look_down might be smart now since we're getting close to the opening. Actually, position x=2.0. The opening seems a few meters away. Let me just continue forward and then check width before entering. But \"you cannot turn once your shoulders are inside the opening\" - so I should check width and turn before entering. Let me do look_down first to assess, then decide.\n\nActually, continuing forward is safe until we get close. But if we need to turn, we need room. The opening is narrow; we may need to turn to fit through (reduce width). Let me look_down now to see body dimensions while there's still room to turn.",
+    "parsed": {
+      "scene_description": "A red carpet runs ahead toward a wall decorated with geometric patterns, with a narrow dark opening centered in the wall and the purple four-pointed star visible just beyond it. To the left is a brightly lit patterned floor area.",
+      "reasoning": "The star is through a narrow opening ahead. Before reaching the opening, I should check my body width via look_down to determine if I need to rotate my torso to fit through, since turning is only possible before my shoulders enter the opening.",
+      "action": "look_down",
+      "confidence": 0.8
+    },
+    "action": "look_down"
+  }
+]

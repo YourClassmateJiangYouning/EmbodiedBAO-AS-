@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:24:54+08:00",
+    "latency_ms": 90034,
+    "payload_bytes": 439542,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "TimeoutError: timed out",
+    "json_mode": null,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T12:25:03+08:00",
+    "latency_ms": 8700,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 128,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"7f0d8165-0f9e-4b0a-a30b-da052c5d2ac8_798bbb408ee5403d99d579cc452fffa4\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The downward glance shows my own body from the front against red carpet: a wheeled base with two large side wheels, a white flat tray extending laterally at the top, exposed electronics and cabling in the middle. Torso rotation reads 0 degrees, so my narrowest width (body thickness) is facing forward toward the opening.\\\", \\\"reasoning\\\": \\\"My torso is at 0 degrees rotation, meaning my body presents its narrowest profile toward the far wall opening. Since turning is impossible once inside the narrow opening and would only make me wider, I should keep the torso aligned and simply walk straight forward toward the green rectangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The current camera image is the downward glance showing the robot's body on a red carpet. I need to assess my width. The body appears fairly wide with wheels at the sides and a white tray extending wider. The opening might be narrow.\\n\\nThe torso rotation is 0 degrees, so my body is aligned with the walking direction, presenting its narrowest profile (thickness) toward the opening. I should just proceed forward toward the opening. The previous reasoning was to check width before entering. Now that I've seen the body at 0 rotation (aligned), I should keep torso at 0 rotation and move forward.\\n\\nAction: forward.\"}}],\"created\":1794198302,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":279,\"prompt_tokens\":2003,\"total_tokens\":2282,\"completion_tokens_details\":{\"reasoning_tokens\":128},\"prompt_tokens_details\":{\"cached_tokens\":1920,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The downward glance shows my own body from the front against red carpet: a wheeled base with two large side wheels, a white flat tray extending laterally at the top, exposed electronics and cabling in the middle. Torso rotation reads 0 degrees, so my narrowest width (body thickness) is facing forward toward the opening.\", \"reasoning\": \"My torso is at 0 degrees rotation, meaning my body presents its narrowest profile toward the far wall opening. Since turning is impossible once inside the narrow opening and would only make me wider, I should keep the torso aligned and simply walk straight forward toward the green rectangle.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "The current camera image is the downward glance showing the robot's body on a red carpet. I need to assess my width. The body appears fairly wide with wheels at the sides and a white tray extending wider. The opening might be narrow.\n\nThe torso rotation is 0 degrees, so my body is aligned with the walking direction, presenting its narrowest profile (thickness) toward the opening. I should just proceed forward toward the opening. The previous reasoning was to check width before entering. Now that I've seen the body at 0 rotation (aligned), I should keep torso at 0 rotation and move forward.\n\nAction: forward.",
+    "parsed": {
+      "scene_description": "The downward glance shows my own body from the front against red carpet: a wheeled base with two large side wheels, a white flat tray extending laterally at the top, exposed electronics and cabling in the middle. Torso rotation reads 0 degrees, so my narrowest width (body thickness) is facing forward toward the opening.",
+      "reasoning": "My torso is at 0 degrees rotation, meaning my body presents its narrowest profile toward the far wall opening. Since turning is impossible once inside the narrow opening and would only make me wider, I should keep the torso aligned and simply walk straight forward toward the green rectangle.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

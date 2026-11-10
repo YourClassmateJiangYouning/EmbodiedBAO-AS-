@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:41:14+08:00",
+    "latency_ms": 7675,
+    "payload_bytes": 397704,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_rd7pzeza2vl4edabbzzgqhrmyrmxtyukjik2bdrmda7xq33tcgbq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145274,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I am in a large indoor space with a red textured floor. Ahead of me is a clear, straight walkway leading to the far wall. The purple four-pointed star is visible in the center of the far wall, mounted on a dark panel. The walls on either side have blue and purple geometric patterns. Yellow and white geometric shapes line both sides of the walkway. The path is completely clear and unobstructed.\\\",\\n  \\\"reasoning\\\": \\\"I can see the purple four-pointed star clearly on the far wall ahead. My walking direction is fixed toward it. The path is straight and clear with no obstacles. I am at position x=0.500, and I need to move forward along the x-axis to reach the star. My torso is at 0 degrees rotation, which is neutral. The most direct approach is to simply walk forward repeatedly until I reach the star.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2321,\"completion_tokens\":222,\"total_tokens\":2543,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2321,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":222,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2321,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I am in a large indoor space with a red textured floor. Ahead of me is a clear, straight walkway leading to the far wall. The purple four-pointed star is visible in the center of the far wall, mounted on a dark panel. The walls on either side have blue and purple geometric patterns. Yellow and white geometric shapes line both sides of the walkway. The path is completely clear and unobstructed.\",\n  \"reasoning\": \"I can see the purple four-pointed star clearly on the far wall ahead. My walking direction is fixed toward it. The path is straight and clear with no obstacles. I am at position x=0.500, and I need to move forward along the x-axis to reach the star. My torso is at 0 degrees rotation, which is neutral. The most direct approach is to simply walk forward repeatedly until I reach the star.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I am in a large indoor space with a red textured floor. Ahead of me is a clear, straight walkway leading to the far wall. The purple four-pointed star is visible in the center of the far wall, mounted on a dark panel. The walls on either side have blue and purple geometric patterns. Yellow and white geometric shapes line both sides of the walkway. The path is completely clear and unobstructed.",
+      "reasoning": "I can see the purple four-pointed star clearly on the far wall ahead. My walking direction is fixed toward it. The path is straight and clear with no obstacles. I am at position x=0.500, and I need to move forward along the x-axis to reach the star. My torso is at 0 degrees rotation, which is neutral. The most direct approach is to simply walk forward repeatedly until I reach the star.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

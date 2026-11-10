@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:25:26+08:00",
+    "latency_ms": 5727,
+    "payload_bytes": 280091,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090825217474936608268d9d6SWG4Wo5s\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212726,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight ahead at a green rectangle on the floor. Behind the rectangle is a dark cloth-covered object on the left and a yellow sofa on the right. A red rug is visible in the immediate foreground.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=7.25 and the green rectangle is directly in front of me. I will move forward one more time to reach the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3564,\"completion_tokens\":113,\"total_tokens\":3677,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3564,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":113,\"totalTokenCount\":3677,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2475}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":113}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2475,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":113,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight ahead at a green rectangle on the floor. Behind the rectangle is a dark cloth-covered object on the left and a yellow sofa on the right. A red rug is visible in the immediate foreground.\",\n  \"reasoning\": \"I am at position x=7.25 and the green rectangle is directly in front of me. I will move forward one more time to reach the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight ahead at a green rectangle on the floor. Behind the rectangle is a dark cloth-covered object on the left and a yellow sofa on the right. A red rug is visible in the immediate foreground.",
+      "reasoning": "I am at position x=7.25 and the green rectangle is directly in front of me. I will move forward one more time to reach the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

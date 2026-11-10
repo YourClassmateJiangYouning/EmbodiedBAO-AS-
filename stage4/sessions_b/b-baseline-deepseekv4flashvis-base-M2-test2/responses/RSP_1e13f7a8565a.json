@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:21:30+08:00",
+    "latency_ms": 2866,
+    "payload_bytes": 350154,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a0ac68ce-1585-4259-9d4e-e8d712787921\",\"object\":\"chat.completion\",\"created\":1794212489,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpet stretches straight ahead toward a far wall with a red circle mounted on a dark panel. The path is clear with no obstacles in the way.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the unobstructed red carpet, and previous forward steps have been successful. Continuing forward will bring me closer to the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1759,\"completion_tokens\":87,\"total_tokens\":1846,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":991},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpet stretches straight ahead toward a far wall with a red circle mounted on a dark panel. The path is clear with no obstacles in the way.\", \"reasoning\": \"The red circle is directly ahead along the unobstructed red carpet, and previous forward steps have been successful. Continuing forward will bring me closer to the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpet stretches straight ahead toward a far wall with a red circle mounted on a dark panel. The path is clear with no obstacles in the way.",
+      "reasoning": "The red circle is directly ahead along the unobstructed red carpet, and previous forward steps have been successful. Continuing forward will bring me closer to the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

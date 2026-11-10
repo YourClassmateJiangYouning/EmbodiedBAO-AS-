@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:43:44+08:00",
+    "latency_ms": 17207,
+    "payload_bytes": 248764,
+    "finish_reason": "stop",
+    "reasoning_tokens": 125,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n{\"id\":\"c2fd0a39-fbd4-4315-b2cf-971ccd7d5714_61e3e9d070f44173b4a613c164d5fe24\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the blue triangle on a dark panel on the far wall directly ahead, framed by the narrow opening between wall panels. The red carpet leads straight toward it. The triangle appears close now, roughly one to one and a half meters ahead. The left wall panel has purple stripes, and the right panel is blue with a small green triangle sticker.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead and appears very close after 8 forward moves (x=6.5). My torso rotation is 0 degrees (narrowest profile), so I fit through the opening. The path is clear on the red carpet. I should continue forward to reach the triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The blue triangle is visible ahead through the opening. Position x=6.5 after 8 forward moves (started at 0 presumably, 8*0.75 = 6.0... but shows 6.5, so maybe started at 0.5). The triangle looks quite close now. Let me check - the triangle appears to be maybe 1-1.5 meters away. One more forward should get close or reach it. Let me move forward.\\n\\nThe triangle is on the far wall, visible through the opening. It looks like it's right ahead. I should continue forward.\"}}],\"created\":1794138224,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":284,\"prompt_tokens\":2476,\"total_tokens\":2760,\"completion_tokens_details\":{\"reasoning_tokens\":125},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows the blue triangle on a dark panel on the far wall directly ahead, framed by the narrow opening between wall panels. The red carpet leads straight toward it. The triangle appears close now, roughly one to one and a half meters ahead. The left wall panel has purple stripes, and the right panel is blue with a small green triangle sticker.\", \"reasoning\": \"The blue triangle is directly ahead and appears very close after 8 forward moves (x=6.5). My torso rotation is 0 degrees (narrowest profile), so I fit through the opening. The path is clear on the red carpet. I should continue forward to reach the triangle.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The blue triangle is visible ahead through the opening. Position x=6.5 after 8 forward moves (started at 0 presumably, 8*0.75 = 6.0... but shows 6.5, so maybe started at 0.5). The triangle looks quite close now. Let me check - the triangle appears to be maybe 1-1.5 meters away. One more forward should get close or reach it. Let me move forward.\n\nThe triangle is on the far wall, visible through the opening. It looks like it's right ahead. I should continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows the blue triangle on a dark panel on the far wall directly ahead, framed by the narrow opening between wall panels. The red carpet leads straight toward it. The triangle appears close now, roughly one to one and a half meters ahead. The left wall panel has purple stripes, and the right panel is blue with a small green triangle sticker.",
+      "reasoning": "The blue triangle is directly ahead and appears very close after 8 forward moves (x=6.5). My torso rotation is 0 degrees (narrowest profile), so I fit through the opening. The path is clear on the red carpet. I should continue forward to reach the triangle.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

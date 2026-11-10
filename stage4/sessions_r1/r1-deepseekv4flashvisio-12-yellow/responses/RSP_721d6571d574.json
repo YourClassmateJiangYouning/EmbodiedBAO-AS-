@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:01:35+08:00",
+    "latency_ms": 2346,
+    "payload_bytes": 244978,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"3e4dedfc-31cc-49b5-889f-21361c094a63\",\"object\":\"chat.completion\",\"created\":1794207694,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a large yellow arrow on a dark sign directly ahead and very close, filling the lower portion of the view, with a light floor and dark fabric above.\\\", \\\"reasoning\\\": \\\"The yellow arrow goal is directly ahead and appears within reach after 10 forward steps. Torso is aligned at 0 degrees and the path is clear, so one more forward step should reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2121,\"completion_tokens\":99,\"total_tokens\":2220,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1353},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a large yellow arrow on a dark sign directly ahead and very close, filling the lower portion of the view, with a light floor and dark fabric above.\", \"reasoning\": \"The yellow arrow goal is directly ahead and appears within reach after 10 forward steps. Torso is aligned at 0 degrees and the path is clear, so one more forward step should reach the goal.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a large yellow arrow on a dark sign directly ahead and very close, filling the lower portion of the view, with a light floor and dark fabric above.",
+      "reasoning": "The yellow arrow goal is directly ahead and appears within reach after 10 forward steps. Torso is aligned at 0 degrees and the path is clear, so one more forward step should reach the goal.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

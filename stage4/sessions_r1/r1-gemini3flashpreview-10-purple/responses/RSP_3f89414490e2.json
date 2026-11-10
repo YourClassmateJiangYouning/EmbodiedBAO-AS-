@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:37:47+08:00",
+    "latency_ms": 5312,
+    "payload_bytes": 256909,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081037436087428818268d9d6KkmY2fLc\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134268,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The purple four-pointed star is now directly in front of me, appearing large on a black rectangular screen placed on the floor. Behind it is a dark, draped fabric and a glimpse of a tan-colored object.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=8.0 and the purple star is immediately in front of me. One more forward step should bring me to the target to complete the task.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3135,\"completion_tokens\":113,\"total_tokens\":3248,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3135,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":113,\"totalTokenCount\":3248,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2046}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":113}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2046,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":113,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The purple four-pointed star is now directly in front of me, appearing large on a black rectangular screen placed on the floor. Behind it is a dark, draped fabric and a glimpse of a tan-colored object.\",\n  \"reasoning\": \"I am at x=8.0 and the purple star is immediately in front of me. One more forward step should bring me to the target to complete the task.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is now directly in front of me, appearing large on a black rectangular screen placed on the floor. Behind it is a dark, draped fabric and a glimpse of a tan-colored object.",
+      "reasoning": "I am at x=8.0 and the purple star is immediately in front of me. One more forward step should bring me to the target to complete the task.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

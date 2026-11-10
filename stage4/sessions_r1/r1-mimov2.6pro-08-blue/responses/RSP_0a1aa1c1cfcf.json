@@ -1,0 +1,52 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:20:37+08:00",
+    "latency_ms": 2700,
+    "payload_bytes": 366549,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T14:20:40+08:00",
+    "latency_ms": 3082,
+    "payload_bytes": 366549,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 3,
+    "started_at": "2026-11-09T14:20:59+08:00",
+    "latency_ms": 18376,
+    "payload_bytes": 366549,
+    "finish_reason": "stop",
+    "reasoning_tokens": 499,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n{\"id\":\"bc856ac0-99c5-4f8d-8966-f1a0077c15ba_22f8043844db4b5c9f22a424081ecb25\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red-carpeted walkway stretches ahead between walls covered in colorful abstract patterns. At the end of the walkway, a narrow dark doorway frames a glowing blue triangle on the far wall. Sunlit floor tiles border the carpet on the left. My torso is rotated 90 degrees, presenting my thinner body dimension toward the opening.\\\",\\\"reasoning\\\": \\\"My torso is already rotated 90 degrees (the six turn_right steps completed the rotation), so my thinner front-to-back dimension faces the narrow doorway ahead. The doorway is still some distance away, well clear of my shoulders, so turning is done and the remaining task is simply to advance. I will walk forward toward the blue triangle.\\\",\\\"action\\\": \\\"forward\\\",\\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are told: current state x=1.250, torso rotation 90.0 degrees. Interesting - state says torso rotation is 90.0, but history says we did turn_right 6 times from step 2 to step 7, going 0 -> 15 -> 30 -> 45 -> 60 -> 75 -> 90. So at 90 now. Good. Also step 8 was \\\"None -> invalid action response\\\" so that didn't execute.\\n\\nThe image shows the red carpet path, a narrow doorway ahead with blue triangle visible. The doorway looks narrow. Torso is rotated 90 degrees so thin dimension faces opening... wait, actually rotating torso 90 degrees means the body width (front-to-back thickness?) faces the opening. The doorway is in the far wall ahead, and forward movement goes toward it.\\n\\nNow we should move forward. We're at x=1.25, we've taken one forward step (75cm) plus starting position maybe 0.5? Anyway we need to keep moving forward toward the doorway. The turn note: \\\"you cannot turn once your shoulders are inside the opening\\\" - we already turned to 90, fine.\\n\\nShould we verify our width with look_down again? We already did look_down at step 0. The plan was rotate 90 degrees so thin side faces opening. Now just forward. But careful: how many forwards needed? The doorway appears some distance ahead. Each forward is 75cm. Let's just keep moving forward until we reach the triangle. The blue triangle is through the doorway at the far wall. We might need several forward steps.\\n\\nLet's think about the geometry: x=1.250 after 9 steps (one forward). The far wall might be at some x. We don't know exactly. The image shows the doorway relatively near - maybe 2-3 meters away? So maybe 3-4 forward steps.\\n\\nConsider look_down to confirm width facing? Not necessary - we already know. But the guidance says look_down gives width info. We've already used it. Now proceed forward.\\n\\nAction: forward. Confidence high, e.g. 0.85.\\n\\nScene description: Red carpeted walkway ahead, patterned walls on both sides, narrow doorway at end with glowing blue triangle visible through it.\\n\\nLet's produce JSON.\"}}],\"created\":1794205258,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":659,\"prompt_tokens\":2493,\"total_tokens\":3152,\"completion_tokens_details\":{\"reasoning_tokens\":499},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red-carpeted walkway stretches ahead between walls covered in colorful abstract patterns. At the end of the walkway, a narrow dark doorway frames a glowing blue triangle on the far wall. Sunlit floor tiles border the carpet on the left. My torso is rotated 90 degrees, presenting my thinner body dimension toward the opening.\",\"reasoning\": \"My torso is already rotated 90 degrees (the six turn_right steps completed the rotation), so my thinner front-to-back dimension faces the narrow doorway ahead. The doorway is still some distance away, well clear of my shoulders, so turning is done and the remaining task is simply to advance. I will walk forward toward the blue triangle.\",\"action\": \"forward\",\"confidence\": 0.9}",
+    "reasoning_content": "We are told: current state x=1.250, torso rotation 90.0 degrees. Interesting - state says torso rotation is 90.0, but history says we did turn_right 6 times from step 2 to step 7, going 0 -> 15 -> 30 -> 45 -> 60 -> 75 -> 90. So at 90 now. Good. Also step 8 was \"None -> invalid action response\" so that didn't execute.\n\nThe image shows the red carpet path, a narrow doorway ahead with blue triangle visible. The doorway looks narrow. Torso is rotated 90 degrees so thin dimension faces opening... wait, actually rotating torso 90 degrees means the body width (front-to-back thickness?) faces the opening. The doorway is in the far wall ahead, and forward movement goes toward it.\n\nNow we should move forward. We're at x=1.25, we've taken one forward step (75cm) plus starting position maybe 0.5? Anyway we need to keep moving forward toward the doorway. The turn note: \"you cannot turn once your shoulders are inside the opening\" - we already turned to 90, fine.\n\nShould we verify our width with look_down again? We already did look_down at step 0. The plan was rotate 90 degrees so thin side faces opening. Now just forward. But careful: how many forwards needed? The doorway appears some distance ahead. Each forward is 75cm. Let's just keep moving forward until we reach the triangle. The blue triangle is through the doorway at the far wall. We might need several forward steps.\n\nLet's think about the geometry: x=1.250 after 9 steps (one forward). The far wall might be at some x. We don't know exactly. The image shows the doorway relatively near - maybe 2-3 meters away? So maybe 3-4 forward steps.\n\nConsider look_down to confirm width facing? Not necessary - we already know. But the guidance says look_down gives width info. We've already used it. Now proceed forward.\n\nAction: forward. Confidence high, e.g. 0.85.\n\nScene description: Red carpeted walkway ahead, patterned walls on both sides, narrow doorway at end with glowing blue triangle visible through it.\n\nLet's produce JSON.",
+    "parsed": {
+      "scene_description": "A red-carpeted walkway stretches ahead between walls covered in colorful abstract patterns. At the end of the walkway, a narrow dark doorway frames a glowing blue triangle on the far wall. Sunlit floor tiles border the carpet on the left. My torso is rotated 90 degrees, presenting my thinner body dimension toward the opening.",
+      "reasoning": "My torso is already rotated 90 degrees (the six turn_right steps completed the rotation), so my thinner front-to-back dimension faces the narrow doorway ahead. The doorway is still some distance away, well clear of my shoulders, so turning is done and the remaining task is simply to advance. I will walk forward toward the blue triangle.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

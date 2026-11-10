@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:34:29+08:00",
+    "latency_ms": 12681,
+    "payload_bytes": 295424,
+    "finish_reason": "stop",
+    "reasoning_tokens": 57,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"b5928be3-adb0-4e1a-933a-ec3bf4151191_836746ac6bda4e18a109ec525d18e4a3\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is visible directly ahead through a narrow dark opening in the far wall, with red carpet leading toward it and patterned walls on either side. The path appears clear to the opening.\\\", \\\"reasoning\\\": \\\"My torso is rotated 90 degrees, presenting my thin depth dimension to the narrow opening - the optimal orientation to pass through. The star is directly ahead and very close. I simply need to keep walking forward to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=4.25, torso rotated 90 degrees. The star is visible through the opening ahead. We need to keep moving forward. The step limit is 30, 12 used, so 18 remaining. Just continue forward.\"}}],\"created\":1794144868,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":173,\"prompt_tokens\":2760,\"total_tokens\":2933,\"completion_tokens_details\":{\"reasoning_tokens\":57},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is visible directly ahead through a narrow dark opening in the far wall, with red carpet leading toward it and patterned walls on either side. The path appears clear to the opening.\", \"reasoning\": \"My torso is rotated 90 degrees, presenting my thin depth dimension to the narrow opening - the optimal orientation to pass through. The star is directly ahead and very close. I simply need to keep walking forward to reach it.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We are at x=4.25, torso rotated 90 degrees. The star is visible through the opening ahead. We need to keep moving forward. The step limit is 30, 12 used, so 18 remaining. Just continue forward.",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is visible directly ahead through a narrow dark opening in the far wall, with red carpet leading toward it and patterned walls on either side. The path appears clear to the opening.",
+      "reasoning": "My torso is rotated 90 degrees, presenting my thin depth dimension to the narrow opening - the optimal orientation to pass through. The star is directly ahead and very close. I simply need to keep walking forward to reach it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

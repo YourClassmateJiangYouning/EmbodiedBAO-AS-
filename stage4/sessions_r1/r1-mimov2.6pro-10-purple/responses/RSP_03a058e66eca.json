@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:20:13+08:00",
+    "latency_ms": 5052,
+    "payload_bytes": 339433,
+    "finish_reason": "stop",
+    "reasoning_tokens": 34,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e0281ff5-79a4-4167-ac87-722d3bdc2bc5_0cc39d5e932c47e49b336edc670d12e4\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet stretches ahead toward a narrow opening in a patterned wall. The purple four-pointed star is visible through the opening, with dark space and a wall beyond. The carpet path is clear in front of me.\\\", \\\"reasoning\\\": \\\"My torso is already at 90 degrees, giving me the narrowest profile to pass through the narrow opening. The star is visible through the opening and the carpet path is clear. I should continue moving forward toward the star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The star is visible through the opening ahead. I'm at x=2.75 and rotated to 90 degrees for narrow profile. Keep moving forward.\"}}],\"created\":1794198012,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":155,\"prompt_tokens\":2611,\"total_tokens\":2766,\"completion_tokens_details\":{\"reasoning_tokens\":34},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet stretches ahead toward a narrow opening in a patterned wall. The purple four-pointed star is visible through the opening, with dark space and a wall beyond. The carpet path is clear in front of me.\", \"reasoning\": \"My torso is already at 90 degrees, giving me the narrowest profile to pass through the narrow opening. The star is visible through the opening and the carpet path is clear. I should continue moving forward toward the star.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The star is visible through the opening ahead. I'm at x=2.75 and rotated to 90 degrees for narrow profile. Keep moving forward.",
+    "parsed": {
+      "scene_description": "A red carpet stretches ahead toward a narrow opening in a patterned wall. The purple four-pointed star is visible through the opening, with dark space and a wall beyond. The carpet path is clear in front of me.",
+      "reasoning": "My torso is already at 90 degrees, giving me the narrowest profile to pass through the narrow opening. The star is visible through the opening and the carpet path is clear. I should continue moving forward toward the star.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

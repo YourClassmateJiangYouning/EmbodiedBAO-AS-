@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:36:01+08:00",
+    "latency_ms": 8029,
+    "payload_bytes": 260746,
+    "finish_reason": "stop",
+    "reasoning_tokens": 47,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"89ec60f5-2a6b-4e6b-a9a5-b84bee3daa95_171b628fc4ab469a85e49fd77e3d200d\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The red circle on a black stand is immediately ahead, very close and large in view, sitting on the floor just beyond the red carpet edge. Behind it are a draped black object and a tan chair. The carpeted floor fills the foreground.\\\", \\\"reasoning\\\": \\\"I am at x=6.5 with torso rotated 90° (the narrow profile that allowed passage). The red circle is directly ahead and extremely close — the previous step moved me from 5.75 to 6.5 successfully. One more forward step should bring me onto the red circle and complete the task.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We're at x=6.5, the red circle appears very close. Previous step said one more forward step should bring us to the circle. We're at 6.5 after 16 steps. Try forward.\"}}],\"created\":1794213360,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":193,\"prompt_tokens\":4030,\"total_tokens\":4223,\"completion_tokens_details\":{\"reasoning_tokens\":47},\"prompt_tokens_details\":{\"cached_tokens\":1536,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The red circle on a black stand is immediately ahead, very close and large in view, sitting on the floor just beyond the red carpet edge. Behind it are a draped black object and a tan chair. The carpeted floor fills the foreground.\", \"reasoning\": \"I am at x=6.5 with torso rotated 90° (the narrow profile that allowed passage). The red circle is directly ahead and extremely close — the previous step moved me from 5.75 to 6.5 successfully. One more forward step should bring me onto the red circle and complete the task.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "We're at x=6.5, the red circle appears very close. Previous step said one more forward step should bring us to the circle. We're at 6.5 after 16 steps. Try forward.",
+    "parsed": {
+      "scene_description": "The red circle on a black stand is immediately ahead, very close and large in view, sitting on the floor just beyond the red carpet edge. Behind it are a draped black object and a tan chair. The carpeted floor fills the foreground.",
+      "reasoning": "I am at x=6.5 with torso rotated 90° (the narrow profile that allowed passage). The red circle is directly ahead and extremely close — the previous step moved me from 5.75 to 6.5 successfully. One more forward step should bring me onto the red circle and complete the task.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

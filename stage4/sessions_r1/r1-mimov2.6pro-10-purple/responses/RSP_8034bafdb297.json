@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:19:39+08:00",
+    "latency_ms": 7429,
+    "payload_bytes": 375158,
+    "finish_reason": "stop",
+    "reasoning_tokens": 125,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5156243e-e6c7-47c7-90fd-7add110f3d06_d37cc8d6ded94f53a4b1b9d9a89d283e\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet leads straight ahead toward a narrow opening in a wall with abstract patterns, where the purple four-pointed star is visible. Light-patterned floor tiles flank the carpet on both sides. The opening appears close ahead.\\\", \\\"reasoning\\\": \\\"My torso is at 45 degrees rotation. To minimize my profile through the narrow opening I need to reach 90 degrees, so I need 3 more turn_right actions. I'm still before the opening and have room to keep rotating.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"{\\\"scene_description\\\": \\\"Red carpet leads forward to a narrow opening in a patterned wall with the purple four-pointed star visible inside the opening. Floor tiles with light patterns are on both sides.\\\", \\\"reasoning\\\": \\\"I'm at 45 degrees torso rotation and need to reach 90 degrees so my narrower body depth faces the narrow opening. I need 4 more turn_right actions. The opening appears close but I still have room to rotate before reaching it. Continuing to turn right to align my narrow profile with the opening.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.9}\"}}],\"created\":1794197979,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":247,\"prompt_tokens\":2290,\"total_tokens\":2537,\"completion_tokens_details\":{\"reasoning_tokens\":125},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet leads straight ahead toward a narrow opening in a wall with abstract patterns, where the purple four-pointed star is visible. Light-patterned floor tiles flank the carpet on both sides. The opening appears close ahead.\", \"reasoning\": \"My torso is at 45 degrees rotation. To minimize my profile through the narrow opening I need to reach 90 degrees, so I need 3 more turn_right actions. I'm still before the opening and have room to keep rotating.\", \"action\": \"turn_right\", \"confidence\": 0.9}",
+    "reasoning_content": "{\"scene_description\": \"Red carpet leads forward to a narrow opening in a patterned wall with the purple four-pointed star visible inside the opening. Floor tiles with light patterns are on both sides.\", \"reasoning\": \"I'm at 45 degrees torso rotation and need to reach 90 degrees so my narrower body depth faces the narrow opening. I need 4 more turn_right actions. The opening appears close but I still have room to rotate before reaching it. Continuing to turn right to align my narrow profile with the opening.\", \"action\": \"turn_right\", \"confidence\": 0.9}",
+    "parsed": {
+      "scene_description": "A red carpet leads straight ahead toward a narrow opening in a wall with abstract patterns, where the purple four-pointed star is visible. Light-patterned floor tiles flank the carpet on both sides. The opening appears close ahead.",
+      "reasoning": "My torso is at 45 degrees rotation. To minimize my profile through the narrow opening I need to reach 90 degrees, so I need 3 more turn_right actions. I'm still before the opening and have room to keep rotating.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

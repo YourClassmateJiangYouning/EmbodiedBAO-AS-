@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:41:33+08:00",
+    "latency_ms": 5033,
+    "payload_bytes": 263946,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090841294366435838268d9d6cmomuzsm\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213693,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading to a narrow opening between two patterned walls. In the distance, beyond the opening, a blue triangle is visible on the far wall. The robot is currently positioned at x=4.25, just before the opening.\\\",\\n  \\\"reasoning\\\": \\\"My current torso rotation is 0.0 degrees, which means my widest profile (the bumper) is facing the narrow opening. To fit through, I need to rotate my torso to 90 degrees. I will continue turning left to increase the rotation angle.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2634,\"completion_tokens\":144,\"total_tokens\":2778,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2634,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":144,\"totalTokenCount\":2778,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1545},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":144}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1545,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":144,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a red carpeted walkway leading to a narrow opening between two patterned walls. In the distance, beyond the opening, a blue triangle is visible on the far wall. The robot is currently positioned at x=4.25, just before the opening.\",\n  \"reasoning\": \"My current torso rotation is 0.0 degrees, which means my widest profile (the bumper) is facing the narrow opening. To fit through, I need to rotate my torso to 90 degrees. I will continue turning left to increase the rotation angle.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading to a narrow opening between two patterned walls. In the distance, beyond the opening, a blue triangle is visible on the far wall. The robot is currently positioned at x=4.25, just before the opening.",
+      "reasoning": "My current torso rotation is 0.0 degrees, which means my widest profile (the bumper) is facing the narrow opening. To fit through, I need to rotate my torso to 90 degrees. I will continue turning left to increase the rotation angle.",
+      "action": "turn_left",
+      "confidence": 1.0
+    },
+    "action": "turn_left"
+  }
+]

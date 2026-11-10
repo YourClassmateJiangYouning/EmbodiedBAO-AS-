@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:25:58+08:00",
+    "latency_ms": 19453,
+    "payload_bytes": 166724,
+    "finish_reason": "stop",
+    "reasoning_tokens": 14,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n\n{\"id\":\"58d6e055-8d7e-4ed9-90b4-87d8aa106bbc_f070c8f0cb9c4761852b9dfbe5ba4fe9\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star on a dark panel is now very close directly ahead, just past the edge of the dark opening. A red carpet leads up to the threshold, with a lit wall to the left. The star appears less than a meter away.\\\", \\\"reasoning\\\": \\\"I am at x=7.25, very close to the star. My torso rotation is 0 degrees (narrowest), and the star is directly ahead just beyond the threshold. One more forward step of 75cm should bring me to the star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The star is very close, right ahead. Just move forward.\"}}],\"created\":1794205558,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":148,\"prompt_tokens\":2587,\"total_tokens\":2735,\"completion_tokens_details\":{\"reasoning_tokens\":14},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star on a dark panel is now very close directly ahead, just past the edge of the dark opening. A red carpet leads up to the threshold, with a lit wall to the left. The star appears less than a meter away.\", \"reasoning\": \"I am at x=7.25, very close to the star. My torso rotation is 0 degrees (narrowest), and the star is directly ahead just beyond the threshold. One more forward step of 75cm should bring me to the star.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The star is very close, right ahead. Just move forward.",
+    "parsed": {
+      "scene_description": "The purple four-pointed star on a dark panel is now very close directly ahead, just past the edge of the dark opening. A red carpet leads up to the threshold, with a lit wall to the left. The star appears less than a meter away.",
+      "reasoning": "I am at x=7.25, very close to the star. My torso rotation is 0 degrees (narrowest), and the star is directly ahead just beyond the threshold. One more forward step of 75cm should bring me to the star.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

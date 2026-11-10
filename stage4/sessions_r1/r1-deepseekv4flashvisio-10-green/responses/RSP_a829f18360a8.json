@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:03:24+08:00",
+    "latency_ms": 2459,
+    "payload_bytes": 244048,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"b59e7886-409e-4a46-8cac-08c8490cceee\",\"object\":\"chat.completion\",\"created\":1794207803,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle target is visible straight ahead on the far wall, slightly above the red carpet, with a clear path between the patterned walls on either side.\\\", \\\"reasoning\\\": \\\"The target is directly ahead along the fixed walking direction and the path appears unobstructed, so continuing forward advances 75cm toward the goal. No turning is needed.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1965,\"completion_tokens\":89,\"total_tokens\":2054,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1325},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green rectangle target is visible straight ahead on the far wall, slightly above the red carpet, with a clear path between the patterned walls on either side.\", \"reasoning\": \"The target is directly ahead along the fixed walking direction and the path appears unobstructed, so continuing forward advances 75cm toward the goal. No turning is needed.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green rectangle target is visible straight ahead on the far wall, slightly above the red carpet, with a clear path between the patterned walls on either side.",
+      "reasoning": "The target is directly ahead along the fixed walking direction and the path appears unobstructed, so continuing forward advances 75cm toward the goal. No turning is needed.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

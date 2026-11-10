@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:18:40+08:00",
+    "latency_ms": 13827,
+    "payload_bytes": 370954,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_a2djl7ox7o27hlbzymuuqp7rjwfwk4lcxea6p5ru7jdyzpox7mga\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794197915,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a red carpeted floor stretching ahead toward a far wall. The wall has a tan/beige colored surface with purple decorative patterns. There is a dark vertical pillar or column in the center-background, and behind/above it I can clearly see the green rectangle target on the far wall. The path ahead is clear and unobstructed. The green rectangle is my destination.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=1.250, having already taken one forward step. The green rectangle is visible on the far wall ahead. My walking direction is fixed toward that wall. The path is clear with no obstacles blocking my way forward. I should continue moving forward toward the green rectangle. My torso is at 0 degrees rotation, so I'm in a neutral stance. I have 29 steps remaining out of 30.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2417,\"completion_tokens\":215,\"total_tokens\":2632,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2417,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":215,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2417,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a red carpeted floor stretching ahead toward a far wall. The wall has a tan/beige colored surface with purple decorative patterns. There is a dark vertical pillar or column in the center-background, and behind/above it I can clearly see the green rectangle target on the far wall. The path ahead is clear and unobstructed. The green rectangle is my destination.\",\n  \"reasoning\": \"I am at position x=1.250, having already taken one forward step. The green rectangle is visible on the far wall ahead. My walking direction is fixed toward that wall. The path is clear with no obstacles blocking my way forward. I should continue moving forward toward the green rectangle. My torso is at 0 degrees rotation, so I'm in a neutral stance. I have 29 steps remaining out of 30.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a red carpeted floor stretching ahead toward a far wall. The wall has a tan/beige colored surface with purple decorative patterns. There is a dark vertical pillar or column in the center-background, and behind/above it I can clearly see the green rectangle target on the far wall. The path ahead is clear and unobstructed. The green rectangle is my destination.",
+      "reasoning": "I am at position x=1.250, having already taken one forward step. The green rectangle is visible on the far wall ahead. My walking direction is fixed toward that wall. The path is clear with no obstacles blocking my way forward. I should continue moving forward toward the green rectangle. My torso is at 0 degrees rotation, so I'm in a neutral stance. I have 29 steps remaining out of 30.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:23:11+08:00",
+    "latency_ms": 5241,
+    "payload_bytes": 382706,
+    "finish_reason": "stop",
+    "reasoning_tokens": 16,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"1409d065-a694-4cf8-9a93-6f3125f8c681_35c9b8d4e1fa4823a4a8753110a3374c\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway extends straight ahead toward a dark opening in a wall with colorful graffiti. A yellow arrow points right at the opening on the far wall. Sunlit tiled floor with purple zigzag patterns is visible to the left of the carpet.\\\", \\\"reasoning\\\": \\\"The yellow arrow is straight ahead at the far wall, and the red carpet leads directly toward the opening. The path is clear with no obstacles, so I should simply move forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear straight ahead toward the yellow arrow. Just move forward.\"}}],\"created\":1794208991,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":130,\"prompt_tokens\":1907,\"total_tokens\":2037,\"completion_tokens_details\":{\"reasoning_tokens\":16},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway extends straight ahead toward a dark opening in a wall with colorful graffiti. A yellow arrow points right at the opening on the far wall. Sunlit tiled floor with purple zigzag patterns is visible to the left of the carpet.\", \"reasoning\": \"The yellow arrow is straight ahead at the far wall, and the red carpet leads directly toward the opening. The path is clear with no obstacles, so I should simply move forward.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear straight ahead toward the yellow arrow. Just move forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway extends straight ahead toward a dark opening in a wall with colorful graffiti. A yellow arrow points right at the opening on the far wall. Sunlit tiled floor with purple zigzag patterns is visible to the left of the carpet.",
+      "reasoning": "The yellow arrow is straight ahead at the far wall, and the red carpet leads directly toward the opening. The path is clear with no obstacles, so I should simply move forward.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:29:19+08:00",
+    "latency_ms": 7508,
+    "payload_bytes": 285293,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A straight red carpeted walkway leads toward a far wall. There is a narrow opening between two panels ahead; the left panel edge slightly intrudes into the carpet path. A red circle target is visible on a small black stand on the floor just beyond the opening.\\\", \\\"reasoning\\\": \\\"The path ahead remains clear and aligned with the target. I am not yet inside the narrow opening, so no torso rotation or width check is needed at this moment. Advancing straight will bring me closer to the opening and the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.77}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198555,\"id\":\"chatcmpl-EiBIJnlrSwfuNhzLdjNqN3Y5czLmh\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008215714-19515ff0-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":134,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":465,\"engine_ttlt_ms\":1637,\"pre_inference_ms\":368,\"service_tbt_ms\":8,\"service_ttft_ms\":1051,\"service_ttlt_ms\":2184,\"user_visible_ttft_ms\":683},\"prompt_tokens\":1785,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1919}}\n",
+    "content": "{\"scene_description\": \"A straight red carpeted walkway leads toward a far wall. There is a narrow opening between two panels ahead; the left panel edge slightly intrudes into the carpet path. A red circle target is visible on a small black stand on the floor just beyond the opening.\", \"reasoning\": \"The path ahead remains clear and aligned with the target. I am not yet inside the narrow opening, so no torso rotation or width check is needed at this moment. Advancing straight will bring me closer to the opening and the red circle.\", \"action\": \"forward\", \"confidence\": 0.77}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight red carpeted walkway leads toward a far wall. There is a narrow opening between two panels ahead; the left panel edge slightly intrudes into the carpet path. A red circle target is visible on a small black stand on the floor just beyond the opening.",
+      "reasoning": "The path ahead remains clear and aligned with the target. I am not yet inside the narrow opening, so no torso rotation or width check is needed at this moment. Advancing straight will bring me closer to the opening and the red circle.",
+      "action": "forward",
+      "confidence": 0.77
+    },
+    "action": "forward"
+  }
+]

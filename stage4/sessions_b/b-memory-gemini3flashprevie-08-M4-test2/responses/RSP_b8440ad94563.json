@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:46:36+08:00",
+    "latency_ms": 11290,
+    "payload_bytes": 366815,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090846305591750948268d9d6u6ZSi79z\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213997,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading towards a narrow opening between two walls decorated with geometric patterns. A blue triangle is visible on the far wall through the opening. The robot is currently positioned on the red carpet, facing the opening.\\\",\\n  \\\"reasoning\\\": \\\"My torso rotation is currently at 15 degrees. Based on the previous successful traversal, I need to rotate my torso significantly more (up to 75 degrees) to minimize my width and fit through the narrow gap ahead. I will continue rotating to the right.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3126,\"completion_tokens\":138,\"total_tokens\":3264,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3126,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":138,\"totalTokenCount\":3264,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2037},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":138}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2037,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":138,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading towards a narrow opening between two walls decorated with geometric patterns. A blue triangle is visible on the far wall through the opening. The robot is currently positioned on the red carpet, facing the opening.\",\n  \"reasoning\": \"My torso rotation is currently at 15 degrees. Based on the previous successful traversal, I need to rotate my torso significantly more (up to 75 degrees) to minimize my width and fit through the narrow gap ahead. I will continue rotating to the right.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading towards a narrow opening between two walls decorated with geometric patterns. A blue triangle is visible on the far wall through the opening. The robot is currently positioned on the red carpet, facing the opening.",
+      "reasoning": "My torso rotation is currently at 15 degrees. Based on the previous successful traversal, I need to rotate my torso significantly more (up to 75 degrees) to minimize my width and fit through the narrow gap ahead. I will continue rotating to the right.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:44:55+08:00",
+    "latency_ms": 8887,
+    "payload_bytes": 330088,
+    "finish_reason": "stop",
+    "reasoning_tokens": 37,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"802cbbe7-c8a7-4b0b-9370-571881947131_5ca51fd0a5394d0198c156ac4da369b5\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet extends straight ahead toward a dark opening in a wall with colorful patterned panels on either side. A yellow arrow marker is visible at the far wall through the opening. The path is clear with no obstacles.\\\", \\\"reasoning\\\": \\\"Three forward steps have been taken and the path remains clear on the red carpet toward the yellow arrow and the opening. Following the successful traversal pattern, I should continue moving forward until I reach the narrow opening where I'll need to check my width and possibly rotate before passing through.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We've taken 3 forward steps. Following the successful pattern, continue forward until blocked. The path shows red carpet leading to the opening with the yellow arrow. Keep going forward.\"}}],\"created\":1794213895,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":163,\"prompt_tokens\":3053,\"total_tokens\":3216,\"completion_tokens_details\":{\"reasoning_tokens\":37},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet extends straight ahead toward a dark opening in a wall with colorful patterned panels on either side. A yellow arrow marker is visible at the far wall through the opening. The path is clear with no obstacles.\", \"reasoning\": \"Three forward steps have been taken and the path remains clear on the red carpet toward the yellow arrow and the opening. Following the successful traversal pattern, I should continue moving forward until I reach the narrow opening where I'll need to check my width and possibly rotate before passing through.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We've taken 3 forward steps. Following the successful pattern, continue forward until blocked. The path shows red carpet leading to the opening with the yellow arrow. Keep going forward.",
+    "parsed": {
+      "scene_description": "A red carpet extends straight ahead toward a dark opening in a wall with colorful patterned panels on either side. A yellow arrow marker is visible at the far wall through the opening. The path is clear with no obstacles.",
+      "reasoning": "Three forward steps have been taken and the path remains clear on the red carpet toward the yellow arrow and the opening. Following the successful traversal pattern, I should continue moving forward until I reach the narrow opening where I'll need to check my width and possibly rotate before passing through.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

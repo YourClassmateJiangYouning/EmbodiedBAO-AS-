@@ -1,0 +1,59 @@
+You are a small wheeled robot. Your task is to reach the green rectangle on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the green rectangle on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the green rectangle on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the green rectangle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the green rectangle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the green rectangle you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+A previous successful traversal by the same model in this same scene and marker:
+
+1. forward -> executed  |  The green rectangle is directly ahead at the far wall through the doorway opening. The path along the red carpet is clear, so I should move forward toward it. No turns are needed s
+2. forward -> executed  |  The green rectangle is directly ahead through the doorway. The red carpet leads straight toward it. I've already moved forward once successfully. Continuing forward is the clear ne
+3. look_down -> executed  |  Before proceeding further, I should check my body width with look_down to ensure I can fit through the opening, as torso rotation affects width and I cannot turn once inside. This 
+4. forward -> executed  |  The downward glance confirms my body's width. I cannot turn once inside the opening anyway, so the safest profile is already set. The path forward along the red carpet to the green
+5. forward -> executed  |  The path remains clear and the green rectangle is directly ahead through the doorway. Torso rotation is 0 degrees, which minimizes my presented width, so I should keep moving strai
+6. forward -> executed  |  The green rectangle remains directly ahead through the doorway opening. My torso rotation is 0 degrees, which minimizes the width I present to the opening, and I cannot turn once i
+7. forward -> executed  |  The green rectangle is directly ahead through the opening. I cannot turn once inside the opening, so I should continue straight forward without any rotation.
+8. forward -> executed  |  The green rectangle is directly ahead through the doorway. My torso rotation is 0 degrees, which minimizes the width I present to the opening. I cannot turn once inside the opening
+9. forward -> executed  |  The green rectangle remains directly ahead through the doorway and is getting closer with each forward step. My torso rotation is 0 degrees, which minimizes the width I present to 
+10. forward -> executed  |  The target is directly ahead and centered in the opening. I should continue moving straight forward toward the target.
+11. forward -> blocked by obstacle or room boundary (wall_panel)  |  The target is centered and directly ahead, torso rotation is 0 which minimizes presented width for the opening, and no turns are needed or allowed near the opening. One more forwar
+12. look_down -> executed  |  My last forward step was blocked by a wall_panel even though the green rectangle is directly ahead and very close, with torso rotation 0 (the orientation that minimizes presented w
+13. turn_left -> executed  |  Forward was blocked by wall_panel. My torso is at 0 degrees which minimizes width for a rectangular body in a straight opening, but the robot is still blocked. Perhaps I need to tr
+14. forward -> blocked by obstacle or room boundary (wall_panel)  |  Forward was blocked at step 10 by wall_panel when torso was at 0 degrees (minimum width). The green rectangle is very close and centered. Let me try forward again - perhaps the blo
+16. turn_right -> executed  |  The robot is blocked by wall_panel when attempting to move forward. Turning right by 15 degrees will return the torso to 0 degrees, minimizing width and potentially allowing passag
+17. look_down -> executed  |  At torso rotation 0 degrees my presented width is minimized. The image shows the green panel mounted on a wall with what appears to be an opening/gap below it. I need to use look_d
+18. turn_left -> executed  |  I still have room to rotate since my shoulders are not inside the opening. I will rotate the torso 90° total (six 15° steps) so the thin side faces the doorway, then move forward.
+19. turn_right -> executed  |  Forward has been blocked by wall_panel repeatedly despite the green rectangle being directly ahead. The projected width facing the opening is w·cos(θ)+d·sin(θ), which is minimized 
+20. turn_left -> executed  |  At 0° torso rotation, my full width faces the opening. I need to rotate to 90° to present my thinnest profile. Each turn is 15°, so I need 6 turn_left actions. I have 11 steps rema
+21. turn_left -> executed  |  I am currently at 15° torso rotation. I have 10 steps left. I need 5 more turn_left actions to reach 90°, then forward should let me pass through the opening and reach the green re
+22. turn_left -> executed  |  I am now at 30° after the last turn. I must continue turning left in 15° increments to reach 90°, then attempt forward. Turning is allowed since I'm still outside the opening.
+23. turn_left -> executed  |  My torso is currently at 45°, so I must keep turning left to reach 90° before attempting forward again. Turns have been executing successfully, so I still have room to rotate.
+24. turn_left -> executed  |  My torso is currently at 60°, so I need two more 15° left turns to reach 90° before attempting forward again. Steps remaining: 7, which is enough for 2 turns plus forward attempts.
+25. turn_left -> executed  |  My torso is now at 75°, so one more 15° left turn brings it to 90°, the minimum-width orientation. After reaching 90°, I will drive forward through the opening to the green rectang
+26. forward -> executed  |  Now that I'm oriented to present my thinnest profile to the doorway, I should attempt to move forward through the opening toward the green rectangle. I have 5 steps remaining and n
+27. forward -> executed  |  The green rectangle is now immediately ahead and centered. I should continue forward to actually reach the target with the remaining steps.
+
+Current state:
+- position (x, y, z): [4.250, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 0.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (5 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: forward -> executed | your reasoning: Torso rotation is 0 degrees which presents my minimum width to the opening. The green rectangle is directly ahead and centered. The path on the red carpet is clear, so I should continue moving straight forward toward the target.
+- step 1: forward -> executed | your reasoning: The green rectangle is directly ahead through the opening and the red carpet path is clear. Torso rotation is 0 degrees which minimizes my presented width for the opening. Based on the previous successful traversal, I should keep moving fo…
+- step 2: forward -> executed | your reasoning: The green rectangle is directly ahead and centered through the doorway. Torso rotation is 0 degrees, presenting the minimum width for the opening. The previous episode confirmed forward progress at this position works, so continuing forwar…
+- step 3: forward -> executed | your reasoning: The green rectangle is directly ahead through the doorway opening. Torso rotation is 0 degrees, presenting minimum width for passage. Three forward steps have been executed successfully so far. Based on the previous successful traversal, I…
+- step 4: forward -> executed | your reasoning: Four forward steps have executed successfully so far in this episode and the green rectangle remains directly ahead and centered. Torso rotation is 0 degrees, presenting minimum width to the opening. I should continue forward toward the ta…
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:25:16+08:00",
+    "latency_ms": 7016,
+    "payload_bytes": 291416,
+    "finish_reason": "stop",
+    "reasoning_tokens": 10,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"d7cfc6cf-f3c1-4b8e-8509-4085aed4485e_9ef5c2591abf41f8aabd57876c77a2ee\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle sits on the floor directly ahead near the far wall, at the end of the red carpet. The carpet path is clear and unobstructed ahead, with the opening between the patterned panels visible on both sides.\\\", \\\"reasoning\\\": \\\"The green target is directly ahead and very close, with clear carpet path. Torso rotation is 0 degrees. Six forward steps have executed successfully; continuing forward should reach the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Green rectangle is ahead, close. Forward.\"}}],\"created\":1794212716,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":122,\"prompt_tokens\":3573,\"total_tokens\":3695,\"completion_tokens_details\":{\"reasoning_tokens\":10},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The green rectangle sits on the floor directly ahead near the far wall, at the end of the red carpet. The carpet path is clear and unobstructed ahead, with the opening between the patterned panels visible on both sides.\", \"reasoning\": \"The green target is directly ahead and very close, with clear carpet path. Torso rotation is 0 degrees. Six forward steps have executed successfully; continuing forward should reach the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "Green rectangle is ahead, close. Forward.",
+    "parsed": {
+      "scene_description": "The green rectangle sits on the floor directly ahead near the far wall, at the end of the red carpet. The carpet path is clear and unobstructed ahead, with the opening between the patterned panels visible on both sides.",
+      "reasoning": "The green target is directly ahead and very close, with clear carpet path. Torso rotation is 0 degrees. Six forward steps have executed successfully; continuing forward should reach the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

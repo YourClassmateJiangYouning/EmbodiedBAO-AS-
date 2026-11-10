@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:19:47+08:00",
+    "latency_ms": 7230,
+    "payload_bytes": 375158,
+    "finish_reason": "stop",
+    "reasoning_tokens": 169,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"20985a61-120a-489b-bf3c-b5f9d3d71d8f_21fecb630c644e279075469f76dddd06\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead down the walking direction along the red carpet toward the far wall, where the purple four-pointed star sits on the floor just before a narrow dark opening in the decorated wall panels. The carpet stretches ahead, and the opening near the star appears narrow, so my body orientation matters when passing through it.\\\", \\\"reasoning\\\": \\\"My torso is at 60 degrees rotation, and I need 90 degrees so my narrower depth dimension faces the narrow opening ahead. That requires 3 more turn_right actions. I'm still before the opening with room to rotate, so I'll continue turning.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.8}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=1.25, torso rotation 60 degrees. We need to reach 90 degrees to minimize profile through narrow opening. Steps remaining: 24. We've been turning right (positive direction?). Current rotation 60. Need 3 more turns to reach 90.\\n\\nBut wait — we need to consider whether turning is needed at all. The narrow opening: the gap appears near the star. We're at x=1.25, the opening appears near far wall. We need to keep turning to 90. Each turn 15 degrees. Currently 60, need 90 => 3 more turn_right.\\n\\nAlso, we should consider whether we can keep turning before opening. Opening seems at far end. Let's continue turning.\\n\\nContinue turn_right.\"}}],\"created\":1794197986,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":316,\"prompt_tokens\":2353,\"total_tokens\":2669,\"completion_tokens_details\":{\"reasoning_tokens\":169},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead down the walking direction along the red carpet toward the far wall, where the purple four-pointed star sits on the floor just before a narrow dark opening in the decorated wall panels. The carpet stretches ahead, and the opening near the star appears narrow, so my body orientation matters when passing through it.\", \"reasoning\": \"My torso is at 60 degrees rotation, and I need 90 degrees so my narrower depth dimension faces the narrow opening ahead. That requires 3 more turn_right actions. I'm still before the opening with room to rotate, so I'll continue turning.\", \"action\": \"turn_right\", \"confidence\": 0.8}",
+    "reasoning_content": "We are at x=1.25, torso rotation 60 degrees. We need to reach 90 degrees to minimize profile through narrow opening. Steps remaining: 24. We've been turning right (positive direction?). Current rotation 60. Need 3 more turns to reach 90.\n\nBut wait — we need to consider whether turning is needed at all. The narrow opening: the gap appears near the star. We're at x=1.25, the opening appears near far wall. We need to keep turning to 90. Each turn 15 degrees. Currently 60, need 90 => 3 more turn_right.\n\nAlso, we should consider whether we can keep turning before opening. Opening seems at far end. Let's continue turning.\n\nContinue turn_right.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead down the walking direction along the red carpet toward the far wall, where the purple four-pointed star sits on the floor just before a narrow dark opening in the decorated wall panels. The carpet stretches ahead, and the opening near the star appears narrow, so my body orientation matters when passing through it.",
+      "reasoning": "My torso is at 60 degrees rotation, and I need 90 degrees so my narrower depth dimension faces the narrow opening ahead. That requires 3 more turn_right actions. I'm still before the opening with room to rotate, so I'll continue turning.",
+      "action": "turn_right",
+      "confidence": 0.8
+    },
+    "action": "turn_right"
+  }
+]

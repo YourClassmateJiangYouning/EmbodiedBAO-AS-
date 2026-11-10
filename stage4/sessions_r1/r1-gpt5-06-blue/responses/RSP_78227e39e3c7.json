@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:32:27+08:00",
+    "latency_ms": 10407,
+    "payload_bytes": 383349,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A straight red carpet walkway extends forward toward a distant doorway in a patterned wall. Beyond the doorway, a blue triangular marker is visible centered ahead. The path appears unobstructed and aligned straight to the triangle.\\\",\\\"reasoning\\\":\\\"The goal (blue triangle) is straight ahead down the red carpet with no visible obstacles. Forward movement advances directly toward it, and no torso rotation is necessary.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.66}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205944,\"id\":\"chatcmpl-EiDDUhRQhi2MYtoJU9qmsb62Vg3gI\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":100,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":585,\"engine_ttlt_ms\":1433,\"pre_inference_ms\":429,\"service_tbt_ms\":8,\"service_ttft_ms\":1287,\"service_ttlt_ms\":2081,\"user_visible_ttft_ms\":858},\"prompt_tokens\":1496,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1596}}\n",
+    "content": "{\"scene_description\":\"A straight red carpet walkway extends forward toward a distant doorway in a patterned wall. Beyond the doorway, a blue triangular marker is visible centered ahead. The path appears unobstructed and aligned straight to the triangle.\",\"reasoning\":\"The goal (blue triangle) is straight ahead down the red carpet with no visible obstacles. Forward movement advances directly toward it, and no torso rotation is necessary.\",\"action\":\"forward\",\"confidence\":0.66}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight red carpet walkway extends forward toward a distant doorway in a patterned wall. Beyond the doorway, a blue triangular marker is visible centered ahead. The path appears unobstructed and aligned straight to the triangle.",
+      "reasoning": "The goal (blue triangle) is straight ahead down the red carpet with no visible obstacles. Forward movement advances directly toward it, and no torso rotation is necessary.",
+      "action": "forward",
+      "confidence": 0.66
+    },
+    "action": "forward"
+  }
+]

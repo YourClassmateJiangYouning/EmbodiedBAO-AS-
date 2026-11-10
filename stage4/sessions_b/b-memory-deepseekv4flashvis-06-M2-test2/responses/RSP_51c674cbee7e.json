@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:22:03+08:00",
+    "latency_ms": 2564,
+    "payload_bytes": 315709,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"1302dfb2-1b4c-4cd1-a791-ed16c31974ee\",\"object\":\"chat.completion\",\"created\":1794212522,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle is visible directly ahead on the far wall, with a clear red carpeted path leading toward it. The path appears unobstructed.\\\", \\\"reasoning\\\": \\\"The goal is directly ahead along the fixed walking direction and the path is clear. Prior successful traversal used repeated forward steps, so continuing forward advances toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2959,\"completion_tokens\":86,\"total_tokens\":3045,\"prompt_tokens_details\":{\"cached_tokens\":1664},\"prompt_cache_hit_tokens\":1664,\"prompt_cache_miss_tokens\":1295},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle is visible directly ahead on the far wall, with a clear red carpeted path leading toward it. The path appears unobstructed.\", \"reasoning\": \"The goal is directly ahead along the fixed walking direction and the path is clear. Prior successful traversal used repeated forward steps, so continuing forward advances toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle is visible directly ahead on the far wall, with a clear red carpeted path leading toward it. The path appears unobstructed.",
+      "reasoning": "The goal is directly ahead along the fixed walking direction and the path is clear. Prior successful traversal used repeated forward steps, so continuing forward advances toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

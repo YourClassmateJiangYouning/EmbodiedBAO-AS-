@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:56:51+08:00",
+    "latency_ms": 13245,
+    "payload_bytes": 362235,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081056397752069598268d9d6Kt7xw3I3\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135411,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The view shows a red carpeted walkway leading toward a narrow vertical opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just inside the opening, pointing to the right. The opening appears significantly narrower than the full width of the robot's base.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso by 15 degrees to the right. To present the narrowest possible profile (my 'thickness' rather than my 'width') to the narrow gap ahead, I should continue rotating until I am at approximately 90 degrees. I am still far enough from the opening (x=1.25) that I have space to complete these rotations before my shoulders enter the gap.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2236,\"completion_tokens\":177,\"total_tokens\":2413,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2236,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":177,\"totalTokenCount\":2413,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1147},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":177}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1147,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":177,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The view shows a red carpeted walkway leading toward a narrow vertical opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just inside the opening, pointing to the right. The opening appears significantly narrower than the full width of the robot's base.\",\n  \"reasoning\": \"I have already rotated my torso by 15 degrees to the right. To present the narrowest possible profile (my 'thickness' rather than my 'width') to the narrow gap ahead, I should continue rotating until I am at approximately 90 degrees. I am still far enough from the opening (x=1.25) that I have space to complete these rotations before my shoulders enter the gap.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The view shows a red carpeted walkway leading toward a narrow vertical opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just inside the opening, pointing to the right. The opening appears significantly narrower than the full width of the robot's base.",
+      "reasoning": "I have already rotated my torso by 15 degrees to the right. To present the narrowest possible profile (my 'thickness' rather than my 'width') to the narrow gap ahead, I should continue rotating until I am at approximately 90 degrees. I am still far enough from the opening (x=1.25) that I have space to complete these rotations before my shoulders enter the gap.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

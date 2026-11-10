@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:36:44+08:00",
+    "latency_ms": 7665,
+    "payload_bytes": 375158,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081036383394637498268d9d60V2v471T\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134205,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading toward a narrow opening in a wall decorated with geometric patterns. Beyond the opening, a purple four-pointed star is visible on the far wall. The robot is currently positioned on the red carpet, facing the opening.\\\",\\n  \\\"reasoning\\\": \\\"I have successfully rotated my torso to 90 degrees, which presents my narrowest profile. I am currently at x=1.25 and need to continue moving forward along the red carpet to pass through the narrow opening and reach the purple star.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2563,\"completion_tokens\":137,\"total_tokens\":2700,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2563,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":137,\"totalTokenCount\":2700,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1474},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":137}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1474,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":137,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading toward a narrow opening in a wall decorated with geometric patterns. Beyond the opening, a purple four-pointed star is visible on the far wall. The robot is currently positioned on the red carpet, facing the opening.\",\n  \"reasoning\": \"I have successfully rotated my torso to 90 degrees, which presents my narrowest profile. I am currently at x=1.25 and need to continue moving forward along the red carpet to pass through the narrow opening and reach the purple star.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading toward a narrow opening in a wall decorated with geometric patterns. Beyond the opening, a purple four-pointed star is visible on the far wall. The robot is currently positioned on the red carpet, facing the opening.",
+      "reasoning": "I have successfully rotated my torso to 90 degrees, which presents my narrowest profile. I am currently at x=1.25 and need to continue moving forward along the red carpet to pass through the narrow opening and reach the purple star.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

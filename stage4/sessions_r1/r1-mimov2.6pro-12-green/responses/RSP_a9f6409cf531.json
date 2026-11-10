@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:06:35+08:00",
+    "latency_ms": 12337,
+    "payload_bytes": 275083,
+    "finish_reason": "stop",
+    "reasoning_tokens": 101,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"8135e724-4fea-42d7-bf8d-5c566171be78_69519a7bff6047f9a6ec8e13e3f5c89e\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the red-carpeted walkway stretching ahead toward a narrow opening between two decorated white walls. Through the opening, the green rectangle stands on the light floor, with a black draped object behind it. The path is clear and the green rectangle is directly ahead along the walking direction.\\\",\\\"reasoning\\\": \\\"The green rectangle remains directly ahead through the narrow opening and the carpeted path is clear. My torso is at 0 degrees, presenting minimal width, and I have already verified my body fits through the gap with the earlier look_down. I continue moving forward toward the goal.\\\",\\\"action\\\": \\\"forward\\\",\\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue forward. The image shows green rectangle ahead, path clear (red carpet), and a narrow opening between walls. The path appears clear. Continue forward.\\n\\nPosition x = 5.75, started presumably 0, so we've moved 7.5*... actually 8 steps, 7 forward = 5.25? Hmm 5.75 means 7.666 steps of 0.75. Anyway.\\n\\nKeep going forward.\"}}],\"created\":1794135995,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":239,\"prompt_tokens\":2429,\"total_tokens\":2668,\"completion_tokens_details\":{\"reasoning_tokens\":101},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows the red-carpeted walkway stretching ahead toward a narrow opening between two decorated white walls. Through the opening, the green rectangle stands on the light floor, with a black draped object behind it. The path is clear and the green rectangle is directly ahead along the walking direction.\",\"reasoning\": \"The green rectangle remains directly ahead through the narrow opening and the carpeted path is clear. My torso is at 0 degrees, presenting minimal width, and I have already verified my body fits through the gap with the earlier look_down. I continue moving forward toward the goal.\",\"action\": \"forward\",\"confidence\": 0.9}",
+    "reasoning_content": "We need to continue forward. The image shows green rectangle ahead, path clear (red carpet), and a narrow opening between walls. The path appears clear. Continue forward.\n\nPosition x = 5.75, started presumably 0, so we've moved 7.5*... actually 8 steps, 7 forward = 5.25? Hmm 5.75 means 7.666 steps of 0.75. Anyway.\n\nKeep going forward.",
+    "parsed": {
+      "scene_description": "The camera shows the red-carpeted walkway stretching ahead toward a narrow opening between two decorated white walls. Through the opening, the green rectangle stands on the light floor, with a black draped object behind it. The path is clear and the green rectangle is directly ahead along the walking direction.",
+      "reasoning": "The green rectangle remains directly ahead through the narrow opening and the carpeted path is clear. My torso is at 0 degrees, presenting minimal width, and I have already verified my body fits through the gap with the earlier look_down. I continue moving forward toward the goal.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

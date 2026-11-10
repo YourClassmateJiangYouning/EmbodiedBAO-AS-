@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:24:58+08:00",
+    "latency_ms": 6833,
+    "payload_bytes": 347171,
+    "finish_reason": "stop",
+    "reasoning_tokens": 29,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a62b8072-d94a-413a-a2b6-0bf9ed02acd7_3f73859c61cc40ef95ede2402fabb242\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet walkway leads straight ahead between two decorated wall panels to a green rectangle mounted on the far wall at floor level. White and yellow paper sheets lie on the carpet edges. The path is clear and centered.\\\",\\\"reasoning\\\": \\\"Four forward steps have executed successfully so far in this episode and the green rectangle remains directly ahead and centered. Torso rotation is 0 degrees, presenting minimum width to the opening. I should continue forward toward the target.\\\",\\\"action\\\": \\\"forward\\\",\\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue forward. Position x=3.5, previous successful traversal reached... The green rectangle is directly ahead. Continue forward.\"}}],\"created\":1794212698,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":142,\"prompt_tokens\":3459,\"total_tokens\":3601,\"completion_tokens_details\":{\"reasoning_tokens\":29},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet walkway leads straight ahead between two decorated wall panels to a green rectangle mounted on the far wall at floor level. White and yellow paper sheets lie on the carpet edges. The path is clear and centered.\",\"reasoning\": \"Four forward steps have executed successfully so far in this episode and the green rectangle remains directly ahead and centered. Torso rotation is 0 degrees, presenting minimum width to the opening. I should continue forward toward the target.\",\"action\": \"forward\",\"confidence\": 0.95}",
+    "reasoning_content": "We need to continue forward. Position x=3.5, previous successful traversal reached... The green rectangle is directly ahead. Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpet walkway leads straight ahead between two decorated wall panels to a green rectangle mounted on the far wall at floor level. White and yellow paper sheets lie on the carpet edges. The path is clear and centered.",
+      "reasoning": "Four forward steps have executed successfully so far in this episode and the green rectangle remains directly ahead and centered. Torso rotation is 0 degrees, presenting minimum width to the opening. I should continue forward toward the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

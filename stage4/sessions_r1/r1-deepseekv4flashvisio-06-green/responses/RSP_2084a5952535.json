@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:14:50+08:00",
+    "latency_ms": 2446,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"cff96fa0-b732-4333-95da-68d7a48762e3\",\"object\":\"chat.completion\",\"created\":1794208488,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle fills the center of the view, very close ahead, with a dark wall panel above it and narrow side walls framing the opening. The floor is visible below the target.\\\", \\\"reasoning\\\": \\\"Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The target is extremely close and centered, suggesting the robot is right at the opening but the wall panel above the green rectangle is blocking forward motion. I have turned left twice, bringing the torso to -30 degrees, which has not yet been tried. I should attempt forward at this new orientation to see if it fits through.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.3}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3198,\"completion_tokens\":152,\"total_tokens\":3350,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2558},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green rectangle fills the center of the view, very close ahead, with a dark wall panel above it and narrow side walls framing the opening. The floor is visible below the target.\", \"reasoning\": \"Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The target is extremely close and centered, suggesting the robot is right at the opening but the wall panel above the green rectangle is blocking forward motion. I have turned left twice, bringing the torso to -30 degrees, which has not yet been tried. I should attempt forward at this new orientation to see if it fits through.\", \"action\": \"forward\", \"confidence\": 0.3}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green rectangle fills the center of the view, very close ahead, with a dark wall panel above it and narrow side walls framing the opening. The floor is visible below the target.",
+      "reasoning": "Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The target is extremely close and centered, suggesting the robot is right at the opening but the wall panel above the green rectangle is blocking forward motion. I have turned left twice, bringing the torso to -30 degrees, which has not yet been tried. I should attempt forward at this new orientation to see if it fits through.",
+      "action": "forward",
+      "confidence": 0.3
+    },
+    "action": "forward"
+  }
+]

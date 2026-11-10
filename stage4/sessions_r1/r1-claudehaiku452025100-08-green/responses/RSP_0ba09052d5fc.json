@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:20:42+08:00",
+    "latency_ms": 11278,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_5ij243ai45iu2wmjlmkgkfn3w5tikyr4hfv5o3hoyzpn4gtpn5ua\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198037,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the green rectangle target clearly on the far wall ahead, centered in my view. There are dark walls on both sides creating a narrow passage. On the left side, I can see what appears to be a curved wall panel or obstacle. The green rectangle is my destination and remains visible and centered ahead.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=7.250 with my torso rotated -15 degrees (left). I have been blocked by wall_panel obstacles when trying to move forward directly. My previous attempts show that moving forward at this position is blocked. Since I turned left (torso at -15 degrees), my body is now angled to the left. I need to try turning right to angle my body the opposite direction, which might allow me to navigate around the obstacle on the right side and continue forward toward the green rectangle.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.65\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3592,\"completion_tokens\":216,\"total_tokens\":3808,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3592,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":216,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3592,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the green rectangle target clearly on the far wall ahead, centered in my view. There are dark walls on both sides creating a narrow passage. On the left side, I can see what appears to be a curved wall panel or obstacle. The green rectangle is my destination and remains visible and centered ahead.\",\n  \"reasoning\": \"I am at x=7.250 with my torso rotated -15 degrees (left). I have been blocked by wall_panel obstacles when trying to move forward directly. My previous attempts show that moving forward at this position is blocked. Since I turned left (torso at -15 degrees), my body is now angled to the left. I need to try turning right to angle my body the opposite direction, which might allow me to navigate around the obstacle on the right side and continue forward toward the green rectangle.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.65\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the green rectangle target clearly on the far wall ahead, centered in my view. There are dark walls on both sides creating a narrow passage. On the left side, I can see what appears to be a curved wall panel or obstacle. The green rectangle is my destination and remains visible and centered ahead.",
+      "reasoning": "I am at x=7.250 with my torso rotated -15 degrees (left). I have been blocked by wall_panel obstacles when trying to move forward directly. My previous attempts show that moving forward at this position is blocked. Since I turned left (torso at -15 degrees), my body is now angled to the left. I need to try turning right to angle my body the opposite direction, which might allow me to navigate around the obstacle on the right side and continue forward toward the green rectangle.",
+      "action": "turn_right",
+      "confidence": 0.65
+    },
+    "action": "turn_right"
+  }
+]

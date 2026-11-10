@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:27:30+08:00",
+    "latency_ms": 6280,
+    "payload_bytes": 376152,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A straight red carpeted walkway leading toward a far wall. The wall has patterned panels on both sides, and near the center-bottom there is a bright green rectangle ahead on the floor/wall area. The path ahead appears clear with no visible obstacles directly in the lane.\\\",\\\"reasoning\\\":\\\"The target green rectangle is straight ahead and the walkway is unobstructed. Continuing forward will bring me closer to the goal within the step limit.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.72}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198448,\"id\":\"chatcmpl-EiBGaxzfeMENXiB1Fp4O7iqmBswYM\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":109,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":11,\"engine_ttft_ms\":330,\"engine_ttlt_ms\":1557,\"pre_inference_ms\":368,\"service_tbt_ms\":11,\"service_ttft_ms\":1023,\"service_ttlt_ms\":2244,\"user_visible_ttft_ms\":655},\"prompt_tokens\":1572,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1681}}\n",
+    "content": "{\"scene_description\":\"A straight red carpeted walkway leading toward a far wall. The wall has patterned panels on both sides, and near the center-bottom there is a bright green rectangle ahead on the floor/wall area. The path ahead appears clear with no visible obstacles directly in the lane.\",\"reasoning\":\"The target green rectangle is straight ahead and the walkway is unobstructed. Continuing forward will bring me closer to the goal within the step limit.\",\"action\":\"forward\",\"confidence\":0.72}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight red carpeted walkway leading toward a far wall. The wall has patterned panels on both sides, and near the center-bottom there is a bright green rectangle ahead on the floor/wall area. The path ahead appears clear with no visible obstacles directly in the lane.",
+      "reasoning": "The target green rectangle is straight ahead and the walkway is unobstructed. Continuing forward will bring me closer to the goal within the step limit.",
+      "action": "forward",
+      "confidence": 0.72
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:30:57+08:00",
+    "latency_ms": 5649,
+    "payload_bytes": 262355,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081030525770644678268d9d6XyNEh579\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133857,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The red circle on the black rectangular board is now very close, occupying a large portion of the center view. I am at the end of the red carpeted path, and the floor ahead is a light-colored smooth surface leading directly to the target.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=7.25 and the target is directly in front of me. I have successfully navigated the narrow passage with my torso rotated to 90 degrees. I will continue moving forward to reach the red circle.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3113,\"completion_tokens\":134,\"total_tokens\":3247,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3113,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":134,\"totalTokenCount\":3247,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2024}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":134}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2024,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":134,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The red circle on the black rectangular board is now very close, occupying a large portion of the center view. I am at the end of the red carpeted path, and the floor ahead is a light-colored smooth surface leading directly to the target.\",\n  \"reasoning\": \"I am at position x=7.25 and the target is directly in front of me. I have successfully navigated the narrow passage with my torso rotated to 90 degrees. I will continue moving forward to reach the red circle.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle on the black rectangular board is now very close, occupying a large portion of the center view. I am at the end of the red carpeted path, and the floor ahead is a light-colored smooth surface leading directly to the target.",
+      "reasoning": "I am at position x=7.25 and the target is directly in front of me. I have successfully navigated the narrow passage with my torso rotated to 90 degrees. I will continue moving forward to reach the red circle.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

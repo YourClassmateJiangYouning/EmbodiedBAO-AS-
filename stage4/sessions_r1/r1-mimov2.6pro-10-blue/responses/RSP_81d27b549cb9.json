@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:41:44+08:00",
+    "latency_ms": 6017,
+    "payload_bytes": 386232,
+    "finish_reason": "stop",
+    "reasoning_tokens": 34,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"efd56aeb-c4a3-41ba-8d65-1ca798939af0_8ca99345b22646219b886050862fb0dd\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted path leads straight ahead toward a gap in a decorated wall, through which a small blue triangle marker is visible on the far wall. The path is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The path ahead is clear and leads directly toward the blue triangle visible through the opening in the wall. The best action is to move forward toward it. I don't need to worry about width/turning since I'm on the walking line and moving straight ahead.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image shows a red carpet path leading to an opening in a wall with the blue triangle visible beyond. The path is clear ahead. I should just move forward.\"}}],\"created\":1794138104,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":156,\"prompt_tokens\":1907,\"total_tokens\":2063,\"completion_tokens_details\":{\"reasoning_tokens\":34},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted path leads straight ahead toward a gap in a decorated wall, through which a small blue triangle marker is visible on the far wall. The path is clear and unobstructed.\", \"reasoning\": \"The path ahead is clear and leads directly toward the blue triangle visible through the opening in the wall. The best action is to move forward toward it. I don't need to worry about width/turning since I'm on the walking line and moving straight ahead.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The image shows a red carpet path leading to an opening in a wall with the blue triangle visible beyond. The path is clear ahead. I should just move forward.",
+    "parsed": {
+      "scene_description": "A red carpeted path leads straight ahead toward a gap in a decorated wall, through which a small blue triangle marker is visible on the far wall. The path is clear and unobstructed.",
+      "reasoning": "The path ahead is clear and leads directly toward the blue triangle visible through the opening in the wall. The best action is to move forward toward it. I don't need to worry about width/turning since I'm on the walking line and moving straight ahead.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

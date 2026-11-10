@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:06:00+08:00",
+    "latency_ms": 2303,
+    "payload_bytes": 284089,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"bcbde51f-ab4d-4634-ade3-be6641d9dfb6\",\"object\":\"chat.completion\",\"created\":1794207959,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a dark red carpeted floor leading toward a dark opening in the far wall, with a small green rectangle visible ahead through the gap between patterned walls on either side.\\\", \\\"reasoning\\\": \\\"The green target is visible straight ahead through the opening, and the path along the carpet appears clear. Continuing forward reduces the distance to the goal; no turning is needed since forward always heads toward the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1834,\"completion_tokens\":101,\"total_tokens\":1935,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1066},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a dark red carpeted floor leading toward a dark opening in the far wall, with a small green rectangle visible ahead through the gap between patterned walls on either side.\", \"reasoning\": \"The green target is visible straight ahead through the opening, and the path along the carpet appears clear. Continuing forward reduces the distance to the goal; no turning is needed since forward always heads toward the target.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a dark red carpeted floor leading toward a dark opening in the far wall, with a small green rectangle visible ahead through the gap between patterned walls on either side.",
+      "reasoning": "The green target is visible straight ahead through the opening, and the path along the carpet appears clear. Continuing forward reduces the distance to the goal; no turning is needed since forward always heads toward the target.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:26:18+08:00",
+    "latency_ms": 5760,
+    "payload_bytes": 337198,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A straight carpeted corridor leads toward a rectangular doorway in a patterned far wall. Inside the doorway, a glowing purple four-pointed star is visible slightly above the floor. The path ahead appears unobstructed and centered in the opening.\\\",\\\"reasoning\\\":\\\"The star is straight ahead with a clear, aligned corridor. Continuing forward will bring me closer efficiently without needing torso rotation or width checks.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.77}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198377,\"id\":\"chatcmpl-EiBFRbeLwM1sTeJQeJN7SXnCfauJz\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":100,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":401,\"engine_ttlt_ms\":1251,\"pre_inference_ms\":433,\"service_tbt_ms\":8,\"service_ttft_ms\":952,\"service_ttlt_ms\":1776,\"user_visible_ttft_ms\":519},\"prompt_tokens\":1666,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1766}}\n",
+    "content": "{\"scene_description\":\"A straight carpeted corridor leads toward a rectangular doorway in a patterned far wall. Inside the doorway, a glowing purple four-pointed star is visible slightly above the floor. The path ahead appears unobstructed and centered in the opening.\",\"reasoning\":\"The star is straight ahead with a clear, aligned corridor. Continuing forward will bring me closer efficiently without needing torso rotation or width checks.\",\"action\":\"forward\",\"confidence\":0.77}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A straight carpeted corridor leads toward a rectangular doorway in a patterned far wall. Inside the doorway, a glowing purple four-pointed star is visible slightly above the floor. The path ahead appears unobstructed and centered in the opening.",
+      "reasoning": "The star is straight ahead with a clear, aligned corridor. Continuing forward will bring me closer efficiently without needing torso rotation or width checks.",
+      "action": "forward",
+      "confidence": 0.77
+    },
+    "action": "forward"
+  }
+]

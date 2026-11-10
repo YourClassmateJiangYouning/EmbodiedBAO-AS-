@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:06:07+08:00",
+    "latency_ms": 10264,
+    "payload_bytes": 322167,
+    "finish_reason": "stop",
+    "reasoning_tokens": 28,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"48c338cc-8f9a-4aab-96f1-0296c12e83c2_81ee77a2d957497b9dbe55c4d5d7d23b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading straight ahead toward a narrow opening between two patterned walls. Through the opening, a bright green rectangle is visible on the far wall. The path is clear of obstacles, and the opening appears directly in line with the walking direction.\\\", \\\"reasoning\\\": \\\"The green rectangle is straight ahead through the narrow opening. My torso is at 0 degrees, presenting minimal width. I've already verified my body width with look_down and confirmed I fit through the gap. The path is clear, so I continue moving forward toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image shows the green rectangle ahead through a narrow opening between two walls. The red carpet leads forward. I should keep moving forward.\"}}],\"created\":1794135967,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":170,\"prompt_tokens\":2245,\"total_tokens\":2415,\"completion_tokens_details\":{\"reasoning_tokens\":28},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted walkway leading straight ahead toward a narrow opening between two patterned walls. Through the opening, a bright green rectangle is visible on the far wall. The path is clear of obstacles, and the opening appears directly in line with the walking direction.\", \"reasoning\": \"The green rectangle is straight ahead through the narrow opening. My torso is at 0 degrees, presenting minimal width. I've already verified my body width with look_down and confirmed I fit through the gap. The path is clear, so I continue moving forward toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The image shows the green rectangle ahead through a narrow opening between two walls. The red carpet leads forward. I should keep moving forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading straight ahead toward a narrow opening between two patterned walls. Through the opening, a bright green rectangle is visible on the far wall. The path is clear of obstacles, and the opening appears directly in line with the walking direction.",
+      "reasoning": "The green rectangle is straight ahead through the narrow opening. My torso is at 0 degrees, presenting minimal width. I've already verified my body width with look_down and confirmed I fit through the gap. The path is clear, so I continue moving forward toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

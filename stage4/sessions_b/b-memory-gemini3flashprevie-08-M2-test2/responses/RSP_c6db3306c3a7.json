@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:33:50+08:00",
+    "latency_ms": 4665,
+    "payload_bytes": 281807,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090833469955204458268d9d6iI5URkmj\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213230,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking directly at a black rectangular tablet resting on the floor. On the screen of the tablet is a large, bright red circle. Behind the tablet, there is a tan or yellow couch and a dark piece of fabric draped over something to the left.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=8.0, and the red circle goal is now immediately in front of me. I have successfully navigated the narrow gap and reached the target area. I will move forward one final time to ensure I have fully reached the goal.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3750,\"completion_tokens\":140,\"total_tokens\":3890,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3750,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":140,\"totalTokenCount\":3890,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2661}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":140}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2661,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":140,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking directly at a black rectangular tablet resting on the floor. On the screen of the tablet is a large, bright red circle. Behind the tablet, there is a tan or yellow couch and a dark piece of fabric draped over something to the left.\",\n  \"reasoning\": \"I am at position x=8.0, and the red circle goal is now immediately in front of me. I have successfully navigated the narrow gap and reached the target area. I will move forward one final time to ensure I have fully reached the goal.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking directly at a black rectangular tablet resting on the floor. On the screen of the tablet is a large, bright red circle. Behind the tablet, there is a tan or yellow couch and a dark piece of fabric draped over something to the left.",
+      "reasoning": "I am at position x=8.0, and the red circle goal is now immediately in front of me. I have successfully navigated the narrow gap and reached the target area. I will move forward one final time to ensure I have fully reached the goal.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

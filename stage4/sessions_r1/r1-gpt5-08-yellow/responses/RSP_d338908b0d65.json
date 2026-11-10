@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:06:05+08:00",
+    "latency_ms": 7885,
+    "payload_bytes": 216006,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A dark doorway ahead with a bright yellow arrow sign on the far wall pointing to the right. The red carpet leads straight into the opening; the left carpet edge is slightly lifted but there is clear space directly forward.\\\", \\\"reasoning\\\": \\\"My walking direction is fixed toward the doorway and the yellow arrow beyond. The path straight ahead is clear, so moving forward brings me closer to the arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.65}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204362,\"id\":\"chatcmpl-EiCnyBRqHANSQqjKOCQ23pTw20yfK\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":107,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":12,\"engine_ttft_ms\":329,\"engine_ttlt_ms\":1641,\"pre_inference_ms\":455,\"service_tbt_ms\":12,\"service_ttft_ms\":1118,\"service_ttlt_ms\":2426,\"user_visible_ttft_ms\":662},\"prompt_tokens\":1900,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2007}}\n",
+    "content": "{\"scene_description\": \"A dark doorway ahead with a bright yellow arrow sign on the far wall pointing to the right. The red carpet leads straight into the opening; the left carpet edge is slightly lifted but there is clear space directly forward.\", \"reasoning\": \"My walking direction is fixed toward the doorway and the yellow arrow beyond. The path straight ahead is clear, so moving forward brings me closer to the arrow.\", \"action\": \"forward\", \"confidence\": 0.65}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A dark doorway ahead with a bright yellow arrow sign on the far wall pointing to the right. The red carpet leads straight into the opening; the left carpet edge is slightly lifted but there is clear space directly forward.",
+      "reasoning": "My walking direction is fixed toward the doorway and the yellow arrow beyond. The path straight ahead is clear, so moving forward brings me closer to the arrow.",
+      "action": "forward",
+      "confidence": 0.65
+    },
+    "action": "forward"
+  }
+]

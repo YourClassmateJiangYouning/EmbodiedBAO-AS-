@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:25:47+08:00",
+    "latency_ms": 7926,
+    "payload_bytes": 296801,
+    "finish_reason": "stop",
+    "reasoning_tokens": 37,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"cf9744a1-287e-4917-8616-a9ca493d459c_f3d79963b9b64b3d829d906811ca2394\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle fills much of the view directly ahead, extremely close and centered. Behind it is the far wall with a brown cushioned bench/seat and dark fabric hanging above. The floor in front is clear and the target is nearly reached.\\\", \\\"reasoning\\\": \\\"Nine forward steps have executed successfully and the green rectangle is now immediately ahead and large in the view, exactly matching the final approach in the previous successful traversal. Torso rotation is 0 degrees with no need to turn. One more forward step should reach the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We're at x=8.0, green rectangle immediately ahead. Previous successful traversal reached target. Image shows green rectangle very close/large. One more forward should reach it.\"}}],\"created\":1794212747,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":166,\"prompt_tokens\":3796,\"total_tokens\":3962,\"completion_tokens_details\":{\"reasoning_tokens\":37},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The green rectangle fills much of the view directly ahead, extremely close and centered. Behind it is the far wall with a brown cushioned bench/seat and dark fabric hanging above. The floor in front is clear and the target is nearly reached.\", \"reasoning\": \"Nine forward steps have executed successfully and the green rectangle is now immediately ahead and large in the view, exactly matching the final approach in the previous successful traversal. Torso rotation is 0 degrees with no need to turn. One more forward step should reach the target.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "We're at x=8.0, green rectangle immediately ahead. Previous successful traversal reached target. Image shows green rectangle very close/large. One more forward should reach it.",
+    "parsed": {
+      "scene_description": "The green rectangle fills much of the view directly ahead, extremely close and centered. Behind it is the far wall with a brown cushioned bench/seat and dark fabric hanging above. The floor in front is clear and the target is nearly reached.",
+      "reasoning": "Nine forward steps have executed successfully and the green rectangle is now immediately ahead and large in the view, exactly matching the final approach in the previous successful traversal. Torso rotation is 0 degrees with no need to turn. One more forward step should reach the target.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

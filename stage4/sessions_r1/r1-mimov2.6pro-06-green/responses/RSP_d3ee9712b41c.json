@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:50:22+08:00",
+    "latency_ms": 8853,
+    "payload_bytes": 382550,
+    "finish_reason": "stop",
+    "reasoning_tokens": 32,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"1992279e-8813-46f9-aaf9-cd74380a5881_9b35dc0c9ef346209bea2d397432bae1\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A long red carpet stretches ahead toward a far wall with a dark doorway. A bright green rectangle is visible on the far wall at the end of the doorway opening. Patterned walls with blue/white geometric designs flank the area. The floor to the left has white and yellow geometric patterns.\\\", \\\"reasoning\\\": \\\"The green rectangle is directly ahead at the far wall through the doorway opening. The path along the red carpet is clear, so I should move forward toward it. No turns are needed since walking direction is already aimed at the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is visible on the far wall through a doorway/opening ahead. The path is clear on the red carpet. Just move forward toward it.\"}}],\"created\":1794207022,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":164,\"prompt_tokens\":1907,\"total_tokens\":2071,\"completion_tokens_details\":{\"reasoning_tokens\":32},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A long red carpet stretches ahead toward a far wall with a dark doorway. A bright green rectangle is visible on the far wall at the end of the doorway opening. Patterned walls with blue/white geometric designs flank the area. The floor to the left has white and yellow geometric patterns.\", \"reasoning\": \"The green rectangle is directly ahead at the far wall through the doorway opening. The path along the red carpet is clear, so I should move forward toward it. No turns are needed since walking direction is already aimed at the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The green rectangle is visible on the far wall through a doorway/opening ahead. The path is clear on the red carpet. Just move forward toward it.",
+    "parsed": {
+      "scene_description": "A long red carpet stretches ahead toward a far wall with a dark doorway. A bright green rectangle is visible on the far wall at the end of the doorway opening. Patterned walls with blue/white geometric designs flank the area. The floor to the left has white and yellow geometric patterns.",
+      "reasoning": "The green rectangle is directly ahead at the far wall through the doorway opening. The path along the red carpet is clear, so I should move forward toward it. No turns are needed since walking direction is already aimed at the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

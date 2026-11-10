@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:33:32+08:00",
+    "latency_ms": 8167,
+    "payload_bytes": 274907,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted path leads straight ahead between two cardboard panels forming a doorway. Beyond the opening, a glowing blue triangle is visible on a small platform. The path appears clear with no obstacles directly ahead.\\\", \\\"reasoning\\\": \\\"The goal is directly ahead and the doorway opening looks wide enough. Continuing straight will move closer to the blue triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.73}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794206009,\"id\":\"chatcmpl-EiDEX2ldEP8Nx1KWjs4WXr0osa05A\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":97,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":11,\"engine_ttft_ms\":270,\"engine_ttlt_ms\":1329,\"pre_inference_ms\":420,\"service_tbt_ms\":11,\"service_ttft_ms\":880,\"service_ttlt_ms\":1933,\"user_visible_ttft_ms\":460},\"prompt_tokens\":1815,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1912}}\n",
+    "content": "{\"scene_description\": \"A red carpeted path leads straight ahead between two cardboard panels forming a doorway. Beyond the opening, a glowing blue triangle is visible on a small platform. The path appears clear with no obstacles directly ahead.\", \"reasoning\": \"The goal is directly ahead and the doorway opening looks wide enough. Continuing straight will move closer to the blue triangle.\", \"action\": \"forward\", \"confidence\": 0.73}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted path leads straight ahead between two cardboard panels forming a doorway. Beyond the opening, a glowing blue triangle is visible on a small platform. The path appears clear with no obstacles directly ahead.",
+      "reasoning": "The goal is directly ahead and the doorway opening looks wide enough. Continuing straight will move closer to the blue triangle.",
+      "action": "forward",
+      "confidence": 0.73
+    },
+    "action": "forward"
+  }
+]

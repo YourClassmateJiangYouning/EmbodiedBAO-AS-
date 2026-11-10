@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:13:02+08:00",
+    "latency_ms": 7178,
+    "payload_bytes": 322258,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_pd3jgjanjqgmne6544wjl4zuwusul4bbttiwakizjhgv42axw4wq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794204783,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the blue triangle target clearly on the far wall, centered and directly ahead along my walking direction. The walkway has transitioned from a light-colored patterned floor on the left to a dark red/maroon carpet on the right where I am currently positioned. There is a black vertical structure (possibly a pillar or wall) behind the triangle. The path ahead on the red carpet appears clear and unobstructed.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=3.5 and have successfully moved forward 4 times. The blue triangle is clearly visible on the far wall directly ahead. My torso is at 0 degrees rotation, meaning I'm aligned straight ahead along my walking direction. The red carpet provides a clear path forward with no obstacles visible. I should continue moving forward to reach the triangle.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2636,\"completion_tokens\":210,\"total_tokens\":2846,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2636,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":210,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2636,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the blue triangle target clearly on the far wall, centered and directly ahead along my walking direction. The walkway has transitioned from a light-colored patterned floor on the left to a dark red/maroon carpet on the right where I am currently positioned. There is a black vertical structure (possibly a pillar or wall) behind the triangle. The path ahead on the red carpet appears clear and unobstructed.\",\n  \"reasoning\": \"I am at position x=3.5 and have successfully moved forward 4 times. The blue triangle is clearly visible on the far wall directly ahead. My torso is at 0 degrees rotation, meaning I'm aligned straight ahead along my walking direction. The red carpet provides a clear path forward with no obstacles visible. I should continue moving forward to reach the triangle.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the blue triangle target clearly on the far wall, centered and directly ahead along my walking direction. The walkway has transitioned from a light-colored patterned floor on the left to a dark red/maroon carpet on the right where I am currently positioned. There is a black vertical structure (possibly a pillar or wall) behind the triangle. The path ahead on the red carpet appears clear and unobstructed.",
+      "reasoning": "I am at position x=3.5 and have successfully moved forward 4 times. The blue triangle is clearly visible on the far wall directly ahead. My torso is at 0 degrees rotation, meaning I'm aligned straight ahead along my walking direction. The red carpet provides a clear path forward with no obstacles visible. I should continue moving forward to reach the triangle.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

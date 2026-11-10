@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:00:30+08:00",
+    "latency_ms": 6278,
+    "payload_bytes": 366177,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"2397e2e5-90d5-4da2-b5f0-ff385ae6ba1c\",\"object\":\"chat.completion\",\"created\":1794207628,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted floor stretches ahead toward a far wall with a red circle visible through a narrow dark opening between patterned wall panels. The opening appears narrow relative to the path.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the fixed walking direction. The opening looks narrow, and my body is wide with torso rotation at 0 degrees, so I should verify width before entering. However, I have already looked down once and made progress; continuing forward advances me toward the goal while there is still room before the opening.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1764,\"completion_tokens\":125,\"total_tokens\":1889,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1124},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted floor stretches ahead toward a far wall with a red circle visible through a narrow dark opening between patterned wall panels. The opening appears narrow relative to the path.\", \"reasoning\": \"The red circle is directly ahead along the fixed walking direction. The opening looks narrow, and my body is wide with torso rotation at 0 degrees, so I should verify width before entering. However, I have already looked down once and made progress; continuing forward advances me toward the goal while there is still room before the opening.\", \"action\": \"forward\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted floor stretches ahead toward a far wall with a red circle visible through a narrow dark opening between patterned wall panels. The opening appears narrow relative to the path.",
+      "reasoning": "The red circle is directly ahead along the fixed walking direction. The opening looks narrow, and my body is wide with torso rotation at 0 degrees, so I should verify width before entering. However, I have already looked down once and made progress; continuing forward advances me toward the goal while there is still room before the opening.",
+      "action": "forward",
+      "confidence": 0.7
+    },
+    "action": "forward"
+  }
+]

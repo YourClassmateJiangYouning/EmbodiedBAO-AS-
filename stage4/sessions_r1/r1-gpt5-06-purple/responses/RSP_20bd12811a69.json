@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:39:52+08:00",
+    "latency_ms": 6977,
+    "payload_bytes": 191441,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A close doorway threshold is directly ahead, with a dark gray floor panel just beyond the edge of a maroon carpet. On the panel, a glowing purple four-pointed star is centered and very close. The opening’s sides are visible, and there appears to be a slight lip at the carpet-to-panel transition that has been blocking progress.\\\",\\\"reasoning\\\":\\\"The star is immediately ahead just beyond a small threshold lip that has been blocking recent forward steps. A small backing move can reset positioning and allow a subsequent forward attempt to climb the lip within remaining steps.\\\",\\\"action\\\":\\\"backward\\\",\\\"confidence\\\":0.64}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794206390,\"id\":\"chatcmpl-EiDKg1Gm6OXaEEwMwlkwpxWO3udSs\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":135,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":533,\"engine_ttlt_ms\":1664,\"pre_inference_ms\":390,\"service_tbt_ms\":8,\"service_ttft_ms\":1090,\"service_ttlt_ms\":2182,\"user_visible_ttft_ms\":701},\"prompt_tokens\":2938,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":3073}}\n",
+    "content": "{\"scene_description\":\"A close doorway threshold is directly ahead, with a dark gray floor panel just beyond the edge of a maroon carpet. On the panel, a glowing purple four-pointed star is centered and very close. The opening’s sides are visible, and there appears to be a slight lip at the carpet-to-panel transition that has been blocking progress.\",\"reasoning\":\"The star is immediately ahead just beyond a small threshold lip that has been blocking recent forward steps. A small backing move can reset positioning and allow a subsequent forward attempt to climb the lip within remaining steps.\",\"action\":\"backward\",\"confidence\":0.64}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A close doorway threshold is directly ahead, with a dark gray floor panel just beyond the edge of a maroon carpet. On the panel, a glowing purple four-pointed star is centered and very close. The opening’s sides are visible, and there appears to be a slight lip at the carpet-to-panel transition that has been blocking progress.",
+      "reasoning": "The star is immediately ahead just beyond a small threshold lip that has been blocking recent forward steps. A small backing move can reset positioning and allow a subsequent forward attempt to climb the lip within remaining steps.",
+      "action": "backward",
+      "confidence": 0.64
+    },
+    "action": "backward"
+  }
+]

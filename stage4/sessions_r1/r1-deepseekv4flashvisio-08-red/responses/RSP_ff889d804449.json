@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:08:10+08:00",
+    "latency_ms": 2625,
+    "payload_bytes": 215858,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"01100dba-96fc-4d62-b562-d2e323fff8b7\",\"object\":\"chat.completion\",\"created\":1794208088,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the red circle on a raised dark panel directly ahead, with a narrow opening between a patterned wall on the left and a blue wall on the right. The floor in front is dark red carpet, and the gap appears narrow relative to the robot's body.\\\", \\\"reasoning\\\": \\\"Forward has been blocked repeatedly at torso rotations of 30, 15, and 0 degrees, and I just backed up. The opening is narrow, so I should check my body width with look_down to determine the best torso orientation before attempting to pass through.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2538,\"completion_tokens\":132,\"total_tokens\":2670,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1898},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows the red circle on a raised dark panel directly ahead, with a narrow opening between a patterned wall on the left and a blue wall on the right. The floor in front is dark red carpet, and the gap appears narrow relative to the robot's body.\", \"reasoning\": \"Forward has been blocked repeatedly at torso rotations of 30, 15, and 0 degrees, and I just backed up. The opening is narrow, so I should check my body width with look_down to determine the best torso orientation before attempting to pass through.\", \"action\": \"look_down\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows the red circle on a raised dark panel directly ahead, with a narrow opening between a patterned wall on the left and a blue wall on the right. The floor in front is dark red carpet, and the gap appears narrow relative to the robot's body.",
+      "reasoning": "Forward has been blocked repeatedly at torso rotations of 30, 15, and 0 degrees, and I just backed up. The opening is narrow, so I should check my body width with look_down to determine the best torso orientation before attempting to pass through.",
+      "action": "look_down",
+      "confidence": 0.6
+    },
+    "action": "look_down"
+  }
+]

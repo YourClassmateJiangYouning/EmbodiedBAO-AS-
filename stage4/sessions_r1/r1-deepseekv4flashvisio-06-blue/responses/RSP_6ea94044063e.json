@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:18:46+08:00",
+    "latency_ms": 2411,
+    "payload_bytes": 177406,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"d9fda870-fc46-4ec7-aa87-b9847392d5e7\",\"object\":\"chat.completion\",\"created\":1794208725,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle on the far wall is directly ahead, framed by a narrow opening with walls on either side. The path forward appears clear.\\\", \\\"reasoning\\\": \\\"I have rotated to 90 degrees, presenting my thinnest profile to the narrow opening. The goal is straight ahead and close. Attempting forward now should let me pass through the gap toward the blue triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.75}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2570,\"completion_tokens\":95,\"total_tokens\":2665,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1930},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle on the far wall is directly ahead, framed by a narrow opening with walls on either side. The path forward appears clear.\", \"reasoning\": \"I have rotated to 90 degrees, presenting my thinnest profile to the narrow opening. The goal is straight ahead and close. Attempting forward now should let me pass through the gap toward the blue triangle.\", \"action\": \"forward\", \"confidence\": 0.75}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle on the far wall is directly ahead, framed by a narrow opening with walls on either side. The path forward appears clear.",
+      "reasoning": "I have rotated to 90 degrees, presenting my thinnest profile to the narrow opening. The goal is straight ahead and close. Attempting forward now should let me pass through the gap toward the blue triangle.",
+      "action": "forward",
+      "confidence": 0.75
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:19:54+08:00",
+    "latency_ms": 6681,
+    "payload_bytes": 375158,
+    "finish_reason": "stop",
+    "reasoning_tokens": 123,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"7b7e9d16-469b-4128-b6a8-47164e7d2a36_a496c0a702764589b339f613cb546760\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpet leading straight ahead toward a wall with abstract geometric artwork. A narrow opening in the center of the wall reveals a dark space with a purple four-pointed star on the floor just beyond it. Light falls across the tiled floor to the left and right of the carpet.\\\", \\\"reasoning\\\": \\\"My torso is currently at 75 degrees rotation. I need to reach 90 degrees so my narrower body depth faces the narrow opening in the wall ahead. One more turn_right will bring me to 90 degrees. I still have room to rotate before reaching the opening.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to rotate to 90 degrees. Currently at 75, need 2 more turn_right (75 -> 90). Actually step 6 said need 3 more from 60... 60->75->90 = 2 turns... hmm 60+15=75, 75+15=90, so 2 turns after 75? Let's just turn right again to reach 90.\\n\\nActually maybe 90 degrees makes width minimal. Let's do turn_right to get to 90.\"}}],\"created\":1794197993,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":272,\"prompt_tokens\":2420,\"total_tokens\":2692,\"completion_tokens_details\":{\"reasoning_tokens\":123},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpet leading straight ahead toward a wall with abstract geometric artwork. A narrow opening in the center of the wall reveals a dark space with a purple four-pointed star on the floor just beyond it. Light falls across the tiled floor to the left and right of the carpet.\", \"reasoning\": \"My torso is currently at 75 degrees rotation. I need to reach 90 degrees so my narrower body depth faces the narrow opening in the wall ahead. One more turn_right will bring me to 90 degrees. I still have room to rotate before reaching the opening.\", \"action\": \"turn_right\", \"confidence\": 0.85}",
+    "reasoning_content": "We need to rotate to 90 degrees. Currently at 75, need 2 more turn_right (75 -> 90). Actually step 6 said need 3 more from 60... 60->75->90 = 2 turns... hmm 60+15=75, 75+15=90, so 2 turns after 75? Let's just turn right again to reach 90.\n\nActually maybe 90 degrees makes width minimal. Let's do turn_right to get to 90.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpet leading straight ahead toward a wall with abstract geometric artwork. A narrow opening in the center of the wall reveals a dark space with a purple four-pointed star on the floor just beyond it. Light falls across the tiled floor to the left and right of the carpet.",
+      "reasoning": "My torso is currently at 75 degrees rotation. I need to reach 90 degrees so my narrower body depth faces the narrow opening in the wall ahead. One more turn_right will bring me to 90 degrees. I still have room to rotate before reaching the opening.",
+      "action": "turn_right",
+      "confidence": 0.85
+    },
+    "action": "turn_right"
+  }
+]

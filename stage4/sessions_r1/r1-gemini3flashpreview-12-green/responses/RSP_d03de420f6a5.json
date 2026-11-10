@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:15:16+08:00",
+    "latency_ms": 5129,
+    "payload_bytes": 284286,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081015122943645818268d9d61FK7Ak3y\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794132916,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows the green rectangle directly in front of the robot, occupying a large portion of the lower field of view. The floor is light-colored, and a dark draped object is visible in the background above the rectangle.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=8.0, and the green rectangle is now immediately in front of me. One more forward step should bring me to the goal.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3101,\"completion_tokens\":112,\"total_tokens\":3213,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3101,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":112,\"totalTokenCount\":3213,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2012}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":112}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2012,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":112,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows the green rectangle directly in front of the robot, occupying a large portion of the lower field of view. The floor is light-colored, and a dark draped object is visible in the background above the rectangle.\",\n  \"reasoning\": \"I am at x=8.0, and the green rectangle is now immediately in front of me. One more forward step should bring me to the goal.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows the green rectangle directly in front of the robot, occupying a large portion of the lower field of view. The floor is light-colored, and a dark draped object is visible in the background above the rectangle.",
+      "reasoning": "I am at x=8.0, and the green rectangle is now immediately in front of me. One more forward step should bring me to the goal.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

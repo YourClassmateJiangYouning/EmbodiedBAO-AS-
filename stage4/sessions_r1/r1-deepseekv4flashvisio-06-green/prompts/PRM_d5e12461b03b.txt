@@ -1,0 +1,39 @@
+You are a small wheeled robot. Your task is to reach the green rectangle on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the green rectangle on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the green rectangle on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the green rectangle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the green rectangle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the green rectangle you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+Current state:
+- position (x, y, z): [7.250, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 30.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (14 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: look_down -> executed | your reasoning: The green target is straight ahead along the walking direction. The opening appears narrow, so I should check my body width before entering. First, glance down to see my width relative to the opening.
+- step 1: forward -> executed | your reasoning: I have now seen my body width via the downward glance. The wheels appear quite wide relative to the narrow opening ahead, so I should consider whether my current torso orientation (0 degrees) presents the narrowest profile. Since the glanc…
+- step 2: turn_right -> executed | your reasoning: The green target is straight ahead through the narrow opening. My torso is at 0 degrees, which from the earlier downward glance presented a wide profile; the opening is narrow, so I should rotate my torso to present a slimmer profile befor…
+- step 3: look_down -> executed | your reasoning: The green target is straight ahead through the narrow opening. My torso is now rotated 15 degrees right, which may present a slimmer profile to the opening. I should glance down to verify my current body width relative to the opening befor…
+- step 4: turn_right -> executed | your reasoning: The downward glance shows my body is quite wide, with the wheels defining the widest profile. My torso is rotated 15 degrees right, which slightly reduces the presented width but not dramatically. Since the opening ahead is narrow, I shoul…
+- step 5: forward -> executed | your reasoning: The green target is straight ahead through the narrow opening. My torso is now rotated 30 degrees right, which should present a slimmer profile to the opening than the wide wheel-to-wheel width seen at 0 degrees. I have already turned twic…
+- step 6: forward -> executed | your reasoning: The green target is straight ahead through the narrow opening. My torso is rotated 30 degrees right, presenting a slimmer profile. I have already moved forward twice and am approaching the opening; continuing forward should bring me closer…
+- step 7: forward -> executed | your reasoning: The green target is straight ahead through the narrow opening. My torso is rotated 30 degrees right, presenting a slimmer profile, and I have already moved forward twice. Continuing forward should bring me closer to and through the opening…
+- step 8: forward -> executed | your reasoning: The green target is straight ahead through the narrow opening. My torso is rotated 30 degrees right, presenting a slimmer profile, and I have already moved forward three times toward the opening. Continuing forward should bring me through…
+- step 9: forward -> executed | your reasoning: The green target is straight ahead through the narrow opening, and my torso is rotated 30 degrees right to present a slimmer profile. I have already moved forward several times and am close to the opening; continuing forward should bring m…
+- step 10: forward -> executed | your reasoning: The green target is straight ahead through the narrow opening. My torso is rotated 30 degrees right to present a slimmer profile, and I have already moved forward several times. Continuing forward should bring me through the opening toward…
+- step 11: forward -> executed | your reasoning: The green target is visible straight ahead through the doorway and I have been moving forward successfully. Continuing forward should bring me through the opening toward the target.
+- step 12: forward -> executed | your reasoning: The green target is directly ahead through the narrow doorway. My torso is rotated 30 degrees right to present a slimmer profile, and repeated forward steps have brought me close to the opening. Continuing forward should carry me through t…
+- step 13: forward -> blocked by obstacle or room boundary (wall_panel) | your reasoning: The target fills much of the view, indicating I am very close. Repeated forward steps have been successful without collision, so continuing forward should reach the green rectangle.
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

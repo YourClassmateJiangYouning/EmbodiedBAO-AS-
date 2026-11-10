@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:33:44+08:00",
+    "latency_ms": 7460,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081033378705136938268d9d6qPzBy62F\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134024,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down at the robot's own body on a red carpet. I can see two large wheels on the sides and a wide, white rectangular foam bumper at the front. The body is significantly wider than it is deep (thickness).\\\",\\n  \\\"reasoning\\\": \\\"The look_down view reveals that my current orientation (0 degrees) presents my maximum width (the bumper and wheels) to the opening ahead. To fit through a narrow gap, I should rotate my torso so that my thinner dimension (front-to-back) faces the direction of travel. I will start turning to the right to align my profile with the walking direction.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2156,\"completion_tokens\":163,\"total_tokens\":2319,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2156,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":163,\"totalTokenCount\":2319,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1067},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":163}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1067,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":163,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down at the robot's own body on a red carpet. I can see two large wheels on the sides and a wide, white rectangular foam bumper at the front. The body is significantly wider than it is deep (thickness).\",\n  \"reasoning\": \"The look_down view reveals that my current orientation (0 degrees) presents my maximum width (the bumper and wheels) to the opening ahead. To fit through a narrow gap, I should rotate my torso so that my thinner dimension (front-to-back) faces the direction of travel. I will start turning to the right to align my profile with the walking direction.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body on a red carpet. I can see two large wheels on the sides and a wide, white rectangular foam bumper at the front. The body is significantly wider than it is deep (thickness).",
+      "reasoning": "The look_down view reveals that my current orientation (0 degrees) presents my maximum width (the bumper and wheels) to the opening ahead. To fit through a narrow gap, I should rotate my torso so that my thinner dimension (front-to-back) faces the direction of travel. I will start turning to the right to align my profile with the walking direction.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

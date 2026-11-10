@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:30+08:00",
+    "latency_ms": 2560,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a256b229-af36-455d-9aa2-2cdbfc9df8ae\",\"object\":\"chat.completion\",\"created\":1794208169,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is very close and centered slightly right in view, mounted on a dark wall panel above the red carpet; the doorway edges are visible on the left.\\\", \\\"reasoning\\\": \\\"Forward steps were blocked by the wall panel even with the arrow close. My torso is now at 15 degrees after the left turn, which may still widen my body against the narrow opening. I should continue rotating back toward 0 degrees (turn_left once more) to align my body with the opening before attempting forward again.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.55}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2406,\"completion_tokens\":124,\"total_tokens\":2530,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1766},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is very close and centered slightly right in view, mounted on a dark wall panel above the red carpet; the doorway edges are visible on the left.\", \"reasoning\": \"Forward steps were blocked by the wall panel even with the arrow close. My torso is now at 15 degrees after the left turn, which may still widen my body against the narrow opening. I should continue rotating back toward 0 degrees (turn_left once more) to align my body with the opening before attempting forward again.\", \"action\": \"turn_left\", \"confidence\": 0.55}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is very close and centered slightly right in view, mounted on a dark wall panel above the red carpet; the doorway edges are visible on the left.",
+      "reasoning": "Forward steps were blocked by the wall panel even with the arrow close. My torso is now at 15 degrees after the left turn, which may still widen my body against the narrow opening. I should continue rotating back toward 0 degrees (turn_left once more) to align my body with the opening before attempting forward again.",
+      "action": "turn_left",
+      "confidence": 0.55
+    },
+    "action": "turn_left"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:22:36+08:00",
+    "latency_ms": 7727,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A large bright green rectangle directly ahead on the far wall, very close at floor level; the red carpet ends just before the wall. The view suggests the robot is essentially at the wall/goal, with the panel touching or nearly touching the front.\\\",\\\"reasoning\\\":\\\"Repeated forward steps are blocked by the wall panel, indicating I’m already at contact distance with the green rectangle. To register the goal, a tiny adjustment may be needed; stepping backward slightly will create space to approach cleanly on the next step.\\\",\\\"action\\\":\\\"backward\\\",\\\"confidence\\\":0.63}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205353,\"id\":\"chatcmpl-EiD3xAthK3HVNt4qMV4X6RNU4p00J\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":126,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":519,\"engine_ttlt_ms\":1607,\"pre_inference_ms\":355,\"service_tbt_ms\":8,\"service_ttft_ms\":1158,\"service_ttlt_ms\":2207,\"user_visible_ttft_ms\":803},\"prompt_tokens\":2453,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2579}}\n",
+    "content": "{\"scene_description\":\"A large bright green rectangle directly ahead on the far wall, very close at floor level; the red carpet ends just before the wall. The view suggests the robot is essentially at the wall/goal, with the panel touching or nearly touching the front.\",\"reasoning\":\"Repeated forward steps are blocked by the wall panel, indicating I’m already at contact distance with the green rectangle. To register the goal, a tiny adjustment may be needed; stepping backward slightly will create space to approach cleanly on the next step.\",\"action\":\"backward\",\"confidence\":0.63}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A large bright green rectangle directly ahead on the far wall, very close at floor level; the red carpet ends just before the wall. The view suggests the robot is essentially at the wall/goal, with the panel touching or nearly touching the front.",
+      "reasoning": "Repeated forward steps are blocked by the wall panel, indicating I’m already at contact distance with the green rectangle. To register the goal, a tiny adjustment may be needed; stepping backward slightly will create space to approach cleanly on the next step.",
+      "action": "backward",
+      "confidence": 0.63
+    },
+    "action": "backward"
+  }
+]

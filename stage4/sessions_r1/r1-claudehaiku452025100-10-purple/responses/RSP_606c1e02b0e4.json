@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:49:35+08:00",
+    "latency_ms": 7425,
+    "payload_bytes": 236877,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_wmaxo2rumnst6efjpcxdgqzitynncsghvhesvjvr5db6wl5qfkna\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145775,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The purple four-pointed star is now clearly visible and much closer on the far wall, displayed on a dark panel mounted on a tan/beige wall section. The walkway ahead is clear with red carpet flooring. There are blue structural elements visible on the right side and various wall panels and fixtures around the space. The star appears to be at approximately eye level and is the dominant feature in the center of the view.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=6.500 after 8 forward steps. The purple star is now prominently visible and much closer than before, indicating I am making good progress toward it. The walkway remains completely clear with no obstacles blocking my path. My walking direction is fixed toward the star. I should continue moving forward to reach it.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2902,\"completion_tokens\":199,\"total_tokens\":3101,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2902,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":199,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2902,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The purple four-pointed star is now clearly visible and much closer on the far wall, displayed on a dark panel mounted on a tan/beige wall section. The walkway ahead is clear with red carpet flooring. There are blue structural elements visible on the right side and various wall panels and fixtures around the space. The star appears to be at approximately eye level and is the dominant feature in the center of the view.\",\n  \"reasoning\": \"I am at position x=6.500 after 8 forward steps. The purple star is now prominently visible and much closer than before, indicating I am making good progress toward it. The walkway remains completely clear with no obstacles blocking my path. My walking direction is fixed toward the star. I should continue moving forward to reach it.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is now clearly visible and much closer on the far wall, displayed on a dark panel mounted on a tan/beige wall section. The walkway ahead is clear with red carpet flooring. There are blue structural elements visible on the right side and various wall panels and fixtures around the space. The star appears to be at approximately eye level and is the dominant feature in the center of the view.",
+      "reasoning": "I am at position x=6.500 after 8 forward steps. The purple star is now prominently visible and much closer than before, indicating I am making good progress toward it. The walkway remains completely clear with no obstacles blocking my path. My walking direction is fixed toward the star. I should continue moving forward to reach it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

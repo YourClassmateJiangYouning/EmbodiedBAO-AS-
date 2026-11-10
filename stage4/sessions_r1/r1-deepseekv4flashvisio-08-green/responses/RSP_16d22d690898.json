@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:06:28+08:00",
+    "latency_ms": 2683,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"2f32c203-74c0-46f4-b4b8-2c52bb6b858f\",\"object\":\"chat.completion\",\"created\":1794207986,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is visible directly ahead, close and centered, sitting on a light-colored surface with a dark wall behind it. The path appears narrow, and previous forward attempts were blocked by a wall panel.\\\", \\\"reasoning\\\": \\\"Forward steps have been blocked twice by a wall panel even after turning left 15 degrees. I have now turned left again (torso at 30 degrees), reducing my presented width further. I should try forward again to see if the narrower profile now allows passage through the opening toward the green target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.5}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2360,\"completion_tokens\":126,\"total_tokens\":2486,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1592},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is visible directly ahead, close and centered, sitting on a light-colored surface with a dark wall behind it. The path appears narrow, and previous forward attempts were blocked by a wall panel.\", \"reasoning\": \"Forward steps have been blocked twice by a wall panel even after turning left 15 degrees. I have now turned left again (torso at 30 degrees), reducing my presented width further. I should try forward again to see if the narrower profile now allows passage through the opening toward the green target.\", \"action\": \"forward\", \"confidence\": 0.5}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is visible directly ahead, close and centered, sitting on a light-colored surface with a dark wall behind it. The path appears narrow, and previous forward attempts were blocked by a wall panel.",
+      "reasoning": "Forward steps have been blocked twice by a wall panel even after turning left 15 degrees. I have now turned left again (torso at 30 degrees), reducing my presented width further. I should try forward again to see if the narrower profile now allows passage through the opening toward the green target.",
+      "action": "forward",
+      "confidence": 0.5
+    },
+    "action": "forward"
+  }
+]

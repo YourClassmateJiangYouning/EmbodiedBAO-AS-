@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:09:07+08:00",
+    "latency_ms": 10669,
+    "payload_bytes": 382500,
+    "finish_reason": "stop",
+    "reasoning_tokens": 7,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"6d7c9da1-67a9-4b8f-8ee4-665f62e66d05_d5ef2e1ce74b4c4194579e0a0119fb71\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\":\\\"A red carpet stretches ahead toward a dark opening where the purple four-pointed star is visible in the distance. Patterned walls flank the opening, and light falls on the floor to either side of the carpet.\\\",\\\"reasoning\\\":\\\"The star is visible straight ahead through the opening, and the path along the red carpet is clear. With 30 steps available and the star at some distance, I should simply move forward. The previous traversal suggests I may need to rotate to pass the opening, but that will only matter once I'm at the wall; for now, moving forward is the obvious best action.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me just go forward.\"}}],\"created\":1794215347,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":148,\"prompt_tokens\":2871,\"total_tokens\":3019,\"completion_tokens_details\":{\"reasoning_tokens\":7},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\":\"A red carpet stretches ahead toward a dark opening where the purple four-pointed star is visible in the distance. Patterned walls flank the opening, and light falls on the floor to either side of the carpet.\",\"reasoning\":\"The star is visible straight ahead through the opening, and the path along the red carpet is clear. With 30 steps available and the star at some distance, I should simply move forward. The previous traversal suggests I may need to rotate to pass the opening, but that will only matter once I'm at the wall; for now, moving forward is the obvious best action.\",\"action\":\"forward\",\"confidence\":0.95}",
+    "reasoning_content": "Let me just go forward.",
+    "parsed": {
+      "scene_description": "A red carpet stretches ahead toward a dark opening where the purple four-pointed star is visible in the distance. Patterned walls flank the opening, and light falls on the floor to either side of the carpet.",
+      "reasoning": "The star is visible straight ahead through the opening, and the path along the red carpet is clear. With 30 steps available and the star at some distance, I should simply move forward. The previous traversal suggests I may need to rotate to pass the opening, but that will only matter once I'm at the wall; for now, moving forward is the obvious best action.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

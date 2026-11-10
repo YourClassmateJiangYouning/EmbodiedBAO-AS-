@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:56:39+08:00",
+    "latency_ms": 6486,
+    "payload_bytes": 352226,
+    "finish_reason": "stop",
+    "reasoning_tokens": 30,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"2250a269-51ac-4e3f-8a0a-6db6acdae11a_3715489f314f4be2aec431d1bcdc4f05\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads forward between two patterned walls toward a dark opening in the far wall. A small blue triangle is visible through the opening at floor level on the far wall. The path is clear.\\\", \\\"reasoning\\\": \\\"My torso remains at 90 degrees presenting the thinnest profile for the tight opening, matching the successful previous traversal. The blue triangle is visible through the dark opening straight ahead and the carpet path is clear. I should continue moving forward to approach and pass through the opening.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We're at x=2.0, torso at 90 degrees. The blue triangle is visible through the opening ahead. Continue forward.\"}}],\"created\":1794214599,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":158,\"prompt_tokens\":3279,\"total_tokens\":3437,\"completion_tokens_details\":{\"reasoning_tokens\":30},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads forward between two patterned walls toward a dark opening in the far wall. A small blue triangle is visible through the opening at floor level on the far wall. The path is clear.\", \"reasoning\": \"My torso remains at 90 degrees presenting the thinnest profile for the tight opening, matching the successful previous traversal. The blue triangle is visible through the dark opening straight ahead and the carpet path is clear. I should continue moving forward to approach and pass through the opening.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We're at x=2.0, torso at 90 degrees. The blue triangle is visible through the opening ahead. Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads forward between two patterned walls toward a dark opening in the far wall. A small blue triangle is visible through the opening at floor level on the far wall. The path is clear.",
+      "reasoning": "My torso remains at 90 degrees presenting the thinnest profile for the tight opening, matching the successful previous traversal. The blue triangle is visible through the dark opening straight ahead and the carpet path is clear. I should continue moving forward to approach and pass through the opening.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

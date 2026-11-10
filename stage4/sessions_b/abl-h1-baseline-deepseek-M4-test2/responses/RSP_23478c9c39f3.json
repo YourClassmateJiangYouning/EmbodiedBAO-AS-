@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:36:32+08:00",
+    "latency_ms": 3385,
+    "payload_bytes": 171622,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"6abc5193-569b-429d-90a3-42aa2eb9c9de\",\"object\":\"chat.completion\",\"created\":1794216992,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle is visible directly ahead on a low platform against the far wall, with a dark red carpeted floor in the foreground and dark objects to the sides. The path to the triangle appears clear and close.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along my fixed walking direction and appears close. Continuing forward moves me 75cm closer each step, and I have ample step budget remaining.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2048,\"completion_tokens\":101,\"total_tokens\":2149,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1536},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle is visible directly ahead on a low platform against the far wall, with a dark red carpeted floor in the foreground and dark objects to the sides. The path to the triangle appears clear and close.\", \"reasoning\": \"The blue triangle is directly ahead along my fixed walking direction and appears close. Continuing forward moves me 75cm closer each step, and I have ample step budget remaining.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle is visible directly ahead on a low platform against the far wall, with a dark red carpeted floor in the foreground and dark objects to the sides. The path to the triangle appears clear and close.",
+      "reasoning": "The blue triangle is directly ahead along my fixed walking direction and appears close. Continuing forward moves me 75cm closer each step, and I have ample step budget remaining.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

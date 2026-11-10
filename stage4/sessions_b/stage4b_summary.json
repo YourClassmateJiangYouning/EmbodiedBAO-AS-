@@ -1,0 +1,156 @@
+[
+ {
+  "model": "mimo-v2.6-pro",
+  "marker": "M1",
+  "condition": "baseline",
+  "source_level": null,
+  "passed": true,
+  "steps": 12,
+  "turns": 0,
+  "max_rotation": 0.0,
+  "turned": false
+ },
+ {
+  "model": "mimo-v2.6-pro",
+  "marker": "M1",
+  "condition": "memory",
+  "source_level": 0.6,
+  "passed": true,
+  "steps": 11,
+  "turns": 0,
+  "max_rotation": 0.0,
+  "turned": false
+ },
+ {
+  "model": "mimo-v2.6-pro",
+  "marker": "M1",
+  "condition": "memory",
+  "source_level": 0.8,
+  "passed": true,
+  "steps": 11,
+  "turns": 0,
+  "max_rotation": 0.0,
+  "turned": false
+ },
+ {
+  "model": "mimo-v2.6-pro",
+  "marker": "M2",
+  "condition": "baseline",
+  "source_level": null,
+  "passed": true,
+  "steps": 11,
+  "turns": 0,
+  "max_rotation": 0.0,
+  "turned": false
+ },
+ {
+  "model": "mimo-v2.6-pro",
+  "marker": "M2",
+  "condition": "memory",
+  "source_level": 0.6,
+  "passed": true,
+  "steps": 19,
+  "turns": 6,
+  "max_rotation": 90.0,
+  "turned": true
+ },
+ {
+  "model": "mimo-v2.6-pro",
+  "marker": "M2",
+  "condition": "memory",
+  "source_level": 0.8,
+  "passed": true,
+  "steps": 19,
+  "turns": 6,
+  "max_rotation": 90.0,
+  "turned": true
+ },
+ {
+  "model": "mimo-v2.6-pro",
+  "marker": "M3",
+  "condition": "baseline",
+  "source_level": null,
+  "passed": true,
+  "steps": 12,
+  "turns": 0,
+  "max_rotation": 0.0,
+  "turned": false
+ },
+ {
+  "model": "mimo-v2.6-pro",
+  "marker": "M3",
+  "condition": "memory",
+  "source_level": 0.6,
+  "passed": true,
+  "steps": 13,
+  "turns": 0,
+  "max_rotation": 0.0,
+  "turned": false
+ },
+ {
+  "model": "mimo-v2.6-pro",
+  "marker": "M4",
+  "condition": "baseline",
+  "source_level": null,
+  "passed": true,
+  "steps": 12,
+  "turns": 0,
+  "max_rotation": 0.0,
+  "turned": false
+ },
+ {
+  "model": "mimo-v2.6-pro",
+  "marker": "M4",
+  "condition": "memory",
+  "source_level": 0.6,
+  "passed": true,
+  "steps": 18,
+  "turns": 6,
+  "max_rotation": 90.0,
+  "turned": true
+ },
+ {
+  "model": "mimo-v2.6-pro",
+  "marker": "M4",
+  "condition": "memory",
+  "source_level": 0.8,
+  "passed": true,
+  "steps": 17,
+  "turns": 6,
+  "max_rotation": 90.0,
+  "turned": true
+ },
+ {
+  "model": "mimo-v2.6-pro",
+  "marker": "M5",
+  "condition": "baseline",
+  "source_level": null,
+  "passed": true,
+  "steps": 13,
+  "turns": 0,
+  "max_rotation": 0.0,
+  "turned": false
+ },
+ {
+  "model": "mimo-v2.6-pro",
+  "marker": "M5",
+  "condition": "memory",
+  "source_level": 0.6,
+  "passed": true,
+  "steps": 18,
+  "turns": 6,
+  "max_rotation": 90.0,
+  "turned": true
+ },
+ {
+  "model": "mimo-v2.6-pro",
+  "marker": "M5",
+  "condition": "memory",
+  "source_level": 0.8,
+  "passed": true,
+  "steps": 16,
+  "turns": 5,
+  "max_rotation": 75.0,
+  "turned": true
+ }
+]

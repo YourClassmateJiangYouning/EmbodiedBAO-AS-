@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:15:42+08:00",
+    "latency_ms": 12299,
+    "payload_bytes": 321639,
+    "finish_reason": "stop",
+    "reasoning_tokens": 44,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"251cfe0e-757f-4508-9924-4060a2809b48_5b884f55c54a44c5b9f9741c2dd0a860\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor extending ahead toward a wall with colorful geometric patterns. A narrow dark opening in the wall reveals a bright red circle on the far wall beyond. To the left of the carpet is a light-colored tiled floor with geometric shapes. The path ahead on the carpet is clear and leads directly to the opening with the red circle visible through it.\\\", \\\"reasoning\\\": \\\"The red circle is clearly visible through the narrow opening straight ahead. My torso remains turned 15 degrees left to narrow my profile for the gap. The path on the red carpet is unobstructed, so I should continue moving forward toward the opening and the red circle. I still have room before reaching the opening, so I should keep advancing.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me keep moving forward toward the red circle. The red circle is visible ahead through the narrow opening. My torso is turned 15 degrees left, which should narrow my profile for the gap. Continue forward.\"}}],\"created\":1794208541,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":216,\"prompt_tokens\":2328,\"total_tokens\":2544,\"completion_tokens_details\":{\"reasoning_tokens\":44},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor extending ahead toward a wall with colorful geometric patterns. A narrow dark opening in the wall reveals a bright red circle on the far wall beyond. To the left of the carpet is a light-colored tiled floor with geometric shapes. The path ahead on the carpet is clear and leads directly to the opening with the red circle visible through it.\", \"reasoning\": \"The red circle is clearly visible through the narrow opening straight ahead. My torso remains turned 15 degrees left to narrow my profile for the gap. The path on the red carpet is unobstructed, so I should continue moving forward toward the opening and the red circle. I still have room before reaching the opening, so I should keep advancing.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "Let me keep moving forward toward the red circle. The red circle is visible ahead through the narrow opening. My torso is turned 15 degrees left, which should narrow my profile for the gap. Continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor extending ahead toward a wall with colorful geometric patterns. A narrow dark opening in the wall reveals a bright red circle on the far wall beyond. To the left of the carpet is a light-colored tiled floor with geometric shapes. The path ahead on the carpet is clear and leads directly to the opening with the red circle visible through it.",
+      "reasoning": "The red circle is clearly visible through the narrow opening straight ahead. My torso remains turned 15 degrees left to narrow my profile for the gap. The path on the red carpet is unobstructed, so I should continue moving forward toward the opening and the red circle. I still have room before reaching the opening, so I should keep advancing.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

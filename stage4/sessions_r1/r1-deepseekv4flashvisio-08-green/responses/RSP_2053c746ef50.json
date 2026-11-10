@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:06:34+08:00",
+    "latency_ms": 2739,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"8c3dcfe6-63ae-4422-b1db-533bc0d65f37\",\"object\":\"chat.completion\",\"created\":1794207992,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is visible directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path appears nearly at the goal, but previous forward steps were blocked by a wall panel.\\\", \\\"reasoning\\\": \\\"Forward has been blocked three times despite turning left to 30 and now 45 degrees. The target is extremely close. Since turning further left may not help and I cannot turn once inside the opening, I should try forward once more at the current 45-degree torso rotation to see if the narrower presented width now clears the panel.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2496,\"completion_tokens\":134,\"total_tokens\":2630,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1728},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is visible directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path appears nearly at the goal, but previous forward steps were blocked by a wall panel.\", \"reasoning\": \"Forward has been blocked three times despite turning left to 30 and now 45 degrees. The target is extremely close. Since turning further left may not help and I cannot turn once inside the opening, I should try forward once more at the current 45-degree torso rotation to see if the narrower presented width now clears the panel.\", \"action\": \"forward\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is visible directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path appears nearly at the goal, but previous forward steps were blocked by a wall panel.",
+      "reasoning": "Forward has been blocked three times despite turning left to 30 and now 45 degrees. The target is extremely close. Since turning further left may not help and I cannot turn once inside the opening, I should try forward once more at the current 45-degree torso rotation to see if the narrower presented width now clears the panel.",
+      "action": "forward",
+      "confidence": 0.4
+    },
+    "action": "forward"
+  }
+]

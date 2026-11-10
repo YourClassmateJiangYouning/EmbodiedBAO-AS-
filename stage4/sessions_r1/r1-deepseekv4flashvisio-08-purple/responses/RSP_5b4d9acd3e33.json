@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:12:51+08:00",
+    "latency_ms": 1979,
+    "payload_bytes": 166724,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"be2b6dd4-9cb5-4e69-9f89-640c5cdb4003\",\"object\":\"chat.completion\",\"created\":1794208370,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star glows brightly on a raised panel directly ahead, with the red carpet leading up to it. The star appears very close and centered in view.\\\", \\\"reasoning\\\": \\\"Forward is blocked by the wall panel holding the star, and repeated forward attempts have failed. The star is directly ahead and as close as physically reachable, so the goal is effectively achieved; no further action will improve the outcome.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2628,\"completion_tokens\":105,\"total_tokens\":2733,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1988},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star glows brightly on a raised panel directly ahead, with the red carpet leading up to it. The star appears very close and centered in view.\", \"reasoning\": \"Forward is blocked by the wall panel holding the star, and repeated forward attempts have failed. The star is directly ahead and as close as physically reachable, so the goal is effectively achieved; no further action will improve the outcome.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star glows brightly on a raised panel directly ahead, with the red carpet leading up to it. The star appears very close and centered in view.",
+      "reasoning": "Forward is blocked by the wall panel holding the star, and repeated forward attempts have failed. The star is directly ahead and as close as physically reachable, so the goal is effectively achieved; no further action will improve the outcome.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

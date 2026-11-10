@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:02:57+08:00",
+    "latency_ms": 2619,
+    "payload_bytes": 389194,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"de0e114e-3a9d-4bcb-a287-8f3e078b8565\",\"object\":\"chat.completion\",\"created\":1794207776,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a far wall with a green rectangle target slightly left of center. The path appears clear and open, with no visible obstacles between the robot and the green rectangle.\\\", \\\"reasoning\\\": \\\"The green rectangle is visible straight ahead along the walking direction, and the path looks unobstructed. Moving forward advances 75cm toward the target. With 30 steps available and the target appearing reachable, the best action is to proceed forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1541,\"completion_tokens\":115,\"total_tokens\":1656,\"prompt_tokens_details\":{\"cached_tokens\":1407},\"prompt_cache_hit_tokens\":1407,\"prompt_cache_miss_tokens\":134},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a far wall with a green rectangle target slightly left of center. The path appears clear and open, with no visible obstacles between the robot and the green rectangle.\", \"reasoning\": \"The green rectangle is visible straight ahead along the walking direction, and the path looks unobstructed. Moving forward advances 75cm toward the target. With 30 steps available and the target appearing reachable, the best action is to proceed forward.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a far wall with a green rectangle target slightly left of center. The path appears clear and open, with no visible obstacles between the robot and the green rectangle.",
+      "reasoning": "The green rectangle is visible straight ahead along the walking direction, and the path looks unobstructed. Moving forward advances 75cm toward the target. With 30 steps available and the target appearing reachable, the best action is to proceed forward.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

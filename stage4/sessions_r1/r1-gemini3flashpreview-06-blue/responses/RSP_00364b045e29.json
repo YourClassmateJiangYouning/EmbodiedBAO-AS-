@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:00:30+08:00",
+    "latency_ms": 5643,
+    "payload_bytes": 359664,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081100258698009748268d9d6cCekhJzP\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135630,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a red carpeted walkway on the right and a patterned floor on the left. Straight ahead is a wall with a very narrow vertical opening. Through the opening, a blue triangle is visible on the far wall.\\\",\\n  \\\"reasoning\\\": \\\"My torso rotation is currently 75 degrees. To present the thinnest possible profile to the narrow vertical gap ahead, I need to reach a 90-degree rotation. I will perform one more turn_left action to reach 90 degrees before I move forward into the opening.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2503,\"completion_tokens\":141,\"total_tokens\":2644,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2503,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":141,\"totalTokenCount\":2644,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1414}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":141}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1414,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":141,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a red carpeted walkway on the right and a patterned floor on the left. Straight ahead is a wall with a very narrow vertical opening. Through the opening, a blue triangle is visible on the far wall.\",\n  \"reasoning\": \"My torso rotation is currently 75 degrees. To present the thinnest possible profile to the narrow vertical gap ahead, I need to reach a 90-degree rotation. I will perform one more turn_left action to reach 90 degrees before I move forward into the opening.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway on the right and a patterned floor on the left. Straight ahead is a wall with a very narrow vertical opening. Through the opening, a blue triangle is visible on the far wall.",
+      "reasoning": "My torso rotation is currently 75 degrees. To present the thinnest possible profile to the narrow vertical gap ahead, I need to reach a 90-degree rotation. I will perform one more turn_left action to reach 90 degrees before I move forward into the opening.",
+      "action": "turn_left",
+      "confidence": 1.0
+    },
+    "action": "turn_left"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:16:34+08:00",
+    "latency_ms": 3405,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f0b5f895-55a6-4efa-aa5f-4fcf98dd8469\",\"object\":\"chat.completion\",\"created\":1794208592,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"Downward glance showing the robot's own body from the front: two wheels on either side, a wide white platform/tray on top, and wiring in the center. The body width spans roughly the full frame, with the wheels defining the widest points.\\\", \\\"reasoning\\\": \\\"The downward view shows my body is fairly wide, with wheels sticking out on both sides. My torso is at 0 degrees, so this width faces the doorway opening. I need to judge whether this width fits through the opening ahead; since I cannot see the doorway width in this glance, I should proceed cautiously forward and observe, or first verify clearance. Given the arrow is straight ahead and the path appeared clear, advancing forward is reasonable, but the wide tray suggests I should be careful. I'll move forward to approach the doorway and reassess.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1700,\"completion_tokens\":186,\"total_tokens\":1886,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":932},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"Downward glance showing the robot's own body from the front: two wheels on either side, a wide white platform/tray on top, and wiring in the center. The body width spans roughly the full frame, with the wheels defining the widest points.\", \"reasoning\": \"The downward view shows my body is fairly wide, with wheels sticking out on both sides. My torso is at 0 degrees, so this width faces the doorway opening. I need to judge whether this width fits through the opening ahead; since I cannot see the doorway width in this glance, I should proceed cautiously forward and observe, or first verify clearance. Given the arrow is straight ahead and the path appeared clear, advancing forward is reasonable, but the wide tray suggests I should be careful. I'll move forward to approach the doorway and reassess.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "Downward glance showing the robot's own body from the front: two wheels on either side, a wide white platform/tray on top, and wiring in the center. The body width spans roughly the full frame, with the wheels defining the widest points.",
+      "reasoning": "The downward view shows my body is fairly wide, with wheels sticking out on both sides. My torso is at 0 degrees, so this width faces the doorway opening. I need to judge whether this width fits through the opening ahead; since I cannot see the doorway width in this glance, I should proceed cautiously forward and observe, or first verify clearance. Given the arrow is straight ahead and the path appeared clear, advancing forward is reasonable, but the wide tray suggests I should be careful. I'll move forward to approach the doorway and reassess.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

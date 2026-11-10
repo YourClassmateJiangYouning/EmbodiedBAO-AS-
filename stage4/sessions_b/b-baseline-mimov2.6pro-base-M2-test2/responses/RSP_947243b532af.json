@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:28:17+08:00",
+    "latency_ms": 7442,
+    "payload_bytes": 396561,
+    "finish_reason": "stop",
+    "reasoning_tokens": 15,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"9b2a183f-56dc-4f1a-879e-adff0bc17db6_0df9cf68c82c4d08806a3e63ce808fd2\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway with white rectangular markers along both edges leads straight toward a doorway with decorative panels. A red circle is visible on a black box at the far end, in front of a dark covered object and a yellow couch. The path ahead is clear.\\\", \\\"reasoning\\\": \\\"The walkway is clear and the red circle is straight ahead. I have moved forward twice already and no obstacles appear in the path. Continuing forward is the most direct approach to the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear ahead. Keep moving forward toward the red circle.\"}}],\"created\":1794212897,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":135,\"prompt_tokens\":2051,\"total_tokens\":2186,\"completion_tokens_details\":{\"reasoning_tokens\":15},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway with white rectangular markers along both edges leads straight toward a doorway with decorative panels. A red circle is visible on a black box at the far end, in front of a dark covered object and a yellow couch. The path ahead is clear.\", \"reasoning\": \"The walkway is clear and the red circle is straight ahead. I have moved forward twice already and no obstacles appear in the path. Continuing forward is the most direct approach to the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear ahead. Keep moving forward toward the red circle.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway with white rectangular markers along both edges leads straight toward a doorway with decorative panels. A red circle is visible on a black box at the far end, in front of a dark covered object and a yellow couch. The path ahead is clear.",
+      "reasoning": "The walkway is clear and the red circle is straight ahead. I have moved forward twice already and no obstacles appear in the path. Continuing forward is the most direct approach to the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

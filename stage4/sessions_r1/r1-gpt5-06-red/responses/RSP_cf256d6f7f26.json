@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:25:32+08:00",
+    "latency_ms": 6802,
+    "payload_bytes": 242096,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A corridor with a dark red carpet leads straight to a far wall opening. In the center near the base of that far wall is a bright red circular target on a small black panel slightly recessed. The path is straight and unobstructed except for the terminating wall where the red circle sits low at floor level.\\\",\\\"reasoning\\\":\\\"Two consecutive forward moves were blocked, indicating I’m already at the wall with the red circle directly ahead; stepping backward moved me away. To reach/contact the target, I should advance forward again toward the wall-mounted red circle.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.69}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205530,\"id\":\"chatcmpl-EiD6oo3Ttu27z9nzZ6rje5jdFicaE\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":133,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":378,\"engine_ttlt_ms\":1590,\"pre_inference_ms\":484,\"service_tbt_ms\":9,\"service_ttft_ms\":1058,\"service_ttlt_ms\":2229,\"user_visible_ttft_ms\":574},\"prompt_tokens\":2119,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2252}}\n",
+    "content": "{\"scene_description\":\"A corridor with a dark red carpet leads straight to a far wall opening. In the center near the base of that far wall is a bright red circular target on a small black panel slightly recessed. The path is straight and unobstructed except for the terminating wall where the red circle sits low at floor level.\",\"reasoning\":\"Two consecutive forward moves were blocked, indicating I’m already at the wall with the red circle directly ahead; stepping backward moved me away. To reach/contact the target, I should advance forward again toward the wall-mounted red circle.\",\"action\":\"forward\",\"confidence\":0.69}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A corridor with a dark red carpet leads straight to a far wall opening. In the center near the base of that far wall is a bright red circular target on a small black panel slightly recessed. The path is straight and unobstructed except for the terminating wall where the red circle sits low at floor level.",
+      "reasoning": "Two consecutive forward moves were blocked, indicating I’m already at the wall with the red circle directly ahead; stepping backward moved me away. To reach/contact the target, I should advance forward again toward the wall-mounted red circle.",
+      "action": "forward",
+      "confidence": 0.69
+    },
+    "action": "forward"
+  }
+]

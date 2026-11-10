@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:42:53+08:00",
+    "latency_ms": 11932,
+    "payload_bytes": 196859,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090842485290343448268d9d6uomeTWyM\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213773,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera view shows a red carpeted floor leading to a blue triangle on a screen at the far end of the room. The robot has passed through the narrow opening between the patterned wall on the left and the white wall on the right. The path to the target is now clear.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=5.75 and have successfully cleared the narrow opening. My torso is still rotated at 90 degrees, but since I am now in an open area, I can continue moving forward toward the blue triangle without further rotation. I will move forward to reach the goal.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3207,\"completion_tokens\":152,\"total_tokens\":3359,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3207,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":152,\"totalTokenCount\":3359,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2118},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":152}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2118,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":152,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera view shows a red carpeted floor leading to a blue triangle on a screen at the far end of the room. The robot has passed through the narrow opening between the patterned wall on the left and the white wall on the right. The path to the target is now clear.\",\n  \"reasoning\": \"I am at x=5.75 and have successfully cleared the narrow opening. My torso is still rotated at 90 degrees, but since I am now in an open area, I can continue moving forward toward the blue triangle without further rotation. I will move forward to reach the goal.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera view shows a red carpeted floor leading to a blue triangle on a screen at the far end of the room. The robot has passed through the narrow opening between the patterned wall on the left and the white wall on the right. The path to the target is now clear.",
+      "reasoning": "I am at x=5.75 and have successfully cleared the narrow opening. My torso is still rotated at 90 degrees, but since I am now in an open area, I can continue moving forward toward the blue triangle without further rotation. I will move forward to reach the goal.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

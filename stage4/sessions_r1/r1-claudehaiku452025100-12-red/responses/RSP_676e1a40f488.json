@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:37:20+08:00",
+    "latency_ms": 7495,
+    "payload_bytes": 340993,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_7mopcare6ka7i6p6ubipdslx3ijco2wuh3c5zotpxg5m3gswx4ca\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794145040,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the red circle target clearly visible on the far wall, centered in my view. The walkway ahead is completely clear with a dark red/maroon textured floor. The walls on either side show decorative patterns in blue and tan colors. The target appears to be at a moderate distance still, visible through what looks like a doorway or opening on the far wall.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=2.750, having made good progress toward the red circle. My walking direction remains perfectly aligned with the target (z=0.000 indicates I'm centered on the walkway). The path ahead is completely clear with no obstacles blocking my way. The red circle is clearly visible and centered in my view, indicating my alignment is correct. I should continue moving forward to reach the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2559,\"completion_tokens\":205,\"total_tokens\":2764,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2559,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":205,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2559,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the red circle target clearly visible on the far wall, centered in my view. The walkway ahead is completely clear with a dark red/maroon textured floor. The walls on either side show decorative patterns in blue and tan colors. The target appears to be at a moderate distance still, visible through what looks like a doorway or opening on the far wall.\",\n  \"reasoning\": \"I am at position x=2.750, having made good progress toward the red circle. My walking direction remains perfectly aligned with the target (z=0.000 indicates I'm centered on the walkway). The path ahead is completely clear with no obstacles blocking my way. The red circle is clearly visible and centered in my view, indicating my alignment is correct. I should continue moving forward to reach the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the red circle target clearly visible on the far wall, centered in my view. The walkway ahead is completely clear with a dark red/maroon textured floor. The walls on either side show decorative patterns in blue and tan colors. The target appears to be at a moderate distance still, visible through what looks like a doorway or opening on the far wall.",
+      "reasoning": "I am at position x=2.750, having made good progress toward the red circle. My walking direction remains perfectly aligned with the target (z=0.000 indicates I'm centered on the walkway). The path ahead is completely clear with no obstacles blocking my way. The red circle is clearly visible and centered in my view, indicating my alignment is correct. I should continue moving forward to reach the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:49:16+08:00",
+    "latency_ms": 5798,
+    "payload_bytes": 371765,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081049119383943668268d9d6a8eGnijX\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134956,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking down a long red carpeted walkway. At the end of the walkway is a narrow opening between two patterned walls, and through that opening, a purple four-pointed star is visible on a far wall. The robot is currently positioned on the red carpet, some distance away from the opening.\\\", \\\"reasoning\\\": \\\"I am still quite far from the opening. I need to move closer to the gap before I can determine if I need to rotate my torso to fit through. I will continue moving forward along the red carpet toward the purple star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2103,\"completion_tokens\":133,\"total_tokens\":2236,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2103,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":133,\"totalTokenCount\":2236,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1014},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":133}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1014,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":133,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking down a long red carpeted walkway. At the end of the walkway is a narrow opening between two patterned walls, and through that opening, a purple four-pointed star is visible on a far wall. The robot is currently positioned on the red carpet, some distance away from the opening.\", \"reasoning\": \"I am still quite far from the opening. I need to move closer to the gap before I can determine if I need to rotate my torso to fit through. I will continue moving forward along the red carpet toward the purple star.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down a long red carpeted walkway. At the end of the walkway is a narrow opening between two patterned walls, and through that opening, a purple four-pointed star is visible on a far wall. The robot is currently positioned on the red carpet, some distance away from the opening.",
+      "reasoning": "I am still quite far from the opening. I need to move closer to the gap before I can determine if I need to rotate my torso to fit through. I will continue moving forward along the red carpet toward the purple star.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

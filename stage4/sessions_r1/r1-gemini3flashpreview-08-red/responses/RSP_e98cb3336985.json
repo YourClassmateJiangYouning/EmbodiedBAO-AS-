@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:40:38+08:00",
+    "latency_ms": 5930,
+    "payload_bytes": 354416,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081040336836408418268d9d6FNI3fsTP\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134438,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. A red circle is visible on the far wall through the opening. The robot is currently positioned on the red carpet, moving towards the gap.\\\",\\n  \\\"reasoning\\\": \\\"I am still a few steps away from the narrow opening. Based on my previous 'look_down' action, I know my body is wide at 0 degrees rotation. I need to continue moving forward to get closer to the gap before I start rotating my torso to fit through. I will take one more step forward.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2217,\"completion_tokens\":148,\"total_tokens\":2365,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2217,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":148,\"totalTokenCount\":2365,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1128},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":148}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1128,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":148,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. A red circle is visible on the far wall through the opening. The robot is currently positioned on the red carpet, moving towards the gap.\",\n  \"reasoning\": \"I am still a few steps away from the narrow opening. Based on my previous 'look_down' action, I know my body is wide at 0 degrees rotation. I need to continue moving forward to get closer to the gap before I start rotating my torso to fit through. I will take one more step forward.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. A red circle is visible on the far wall through the opening. The robot is currently positioned on the red carpet, moving towards the gap.",
+      "reasoning": "I am still a few steps away from the narrow opening. Based on my previous 'look_down' action, I know my body is wide at 0 degrees rotation. I need to continue moving forward to get closer to the gap before I start rotating my torso to fit through. I will take one more step forward.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

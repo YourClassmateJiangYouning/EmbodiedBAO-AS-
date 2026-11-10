@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:15:34+08:00",
+    "latency_ms": 2462,
+    "payload_bytes": 186978,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"d23eec7e-11a6-466a-8011-918e1f315326\",\"object\":\"chat.completion\",\"created\":1794208533,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle is now large and close, centered on the dark panel directly ahead at the end of the walkway. The carpeted path is clear with no obstacles between the robot and the goal.\\\", \\\"reasoning\\\": \\\"The red circle fills much of the view, indicating the robot is very near the goal. Continuing forward should reach it within a step or two.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2094,\"completion_tokens\":93,\"total_tokens\":2187,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1326},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle is now large and close, centered on the dark panel directly ahead at the end of the walkway. The carpeted path is clear with no obstacles between the robot and the goal.\", \"reasoning\": \"The red circle fills much of the view, indicating the robot is very near the goal. Continuing forward should reach it within a step or two.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle is now large and close, centered on the dark panel directly ahead at the end of the walkway. The carpeted path is clear with no obstacles between the robot and the goal.",
+      "reasoning": "The red circle fills much of the view, indicating the robot is very near the goal. Continuing forward should reach it within a step or two.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

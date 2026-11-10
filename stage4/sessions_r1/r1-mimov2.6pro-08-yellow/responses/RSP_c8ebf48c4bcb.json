@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:07:57+08:00",
+    "latency_ms": 4899,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": 14,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"0c2d1da9-27a4-44df-9cd5-8b77bd2498a9_9344f48daeff442da34db4b8546fe8f3\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows the yellow arrow sign directly ahead on the far wall, very close now, with the red carpet on the floor leading toward it and a dark opening/wall behind it.\\\", \\\"reasoning\\\": \\\"I am at x=7.25 and the yellow arrow is right in front of me, nearly reached. The path is clear and my torso is already rotated 15 degrees right. One more forward step should bring me directly to the arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The yellow arrow is right ahead, very close. Move forward.\"}}],\"created\":1794204477,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":130,\"prompt_tokens\":2598,\"total_tokens\":2728,\"completion_tokens_details\":{\"reasoning_tokens\":14},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows the yellow arrow sign directly ahead on the far wall, very close now, with the red carpet on the floor leading toward it and a dark opening/wall behind it.\", \"reasoning\": \"I am at x=7.25 and the yellow arrow is right in front of me, nearly reached. The path is clear and my torso is already rotated 15 degrees right. One more forward step should bring me directly to the arrow.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The yellow arrow is right ahead, very close. Move forward.",
+    "parsed": {
+      "scene_description": "The camera shows the yellow arrow sign directly ahead on the far wall, very close now, with the red carpet on the floor leading toward it and a dark opening/wall behind it.",
+      "reasoning": "I am at x=7.25 and the yellow arrow is right in front of me, nearly reached. The path is clear and my torso is already rotated 15 degrees right. One more forward step should bring me directly to the arrow.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

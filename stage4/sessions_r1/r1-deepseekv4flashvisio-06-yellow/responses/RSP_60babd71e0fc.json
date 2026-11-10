@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:17:14+08:00",
+    "latency_ms": 3232,
+    "payload_bytes": 173192,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f8bdbcfe-4a5a-4fe5-88fc-22eaff69d600\",\"object\":\"chat.completion\",\"created\":1794208632,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is directly ahead, very close, mounted on a low dark panel that blocks forward motion at body height. The sign sits low, near the floor level in view.\\\", \\\"reasoning\\\": \\\"Forward steps are repeatedly blocked by the low wall_panel holding the arrow. Turning does not change walking direction, so it cannot steer around the obstacle. The panel appears low, so the arrow may be reachable by moving backward slightly and re-approaching, but since forward is blocked at this height, the best remaining option is to try a backward step to reposition and then attempt forward again, or accept the goal is at the panel. Given the arrow is the goal and is directly ahead, I will try backing up slightly to gain clearance and re-approach.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2513,\"completion_tokens\":175,\"total_tokens\":2688,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1745},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is directly ahead, very close, mounted on a low dark panel that blocks forward motion at body height. The sign sits low, near the floor level in view.\", \"reasoning\": \"Forward steps are repeatedly blocked by the low wall_panel holding the arrow. Turning does not change walking direction, so it cannot steer around the obstacle. The panel appears low, so the arrow may be reachable by moving backward slightly and re-approaching, but since forward is blocked at this height, the best remaining option is to try a backward step to reposition and then attempt forward again, or accept the goal is at the panel. Given the arrow is the goal and is directly ahead, I will try backing up slightly to gain clearance and re-approach.\", \"action\": \"backward\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is directly ahead, very close, mounted on a low dark panel that blocks forward motion at body height. The sign sits low, near the floor level in view.",
+      "reasoning": "Forward steps are repeatedly blocked by the low wall_panel holding the arrow. Turning does not change walking direction, so it cannot steer around the obstacle. The panel appears low, so the arrow may be reachable by moving backward slightly and re-approaching, but since forward is blocked at this height, the best remaining option is to try a backward step to reposition and then attempt forward again, or accept the goal is at the panel. Given the arrow is the goal and is directly ahead, I will try backing up slightly to gain clearance and re-approach.",
+      "action": "backward",
+      "confidence": 0.4
+    },
+    "action": "backward"
+  }
+]

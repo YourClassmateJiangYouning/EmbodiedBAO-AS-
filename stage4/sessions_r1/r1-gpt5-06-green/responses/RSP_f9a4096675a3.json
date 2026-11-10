@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:23:05+08:00",
+    "latency_ms": 9130,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A large bright green rectangular panel is directly ahead at the base of the far wall, occupying most of the doorway opening. The red carpeted path ends just in front of the panel, and the surrounding wall surfaces are dark. The panel appears very close, indicating the robot is at or against the wall/panel plane.\\\",\\\"reasoning\\\":\\\"Multiple recent forward steps were blocked by the wall_panel, meaning I’m already at contact distance with the goal plane. Stepping forward again is futile and wastes steps; a small backward move may create the spacing needed to register a successful final approach on the next step.\\\",\\\"action\\\":\\\"backward\\\",\\\"confidence\\\":0.68}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205382,\"id\":\"chatcmpl-EiD4QWhtH5tvdOep9cyyh0ZJarvQ4\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":144,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":495,\"engine_ttlt_ms\":1775,\"pre_inference_ms\":326,\"service_tbt_ms\":9,\"service_ttft_ms\":1079,\"service_ttlt_ms\":2320,\"user_visible_ttft_ms\":753},\"prompt_tokens\":2690,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2834}}\n",
+    "content": "{\"scene_description\":\"A large bright green rectangular panel is directly ahead at the base of the far wall, occupying most of the doorway opening. The red carpeted path ends just in front of the panel, and the surrounding wall surfaces are dark. The panel appears very close, indicating the robot is at or against the wall/panel plane.\",\"reasoning\":\"Multiple recent forward steps were blocked by the wall_panel, meaning I’m already at contact distance with the goal plane. Stepping forward again is futile and wastes steps; a small backward move may create the spacing needed to register a successful final approach on the next step.\",\"action\":\"backward\",\"confidence\":0.68}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A large bright green rectangular panel is directly ahead at the base of the far wall, occupying most of the doorway opening. The red carpeted path ends just in front of the panel, and the surrounding wall surfaces are dark. The panel appears very close, indicating the robot is at or against the wall/panel plane.",
+      "reasoning": "Multiple recent forward steps were blocked by the wall_panel, meaning I’m already at contact distance with the goal plane. Stepping forward again is futile and wastes steps; a small backward move may create the spacing needed to register a successful final approach on the next step.",
+      "action": "backward",
+      "confidence": 0.68
+    },
+    "action": "backward"
+  }
+]

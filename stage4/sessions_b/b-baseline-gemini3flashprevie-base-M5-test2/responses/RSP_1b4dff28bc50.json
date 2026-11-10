@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:50:12+08:00",
+    "latency_ms": 13883,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090850034934472028268d9d62DB5w5hV\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794214212,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper and two large wheels on the sides. The torso rotation is currently 0.0 degrees, meaning the widest part of the robot (the bumper) is facing directly forward.\\\", \\\"reasoning\\\": \\\"Looking down reveals that my body is very wide at a 0-degree rotation due to the white bumper. To fit through the narrow opening ahead, I need to minimize my profile width by rotating my torso. I will start turning to the right to align my body more vertically relative to the walking direction.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2170,\"completion_tokens\":148,\"total_tokens\":2318,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2170,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":148,\"totalTokenCount\":2318,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1081}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":148}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1081,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":148,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper and two large wheels on the sides. The torso rotation is currently 0.0 degrees, meaning the widest part of the robot (the bumper) is facing directly forward.\", \"reasoning\": \"Looking down reveals that my body is very wide at a 0-degree rotation due to the white bumper. To fit through the narrow opening ahead, I need to minimize my profile width by rotating my torso. I will start turning to the right to align my body more vertically relative to the walking direction.\", \"action\": \"turn_right\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper and two large wheels on the sides. The torso rotation is currently 0.0 degrees, meaning the widest part of the robot (the bumper) is facing directly forward.",
+      "reasoning": "Looking down reveals that my body is very wide at a 0-degree rotation due to the white bumper. To fit through the narrow opening ahead, I need to minimize my profile width by rotating my torso. I will start turning to the right to align my body more vertically relative to the walking direction.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

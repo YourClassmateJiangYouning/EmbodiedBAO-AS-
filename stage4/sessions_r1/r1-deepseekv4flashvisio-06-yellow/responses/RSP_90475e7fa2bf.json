@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:16:43+08:00",
+    "latency_ms": 2403,
+    "payload_bytes": 322442,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"8b0b5ed9-11c5-4a05-9147-a088b78693ca\",\"object\":\"chat.completion\",\"created\":1794208602,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading toward a dark doorway in the far wall, with a yellow arrow visible just inside the doorway. The patterned wall is on the left, and the doorway opening appears narrow relative to the path.\\\", \\\"reasoning\\\": \\\"The yellow arrow is straight ahead through the doorway and my walking direction is fixed toward it. My torso is at 0 degrees, so my width is aligned with the opening, and I have already checked my width and advanced several times. Continuing forward moves me closer to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1888,\"completion_tokens\":127,\"total_tokens\":2015,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1120},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading toward a dark doorway in the far wall, with a yellow arrow visible just inside the doorway. The patterned wall is on the left, and the doorway opening appears narrow relative to the path.\", \"reasoning\": \"The yellow arrow is straight ahead through the doorway and my walking direction is fixed toward it. My torso is at 0 degrees, so my width is aligned with the opening, and I have already checked my width and advanced several times. Continuing forward moves me closer to the goal.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading toward a dark doorway in the far wall, with a yellow arrow visible just inside the doorway. The patterned wall is on the left, and the doorway opening appears narrow relative to the path.",
+      "reasoning": "The yellow arrow is straight ahead through the doorway and my walking direction is fixed toward it. My torso is at 0 degrees, so my width is aligned with the opening, and I have already checked my width and advanced several times. Continuing forward moves me closer to the goal.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

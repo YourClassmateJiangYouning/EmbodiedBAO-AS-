@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:21:17+08:00",
+    "latency_ms": 2892,
+    "payload_bytes": 427921,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"abb9005d-09c5-4802-a75b-68ae8f85820a\",\"object\":\"chat.completion\",\"created\":1794212476,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A long red carpet walkway stretches ahead toward a far wall with a red circle target. The path appears clear and unobstructed, with patterned walls on either side and a wooden chair to the right.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the clear red carpet. No obstacles block the path, so moving forward repeatedly will bring me closer to the target. I'll start by walking forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1541,\"completion_tokens\":102,\"total_tokens\":1643,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":901},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A long red carpet walkway stretches ahead toward a far wall with a red circle target. The path appears clear and unobstructed, with patterned walls on either side and a wooden chair to the right.\", \"reasoning\": \"The red circle is directly ahead along the clear red carpet. No obstacles block the path, so moving forward repeatedly will bring me closer to the target. I'll start by walking forward.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpet walkway stretches ahead toward a far wall with a red circle target. The path appears clear and unobstructed, with patterned walls on either side and a wooden chair to the right.",
+      "reasoning": "The red circle is directly ahead along the clear red carpet. No obstacles block the path, so moving forward repeatedly will bring me closer to the target. I'll start by walking forward.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

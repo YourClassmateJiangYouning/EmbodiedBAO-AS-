@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:39:50+08:00",
+    "latency_ms": 8561,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_ghvignhrewsy42lktpmkorl24yqpyc7muugldte2mfzjsgljd54a\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794199190,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The green rectangle target is now clearly visible on the far wall, centered in the view. It appears to be a bright green rectangular display or marker on a dark wall. The maroon obstacle that was blocking the path is no longer visible in the direct line of sight, suggesting I have successfully navigated around it. The path ahead appears clear toward the target.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=7.250 with my torso rotated 15 degrees left. The green rectangle target is now clearly visible and centered on the far wall ahead. The maroon obstacle is no longer blocking my direct forward path. I should continue moving forward toward the target. My torso rotation of 15 degrees left has allowed me to navigate around the obstacle, and now I have a clear path to the green rectangle.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.92\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3049,\"completion_tokens\":205,\"total_tokens\":3254,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3049,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":205,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3049,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The green rectangle target is now clearly visible on the far wall, centered in the view. It appears to be a bright green rectangular display or marker on a dark wall. The maroon obstacle that was blocking the path is no longer visible in the direct line of sight, suggesting I have successfully navigated around it. The path ahead appears clear toward the target.\",\n  \"reasoning\": \"I am at position x=7.250 with my torso rotated 15 degrees left. The green rectangle target is now clearly visible and centered on the far wall ahead. The maroon obstacle is no longer blocking my direct forward path. I should continue moving forward toward the target. My torso rotation of 15 degrees left has allowed me to navigate around the obstacle, and now I have a clear path to the green rectangle.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.92\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green rectangle target is now clearly visible on the far wall, centered in the view. It appears to be a bright green rectangular display or marker on a dark wall. The maroon obstacle that was blocking the path is no longer visible in the direct line of sight, suggesting I have successfully navigated around it. The path ahead appears clear toward the target.",
+      "reasoning": "I am at position x=7.250 with my torso rotated 15 degrees left. The green rectangle target is now clearly visible and centered on the far wall ahead. The maroon obstacle is no longer blocking my direct forward path. I should continue moving forward toward the target. My torso rotation of 15 degrees left has allowed me to navigate around the obstacle, and now I have a clear path to the green rectangle.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:13:41+08:00",
+    "latency_ms": 6841,
+    "payload_bytes": 177406,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_wipabl5ydmc2ogjaf47fu6rqgxnxeea6n5ptvl4zsh3frmbdrfwq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794204822,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the blue triangle target clearly on the far wall, centered in my view. It's a bright blue illuminated triangle displayed on a dark wall. The walkway ahead appears clear and unobstructed. I'm at position x=7.250, having moved forward 9 times already. The triangle is directly ahead along my walking direction.\\\",\\n  \\\"reasoning\\\": \\\"I have been moving forward consistently and am now at x=7.250. The blue triangle is clearly visible and directly ahead on the far wall. The path appears clear with no obstacles blocking my forward movement. I should continue moving forward to reach the triangle. I have 21 steps remaining (30 - 9 = 21), which should be sufficient to reach the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.95\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2987,\"completion_tokens\":194,\"total_tokens\":3181,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2987,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":194,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2987,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the blue triangle target clearly on the far wall, centered in my view. It's a bright blue illuminated triangle displayed on a dark wall. The walkway ahead appears clear and unobstructed. I'm at position x=7.250, having moved forward 9 times already. The triangle is directly ahead along my walking direction.\",\n  \"reasoning\": \"I have been moving forward consistently and am now at x=7.250. The blue triangle is clearly visible and directly ahead on the far wall. The path appears clear with no obstacles blocking my forward movement. I should continue moving forward to reach the triangle. I have 21 steps remaining (30 - 9 = 21), which should be sufficient to reach the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.95\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the blue triangle target clearly on the far wall, centered in my view. It's a bright blue illuminated triangle displayed on a dark wall. The walkway ahead appears clear and unobstructed. I'm at position x=7.250, having moved forward 9 times already. The triangle is directly ahead along my walking direction.",
+      "reasoning": "I have been moving forward consistently and am now at x=7.250. The blue triangle is clearly visible and directly ahead on the far wall. The path appears clear with no obstacles blocking my forward movement. I should continue moving forward to reach the triangle. I have 21 steps remaining (30 - 9 = 21), which should be sufficient to reach the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:35:18+08:00",
+    "latency_ms": 9261,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": 99,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"370da3ba-8b44-4aa8-885e-5567fcfcf43e_09ef982f86614b88aef86d95805d1028\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead along the walking direction: a bright green rectangle is centered on the far wall panel, surrounded by darkness. The red carpet is visible at the bottom left, and the green target is close ahead but forward motion has been repeatedly blocked by the wall_panel at x=7.250. The current torso rotation is 90 degrees, presenting the narrowest projected width (body depth) to the opening.\\\", \\\"reasoning\\\": \\\"Forward has been blocked at torso rotations 0°, 30°, and 45°. My body is wide but shallow, so the projected width through the opening is W·cos(θ)+D·sin(θ), minimized at θ=90° where it equals the body depth D. I've now reached 90° exactly, which is the best possible orientation to fit through the narrow opening. I should attempt forward again in this minimal-profile orientation.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.65}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We're at torso 90 degrees now, and forward has been blocked at 0, 30, 45 degrees. We just turned to 90 degrees (state says 90.0). Now try forward - at 90 degrees the projected width is minimized for a wide-shallow body (equals depth D). This is the optimal orientation. Let's try forward.\\n\\nScene: green rectangle visible ahead on the wall, dark room, red carpet below.\"}}],\"created\":1794198918,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":314,\"prompt_tokens\":3423,\"total_tokens\":3737,\"completion_tokens_details\":{\"reasoning_tokens\":99},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead along the walking direction: a bright green rectangle is centered on the far wall panel, surrounded by darkness. The red carpet is visible at the bottom left, and the green target is close ahead but forward motion has been repeatedly blocked by the wall_panel at x=7.250. The current torso rotation is 90 degrees, presenting the narrowest projected width (body depth) to the opening.\", \"reasoning\": \"Forward has been blocked at torso rotations 0°, 30°, and 45°. My body is wide but shallow, so the projected width through the opening is W·cos(θ)+D·sin(θ), minimized at θ=90° where it equals the body depth D. I've now reached 90° exactly, which is the best possible orientation to fit through the narrow opening. I should attempt forward again in this minimal-profile orientation.\", \"action\": \"forward\", \"confidence\": 0.65}",
+    "reasoning_content": "We're at torso 90 degrees now, and forward has been blocked at 0, 30, 45 degrees. We just turned to 90 degrees (state says 90.0). Now try forward - at 90 degrees the projected width is minimized for a wide-shallow body (equals depth D). This is the optimal orientation. Let's try forward.\n\nScene: green rectangle visible ahead on the wall, dark room, red carpet below.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead along the walking direction: a bright green rectangle is centered on the far wall panel, surrounded by darkness. The red carpet is visible at the bottom left, and the green target is close ahead but forward motion has been repeatedly blocked by the wall_panel at x=7.250. The current torso rotation is 90 degrees, presenting the narrowest projected width (body depth) to the opening.",
+      "reasoning": "Forward has been blocked at torso rotations 0°, 30°, and 45°. My body is wide but shallow, so the projected width through the opening is W·cos(θ)+D·sin(θ), minimized at θ=90° where it equals the body depth D. I've now reached 90° exactly, which is the best possible orientation to fit through the narrow opening. I should attempt forward again in this minimal-profile orientation.",
+      "action": "forward",
+      "confidence": 0.65
+    },
+    "action": "forward"
+  }
+]

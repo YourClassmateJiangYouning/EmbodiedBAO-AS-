@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:37:11+08:00",
+    "latency_ms": 2898,
+    "payload_bytes": 170937,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"3b24432f-e12c-42dc-8cfa-a0c4eca665c8\",\"object\":\"chat.completion\",\"created\":1794217030,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is visible on a small platform directly ahead, close to the camera, with the red carpet leading up to it and a dark wall behind.\\\", \\\"reasoning\\\": \\\"The star is directly ahead along my fixed walking direction and appears very close now after 8 forward steps. Continuing forward should bring me to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2014,\"completion_tokens\":88,\"total_tokens\":2102,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1502},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is visible on a small platform directly ahead, close to the camera, with the red carpet leading up to it and a dark wall behind.\", \"reasoning\": \"The star is directly ahead along my fixed walking direction and appears very close now after 8 forward steps. Continuing forward should bring me to the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is visible on a small platform directly ahead, close to the camera, with the red carpet leading up to it and a dark wall behind.",
+      "reasoning": "The star is directly ahead along my fixed walking direction and appears very close now after 8 forward steps. Continuing forward should bring me to the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

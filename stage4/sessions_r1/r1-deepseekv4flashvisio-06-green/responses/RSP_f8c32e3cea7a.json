@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:14:47+08:00",
+    "latency_ms": 3898,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"2963aedc-4a32-40a2-b33d-be12eb9c1a4b\",\"object\":\"chat.completion\",\"created\":1794208485,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle fills the center of the view, very close ahead, framed by a narrow dark opening with wall panels on both sides and a dark overhang above. The floor in front is dark and shadowed.\\\", \\\"reasoning\\\": \\\"Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The target is extremely close and centered, suggesting the robot is right at the opening but the wall panel above the green rectangle is blocking forward motion. Since turning changes body width but not walking direction, and the blockage persists across orientations, the issue may be the overhang height rather than width. I have not yet tried turning to a negative (left) torso rotation, which could present a different profile. I will turn left once more to reach -15 degrees and then attempt forward.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.3}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3133,\"completion_tokens\":190,\"total_tokens\":3323,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2493},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green rectangle fills the center of the view, very close ahead, framed by a narrow dark opening with wall panels on both sides and a dark overhang above. The floor in front is dark and shadowed.\", \"reasoning\": \"Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The target is extremely close and centered, suggesting the robot is right at the opening but the wall panel above the green rectangle is blocking forward motion. Since turning changes body width but not walking direction, and the blockage persists across orientations, the issue may be the overhang height rather than width. I have not yet tried turning to a negative (left) torso rotation, which could present a different profile. I will turn left once more to reach -15 degrees and then attempt forward.\", \"action\": \"turn_left\", \"confidence\": 0.3}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green rectangle fills the center of the view, very close ahead, framed by a narrow dark opening with wall panels on both sides and a dark overhang above. The floor in front is dark and shadowed.",
+      "reasoning": "Forward has been blocked repeatedly at torso rotations of 0, 15, and 30 degrees right, even after backing up. The target is extremely close and centered, suggesting the robot is right at the opening but the wall panel above the green rectangle is blocking forward motion. Since turning changes body width but not walking direction, and the blockage persists across orientations, the issue may be the overhang height rather than width. I have not yet tried turning to a negative (left) torso rotation, which could present a different profile. I will turn left once more to reach -15 degrees and then attempt forward.",
+      "action": "turn_left",
+      "confidence": 0.3
+    },
+    "action": "turn_left"
+  }
+]

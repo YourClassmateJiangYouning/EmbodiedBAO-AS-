@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:31:34+08:00",
+    "latency_ms": 12082,
+    "payload_bytes": 388989,
+    "finish_reason": "stop",
+    "reasoning_tokens": 76,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"515091e3-075f-4648-99f8-14620e724630_75c0d2c38118400dbd003ab561b218c3\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted path stretching forward toward a far wall with decorative panels. A red circle target is visible at the end of the carpet near a doorway with a black bin beside it. The path ahead appears clear and wide.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the carpeted path. The path is clear with no visible obstacles, so the best action is to move straight forward toward the target. I have 30 steps, and the circle appears to be several meters away.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red circle is visible ahead on a red carpeted path. I need to move forward toward it. The path seems clear. Let me consider whether turning is needed — the doorway/opening ahead might be narrow, but I should just go forward first to get closer.\\n\\nThe red circle appears at the far wall at the end of the carpet. I'll move forward repeatedly.\"}}],\"created\":1794137494,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":200,\"prompt_tokens\":1907,\"total_tokens\":2107,\"completion_tokens_details\":{\"reasoning_tokens\":76},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted path stretching forward toward a far wall with decorative panels. A red circle target is visible at the end of the carpet near a doorway with a black bin beside it. The path ahead appears clear and wide.\", \"reasoning\": \"The red circle is directly ahead along the carpeted path. The path is clear with no visible obstacles, so the best action is to move straight forward toward the target. I have 30 steps, and the circle appears to be several meters away.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The red circle is visible ahead on a red carpeted path. I need to move forward toward it. The path seems clear. Let me consider whether turning is needed — the doorway/opening ahead might be narrow, but I should just go forward first to get closer.\n\nThe red circle appears at the far wall at the end of the carpet. I'll move forward repeatedly.",
+    "parsed": {
+      "scene_description": "A red carpeted path stretching forward toward a far wall with decorative panels. A red circle target is visible at the end of the carpet near a doorway with a black bin beside it. The path ahead appears clear and wide.",
+      "reasoning": "The red circle is directly ahead along the carpeted path. The path is clear with no visible obstacles, so the best action is to move straight forward toward the target. I have 30 steps, and the circle appears to be several meters away.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

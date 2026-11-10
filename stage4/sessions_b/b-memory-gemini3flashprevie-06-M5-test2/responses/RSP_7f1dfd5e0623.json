@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:01:37+08:00",
+    "latency_ms": 11568,
+    "payload_bytes": 199625,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090901296998665108268d9d6SSgpKOQT\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794214897,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading towards a purple four-pointed star on a black background. The star is positioned on the far wall. To the left and right are walls forming a narrow passage that I have just passed through. The star is directly ahead.\\\",\\n  \\\"reasoning\\\": \\\"I have successfully navigated through the narrow opening with my torso rotated to 90 degrees. I am now at position x=5.75. The purple star is straight ahead and I need to continue moving forward to reach it.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3424,\"completion_tokens\":136,\"total_tokens\":3560,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3424,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":136,\"totalTokenCount\":3560,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2335},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":136}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2335,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":136,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a red carpeted floor leading towards a purple four-pointed star on a black background. The star is positioned on the far wall. To the left and right are walls forming a narrow passage that I have just passed through. The star is directly ahead.\",\n  \"reasoning\": \"I have successfully navigated through the narrow opening with my torso rotated to 90 degrees. I am now at position x=5.75. The purple star is straight ahead and I need to continue moving forward to reach it.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading towards a purple four-pointed star on a black background. The star is positioned on the far wall. To the left and right are walls forming a narrow passage that I have just passed through. The star is directly ahead.",
+      "reasoning": "I have successfully navigated through the narrow opening with my torso rotated to 90 degrees. I am now at position x=5.75. The purple star is straight ahead and I need to continue moving forward to reach it.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

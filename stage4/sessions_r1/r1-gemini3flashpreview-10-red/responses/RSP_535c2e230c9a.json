@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:30:51+08:00",
+    "latency_ms": 5712,
+    "payload_bytes": 239535,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081030462600562068268d9d6wmnY7EGM\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133851,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading towards a red circle on a black rectangular sign. The sign is positioned on a light-colored floor beyond the carpet. To the left and right are vertical walls with geometric patterns. The red circle is directly ahead.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=6.5 and my torso is rotated to 90 degrees, which is my narrowest profile. I have successfully navigated through the narrowest part of the opening and the red circle is now very close. I will continue moving forward to reach the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3043,\"completion_tokens\":145,\"total_tokens\":3188,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3043,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":145,\"totalTokenCount\":3188,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1954},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":145}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1954,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":145,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a red carpeted floor leading towards a red circle on a black rectangular sign. The sign is positioned on a light-colored floor beyond the carpet. To the left and right are vertical walls with geometric patterns. The red circle is directly ahead.\",\n  \"reasoning\": \"I am at position x=6.5 and my torso is rotated to 90 degrees, which is my narrowest profile. I have successfully navigated through the narrowest part of the opening and the red circle is now very close. I will continue moving forward to reach the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading towards a red circle on a black rectangular sign. The sign is positioned on a light-colored floor beyond the carpet. To the left and right are vertical walls with geometric patterns. The red circle is directly ahead.",
+      "reasoning": "I am at position x=6.5 and my torso is rotated to 90 degrees, which is my narrowest profile. I have successfully navigated through the narrowest part of the opening and the red circle is now very close. I will continue moving forward to reach the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

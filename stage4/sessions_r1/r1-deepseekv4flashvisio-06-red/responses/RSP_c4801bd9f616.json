@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:15:56+08:00",
+    "latency_ms": 2661,
+    "payload_bytes": 242096,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"70b853af-b551-4cb0-9df7-47913f6addba\",\"object\":\"chat.completion\",\"created\":1794208554,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle glows on a dark panel at the end of a narrow opening between two patterned wall panels; the carpeted floor leads up to it, and the gap appears narrow relative to the robot's body.\\\", \\\"reasoning\\\": \\\"Forward was blocked twice by the wall panel, so the opening is too narrow for the current torso orientation. Turning changes only body width orientation, not walking direction or view. I have turned left three times (45 degrees total); continuing to rotate toward 90 degrees presents the thinner side of the body to the gap, which should let forward succeed.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2514,\"completion_tokens\":137,\"total_tokens\":2651,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1874},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle glows on a dark panel at the end of a narrow opening between two patterned wall panels; the carpeted floor leads up to it, and the gap appears narrow relative to the robot's body.\", \"reasoning\": \"Forward was blocked twice by the wall panel, so the opening is too narrow for the current torso orientation. Turning changes only body width orientation, not walking direction or view. I have turned left three times (45 degrees total); continuing to rotate toward 90 degrees presents the thinner side of the body to the gap, which should let forward succeed.\", \"action\": \"turn_left\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle glows on a dark panel at the end of a narrow opening between two patterned wall panels; the carpeted floor leads up to it, and the gap appears narrow relative to the robot's body.",
+      "reasoning": "Forward was blocked twice by the wall panel, so the opening is too narrow for the current torso orientation. Turning changes only body width orientation, not walking direction or view. I have turned left three times (45 degrees total); continuing to rotate toward 90 degrees presents the thinner side of the body to the gap, which should let forward succeed.",
+      "action": "turn_left",
+      "confidence": 0.6
+    },
+    "action": "turn_left"
+  }
+]

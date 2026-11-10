@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:29:09+08:00",
+    "latency_ms": 6381,
+    "payload_bytes": 267491,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090829041870891648268d9d6woe66kdn\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212949,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking straight ahead down a red carpeted walkway. In the distance, a red circle is mounted on a black board. Behind the red circle, there is a yellow chair and a black draped object. The narrow walls that were previously on either side are now behind the robot's current position.\\\", \\\"reasoning\\\": \\\"I am at x=5.75 and have successfully passed through the narrow opening. My torso is still rotated at 90 degrees. The red circle is directly ahead and there are no more obstacles in my path. I will continue moving forward to reach the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3074,\"completion_tokens\":142,\"total_tokens\":3216,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3074,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":142,\"totalTokenCount\":3216,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1985}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":142}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1985,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":142,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking straight ahead down a red carpeted walkway. In the distance, a red circle is mounted on a black board. Behind the red circle, there is a yellow chair and a black draped object. The narrow walls that were previously on either side are now behind the robot's current position.\", \"reasoning\": \"I am at x=5.75 and have successfully passed through the narrow opening. My torso is still rotated at 90 degrees. The red circle is directly ahead and there are no more obstacles in my path. I will continue moving forward to reach the target.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight ahead down a red carpeted walkway. In the distance, a red circle is mounted on a black board. Behind the red circle, there is a yellow chair and a black draped object. The narrow walls that were previously on either side are now behind the robot's current position.",
+      "reasoning": "I am at x=5.75 and have successfully passed through the narrow opening. My torso is still rotated at 90 degrees. The red circle is directly ahead and there are no more obstacles in my path. I will continue moving forward to reach the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

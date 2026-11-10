@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:21:35+08:00",
+    "latency_ms": 8113,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090821292871785678268d9d6nHK7BhXG\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212496,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking down at the robot's own body on a red carpet. The robot has a wide, rectangular white foam bumper at the front, extending significantly to the left and right of its wheels. The torso rotation is currently 0.0 degrees, meaning the full width of this bumper is facing the direction of travel.\\\", \\\"reasoning\\\": \\\"The 'look_down' view reveals that my body is very wide due to the white foam bumper. To pass through a narrow opening, I will need to rotate my torso to present a narrower profile (the thickness of the bumper rather than its width). I will start by turning to the right to begin this reorientation before I get too close to the opening.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.9}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2138,\"completion_tokens\":167,\"total_tokens\":2305,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2138,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":167,\"totalTokenCount\":2305,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1049},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":167}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1049,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":167,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking down at the robot's own body on a red carpet. The robot has a wide, rectangular white foam bumper at the front, extending significantly to the left and right of its wheels. The torso rotation is currently 0.0 degrees, meaning the full width of this bumper is facing the direction of travel.\", \"reasoning\": \"The 'look_down' view reveals that my body is very wide due to the white foam bumper. To pass through a narrow opening, I will need to rotate my torso to present a narrower profile (the thickness of the bumper rather than its width). I will start by turning to the right to begin this reorientation before I get too close to the opening.\", \"action\": \"turn_right\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body on a red carpet. The robot has a wide, rectangular white foam bumper at the front, extending significantly to the left and right of its wheels. The torso rotation is currently 0.0 degrees, meaning the full width of this bumper is facing the direction of travel.",
+      "reasoning": "The 'look_down' view reveals that my body is very wide due to the white foam bumper. To pass through a narrow opening, I will need to rotate my torso to present a narrower profile (the thickness of the bumper rather than its width). I will start by turning to the right to begin this reorientation before I get too close to the opening.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

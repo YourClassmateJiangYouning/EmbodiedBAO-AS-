@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:48:28+08:00",
+    "latency_ms": 6011,
+    "payload_bytes": 287352,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081048236985960188268d9d6TUkxQUAR\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134908,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight down a red carpeted walkway towards a narrow opening between two decorated walls. A blue triangle is visible on the far wall through the opening. The robot is very close to the opening.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=4.25 and have rotated my torso to 75 degrees to minimize my width. I am now right in front of the narrow opening. Since I have already aligned my body to be as thin as possible relative to the path, I will move forward to pass through the gap and reach the blue triangle.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3100,\"completion_tokens\":145,\"total_tokens\":3245,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3100,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":145,\"totalTokenCount\":3245,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2011}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":145}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2011,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":145,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight down a red carpeted walkway towards a narrow opening between two decorated walls. A blue triangle is visible on the far wall through the opening. The robot is very close to the opening.\",\n  \"reasoning\": \"I am at x=4.25 and have rotated my torso to 75 degrees to minimize my width. I am now right in front of the narrow opening. Since I have already aligned my body to be as thin as possible relative to the path, I will move forward to pass through the gap and reach the blue triangle.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red carpeted walkway towards a narrow opening between two decorated walls. A blue triangle is visible on the far wall through the opening. The robot is very close to the opening.",
+      "reasoning": "I am at x=4.25 and have rotated my torso to 75 degrees to minimize my width. I am now right in front of the narrow opening. Since I have already aligned my body to be as thin as possible relative to the path, I will move forward to pass through the gap and reach the blue triangle.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

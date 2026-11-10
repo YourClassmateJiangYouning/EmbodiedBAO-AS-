@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:27:44+08:00",
+    "latency_ms": 6304,
+    "payload_bytes": 296801,
+    "finish_reason": "stop",
+    "reasoning_tokens": 16,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"8b8975d7-a836-41a3-9e61-6921c083dbad_caae5b74ef0d475a9d20735e91e44055\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle dominates the view directly ahead on the floor, very close, with a brown leather bench and dark draped cloth in the background. The rectangle fills the lower center of the frame, indicating I am nearly on top of it.\\\", \\\"reasoning\\\": \\\"I am at x=8.0 and the green rectangle is directly ahead and extremely close, filling most of the lower view. All forward steps this episode executed without issue. One more forward step should bring me to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is right in front. One more forward should reach it.\"}}],\"created\":1794212863,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":137,\"prompt_tokens\":3460,\"total_tokens\":3597,\"completion_tokens_details\":{\"reasoning_tokens\":16},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The green rectangle dominates the view directly ahead on the floor, very close, with a brown leather bench and dark draped cloth in the background. The rectangle fills the lower center of the frame, indicating I am nearly on top of it.\", \"reasoning\": \"I am at x=8.0 and the green rectangle is directly ahead and extremely close, filling most of the lower view. All forward steps this episode executed without issue. One more forward step should bring me to the goal.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "The green rectangle is right in front. One more forward should reach it.",
+    "parsed": {
+      "scene_description": "The green rectangle dominates the view directly ahead on the floor, very close, with a brown leather bench and dark draped cloth in the background. The rectangle fills the lower center of the frame, indicating I am nearly on top of it.",
+      "reasoning": "I am at x=8.0 and the green rectangle is directly ahead and extremely close, filling most of the lower view. All forward steps this episode executed without issue. One more forward step should bring me to the goal.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:00:58+08:00",
+    "latency_ms": 2796,
+    "payload_bytes": 241628,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"19a4d89a-73d3-41b2-9a30-55e969a9d3ce\",\"object\":\"chat.completion\",\"created\":1794207656,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red circle on a black panel mounted on a low white ledge directly ahead, with red carpet in the foreground and a narrow opening framed by white walls on either side.\\\", \\\"reasoning\\\": \\\"The red circle goal is directly ahead along the fixed walking direction and appears close. My torso is rotated 30 degrees right, narrowing my presented width, and the path through the opening looks clear. Continuing forward should bring me to the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2310,\"completion_tokens\":109,\"total_tokens\":2419,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1670},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red circle on a black panel mounted on a low white ledge directly ahead, with red carpet in the foreground and a narrow opening framed by white walls on either side.\", \"reasoning\": \"The red circle goal is directly ahead along the fixed walking direction and appears close. My torso is rotated 30 degrees right, narrowing my presented width, and the path through the opening looks clear. Continuing forward should bring me to the goal.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red circle on a black panel mounted on a low white ledge directly ahead, with red carpet in the foreground and a narrow opening framed by white walls on either side.",
+      "reasoning": "The red circle goal is directly ahead along the fixed walking direction and appears close. My torso is rotated 30 degrees right, narrowing my presented width, and the path through the opening looks clear. Continuing forward should bring me to the goal.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

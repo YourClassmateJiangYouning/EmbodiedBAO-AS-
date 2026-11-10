@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:26:17+08:00",
+    "latency_ms": 6783,
+    "payload_bytes": 164594,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_7ybxgtzscyqlcehju2gcd3iv2xxluntv6ztjtmgugumr7r6mkakq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198378,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The red circle target is clearly visible on the far wall ahead, centered in the view. The walkway appears clear in the immediate forward direction. There is a wall panel visible on the left side of the image. The environment is dimly lit with purple/blue ambient lighting. The red circle is the goal target.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=6.500 after stepping backward at step 21. My torso is rotated 30 degrees to the right. I have been blocked by a wall_panel obstacle multiple times when trying to move forward directly at x=7.250. Step 22 successfully moved forward, so I am now at x=6.500. The red circle is clearly visible ahead on the far wall. Since forward movement was successful at step 22, I should continue moving forward toward the target. My walking direction is fixed toward the red circle regardless of torso rotation.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.85\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":4071,\"completion_tokens\":227,\"total_tokens\":4298,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":4071,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":227,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":4071,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The red circle target is clearly visible on the far wall ahead, centered in the view. The walkway appears clear in the immediate forward direction. There is a wall panel visible on the left side of the image. The environment is dimly lit with purple/blue ambient lighting. The red circle is the goal target.\",\n  \"reasoning\": \"I am at x=6.500 after stepping backward at step 21. My torso is rotated 30 degrees to the right. I have been blocked by a wall_panel obstacle multiple times when trying to move forward directly at x=7.250. Step 22 successfully moved forward, so I am now at x=6.500. The red circle is clearly visible ahead on the far wall. Since forward movement was successful at step 22, I should continue moving forward toward the target. My walking direction is fixed toward the red circle regardless of torso rotation.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.85\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle target is clearly visible on the far wall ahead, centered in the view. The walkway appears clear in the immediate forward direction. There is a wall panel visible on the left side of the image. The environment is dimly lit with purple/blue ambient lighting. The red circle is the goal target.",
+      "reasoning": "I am at x=6.500 after stepping backward at step 21. My torso is rotated 30 degrees to the right. I have been blocked by a wall_panel obstacle multiple times when trying to move forward directly at x=7.250. Step 22 successfully moved forward, so I am now at x=6.500. The red circle is clearly visible ahead on the far wall. Since forward movement was successful at step 22, I should continue moving forward toward the target. My walking direction is fixed toward the red circle regardless of torso rotation.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

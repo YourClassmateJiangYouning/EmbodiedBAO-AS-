@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:25:39+08:00",
+    "latency_ms": 9065,
+    "payload_bytes": 280091,
+    "finish_reason": "stop",
+    "reasoning_tokens": 43,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"8c0bcdb2-0a5d-4973-bd18-a30a5accc3a5_6904f5d20f304f9e847fba86a0133504\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle panel is directly ahead and very close, standing on the floor just beyond a strip of white/carpet edge. Behind it are a dark draped object and a tan sofa/chair. The red carpet fills the foreground, with the green target centered and imminent.\\\", \\\"reasoning\\\": \\\"Nine forward steps have executed successfully and the green rectangle is now immediately ahead and large in the view. Torso rotation is 0 degrees. One more forward step should bring me to the target; if blocked by the wall panel, I can then decide whether to rotate my torso to a thin profile to pass through the opening below the green panel as in the previous successful traversal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Green rectangle is very close now. 9 steps taken, 21 remaining. Let me continue forward to reach it. The image shows the green panel close up. Probably one more forward should reach it.\"}}],\"created\":1794212739,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":200,\"prompt_tokens\":3733,\"total_tokens\":3933,\"completion_tokens_details\":{\"reasoning_tokens\":43},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The green rectangle panel is directly ahead and very close, standing on the floor just beyond a strip of white/carpet edge. Behind it are a dark draped object and a tan sofa/chair. The red carpet fills the foreground, with the green target centered and imminent.\", \"reasoning\": \"Nine forward steps have executed successfully and the green rectangle is now immediately ahead and large in the view. Torso rotation is 0 degrees. One more forward step should bring me to the target; if blocked by the wall panel, I can then decide whether to rotate my torso to a thin profile to pass through the opening below the green panel as in the previous successful traversal.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "Green rectangle is very close now. 9 steps taken, 21 remaining. Let me continue forward to reach it. The image shows the green panel close up. Probably one more forward should reach it.",
+    "parsed": {
+      "scene_description": "The green rectangle panel is directly ahead and very close, standing on the floor just beyond a strip of white/carpet edge. Behind it are a dark draped object and a tan sofa/chair. The red carpet fills the foreground, with the green target centered and imminent.",
+      "reasoning": "Nine forward steps have executed successfully and the green rectangle is now immediately ahead and large in the view. Torso rotation is 0 degrees. One more forward step should bring me to the target; if blocked by the wall panel, I can then decide whether to rotate my torso to a thin profile to pass through the opening below the green panel as in the previous successful traversal.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

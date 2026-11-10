@@ -1,0 +1,58 @@
+You are a small wheeled robot. Your task is to reach the yellow arrow on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the yellow arrow on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the yellow arrow on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the yellow arrow, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the yellow arrow, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the yellow arrow you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+A previous successful traversal by the same model in this same scene and marker:
+
+1. forward -> executed  |  The yellow arrow is clearly visible on the far wall ahead of me. My walking direction is fixed toward that arrow, and my torso is not rotated. The path forward on the red carpet is
+2. forward -> executed  |  The yellow arrow is clearly visible ahead on the far wall. The path forward on the red carpet is completely clear with no obstacles. My walking direction remains fixed toward the a
+3. forward -> executed  |  The yellow arrow is my target and remains clearly visible straight ahead. The red carpet path is completely clear with no obstacles blocking my way. My torso is at 0 degrees rotati
+4. forward -> executed  |  The yellow arrow remains clearly visible straight ahead on the far wall. My walking direction is fixed toward that arrow, my torso is at 0 degrees rotation, and the path forward is
+5. forward -> executed  |  The yellow arrow target is clearly visible straight ahead on the far wall. My walking direction is fixed toward that arrow, my torso is at 0 degrees rotation, and the red carpet pa
+6. forward -> executed  |  The yellow arrow is clearly visible straight ahead on the far wall. My walking direction is fixed toward that arrow, my torso is at 0 degrees rotation, and the red carpet path ahea
+7. forward -> executed  |  The yellow arrow is clearly visible straight ahead on the far wall, my target destination. My walking direction is fixed toward that arrow, my torso is at 0 degrees rotation, and t
+8. forward -> executed  |  The yellow arrow is my target and remains clearly visible straight ahead on the far wall. My walking direction is fixed toward that arrow, my torso is at 0 degrees rotation, and th
+9. forward -> executed  |  The yellow arrow is my target and remains clearly visible straight ahead on the far wall. My walking direction is fixed toward that arrow, my torso is at 0 degrees rotation, and th
+10. forward -> blocked by obstacle or room boundary (wall_panel)  |  The yellow arrow is my target and remains clearly visible straight ahead on the far wall. My walking direction is fixed toward that arrow, my torso is at 0 degrees rotation, and th
+11. turn_right -> executed  |  The yellow arrow is my target and is clearly visible ahead. Since I cannot move forward due to the obstacle, I need to navigate around it. The wall panel is on my left side. I shou
+12. forward -> blocked by obstacle or room boundary (wall_panel)  |  I was blocked by a wall_panel when trying to move forward on step 9, so I turned right on step 10. Now I need to continue navigating around this obstacle.
+13. turn_right -> executed  |  I was blocked by a wall_panel when trying to move forward on step 9. On step 10, I turned right to navigate around the obstacle. On step 11, I tried to move forward but was blocked
+14. turn_right -> executed  |  I have been blocked by a wall_panel obstacle when attempting to move forward. My walking direction remains fixed toward the yellow arrow on the far wall. Since I cannot move forwar
+15. turn_right -> executed  |  I have been blocked by a wall_panel obstacle when trying to move forward directly. My walking direction remains fixed toward the yellow arrow on the far wall. Since I've turned rig
+16. turn_right -> executed  |  I have been blocked by a wall_panel obstacle when trying to move forward directly. My walking direction remains fixed toward the yellow arrow on the far wall. Since I've turned rig
+17. turn_right -> executed  |  I have been blocked by a wall_panel obstacle when trying to move forward directly toward the yellow arrow. My walking direction remains fixed toward the arrow on the far wall. I ha
+18. turn_right -> executed  |  I have been blocked by a wall_panel obstacle when trying to move forward directly. My walking direction remains fixed toward the yellow arrow on the far wall. I need to continue ro
+19. turn_left -> executed  |  I've been turning right repeatedly (now at 105 degrees torso rotation), but this hasn't helped me progress forward. The yellow arrow is clearly visible ahead on the far wall. Since
+20. backward -> executed  |  My torso is currently rotated 90 degrees to the right (after turning right 6 times and left once). I have tried repeatedly turning right and then left, but this hasn't allowed me t
+21. turn_left -> executed  |  My torso is currently rotated 90 degrees to the right. I took a backward step on step 19 to try to back away from the obstacle. Now I need to reassess my approach. Since my walking
+22. turn_left -> executed  |  I've tried turning right repeatedly and then backward. My current torso rotation is 75 degrees right. The yellow arrow is clearly visible ahead on the far wall. Since I'm blocked g
+23. forward -> executed  |  My torso is currently rotated 60 degrees to the left (after turning left twice on steps 18 and 20, then left again on step 21). I've tried turning right repeatedly, going backward,
+24. forward -> blocked by obstacle or room boundary (wall_panel)  |  I have been blocked by a wall_panel obstacle when trying to move forward directly. On step 22, I moved forward and successfully progressed. The yellow arrow is clearly visible ahea
+25. turn_right -> executed  |  I have been blocked by wall_panel obstacles when trying to move forward directly. On step 22, I successfully moved forward, but step 23 was blocked again. My walking direction is f
+26. forward -> executed  |  I have been blocked by wall_panel obstacles when trying to move forward directly. The yellow arrow is clearly visible ahead on the far wall. My walking direction is fixed toward th
+27. forward -> executed  |  The yellow arrow is clearly visible on the far wall ahead. Looking at my action history, I've been navigating around wall_panel obstacles that blocked my direct forward path. The y
+
+Current state:
+- position (x, y, z): [2.750, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 0.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (3 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: forward -> executed | your reasoning: I'm at position x=0.500 with my torso at 0 degrees rotation, looking straight ahead at the yellow arrow on the far wall. The path forward on the red carpet is completely clear with no obstacles visible. According to the task, my walking di…
+- step 1: forward -> executed | your reasoning: I'm at position x=1.250, having made good progress. The yellow arrow is clearly visible straight ahead on the far wall. My torso is at 0 degrees rotation, meaning I'm aligned directly with my walking direction toward the target. The path f…
+- step 2: forward -> executed | your reasoning: I'm at position x=2.000 with torso rotation at 0 degrees, meaning I'm perfectly aligned with my walking direction toward the yellow arrow. The previous two steps both executed successfully with forward movement. The current view shows the…
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:20:14+08:00",
+    "latency_ms": 18971,
+    "payload_bytes": 370372,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090419567906172328268d9d6bSA2WLG7\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794198014,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just beyond the opening, pointing to the right. The robot is currently positioned on the red carpet, some distance away from the opening.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso by 15 degrees to the right to reduce my effective width. To fit through the narrow opening, I likely need to rotate further. I will continue rotating my torso to the right to reach a more profile-like orientation before moving closer to the gap.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2221,\"completion_tokens\":151,\"total_tokens\":2372,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2221,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":151,\"totalTokenCount\":2372,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1132}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":151}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1132,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":151,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a red carpeted walkway leading towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just beyond the opening, pointing to the right. The robot is currently positioned on the red carpet, some distance away from the opening.\",\n  \"reasoning\": \"I have already rotated my torso by 15 degrees to the right to reduce my effective width. To fit through the narrow opening, I likely need to rotate further. I will continue rotating my torso to the right to reach a more profile-like orientation before moving closer to the gap.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just beyond the opening, pointing to the right. The robot is currently positioned on the red carpet, some distance away from the opening.",
+      "reasoning": "I have already rotated my torso by 15 degrees to the right to reduce my effective width. To fit through the narrow opening, I likely need to rotate further. I will continue rotating my torso to the right to reach a more profile-like orientation before moving closer to the gap.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

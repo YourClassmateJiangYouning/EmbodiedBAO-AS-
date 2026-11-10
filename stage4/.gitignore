@@ -1,9 +1,13 @@
-# Stage 4 实验数据不进版本库
+# Stage 4 实验数据
 #
-# sessions/ 和 sessions_r1/ 里是真实实验产物：原图、prompt、模型响应、JSONL 记录。
-# 它们体积大、含实验现场的画面，而且每次运行都会变，所以只在本地保留，随实验目录一起归档。
+# sessions_r1/ 是主实验（A/S 1.2/1.0/0.8/0.6 × 5 模型 × 5 标志物，100 条），
+# sessions_b/ 是记忆实验（14 条基线 + 24 条记忆），两者都是纯文本记录（prompt、模型响应、
+# JSONL、manifest），共约 36 MB，进版本库，因为论文的每个真机数字都要能从它们复算出来。
+#
+# sessions/ 是更早的一次上传目录；sessions_r1_discarded/ 是被判定污染后废弃的 episode，
+# 保留在本地作为调查证据，不进版本库。
 sessions/
-sessions_r1/
+sessions_r1_discarded/
 __pycache__/
 *.pyc
 .pytest_cache/

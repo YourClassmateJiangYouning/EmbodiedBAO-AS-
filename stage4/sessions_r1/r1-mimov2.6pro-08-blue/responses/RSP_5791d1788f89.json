@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:21:53+08:00",
+    "latency_ms": 26116,
+    "payload_bytes": 287352,
+    "finish_reason": "stop",
+    "reasoning_tokens": 132,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n\n\n{\"id\":\"729406a7-575f-4e60-a113-f857762dd8d7_be56222d673d46f5b7ca679233f8f6f7\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted walkway extending toward the far wall with decorative colorful patterns. In the center of the far wall there is a narrow doorway opening through which the blue triangle is visible on the floor beyond. The opening appears close now, directly ahead on the path, with the decorative wall panels on either side.\\\", \\\"reasoning\\\": \\\"My torso is rotated 90 degrees so my thinner body dimension faces the narrow doorway, which is the orientation I set up. The blue triangle is clearly visible through the opening and appears close. I should continue walking forward toward it since the path is clear and my body is properly oriented to fit through the narrow opening.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The blue triangle is ahead through the opening. The torso is rotated 90 degrees, presenting the thinner dimension. The doorway appears close now. I should continue forward. Let me think about how close the doorway is - the triangle is visible through the opening, and it looks like the opening is maybe 1-2 meters ahead. Each forward is 75cm. I should continue forward, but I should be careful about the opening - once shoulders are inside the opening, I can't turn. Since I'm already at 90 degrees and the thinner dimension faces the opening, I just need to walk forward through.\\n\\nLet me continue forward.\"}}],\"created\":1794205311,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":290,\"prompt_tokens\":2725,\"total_tokens\":3015,\"completion_tokens_details\":{\"reasoning_tokens\":132},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted walkway extending toward the far wall with decorative colorful patterns. In the center of the far wall there is a narrow doorway opening through which the blue triangle is visible on the floor beyond. The opening appears close now, directly ahead on the path, with the decorative wall panels on either side.\", \"reasoning\": \"My torso is rotated 90 degrees so my thinner body dimension faces the narrow doorway, which is the orientation I set up. The blue triangle is clearly visible through the opening and appears close. I should continue walking forward toward it since the path is clear and my body is properly oriented to fit through the narrow opening.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The blue triangle is ahead through the opening. The torso is rotated 90 degrees, presenting the thinner dimension. The doorway appears close now. I should continue forward. Let me think about how close the doorway is - the triangle is visible through the opening, and it looks like the opening is maybe 1-2 meters ahead. Each forward is 75cm. I should continue forward, but I should be careful about the opening - once shoulders are inside the opening, I can't turn. Since I'm already at 90 degrees and the thinner dimension faces the opening, I just need to walk forward through.\n\nLet me continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway extending toward the far wall with decorative colorful patterns. In the center of the far wall there is a narrow doorway opening through which the blue triangle is visible on the floor beyond. The opening appears close now, directly ahead on the path, with the decorative wall panels on either side.",
+      "reasoning": "My torso is rotated 90 degrees so my thinner body dimension faces the narrow doorway, which is the orientation I set up. The blue triangle is clearly visible through the opening and appears close. I should continue walking forward toward it since the path is clear and my body is properly oriented to fit through the narrow opening.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

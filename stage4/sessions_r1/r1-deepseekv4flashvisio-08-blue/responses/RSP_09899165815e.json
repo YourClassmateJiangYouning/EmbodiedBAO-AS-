@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:10:36+08:00",
+    "latency_ms": 2424,
+    "payload_bytes": 212085,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"b6090b36-ded0-43d9-8edf-43bab73a8ffd\",\"object\":\"chat.completion\",\"created\":1794208235,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a dark doorway opening ahead with the blue triangle on the far wall beyond it, framed by patterned walls on both sides and a dark red carpet leading up to the threshold.\\\", \\\"reasoning\\\": \\\"The blue triangle is visible straight ahead through the doorway. The opening appears narrow, so I should check my body width before entering to avoid getting stuck. Looking down will reveal my width relative to the opening.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1970,\"completion_tokens\":103,\"total_tokens\":2073,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1202},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a dark doorway opening ahead with the blue triangle on the far wall beyond it, framed by patterned walls on both sides and a dark red carpet leading up to the threshold.\", \"reasoning\": \"The blue triangle is visible straight ahead through the doorway. The opening appears narrow, so I should check my body width before entering to avoid getting stuck. Looking down will reveal my width relative to the opening.\", \"action\": \"look_down\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a dark doorway opening ahead with the blue triangle on the far wall beyond it, framed by patterned walls on both sides and a dark red carpet leading up to the threshold.",
+      "reasoning": "The blue triangle is visible straight ahead through the doorway. The opening appears narrow, so I should check my body width before entering to avoid getting stuck. Looking down will reveal my width relative to the opening.",
+      "action": "look_down",
+      "confidence": 0.7
+    },
+    "action": "look_down"
+  }
+]

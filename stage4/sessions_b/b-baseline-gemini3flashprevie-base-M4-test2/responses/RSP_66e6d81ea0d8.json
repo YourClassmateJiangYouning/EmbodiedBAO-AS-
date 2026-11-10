@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:40:55+08:00",
+    "latency_ms": 5105,
+    "payload_bytes": 300072,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090840510233870208268d9d64jinBzz0\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213655,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The image shows a red carpeted walkway leading towards a blue triangle on a far wall. There are two white walls with purple and blue geometric patterns on either side of the path, forming a narrow opening ahead. The blue triangle is centered at the end of the path.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=3.5 and the path ahead is still clear. I need to reach the blue triangle. I will continue moving forward to approach the opening between the two patterned walls.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2233,\"completion_tokens\":128,\"total_tokens\":2361,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2233,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":128,\"totalTokenCount\":2361,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1144},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":128}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1144,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":128,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The image shows a red carpeted walkway leading towards a blue triangle on a far wall. There are two white walls with purple and blue geometric patterns on either side of the path, forming a narrow opening ahead. The blue triangle is centered at the end of the path.\",\n  \"reasoning\": \"I am at x=3.5 and the path ahead is still clear. I need to reach the blue triangle. I will continue moving forward to approach the opening between the two patterned walls.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The image shows a red carpeted walkway leading towards a blue triangle on a far wall. There are two white walls with purple and blue geometric patterns on either side of the path, forming a narrow opening ahead. The blue triangle is centered at the end of the path.",
+      "reasoning": "I am at x=3.5 and the path ahead is still clear. I need to reach the blue triangle. I will continue moving forward to approach the opening between the two patterned walls.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

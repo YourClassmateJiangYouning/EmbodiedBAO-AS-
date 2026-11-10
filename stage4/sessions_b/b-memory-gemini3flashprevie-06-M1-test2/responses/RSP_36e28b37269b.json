@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:25:10+08:00",
+    "latency_ms": 5059,
+    "payload_bytes": 291416,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090825065021842908268d9d6RSkUMrzA\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212710,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted path leading directly to a green rectangle on the far wall. The robot has passed through the narrow opening between two white pillars and is now in an open area. A yellow chair and a black cloth-covered object are visible behind the green rectangle.\\\", \\\"reasoning\\\": \\\"I am at position x=5.0 and have successfully cleared the narrow gap with my torso rotated to 90 degrees. The green rectangle is directly ahead. I will continue moving forward to reach the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3400,\"completion_tokens\":124,\"total_tokens\":3524,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3400,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":124,\"totalTokenCount\":3524,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2311},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":124}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2311,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":124,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted path leading directly to a green rectangle on the far wall. The robot has passed through the narrow opening between two white pillars and is now in an open area. A yellow chair and a black cloth-covered object are visible behind the green rectangle.\", \"reasoning\": \"I am at position x=5.0 and have successfully cleared the narrow gap with my torso rotated to 90 degrees. The green rectangle is directly ahead. I will continue moving forward to reach the target.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted path leading directly to a green rectangle on the far wall. The robot has passed through the narrow opening between two white pillars and is now in an open area. A yellow chair and a black cloth-covered object are visible behind the green rectangle.",
+      "reasoning": "I am at position x=5.0 and have successfully cleared the narrow gap with my torso rotated to 90 degrees. The green rectangle is directly ahead. I will continue moving forward to reach the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

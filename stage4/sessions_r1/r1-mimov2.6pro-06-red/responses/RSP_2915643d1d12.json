@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:19:15+08:00",
+    "latency_ms": 90007,
+    "payload_bytes": 186978,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "TimeoutError: timed out",
+    "json_mode": null,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T15:19:29+08:00",
+    "latency_ms": 14258,
+    "payload_bytes": 186978,
+    "finish_reason": "stop",
+    "reasoning_tokens": 203,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n{\"id\":\"cc4de2eb-5b87-4375-bf7e-325911e56e2c_968800091e1d4a58b88fd6c933f07203\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red circular target on a dark panel directly ahead, viewed through a narrow gap between two wall panels. A red carpet covers the floor leading to the target. Wall panels with a blue-purple geometric pattern are visible on the left, and a plain wall is on the right. The gap appears narrow, and the robot is positioned just before it.\\\", \\\"reasoning\\\": \\\"I've been blocked by wall panels at 15 and 30 degrees of torso rotation because my profile was too wide for the opening. I've now turned to 60 degrees, which should significantly narrow my projected width. The red circle is directly ahead through the opening. I should attempt forward movement now at this narrow profile. If 60 degrees still doesn't fit, I'll need to look_down to check my actual width, or turn even further to 75+ degrees.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me analyze the situation. I've been trying to fit through a narrow opening. My torso is at 60 degrees rotation now (after two turn_left from 15, going to 30, then 45, then 60). Forward was blocked at 15 and 30 degrees. I need to try forward at 60 degrees.\\n\\nLooking at the image, the red circle is directly ahead through an opening. The walls are on both sides. The floor is visible with a red carpet.\\n\\nMy body width at 60 degrees would be: if original width is W and thickness is T, then projected width = W*cos(60°) + T*sin(60°) = W*0.5 + T*0.866. \\n\\nHmm, actually as I turn more, the width narrows but the depth increases. At some point the width should be small enough. Let me try forward now at 60 degrees.\"}}],\"created\":1794208769,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":403,\"prompt_tokens\":2996,\"total_tokens\":3399,\"completion_tokens_details\":{\"reasoning_tokens\":203},\"prompt_tokens_details\":{\"cached_tokens\":2944,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red circular target on a dark panel directly ahead, viewed through a narrow gap between two wall panels. A red carpet covers the floor leading to the target. Wall panels with a blue-purple geometric pattern are visible on the left, and a plain wall is on the right. The gap appears narrow, and the robot is positioned just before it.\", \"reasoning\": \"I've been blocked by wall panels at 15 and 30 degrees of torso rotation because my profile was too wide for the opening. I've now turned to 60 degrees, which should significantly narrow my projected width. The red circle is directly ahead through the opening. I should attempt forward movement now at this narrow profile. If 60 degrees still doesn't fit, I'll need to look_down to check my actual width, or turn even further to 75+ degrees.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "Let me analyze the situation. I've been trying to fit through a narrow opening. My torso is at 60 degrees rotation now (after two turn_left from 15, going to 30, then 45, then 60). Forward was blocked at 15 and 30 degrees. I need to try forward at 60 degrees.\n\nLooking at the image, the red circle is directly ahead through an opening. The walls are on both sides. The floor is visible with a red carpet.\n\nMy body width at 60 degrees would be: if original width is W and thickness is T, then projected width = W*cos(60°) + T*sin(60°) = W*0.5 + T*0.866. \n\nHmm, actually as I turn more, the width narrows but the depth increases. At some point the width should be small enough. Let me try forward now at 60 degrees.",
+    "parsed": {
+      "scene_description": "The camera shows a red circular target on a dark panel directly ahead, viewed through a narrow gap between two wall panels. A red carpet covers the floor leading to the target. Wall panels with a blue-purple geometric pattern are visible on the left, and a plain wall is on the right. The gap appears narrow, and the robot is positioned just before it.",
+      "reasoning": "I've been blocked by wall panels at 15 and 30 degrees of torso rotation because my profile was too wide for the opening. I've now turned to 60 degrees, which should significantly narrow my projected width. The red circle is directly ahead through the opening. I should attempt forward movement now at this narrow profile. If 60 degrees still doesn't fit, I'll need to look_down to check my actual width, or turn even further to 75+ degrees.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

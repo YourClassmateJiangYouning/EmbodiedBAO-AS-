@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:35:17+08:00",
+    "latency_ms": 6462,
+    "payload_bytes": 242941,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090835121737267428268d9d6KCWI8xAm\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213318,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight ahead down a red carpeted path. In the distance, a yellow arrow points to the right on a dark background. Two white pillars with purple and blue geometric patterns flank the path, creating a narrow opening that the robot is currently entering.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=5.0 and my torso is already rotated to 90 degrees, which is the narrowest profile to fit through the gap. I am currently passing through the narrow opening between the two pillars. I will continue moving forward to reach the yellow arrow on the far wall.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2900,\"completion_tokens\":149,\"total_tokens\":3049,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2900,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":149,\"totalTokenCount\":3049,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1811},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":149}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1811,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":149,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight ahead down a red carpeted path. In the distance, a yellow arrow points to the right on a dark background. Two white pillars with purple and blue geometric patterns flank the path, creating a narrow opening that the robot is currently entering.\",\n  \"reasoning\": \"I am at position x=5.0 and my torso is already rotated to 90 degrees, which is the narrowest profile to fit through the gap. I am currently passing through the narrow opening between the two pillars. I will continue moving forward to reach the yellow arrow on the far wall.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight ahead down a red carpeted path. In the distance, a yellow arrow points to the right on a dark background. Two white pillars with purple and blue geometric patterns flank the path, creating a narrow opening that the robot is currently entering.",
+      "reasoning": "I am at position x=5.0 and my torso is already rotated to 90 degrees, which is the narrowest profile to fit through the gap. I am currently passing through the narrow opening between the two pillars. I will continue moving forward to reach the yellow arrow on the far wall.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

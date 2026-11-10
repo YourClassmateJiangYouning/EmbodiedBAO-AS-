@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:26:54+08:00",
+    "latency_ms": 8021,
+    "payload_bytes": 186978,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A large glowing red circle on a dark panel directly ahead at the end of the walkway; the floor carpet extends up to the wall. No visible opening or obstacle between me and the circle other than the wall it’s mounted on.\\\", \\\"reasoning\\\": \\\"My walking direction is straight at the red circle and I am very close to the wall panel. Forward steps have sometimes been blocked when at the wall; currently at x=7.25 after a recent forward execution, I should advance to reach/contact the circle until blocked.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.69}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205611,\"id\":\"chatcmpl-EiD87QXPLo1ZlnqMuX6rB8UDUfvOO\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":133,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":14,\"engine_ttft_ms\":315,\"engine_ttlt_ms\":2194,\"pre_inference_ms\":434,\"service_tbt_ms\":14,\"service_ttft_ms\":946,\"service_ttlt_ms\":2835,\"user_visible_ttft_ms\":512},\"prompt_tokens\":2728,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2861}}\n",
+    "content": "{\"scene_description\": \"A large glowing red circle on a dark panel directly ahead at the end of the walkway; the floor carpet extends up to the wall. No visible opening or obstacle between me and the circle other than the wall it’s mounted on.\", \"reasoning\": \"My walking direction is straight at the red circle and I am very close to the wall panel. Forward steps have sometimes been blocked when at the wall; currently at x=7.25 after a recent forward execution, I should advance to reach/contact the circle until blocked.\", \"action\": \"forward\", \"confidence\": 0.69}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A large glowing red circle on a dark panel directly ahead at the end of the walkway; the floor carpet extends up to the wall. No visible opening or obstacle between me and the circle other than the wall it’s mounted on.",
+      "reasoning": "My walking direction is straight at the red circle and I am very close to the wall panel. Forward steps have sometimes been blocked when at the wall; currently at x=7.25 after a recent forward execution, I should advance to reach/contact the circle until blocked.",
+      "action": "forward",
+      "confidence": 0.69
+    },
+    "action": "forward"
+  }
+]

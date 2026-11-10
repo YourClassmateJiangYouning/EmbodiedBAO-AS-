@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:08:36+08:00",
+    "latency_ms": 11544,
+    "payload_bytes": 170937,
+    "finish_reason": "stop",
+    "reasoning_tokens": 36,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"539e880a-491f-4f52-aca1-14bf7b407331_bbbee294bb2c45959ad442f6cfff3750\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star on a small panel sits directly ahead at the end of the red carpet, very close, just past the floor transition. The path is clear.\\\", \\\"reasoning\\\": \\\"The star is directly ahead and very close, only about a step or two away. My torso is at 90 degrees presenting the thin profile, and turning is already done. I simply continue forward toward the star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need 15 steps used, x=6.5. Previous traversal had 18 steps total with forward count. Star very close ahead. Just keep forward.\"}}],\"created\":1794215316,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":143,\"prompt_tokens\":3687,\"total_tokens\":3830,\"completion_tokens_details\":{\"reasoning_tokens\":36},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star on a small panel sits directly ahead at the end of the red carpet, very close, just past the floor transition. The path is clear.\", \"reasoning\": \"The star is directly ahead and very close, only about a step or two away. My torso is at 90 degrees presenting the thin profile, and turning is already done. I simply continue forward toward the star.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We need 15 steps used, x=6.5. Previous traversal had 18 steps total with forward count. Star very close ahead. Just keep forward.",
+    "parsed": {
+      "scene_description": "The purple four-pointed star on a small panel sits directly ahead at the end of the red carpet, very close, just past the floor transition. The path is clear.",
+      "reasoning": "The star is directly ahead and very close, only about a step or two away. My torso is at 90 degrees presenting the thin profile, and turning is already done. I simply continue forward toward the star.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

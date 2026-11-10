@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:52+08:00",
+    "latency_ms": 2662,
+    "payload_bytes": 216006,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f1a0a6fe-62e9-40db-bd16-3a49cf36debe\",\"object\":\"chat.completion\",\"created\":1794208191,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is mounted low on a dark panel directly ahead, with the red carpet leading up to it. The sign appears to be at floor level, suggesting the arrow is a low-mounted target rather than a doorway to pass through.\\\", \\\"reasoning\\\": \\\"Forward steps keep being blocked by the wall panel even with the torso aligned at 0 degrees, and the arrow is mounted low near the floor. The obstacle is likely the panel itself, and the goal may be reached by getting close to the sign rather than passing through. I have backed up and turned right; now I should try moving forward again to approach the low-mounted arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2848,\"completion_tokens\":148,\"total_tokens\":2996,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":2336},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is mounted low on a dark panel directly ahead, with the red carpet leading up to it. The sign appears to be at floor level, suggesting the arrow is a low-mounted target rather than a doorway to pass through.\", \"reasoning\": \"Forward steps keep being blocked by the wall panel even with the torso aligned at 0 degrees, and the arrow is mounted low near the floor. The obstacle is likely the panel itself, and the goal may be reached by getting close to the sign rather than passing through. I have backed up and turned right; now I should try moving forward again to approach the low-mounted arrow.\", \"action\": \"forward\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is mounted low on a dark panel directly ahead, with the red carpet leading up to it. The sign appears to be at floor level, suggesting the arrow is a low-mounted target rather than a doorway to pass through.",
+      "reasoning": "Forward steps keep being blocked by the wall panel even with the torso aligned at 0 degrees, and the arrow is mounted low near the floor. The obstacle is likely the panel itself, and the goal may be reached by getting close to the sign rather than passing through. I have backed up and turned right; now I should try moving forward again to approach the low-mounted arrow.",
+      "action": "forward",
+      "confidence": 0.4
+    },
+    "action": "forward"
+  }
+]

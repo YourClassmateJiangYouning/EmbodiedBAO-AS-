@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:22:37+08:00",
+    "latency_ms": 3006,
+    "payload_bytes": 300072,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"b0d6a377-3248-42e8-989a-cc4bc601b868\",\"object\":\"chat.completion\",\"created\":1794212555,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead down a red carpeted walkway toward a blue triangle on the far wall, framed by a narrow dark opening between patterned walls on the left and right.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along my fixed walking direction and the path appears clear. My torso is at 0 degrees, which is the narrowest presentation for passing through the opening, so continuing forward advances me toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1838,\"completion_tokens\":106,\"total_tokens\":1944,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1070},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead down a red carpeted walkway toward a blue triangle on the far wall, framed by a narrow dark opening between patterned walls on the left and right.\", \"reasoning\": \"The blue triangle is directly ahead along my fixed walking direction and the path appears clear. My torso is at 0 degrees, which is the narrowest presentation for passing through the opening, so continuing forward advances me toward the goal.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead down a red carpeted walkway toward a blue triangle on the far wall, framed by a narrow dark opening between patterned walls on the left and right.",
+      "reasoning": "The blue triangle is directly ahead along my fixed walking direction and the path appears clear. My torso is at 0 degrees, which is the narrowest presentation for passing through the opening, so continuing forward advances me toward the goal.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

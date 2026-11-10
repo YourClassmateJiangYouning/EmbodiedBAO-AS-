@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:35:56+08:00",
+    "latency_ms": 6164,
+    "payload_bytes": 210305,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A doorway/opening ahead with a slight raised threshold or lip; the floor mat in the foreground is slightly curled up near the opening. Beyond the threshold, against the far wall, there is a bright green rectangle lying on the floor, centered ahead. Side walls flank the opening.\\\", \\\"reasoning\\\": \\\"Multiple recent forward actions were blocked by a wall panel, indicating a low threshold right before the opening. For this robot, turning does not change path or view, and rotating inside the opening is not possible. The best strategy is to gain momentum-free clearance by moving backward further from the threshold to ensure the next forward step can traverse it cleanly.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.72}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198953,\"id\":\"chatcmpl-EiBOjCfJJPnU0AZvGKZQSggScRgVL\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":159,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":524,\"engine_ttlt_ms\":1898,\"pre_inference_ms\":385,\"service_tbt_ms\":8,\"service_ttft_ms\":1198,\"service_ttlt_ms\":2533,\"user_visible_ttft_ms\":812},\"prompt_tokens\":2290,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2449}}\n",
+    "content": "{\"scene_description\": \"A doorway/opening ahead with a slight raised threshold or lip; the floor mat in the foreground is slightly curled up near the opening. Beyond the threshold, against the far wall, there is a bright green rectangle lying on the floor, centered ahead. Side walls flank the opening.\", \"reasoning\": \"Multiple recent forward actions were blocked by a wall panel, indicating a low threshold right before the opening. For this robot, turning does not change path or view, and rotating inside the opening is not possible. The best strategy is to gain momentum-free clearance by moving backward further from the threshold to ensure the next forward step can traverse it cleanly.\", \"action\": \"backward\", \"confidence\": 0.72}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A doorway/opening ahead with a slight raised threshold or lip; the floor mat in the foreground is slightly curled up near the opening. Beyond the threshold, against the far wall, there is a bright green rectangle lying on the floor, centered ahead. Side walls flank the opening.",
+      "reasoning": "Multiple recent forward actions were blocked by a wall panel, indicating a low threshold right before the opening. For this robot, turning does not change path or view, and rotating inside the opening is not possible. The best strategy is to gain momentum-free clearance by moving backward further from the threshold to ensure the next forward step can traverse it cleanly.",
+      "action": "backward",
+      "confidence": 0.72
+    },
+    "action": "backward"
+  }
+]

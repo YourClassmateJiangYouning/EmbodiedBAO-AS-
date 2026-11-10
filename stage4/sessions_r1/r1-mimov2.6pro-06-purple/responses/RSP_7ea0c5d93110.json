@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:34:49+08:00",
+    "latency_ms": 10996,
+    "payload_bytes": 257628,
+    "finish_reason": "stop",
+    "reasoning_tokens": 112,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"e505ebe0-7677-4081-8f52-68e8e059dcb1_d0f0b27cd1074a58b3e1587e4001e55b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is visible directly ahead through the narrow dark opening in the wall, positioned on the far wall. The red carpet leads straight toward the opening. My torso remains rotated 90 degrees, presenting my thin depth dimension to the narrow gap.\\\", \\\"reasoning\\\": \\\"The star is now very close, just through the opening ahead. My torso is at 90 degrees rotation, presenting my thin depth dimension to the narrow opening — the optimal orientation to pass through safely. I simply need to continue forward to reach the star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is visible ahead through the narrow dark opening in the wall. The red carpet leads straight toward it. My torso remains rotated 90 degrees, presenting my thin depth dimension to the opening.\\\", \\\"reasoning\\\": \\\"The star is very close, just through the opening ahead. My torso is at 90 degrees, presenting my thin dimension to fit through the narrow opening. I just need to keep walking forward to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"}}],\"created\":1794144888,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":244,\"prompt_tokens\":2871,\"total_tokens\":3115,\"completion_tokens_details\":{\"reasoning_tokens\":112},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is visible directly ahead through the narrow dark opening in the wall, positioned on the far wall. The red carpet leads straight toward the opening. My torso remains rotated 90 degrees, presenting my thin depth dimension to the narrow gap.\", \"reasoning\": \"The star is now very close, just through the opening ahead. My torso is at 90 degrees rotation, presenting my thin depth dimension to the narrow opening — the optimal orientation to pass through safely. I simply need to continue forward to reach the star.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "{\"scene_description\": \"The purple four-pointed star is visible ahead through the narrow dark opening in the wall. The red carpet leads straight toward it. My torso remains rotated 90 degrees, presenting my thin depth dimension to the opening.\", \"reasoning\": \"The star is very close, just through the opening ahead. My torso is at 90 degrees, presenting my thin dimension to fit through the narrow opening. I just need to keep walking forward to reach it.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is visible directly ahead through the narrow dark opening in the wall, positioned on the far wall. The red carpet leads straight toward the opening. My torso remains rotated 90 degrees, presenting my thin depth dimension to the narrow gap.",
+      "reasoning": "The star is now very close, just through the opening ahead. My torso is at 90 degrees rotation, presenting my thin depth dimension to the narrow opening — the optimal orientation to pass through safely. I simply need to continue forward to reach the star.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

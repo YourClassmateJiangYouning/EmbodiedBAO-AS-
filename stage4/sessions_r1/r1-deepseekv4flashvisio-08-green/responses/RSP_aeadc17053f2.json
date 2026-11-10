@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:06:31+08:00",
+    "latency_ms": 2780,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"1f228de7-6e07-4e2f-bb63-135b9b12868d\",\"object\":\"chat.completion\",\"created\":1794207989,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is visible directly ahead, close and centered, sitting on a light-colored surface with a dark wall behind it. The path appears narrow, and previous forward attempts were blocked by a wall panel.\\\", \\\"reasoning\\\": \\\"Forward has been blocked three times despite turning left to 30 degrees. The target is very close but the opening is narrow. Since turning further left may reduce presented width more, but I've already tried 15 and 30 degrees without success, I should try turning further left to 45 degrees to present an even narrower profile before attempting forward again.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2433,\"completion_tokens\":137,\"total_tokens\":2570,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1793},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is visible directly ahead, close and centered, sitting on a light-colored surface with a dark wall behind it. The path appears narrow, and previous forward attempts were blocked by a wall panel.\", \"reasoning\": \"Forward has been blocked three times despite turning left to 30 degrees. The target is very close but the opening is narrow. Since turning further left may reduce presented width more, but I've already tried 15 and 30 degrees without success, I should try turning further left to 45 degrees to present an even narrower profile before attempting forward again.\", \"action\": \"turn_left\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is visible directly ahead, close and centered, sitting on a light-colored surface with a dark wall behind it. The path appears narrow, and previous forward attempts were blocked by a wall panel.",
+      "reasoning": "Forward has been blocked three times despite turning left to 30 degrees. The target is very close but the opening is narrow. Since turning further left may reduce presented width more, but I've already tried 15 and 30 degrees without success, I should try turning further left to 45 degrees to present an even narrower profile before attempting forward again.",
+      "action": "turn_left",
+      "confidence": 0.4
+    },
+    "action": "turn_left"
+  }
+]

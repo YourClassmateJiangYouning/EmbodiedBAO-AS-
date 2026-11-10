@@ -1,0 +1,62 @@
+You are a small wheeled robot. Your task is to reach the red circle on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the red circle on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the red circle on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the red circle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the red circle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the red circle you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+A previous successful traversal by the same model in this same scene and marker:
+
+1. forward -> executed  |  The red circle is directly ahead along my walking direction, and the path is clear. I'll move forward to make progress; if I get close to the opening, I can check my body width wit
+2. forward -> executed  |  The path ahead is clear along the red carpet toward the red circle. I should continue advancing. For now, moving forward is safe as I'm not yet near the opening.
+3. look_down -> executed
+4. turn_left -> executed  |  Six turn_left actions give 90 degrees; forward/back are unaffected by torso rotation, so I keep progressing toward the red circle afterward.
+5. turn_left -> executed  |  I need 5 more left turns to reach 90 degrees total.
+6. turn_left -> executed  |  To pass through, I must rotate my torso 90 degrees so my shallow depth faces the opening's width. That needs 4 more 15-degree left turns to reach 90 degrees. Then I can simply driv
+7. turn_left -> executed  |  My torso is currently rotated 45 degrees left. I need 3 more turn_left actions to reach 90 degrees. The doorway is still several meters away, so I have room to continue turning bef
+8. turn_left -> executed  |  My torso is currently rotated 60 degrees left. I'm still some distance from the opening, so I have room to continue rotating. Two more turn_left actions needed to reach 90 degrees.
+9. turn_left -> executed  |  My torso is at 75 degrees left after 5 turns. I need 15 more degrees (one turn_left) to reach 90.
+10. forward -> executed  |  I have completed 6 turn_left actions (90 degrees total), and my torso rotation confirms I'm at 90 degrees. The red circle is visible through the doorway ahead. I should now move fo
+16. forward -> executed  |  The red circle is visible through the opening ahead. I need to continue moving forward to reach it. I should keep going forward as there's still distance to cover before reaching t
+17. forward -> executed  |  The path is clear and the red circle is still some distance ahead through the opening. I should continue moving forward to close the remaining distance.
+18. forward -> executed  |  The red circle is visible ahead through the opening, and the carpeted path is clear. I should continue advancing to reach it.
+19. forward -> executed  |  The path is clear and the circle is still some distance away, so I should continue advancing with forward steps. I have 12 steps left, which should be plenty to close the remaining
+20. forward -> executed  |  The red circle is directly ahead through the opening and still some distance away. The path is clear, so I continue forward to close the remaining distance.
+21. forward -> executed  |  The red circle is directly ahead and still some distance away; the path is clear, so I continue advancing with forward.
+22. forward -> executed  |  The red circle fills a large portion of the view, indicating I am very close. My torso remains rotated 90 degrees to present shallow depth. Continuing forward should bring me to th
+23. forward -> executed  |  The red circle now dominates the view, but the panel's edges are still visible with border around the circle, so I am not yet exactly on it.
+
+Current state:
+- position (x, y, z): [6.500, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 90.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (16 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: look_down -> executed | your reasoning: The doorway ahead is narrower than the robot's body width when oriented straight, as established by the successful traversal: the torso must be rotated 90 degrees (six 15-degree turns) before reaching the opening, since turning is impossib…
+- step 1: turn_left -> executed | your reasoning: I just performed a look_down to confirm my body width. Based on the successful traversal, I need to rotate my torso 90 degrees (6 turn_left actions) before reaching the narrow opening. I'm currently at torso rotation 0 degrees, so I should…
+- step 2: turn_left -> executed | your reasoning: I've already performed 1 turn_left (15 degrees). Based on the successful traversal, I need a total of 6 turn_left actions (90 degrees) so my shallow depth faces the narrow opening. I still need 5 more turn_left actions before moving forwar…
+- step 3: turn_left -> executed | your reasoning: Torso is at 30 degrees left after 2 turn_left actions. Based on the successful traversal, I need 6 turn_left actions total (90 degrees) before moving forward through the narrow opening. I still need 4 more turn_left actions.
+- step 4: turn_left -> executed | your reasoning: I've completed 3 turn_left actions (45 degrees so far). Based on the successful traversal, I need 6 turn_left actions total (90 degrees) to present my shallow depth to the narrow opening. I still need 3 more turn_left actions before moving…
+- step 5: turn_left -> executed | your reasoning: My torso is at 60 degrees left after 4 turn_left actions. The successful traversal requires a full 90-degree rotation (6 turn_left total) so my shallow depth faces the narrow opening before I advance. I still need 2 more turn_left actions…
+- step 6: turn_left -> executed | your reasoning: My torso is at 75 degrees left after 5 turn_left actions in this episode. The successful traversal rotated the torso a full 90 degrees (6 turn_left actions) before advancing through the narrow opening, so I need exactly one more turn_left.…
+- step 7: forward -> executed | your reasoning: I have completed all 6 turn_left actions and my torso is at 90 degrees, matching the successful traversal posture for passing the narrow opening. The red circle is still some distance ahead, so I should advance with forward steps along the…
+- step 8: forward -> executed | your reasoning: My torso is correctly rotated 90 degrees to present my shallow depth, matching the successful traversal. The red circle is still ahead along the clear carpeted path and is not yet large in view, so I should keep advancing with forward step…
+- step 9: forward -> executed | your reasoning: The red circle is clearly visible through the opening ahead but still appears at a moderate distance. My torso remains rotated 90 degrees to present my shallow depth for passing through the narrow opening. The path is clear, so I continue…
+- step 10: forward -> executed | your reasoning: My torso is already rotated 90 degrees to present my shallow depth for the narrow opening, matching the successful traversal. The red circle is directly ahead and still at a moderate distance, and the carpeted path is clear. I should conti…
+- step 11: forward -> executed | your reasoning: My torso is already rotated 90 degrees to present my shallow depth for the narrow opening, matching the successful traversal. The red circle is directly ahead but still appears fairly small, indicating remaining distance. The path along th…
+- step 12: forward -> executed | your reasoning: The red circle is still ahead at moderate distance and the path is clear. My torso remains at 90 degrees for passing the narrow opening, matching the successful traversal. I should continue advancing with forward steps.
+- step 13: forward -> executed | your reasoning: My torso remains at 90 degrees, presenting shallow depth through the narrow opening as in the successful traversal. The red circle is still a moderate distance ahead and the carpeted path is clear, so I continue advancing.
+- step 14: None -> invalid action response
+- step 15: forward -> executed | your reasoning: My torso is already rotated 90 degrees (shallow depth facing the narrow opening), matching the successful traversal. Step 14 was an invalid action response (no action), so I must supply a valid action now. The red circle is visible ahead b…
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

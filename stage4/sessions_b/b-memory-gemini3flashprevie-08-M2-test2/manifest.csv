@@ -1,0 +1,2 @@
+episode_id,mode,model,scene,marker,a_s,channel_width_m,memory_id,started_at,finished_at,passed,total_steps,end_reason,invalid_count
+S4E_5d8a527136c4,B,gemini-3-flash-preview,R1,M2,2.0,1.14,S4M_f569694e60b3,2026-11-09T16:31:58+08:00,2026-11-09T16:33:50+08:00,True,18,passed,0

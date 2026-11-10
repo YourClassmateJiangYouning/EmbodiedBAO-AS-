@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:31:40+08:00",
+    "latency_ms": 8243,
+    "payload_bytes": 173192,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"The yellow arrow sign is directly ahead on the wall at close range, centered in view within a doorway opening. The carpeted floor meets the wall at the bottom of the sign, indicating I’m at or just in front of the wall with the arrow.\\\",\\\"reasoning\\\":\\\"Forward steps have repeatedly been blocked at the wall, and the arrow is immediately in front. To reach the arrow, I should stop trying to press into the wall; staying here indicates I’ve effectively reached it. However, the task requires choosing an action: any forward would be blocked, so no movement forward is needed. To avoid another block, I will take a small backward step to maintain safe proximity while confirming reach.\\\",\\\"action\\\":\\\"backward\\\",\\\"confidence\\\":0.59}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205897,\"id\":\"chatcmpl-EiDCjkFVM9krpyKKh7z9FZe5pme0o\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":162,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":12,\"engine_ttft_ms\":312,\"engine_ttlt_ms\":2281,\"pre_inference_ms\":323,\"service_tbt_ms\":12,\"service_ttft_ms\":819,\"service_ttlt_ms\":2784,\"user_visible_ttft_ms\":495},\"prompt_tokens\":2756,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2918}}\n",
+    "content": "{\"scene_description\":\"The yellow arrow sign is directly ahead on the wall at close range, centered in view within a doorway opening. The carpeted floor meets the wall at the bottom of the sign, indicating I’m at or just in front of the wall with the arrow.\",\"reasoning\":\"Forward steps have repeatedly been blocked at the wall, and the arrow is immediately in front. To reach the arrow, I should stop trying to press into the wall; staying here indicates I’ve effectively reached it. However, the task requires choosing an action: any forward would be blocked, so no movement forward is needed. To avoid another block, I will take a small backward step to maintain safe proximity while confirming reach.\",\"action\":\"backward\",\"confidence\":0.59}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is directly ahead on the wall at close range, centered in view within a doorway opening. The carpeted floor meets the wall at the bottom of the sign, indicating I’m at or just in front of the wall with the arrow.",
+      "reasoning": "Forward steps have repeatedly been blocked at the wall, and the arrow is immediately in front. To reach the arrow, I should stop trying to press into the wall; staying here indicates I’ve effectively reached it. However, the task requires choosing an action: any forward would be blocked, so no movement forward is needed. To avoid another block, I will take a small backward step to maintain safe proximity while confirming reach.",
+      "action": "backward",
+      "confidence": 0.59
+    },
+    "action": "backward"
+  }
+]

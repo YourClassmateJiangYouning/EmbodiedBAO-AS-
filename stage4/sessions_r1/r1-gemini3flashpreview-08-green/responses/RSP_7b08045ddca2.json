@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:37:54+08:00",
+    "latency_ms": 5794,
+    "payload_bytes": 384902,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081037494307111418268d9d6KiTuPDS4\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134274,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"A long red carpet leads toward a narrow opening in a wall decorated with geometric patterns. A small green rectangle is visible on the floor inside the dark opening at the end of the carpet.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at the start of the path (x=0.5). The goal is to reach the green rectangle. I need to move forward to get closer to the opening. Before I reach the narrow gap, I should check my body width to ensure I can fit through, but for now, moving forward is the most direct action.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1974,\"completion_tokens\":141,\"total_tokens\":2115,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":1974,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":141,\"totalTokenCount\":2115,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":885},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":141}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":885,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":141,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"A long red carpet leads toward a narrow opening in a wall decorated with geometric patterns. A small green rectangle is visible on the floor inside the dark opening at the end of the carpet.\",\n  \"reasoning\": \"I am currently at the start of the path (x=0.5). The goal is to reach the green rectangle. I need to move forward to get closer to the opening. Before I reach the narrow gap, I should check my body width to ensure I can fit through, but for now, moving forward is the most direct action.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpet leads toward a narrow opening in a wall decorated with geometric patterns. A small green rectangle is visible on the floor inside the dark opening at the end of the carpet.",
+      "reasoning": "I am currently at the start of the path (x=0.5). The goal is to reach the green rectangle. I need to move forward to get closer to the opening. Before I reach the narrow gap, I should check my body width to ensure I can fit through, but for now, moving forward is the most direct action.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

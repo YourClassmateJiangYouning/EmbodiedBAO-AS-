@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:22:04+08:00",
+    "latency_ms": 7604,
+    "payload_bytes": 377016,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081021575403060228268d9d6UrSwg43M\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133324,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"I am on a red carpet walkway. In the distance, there is a narrow opening between two patterned walls. Beyond the opening, a purple four-pointed star is visible on the far wall.\\\", \\\"reasoning\\\": \\\"I need to reach the purple star. I am still quite far from the opening. I will move forward to get closer, but I must eventually check my body width using 'look_down' to ensure I can pass through the gap.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2104,\"completion_tokens\":112,\"total_tokens\":2216,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2104,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":112,\"totalTokenCount\":2216,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1015}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":112}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1015,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":112,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"I am on a red carpet walkway. In the distance, there is a narrow opening between two patterned walls. Beyond the opening, a purple four-pointed star is visible on the far wall.\", \"reasoning\": \"I need to reach the purple star. I am still quite far from the opening. I will move forward to get closer, but I must eventually check my body width using 'look_down' to ensure I can pass through the gap.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I am on a red carpet walkway. In the distance, there is a narrow opening between two patterned walls. Beyond the opening, a purple four-pointed star is visible on the far wall.",
+      "reasoning": "I need to reach the purple star. I am still quite far from the opening. I will move forward to get closer, but I must eventually check my body width using 'look_down' to ensure I can pass through the gap.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

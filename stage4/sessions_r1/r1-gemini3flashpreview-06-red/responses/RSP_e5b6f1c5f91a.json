@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:55:43+08:00",
+    "latency_ms": 6066,
+    "payload_bytes": 305039,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081055383923327418268d9d6Lu14cEVK\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135343,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight down a red-carpeted path towards a narrow opening in a wall decorated with geometric patterns. Through the opening, a bright red circle is visible on a dark background at the far end.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at x=4.25 and my torso is rotated to 90 degrees, which is my narrowest profile. I am directly aligned with the narrow opening. I need to continue moving forward to pass through the gap and reach the red circle.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2846,\"completion_tokens\":132,\"total_tokens\":2978,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2846,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":132,\"totalTokenCount\":2978,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1757}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":132}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1757,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":132,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight down a red-carpeted path towards a narrow opening in a wall decorated with geometric patterns. Through the opening, a bright red circle is visible on a dark background at the far end.\",\n  \"reasoning\": \"I am currently at x=4.25 and my torso is rotated to 90 degrees, which is my narrowest profile. I am directly aligned with the narrow opening. I need to continue moving forward to pass through the gap and reach the red circle.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red-carpeted path towards a narrow opening in a wall decorated with geometric patterns. Through the opening, a bright red circle is visible on a dark background at the far end.",
+      "reasoning": "I am currently at x=4.25 and my torso is rotated to 90 degrees, which is my narrowest profile. I am directly aligned with the narrow opening. I need to continue moving forward to pass through the gap and reach the red circle.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

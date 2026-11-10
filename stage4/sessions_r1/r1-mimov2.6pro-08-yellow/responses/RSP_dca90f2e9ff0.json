@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:05:08+08:00",
+    "latency_ms": 8514,
+    "payload_bytes": 381083,
+    "finish_reason": "stop",
+    "reasoning_tokens": 22,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"16080b71-ed4a-4c65-8eca-b338b43734b7_588fd3507eb5423a87fcbf7ec2e853b4\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a dark opening in a patterned wall, with a yellow arrow pointing right at the opening. Geometric-patterned floor tiles flank the carpet on both sides.\\\", \\\"reasoning\\\": \\\"The path ahead is clear along the red carpet straight toward the yellow arrow. No obstacles visible; simply advance forward repeatedly.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear along the red carpet toward the yellow arrow on the far wall. Just go forward.\"}}],\"created\":1794204308,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":115,\"prompt_tokens\":1907,\"total_tokens\":2022,\"completion_tokens_details\":{\"reasoning_tokens\":22},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a dark opening in a patterned wall, with a yellow arrow pointing right at the opening. Geometric-patterned floor tiles flank the carpet on both sides.\", \"reasoning\": \"The path ahead is clear along the red carpet straight toward the yellow arrow. No obstacles visible; simply advance forward repeatedly.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear along the red carpet toward the yellow arrow on the far wall. Just go forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a dark opening in a patterned wall, with a yellow arrow pointing right at the opening. Geometric-patterned floor tiles flank the carpet on both sides.",
+      "reasoning": "The path ahead is clear along the red carpet straight toward the yellow arrow. No obstacles visible; simply advance forward repeatedly.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

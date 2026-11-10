@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:00:15+08:00",
+    "latency_ms": 3010,
+    "payload_bytes": 389526,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"9765a944-e39c-4d33-a7c8-255ee770797a\",\"object\":\"chat.completion\",\"created\":1794207613,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a far wall with a red circle target visible through a narrow opening between patterned wall panels. The path appears clear and straight ahead.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the walking direction, and the path looks unobstructed. Moving forward advances me toward the goal. I should check my body width before entering the narrow opening, but first I can make progress with forward steps.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1541,\"completion_tokens\":108,\"total_tokens\":1649,\"prompt_tokens_details\":{\"cached_tokens\":1407},\"prompt_cache_hit_tokens\":1407,\"prompt_cache_miss_tokens\":134},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a far wall with a red circle target visible through a narrow opening between patterned wall panels. The path appears clear and straight ahead.\", \"reasoning\": \"The red circle is directly ahead along the walking direction, and the path looks unobstructed. Moving forward advances me toward the goal. I should check my body width before entering the narrow opening, but first I can make progress with forward steps.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a far wall with a red circle target visible through a narrow opening between patterned wall panels. The path appears clear and straight ahead.",
+      "reasoning": "The red circle is directly ahead along the walking direction, and the path looks unobstructed. Moving forward advances me toward the goal. I should check my body width before entering the narrow opening, but first I can make progress with forward steps.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:39:47+08:00",
+    "latency_ms": 6707,
+    "payload_bytes": 164594,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A wall panel directly ahead at floor level with a large red circle centered on it. The panel is close; the walkway carpet ends at the base of the panel.\\\", \\\"reasoning\\\": \\\"The red circle target is immediately ahead on the wall panel. Advancing straight should complete reaching it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.66}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794199184,\"id\":\"chatcmpl-EiBSSCpEpX6zPqN06O9kyqGY8d5fy\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":86,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":15,\"engine_ttft_ms\":278,\"engine_ttlt_ms\":1603,\"pre_inference_ms\":561,\"service_tbt_ms\":15,\"service_ttft_ms\":1236,\"service_ttlt_ms\":2556,\"user_visible_ttft_ms\":676},\"prompt_tokens\":2179,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2265}}\n",
+    "content": "{\"scene_description\": \"A wall panel directly ahead at floor level with a large red circle centered on it. The panel is close; the walkway carpet ends at the base of the panel.\", \"reasoning\": \"The red circle target is immediately ahead on the wall panel. Advancing straight should complete reaching it.\", \"action\": \"forward\", \"confidence\": 0.66}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A wall panel directly ahead at floor level with a large red circle centered on it. The panel is close; the walkway carpet ends at the base of the panel.",
+      "reasoning": "The red circle target is immediately ahead on the wall panel. Advancing straight should complete reaching it.",
+      "action": "forward",
+      "confidence": 0.66
+    },
+    "action": "forward"
+  }
+]

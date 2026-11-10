@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:46:47+08:00",
+    "latency_ms": 10217,
+    "payload_bytes": 366815,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090846423275756178268d9d6o8qUkViH\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794214007,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The image shows a red carpeted walkway leading toward a narrow opening between two decorated walls. A blue triangle is visible on the floor in the distance behind the opening. The walls are white with purple and blue geometric patterns.\\\",\\n  \\\"reasoning\\\": \\\"My current torso rotation is 30 degrees. To fit through the narrow gap ahead, I need to reach a rotation of approximately 75 degrees to minimize my width, as indicated by the successful previous traversal. I will continue rotating to the right.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3193,\"completion_tokens\":132,\"total_tokens\":3325,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3193,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":132,\"totalTokenCount\":3325,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2104},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":132}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2104,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":132,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The image shows a red carpeted walkway leading toward a narrow opening between two decorated walls. A blue triangle is visible on the floor in the distance behind the opening. The walls are white with purple and blue geometric patterns.\",\n  \"reasoning\": \"My current torso rotation is 30 degrees. To fit through the narrow gap ahead, I need to reach a rotation of approximately 75 degrees to minimize my width, as indicated by the successful previous traversal. I will continue rotating to the right.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The image shows a red carpeted walkway leading toward a narrow opening between two decorated walls. A blue triangle is visible on the floor in the distance behind the opening. The walls are white with purple and blue geometric patterns.",
+      "reasoning": "My current torso rotation is 30 degrees. To fit through the narrow gap ahead, I need to reach a rotation of approximately 75 degrees to minimize my width, as indicated by the successful previous traversal. I will continue rotating to the right.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:24:54+08:00",
+    "latency_ms": 67356,
+    "payload_bytes": 262706,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-08T18:25:01+08:00",
+    "latency_ms": 7001,
+    "payload_bytes": 262706,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081024561794249388268d9d6qkXave8R\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133501,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is directly ahead, centered in the view and very close. I have passed through the narrow opening and am now on the floor beyond the red carpet area.\\\", \\\"reasoning\\\": \\\"I am at x=7.25 and the purple star is right in front of me. I will move forward one more time to reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3149,\"completion_tokens\":94,\"total_tokens\":3243,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3149,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":94,\"totalTokenCount\":3243,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2060},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":94}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2060,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":94,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is directly ahead, centered in the view and very close. I have passed through the narrow opening and am now on the floor beyond the red carpet area.\", \"reasoning\": \"I am at x=7.25 and the purple star is right in front of me. I will move forward one more time to reach the goal.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is directly ahead, centered in the view and very close. I have passed through the narrow opening and am now on the floor beyond the red carpet area.",
+      "reasoning": "I am at x=7.25 and the purple star is right in front of me. I will move forward one more time to reach the goal.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

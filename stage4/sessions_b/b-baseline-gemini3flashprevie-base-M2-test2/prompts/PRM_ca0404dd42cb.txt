@@ -1,0 +1,33 @@
+You are a small wheeled robot. Your task is to reach the red circle on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the red circle on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the red circle on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the red circle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the red circle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the red circle you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+Current state:
+- position (x, y, z): [2.750, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 45.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (8 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: look_down -> executed | your reasoning: The goal is to reach the red circle at the end of the walkway. I am currently at the start of the path (x=0.5). I need to move forward to decrease the distance to the target. I will first look down to assess my body width relative to the p…
+- step 1: forward -> executed | your reasoning: Looking down reveals that my body is quite wide due to the foam bumper and wheels. To pass through any narrow openings on the way to the red circle, I will likely need to rotate my torso to present a narrower profile. Since I am currently…
+- step 2: forward -> executed | your reasoning: I am currently at x=1.25 and need to reach the red circle. The path ahead is clear for several steps before I reach the narrow opening between the walls. I will continue moving forward to get closer to the target.
+- step 3: forward -> executed | your reasoning: I am currently at x=2.0. The red circle is still a significant distance away, and the narrow opening between the patterned walls is further down the path. I can safely move forward at least one more step before I need to worry about my tor…
+- step 4: look_down -> executed | your reasoning: I am at x=2.75. The narrow opening between the patterned walls is getting closer. I need to determine if my current torso rotation (0.0 degrees) will allow me to pass through the gap. I will look down to see my body width relative to the p…
+- step 5: turn_left -> executed | your reasoning: Looking down confirms that my body is very wide at a 0-degree rotation due to the foam bumper. To pass through the narrow opening ahead, I need to rotate my torso to present a thinner profile. I will start rotating now before I reach the g…
+- step 6: turn_left -> executed | your reasoning: I have already rotated my torso to 15 degrees to prepare for the narrow opening. I am still at x=2.75, and the gap appears to be several steps away. I will continue to rotate my torso to a sharper angle (e.g., 45 or 90 degrees) to ensure I…
+- step 7: turn_left -> executed | your reasoning: I am currently at x=2.75 with a torso rotation of 30 degrees. To pass through the narrow gap between the patterned walls ahead, I need to present a thinner profile. I will continue rotating my torso to the left to reach a more optimal angl…
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

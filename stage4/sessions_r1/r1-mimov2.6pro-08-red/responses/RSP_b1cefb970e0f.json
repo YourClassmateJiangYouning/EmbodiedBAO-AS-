@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:04:01+08:00",
+    "latency_ms": 8363,
+    "payload_bytes": 313744,
+    "finish_reason": "stop",
+    "reasoning_tokens": 44,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"cf47aefe-ed5f-4e15-864a-929bef7ecf52_67c5cfcb46d14e9a88e0d9b8b6bcca8e\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead down the red carpeted walkway toward a narrow doorway in a far wall decorated with colorful geometric patterns. Through the dark doorway opening, the red circle is visible centered at the far end. The carpet extends ahead with no obstacles in the path.\\\", \\\"reasoning\\\": \\\"My torso is already rotated 90 degrees so my shallow depth faces the narrow doorway. The path is clear and the red circle is still some distance ahead through the opening. I should continue moving forward to close the remaining distance.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue forward. The red circle is ahead through the doorway. Position x=3.5. Keep going forward.\\n\\nWe've done 16 steps, 14 remaining. Just go forward.\"}}],\"created\":1794204241,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":172,\"prompt_tokens\":2755,\"total_tokens\":2927,\"completion_tokens_details\":{\"reasoning_tokens\":44},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead down the red carpeted walkway toward a narrow doorway in a far wall decorated with colorful geometric patterns. Through the dark doorway opening, the red circle is visible centered at the far end. The carpet extends ahead with no obstacles in the path.\", \"reasoning\": \"My torso is already rotated 90 degrees so my shallow depth faces the narrow doorway. The path is clear and the red circle is still some distance ahead through the opening. I should continue moving forward to close the remaining distance.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We need to continue forward. The red circle is ahead through the doorway. Position x=3.5. Keep going forward.\n\nWe've done 16 steps, 14 remaining. Just go forward.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead down the red carpeted walkway toward a narrow doorway in a far wall decorated with colorful geometric patterns. Through the dark doorway opening, the red circle is visible centered at the far end. The carpet extends ahead with no obstacles in the path.",
+      "reasoning": "My torso is already rotated 90 degrees so my shallow depth faces the narrow doorway. The path is clear and the red circle is still some distance ahead through the opening. I should continue moving forward to close the remaining distance.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

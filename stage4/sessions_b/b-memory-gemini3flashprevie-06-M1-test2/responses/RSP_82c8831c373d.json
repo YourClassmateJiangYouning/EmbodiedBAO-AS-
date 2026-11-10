@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:25:33+08:00",
+    "latency_ms": 6556,
+    "payload_bytes": 296801,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090825278905977848268d9d6zeflQEDT\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212733,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking directly at a large green rectangle placed on the floor. Behind it, there is a dark fabric-covered object on the left and a tan or mustard-colored piece of furniture on the right.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=8.0, and the green rectangle is now immediately in front of me, filling a large portion of the view. I will move forward one more time to reach the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3611,\"completion_tokens\":120,\"total_tokens\":3731,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3611,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":120,\"totalTokenCount\":3731,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2522}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":120}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2522,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":120,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking directly at a large green rectangle placed on the floor. Behind it, there is a dark fabric-covered object on the left and a tan or mustard-colored piece of furniture on the right.\",\n  \"reasoning\": \"I am at position x=8.0, and the green rectangle is now immediately in front of me, filling a large portion of the view. I will move forward one more time to reach the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking directly at a large green rectangle placed on the floor. Behind it, there is a dark fabric-covered object on the left and a tan or mustard-colored piece of furniture on the right.",
+      "reasoning": "I am at position x=8.0, and the green rectangle is now immediately in front of me, filling a large portion of the view. I will move forward one more time to reach the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

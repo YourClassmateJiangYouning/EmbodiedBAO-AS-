@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:36:36+08:00",
+    "latency_ms": 5956,
+    "payload_bytes": 387593,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081036318465828238268d9d6MGmMydKt\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134196,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading towards a narrow opening between two patterned walls. In the distance, through the opening, a purple four-pointed star is visible on a dark background.\\\",\\n  \\\"reasoning\\\": \\\"My torso is now rotated to 90 degrees, which presents my narrowest profile to the opening ahead. I am positioned at x=0.5 and need to move forward to reach the star. I will now begin moving forward along the red carpet.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2498,\"completion_tokens\":125,\"total_tokens\":2623,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2498,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":125,\"totalTokenCount\":2623,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1409}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":125}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1409,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":125,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading towards a narrow opening between two patterned walls. In the distance, through the opening, a purple four-pointed star is visible on a dark background.\",\n  \"reasoning\": \"My torso is now rotated to 90 degrees, which presents my narrowest profile to the opening ahead. I am positioned at x=0.5 and need to move forward to reach the star. I will now begin moving forward along the red carpet.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading towards a narrow opening between two patterned walls. In the distance, through the opening, a purple four-pointed star is visible on a dark background.",
+      "reasoning": "My torso is now rotated to 90 degrees, which presents my narrowest profile to the opening ahead. I am positioned at x=0.5 and need to move forward to reach the star. I will now begin moving forward along the red carpet.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

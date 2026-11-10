@@ -1,0 +1,35 @@
+You are a small wheeled robot. Your task is to reach the purple four-pointed star on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the purple four-pointed star on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the purple four-pointed star on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the purple four-pointed star, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the purple four-pointed star, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the purple four-pointed star you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+Current state:
+- position (x, y, z): [7.250, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 0.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (10 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: forward -> executed | your reasoning: I am at the starting position (x=0.5) and need to reach the purple four-pointed star on the far wall. The star is clearly visible straight ahead down my walking direction. The red carpet provides a clear, unobstructed path forward. My tors…
+- step 1: forward -> executed | your reasoning: I am at position x=1.250, having already taken one forward step from the starting position. The purple four-pointed star is clearly visible straight ahead down my walking direction. The red carpet provides a clear, unobstructed path. My to…
+- step 2: forward -> executed | your reasoning: I have already taken 2 forward steps and am at x=2.000. The purple four-pointed star is clearly visible straight ahead down my walking direction on the far wall. The red carpet provides a clear, unobstructed path. There are no obstacles bl…
+- step 3: forward -> executed | your reasoning: The purple four-pointed star is my target and is clearly visible straight ahead down my walking direction. The red carpet provides a clear, unobstructed path forward. There are no obstacles blocking my way. I should continue moving forward…
+- step 4: forward -> executed | your reasoning: I have successfully moved forward 4 times and am now at x=3.500. The purple four-pointed star remains clearly visible straight ahead down my walking direction with no obstacles blocking the path. The red carpet provides a clear walkway. I…
+- step 5: forward -> executed | your reasoning: I am at position x=4.250 after 5 forward steps. The purple four-pointed star is my target and remains clearly visible straight ahead with no obstacles blocking the path. The red carpet provides a clear walkway. I should continue moving for…
+- step 6: forward -> executed | your reasoning: I am at position x=5.0 after 6 forward steps. The purple four-pointed star is my target and remains clearly visible straight ahead down my walking direction. The red carpet provides a clear, unobstructed walkway with no obstacles blocking…
+- step 7: forward -> executed | your reasoning: I am at position x=5.750 after 7 forward steps. The purple four-pointed star remains my target and is clearly visible straight ahead down my walking direction. The star appears noticeably larger and closer than in previous steps, indicatin…
+- step 8: forward -> executed | your reasoning: I am at position x=6.500 after 8 forward steps. The purple four-pointed star is my target and is now very close and clearly visible straight ahead. The star appears much larger than before, indicating I am getting closer to it. The path re…
+- step 9: forward -> blocked by obstacle or room boundary (wall_panel) | your reasoning: I am at position x=7.250 after 9 forward steps. The purple four-pointed star is my target and is now extremely close and large in my view, indicating I am very near to reaching it. The star remains centered straight ahead down my walking d…
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

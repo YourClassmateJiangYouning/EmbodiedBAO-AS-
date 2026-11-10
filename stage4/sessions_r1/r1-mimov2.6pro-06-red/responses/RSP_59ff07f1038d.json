@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:16:00+08:00",
+    "latency_ms": 8156,
+    "payload_bytes": 282724,
+    "finish_reason": "stop",
+    "reasoning_tokens": 72,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"89658071-13a1-4f83-b0c7-685a50ccb599_af7d7f725b524cd7b26243d846875dff\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a dark red carpeted floor stretching ahead to a dark doorway in a wall with colorful abstract murals. The bright red circle is visible through the narrow opening in the wall straight ahead. The path on the carpet is clear of obstacles.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead through the narrow opening, and the carpet path is unobstructed. My torso remains turned 15 degrees left to narrow my profile for the gap. I should continue moving forward toward the circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image shows a red carpet leading to a dark doorway/opening where a red circle is visible. The path is clear, the torso is turned 15 degrees left (narrowed profile). Position x=5.0, started presumably at some position, 8 steps taken. The red circle is ahead through the narrow opening. Continue forward.\"}}],\"created\":1794208560,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":197,\"prompt_tokens\":2453,\"total_tokens\":2650,\"completion_tokens_details\":{\"reasoning_tokens\":72},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a dark red carpeted floor stretching ahead to a dark doorway in a wall with colorful abstract murals. The bright red circle is visible through the narrow opening in the wall straight ahead. The path on the carpet is clear of obstacles.\", \"reasoning\": \"The red circle is directly ahead through the narrow opening, and the carpet path is unobstructed. My torso remains turned 15 degrees left to narrow my profile for the gap. I should continue moving forward toward the circle.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "The image shows a red carpet leading to a dark doorway/opening where a red circle is visible. The path is clear, the torso is turned 15 degrees left (narrowed profile). Position x=5.0, started presumably at some position, 8 steps taken. The red circle is ahead through the narrow opening. Continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows a dark red carpeted floor stretching ahead to a dark doorway in a wall with colorful abstract murals. The bright red circle is visible through the narrow opening in the wall straight ahead. The path on the carpet is clear of obstacles.",
+      "reasoning": "The red circle is directly ahead through the narrow opening, and the carpet path is unobstructed. My torso remains turned 15 degrees left to narrow my profile for the gap. I should continue moving forward toward the circle.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

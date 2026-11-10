@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:04:10+08:00",
+    "latency_ms": 8013,
+    "payload_bytes": 289556,
+    "finish_reason": "stop",
+    "reasoning_tokens": 38,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"8d35aac7-35f7-4c06-8228-e8dfef8307ca_f6bf33ca6dac47e0b47076063969415b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted path leads toward a doorway in the far wall, through which a red circle is visible on the wall inside. The walls are decorated with colorful geometric shapes. The robot's body is rotated 90 degrees to present its shallow depth toward the narrow opening.\\\", \\\"reasoning\\\": \\\"My torso remains rotated 90 degrees so my shallow depth faces the narrow doorway. The red circle is visible ahead through the opening, and the carpeted path is clear. I should continue advancing to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue forward toward the red circle, which is visible ahead through the doorway. The torso is rotated 90 degrees to present the shallow side. Just keep moving forward.\"}}],\"created\":1794204250,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":165,\"prompt_tokens\":2814,\"total_tokens\":2979,\"completion_tokens_details\":{\"reasoning_tokens\":38},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted path leads toward a doorway in the far wall, through which a red circle is visible on the wall inside. The walls are decorated with colorful geometric shapes. The robot's body is rotated 90 degrees to present its shallow depth toward the narrow opening.\", \"reasoning\": \"My torso remains rotated 90 degrees so my shallow depth faces the narrow doorway. The red circle is visible ahead through the opening, and the carpeted path is clear. I should continue advancing to reach it.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "We need to continue forward toward the red circle, which is visible ahead through the doorway. The torso is rotated 90 degrees to present the shallow side. Just keep moving forward.",
+    "parsed": {
+      "scene_description": "A red carpeted path leads toward a doorway in the far wall, through which a red circle is visible on the wall inside. The walls are decorated with colorful geometric shapes. The robot's body is rotated 90 degrees to present its shallow depth toward the narrow opening.",
+      "reasoning": "My torso remains rotated 90 degrees so my shallow depth faces the narrow doorway. The red circle is visible ahead through the opening, and the carpeted path is clear. I should continue advancing to reach it.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

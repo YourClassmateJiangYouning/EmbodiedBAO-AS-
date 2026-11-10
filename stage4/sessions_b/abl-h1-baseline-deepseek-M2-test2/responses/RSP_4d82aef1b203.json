@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:35:34+08:00",
+    "latency_ms": 3034,
+    "payload_bytes": 315709,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"280b7a7b-8688-43e4-a4ec-0789e8643228\",\"object\":\"chat.completion\",\"created\":1794216933,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading toward a far wall with a red circle mounted on a dark panel, flanked by patterned blue/white panels and a dark draped object. The path ahead appears clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along my fixed walking direction and the path is clear. Each forward step moves me 75cm closer, so continuing forward is optimal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1814,\"completion_tokens\":104,\"total_tokens\":1918,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1302},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading toward a far wall with a red circle mounted on a dark panel, flanked by patterned blue/white panels and a dark draped object. The path ahead appears clear and unobstructed.\", \"reasoning\": \"The red circle is directly ahead along my fixed walking direction and the path is clear. Each forward step moves me 75cm closer, so continuing forward is optimal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading toward a far wall with a red circle mounted on a dark panel, flanked by patterned blue/white panels and a dark draped object. The path ahead appears clear and unobstructed.",
+      "reasoning": "The red circle is directly ahead along my fixed walking direction and the path is clear. Each forward step moves me 75cm closer, so continuing forward is optimal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:31:22+08:00",
+    "latency_ms": 9113,
+    "payload_bytes": 276066,
+    "finish_reason": "stop",
+    "reasoning_tokens": 135,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"bf7dbb1d-db95-4832-b192-61ca4410ff99_df61879d2daf4d948e1a2dcab2791e40\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle dominates the camera view, appearing extremely close and filling most of the frame. It is a bright green screen/panel sitting on a light-colored floor against a dark fabric-covered wall. The rectangle is directly ahead along my walking direction.\\\", \\\"reasoning\\\": \\\"The green rectangle is now very large in my view, indicating I am nearly at the far wall. My torso is at 0 degrees rotation (narrowest profile). I've taken 10 forward steps from x=8.000, so I should be at approximately x=0.5. One more forward step of 75cm should bring me right to the green rectangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is now very large in the camera view, occupying most of the frame. It appears to be right in front of me. I've taken 11 steps so far (steps 0-10), starting at x=8.000. After 10 forward moves (75cm each = 7.5m), I should be at x=0.5. The green rectangle appears extremely close - possibly already at the wall. One more forward step should reach it.\\n\\nActually, looking at the image, the green rectangle fills a huge portion of the view and appears very close. I should move forward to reach it.\"}}],\"created\":1794137481,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":291,\"prompt_tokens\":2580,\"total_tokens\":2871,\"completion_tokens_details\":{\"reasoning_tokens\":135},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The green rectangle dominates the camera view, appearing extremely close and filling most of the frame. It is a bright green screen/panel sitting on a light-colored floor against a dark fabric-covered wall. The rectangle is directly ahead along my walking direction.\", \"reasoning\": \"The green rectangle is now very large in my view, indicating I am nearly at the far wall. My torso is at 0 degrees rotation (narrowest profile). I've taken 10 forward steps from x=8.000, so I should be at approximately x=0.5. One more forward step of 75cm should bring me right to the green rectangle.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The green rectangle is now very large in the camera view, occupying most of the frame. It appears to be right in front of me. I've taken 11 steps so far (steps 0-10), starting at x=8.000. After 10 forward moves (75cm each = 7.5m), I should be at x=0.5. The green rectangle appears extremely close - possibly already at the wall. One more forward step should reach it.\n\nActually, looking at the image, the green rectangle fills a huge portion of the view and appears very close. I should move forward to reach it.",
+    "parsed": {
+      "scene_description": "The green rectangle dominates the camera view, appearing extremely close and filling most of the frame. It is a bright green screen/panel sitting on a light-colored floor against a dark fabric-covered wall. The rectangle is directly ahead along my walking direction.",
+      "reasoning": "The green rectangle is now very large in my view, indicating I am nearly at the far wall. My torso is at 0 degrees rotation (narrowest profile). I've taken 10 forward steps from x=8.000, so I should be at approximately x=0.5. One more forward step of 75cm should bring me right to the green rectangle.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

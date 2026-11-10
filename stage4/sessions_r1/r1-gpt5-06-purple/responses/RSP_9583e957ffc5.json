@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:37:40+08:00",
+    "latency_ms": 8332,
+    "payload_bytes": 236765,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted path leads straight ahead toward a doorway opening. Beyond the doorway on the far wall, a glowing purple four-pointed star is clearly visible centered slightly above the floor. The carpet edge is slightly lifted near the doorway but there is still a clear straight path forward.\\\", \\\"reasoning\\\": \\\"The goal star is directly ahead with a clear path; continuing straight will bring me closer to the star.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.79}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794206257,\"id\":\"chatcmpl-EiDIXX2WIxkGldxN8E3lUqjXJ9olC\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008215714-19515ff0-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":110,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":457,\"engine_ttlt_ms\":1422,\"pre_inference_ms\":327,\"service_tbt_ms\":9,\"service_ttft_ms\":955,\"service_ttlt_ms\":1896,\"user_visible_ttft_ms\":628},\"prompt_tokens\":1912,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2022}}\n",
+    "content": "{\"scene_description\": \"A red carpeted path leads straight ahead toward a doorway opening. Beyond the doorway on the far wall, a glowing purple four-pointed star is clearly visible centered slightly above the floor. The carpet edge is slightly lifted near the doorway but there is still a clear straight path forward.\", \"reasoning\": \"The goal star is directly ahead with a clear path; continuing straight will bring me closer to the star.\", \"action\": \"forward\", \"confidence\": 0.79}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted path leads straight ahead toward a doorway opening. Beyond the doorway on the far wall, a glowing purple four-pointed star is clearly visible centered slightly above the floor. The carpet edge is slightly lifted near the doorway but there is still a clear straight path forward.",
+      "reasoning": "The goal star is directly ahead with a clear path; continuing straight will bring me closer to the star.",
+      "action": "forward",
+      "confidence": 0.79
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:36:06+08:00",
+    "latency_ms": 6192,
+    "payload_bytes": 232670,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A dim corridor with a red carpet leading straight to a doorway. Just beyond the threshold sits a glowing blue triangle on a small dark panel at floor level, centered ahead. The carpet edge curls slightly near the threshold but the path is otherwise clear and straight.\\\",\\\"reasoning\\\":\\\"My walking direction is fixed toward the triangle. I recently stepped backward to create space; a single forward step should carry me the short remaining distance to reach the blue triangle. Repeated prior blocks indicate the wall is very close, so one forward should make contact.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.73}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794206164,\"id\":\"chatcmpl-EiDH2xRCNtMNpphsc1L8srwuRaQQ1\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":129,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":399,\"engine_ttlt_ms\":1575,\"pre_inference_ms\":429,\"service_tbt_ms\":9,\"service_ttft_ms\":950,\"service_ttlt_ms\":2102,\"user_visible_ttft_ms\":521},\"prompt_tokens\":2886,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":3015}}\n",
+    "content": "{\"scene_description\":\"A dim corridor with a red carpet leading straight to a doorway. Just beyond the threshold sits a glowing blue triangle on a small dark panel at floor level, centered ahead. The carpet edge curls slightly near the threshold but the path is otherwise clear and straight.\",\"reasoning\":\"My walking direction is fixed toward the triangle. I recently stepped backward to create space; a single forward step should carry me the short remaining distance to reach the blue triangle. Repeated prior blocks indicate the wall is very close, so one forward should make contact.\",\"action\":\"forward\",\"confidence\":0.73}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A dim corridor with a red carpet leading straight to a doorway. Just beyond the threshold sits a glowing blue triangle on a small dark panel at floor level, centered ahead. The carpet edge curls slightly near the threshold but the path is otherwise clear and straight.",
+      "reasoning": "My walking direction is fixed toward the triangle. I recently stepped backward to create space; a single forward step should carry me the short remaining distance to reach the blue triangle. Repeated prior blocks indicate the wall is very close, so one forward should make contact.",
+      "action": "forward",
+      "confidence": 0.73
+    },
+    "action": "forward"
+  }
+]

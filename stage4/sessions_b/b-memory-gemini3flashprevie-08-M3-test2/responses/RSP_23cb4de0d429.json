@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:39:07+08:00",
+    "latency_ms": 5846,
+    "payload_bytes": 353288,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090839028774423978268d9d6ne3SsBpl\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213547,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading towards a narrow opening in a wall. A yellow arrow is visible on the floor inside the dark area beyond the opening. The walls on either side of the opening have a white background with purple and blue geometric patterns.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees, which is the profile orientation and minimizes my width to fit through the narrow gap. I am currently at position x=2.0 and need to continue moving forward along the red carpet to reach the yellow arrow.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3249,\"completion_tokens\":140,\"total_tokens\":3389,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3249,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":140,\"totalTokenCount\":3389,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2160},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":140}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2160,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":140,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading towards a narrow opening in a wall. A yellow arrow is visible on the floor inside the dark area beyond the opening. The walls on either side of the opening have a white background with purple and blue geometric patterns.\",\n  \"reasoning\": \"I have already rotated my torso to 90 degrees, which is the profile orientation and minimizes my width to fit through the narrow gap. I am currently at position x=2.0 and need to continue moving forward along the red carpet to reach the yellow arrow.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading towards a narrow opening in a wall. A yellow arrow is visible on the floor inside the dark area beyond the opening. The walls on either side of the opening have a white background with purple and blue geometric patterns.",
+      "reasoning": "I have already rotated my torso to 90 degrees, which is the profile orientation and minimizes my width to fit through the narrow gap. I am currently at position x=2.0 and need to continue moving forward along the red carpet to reach the yellow arrow.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

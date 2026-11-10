@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:02:51+08:00",
+    "latency_ms": 2115,
+    "payload_bytes": 262706,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"fc9129ea-9e7d-4d86-b2b7-b3c374a64095\",\"object\":\"chat.completion\",\"created\":1794207770,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star on its black panel is directly ahead and close, resting on the floor just beyond a red carpet edge; the path is clear with no visible obstruction.\\\", \\\"reasoning\\\": \\\"The star is centered and near, and the path ahead is unobstructed. Continuing forward should bring me to the goal without needing further turns.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2153,\"completion_tokens\":89,\"total_tokens\":2242,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1385},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The purple four-pointed star on its black panel is directly ahead and close, resting on the floor just beyond a red carpet edge; the path is clear with no visible obstruction.\", \"reasoning\": \"The star is centered and near, and the path ahead is unobstructed. Continuing forward should bring me to the goal without needing further turns.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The purple four-pointed star on its black panel is directly ahead and close, resting on the floor just beyond a red carpet edge; the path is clear with no visible obstruction.",
+      "reasoning": "The star is centered and near, and the path ahead is unobstructed. Continuing forward should bring me to the goal without needing further turns.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

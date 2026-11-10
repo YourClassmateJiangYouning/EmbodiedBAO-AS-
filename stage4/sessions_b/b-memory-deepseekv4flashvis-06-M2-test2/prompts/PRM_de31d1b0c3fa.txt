@@ -1,0 +1,65 @@
+You are a small wheeled robot. Your task is to reach the red circle on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the red circle on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the red circle on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the red circle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the red circle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the red circle you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+A previous successful traversal by the same model in this same scene and marker:
+
+1. forward -> executed  |  The red circle is directly ahead along the walking direction, and the walkway is clear. Moving forward advances toward the goal.
+2. look_down -> executed  |  The red circle is directly ahead along my fixed walking direction, and the path appears clear.
+3. forward -> executed  |  I have checked my body width with look_down. Since turning is not needed and the path is unobstructed, I should proceed forward toward the goal.
+4. forward -> executed  |  The red circle is directly ahead along my fixed walking direction, and the carpeted path is clear. I have already checked my body width and advanced twice; continuing forward moves
+5. forward -> executed  |  The red circle is directly ahead along my fixed walking direction, and the carpeted path is clear. Continuing forward moves me closer to the goal; no turning is needed.
+6. forward -> executed  |  The red circle is directly ahead along my fixed walking direction, and the carpeted path is clear. Continuing forward moves me closer to the goal; no turning is needed.
+7. forward -> executed  |  The red circle is directly ahead along the fixed walking direction, and the carpeted path is clear. Continuing forward moves me closer to the goal; no turning is needed.
+8. forward -> executed  |  The red circle is directly ahead along the fixed walking direction and the carpeted path is clear. Continuing forward moves me closer to the goal; no turning is needed.
+9. forward -> executed  |  The red circle is directly ahead along the fixed walking direction and the carpeted path is clear. Continuing forward moves me closer to the goal; no turning is needed.
+10. forward -> executed  |  The red circle is directly ahead along the fixed walking direction and the carpeted path is clear. Continuing forward moves me closer to the goal; no turning is needed.
+11. forward -> blocked by obstacle or room boundary (wall_panel)  |  The red circle fills much of the view, indicating the robot is very near the goal. Continuing forward should reach it within a step or two.
+12. forward -> blocked by obstacle or room boundary (wall_panel)  |  The goal circle is directly ahead and fills much of the view, but the previous forward attempt was blocked by the wall panel. Trying forward once more is the most direct way to rea
+13. look_down -> executed  |  Forward is blocked by the wall panel even though the goal circle is directly ahead. Since turning does not change walking direction and the goal is straight ahead, I will try look_
+14. backward -> executed  |  Forward is blocked by the wall panel even though the goal circle is directly ahead. Since turning does not change walking direction or view, and forward is blocked, the remaining o
+15. turn_left -> executed  |  Since turning changes body width orientation without changing walking direction, rotating the torso 90 degrees (six 15-degree turns) would present the thinner side of the body to t
+16. turn_left -> executed  |  Turning changes only body width orientation, not walking direction or view. I have already turned left once (15 degrees); continuing to rotate toward 90 degrees presents the thinne
+17. turn_left -> executed  |  Turning changes only body width orientation, not walking direction or view. I have turned left twice (30 degrees total); continuing to rotate toward 90 degrees presents the thinner
+18. turn_left -> executed  |  Turning changes only body width orientation, not walking direction or view. I have turned left three times (45 degrees total); continuing to rotate toward 90 degrees presents the t
+19. turn_left -> executed  |  I have turned left four times (60 degrees total). Turning changes only body width orientation, not walking direction or view. Continuing to rotate toward 90 degrees presents the th
+20. forward -> executed  |  Now I should attempt forward again to see if the rotated body fits through the gap.
+21. forward -> blocked by obstacle or room boundary (wall_panel)  |  The red circle is directly ahead along the fixed walking direction, so continuing forward should bring the robot to the goal.
+22. forward -> blocked by obstacle or room boundary (wall_panel)  |  Forward was blocked again at step 20 even after turning 75 degrees, so the block is a boundary rather than a width issue. The circle is directly ahead and close; the remaining opti
+23. backward -> executed  |  Forward has been blocked repeatedly by the wall panel even after turning 75 degrees, so the block is a boundary rather than a width issue. Since turning does not change walking dir
+24. turn_left -> executed  |  Forward has been blocked repeatedly by the wall panel even after turning 75 degrees, so the block is a boundary rather than a width issue.
+25. forward -> executed  |  Forward has been blocked repeatedly by the wall panel even after turning 75 degrees, so the block is a boundary rather than a width issue. I just backed up and turned left once mor
+26. forward -> executed  |  The goal circle is directly ahead and very close. The last forward step succeeded after backing up and turning, so continuing forward should bring the robot to the goal. Forward is
+27. forward -> executed  |  The goal circle is directly ahead and extremely close; the last two forward steps succeeded after backing up and turning, so continuing forward should reach the red circle.
+
+Current state:
+- position (x, y, z): [8.000, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 0.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (10 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: forward -> executed | your reasoning: The red circle is directly ahead along the fixed walking direction and the carpeted path appears clear, so moving forward advances toward the goal.
+- step 1: forward -> executed | your reasoning: The red circle is directly ahead along the fixed walking direction and the carpeted path is clear. The previous episode showed that repeated forward steps are the correct approach, so continuing forward advances toward the goal.
+- step 2: forward -> executed | your reasoning: The red circle is directly ahead along the fixed walking direction and the carpeted path is clear, so continuing forward advances toward the goal, consistent with the prior successful traversal.
+- step 3: forward -> executed | your reasoning: The red circle is directly ahead along the fixed walking direction and the carpeted path is clear. Prior successful traversal used repeated forward steps, so continuing forward advances toward the goal.
+- step 4: forward -> executed | your reasoning: The red circle is directly ahead along the fixed walking direction and the carpeted path is clear. Prior successful traversal used repeated forward steps, so continuing forward advances toward the goal.
+- step 5: forward -> executed | your reasoning: The goal is directly ahead along the fixed walking direction and the path is clear. Prior successful traversal used repeated forward steps, so continuing forward advances toward the goal.
+- step 6: forward -> executed | your reasoning: The goal is directly ahead along the fixed walking direction and the path is clear, so continuing forward advances toward the red circle, consistent with the prior successful traversal.
+- step 7: forward -> executed | your reasoning: The goal is directly ahead along the fixed walking direction and the path is clear. Prior successful traversal used repeated forward steps, so continuing forward advances toward the red circle.
+- step 8: forward -> executed | your reasoning: The goal is directly ahead along the fixed walking direction and the carpeted path is clear. Prior successful traversal used repeated forward steps, so continuing forward advances toward the red circle.
+- step 9: forward -> executed | your reasoning: The goal is directly ahead along the fixed walking direction and the path is clear. Prior successful traversal used repeated forward steps, so continuing forward advances toward the red circle.
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

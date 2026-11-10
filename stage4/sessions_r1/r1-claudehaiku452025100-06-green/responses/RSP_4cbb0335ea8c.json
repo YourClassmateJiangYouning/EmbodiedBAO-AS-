@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:03:43+08:00",
+    "latency_ms": 5006,
+    "payload_bytes": 186112,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T14:03:49+08:00",
+    "latency_ms": 6078,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_gg2xlextqvu2ddhygme5okym5pcbnur2vhf4cwuv4g6vf4jch5rq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794204229,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The green rectangle target is clearly visible on the far wall, centered in the view. There is a dark obstacle (wall_panel) directly blocking the forward path, appearing as a dark vertical structure in the center-lower portion of the view. The left side shows tan/beige colored walls, and the right side shows darker surfaces. My torso is currently rotated 15 degrees right (after the turn_right action in step 11).\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=7.250 with my torso rotated 15 degrees right. My previous forward attempt was blocked by a wall_panel. After turning right, I need to assess if I can now move forward with my narrower right-side profile, or if I need to continue rotating or try a different approach. The green rectangle is visible and my goal is to reach it. Let me try moving forward now that my torso is rotated right, which should present a narrower profile to the obstacle.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.6\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3254,\"completion_tokens\":244,\"total_tokens\":3498,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3254,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":244,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3254,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The green rectangle target is clearly visible on the far wall, centered in the view. There is a dark obstacle (wall_panel) directly blocking the forward path, appearing as a dark vertical structure in the center-lower portion of the view. The left side shows tan/beige colored walls, and the right side shows darker surfaces. My torso is currently rotated 15 degrees right (after the turn_right action in step 11).\",\n  \"reasoning\": \"I am at position x=7.250 with my torso rotated 15 degrees right. My previous forward attempt was blocked by a wall_panel. After turning right, I need to assess if I can now move forward with my narrower right-side profile, or if I need to continue rotating or try a different approach. The green rectangle is visible and my goal is to reach it. Let me try moving forward now that my torso is rotated right, which should present a narrower profile to the obstacle.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.6\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green rectangle target is clearly visible on the far wall, centered in the view. There is a dark obstacle (wall_panel) directly blocking the forward path, appearing as a dark vertical structure in the center-lower portion of the view. The left side shows tan/beige colored walls, and the right side shows darker surfaces. My torso is currently rotated 15 degrees right (after the turn_right action in step 11).",
+      "reasoning": "I am at position x=7.250 with my torso rotated 15 degrees right. My previous forward attempt was blocked by a wall_panel. After turning right, I need to assess if I can now move forward with my narrower right-side profile, or if I need to continue rotating or try a different approach. The green rectangle is visible and my goal is to reach it. Let me try moving forward now that my torso is rotated right, which should present a narrower profile to the obstacle.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

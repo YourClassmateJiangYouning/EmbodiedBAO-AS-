@@ -1,0 +1,59 @@
+You are a small wheeled robot. Your task is to reach the blue triangle on the far wall.
+
+Available actions (each action is one discrete step):
+{"action": "forward"} - walk 75cm straight ahead, in your walking direction, which always takes you toward the blue triangle on the far wall. Turning your torso does not change where forward takes you
+{"action": "backward"} - walk 75cm backwards, away from the blue triangle on the far wall: the same walking direction as forward, reversed
+{"action": "turn_left"} - rotate your torso 15 degrees to the left. This does NOT change your walking direction, so forward still takes you toward the blue triangle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "turn_right"} - rotate your torso 15 degrees to the right. This does NOT change your walking direction, so forward still takes you toward the blue triangle, and it does NOT change what you can see: your eyes keep looking straight ahead along your walking direction. It changes how wide your body is. Rotating needs room, so you cannot turn once your shoulders are inside the opening
+{"action": "look_down"} - glance downwards with your head camera, 45 degrees below your usual view: you see the floor in front of you and your own body as seen from your own front. That view gives you the two dimensions you cannot otherwise see: the width you present to whatever is ahead, and the thickness of your body behind it. The view itself does not change when you rotate your torso -- it always shows the body from your own front -- so read the torso rotation reported in your state to know which way that width is now facing. Your gaze returns to its usual direction as soon as you do anything else. Use it to see how wide you are, which you cannot otherwise see. Your torso and your walking direction are unaffected by the glance itself
+
+Your walking direction is fixed: it always points straight ahead at the far wall, which is where the blue triangle you are heading for is. forward/backward are defined relative to that walking direction, so they behave the same way however your torso is turned.
+turn_left/turn_right rotate your torso 15 degrees relative to that walking direction. The direction you walk does not change, and neither does your view: your eyes look straight ahead along your walking direction whatever your torso is doing. Turning changes how your body is oriented; it does not steer you and it does not change what you see.
+look_down is a single glance 45 degrees below your usual view. Your torso and your walking direction are unaffected, and the glance clears as soon as you do anything else. You cannot look up.
+
+A previous successful traversal by the same model in this same scene and marker:
+
+1. forward -> executed  |  The goal is to reach the blue triangle. Moving forward will bring me closer to the target. I should first check my body dimensions to ensure I can fit through the opening later, bu
+2. look_down -> executed  |  To ensure I can pass through without hitting the walls, I need to know my current body width and orientation. Using 'look_down' will allow me to see my torso dimensions relative to
+3. turn_right -> executed  |  I will start by turning right to orient the bumper diagonally relative to the walking direction.
+4. turn_right -> executed  |  I need to rotate further to minimize my profile before I reach the gap. I will continue rotating to the right to reach a more diagonal orientation.
+5. look_down -> executed  |  I have rotated my torso to 30 degrees to reduce my effective width. I will use 'look_down' to see my current profile relative to the walking direction before moving further forward
+6. turn_right -> executed  |  I will continue turning right to further reduce my effective width.
+7. look_down -> executed  |  I have rotated my torso to 45 degrees to reduce my width. I will use 'look_down' to see my current profile relative to the walking direction before I move any closer to the gap.
+8. turn_right -> executed  |  I have rotated my torso to 45 degrees. I will rotate another 15 degrees to reach 60 degrees.
+9. look_down -> executed  |  I have rotated my torso to 60 degrees. I need to check if this rotation has sufficiently narrowed my profile to fit through the gap ahead. I will use 'look_down' to see my current 
+10. turn_right -> executed  |  At a 60-degree rotation, the white bumper still presents a significant width relative to the forward path. I will perform one more turn to reach 75 degrees.
+11. look_down -> executed  |  I have rotated my torso to 75 degrees to minimize my width. I will use 'look_down' to see my current profile relative to the walking direction before I move any closer to the gap.
+12. forward -> executed  |  At a 75-degree rotation, the robot's profile is significantly narrowed relative to the forward path. I will now move forward to approach the gap.
+13. forward -> executed  |  I have rotated my torso to 75 degrees, which significantly narrows my profile. I have already moved forward once at this rotation (step 11). I am still some distance from the openi
+14. forward -> executed  |  I have rotated my torso to 75 degrees, which is a significant angle to minimize my width. I am still some distance from the opening. I will continue to move forward to reach the bl
+15. look_down -> executed  |  I have rotated my torso to 75 degrees to minimize my width. I need to verify one last time that my current orientation is sufficient to pass through without hitting the walls befor
+16. forward -> executed  |  I have rotated my torso to 75 degrees, which significantly reduces my effective width. Looking at the current downward view, the long axis of the bumper is now mostly aligned with 
+17. forward -> executed  |  Since I have already aligned my body to be as thin as possible relative to the path, I will move forward to pass through the gap and reach the blue triangle.
+18. forward -> executed  |  I will continue moving forward to pass through the gap and reach the target.
+19. forward -> executed  |  The blue triangle is directly ahead. I will continue moving forward to reach the target.
+20. forward -> executed  |  The blue triangle is clearly visible straight ahead. I will continue moving forward to reach the target.
+21. forward -> executed  |  The blue triangle is directly in front of me and very close. I will continue moving forward to reach the final goal.
+22. forward -> executed  |  The blue triangle is directly in front of me. One more forward step should bring me to the goal.
+
+Current state:
+- position (x, y, z): [2.000, 0.000, 0.000]
+  x is your forward position along the walkway, and changes only when you use forward/backward; y is always 0; z is how far to the right (negative) or left (positive) of the line you started on you are; it does not change in this task
+- torso rotation (degrees): 75.0
+- head camera yaw offset from straight ahead (degrees): 0.0 (0 = looking straight ahead down your walking direction; you have no side glance in this task)
+- head camera extra downward pitch (degrees): 0.0 (0 = your usual view; +45 = the glance down at your own body you just asked for, which clears on your next action)
+- step limit for this episode: 30
+
+Action history for this episode (9 step(s) already taken, oldest first). This is your own record of this episode: use it to notice what you have already tried and whether it worked.
+- step 0: forward -> executed | your reasoning: The goal is to reach the blue triangle. I need to move forward, but I also need to ensure I can fit through the narrow opening ahead. I will start by moving forward to get closer while I prepare to adjust my torso rotation.
+- step 1: look_down -> executed | your reasoning: To pass through the narrow opening ahead, I need to know my current body width and orientation relative to the path. I will use 'look_down' to see my torso dimensions before I start rotating to fit through the gap.
+- step 2: turn_right -> executed | your reasoning: The downward view confirms that the white bumper is very wide. To fit through the narrow opening ahead, I must rotate my torso to align the long axis of the bumper more closely with my walking direction. I will begin by turning right.
+- step 3: turn_right -> executed | your reasoning: My torso rotation is currently at 15 degrees. Based on the previous successful traversal, I need to rotate my torso significantly more (up to 75 degrees) to minimize my width and fit through the narrow gap ahead. I will continue rotating t…
+- step 4: turn_right -> executed | your reasoning: My current torso rotation is 30 degrees. To fit through the narrow gap ahead, I need to reach a rotation of approximately 75 degrees to minimize my width, as indicated by the successful previous traversal. I will continue rotating to the r…
+- step 5: turn_right -> executed | your reasoning: My current torso rotation is 45 degrees. To safely pass through the narrow gap ahead, I need to continue rotating my torso to reach a 75-degree angle, which minimizes my effective width relative to the walking direction, as demonstrated in…
+- step 6: turn_right -> executed | your reasoning: My current torso rotation is 60 degrees. To minimize my width and safely pass through the narrow gap ahead, I need to reach a rotation of 75 degrees, as established in the successful previous traversal. I will perform one more turn to the…
+- step 7: look_down -> executed | your reasoning: I have reached a torso rotation of 75 degrees, which is the target orientation to minimize my width based on the previous successful traversal. I will now use 'look_down' to verify my profile relative to the walking direction before procee…
+- step 8: forward -> executed | your reasoning: I have successfully rotated my torso to 75 degrees, which is the optimal orientation to pass through the narrow gap ahead based on the previous successful traversal. Now that my profile is minimized, I will begin moving forward toward the…
+
+Reply with exactly one JSON object:
+{"scene_description": "<what the current camera image shows>", "reasoning": "<brief reasoning>", "action": "<action>", "confidence": 0.0}

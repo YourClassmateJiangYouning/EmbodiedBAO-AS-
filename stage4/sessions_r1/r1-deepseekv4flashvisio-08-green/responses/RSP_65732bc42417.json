@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:07:09+08:00",
+    "latency_ms": 3096,
+    "payload_bytes": 210305,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"0a1fe254-242d-4429-829c-12f8c5277c88\",\"object\":\"chat.completion\",\"created\":1794208027,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle sits on a raised ledge just ahead, framed by a narrow gap between a striped wall panel on the left and a blue/purple panel on the right. The dark red carpet floor fills the foreground, and the opening appears tight relative to the robot's width.\\\", \\\"reasoning\\\": \\\"Forward has been blocked repeatedly at many torso rotations, and the target is on a raised ledge slightly above the floor. Backing up gave clearance; now I should re-approach with a narrower presented width. My torso is at 15 degrees right; turning further to align the narrow dimension toward the gap may let me pass. I'll turn right to reduce presented width before trying forward again.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.35}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3282,\"completion_tokens\":160,\"total_tokens\":3442,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2642},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle sits on a raised ledge just ahead, framed by a narrow gap between a striped wall panel on the left and a blue/purple panel on the right. The dark red carpet floor fills the foreground, and the opening appears tight relative to the robot's width.\", \"reasoning\": \"Forward has been blocked repeatedly at many torso rotations, and the target is on a raised ledge slightly above the floor. Backing up gave clearance; now I should re-approach with a narrower presented width. My torso is at 15 degrees right; turning further to align the narrow dimension toward the gap may let me pass. I'll turn right to reduce presented width before trying forward again.\", \"action\": \"turn_right\", \"confidence\": 0.35}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle sits on a raised ledge just ahead, framed by a narrow gap between a striped wall panel on the left and a blue/purple panel on the right. The dark red carpet floor fills the foreground, and the opening appears tight relative to the robot's width.",
+      "reasoning": "Forward has been blocked repeatedly at many torso rotations, and the target is on a raised ledge slightly above the floor. Backing up gave clearance; now I should re-approach with a narrower presented width. My torso is at 15 degrees right; turning further to align the narrow dimension toward the gap may let me pass. I'll turn right to reduce presented width before trying forward again.",
+      "action": "turn_right",
+      "confidence": 0.35
+    },
+    "action": "turn_right"
+  }
+]

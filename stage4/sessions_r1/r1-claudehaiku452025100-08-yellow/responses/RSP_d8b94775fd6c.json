@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:30:42+08:00",
+    "latency_ms": 6396,
+    "payload_bytes": 164446,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_cubqjb7bxbzjd756oh5bvbemsdm2tkbib225wiikqkcjj5nulfoa\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198642,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the bright yellow arrow on the far wall, which is my target destination. The arrow is clearly visible and pointing to the right. The scene shows a dark interior space with the illuminated yellow arrow sign mounted on the wall ahead. There appears to be a wall panel or obstacle structure in the middle distance.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=8.000 after 26 steps, with my torso rotated 75 degrees to the right. The yellow arrow is clearly visible on the far wall ahead. Looking at my action history, I've been navigating around wall_panel obstacles that blocked my direct forward path. I successfully moved forward on step 25 to reach x=8.000. The yellow arrow is my target and appears to be getting closer. I should continue moving forward toward it.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.75\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":4309,\"completion_tokens\":209,\"total_tokens\":4518,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":4309,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":209,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":4309,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the bright yellow arrow on the far wall, which is my target destination. The arrow is clearly visible and pointing to the right. The scene shows a dark interior space with the illuminated yellow arrow sign mounted on the wall ahead. There appears to be a wall panel or obstacle structure in the middle distance.\",\n  \"reasoning\": \"I am at position x=8.000 after 26 steps, with my torso rotated 75 degrees to the right. The yellow arrow is clearly visible on the far wall ahead. Looking at my action history, I've been navigating around wall_panel obstacles that blocked my direct forward path. I successfully moved forward on step 25 to reach x=8.000. The yellow arrow is my target and appears to be getting closer. I should continue moving forward toward it.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.75\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the bright yellow arrow on the far wall, which is my target destination. The arrow is clearly visible and pointing to the right. The scene shows a dark interior space with the illuminated yellow arrow sign mounted on the wall ahead. There appears to be a wall panel or obstacle structure in the middle distance.",
+      "reasoning": "I am at position x=8.000 after 26 steps, with my torso rotated 75 degrees to the right. The yellow arrow is clearly visible on the far wall ahead. Looking at my action history, I've been navigating around wall_panel obstacles that blocked my direct forward path. I successfully moved forward on step 25 to reach x=8.000. The yellow arrow is my target and appears to be getting closer. I should continue moving forward toward it.",
+      "action": "forward",
+      "confidence": 0.75
+    },
+    "action": "forward"
+  }
+]

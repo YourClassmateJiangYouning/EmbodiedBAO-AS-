@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:31:46+08:00",
+    "latency_ms": 6650,
+    "payload_bytes": 245159,
+    "finish_reason": "stop",
+    "reasoning_tokens": 30,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"787ca0fe-4522-4d99-be00-54ebc6b5280e_d9d1df4792164b0694d5b3cfc02dbb18\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead down the walking direction at a narrow dark opening in the far wall, with a yellow right-pointing arrow mounted below the opening on the far side. Red carpet leads toward the opening, flanked by decorated wall panels on both sides.\\\", \\\"reasoning\\\": \\\"My torso rotation is at 75 degrees after five turn_left actions. I need to reach 90 degrees to present my thinnest profile (body thickness) to the narrow opening, since my wide plate was blocked earlier. One more turn_left will bring me to 90 degrees.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need 90 degrees. Currently 75 degrees after step 17. Need one more turn_left to reach 90.\"}}],\"created\":1794209506,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":171,\"prompt_tokens\":3146,\"total_tokens\":3317,\"completion_tokens_details\":{\"reasoning_tokens\":30},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead down the walking direction at a narrow dark opening in the far wall, with a yellow right-pointing arrow mounted below the opening on the far side. Red carpet leads toward the opening, flanked by decorated wall panels on both sides.\", \"reasoning\": \"My torso rotation is at 75 degrees after five turn_left actions. I need to reach 90 degrees to present my thinnest profile (body thickness) to the narrow opening, since my wide plate was blocked earlier. One more turn_left will bring me to 90 degrees.\", \"action\": \"turn_left\", \"confidence\": 0.85}",
+    "reasoning_content": "We need 90 degrees. Currently 75 degrees after step 17. Need one more turn_left to reach 90.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead down the walking direction at a narrow dark opening in the far wall, with a yellow right-pointing arrow mounted below the opening on the far side. Red carpet leads toward the opening, flanked by decorated wall panels on both sides.",
+      "reasoning": "My torso rotation is at 75 degrees after five turn_left actions. I need to reach 90 degrees to present my thinnest profile (body thickness) to the narrow opening, since my wide plate was blocked earlier. One more turn_left will bring me to 90 degrees.",
+      "action": "turn_left",
+      "confidence": 0.85
+    },
+    "action": "turn_left"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:17:25+08:00",
+    "latency_ms": 2656,
+    "payload_bytes": 173192,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"93c9a688-aa65-4a87-8538-6e2b6573455e\",\"object\":\"chat.completion\",\"created\":1794208644,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is directly ahead, mounted on a low dark panel that sits at body height, blocking direct forward motion. The arrow is very close and centered in view.\\\", \\\"reasoning\\\": \\\"Forward steps have been repeatedly blocked by the low wall_panel holding the arrow, and turning does not change walking direction. Backing up then moving forward succeeded once, so the panel may be passable at a slightly different distance. I will back up slightly to reset clearance, then attempt forward again.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2769,\"completion_tokens\":120,\"total_tokens\":2889,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2129},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is directly ahead, mounted on a low dark panel that sits at body height, blocking direct forward motion. The arrow is very close and centered in view.\", \"reasoning\": \"Forward steps have been repeatedly blocked by the low wall_panel holding the arrow, and turning does not change walking direction. Backing up then moving forward succeeded once, so the panel may be passable at a slightly different distance. I will back up slightly to reset clearance, then attempt forward again.\", \"action\": \"backward\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is directly ahead, mounted on a low dark panel that sits at body height, blocking direct forward motion. The arrow is very close and centered in view.",
+      "reasoning": "Forward steps have been repeatedly blocked by the low wall_panel holding the arrow, and turning does not change walking direction. Backing up then moving forward succeeded once, so the panel may be passable at a slightly different distance. I will back up slightly to reset clearance, then attempt forward again.",
+      "action": "backward",
+      "confidence": 0.4
+    },
+    "action": "backward"
+  }
+]

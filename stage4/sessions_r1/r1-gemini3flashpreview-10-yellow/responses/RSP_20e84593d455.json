@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:31:26+08:00",
+    "latency_ms": 6643,
+    "payload_bytes": 384228,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081031209976393178268d9d60eVzraqT\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794133886,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just inside the dark opening. The view is straight ahead along the walking path.\\\",\\n  \\\"reasoning\\\": \\\"My torso rotation is currently at 15.0 degrees. Based on my previous look_down action, I am a wide robot with a white bumper. To fit through the narrow opening ahead, I need to be oriented sideways (90 degrees) to present my narrowest profile. I will continue turning right to reach that orientation before I get too close to the opening.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2146,\"completion_tokens\":157,\"total_tokens\":2303,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2146,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":157,\"totalTokenCount\":2303,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1057}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":157}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1057,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":157,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just inside the dark opening. The view is straight ahead along the walking path.\",\n  \"reasoning\": \"My torso rotation is currently at 15.0 degrees. Based on my previous look_down action, I am a wide robot with a white bumper. To fit through the narrow opening ahead, I need to be oriented sideways (90 degrees) to present my narrowest profile. I will continue turning right to reach that orientation before I get too close to the opening.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading towards a narrow opening in a wall decorated with geometric patterns. A yellow arrow is visible on the floor just inside the dark opening. The view is straight ahead along the walking path.",
+      "reasoning": "My torso rotation is currently at 15.0 degrees. Based on my previous look_down action, I am a wide robot with a white bumper. To fit through the narrow opening ahead, I need to be oriented sideways (90 degrees) to present my narrowest profile. I will continue turning right to reach that orientation before I get too close to the opening.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

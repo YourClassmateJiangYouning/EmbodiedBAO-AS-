@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:23:31+08:00",
+    "latency_ms": 9799,
+    "payload_bytes": 264283,
+    "finish_reason": "stop",
+    "reasoning_tokens": 54,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"3638ba62-3eed-4054-a351-8bc742c2c4f5_8884d18eb3884479ad105d00bf46e242\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle is now very close, centered directly ahead just beyond the red carpet edge on the floor, with a dark draped object and brown chair behind it. The rectangle appears to be within one step's distance (75cm) directly in my path.\\\", \\\"reasoning\\\": \\\"I have taken 7 forward steps successfully with torso rotation 0 degrees (narrowest profile). The green rectangle is directly ahead and appears to be within one more forward step. My position x=6.5, and moving forward 75cm should bring me right to the rectangle. No turning is needed since I'm aligned straight ahead.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The green rectangle is very close now. Position is x=6.500. The goal is \\\"reach the green rectangle on the far wall.\\\" It appears just ahead, maybe one more forward step. Let me move forward one more step to reach it.\"}}],\"created\":1794212611,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":204,\"prompt_tokens\":2466,\"total_tokens\":2670,\"completion_tokens_details\":{\"reasoning_tokens\":54},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The green rectangle is now very close, centered directly ahead just beyond the red carpet edge on the floor, with a dark draped object and brown chair behind it. The rectangle appears to be within one step's distance (75cm) directly in my path.\", \"reasoning\": \"I have taken 7 forward steps successfully with torso rotation 0 degrees (narrowest profile). The green rectangle is directly ahead and appears to be within one more forward step. My position x=6.5, and moving forward 75cm should bring me right to the rectangle. No turning is needed since I'm aligned straight ahead.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "The green rectangle is very close now. Position is x=6.500. The goal is \"reach the green rectangle on the far wall.\" It appears just ahead, maybe one more forward step. Let me move forward one more step to reach it.",
+    "parsed": {
+      "scene_description": "The green rectangle is now very close, centered directly ahead just beyond the red carpet edge on the floor, with a dark draped object and brown chair behind it. The rectangle appears to be within one step's distance (75cm) directly in my path.",
+      "reasoning": "I have taken 7 forward steps successfully with torso rotation 0 degrees (narrowest profile). The green rectangle is directly ahead and appears to be within one more forward step. My position x=6.5, and moving forward 75cm should bring me right to the rectangle. No turning is needed since I'm aligned straight ahead.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

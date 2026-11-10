@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:14:12+08:00",
+    "latency_ms": 2312,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"3adfa083-143a-48e0-a1d9-4e2041c0f4a6\",\"object\":\"chat.completion\",\"created\":1794208451,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is visible straight ahead, close but slightly below eye level, framed by a narrow opening with wall panels on both sides. The floor in front is dark.\\\", \\\"reasoning\\\": \\\"Forward was blocked at step 13, likely because the torso at 30 degrees right presented a wide diagonal profile to the narrow opening. I turned left once, bringing the torso to 15 degrees right. I should continue turning left to reduce the presented width further, then attempt forward again.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.55}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2443,\"completion_tokens\":118,\"total_tokens\":2561,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1803},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is visible straight ahead, close but slightly below eye level, framed by a narrow opening with wall panels on both sides. The floor in front is dark.\", \"reasoning\": \"Forward was blocked at step 13, likely because the torso at 30 degrees right presented a wide diagonal profile to the narrow opening. I turned left once, bringing the torso to 15 degrees right. I should continue turning left to reduce the presented width further, then attempt forward again.\", \"action\": \"turn_left\", \"confidence\": 0.55}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is visible straight ahead, close but slightly below eye level, framed by a narrow opening with wall panels on both sides. The floor in front is dark.",
+      "reasoning": "Forward was blocked at step 13, likely because the torso at 30 degrees right presented a wide diagonal profile to the narrow opening. I turned left once, bringing the torso to 15 degrees right. I should continue turning left to reduce the presented width further, then attempt forward again.",
+      "action": "turn_left",
+      "confidence": 0.55
+    },
+    "action": "turn_left"
+  }
+]

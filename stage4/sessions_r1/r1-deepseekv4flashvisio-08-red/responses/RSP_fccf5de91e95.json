@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:07:48+08:00",
+    "latency_ms": 3316,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ffb9b1c1-96f3-425b-b5ab-eb166b108cd8\",\"object\":\"chat.completion\",\"created\":1794208066,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The downward glance shows the robot's own body from the front: two wheels on either side, a wide white chassis with a flat white plate on top, and a bundle of cables in the center. The body's width spans roughly the full frame, with the wheels defining the widest points. The floor ahead is red carpet.\\\", \\\"reasoning\\\": \\\"Forward was blocked by a wall panel at step 9, and the goal is straight ahead. Since turning does not change walking direction but does change how the body's width is oriented, I should rotate my torso so the narrower dimension faces the opening. The body appears wider than it is thick, so turning 90 degrees would present the thinner profile. I'll begin turning right to reorient the body's width relative to the gap.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2053,\"completion_tokens\":178,\"total_tokens\":2231,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1285},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The downward glance shows the robot's own body from the front: two wheels on either side, a wide white chassis with a flat white plate on top, and a bundle of cables in the center. The body's width spans roughly the full frame, with the wheels defining the widest points. The floor ahead is red carpet.\", \"reasoning\": \"Forward was blocked by a wall panel at step 9, and the goal is straight ahead. Since turning does not change walking direction but does change how the body's width is oriented, I should rotate my torso so the narrower dimension faces the opening. The body appears wider than it is thick, so turning 90 degrees would present the thinner profile. I'll begin turning right to reorient the body's width relative to the gap.\", \"action\": \"turn_right\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The downward glance shows the robot's own body from the front: two wheels on either side, a wide white chassis with a flat white plate on top, and a bundle of cables in the center. The body's width spans roughly the full frame, with the wheels defining the widest points. The floor ahead is red carpet.",
+      "reasoning": "Forward was blocked by a wall panel at step 9, and the goal is straight ahead. Since turning does not change walking direction but does change how the body's width is oriented, I should rotate my torso so the narrower dimension faces the opening. The body appears wider than it is thick, so turning 90 degrees would present the thinner profile. I'll begin turning right to reorient the body's width relative to the gap.",
+      "action": "turn_right",
+      "confidence": 0.6
+    },
+    "action": "turn_right"
+  }
+]

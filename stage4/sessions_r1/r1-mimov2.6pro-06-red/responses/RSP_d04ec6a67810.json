@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:15:29+08:00",
+    "latency_ms": 9869,
+    "payload_bytes": 339424,
+    "finish_reason": "stop",
+    "reasoning_tokens": 118,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"71df36aa-2e69-4510-8854-e589f0dcbdc8_74f4bb952c2c4f8a9d0651d5f9471b79\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading straight ahead toward a narrow dark doorway in a wall decorated with purple zigzags and colorful shapes. The red circle is visible through the opening in the far wall. The floor to the left has a colorful patterned design. My path along the carpet is clear all the way to the opening.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead through the narrow opening, and the carpeted path is unobstructed. My torso is already turned 15 degrees left to narrow my profile for the gap, and I must not turn further once my shoulders reach the opening. The best action is to keep moving forward toward the circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue moving forward toward the red circle through the narrow opening. Torso is turned 15 degrees left already, which narrows profile. Just keep going forward.\\n\\nWe're at x=2.75 after 3 forward moves? Actually step 1, 3, 4 were forward = 2.25 cm... position 2.75 suggests starting at 0.5. Anyway continue forward.\\n\\n30 step limit, 5 used. Continue forward until reaching the circle. The circle appears near the doorway. Just keep moving forward.\"}}],\"created\":1794208529,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":281,\"prompt_tokens\":2262,\"total_tokens\":2543,\"completion_tokens_details\":{\"reasoning_tokens\":118},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted walkway leading straight ahead toward a narrow dark doorway in a wall decorated with purple zigzags and colorful shapes. The red circle is visible through the opening in the far wall. The floor to the left has a colorful patterned design. My path along the carpet is clear all the way to the opening.\", \"reasoning\": \"The red circle is directly ahead through the narrow opening, and the carpeted path is unobstructed. My torso is already turned 15 degrees left to narrow my profile for the gap, and I must not turn further once my shoulders reach the opening. The best action is to keep moving forward toward the circle.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "We need to continue moving forward toward the red circle through the narrow opening. Torso is turned 15 degrees left already, which narrows profile. Just keep going forward.\n\nWe're at x=2.75 after 3 forward moves? Actually step 1, 3, 4 were forward = 2.25 cm... position 2.75 suggests starting at 0.5. Anyway continue forward.\n\n30 step limit, 5 used. Continue forward until reaching the circle. The circle appears near the doorway. Just keep moving forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading straight ahead toward a narrow dark doorway in a wall decorated with purple zigzags and colorful shapes. The red circle is visible through the opening in the far wall. The floor to the left has a colorful patterned design. My path along the carpet is clear all the way to the opening.",
+      "reasoning": "The red circle is directly ahead through the narrow opening, and the carpeted path is unobstructed. My torso is already turned 15 degrees left to narrow my profile for the gap, and I must not turn further once my shoulders reach the opening. The best action is to keep moving forward toward the circle.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

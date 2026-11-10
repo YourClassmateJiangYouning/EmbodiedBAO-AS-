@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:11:30+08:00",
+    "latency_ms": 2567,
+    "payload_bytes": 167433,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"b2d6f5df-7028-4429-b823-febc59a77ba7\",\"object\":\"chat.completion\",\"created\":1794208289,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle is directly ahead, mounted on a raised platform/ledge just in front of the robot. The carpeted floor is visible in the foreground, and the triangle appears very close, filling much of the view.\\\", \\\"reasoning\\\": \\\"The goal is immediately ahead but forward steps keep getting blocked by the low ledge at wheel height. Backing up to gain clearance then moving forward has worked before, so I'll back up one step to reposition before attempting forward again.\\\", \\\"action\\\": \\\"backward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3052,\"completion_tokens\":115,\"total_tokens\":3167,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2412},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle is directly ahead, mounted on a raised platform/ledge just in front of the robot. The carpeted floor is visible in the foreground, and the triangle appears very close, filling much of the view.\", \"reasoning\": \"The goal is immediately ahead but forward steps keep getting blocked by the low ledge at wheel height. Backing up to gain clearance then moving forward has worked before, so I'll back up one step to reposition before attempting forward again.\", \"action\": \"backward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle is directly ahead, mounted on a raised platform/ledge just in front of the robot. The carpeted floor is visible in the foreground, and the triangle appears very close, filling much of the view.",
+      "reasoning": "The goal is immediately ahead but forward steps keep getting blocked by the low ledge at wheel height. Backing up to gain clearance then moving forward has worked before, so I'll back up one step to reposition before attempting forward again.",
+      "action": "backward",
+      "confidence": 0.6
+    },
+    "action": "backward"
+  }
+]

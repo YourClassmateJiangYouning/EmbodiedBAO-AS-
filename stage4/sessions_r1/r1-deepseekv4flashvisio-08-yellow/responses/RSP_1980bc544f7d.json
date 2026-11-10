@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:09:24+08:00",
+    "latency_ms": 2978,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"3c461d57-938e-4fbe-8f6d-ceb7e97e6317\",\"object\":\"chat.completion\",\"created\":1794208163,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is very close and centered slightly right in view, mounted on a dark wall panel above the red carpet; the sign appears large, indicating the robot is nearly at the goal.\\\", \\\"reasoning\\\": \\\"The forward step was blocked by a wall panel, but the arrow is now very close and slightly right of center. I have already turned right twice (torso now at 30 degrees), which may have widened my body against the opening. Since turning doesn't change my walking direction, and the arrow is essentially straight ahead, I should try forward again to reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2270,\"completion_tokens\":138,\"total_tokens\":2408,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1630},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is very close and centered slightly right in view, mounted on a dark wall panel above the red carpet; the sign appears large, indicating the robot is nearly at the goal.\", \"reasoning\": \"The forward step was blocked by a wall panel, but the arrow is now very close and slightly right of center. I have already turned right twice (torso now at 30 degrees), which may have widened my body against the opening. Since turning doesn't change my walking direction, and the arrow is essentially straight ahead, I should try forward again to reach the goal.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is very close and centered slightly right in view, mounted on a dark wall panel above the red carpet; the sign appears large, indicating the robot is nearly at the goal.",
+      "reasoning": "The forward step was blocked by a wall panel, but the arrow is now very close and slightly right of center. I have already turned right twice (torso now at 30 degrees), which may have widened my body against the opening. Since turning doesn't change my walking direction, and the arrow is essentially straight ahead, I should try forward again to reach the goal.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

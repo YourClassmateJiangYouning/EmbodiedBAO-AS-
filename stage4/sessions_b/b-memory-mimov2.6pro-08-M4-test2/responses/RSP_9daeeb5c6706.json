@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:58:09+08:00",
+    "latency_ms": 8933,
+    "payload_bytes": 383069,
+    "finish_reason": "stop",
+    "reasoning_tokens": 52,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"77c4ce35-5eb0-4e74-a094-0da2b0139565_09981a8de0b6400d9b83b13381651edb\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet walkway extends ahead toward a doorway in the far wall. A small blue triangle marker is visible through the dark opening. Decorative walls with geometric patterns line both sides of the walkway, with tiled floor visible to the left and right of the carpet.\\\", \\\"reasoning\\\": \\\"Following the previous successful traversal, I need to rotate my torso 90 degrees right so my thinner front-to-back dimension faces the opening when passing through. Each turn is 15 degrees, so I need 6 turn_right actions. I'm at 0.5 forward position with the doorway still ahead, giving room to rotate. Starting with the first turn_right.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The blue triangle is visible through the doorway ahead on a red carpet. Following the previous successful traversal, I should rotate 90 degrees (6 turn_right) then go forward. Currently at 0.5 forward position. Let me start turning right.\"}}],\"created\":1794214689,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":212,\"prompt_tokens\":2654,\"total_tokens\":2866,\"completion_tokens_details\":{\"reasoning_tokens\":52},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet walkway extends ahead toward a doorway in the far wall. A small blue triangle marker is visible through the dark opening. Decorative walls with geometric patterns line both sides of the walkway, with tiled floor visible to the left and right of the carpet.\", \"reasoning\": \"Following the previous successful traversal, I need to rotate my torso 90 degrees right so my thinner front-to-back dimension faces the opening when passing through. Each turn is 15 degrees, so I need 6 turn_right actions. I'm at 0.5 forward position with the doorway still ahead, giving room to rotate. Starting with the first turn_right.\", \"action\": \"turn_right\", \"confidence\": 0.85}",
+    "reasoning_content": "The blue triangle is visible through the doorway ahead on a red carpet. Following the previous successful traversal, I should rotate 90 degrees (6 turn_right) then go forward. Currently at 0.5 forward position. Let me start turning right.",
+    "parsed": {
+      "scene_description": "A red carpet walkway extends ahead toward a doorway in the far wall. A small blue triangle marker is visible through the dark opening. Decorative walls with geometric patterns line both sides of the walkway, with tiled floor visible to the left and right of the carpet.",
+      "reasoning": "Following the previous successful traversal, I need to rotate my torso 90 degrees right so my thinner front-to-back dimension faces the opening when passing through. Each turn is 15 degrees, so I need 6 turn_right actions. I'm at 0.5 forward position with the doorway still ahead, giving room to rotate. Starting with the first turn_right.",
+      "action": "turn_right",
+      "confidence": 0.85
+    },
+    "action": "turn_right"
+  }
+]

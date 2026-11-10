@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:17:40+08:00",
+    "latency_ms": 2331,
+    "payload_bytes": 173192,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"d8694576-f4f3-49d4-8ca3-234712868592\",\"object\":\"chat.completion\",\"created\":1794208659,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is directly ahead, very close, mounted on a low panel that blocks forward motion at body height. The sign fills much of the view.\\\", \\\"reasoning\\\": \\\"Forward steps are repeatedly blocked by the low wall_panel holding the arrow. Backing up then moving forward succeeded once, so I just backed up and moved forward successfully at step 23. The arrow is extremely close; trying forward again may reach the goal if the panel is passable at this distance.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.4}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3078,\"completion_tokens\":117,\"total_tokens\":3195,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":2310},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is directly ahead, very close, mounted on a low panel that blocks forward motion at body height. The sign fills much of the view.\", \"reasoning\": \"Forward steps are repeatedly blocked by the low wall_panel holding the arrow. Backing up then moving forward succeeded once, so I just backed up and moved forward successfully at step 23. The arrow is extremely close; trying forward again may reach the goal if the panel is passable at this distance.\", \"action\": \"forward\", \"confidence\": 0.4}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is directly ahead, very close, mounted on a low panel that blocks forward motion at body height. The sign fills much of the view.",
+      "reasoning": "Forward steps are repeatedly blocked by the low wall_panel holding the arrow. Backing up then moving forward succeeded once, so I just backed up and moved forward successfully at step 23. The arrow is extremely close; trying forward again may reach the goal if the panel is passable at this distance.",
+      "action": "forward",
+      "confidence": 0.4
+    },
+    "action": "forward"
+  }
+]

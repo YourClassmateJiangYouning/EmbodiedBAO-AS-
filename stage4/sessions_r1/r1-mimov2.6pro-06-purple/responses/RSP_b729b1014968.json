@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:34:37+08:00",
+    "latency_ms": 8461,
+    "payload_bytes": 279842,
+    "finish_reason": "stop",
+    "reasoning_tokens": 15,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"25c6924d-1629-447b-8540-0969c4426cb5_c1a2c249c56d43999feb2b84de7120a8\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is directly ahead, visible through a narrow dark opening in the patterned wall. A red carpet leads from my position up to the opening. The floor on either side has geometric patterns. The star appears quite close, just at the threshold of the opening.\\\", \\\"reasoning\\\": \\\"My torso remains at 90 degrees rotation, presenting my thin depth dimension to the narrow opening. The star is very close ahead through the opening. I should continue moving forward to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The star is very close ahead through the opening. Keep moving forward.\"}}],\"created\":1794144877,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":139,\"prompt_tokens\":2819,\"total_tokens\":2958,\"completion_tokens_details\":{\"reasoning_tokens\":15},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is directly ahead, visible through a narrow dark opening in the patterned wall. A red carpet leads from my position up to the opening. The floor on either side has geometric patterns. The star appears quite close, just at the threshold of the opening.\", \"reasoning\": \"My torso remains at 90 degrees rotation, presenting my thin depth dimension to the narrow opening. The star is very close ahead through the opening. I should continue moving forward to reach it.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The star is very close ahead through the opening. Keep moving forward.",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is directly ahead, visible through a narrow dark opening in the patterned wall. A red carpet leads from my position up to the opening. The floor on either side has geometric patterns. The star appears quite close, just at the threshold of the opening.",
+      "reasoning": "My torso remains at 90 degrees rotation, presenting my thin depth dimension to the narrow opening. The star is very close ahead through the opening. I should continue moving forward to reach it.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

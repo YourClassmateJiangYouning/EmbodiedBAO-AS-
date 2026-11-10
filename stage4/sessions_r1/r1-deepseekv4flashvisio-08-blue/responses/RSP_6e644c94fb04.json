@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:11:36+08:00",
+    "latency_ms": 2334,
+    "payload_bytes": 167433,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"7b962a40-0e11-49bd-9b07-144583b14d21\",\"object\":\"chat.completion\",\"created\":1794208295,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle is directly ahead, very close, mounted on a raised platform/ledge just above the carpeted floor. The triangle fills much of the view, indicating the goal is nearly reached.\\\", \\\"reasoning\\\": \\\"The goal is immediately ahead and centered. The last forward step succeeded after backing up for clearance, so continuing forward should close the remaining gap to the triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3169,\"completion_tokens\":94,\"total_tokens\":3263,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2529},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle is directly ahead, very close, mounted on a raised platform/ledge just above the carpeted floor. The triangle fills much of the view, indicating the goal is nearly reached.\", \"reasoning\": \"The goal is immediately ahead and centered. The last forward step succeeded after backing up for clearance, so continuing forward should close the remaining gap to the triangle.\", \"action\": \"forward\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle is directly ahead, very close, mounted on a raised platform/ledge just above the carpeted floor. The triangle fills much of the view, indicating the goal is nearly reached.",
+      "reasoning": "The goal is immediately ahead and centered. The last forward step succeeded after backing up for clearance, so continuing forward should close the remaining gap to the triangle.",
+      "action": "forward",
+      "confidence": 0.7
+    },
+    "action": "forward"
+  }
+]

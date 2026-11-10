@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:10:34+08:00",
+    "latency_ms": 12588,
+    "payload_bytes": 262365,
+    "finish_reason": "stop",
+    "reasoning_tokens": 80,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"10691d4b-33aa-42a7-8927-ed94697e6dfb_d30e94fdd1f344769e8e3cc51b3c9510\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpet leads straight ahead toward a dark opening in a wall panel with decorative shapes on both sides. The purple four-pointed star is visible centered in the dark opening ahead. The path is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"I'm at x=4.25 after 5 forward steps. The previous traversal reached the opening's face around x≈7.25 (after ~10 forward steps), so I need roughly 4 more forward steps before I have to deal with the narrow opening. The path is clear, so I continue forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=4.25, after 5 forward steps. Opening at ~x=7.25. Need ~4 more forwards to reach opening, then turn sequence. Previous traversal: forward at 10 steps reached x≈7.25 blocked. Then turned to 75 degrees and passed through. We have 25 steps left. Continue forward.\"}}],\"created\":1794215434,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":220,\"prompt_tokens\":3267,\"total_tokens\":3487,\"completion_tokens_details\":{\"reasoning_tokens\":80},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpet leads straight ahead toward a dark opening in a wall panel with decorative shapes on both sides. The purple four-pointed star is visible centered in the dark opening ahead. The path is clear and unobstructed.\", \"reasoning\": \"I'm at x=4.25 after 5 forward steps. The previous traversal reached the opening's face around x≈7.25 (after ~10 forward steps), so I need roughly 4 more forward steps before I have to deal with the narrow opening. The path is clear, so I continue forward.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We are at x=4.25, after 5 forward steps. Opening at ~x=7.25. Need ~4 more forwards to reach opening, then turn sequence. Previous traversal: forward at 10 steps reached x≈7.25 blocked. Then turned to 75 degrees and passed through. We have 25 steps left. Continue forward.",
+    "parsed": {
+      "scene_description": "Red carpet leads straight ahead toward a dark opening in a wall panel with decorative shapes on both sides. The purple four-pointed star is visible centered in the dark opening ahead. The path is clear and unobstructed.",
+      "reasoning": "I'm at x=4.25 after 5 forward steps. The previous traversal reached the opening's face around x≈7.25 (after ~10 forward steps), so I need roughly 4 more forward steps before I have to deal with the narrow opening. The path is clear, so I continue forward.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

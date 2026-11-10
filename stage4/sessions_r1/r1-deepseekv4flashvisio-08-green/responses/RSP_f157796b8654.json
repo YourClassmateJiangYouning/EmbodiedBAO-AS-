@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:06:59+08:00",
+    "latency_ms": 2523,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"de7c0c3d-5092-4e87-a474-1bc9410fe09f\",\"object\":\"chat.completion\",\"created\":1794208017,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path appears clear right up to the target.\\\", \\\"reasoning\\\": \\\"Forward has been blocked many times at various torso rotations, but the target is extremely close and centered. The blockage may have been a narrow opening that my current orientation (torso at 15 degrees right after the last turn) might now clear. With limited steps remaining, attempting forward once more is the best chance to reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.35}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3075,\"completion_tokens\":125,\"total_tokens\":3200,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2435},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path appears clear right up to the target.\", \"reasoning\": \"Forward has been blocked many times at various torso rotations, but the target is extremely close and centered. The blockage may have been a narrow opening that my current orientation (torso at 15 degrees right after the last turn) might now clear. With limited steps remaining, attempting forward once more is the best chance to reach the goal.\", \"action\": \"forward\", \"confidence\": 0.35}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is directly ahead, very close, sitting on a light-colored surface with a dark wall behind it. The path appears clear right up to the target.",
+      "reasoning": "Forward has been blocked many times at various torso rotations, but the target is extremely close and centered. The blockage may have been a narrow opening that my current orientation (torso at 15 degrees right after the last turn) might now clear. With limited steps remaining, attempting forward once more is the best chance to reach the goal.",
+      "action": "forward",
+      "confidence": 0.35
+    },
+    "action": "forward"
+  }
+]

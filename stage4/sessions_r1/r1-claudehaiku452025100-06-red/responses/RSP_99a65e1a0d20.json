@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:07:03+08:00",
+    "latency_ms": 6777,
+    "payload_bytes": 186978,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_3lx6fo27ynahuhylmb7q6c2suskfyp5m2u34myb5zrluc37h2seq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794204424,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The red circle target is clearly visible on the far wall, centered and well-lit. There is a large dark rectangular obstacle directly in front of me blocking the most direct path. The obstacle appears to be a tall dark structure. On the left side, there are blue/purple illuminated panels. On the right side, there are similar blue/purple panels. The floor appears dark. My torso is rotated 30 degrees left from my walking direction.\\\",\\n  \\\"reasoning\\\": \\\"I'm at x=5.750 with 18 steps remaining. After turning left twice (30 degrees total) and moving forward, I'm still blocked by the dark obstacle. The red circle is visible above/beyond it. My current strategy of turning left and moving forward hasn't successfully navigated around the obstacle yet. I need to continue forward to try to clear this obstacle, as I've committed to the left-turn navigation strategy. The obstacle may be passable if I continue forward.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.55\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3191,\"completion_tokens\":239,\"total_tokens\":3430,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3191,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":239,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3191,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The red circle target is clearly visible on the far wall, centered and well-lit. There is a large dark rectangular obstacle directly in front of me blocking the most direct path. The obstacle appears to be a tall dark structure. On the left side, there are blue/purple illuminated panels. On the right side, there are similar blue/purple panels. The floor appears dark. My torso is rotated 30 degrees left from my walking direction.\",\n  \"reasoning\": \"I'm at x=5.750 with 18 steps remaining. After turning left twice (30 degrees total) and moving forward, I'm still blocked by the dark obstacle. The red circle is visible above/beyond it. My current strategy of turning left and moving forward hasn't successfully navigated around the obstacle yet. I need to continue forward to try to clear this obstacle, as I've committed to the left-turn navigation strategy. The obstacle may be passable if I continue forward.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.55\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle target is clearly visible on the far wall, centered and well-lit. There is a large dark rectangular obstacle directly in front of me blocking the most direct path. The obstacle appears to be a tall dark structure. On the left side, there are blue/purple illuminated panels. On the right side, there are similar blue/purple panels. The floor appears dark. My torso is rotated 30 degrees left from my walking direction.",
+      "reasoning": "I'm at x=5.750 with 18 steps remaining. After turning left twice (30 degrees total) and moving forward, I'm still blocked by the dark obstacle. The red circle is visible above/beyond it. My current strategy of turning left and moving forward hasn't successfully navigated around the obstacle yet. I need to continue forward to try to clear this obstacle, as I've committed to the left-turn navigation strategy. The obstacle may be passable if I continue forward.",
+      "action": "forward",
+      "confidence": 0.55
+    },
+    "action": "forward"
+  }
+]

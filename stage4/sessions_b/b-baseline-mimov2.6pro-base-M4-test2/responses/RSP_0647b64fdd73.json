@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:53:58+08:00",
+    "latency_ms": 8541,
+    "payload_bytes": 238101,
+    "finish_reason": "stop",
+    "reasoning_tokens": 54,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"8d748d4b-7902-4efe-99ea-b6c716e20b5b_b35a0d5bd1ed48798514c4e66dbc7e38\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted path leading straight ahead toward a blue triangle visible through a narrow opening. Decorated walls with patterns flank the path on both sides. The blue triangle is still at a distance on the far wall.\\\", \\\"reasoning\\\": \\\"The path remains clear along the red carpet with the blue triangle directly ahead. My torso is at 0 degrees, presenting the narrowest profile for the narrow opening. I've been moving forward successfully and should continue toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image shows the red carpet path ahead with the blue triangle visible through the opening. I've been moving forward steadily and the path remains clear. My torso is at 0 degrees rotation, presenting the narrowest profile. I should continue forward toward the blue triangle.\"}}],\"created\":1794214438,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":175,\"prompt_tokens\":2354,\"total_tokens\":2529,\"completion_tokens_details\":{\"reasoning_tokens\":54},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted path leading straight ahead toward a blue triangle visible through a narrow opening. Decorated walls with patterns flank the path on both sides. The blue triangle is still at a distance on the far wall.\", \"reasoning\": \"The path remains clear along the red carpet with the blue triangle directly ahead. My torso is at 0 degrees, presenting the narrowest profile for the narrow opening. I've been moving forward successfully and should continue toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The image shows the red carpet path ahead with the blue triangle visible through the opening. I've been moving forward steadily and the path remains clear. My torso is at 0 degrees rotation, presenting the narrowest profile. I should continue forward toward the blue triangle.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted path leading straight ahead toward a blue triangle visible through a narrow opening. Decorated walls with patterns flank the path on both sides. The blue triangle is still at a distance on the far wall.",
+      "reasoning": "The path remains clear along the red carpet with the blue triangle directly ahead. My torso is at 0 degrees, presenting the narrowest profile for the narrow opening. I've been moving forward successfully and should continue toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

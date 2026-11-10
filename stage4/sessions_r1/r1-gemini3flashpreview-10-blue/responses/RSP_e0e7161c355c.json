@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:33:50+08:00",
+    "latency_ms": 5788,
+    "payload_bytes": 375949,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081033456318010458268d9d6S25GaPeE\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134030,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The view is looking straight down a red carpet towards a narrow opening between two patterned walls. A blue triangle is visible on the far wall through the opening. The floor to the left of the carpet has a white and purple geometric pattern.\\\",\\n  \\\"reasoning\\\": \\\"I have already rotated my torso by 15 degrees to the right (from 0 to 15, as turn_right subtracts from the angle or changes orientation relative to the path). To minimize my width to fit through the narrow gap ahead, I should continue rotating until my side (the thinner dimension) is facing forward. I will rotate another 15 degrees to reach a 30-degree angle.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2226,\"completion_tokens\":170,\"total_tokens\":2396,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2226,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":170,\"totalTokenCount\":2396,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1137},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":170}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1137,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":170,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The view is looking straight down a red carpet towards a narrow opening between two patterned walls. A blue triangle is visible on the far wall through the opening. The floor to the left of the carpet has a white and purple geometric pattern.\",\n  \"reasoning\": \"I have already rotated my torso by 15 degrees to the right (from 0 to 15, as turn_right subtracts from the angle or changes orientation relative to the path). To minimize my width to fit through the narrow gap ahead, I should continue rotating until my side (the thinner dimension) is facing forward. I will rotate another 15 degrees to reach a 30-degree angle.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The view is looking straight down a red carpet towards a narrow opening between two patterned walls. A blue triangle is visible on the far wall through the opening. The floor to the left of the carpet has a white and purple geometric pattern.",
+      "reasoning": "I have already rotated my torso by 15 degrees to the right (from 0 to 15, as turn_right subtracts from the angle or changes orientation relative to the path). To minimize my width to fit through the narrow gap ahead, I should continue rotating until my side (the thinner dimension) is facing forward. I will rotate another 15 degrees to reach a 30-degree angle.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

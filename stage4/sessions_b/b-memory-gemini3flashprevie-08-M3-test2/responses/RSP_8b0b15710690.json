@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:40:08+08:00",
+    "latency_ms": 5017,
+    "payload_bytes": 159645,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T16:40:15+08:00",
+    "latency_ms": 6556,
+    "payload_bytes": 159645,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090840104392890408268d9d6Jg9TJz0x\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213615,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is very close to the yellow arrow on the far wall. The arrow is large and centered in the view, indicating I have reached the end of the walkway.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=7.25 and the yellow arrow is directly in front of me. I will move forward one more time to ensure I have fully reached the target marker.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3718,\"completion_tokens\":107,\"total_tokens\":3825,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3718,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":107,\"totalTokenCount\":3825,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2629},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":107}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2629,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":107,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is very close to the yellow arrow on the far wall. The arrow is large and centered in the view, indicating I have reached the end of the walkway.\",\n  \"reasoning\": \"I am at position x=7.25 and the yellow arrow is directly in front of me. I will move forward one more time to ensure I have fully reached the target marker.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is very close to the yellow arrow on the far wall. The arrow is large and centered in the view, indicating I have reached the end of the walkway.",
+      "reasoning": "I am at position x=7.25 and the yellow arrow is directly in front of me. I will move forward one more time to ensure I have fully reached the target marker.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

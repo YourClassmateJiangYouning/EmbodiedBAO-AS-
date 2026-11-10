@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:27:40+08:00",
+    "latency_ms": 9387,
+    "payload_bytes": 377016,
+    "finish_reason": "stop",
+    "reasoning_tokens": 24,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"b6760b32-9ef9-4c2b-9c33-45693f82d647_eca12e67ad8c471484b37495db61a409\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads forward toward a gap between two decorated wall panels. The purple four-pointed star is visible on a small black stand at the far end of the opening. White/yellow markers line the left edge of the carpet.\\\", \\\"reasoning\\\": \\\"The path ahead is clear and the star is directly ahead through the opening. I should keep moving forward to approach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to move forward toward the star. There's a gap/opening in the wall ahead. Continue forward.\"}}],\"created\":1794137260,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":125,\"prompt_tokens\":2015,\"total_tokens\":2140,\"completion_tokens_details\":{\"reasoning_tokens\":24},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads forward toward a gap between two decorated wall panels. The purple four-pointed star is visible on a small black stand at the far end of the opening. White/yellow markers line the left edge of the carpet.\", \"reasoning\": \"The path ahead is clear and the star is directly ahead through the opening. I should keep moving forward to approach it.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "We need to move forward toward the star. There's a gap/opening in the wall ahead. Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads forward toward a gap between two decorated wall panels. The purple four-pointed star is visible on a small black stand at the far end of the opening. White/yellow markers line the left edge of the carpet.",
+      "reasoning": "The path ahead is clear and the star is directly ahead through the opening. I should keep moving forward to approach it.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

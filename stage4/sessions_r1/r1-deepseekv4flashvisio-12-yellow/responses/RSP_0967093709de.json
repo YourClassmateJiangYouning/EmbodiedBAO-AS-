@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:01:30+08:00",
+    "latency_ms": 2503,
+    "payload_bytes": 241502,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"ecf4443a-6243-4f3f-8df9-99ddb68f6cd2\",\"object\":\"chat.completion\",\"created\":1794207688,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpet leading to a doorway opening with a black sign bearing a yellow arrow pointing right, mounted on the far wall. The path ahead appears clear and the arrow is close.\\\", \\\"reasoning\\\": \\\"The yellow arrow is directly ahead and appears near; the path is unobstructed and my torso is aligned at 0 degrees, so continuing forward advances me toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2021,\"completion_tokens\":98,\"total_tokens\":2119,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1253},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpet leading to a doorway opening with a black sign bearing a yellow arrow pointing right, mounted on the far wall. The path ahead appears clear and the arrow is close.\", \"reasoning\": \"The yellow arrow is directly ahead and appears near; the path is unobstructed and my torso is aligned at 0 degrees, so continuing forward advances me toward the goal.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpet leading to a doorway opening with a black sign bearing a yellow arrow pointing right, mounted on the far wall. The path ahead appears clear and the arrow is close.",
+      "reasoning": "The yellow arrow is directly ahead and appears near; the path is unobstructed and my torso is aligned at 0 degrees, so continuing forward advances me toward the goal.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

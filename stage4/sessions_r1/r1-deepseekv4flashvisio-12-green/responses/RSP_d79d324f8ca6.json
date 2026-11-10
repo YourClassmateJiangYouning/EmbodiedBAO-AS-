@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:59:49+08:00",
+    "latency_ms": 3194,
+    "payload_bytes": 344277,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"9b386aba-50b6-42d8-9770-d98b53e6aa97\",\"object\":\"chat.completion\",\"created\":1794207587,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a narrow opening between two patterned walls, with a bright green rectangle visible on the far wall through the gap. The path appears clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The green target is directly ahead through the narrow opening, and my torso is at 0 degrees so my width faces the gap squarely. The path is clear, so continuing forward brings me closer to the goal. I have 26 steps remaining, plenty to reach the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1817,\"completion_tokens\":120,\"total_tokens\":1937,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1049},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a narrow opening between two patterned walls, with a bright green rectangle visible on the far wall through the gap. The path appears clear and unobstructed.\", \"reasoning\": \"The green target is directly ahead through the narrow opening, and my torso is at 0 degrees so my width faces the gap squarely. The path is clear, so continuing forward brings me closer to the goal. I have 26 steps remaining, plenty to reach the target.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a narrow opening between two patterned walls, with a bright green rectangle visible on the far wall through the gap. The path appears clear and unobstructed.",
+      "reasoning": "The green target is directly ahead through the narrow opening, and my torso is at 0 degrees so my width faces the gap squarely. The path is clear, so continuing forward brings me closer to the goal. I have 26 steps remaining, plenty to reach the target.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

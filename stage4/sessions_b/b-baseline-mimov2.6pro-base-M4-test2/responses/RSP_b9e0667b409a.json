@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:51:54+08:00",
+    "latency_ms": 13034,
+    "payload_bytes": 383069,
+    "finish_reason": "stop",
+    "reasoning_tokens": 16,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"c1501c50-400f-4eaa-ad1f-eedaf87f4347_77422d2feb5a414593353597039f6576\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches straight ahead toward a dark doorway where a small blue triangle glows on the far wall. Colorful patterned floor and walls flank the carpet on both sides.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along the walking direction and the path is clear. The doorway ahead appears narrow, so I should check my body width with look_down before entering to avoid getting stuck.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.7}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear straight ahead to the blue triangle. Just move forward.\"}}],\"created\":1794214313,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":122,\"prompt_tokens\":1907,\"total_tokens\":2029,\"completion_tokens_details\":{\"reasoning_tokens\":16},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches straight ahead toward a dark doorway where a small blue triangle glows on the far wall. Colorful patterned floor and walls flank the carpet on both sides.\", \"reasoning\": \"The blue triangle is directly ahead along the walking direction and the path is clear. The doorway ahead appears narrow, so I should check my body width with look_down before entering to avoid getting stuck.\", \"action\": \"look_down\", \"confidence\": 0.7}",
+    "reasoning_content": "The path is clear straight ahead to the blue triangle. Just move forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches straight ahead toward a dark doorway where a small blue triangle glows on the far wall. Colorful patterned floor and walls flank the carpet on both sides.",
+      "reasoning": "The blue triangle is directly ahead along the walking direction and the path is clear. The doorway ahead appears narrow, so I should check my body width with look_down before entering to avoid getting stuck.",
+      "action": "look_down",
+      "confidence": 0.7
+    },
+    "action": "look_down"
+  }
+]

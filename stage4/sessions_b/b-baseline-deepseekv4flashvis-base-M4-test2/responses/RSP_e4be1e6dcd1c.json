@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:22:53+08:00",
+    "latency_ms": 2826,
+    "payload_bytes": 159784,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"27ecb6bd-50dd-4303-8ac8-6b7a22e9c8d5\",\"object\":\"chat.completion\",\"created\":1794212571,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle on the far wall is now large and centered, filling much of the view, indicating I am very close to the goal. The floor below is dark red and the wall around the triangle is dimly lit.\\\", \\\"reasoning\\\": \\\"The triangle appears large and close, so continuing forward should bring me to the goal. My torso is at 0 degrees, the narrowest presentation, and the path ahead looks clear.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2111,\"completion_tokens\":106,\"total_tokens\":2217,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1343},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle on the far wall is now large and centered, filling much of the view, indicating I am very close to the goal. The floor below is dark red and the wall around the triangle is dimly lit.\", \"reasoning\": \"The triangle appears large and close, so continuing forward should bring me to the goal. My torso is at 0 degrees, the narrowest presentation, and the path ahead looks clear.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle on the far wall is now large and centered, filling much of the view, indicating I am very close to the goal. The floor below is dark red and the wall around the triangle is dimly lit.",
+      "reasoning": "The triangle appears large and close, so continuing forward should bring me to the goal. My torso is at 0 degrees, the narrowest presentation, and the path ahead looks clear.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

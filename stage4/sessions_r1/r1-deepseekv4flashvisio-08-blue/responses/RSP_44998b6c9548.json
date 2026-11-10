@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:10:39+08:00",
+    "latency_ms": 2792,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"63886cf6-d035-4b26-a331-485078319977\",\"object\":\"chat.completion\",\"created\":1794208238,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The downward glance shows the robot's own body from the front: two wide wheels on either side, a white chassis with wiring and a camera mast in the center, and a flat white tray on top. The overall width spans roughly the full frame, with the wheels defining the widest points.\\\", \\\"reasoning\\\": \\\"The body is fairly wide due to the wheels sticking out on both sides. The doorway ahead looked narrow, so I should check whether my width fits. Since turning changes how wide I present to the opening, I may need to rotate my torso to align the narrower dimension with the doorway before proceeding forward.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.5}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2024,\"completion_tokens\":144,\"total_tokens\":2168,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1384},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The downward glance shows the robot's own body from the front: two wide wheels on either side, a white chassis with wiring and a camera mast in the center, and a flat white tray on top. The overall width spans roughly the full frame, with the wheels defining the widest points.\", \"reasoning\": \"The body is fairly wide due to the wheels sticking out on both sides. The doorway ahead looked narrow, so I should check whether my width fits. Since turning changes how wide I present to the opening, I may need to rotate my torso to align the narrower dimension with the doorway before proceeding forward.\", \"action\": \"turn_left\", \"confidence\": 0.5}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The downward glance shows the robot's own body from the front: two wide wheels on either side, a white chassis with wiring and a camera mast in the center, and a flat white tray on top. The overall width spans roughly the full frame, with the wheels defining the widest points.",
+      "reasoning": "The body is fairly wide due to the wheels sticking out on both sides. The doorway ahead looked narrow, so I should check whether my width fits. Since turning changes how wide I present to the opening, I may need to rotate my torso to align the narrower dimension with the doorway before proceeding forward.",
+      "action": "turn_left",
+      "confidence": 0.5
+    },
+    "action": "turn_left"
+  }
+]

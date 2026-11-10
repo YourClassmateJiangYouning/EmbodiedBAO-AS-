@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:40:03+08:00",
+    "latency_ms": 12242,
+    "payload_bytes": 168764,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090839590482798268268d9d6YsnDsras\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213603,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera is looking straight ahead at a yellow arrow pointing right, which is placed on the floor at the end of a red carpeted walkway. The arrow is very close now.\\\", \\\"reasoning\\\": \\\"I am at position x=6.5 and have already rotated my torso to 90 degrees to fit through the narrow passage. I am now very close to the yellow arrow target. I will move forward to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3658,\"completion_tokens\":107,\"total_tokens\":3765,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3658,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":107,\"totalTokenCount\":3765,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2569}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":107}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2569,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":107,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera is looking straight ahead at a yellow arrow pointing right, which is placed on the floor at the end of a red carpeted walkway. The arrow is very close now.\", \"reasoning\": \"I am at position x=6.5 and have already rotated my torso to 90 degrees to fit through the narrow passage. I am now very close to the yellow arrow target. I will move forward to reach it.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight ahead at a yellow arrow pointing right, which is placed on the floor at the end of a red carpeted walkway. The arrow is very close now.",
+      "reasoning": "I am at position x=6.5 and have already rotated my torso to 90 degrees to fit through the narrow passage. I am now very close to the yellow arrow target. I will move forward to reach it.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

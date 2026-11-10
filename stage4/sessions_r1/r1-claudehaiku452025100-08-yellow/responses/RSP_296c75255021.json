@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:28:56+08:00",
+    "latency_ms": 5028,
+    "payload_bytes": 161097,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T12:29:07+08:00",
+    "latency_ms": 10381,
+    "payload_bytes": 161097,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_x2vvuqdmty3egx6l3n5lznhgfgnivqr3u3m3bqrzocj7pl4a2yyq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794198547,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the bright yellow arrow target on the far wall, clearly visible and centered in my view. The arrow is pointing to the right. On the left side of my view, there is a dark wall panel or obstacle that is blocking my direct forward path. The environment is dimly lit with the yellow arrow being the most prominent feature.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=7.250 with my torso rotated 30 degrees to the right (after turning right twice on steps 10 and 12). I have been blocked by a wall_panel obstacle when attempting to move forward. My walking direction remains fixed toward the yellow arrow on the far wall. Since I cannot move forward due to the obstacle, and I've already turned right twice, I should continue turning right to navigate around this wall panel. This will allow me to eventually find a path forward toward the yellow arrow.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.75\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3309,\"completion_tokens\":225,\"total_tokens\":3534,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3309,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":225,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3309,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the bright yellow arrow target on the far wall, clearly visible and centered in my view. The arrow is pointing to the right. On the left side of my view, there is a dark wall panel or obstacle that is blocking my direct forward path. The environment is dimly lit with the yellow arrow being the most prominent feature.\",\n  \"reasoning\": \"I am at position x=7.250 with my torso rotated 30 degrees to the right (after turning right twice on steps 10 and 12). I have been blocked by a wall_panel obstacle when attempting to move forward. My walking direction remains fixed toward the yellow arrow on the far wall. Since I cannot move forward due to the obstacle, and I've already turned right twice, I should continue turning right to navigate around this wall panel. This will allow me to eventually find a path forward toward the yellow arrow.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.75\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the bright yellow arrow target on the far wall, clearly visible and centered in my view. The arrow is pointing to the right. On the left side of my view, there is a dark wall panel or obstacle that is blocking my direct forward path. The environment is dimly lit with the yellow arrow being the most prominent feature.",
+      "reasoning": "I am at position x=7.250 with my torso rotated 30 degrees to the right (after turning right twice on steps 10 and 12). I have been blocked by a wall_panel obstacle when attempting to move forward. My walking direction remains fixed toward the yellow arrow on the far wall. Since I cannot move forward due to the obstacle, and I've already turned right twice, I should continue turning right to navigate around this wall panel. This will allow me to eventually find a path forward toward the yellow arrow.",
+      "action": "turn_right",
+      "confidence": 0.75
+    },
+    "action": "turn_right"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:38:42+08:00",
+    "latency_ms": 6801,
+    "payload_bytes": 371265,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090838367913620868268d9d67BFx1T0i\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213522,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking straight down a red carpeted walkway towards a narrow opening in a wall. A yellow arrow is visible on the floor beyond the opening. The walls on either side of the opening have a purple and white geometric pattern.\\\",\\n  \\\"reasoning\\\": \\\"My current torso rotation is 45 degrees. To minimize my width and safely pass through the narrow gap ahead, I need to reach a 90-degree rotation (profile view). I will continue turning right in 15-degree increments.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2986,\"completion_tokens\":135,\"total_tokens\":3121,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2986,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":135,\"totalTokenCount\":3121,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1897},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":135}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1897,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":135,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking straight down a red carpeted walkway towards a narrow opening in a wall. A yellow arrow is visible on the floor beyond the opening. The walls on either side of the opening have a purple and white geometric pattern.\",\n  \"reasoning\": \"My current torso rotation is 45 degrees. To minimize my width and safely pass through the narrow gap ahead, I need to reach a 90-degree rotation (profile view). I will continue turning right in 15-degree increments.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking straight down a red carpeted walkway towards a narrow opening in a wall. A yellow arrow is visible on the floor beyond the opening. The walls on either side of the opening have a purple and white geometric pattern.",
+      "reasoning": "My current torso rotation is 45 degrees. To minimize my width and safely pass through the narrow gap ahead, I need to reach a 90-degree rotation (profile view). I will continue turning right in 15-degree increments.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

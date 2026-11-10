@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:39:27+08:00",
+    "latency_ms": 6794,
+    "payload_bytes": 286928,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_r24q7jhnphab7s32tqsqu6e5qrct5tyidmkhioplapli7omfxjnq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794199167,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see a large dark maroon/burgundy obstacle directly ahead blocking my path. The green rectangle target is visible on the far wall behind/above the obstacle. The obstacle appears to be a tall rectangular structure. On the left side of my view, there is open floor space. My torso is currently rotated 15 degrees to the left.\\\",\\n  \\\"reasoning\\\": \\\"I turned left in the previous step (step 6) to rotate my torso 15 degrees left, which narrows my body profile on the left side. The maroon obstacle is still blocking my direct forward path. Since I've rotated my torso left, I should now attempt to move forward. My walking direction remains fixed toward the green rectangle, so moving forward will take me toward the target. The left-rotated torso should allow me to pass by the obstacle on the left side if there is sufficient clearance.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.72\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2832,\"completion_tokens\":225,\"total_tokens\":3057,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2832,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":225,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2832,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see a large dark maroon/burgundy obstacle directly ahead blocking my path. The green rectangle target is visible on the far wall behind/above the obstacle. The obstacle appears to be a tall rectangular structure. On the left side of my view, there is open floor space. My torso is currently rotated 15 degrees to the left.\",\n  \"reasoning\": \"I turned left in the previous step (step 6) to rotate my torso 15 degrees left, which narrows my body profile on the left side. The maroon obstacle is still blocking my direct forward path. Since I've rotated my torso left, I should now attempt to move forward. My walking direction remains fixed toward the green rectangle, so moving forward will take me toward the target. The left-rotated torso should allow me to pass by the obstacle on the left side if there is sufficient clearance.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.72\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see a large dark maroon/burgundy obstacle directly ahead blocking my path. The green rectangle target is visible on the far wall behind/above the obstacle. The obstacle appears to be a tall rectangular structure. On the left side of my view, there is open floor space. My torso is currently rotated 15 degrees to the left.",
+      "reasoning": "I turned left in the previous step (step 6) to rotate my torso 15 degrees left, which narrows my body profile on the left side. The maroon obstacle is still blocking my direct forward path. Since I've rotated my torso left, I should now attempt to move forward. My walking direction remains fixed toward the green rectangle, so moving forward will take me toward the target. The left-rotated torso should allow me to pass by the obstacle on the left side if there is sufficient clearance.",
+      "action": "forward",
+      "confidence": 0.72
+    },
+    "action": "forward"
+  }
+]

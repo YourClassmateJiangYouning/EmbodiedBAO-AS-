@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:16:35+08:00",
+    "latency_ms": 9230,
+    "payload_bytes": 319893,
+    "finish_reason": "stop",
+    "reasoning_tokens": 138,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e042d49a-aec7-40ed-91f9-d938c892e216_b4248fd54d024b178d8af6953c091c3b\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpeted floor stretching ahead toward a narrow opening between two decorated wall panels. Through the opening, a red circle target is visible on a dark panel at the far wall. The path is clear and straight ahead.\\\", \\\"reasoning\\\": \\\"I've confirmed my width via look_down and determined I'm at minimum width at 0 degrees rotation. The path is clear straight ahead toward the red circle through the narrow opening. I should continue moving forward toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me analyze the current situation. The robot is at x=3.500, facing the red circle through a narrow opening. The image shows the red circle ahead through a narrow opening between two wall panels. The path is a red carpet leading straight to it.\\n\\nThe robot has already taken 5 steps: 3 forward, 1 look_down, 1 forward. It's now at x=3.5.\\n\\nI need to continue moving forward toward the red circle. The opening appears narrow but the robot has already checked its width and determined it's widest at 0 degrees rotation. The path is clear ahead.\\n\\nLet me just keep going forward toward the goal.\"}}],\"created\":1794136594,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":254,\"prompt_tokens\":2255,\"total_tokens\":2509,\"completion_tokens_details\":{\"reasoning_tokens\":138},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpeted floor stretching ahead toward a narrow opening between two decorated wall panels. Through the opening, a red circle target is visible on a dark panel at the far wall. The path is clear and straight ahead.\", \"reasoning\": \"I've confirmed my width via look_down and determined I'm at minimum width at 0 degrees rotation. The path is clear straight ahead toward the red circle through the narrow opening. I should continue moving forward toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "Let me analyze the current situation. The robot is at x=3.500, facing the red circle through a narrow opening. The image shows the red circle ahead through a narrow opening between two wall panels. The path is a red carpet leading straight to it.\n\nThe robot has already taken 5 steps: 3 forward, 1 look_down, 1 forward. It's now at x=3.5.\n\nI need to continue moving forward toward the red circle. The opening appears narrow but the robot has already checked its width and determined it's widest at 0 degrees rotation. The path is clear ahead.\n\nLet me just keep going forward toward the goal.",
+    "parsed": {
+      "scene_description": "Red carpeted floor stretching ahead toward a narrow opening between two decorated wall panels. Through the opening, a red circle target is visible on a dark panel at the far wall. The path is clear and straight ahead.",
+      "reasoning": "I've confirmed my width via look_down and determined I'm at minimum width at 0 degrees rotation. The path is clear straight ahead toward the red circle through the narrow opening. I should continue moving forward toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

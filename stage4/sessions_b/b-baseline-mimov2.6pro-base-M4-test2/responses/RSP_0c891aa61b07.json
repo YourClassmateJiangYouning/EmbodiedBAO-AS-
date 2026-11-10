@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:54:15+08:00",
+    "latency_ms": 7678,
+    "payload_bytes": 171622,
+    "finish_reason": "stop",
+    "reasoning_tokens": 23,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"f93855ce-af6c-4357-9dcd-54be1d9b3ad5_99ba5e69238e4cbe82db277c3d0ae446\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle on a square plate is now very close, sitting on the floor at the far wall, with the red carpeted floor extending ahead toward it.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead and appears just a short distance away on the floor. I've moved 8 steps forward so far from x=6.5 start. One more forward step of 75cm should bring me right to the triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The blue triangle is very close now, just ahead on the floor. I should move forward to reach it.\"}}],\"created\":1794214455,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":138,\"prompt_tokens\":2475,\"total_tokens\":2613,\"completion_tokens_details\":{\"reasoning_tokens\":23},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The blue triangle on a square plate is now very close, sitting on the floor at the far wall, with the red carpeted floor extending ahead toward it.\", \"reasoning\": \"The blue triangle is directly ahead and appears just a short distance away on the floor. I've moved 8 steps forward so far from x=6.5 start. One more forward step of 75cm should bring me right to the triangle.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The blue triangle is very close now, just ahead on the floor. I should move forward to reach it.",
+    "parsed": {
+      "scene_description": "The blue triangle on a square plate is now very close, sitting on the floor at the far wall, with the red carpeted floor extending ahead toward it.",
+      "reasoning": "The blue triangle is directly ahead and appears just a short distance away on the floor. I've moved 8 steps forward so far from x=6.5 start. One more forward step of 75cm should bring me right to the triangle.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

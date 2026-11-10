@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:04:41+08:00",
+    "latency_ms": 6229,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_ddjngt26bjn7ipsty25tr4byifjaa7e4pgaiubaehys23ud46omq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794204281,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"The camera shows a bright green rectangle (the target) on the far wall, centered in the view. The rectangle is clearly visible and unobstructed. There are dark walls/obstacles on either side and above. The green rectangle appears to be at a reachable distance ahead.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=6.750 with torso rotated 15 degrees left. My last forward attempt was blocked by a wall_panel. However, the green rectangle is now clearly visible and appears unobstructed in my direct line of sight. The repeated blocking suggests I may have been at a narrow passage. Since I backed up to x=6.750 and have tried multiple torso rotations, I should attempt to move forward again. The green rectangle is the target and appears accessible. Let me try forward movement.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.45\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3805,\"completion_tokens\":212,\"total_tokens\":4017,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":3805,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":212,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":3805,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"The camera shows a bright green rectangle (the target) on the far wall, centered in the view. The rectangle is clearly visible and unobstructed. There are dark walls/obstacles on either side and above. The green rectangle appears to be at a reachable distance ahead.\",\n  \"reasoning\": \"I am at position x=6.750 with torso rotated 15 degrees left. My last forward attempt was blocked by a wall_panel. However, the green rectangle is now clearly visible and appears unobstructed in my direct line of sight. The repeated blocking suggests I may have been at a narrow passage. Since I backed up to x=6.750 and have tried multiple torso rotations, I should attempt to move forward again. The green rectangle is the target and appears accessible. Let me try forward movement.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.45\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a bright green rectangle (the target) on the far wall, centered in the view. The rectangle is clearly visible and unobstructed. There are dark walls/obstacles on either side and above. The green rectangle appears to be at a reachable distance ahead.",
+      "reasoning": "I am at position x=6.750 with torso rotated 15 degrees left. My last forward attempt was blocked by a wall_panel. However, the green rectangle is now clearly visible and appears unobstructed in my direct line of sight. The repeated blocking suggests I may have been at a narrow passage. Since I backed up to x=6.750 and have tried multiple torso rotations, I should attempt to move forward again. The green rectangle is the target and appears accessible. Let me try forward movement.",
+      "action": "forward",
+      "confidence": 0.45
+    },
+    "action": "forward"
+  }
+]

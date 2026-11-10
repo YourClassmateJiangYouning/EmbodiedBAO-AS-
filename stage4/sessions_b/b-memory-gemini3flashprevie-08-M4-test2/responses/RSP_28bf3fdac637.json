@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:48:57+08:00",
+    "latency_ms": 7779,
+    "payload_bytes": 238101,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T16:49:04+08:00",
+    "latency_ms": 6795,
+    "payload_bytes": 238101,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090848597443572618268d9d6DbahmygW\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794214144,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera view shows a red carpeted floor leading towards a blue triangle on a dark background. There are white walls with purple and blue geometric patterns on both the left and right sides, forming a narrow passage that the robot is currently passing through.\\\", \\\"reasoning\\\": \\\"I am currently at position x=5.0 and have successfully navigated into the narrow passage with my torso rotated to 75 degrees. The blue triangle is straight ahead. I will continue moving forward to reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3788,\"completion_tokens\":119,\"total_tokens\":3907,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3788,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":119,\"totalTokenCount\":3907,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":2699},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":119}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2699,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":119,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera view shows a red carpeted floor leading towards a blue triangle on a dark background. There are white walls with purple and blue geometric patterns on both the left and right sides, forming a narrow passage that the robot is currently passing through.\", \"reasoning\": \"I am currently at position x=5.0 and have successfully navigated into the narrow passage with my torso rotated to 75 degrees. The blue triangle is straight ahead. I will continue moving forward to reach the goal.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera view shows a red carpeted floor leading towards a blue triangle on a dark background. There are white walls with purple and blue geometric patterns on both the left and right sides, forming a narrow passage that the robot is currently passing through.",
+      "reasoning": "I am currently at position x=5.0 and have successfully navigated into the narrow passage with my torso rotated to 75 degrees. The blue triangle is straight ahead. I will continue moving forward to reach the goal.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

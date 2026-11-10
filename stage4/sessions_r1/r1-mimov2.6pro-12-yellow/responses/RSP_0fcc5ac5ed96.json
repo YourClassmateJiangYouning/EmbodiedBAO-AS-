@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:22:45+08:00",
+    "latency_ms": 11837,
+    "payload_bytes": 268320,
+    "finish_reason": "stop",
+    "reasoning_tokens": 64,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"4ac0287a-5a15-4b3e-b710-a03254afa0c6_a8655b3ebaec456480df43e7062baa7e\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading toward a doorway/narrow opening between two patterned walls. Straight ahead on the floor near the far wall is a yellow arrow on a black backing pointing right. A dark draped object sits behind the opening. The path ahead is clear.\\\", \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees to present my thinnest profile through the narrow gap and have been moving forward successfully. The yellow arrow is clearly visible ahead on the floor at the far wall, and the path remains clear. I should continue moving forward to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The arrow is ahead on the floor at the far wall. I've been moving forward. The yellow arrow appears fairly close now. Position x=5.0. Let me just continue moving forward to reach the arrow. It looks like the arrow is maybe 2-3 meters ahead. Let me continue forward.\"}}],\"created\":1794136965,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":207,\"prompt_tokens\":2795,\"total_tokens\":3002,\"completion_tokens_details\":{\"reasoning_tokens\":64},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted walkway leading toward a doorway/narrow opening between two patterned walls. Straight ahead on the floor near the far wall is a yellow arrow on a black backing pointing right. A dark draped object sits behind the opening. The path ahead is clear.\", \"reasoning\": \"I have already rotated my torso to 90 degrees to present my thinnest profile through the narrow gap and have been moving forward successfully. The yellow arrow is clearly visible ahead on the floor at the far wall, and the path remains clear. I should continue moving forward to reach it.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The arrow is ahead on the floor at the far wall. I've been moving forward. The yellow arrow appears fairly close now. Position x=5.0. Let me just continue moving forward to reach the arrow. It looks like the arrow is maybe 2-3 meters ahead. Let me continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading toward a doorway/narrow opening between two patterned walls. Straight ahead on the floor near the far wall is a yellow arrow on a black backing pointing right. A dark draped object sits behind the opening. The path ahead is clear.",
+      "reasoning": "I have already rotated my torso to 90 degrees to present my thinnest profile through the narrow gap and have been moving forward successfully. The yellow arrow is clearly visible ahead on the floor at the far wall, and the path remains clear. I should continue moving forward to reach it.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

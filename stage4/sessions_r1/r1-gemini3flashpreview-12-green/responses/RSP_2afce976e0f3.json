@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:13:55+08:00",
+    "latency_ms": 7220,
+    "payload_bytes": 390745,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081013496424779028268d9d63kXJGlvQ\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794132835,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down a long red carpeted path towards a green rectangle on the far wall. There is a narrow opening between two patterned walls that I must pass through to reach the goal. The path is clear ahead of me.\\\",\\n  \\\"reasoning\\\": \\\"My torso is currently rotated at 75 degrees. To present the narrowest possible profile (side-on) to fit through the opening ahead, I need to reach a 90-degree rotation. I will perform one more turn_right action to reach that 90-degree orientation before I begin moving forward.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2431,\"completion_tokens\":150,\"total_tokens\":2581,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2431,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":150,\"totalTokenCount\":2581,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1342},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":150}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1342,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":150,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down a long red carpeted path towards a green rectangle on the far wall. There is a narrow opening between two patterned walls that I must pass through to reach the goal. The path is clear ahead of me.\",\n  \"reasoning\": \"My torso is currently rotated at 75 degrees. To present the narrowest possible profile (side-on) to fit through the opening ahead, I need to reach a 90-degree rotation. I will perform one more turn_right action to reach that 90-degree orientation before I begin moving forward.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down a long red carpeted path towards a green rectangle on the far wall. There is a narrow opening between two patterned walls that I must pass through to reach the goal. The path is clear ahead of me.",
+      "reasoning": "My torso is currently rotated at 75 degrees. To present the narrowest possible profile (side-on) to fit through the opening ahead, I need to reach a 90-degree rotation. I will perform one more turn_right action to reach that 90-degree orientation before I begin moving forward.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

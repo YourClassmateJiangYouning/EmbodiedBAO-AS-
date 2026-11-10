@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:33:14+08:00",
+    "latency_ms": 9941,
+    "payload_bytes": 345209,
+    "finish_reason": "stop",
+    "reasoning_tokens": 70,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"a79499b0-79f2-454f-a80a-2f5d64704f22_f1e3553eafcb47a492ffaa92a73d3272\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway extends ahead toward a dark narrow opening in a wall decorated with abstract purple and yellow geometric patterns. The purple four-pointed star is visible through the opening, slightly above center. The floor to the left is bright yellow with patterned tiles.\\\", \\\"reasoning\\\": \\\"My torso is at 45 degrees. The opening is narrow and my body is wide, so I need to present my thinner dimension (depth) to the opening. Turning reduces projected width (W·cosθ + D·sinθ) as long as D < W. I should continue turning right toward 90 degrees before entering the opening. Then I will move forward to approach and pass through.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.8}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"Let me turn right once more to reach 60 degrees, then move forward.\\n\\nActually, at 45 degrees projected width is already 0.707W+0.707D. At 60 it's 0.5W+0.866D, better. Let's continue turning.\"}}],\"created\":1794144793,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":234,\"prompt_tokens\":2355,\"total_tokens\":2589,\"completion_tokens_details\":{\"reasoning_tokens\":70},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway extends ahead toward a dark narrow opening in a wall decorated with abstract purple and yellow geometric patterns. The purple four-pointed star is visible through the opening, slightly above center. The floor to the left is bright yellow with patterned tiles.\", \"reasoning\": \"My torso is at 45 degrees. The opening is narrow and my body is wide, so I need to present my thinner dimension (depth) to the opening. Turning reduces projected width (W·cosθ + D·sinθ) as long as D < W. I should continue turning right toward 90 degrees before entering the opening. Then I will move forward to approach and pass through.\", \"action\": \"turn_right\", \"confidence\": 0.8}",
+    "reasoning_content": "Let me turn right once more to reach 60 degrees, then move forward.\n\nActually, at 45 degrees projected width is already 0.707W+0.707D. At 60 it's 0.5W+0.866D, better. Let's continue turning.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway extends ahead toward a dark narrow opening in a wall decorated with abstract purple and yellow geometric patterns. The purple four-pointed star is visible through the opening, slightly above center. The floor to the left is bright yellow with patterned tiles.",
+      "reasoning": "My torso is at 45 degrees. The opening is narrow and my body is wide, so I need to present my thinner dimension (depth) to the opening. Turning reduces projected width (W·cosθ + D·sinθ) as long as D < W. I should continue turning right toward 90 degrees before entering the opening. Then I will move forward to approach and pass through.",
+      "action": "turn_right",
+      "confidence": 0.8
+    },
+    "action": "turn_right"
+  }
+]

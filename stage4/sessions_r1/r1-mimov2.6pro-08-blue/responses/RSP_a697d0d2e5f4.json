@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:22:59+08:00",
+    "latency_ms": 5365,
+    "payload_bytes": 171682,
+    "finish_reason": "stop",
+    "reasoning_tokens": 28,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"43a8c27e-2ac2-4993-bf79-c0cf0a29309f_33adbae344b14cb5a22f7061aba18e41\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle is directly ahead and very close, filling the lower center of the view on its board against the dark curtain. There is still a small amount of floor between me and the triangle.\\\", \\\"reasoning\\\": \\\"The triangle is nearly directly in front of me but still slightly ahead on the floor. My torso is rotated 90 degrees, presenting my thinner dimension toward the opening I passed through. One more forward step of 75cm should bring me right to the triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.8}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We see the blue triangle up close. One more forward likely reaches it. Actually it appears very close. Let's just do forward.\"}}],\"created\":1794205379,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":148,\"prompt_tokens\":3038,\"total_tokens\":3186,\"completion_tokens_details\":{\"reasoning_tokens\":28},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The blue triangle is directly ahead and very close, filling the lower center of the view on its board against the dark curtain. There is still a small amount of floor between me and the triangle.\", \"reasoning\": \"The triangle is nearly directly in front of me but still slightly ahead on the floor. My torso is rotated 90 degrees, presenting my thinner dimension toward the opening I passed through. One more forward step of 75cm should bring me right to the triangle.\", \"action\": \"forward\", \"confidence\": 0.8}",
+    "reasoning_content": "We see the blue triangle up close. One more forward likely reaches it. Actually it appears very close. Let's just do forward.",
+    "parsed": {
+      "scene_description": "The blue triangle is directly ahead and very close, filling the lower center of the view on its board against the dark curtain. There is still a small amount of floor between me and the triangle.",
+      "reasoning": "The triangle is nearly directly in front of me but still slightly ahead on the floor. My torso is rotated 90 degrees, presenting my thinner dimension toward the opening I passed through. One more forward step of 75cm should bring me right to the triangle.",
+      "action": "forward",
+      "confidence": 0.8
+    },
+    "action": "forward"
+  }
+]

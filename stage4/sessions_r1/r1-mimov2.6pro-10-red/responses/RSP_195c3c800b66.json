@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:38:02+08:00",
+    "latency_ms": 13749,
+    "payload_bytes": 269405,
+    "finish_reason": "stop",
+    "reasoning_tokens": 62,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"38fe3360-2188-401a-ba1c-467e9cfcfb25_e21a28f0283a48f28ade0632e221294f\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead along a red carpeted walkway toward a dark opening in a patterned wall. Through the opening, a bright red circle on a dark panel is visible on the far wall. The opening appears fairly narrow, with decorated wall panels on either side (white with purple/blue geometric shapes on the left, blue/white shapes on the right).\\\", \\\"reasoning\\\": \\\"My torso is already rotated 90 degrees, presenting my thinnest dimension (depth) to the narrow opening. The previous forward step executed successfully and I am now at the opening, with the red circle visible straight ahead through it. I cannot turn anymore since my shoulders may already be inside the opening. I should continue moving forward through the opening toward the red circle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.85}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue forward. We're approaching the opening. We already have torso at 90 degrees, presenting narrow depth. Step 12 was forward. Continue forward through the opening toward the red circle.\\n\\nThe image shows the red circle ahead through a dark opening. We should keep moving forward.\"}}],\"created\":1794137881,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":239,\"prompt_tokens\":2773,\"total_tokens\":3012,\"completion_tokens_details\":{\"reasoning_tokens\":62},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead along a red carpeted walkway toward a dark opening in a patterned wall. Through the opening, a bright red circle on a dark panel is visible on the far wall. The opening appears fairly narrow, with decorated wall panels on either side (white with purple/blue geometric shapes on the left, blue/white shapes on the right).\", \"reasoning\": \"My torso is already rotated 90 degrees, presenting my thinnest dimension (depth) to the narrow opening. The previous forward step executed successfully and I am now at the opening, with the red circle visible straight ahead through it. I cannot turn anymore since my shoulders may already be inside the opening. I should continue moving forward through the opening toward the red circle.\", \"action\": \"forward\", \"confidence\": 0.85}",
+    "reasoning_content": "We need to continue forward. We're approaching the opening. We already have torso at 90 degrees, presenting narrow depth. Step 12 was forward. Continue forward through the opening toward the red circle.\n\nThe image shows the red circle ahead through a dark opening. We should keep moving forward.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead along a red carpeted walkway toward a dark opening in a patterned wall. Through the opening, a bright red circle on a dark panel is visible on the far wall. The opening appears fairly narrow, with decorated wall panels on either side (white with purple/blue geometric shapes on the left, blue/white shapes on the right).",
+      "reasoning": "My torso is already rotated 90 degrees, presenting my thinnest dimension (depth) to the narrow opening. The previous forward step executed successfully and I am now at the opening, with the red circle visible straight ahead through it. I cannot turn anymore since my shoulders may already be inside the opening. I should continue moving forward through the opening toward the red circle.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

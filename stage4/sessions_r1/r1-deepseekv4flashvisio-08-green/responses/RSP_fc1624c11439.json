@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:06:25+08:00",
+    "latency_ms": 2741,
+    "payload_bytes": 160591,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"8da7317c-79db-4103-8688-775b0cb71982\",\"object\":\"chat.completion\",\"created\":1794207983,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is visible directly ahead, close and centered, sitting on a light-colored surface. The surrounding area is dark, and the path forward appears blocked by a wall panel just in front of the target.\\\", \\\"reasoning\\\": \\\"Forward steps have been blocked by a wall panel even after turning left 15 degrees. The target is very close but the opening is narrow. Since turning changes body width orientation and I cannot turn once shoulders are inside the opening, I should continue turning to reduce my presented width further before attempting forward again. Turning left more may align my narrower profile with the opening.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.55}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2300,\"completion_tokens\":140,\"total_tokens\":2440,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1532},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is visible directly ahead, close and centered, sitting on a light-colored surface. The surrounding area is dark, and the path forward appears blocked by a wall panel just in front of the target.\", \"reasoning\": \"Forward steps have been blocked by a wall panel even after turning left 15 degrees. The target is very close but the opening is narrow. Since turning changes body width orientation and I cannot turn once shoulders are inside the opening, I should continue turning to reduce my presented width further before attempting forward again. Turning left more may align my narrower profile with the opening.\", \"action\": \"turn_left\", \"confidence\": 0.55}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is visible directly ahead, close and centered, sitting on a light-colored surface. The surrounding area is dark, and the path forward appears blocked by a wall panel just in front of the target.",
+      "reasoning": "Forward steps have been blocked by a wall panel even after turning left 15 degrees. The target is very close but the opening is narrow. Since turning changes body width orientation and I cannot turn once shoulders are inside the opening, I should continue turning to reduce my presented width further before attempting forward again. Turning left more may align my narrower profile with the opening.",
+      "action": "turn_left",
+      "confidence": 0.55
+    },
+    "action": "turn_left"
+  }
+]

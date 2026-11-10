@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:32:29+08:00",
+    "latency_ms": 7763,
+    "payload_bytes": 170663,
+    "finish_reason": "stop",
+    "reasoning_tokens": 114,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5cdcc72b-381e-4978-95ab-b292150696c7_2e96c1268388445587fcc49de50955b9\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow on a dark plaque fills most of the view, very close straight ahead on the far wall; a dark opening/curtain above and the edge of a wall on the left are visible, indicating I am right at the wall with the arrow directly in front of me.\\\", \\\"reasoning\\\": \\\"After backing up and rotating my torso to 90 degrees (thin profile), forward steps succeeded through the narrow opening where I was previously blocked, bringing me to x=8.0. The arrow is now very large and directly ahead, so one more forward step should reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.7}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=8.0 after step 20 forward, torso at 90 degrees. The image shows the yellow arrow very close ahead. We have 30-21=9 steps remaining. Previous forward at 7.25 was blocked with wide torso; now thin profile succeeded through the opening and we're at 8.0, very close to the arrow. Try forward again to reach the arrow.\\n\\nActually the arrow appears large — likely right at the wall. One more forward might reach it. Let's do forward.\"}}],\"created\":1794209549,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":255,\"prompt_tokens\":3359,\"total_tokens\":3614,\"completion_tokens_details\":{\"reasoning_tokens\":114},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The yellow arrow on a dark plaque fills most of the view, very close straight ahead on the far wall; a dark opening/curtain above and the edge of a wall on the left are visible, indicating I am right at the wall with the arrow directly in front of me.\", \"reasoning\": \"After backing up and rotating my torso to 90 degrees (thin profile), forward steps succeeded through the narrow opening where I was previously blocked, bringing me to x=8.0. The arrow is now very large and directly ahead, so one more forward step should reach it.\", \"action\": \"forward\", \"confidence\": 0.7}",
+    "reasoning_content": "We are at x=8.0 after step 20 forward, torso at 90 degrees. The image shows the yellow arrow very close ahead. We have 30-21=9 steps remaining. Previous forward at 7.25 was blocked with wide torso; now thin profile succeeded through the opening and we're at 8.0, very close to the arrow. Try forward again to reach the arrow.\n\nActually the arrow appears large — likely right at the wall. One more forward might reach it. Let's do forward.",
+    "parsed": {
+      "scene_description": "The yellow arrow on a dark plaque fills most of the view, very close straight ahead on the far wall; a dark opening/curtain above and the edge of a wall on the left are visible, indicating I am right at the wall with the arrow directly in front of me.",
+      "reasoning": "After backing up and rotating my torso to 90 degrees (thin profile), forward steps succeeded through the narrow opening where I was previously blocked, bringing me to x=8.0. The arrow is now very large and directly ahead, so one more forward step should reach it.",
+      "action": "forward",
+      "confidence": 0.7
+    },
+    "action": "forward"
+  }
+]

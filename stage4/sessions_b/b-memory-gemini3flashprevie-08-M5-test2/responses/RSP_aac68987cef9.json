@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:05:49+08:00",
+    "latency_ms": 5772,
+    "payload_bytes": 161763,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090905450585658528268d9d6fUJ4BUa4\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794215149,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera view shows the purple four-pointed star directly ahead, centered on a dark wall. The robot is very close to the target, with the red carpet ending just before the star's base.\\\",\\n  \\\"reasoning\\\": \\\"I have successfully navigated through the gap and am now directly in front of the target. One final forward movement should bring me to the purple star to complete the task.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3787,\"completion_tokens\":109,\"total_tokens\":3896,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3787,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":109,\"totalTokenCount\":3896,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2698}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":109}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2698,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":109,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera view shows the purple four-pointed star directly ahead, centered on a dark wall. The robot is very close to the target, with the red carpet ending just before the star's base.\",\n  \"reasoning\": \"I have successfully navigated through the gap and am now directly in front of the target. One final forward movement should bring me to the purple star to complete the task.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera view shows the purple four-pointed star directly ahead, centered on a dark wall. The robot is very close to the target, with the red carpet ending just before the star's base.",
+      "reasoning": "I have successfully navigated through the gap and am now directly in front of the target. One final forward movement should bring me to the purple star to complete the task.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

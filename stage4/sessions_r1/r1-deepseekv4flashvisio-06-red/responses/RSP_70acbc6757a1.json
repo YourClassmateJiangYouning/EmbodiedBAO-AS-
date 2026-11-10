@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:15:59+08:00",
+    "latency_ms": 2917,
+    "payload_bytes": 242096,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"c51c644a-7ef2-4a11-b4aa-1e3258ce0cec\",\"object\":\"chat.completion\",\"created\":1794208558,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The red circle glows on a dark panel ahead, framed by a narrow opening between two wall panels; the carpeted floor leads up to it. The gap looks narrow relative to the body.\\\", \\\"reasoning\\\": \\\"Forward was blocked twice by the wall panel, so the opening is too narrow for the current torso orientation. I have turned left four times (60 degrees total). Turning changes only body width orientation, not walking direction or view. Continuing to rotate toward 90 degrees presents the thinner side of the body to the opening, which should let me pass through.\\\", \\\"action\\\": \\\"turn_left\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2574,\"completion_tokens\":134,\"total_tokens\":2708,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1934},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The red circle glows on a dark panel ahead, framed by a narrow opening between two wall panels; the carpeted floor leads up to it. The gap looks narrow relative to the body.\", \"reasoning\": \"Forward was blocked twice by the wall panel, so the opening is too narrow for the current torso orientation. I have turned left four times (60 degrees total). Turning changes only body width orientation, not walking direction or view. Continuing to rotate toward 90 degrees presents the thinner side of the body to the opening, which should let me pass through.\", \"action\": \"turn_left\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The red circle glows on a dark panel ahead, framed by a narrow opening between two wall panels; the carpeted floor leads up to it. The gap looks narrow relative to the body.",
+      "reasoning": "Forward was blocked twice by the wall panel, so the opening is too narrow for the current torso orientation. I have turned left four times (60 degrees total). Turning changes only body width orientation, not walking direction or view. Continuing to rotate toward 90 degrees presents the thinner side of the body to the opening, which should let me pass through.",
+      "action": "turn_left",
+      "confidence": 0.7
+    },
+    "action": "turn_left"
+  }
+]

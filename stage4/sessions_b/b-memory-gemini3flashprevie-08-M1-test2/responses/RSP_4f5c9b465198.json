@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:26:30+08:00",
+    "latency_ms": 5209,
+    "payload_bytes": 397400,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090826266837353598268d9d6ulFiy3sO\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212791,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a long red carpet leading towards a narrow opening between two patterned walls. In the distance, a green rectangle is visible on the far wall. I am currently positioned on the red carpet, and my torso is rotated 90 degrees.\\\", \\\"reasoning\\\": \\\"I have already rotated my torso to 90 degrees to present my narrowest profile. I am at position x=2.0 and need to continue moving forward to pass through the narrow gap and reach the green rectangle goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 1.0}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3215,\"completion_tokens\":121,\"total_tokens\":3336,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3215,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":121,\"totalTokenCount\":3336,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2126}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":121}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2126,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":121,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\"scene_description\": \"The camera shows a long red carpet leading towards a narrow opening between two patterned walls. In the distance, a green rectangle is visible on the far wall. I am currently positioned on the red carpet, and my torso is rotated 90 degrees.\", \"reasoning\": \"I have already rotated my torso to 90 degrees to present my narrowest profile. I am at position x=2.0 and need to continue moving forward to pass through the narrow gap and reach the green rectangle goal.\", \"action\": \"forward\", \"confidence\": 1.0}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a long red carpet leading towards a narrow opening between two patterned walls. In the distance, a green rectangle is visible on the far wall. I am currently positioned on the red carpet, and my torso is rotated 90 degrees.",
+      "reasoning": "I have already rotated my torso to 90 degrees to present my narrowest profile. I am at position x=2.0 and need to continue moving forward to pass through the narrow gap and reach the green rectangle goal.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

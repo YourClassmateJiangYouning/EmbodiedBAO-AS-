@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:47:01+08:00",
+    "latency_ms": 5305,
+    "payload_bytes": 366549,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081046568244241288268d9d6ksCNqzwe\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134821,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The image shows a red carpeted walkway leading toward a narrow opening in a wall decorated with geometric patterns. Through the opening, a blue triangle is visible on the far wall. I am currently positioned on the red carpet, some distance away from the opening.\\\",\\n  \\\"reasoning\\\": \\\"I have rotated my torso to 45 degrees to reduce my width. I need to verify if this rotation is sufficient to pass through the narrow opening ahead. I will use 'look_down' to see my current profile relative to the walking direction before I move any closer to the gap.\\\",\\n  \\\"action\\\": \\\"look_down\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2424,\"completion_tokens\":147,\"total_tokens\":2571,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2424,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":147,\"totalTokenCount\":2571,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1335},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":147}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1335,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":147,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The image shows a red carpeted walkway leading toward a narrow opening in a wall decorated with geometric patterns. Through the opening, a blue triangle is visible on the far wall. I am currently positioned on the red carpet, some distance away from the opening.\",\n  \"reasoning\": \"I have rotated my torso to 45 degrees to reduce my width. I need to verify if this rotation is sufficient to pass through the narrow opening ahead. I will use 'look_down' to see my current profile relative to the walking direction before I move any closer to the gap.\",\n  \"action\": \"look_down\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The image shows a red carpeted walkway leading toward a narrow opening in a wall decorated with geometric patterns. Through the opening, a blue triangle is visible on the far wall. I am currently positioned on the red carpet, some distance away from the opening.",
+      "reasoning": "I have rotated my torso to 45 degrees to reduce my width. I need to verify if this rotation is sufficient to pass through the narrow opening ahead. I will use 'look_down' to see my current profile relative to the walking direction before I move any closer to the gap.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

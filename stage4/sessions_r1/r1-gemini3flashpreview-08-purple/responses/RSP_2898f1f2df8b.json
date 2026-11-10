@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:49:30+08:00",
+    "latency_ms": 6131,
+    "payload_bytes": 334239,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081049251848927168268d9d6IK91UKWU\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134970,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The image shows a red carpeted path leading toward a narrow opening in a wall decorated with geometric patterns. A purple four-pointed star is visible through the opening on the far wall. I am currently positioned on the red carpet, moving toward the gap.\\\",\\n  \\\"reasoning\\\": \\\"I am approaching the narrow opening. To ensure I can pass through without hitting the walls, I need to know my current body width relative to the gap. Since I cannot see my own body dimensions in the standard view, I will use the look_down action to assess my torso's width and orientation before I get too close to the opening.\\\",\\n  \\\"action\\\": \\\"look_down\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2223,\"completion_tokens\":158,\"total_tokens\":2381,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2223,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":158,\"totalTokenCount\":2381,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1134}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":158}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1134,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":158,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The image shows a red carpeted path leading toward a narrow opening in a wall decorated with geometric patterns. A purple four-pointed star is visible through the opening on the far wall. I am currently positioned on the red carpet, moving toward the gap.\",\n  \"reasoning\": \"I am approaching the narrow opening. To ensure I can pass through without hitting the walls, I need to know my current body width relative to the gap. Since I cannot see my own body dimensions in the standard view, I will use the look_down action to assess my torso's width and orientation before I get too close to the opening.\",\n  \"action\": \"look_down\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The image shows a red carpeted path leading toward a narrow opening in a wall decorated with geometric patterns. A purple four-pointed star is visible through the opening on the far wall. I am currently positioned on the red carpet, moving toward the gap.",
+      "reasoning": "I am approaching the narrow opening. To ensure I can pass through without hitting the walls, I need to know my current body width relative to the gap. Since I cannot see my own body dimensions in the standard view, I will use the look_down action to assess my torso's width and orientation before I get too close to the opening.",
+      "action": "look_down",
+      "confidence": 1.0
+    },
+    "action": "look_down"
+  }
+]

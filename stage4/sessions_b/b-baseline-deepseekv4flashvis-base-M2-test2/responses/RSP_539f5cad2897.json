@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:21:32+08:00",
+    "latency_ms": 2480,
+    "payload_bytes": 315709,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"bd511c46-73d5-40bd-9e60-dbab4339b05d\",\"object\":\"chat.completion\",\"created\":1794212491,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a wide red carpet leading straight ahead toward a red circle mounted on a dark panel at the far wall. The path appears clear and unobstructed, with the red circle centered ahead.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the clear red carpet, and five prior forward steps have been unobstructed. Continuing forward will bring me closer to the target.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1803,\"completion_tokens\":97,\"total_tokens\":1900,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1035},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a wide red carpet leading straight ahead toward a red circle mounted on a dark panel at the far wall. The path appears clear and unobstructed, with the red circle centered ahead.\", \"reasoning\": \"The red circle is directly ahead along the clear red carpet, and five prior forward steps have been unobstructed. Continuing forward will bring me closer to the target.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a wide red carpet leading straight ahead toward a red circle mounted on a dark panel at the far wall. The path appears clear and unobstructed, with the red circle centered ahead.",
+      "reasoning": "The red circle is directly ahead along the clear red carpet, and five prior forward steps have been unobstructed. Continuing forward will bring me closer to the target.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

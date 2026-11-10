@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:26:29+08:00",
+    "latency_ms": 11066,
+    "payload_bytes": 244409,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090426192659654918268d9d62f6nanay\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794198389,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera view shows a red carpeted floor leading through a narrow opening between two decorated walls. A glowing yellow arrow is visible on the far wall directly ahead, pointing to the right.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at position x=5.75 and my torso is rotated to 90 degrees, which is the narrowest profile to fit through the gap. I am in the middle of the narrow opening. I need to continue moving forward to pass through the gap and reach the yellow arrow on the far wall.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3001,\"completion_tokens\":137,\"total_tokens\":3138,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3001,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":137,\"totalTokenCount\":3138,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1912}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":137}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1912,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":137,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera view shows a red carpeted floor leading through a narrow opening between two decorated walls. A glowing yellow arrow is visible on the far wall directly ahead, pointing to the right.\",\n  \"reasoning\": \"I am currently at position x=5.75 and my torso is rotated to 90 degrees, which is the narrowest profile to fit through the gap. I am in the middle of the narrow opening. I need to continue moving forward to pass through the gap and reach the yellow arrow on the far wall.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera view shows a red carpeted floor leading through a narrow opening between two decorated walls. A glowing yellow arrow is visible on the far wall directly ahead, pointing to the right.",
+      "reasoning": "I am currently at position x=5.75 and my torso is rotated to 90 degrees, which is the narrowest profile to fit through the gap. I am in the middle of the narrow opening. I need to continue moving forward to pass through the gap and reach the yellow arrow on the far wall.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

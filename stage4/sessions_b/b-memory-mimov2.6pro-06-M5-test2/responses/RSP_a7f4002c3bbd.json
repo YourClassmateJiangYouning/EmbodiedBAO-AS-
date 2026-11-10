@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:08:24+08:00",
+    "latency_ms": 7802,
+    "payload_bytes": 199625,
+    "finish_reason": "stop",
+    "reasoning_tokens": 13,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"371c7462-ac7d-444d-9e90-787719649a55_954c617eb56245008f45adab370e7d73\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpet stretches ahead toward a dark opening where the purple four-pointed star sits on a dark panel at the far wall. Side walls with colorful markings frame the carpet, and dark furniture is visible beyond the opening. The star appears quite close, centered in view.\\\", \\\"reasoning\\\": \\\"My torso is at 90 degrees, presenting my thin profile, and the star is directly ahead and close. There is still some carpet distance before the opening, so I continue walking forward to reach the star, matching the successful traversal pattern.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.93}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The star is directly ahead, close. Keep moving forward.\"}}],\"created\":1794215304,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":143,\"prompt_tokens\":3625,\"total_tokens\":3768,\"completion_tokens_details\":{\"reasoning_tokens\":13},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpet stretches ahead toward a dark opening where the purple four-pointed star sits on a dark panel at the far wall. Side walls with colorful markings frame the carpet, and dark furniture is visible beyond the opening. The star appears quite close, centered in view.\", \"reasoning\": \"My torso is at 90 degrees, presenting my thin profile, and the star is directly ahead and close. There is still some carpet distance before the opening, so I continue walking forward to reach the star, matching the successful traversal pattern.\", \"action\": \"forward\", \"confidence\": 0.93}",
+    "reasoning_content": "The star is directly ahead, close. Keep moving forward.",
+    "parsed": {
+      "scene_description": "Red carpet stretches ahead toward a dark opening where the purple four-pointed star sits on a dark panel at the far wall. Side walls with colorful markings frame the carpet, and dark furniture is visible beyond the opening. The star appears quite close, centered in view.",
+      "reasoning": "My torso is at 90 degrees, presenting my thin profile, and the star is directly ahead and close. There is still some carpet distance before the opening, so I continue walking forward to reach the star, matching the successful traversal pattern.",
+      "action": "forward",
+      "confidence": 0.93
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:20:40+08:00",
+    "latency_ms": 3273,
+    "payload_bytes": 257628,
+    "finish_reason": null,
+    "reasoning_tokens": null,
+    "error": "HTTP 502",
+    "json_mode": true,
+    "raw_response": "",
+    "content": "",
+    "reasoning_content": "",
+    "parsed": null,
+    "action": null
+  },
+  {
+    "attempt": 2,
+    "started_at": "2026-11-09T14:20:49+08:00",
+    "latency_ms": 8759,
+    "payload_bytes": 257628,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"msg_bdrk_lja53wiyedduzf5a2kj56idagrbm6rist2ev4ol5cpnhaczc3pnq\",\"model\":\"anthropic.claude-haiku-4-5-20251001-v1:0\",\"object\":\"chat.completion\",\"created\":1794205250,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"```json\\n{\\n  \\\"scene_description\\\": \\\"I can see the purple four-pointed star clearly visible on the far wall, centered in my view. The star appears bright and well-defined against the dark background. The dark red carpet continues ahead of me toward the wall. There is a dark rectangular obstruction (possibly a doorway or opening) directly in front of the star on the wall. The path on the red carpet appears clear for forward movement.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=5.750 after 8 steps (step 7 was invalid). The purple four-pointed star is my target and is clearly visible ahead on the far wall. The star appears to be at approximately the same distance as before, suggesting I may be close to it or there may be an obstacle. The dark rectangular shape in front of the star could be a doorway or opening I need to pass through. I should continue moving forward to reach the star, as the carpet path ahead appears unobstructed.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 0.85\\n}\\n```\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2861,\"completion_tokens\":237,\"total_tokens\":3098,\"usage_semantic\":\"openai\",\"usage_source\":\"anthropic\",\"billing_usage\":{\"source\":\"claude_messages\",\"semantic\":\"anthropic\",\"claude_usage\":{\"input_tokens\":2861,\"cache_creation_input_tokens\":0,\"cache_read_input_tokens\":0,\"output_tokens\":237,\"cache_creation\":{},\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0},\"completion_tokens_details\":{\"text_tokens\":0,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":2861,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "```json\n{\n  \"scene_description\": \"I can see the purple four-pointed star clearly visible on the far wall, centered in my view. The star appears bright and well-defined against the dark background. The dark red carpet continues ahead of me toward the wall. There is a dark rectangular obstruction (possibly a doorway or opening) directly in front of the star on the wall. The path on the red carpet appears clear for forward movement.\",\n  \"reasoning\": \"I am at position x=5.750 after 8 steps (step 7 was invalid). The purple four-pointed star is my target and is clearly visible ahead on the far wall. The star appears to be at approximately the same distance as before, suggesting I may be close to it or there may be an obstacle. The dark rectangular shape in front of the star could be a doorway or opening I need to pass through. I should continue moving forward to reach the star, as the carpet path ahead appears unobstructed.\",\n  \"action\": \"forward\",\n  \"confidence\": 0.85\n}\n```",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "I can see the purple four-pointed star clearly visible on the far wall, centered in my view. The star appears bright and well-defined against the dark background. The dark red carpet continues ahead of me toward the wall. There is a dark rectangular obstruction (possibly a doorway or opening) directly in front of the star on the wall. The path on the red carpet appears clear for forward movement.",
+      "reasoning": "I am at position x=5.750 after 8 steps (step 7 was invalid). The purple four-pointed star is my target and is clearly visible ahead on the far wall. The star appears to be at approximately the same distance as before, suggesting I may be close to it or there may be an obstacle. The dark rectangular shape in front of the star could be a doorway or opening I need to pass through. I should continue moving forward to reach the star, as the carpet path ahead appears unobstructed.",
+      "action": "forward",
+      "confidence": 0.85
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:41:09+08:00",
+    "latency_ms": 13144,
+    "payload_bytes": 371265,
+    "finish_reason": "stop",
+    "reasoning_tokens": 31,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"66d5ed90-833a-4b4b-b204-489698a8052e_2837d4f1174f4ef8bbc39305a434e0fe\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead between two walls with colorful geometric patterns, leading to a dark opening where a yellow arrow pointing right is visible on the far wall.\\\", \\\"reasoning\\\": \\\"The path ahead is clear and the yellow arrow is visible in the distance. I simply need to keep moving forward toward it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image shows a red carpet path ahead leading to a yellow arrow on the far wall. The path is clear. I should just keep moving forward.\"}}],\"created\":1794213669,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":118,\"prompt_tokens\":1982,\"total_tokens\":2100,\"completion_tokens_details\":{\"reasoning_tokens\":31},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead between two walls with colorful geometric patterns, leading to a dark opening where a yellow arrow pointing right is visible on the far wall.\", \"reasoning\": \"The path ahead is clear and the yellow arrow is visible in the distance. I simply need to keep moving forward toward it.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The image shows a red carpet path ahead leading to a yellow arrow on the far wall. The path is clear. I should just keep moving forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead between two walls with colorful geometric patterns, leading to a dark opening where a yellow arrow pointing right is visible on the far wall.",
+      "reasoning": "The path ahead is clear and the yellow arrow is visible in the distance. I simply need to keep moving forward toward it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:26:44+08:00",
+    "latency_ms": 5650,
+    "payload_bytes": 359664,
+    "finish_reason": "stop",
+    "reasoning_tokens": 44,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5550617c-af40-4cc0-9b48-83f31e9f6000_556a5c03e17d4b73befa136276757d40\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpet leads forward toward a dark narrow opening in the far wall, where a small blue triangle is visible. To the left is a light-colored floor with geometric patterns, and the walls are covered in colorful graffiti-like designs. The path ahead is clear and unobstructed.\\\", \\\"reasoning\\\": \\\"My torso is at 90 degrees presenting my thinnest profile for the narrow opening ahead. The opening is still some distance away and the path is clear, so I should continue moving forward along the carpet toward the blue triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to continue forward toward the opening with the blue triangle. We're at x=1.250, torso at 90 degrees (thin profile). The opening appears ahead. Keep moving forward.\"}}],\"created\":1794144404,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":175,\"prompt_tokens\":2474,\"total_tokens\":2649,\"completion_tokens_details\":{\"reasoning_tokens\":44},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpet leads forward toward a dark narrow opening in the far wall, where a small blue triangle is visible. To the left is a light-colored floor with geometric patterns, and the walls are covered in colorful graffiti-like designs. The path ahead is clear and unobstructed.\", \"reasoning\": \"My torso is at 90 degrees presenting my thinnest profile for the narrow opening ahead. The opening is still some distance away and the path is clear, so I should continue moving forward along the carpet toward the blue triangle.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "We need to continue forward toward the opening with the blue triangle. We're at x=1.250, torso at 90 degrees (thin profile). The opening appears ahead. Keep moving forward.",
+    "parsed": {
+      "scene_description": "A red carpet leads forward toward a dark narrow opening in the far wall, where a small blue triangle is visible. To the left is a light-colored floor with geometric patterns, and the walls are covered in colorful graffiti-like designs. The path ahead is clear and unobstructed.",
+      "reasoning": "My torso is at 90 degrees presenting my thinnest profile for the narrow opening ahead. The opening is still some distance away and the path is clear, so I should continue moving forward along the carpet toward the blue triangle.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

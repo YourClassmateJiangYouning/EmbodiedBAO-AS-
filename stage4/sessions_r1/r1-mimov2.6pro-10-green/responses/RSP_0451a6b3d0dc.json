@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:30:30+08:00",
+    "latency_ms": 5210,
+    "payload_bytes": 290019,
+    "finish_reason": "stop",
+    "reasoning_tokens": 21,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5c3cfcfc-048d-41ef-bf9b-b5625563ff00_7dcf3fbeb1b24d0cac0fde1e81127143\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretching forward toward a narrow opening between decorated wall panels, through which a bright green rectangle is visible on the far wall. The path ahead is clear.\\\", \\\"reasoning\\\": \\\"The green rectangle is directly ahead and centered through the opening. My torso is at 0 degrees rotation, presenting my narrowest profile, which is optimal for passing through the narrow opening. The path is clear, so I should continue moving forward.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear, green rectangle straight ahead, torso at 0 rotation. Keep moving forward.\"}}],\"created\":1794137430,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":133,\"prompt_tokens\":2278,\"total_tokens\":2411,\"completion_tokens_details\":{\"reasoning_tokens\":21},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretching forward toward a narrow opening between decorated wall panels, through which a bright green rectangle is visible on the far wall. The path ahead is clear.\", \"reasoning\": \"The green rectangle is directly ahead and centered through the opening. My torso is at 0 degrees rotation, presenting my narrowest profile, which is optimal for passing through the narrow opening. The path is clear, so I should continue moving forward.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear, green rectangle straight ahead, torso at 0 rotation. Keep moving forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretching forward toward a narrow opening between decorated wall panels, through which a bright green rectangle is visible on the far wall. The path ahead is clear.",
+      "reasoning": "The green rectangle is directly ahead and centered through the opening. My torso is at 0 degrees rotation, presenting my narrowest profile, which is optimal for passing through the narrow opening. The path is clear, so I should continue moving forward.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

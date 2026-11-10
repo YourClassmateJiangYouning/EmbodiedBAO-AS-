@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:04:57+08:00",
+    "latency_ms": 10092,
+    "payload_bytes": 381083,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A long red carpeted walkway stretches straight ahead toward a far wall with patterned panels. In the center of the wall there is a dark doorway/opening, and inside it a bright yellow arrow pointing to the right is visible. The path ahead looks clear and aligned with the opening.\\\",\\\"reasoning\\\":\\\"The yellow arrow is straight ahead through the doorway. The path is clear, and moving forward brings me closer to the target.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.83}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794204294,\"id\":\"chatcmpl-EiCmsa8SIZk6gJti2Zz7jpRW1WwNu\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r2-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":107,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":378,\"engine_ttlt_ms\":1312,\"pre_inference_ms\":419,\"service_tbt_ms\":9,\"service_ttft_ms\":926,\"service_ttlt_ms\":1838,\"user_visible_ttft_ms\":508},\"prompt_tokens\":1496,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1603}}\n",
+    "content": "{\"scene_description\":\"A long red carpeted walkway stretches straight ahead toward a far wall with patterned panels. In the center of the wall there is a dark doorway/opening, and inside it a bright yellow arrow pointing to the right is visible. The path ahead looks clear and aligned with the opening.\",\"reasoning\":\"The yellow arrow is straight ahead through the doorway. The path is clear, and moving forward brings me closer to the target.\",\"action\":\"forward\",\"confidence\":0.83}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpeted walkway stretches straight ahead toward a far wall with patterned panels. In the center of the wall there is a dark doorway/opening, and inside it a bright yellow arrow pointing to the right is visible. The path ahead looks clear and aligned with the opening.",
+      "reasoning": "The yellow arrow is straight ahead through the doorway. The path is clear, and moving forward brings me closer to the target.",
+      "action": "forward",
+      "confidence": 0.83
+    },
+    "action": "forward"
+  }
+]

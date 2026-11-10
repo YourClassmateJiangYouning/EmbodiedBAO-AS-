@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:02:15+08:00",
+    "latency_ms": 2426,
+    "payload_bytes": 251439,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"7e22a56d-6c2e-4da9-b569-674b54c91485\",\"object\":\"chat.completion\",\"created\":1794207734,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle on a dark tablet-like surface is directly ahead and very close, filling the lower portion of the view; the floor and a dark wall/curtain are visible above it.\\\", \\\"reasoning\\\": \\\"The goal is immediately in front of the robot and appears reachable with one more forward step. Torso is at 0 degrees, so no turning is needed.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2238,\"completion_tokens\":95,\"total_tokens\":2333,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1598},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle on a dark tablet-like surface is directly ahead and very close, filling the lower portion of the view; the floor and a dark wall/curtain are visible above it.\", \"reasoning\": \"The goal is immediately in front of the robot and appears reachable with one more forward step. Torso is at 0 degrees, so no turning is needed.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle on a dark tablet-like surface is directly ahead and very close, filling the lower portion of the view; the floor and a dark wall/curtain are visible above it.",
+      "reasoning": "The goal is immediately in front of the robot and appears reachable with one more forward step. Torso is at 0 degrees, so no turning is needed.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

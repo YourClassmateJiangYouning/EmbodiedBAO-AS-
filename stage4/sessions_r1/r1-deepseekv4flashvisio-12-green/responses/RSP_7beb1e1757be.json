@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:59:42+08:00",
+    "latency_ms": 3166,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"50f60e73-e729-4f7e-83a7-93c9141ca383\",\"object\":\"chat.completion\",\"created\":1794207580,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The downward glance shows the robot's own body from the front: two wheels on either side, a wide chassis with wiring and a camera mast in the center, and a white tray/plate on top. The body's overall width spans roughly the full frame, with the wheels defining the widest points.\\\", \\\"reasoning\\\": \\\"The look_down view reveals my body width, which appears fairly wide due to the wheels and tray. Since turning is impossible once shoulders are inside the opening, and I don't yet know the opening's width, I should proceed cautiously. The target is straight ahead and the path was unobstructed, so advancing forward is the natural next step to approach the opening and gauge whether I fit.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1695,\"completion_tokens\":163,\"total_tokens\":1858,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":927},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The downward glance shows the robot's own body from the front: two wheels on either side, a wide chassis with wiring and a camera mast in the center, and a white tray/plate on top. The body's overall width spans roughly the full frame, with the wheels defining the widest points.\", \"reasoning\": \"The look_down view reveals my body width, which appears fairly wide due to the wheels and tray. Since turning is impossible once shoulders are inside the opening, and I don't yet know the opening's width, I should proceed cautiously. The target is straight ahead and the path was unobstructed, so advancing forward is the natural next step to approach the opening and gauge whether I fit.\", \"action\": \"forward\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The downward glance shows the robot's own body from the front: two wheels on either side, a wide chassis with wiring and a camera mast in the center, and a white tray/plate on top. The body's overall width spans roughly the full frame, with the wheels defining the widest points.",
+      "reasoning": "The look_down view reveals my body width, which appears fairly wide due to the wheels and tray. Since turning is impossible once shoulders are inside the opening, and I don't yet know the opening's width, I should proceed cautiously. The target is straight ahead and the path was unobstructed, so advancing forward is the natural next step to approach the opening and gauge whether I fit.",
+      "action": "forward",
+      "confidence": 0.7
+    },
+    "action": "forward"
+  }
+]

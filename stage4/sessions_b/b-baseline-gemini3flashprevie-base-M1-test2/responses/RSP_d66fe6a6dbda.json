@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:23:03+08:00",
+    "latency_ms": 5661,
+    "payload_bytes": 317417,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090822589103836608268d9d66kH8FI3c\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212583,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a red carpeted walkway leading directly to a small green rectangle on the far wall. The robot has passed through the narrow opening and is now in a wider area, with the green target clearly visible ahead.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at x=4.25 and have successfully navigated through the narrow gap with my torso rotated to 90 degrees. The green rectangle is straight ahead. I will continue moving forward to reach the goal.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2829,\"completion_tokens\":124,\"total_tokens\":2953,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2829,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":124,\"totalTokenCount\":2953,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":1740}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":124}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1740,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":124,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a red carpeted walkway leading directly to a small green rectangle on the far wall. The robot has passed through the narrow opening and is now in a wider area, with the green target clearly visible ahead.\",\n  \"reasoning\": \"I am currently at x=4.25 and have successfully navigated through the narrow gap with my torso rotated to 90 degrees. The green rectangle is straight ahead. I will continue moving forward to reach the goal.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted walkway leading directly to a small green rectangle on the far wall. The robot has passed through the narrow opening and is now in a wider area, with the green target clearly visible ahead.",
+      "reasoning": "I am currently at x=4.25 and have successfully navigated through the narrow gap with my torso rotated to 90 degrees. The green rectangle is straight ahead. I will continue moving forward to reach the goal.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

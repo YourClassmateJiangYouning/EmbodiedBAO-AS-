@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:04:43+08:00",
+    "latency_ms": 4367,
+    "payload_bytes": 164594,
+    "finish_reason": "stop",
+    "reasoning_tokens": 43,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"a0cb7974-3c54-4d88-82bd-ade109fd4556_e1057118707c44f68a4ffce865d5579a\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The red circle is now large and close, seen on a dark panel ahead with a red carpet curving below. The dark opening/wall frames the scene; I have clearly passed through the doorway and am close to the target.\\\", \\\"reasoning\\\": \\\"The red circle fills a large portion of the view, indicating I am very close. My torso remains rotated 90 degrees to present shallow depth. Continuing forward should bring me to the circle within a step or two.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The red circle is very close now, large in view. Just a few more forward steps. Step limit is 30, 21 steps used (20 effective). Let me keep going forward.\"}}],\"created\":1794204283,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":160,\"prompt_tokens\":3056,\"total_tokens\":3216,\"completion_tokens_details\":{\"reasoning_tokens\":43},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The red circle is now large and close, seen on a dark panel ahead with a red carpet curving below. The dark opening/wall frames the scene; I have clearly passed through the doorway and am close to the target.\", \"reasoning\": \"The red circle fills a large portion of the view, indicating I am very close. My torso remains rotated 90 degrees to present shallow depth. Continuing forward should bring me to the circle within a step or two.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The red circle is very close now, large in view. Just a few more forward steps. Step limit is 30, 21 steps used (20 effective). Let me keep going forward.",
+    "parsed": {
+      "scene_description": "The red circle is now large and close, seen on a dark panel ahead with a red carpet curving below. The dark opening/wall frames the scene; I have clearly passed through the doorway and am close to the target.",
+      "reasoning": "The red circle fills a large portion of the view, indicating I am very close. My torso remains rotated 90 degrees to present shallow depth. Continuing forward should bring me to the circle within a step or two.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

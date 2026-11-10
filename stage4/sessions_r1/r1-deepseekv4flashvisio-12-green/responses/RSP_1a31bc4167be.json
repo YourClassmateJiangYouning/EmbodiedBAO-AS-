@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:00:01+08:00",
+    "latency_ms": 2485,
+    "payload_bytes": 275083,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"3f076716-3d90-4c65-8b73-7553d035b089\",\"object\":\"chat.completion\",\"created\":1794207600,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green rectangle is visible directly ahead on the far wall, framed by a narrow opening between two patterned wall panels. The floor is red carpet leading up to a light-colored threshold just before the target.\\\", \\\"reasoning\\\": \\\"The target is straight ahead and the path appears clear. My torso is at 0 degrees, presenting my width squarely to the opening, and previous forward steps have kept the path clear. Continuing forward advances me toward the goal with plenty of steps remaining.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2068,\"completion_tokens\":114,\"total_tokens\":2182,\"prompt_tokens_details\":{\"cached_tokens\":768},\"prompt_cache_hit_tokens\":768,\"prompt_cache_miss_tokens\":1300},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green rectangle is visible directly ahead on the far wall, framed by a narrow opening between two patterned wall panels. The floor is red carpet leading up to a light-colored threshold just before the target.\", \"reasoning\": \"The target is straight ahead and the path appears clear. My torso is at 0 degrees, presenting my width squarely to the opening, and previous forward steps have kept the path clear. Continuing forward advances me toward the goal with plenty of steps remaining.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green rectangle is visible directly ahead on the far wall, framed by a narrow opening between two patterned wall panels. The floor is red carpet leading up to a light-colored threshold just before the target.",
+      "reasoning": "The target is straight ahead and the path appears clear. My torso is at 0 degrees, presenting my width squarely to the opening, and previous forward steps have kept the path clear. Continuing forward advances me toward the goal with plenty of steps remaining.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

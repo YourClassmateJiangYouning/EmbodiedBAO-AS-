@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:24:49+08:00",
+    "latency_ms": 8191,
+    "payload_bytes": 259239,
+    "finish_reason": "stop",
+    "reasoning_tokens": 105,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"69cf26cb-fd6a-4b92-bba7-3cd329ea3d0d_5e1eb4c90aef429e8565cc84dcc3911a\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpet leading straight ahead toward a dark opening in a wall. A yellow arrow pointing right is mounted on a dark panel at the opening. The walls on either side have colorful geometric patterns. The carpet path is clear and leads directly to the arrow.\\\", \\\"reasoning\\\": \\\"The yellow arrow is straight ahead at the opening and the path remains clear on the red carpet. My torso is at 0 degrees, the optimal orientation for the narrow opening. I have 22 steps remaining and the arrow appears close, so I should continue moving forward toward it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image shows the yellow arrow on a dark panel at the far wall, with a red carpet leading to it. The opening is ahead. I'm at x=5.75, having taken 6 forward steps (each 75cm = 4.5m from some start, plus initial position). I need to continue forward toward the arrow. The arrow looks very close now. Let me continue forward.\\n\\nThe opening appears dark ahead - looks like I need to go through the opening. Continue forward.\"}}],\"created\":1794209089,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":246,\"prompt_tokens\":2400,\"total_tokens\":2646,\"completion_tokens_details\":{\"reasoning_tokens\":105},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera shows a red carpet leading straight ahead toward a dark opening in a wall. A yellow arrow pointing right is mounted on a dark panel at the opening. The walls on either side have colorful geometric patterns. The carpet path is clear and leads directly to the arrow.\", \"reasoning\": \"The yellow arrow is straight ahead at the opening and the path remains clear on the red carpet. My torso is at 0 degrees, the optimal orientation for the narrow opening. I have 22 steps remaining and the arrow appears close, so I should continue moving forward toward it.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "The image shows the yellow arrow on a dark panel at the far wall, with a red carpet leading to it. The opening is ahead. I'm at x=5.75, having taken 6 forward steps (each 75cm = 4.5m from some start, plus initial position). I need to continue forward toward the arrow. The arrow looks very close now. Let me continue forward.\n\nThe opening appears dark ahead - looks like I need to go through the opening. Continue forward.",
+    "parsed": {
+      "scene_description": "The camera shows a red carpet leading straight ahead toward a dark opening in a wall. A yellow arrow pointing right is mounted on a dark panel at the opening. The walls on either side have colorful geometric patterns. The carpet path is clear and leads directly to the arrow.",
+      "reasoning": "The yellow arrow is straight ahead at the opening and the path remains clear on the red carpet. My torso is at 0 degrees, the optimal orientation for the narrow opening. I have 22 steps remaining and the arrow appears close, so I should continue moving forward toward it.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

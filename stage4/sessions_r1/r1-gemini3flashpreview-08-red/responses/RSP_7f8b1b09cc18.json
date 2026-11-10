@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:40:32+08:00",
+    "latency_ms": 8240,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081040250536055498268d9d6LwNj3oKr\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134432,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper at the front, extending significantly beyond the wheels on both sides. The torso rotation is currently 0.0 degrees, meaning this wide bumper is oriented perpendicular to the walking direction.\\\",\\n  \\\"reasoning\\\": \\\"Looking down reveals that my body is very wide due to the white bumper. At 0 degrees rotation, I present my maximum width to the opening ahead. To fit through a narrow gap, I will likely need to rotate my torso to reduce my effective width. However, I am still at position x=1.25 and need to get closer to the opening before I can accurately judge the gap size and align myself. I will move forward again.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2153,\"completion_tokens\":187,\"total_tokens\":2340,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2153,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":187,\"totalTokenCount\":2340,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1064},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":187}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1064,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":187,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper at the front, extending significantly beyond the wheels on both sides. The torso rotation is currently 0.0 degrees, meaning this wide bumper is oriented perpendicular to the walking direction.\",\n  \"reasoning\": \"Looking down reveals that my body is very wide due to the white bumper. At 0 degrees rotation, I present my maximum width to the opening ahead. To fit through a narrow gap, I will likely need to rotate my torso to reduce my effective width. However, I am still at position x=1.25 and need to get closer to the opening before I can accurately judge the gap size and align myself. I will move forward again.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body on a red carpet. The robot has a wide white rectangular bumper at the front, extending significantly beyond the wheels on both sides. The torso rotation is currently 0.0 degrees, meaning this wide bumper is oriented perpendicular to the walking direction.",
+      "reasoning": "Looking down reveals that my body is very wide due to the white bumper. At 0 degrees rotation, I present my maximum width to the opening ahead. To fit through a narrow gap, I will likely need to rotate my torso to reduce my effective width. However, I am still at position x=1.25 and need to get closer to the opening before I can accurately judge the gap size and align myself. I will move forward again.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

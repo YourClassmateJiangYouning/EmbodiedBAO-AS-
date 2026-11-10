@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:23:38+08:00",
+    "latency_ms": 6765,
+    "payload_bytes": 296801,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090823340034002468268d9d6aWCeZSYf\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212619,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The green rectangle is now very large and centered in the lower half of the view, indicating I am extremely close to it. Behind it is a floor and some furniture, including a dark draped object and a tan sofa.\\\",\\n  \\\"reasoning\\\": \\\"I am at position x=8.0, and the green rectangle is directly in front of me. One more forward step should bring me into contact with or sufficiently close to the target to complete the task.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":3120,\"completion_tokens\":121,\"total_tokens\":3241,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":3120,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":121,\"totalTokenCount\":3241,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"IMAGE\",\"tokenCount\":1089},{\"modality\":\"TEXT\",\"tokenCount\":2031}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":121}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":2031,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":121,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The green rectangle is now very large and centered in the lower half of the view, indicating I am extremely close to it. Behind it is a floor and some furniture, including a dark draped object and a tan sofa.\",\n  \"reasoning\": \"I am at position x=8.0, and the green rectangle is directly in front of me. One more forward step should bring me into contact with or sufficiently close to the target to complete the task.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green rectangle is now very large and centered in the lower half of the view, indicating I am extremely close to it. Behind it is a floor and some furniture, including a dark draped object and a tan sofa.",
+      "reasoning": "I am at position x=8.0, and the green rectangle is directly in front of me. One more forward step should bring me into contact with or sufficiently close to the target to complete the task.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

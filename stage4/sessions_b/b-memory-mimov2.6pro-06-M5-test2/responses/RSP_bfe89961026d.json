@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:06:46+08:00",
+    "latency_ms": 9128,
+    "payload_bytes": 351677,
+    "finish_reason": "stop",
+    "reasoning_tokens": 56,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"5a5e4502-d782-4767-8ed7-238b7d13b004_2f7fabef1c834cbb907c948608194740\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The camera looks straight ahead down a red carpet toward a dark opening in the far wall, with the purple four-pointed star visible at the opening. Decorative walls with purple zigzag patterns flank the opening. My torso is rotated 45 degrees to the right, still in the turning phase before reaching the opening.\\\", \\\"reasoning\\\": \\\"Mirroring the previous successful traversal: 2 forward, 1 look_down, then 6 turn_right to reach 90 degrees. I have completed 3 turn_right steps (torso at 45 degrees). I need 3 more turn_right actions to complete the rotation to 90 degrees before my shoulders enter the opening.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need 6 turn_right to reach 90. Currently torso 45 after 3 turns? Wait, step 3,4,5 were turn_right = 3 turns = 45 degrees. So 3 more turn_right needed. Continue turning.\"}}],\"created\":1794215206,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":217,\"prompt_tokens\":3093,\"total_tokens\":3310,\"completion_tokens_details\":{\"reasoning_tokens\":56},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The camera looks straight ahead down a red carpet toward a dark opening in the far wall, with the purple four-pointed star visible at the opening. Decorative walls with purple zigzag patterns flank the opening. My torso is rotated 45 degrees to the right, still in the turning phase before reaching the opening.\", \"reasoning\": \"Mirroring the previous successful traversal: 2 forward, 1 look_down, then 6 turn_right to reach 90 degrees. I have completed 3 turn_right steps (torso at 45 degrees). I need 3 more turn_right actions to complete the rotation to 90 degrees before my shoulders enter the opening.\", \"action\": \"turn_right\", \"confidence\": 0.9}",
+    "reasoning_content": "We need 6 turn_right to reach 90. Currently torso 45 after 3 turns? Wait, step 3,4,5 were turn_right = 3 turns = 45 degrees. So 3 more turn_right needed. Continue turning.",
+    "parsed": {
+      "scene_description": "The camera looks straight ahead down a red carpet toward a dark opening in the far wall, with the purple four-pointed star visible at the opening. Decorative walls with purple zigzag patterns flank the opening. My torso is rotated 45 degrees to the right, still in the turning phase before reaching the opening.",
+      "reasoning": "Mirroring the previous successful traversal: 2 forward, 1 look_down, then 6 turn_right to reach 90 degrees. I have completed 3 turn_right steps (torso at 45 degrees). I need 3 more turn_right actions to complete the rotation to 90 degrees before my shoulders enter the opening.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

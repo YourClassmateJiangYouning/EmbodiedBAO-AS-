@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:00:37+08:00",
+    "latency_ms": 3380,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"160b95d6-9265-495d-b7aa-ade91391b746\",\"object\":\"chat.completion\",\"created\":1794207634,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"Downward glance showing the robot's own body from the front: a wide tray with white padding on top, two large wheels at the sides, and a central camera/wiring assembly. The body presents a wide profile, wider than a narrow gap would likely allow.\\\", \\\"reasoning\\\": \\\"The downward view confirms my body is quite wide (wheels plus tray). The opening ahead is narrow, and with torso rotation at 0 degrees this wide profile faces the gap directly. Turning is impossible once shoulders are inside, so I should rotate my torso now to present a narrower profile before advancing. Turning 90 degrees would align my thinner dimension with the gap; I'll start turning right to reduce the presented width.\\\", \\\"action\\\": \\\"turn_right\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1888,\"completion_tokens\":163,\"total_tokens\":2051,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1248},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"Downward glance showing the robot's own body from the front: a wide tray with white padding on top, two large wheels at the sides, and a central camera/wiring assembly. The body presents a wide profile, wider than a narrow gap would likely allow.\", \"reasoning\": \"The downward view confirms my body is quite wide (wheels plus tray). The opening ahead is narrow, and with torso rotation at 0 degrees this wide profile faces the gap directly. Turning is impossible once shoulders are inside, so I should rotate my torso now to present a narrower profile before advancing. Turning 90 degrees would align my thinner dimension with the gap; I'll start turning right to reduce the presented width.\", \"action\": \"turn_right\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "Downward glance showing the robot's own body from the front: a wide tray with white padding on top, two large wheels at the sides, and a central camera/wiring assembly. The body presents a wide profile, wider than a narrow gap would likely allow.",
+      "reasoning": "The downward view confirms my body is quite wide (wheels plus tray). The opening ahead is narrow, and with torso rotation at 0 degrees this wide profile faces the gap directly. Turning is impossible once shoulders are inside, so I should rotate my torso now to present a narrower profile before advancing. Turning 90 degrees would align my thinner dimension with the gap; I'll start turning right to reduce the presented width.",
+      "action": "turn_right",
+      "confidence": 0.6
+    },
+    "action": "turn_right"
+  }
+]

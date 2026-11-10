@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:38:21+08:00",
+    "latency_ms": 7347,
+    "payload_bytes": 439542,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090838164176289998268d9d6j84BWa4p\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794213501,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white bumper and two large wheels on the sides, making it quite wide in its current 0-degree orientation.\\\",\\n  \\\"reasoning\\\": \\\"The 'look_down' view confirms that my body is very wide due to the bumper and wheels. To fit through the narrow opening ahead, I need to rotate my torso to a profile orientation (90 degrees). I will start by turning right.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2781,\"completion_tokens\":133,\"total_tokens\":2914,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2781,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":133,\"totalTokenCount\":2914,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1692},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":133}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1692,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":133,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera is looking down at the robot's own body on a red carpet. The robot has a wide white bumper and two large wheels on the sides, making it quite wide in its current 0-degree orientation.\",\n  \"reasoning\": \"The 'look_down' view confirms that my body is very wide due to the bumper and wheels. To fit through the narrow opening ahead, I need to rotate my torso to a profile orientation (90 degrees). I will start by turning right.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera is looking down at the robot's own body on a red carpet. The robot has a wide white bumper and two large wheels on the sides, making it quite wide in its current 0-degree orientation.",
+      "reasoning": "The 'look_down' view confirms that my body is very wide due to the bumper and wheels. To fit through the narrow opening ahead, I need to rotate my torso to a profile orientation (90 degrees). I will start by turning right.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

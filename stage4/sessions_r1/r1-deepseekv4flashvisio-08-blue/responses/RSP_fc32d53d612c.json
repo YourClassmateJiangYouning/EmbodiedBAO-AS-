@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:10:56+08:00",
+    "latency_ms": 2294,
+    "payload_bytes": 167433,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e6da6f01-2f6b-4997-951d-87439d732303\",\"object\":\"chat.completion\",\"created\":1794208255,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle is directly ahead, very close, mounted on a low panel at floor level. The path ahead appears clear with no visible obstruction between the robot and the triangle.\\\", \\\"reasoning\\\": \\\"The triangle is immediately ahead and the previous blockages may have been due to the rotated torso. The torso is now at 0 degrees, presenting the narrowest profile. Attempting forward again should reach the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2401,\"completion_tokens\":102,\"total_tokens\":2503,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":1761},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle is directly ahead, very close, mounted on a low panel at floor level. The path ahead appears clear with no visible obstruction between the robot and the triangle.\", \"reasoning\": \"The triangle is immediately ahead and the previous blockages may have been due to the rotated torso. The torso is now at 0 degrees, presenting the narrowest profile. Attempting forward again should reach the goal.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle is directly ahead, very close, mounted on a low panel at floor level. The path ahead appears clear with no visible obstruction between the robot and the triangle.",
+      "reasoning": "The triangle is immediately ahead and the previous blockages may have been due to the rotated torso. The torso is now at 0 degrees, presenting the narrowest profile. Attempting forward again should reach the goal.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

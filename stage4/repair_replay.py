@@ -69,6 +69,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--models", default="", help="comma-separated model names to restrict to")
+    parser.add_argument("--force", action="store_true", help="delete and re-run even clean cells (for a replication run)")
     args = parser.parse_args()
 
     os.makedirs(ROOT, exist_ok=True)
@@ -81,6 +82,9 @@ def main():
     for spec in plan:
         directory = os.path.join(ROOT, session_id_for(spec))
         state, blocked = episode_state(directory)
+        if args.force and state != "absent":
+            todo.append((spec, directory, blocked))
+            continue
         if state == "clean":
             keep += 1
         elif state == "contaminated":

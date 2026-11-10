@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:18:27+08:00",
+    "latency_ms": 8255,
+    "payload_bytes": 381083,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090418218514641778268d9d6NwjHJcL2\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794197907,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"A long red carpet leads toward a narrow dark opening in a far wall decorated with purple and blue geometric patterns. A yellow arrow is visible inside the opening, pointing to the right.\\\",\\n  \\\"reasoning\\\": \\\"I am at the start of the walkway. To reach the yellow arrow, I need to move forward. Before I get too close to the narrow opening, I should check my body's width and orientation to ensure I can fit through, but for now, I will simply advance toward the target.\\\",\\n  \\\"action\\\": \\\"forward\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1974,\"completion_tokens\":131,\"total_tokens\":2105,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":1974,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":131,\"totalTokenCount\":2105,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":885},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":131}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":885,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":131,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"A long red carpet leads toward a narrow dark opening in a far wall decorated with purple and blue geometric patterns. A yellow arrow is visible inside the opening, pointing to the right.\",\n  \"reasoning\": \"I am at the start of the walkway. To reach the yellow arrow, I need to move forward. Before I get too close to the narrow opening, I should check my body's width and orientation to ensure I can fit through, but for now, I will simply advance toward the target.\",\n  \"action\": \"forward\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A long red carpet leads toward a narrow dark opening in a far wall decorated with purple and blue geometric patterns. A yellow arrow is visible inside the opening, pointing to the right.",
+      "reasoning": "I am at the start of the walkway. To reach the yellow arrow, I need to move forward. Before I get too close to the narrow opening, I should check my body's width and orientation to ensure I can fit through, but for now, I will simply advance toward the target.",
+      "action": "forward",
+      "confidence": 1.0
+    },
+    "action": "forward"
+  }
+]

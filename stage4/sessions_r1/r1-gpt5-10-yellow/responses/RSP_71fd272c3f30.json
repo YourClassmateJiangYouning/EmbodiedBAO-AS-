@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:31:17+08:00",
+    "latency_ms": 6426,
+    "payload_bytes": 250636,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"protected_material_code\":{\"detected\":false,\"filtered\":false},\"protected_material_text\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\":\\\"A yellow right-pointing arrow on a black sign is directly ahead on the floor near the far wall. The path in front appears clear with a red carpet edge in the foreground and smooth flooring leading to the sign.\\\",\\\"reasoning\\\":\\\"The yellow arrow target is straight ahead and close. Moving forward will bring me closer to the arrow on the far wall.\\\",\\\"action\\\":\\\"forward\\\",\\\"confidence\\\":0.67}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198675,\"id\":\"chatcmpl-EiBKFkXe3uDkLKsk83lDA4Vu0PVCg\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"jailbreak\":{\"detected\":false,\"filtered\":false},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261104031848-0b714194-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":93,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":11,\"engine_ttft_ms\":293,\"engine_ttlt_ms\":1293,\"pre_inference_ms\":407,\"service_tbt_ms\":11,\"service_ttft_ms\":1039,\"service_ttlt_ms\":2036,\"user_visible_ttft_ms\":632},\"prompt_tokens\":1909,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2002}}\n",
+    "content": "{\"scene_description\":\"A yellow right-pointing arrow on a black sign is directly ahead on the floor near the far wall. The path in front appears clear with a red carpet edge in the foreground and smooth flooring leading to the sign.\",\"reasoning\":\"The yellow arrow target is straight ahead and close. Moving forward will bring me closer to the arrow on the far wall.\",\"action\":\"forward\",\"confidence\":0.67}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A yellow right-pointing arrow on a black sign is directly ahead on the floor near the far wall. The path in front appears clear with a red carpet edge in the foreground and smooth flooring leading to the sign.",
+      "reasoning": "The yellow arrow target is straight ahead and close. Moving forward will bring me closer to the arrow on the far wall.",
+      "action": "forward",
+      "confidence": 0.67
+    },
+    "action": "forward"
+  }
+]

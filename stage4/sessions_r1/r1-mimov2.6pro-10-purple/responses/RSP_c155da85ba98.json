@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:18:27+08:00",
+    "latency_ms": 8383,
+    "payload_bytes": 387593,
+    "finish_reason": "stop",
+    "reasoning_tokens": 117,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"0031ddc1-cea3-4b7e-8d10-2b0ecad20274_eee00c1336ca4b309f6070e74fede30d\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretching ahead toward a far wall with decorative panels. The purple four-pointed star is visible in a narrow opening in the wall, roughly centered ahead. The floor on either side is patterned, and the path ahead appears unobstructed.\\\", \\\"reasoning\\\": \\\"The purple star is straight ahead down the red carpet and the path is clear, so I should make progress by moving forward. I'll want to verify my body width before entering the narrow opening near the star, but right now moving forward is safe and needed.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.9}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The image shows a red carpeted path leading to a far wall where the purple four-pointed star is visible in a doorway/opening. The star appears centered ahead. The path is clear. I should move forward toward the star. The doorway seems somewhat narrow - there might be a need to check width before entering. Let me just move forward first.\\n\\nThe opening looks narrow (the black bag is to the left of the star). The star is at the opening. Moving forward gets closer. I'll keep moving forward and possibly look down to check width when near the opening.\"}}],\"created\":1794197907,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":253,\"prompt_tokens\":1925,\"total_tokens\":2178,\"completion_tokens_details\":{\"reasoning_tokens\":117},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretching ahead toward a far wall with decorative panels. The purple four-pointed star is visible in a narrow opening in the wall, roughly centered ahead. The floor on either side is patterned, and the path ahead appears unobstructed.\", \"reasoning\": \"The purple star is straight ahead down the red carpet and the path is clear, so I should make progress by moving forward. I'll want to verify my body width before entering the narrow opening near the star, but right now moving forward is safe and needed.\", \"action\": \"forward\", \"confidence\": 0.9}",
+    "reasoning_content": "The image shows a red carpeted path leading to a far wall where the purple four-pointed star is visible in a doorway/opening. The star appears centered ahead. The path is clear. I should move forward toward the star. The doorway seems somewhat narrow - there might be a need to check width before entering. Let me just move forward first.\n\nThe opening looks narrow (the black bag is to the left of the star). The star is at the opening. Moving forward gets closer. I'll keep moving forward and possibly look down to check width when near the opening.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretching ahead toward a far wall with decorative panels. The purple four-pointed star is visible in a narrow opening in the wall, roughly centered ahead. The floor on either side is patterned, and the path ahead appears unobstructed.",
+      "reasoning": "The purple star is straight ahead down the red carpet and the path is clear, so I should make progress by moving forward. I'll want to verify my body width before entering the narrow opening near the star, but right now moving forward is safe and needed.",
+      "action": "forward",
+      "confidence": 0.9
+    },
+    "action": "forward"
+  }
+]

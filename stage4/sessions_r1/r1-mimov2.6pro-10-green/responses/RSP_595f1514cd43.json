@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:29:35+08:00",
+    "latency_ms": 6727,
+    "payload_bytes": 376152,
+    "finish_reason": "stop",
+    "reasoning_tokens": 26,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e1731cba-63c1-4e7d-81fc-b0b924c36c42_fc068501f9ee4adbb3d9515593c00003\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a far wall with colorful patterned panels. A small green rectangle is visible on the far wall in the distance, roughly centered ahead. The path is clear with no obstacles on the carpet.\\\", \\\"reasoning\\\": \\\"The green rectangle is directly ahead along the walkway and the path remains clear after my first forward step. I should keep moving forward to close the distance to the far wall.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to move forward. The green rectangle is visible in the distance on the wall. Path appears clear. Continue forward.\"}}],\"created\":1794137374,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":139,\"prompt_tokens\":1996,\"total_tokens\":2135,\"completion_tokens_details\":{\"reasoning_tokens\":26},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a far wall with colorful patterned panels. A small green rectangle is visible on the far wall in the distance, roughly centered ahead. The path is clear with no obstacles on the carpet.\", \"reasoning\": \"The green rectangle is directly ahead along the walkway and the path remains clear after my first forward step. I should keep moving forward to close the distance to the far wall.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "We need to move forward. The green rectangle is visible in the distance on the wall. Path appears clear. Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a far wall with colorful patterned panels. A small green rectangle is visible on the far wall in the distance, roughly centered ahead. The path is clear with no obstacles on the carpet.",
+      "reasoning": "The green rectangle is directly ahead along the walkway and the path remains clear after my first forward step. I should keep moving forward to close the distance to the far wall.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:23:25+08:00",
+    "latency_ms": 14125,
+    "payload_bytes": 241502,
+    "finish_reason": "stop",
+    "reasoning_tokens": 102,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n\n{\"id\":\"87295dfd-e777-4435-919d-a75fbd5ed8b6_e63607d24fbb4685979f4fb214fc327e\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The yellow arrow sign is directly ahead, sitting on the light floor just past the end of the dark red carpet. It appears only about a meter ahead. The narrow opening with patterned walls frames the view on both sides, and a dark covered object hangs above the arrow sign. The path is clear.\\\", \\\"reasoning\\\": \\\"The yellow arrow is very close now, roughly a meter ahead. My torso remains rotated 90 degrees presenting my thinnest profile through the opening. I should move forward to close the remaining distance and reach the arrow.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.8}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We need to reach the yellow arrow on the far wall. Position x=6.5. Hmm, the arrow is right there. It looks close. The image shows the yellow arrow sign directly ahead, maybe 1-2 meters away. One more forward of 75cm should put us at it or very close. Actually we want to reach it. Let's move forward.\\n\\nSteps: 15 used, 30 limit — 15 remaining. Arrow appears close. Forward.\"}}],\"created\":1794137004,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":235,\"prompt_tokens\":2921,\"total_tokens\":3156,\"completion_tokens_details\":{\"reasoning_tokens\":102},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The yellow arrow sign is directly ahead, sitting on the light floor just past the end of the dark red carpet. It appears only about a meter ahead. The narrow opening with patterned walls frames the view on both sides, and a dark covered object hangs above the arrow sign. The path is clear.\", \"reasoning\": \"The yellow arrow is very close now, roughly a meter ahead. My torso remains rotated 90 degrees presenting my thinnest profile through the opening. I should move forward to close the remaining distance and reach the arrow.\", \"action\": \"forward\", \"confidence\": 0.8}",
+    "reasoning_content": "We need to reach the yellow arrow on the far wall. Position x=6.5. Hmm, the arrow is right there. It looks close. The image shows the yellow arrow sign directly ahead, maybe 1-2 meters away. One more forward of 75cm should put us at it or very close. Actually we want to reach it. Let's move forward.\n\nSteps: 15 used, 30 limit — 15 remaining. Arrow appears close. Forward.",
+    "parsed": {
+      "scene_description": "The yellow arrow sign is directly ahead, sitting on the light floor just past the end of the dark red carpet. It appears only about a meter ahead. The narrow opening with patterned walls frames the view on both sides, and a dark covered object hangs above the arrow sign. The path is clear.",
+      "reasoning": "The yellow arrow is very close now, roughly a meter ahead. My torso remains rotated 90 degrees presenting my thinnest profile through the opening. I should move forward to close the remaining distance and reach the arrow.",
+      "action": "forward",
+      "confidence": 0.8
+    },
+    "action": "forward"
+  }
+]

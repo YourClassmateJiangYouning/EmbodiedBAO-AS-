@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:11:25+08:00",
+    "latency_ms": 2684,
+    "payload_bytes": 212085,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"6713b3d4-f79b-4fd1-8369-2fbcfd72b530\",\"object\":\"chat.completion\",\"created\":1794208283,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The blue triangle sits on a raised platform directly ahead, framed by a dark doorway with patterned walls on either side. The red carpet leads up to the platform edge, which appears as a low ledge at wheel height.\\\", \\\"reasoning\\\": \\\"The goal is very close and centered. The last forward step succeeded after backing up for clearance, so continuing forward should close the remaining gap to the triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2954,\"completion_tokens\":98,\"total_tokens\":3052,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2314},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The blue triangle sits on a raised platform directly ahead, framed by a dark doorway with patterned walls on either side. The red carpet leads up to the platform edge, which appears as a low ledge at wheel height.\", \"reasoning\": \"The goal is very close and centered. The last forward step succeeded after backing up for clearance, so continuing forward should close the remaining gap to the triangle.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The blue triangle sits on a raised platform directly ahead, framed by a dark doorway with patterned walls on either side. The red carpet leads up to the platform edge, which appears as a low ledge at wheel height.",
+      "reasoning": "The goal is very close and centered. The last forward step succeeded after backing up for clearance, so continuing forward should close the remaining gap to the triangle.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

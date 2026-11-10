@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:30:12+08:00",
+    "latency_ms": 5051,
+    "payload_bytes": 342240,
+    "finish_reason": "stop",
+    "reasoning_tokens": 10,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"9e68c6ae-933a-4263-9675-102de30a480b_a5edcbf781134945b1d171a2f16b6743\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches forward toward a narrow opening in the far wall, with the green rectangle visible directly ahead through the gap. Patterned walls flank the walkway on both sides.\\\", \\\"reasoning\\\": \\\"The green rectangle remains directly ahead and the path is clear. My torso is at 0 rotation, presenting my narrowest profile toward the opening. I should continue moving forward to close the remaining distance.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The path is clear ahead. Continue forward.\"}}],\"created\":1794137412,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":117,\"prompt_tokens\":2164,\"total_tokens\":2281,\"completion_tokens_details\":{\"reasoning_tokens\":10},\"prompt_tokens_details\":{\"cached_tokens\":0,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches forward toward a narrow opening in the far wall, with the green rectangle visible directly ahead through the gap. Patterned walls flank the walkway on both sides.\", \"reasoning\": \"The green rectangle remains directly ahead and the path is clear. My torso is at 0 rotation, presenting my narrowest profile toward the opening. I should continue moving forward to close the remaining distance.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The path is clear ahead. Continue forward.",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches forward toward a narrow opening in the far wall, with the green rectangle visible directly ahead through the gap. Patterned walls flank the walkway on both sides.",
+      "reasoning": "The green rectangle remains directly ahead and the path is clear. My torso is at 0 rotation, presenting my narrowest profile toward the opening. I should continue moving forward to close the remaining distance.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

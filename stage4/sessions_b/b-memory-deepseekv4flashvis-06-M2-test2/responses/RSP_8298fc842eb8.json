@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:22:00+08:00",
+    "latency_ms": 2569,
+    "payload_bytes": 350154,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"9443d465-7b78-47d4-936a-0b117165ec0f\",\"object\":\"chat.completion\",\"created\":1794212519,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway stretches ahead toward a far wall with a red circle marker centered in view, flanked by patterned wall panels and a dark object above it. The path appears clear.\\\", \\\"reasoning\\\": \\\"The red circle is directly ahead along the fixed walking direction and the carpeted path is clear. Prior successful traversal used repeated forward steps, so continuing forward advances toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2912,\"completion_tokens\":98,\"total_tokens\":3010,\"prompt_tokens_details\":{\"cached_tokens\":1664},\"prompt_cache_hit_tokens\":1664,\"prompt_cache_miss_tokens\":1248},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway stretches ahead toward a far wall with a red circle marker centered in view, flanked by patterned wall panels and a dark object above it. The path appears clear.\", \"reasoning\": \"The red circle is directly ahead along the fixed walking direction and the carpeted path is clear. Prior successful traversal used repeated forward steps, so continuing forward advances toward the goal.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway stretches ahead toward a far wall with a red circle marker centered in view, flanked by patterned wall panels and a dark object above it. The path appears clear.",
+      "reasoning": "The red circle is directly ahead along the fixed walking direction and the carpeted path is clear. Prior successful traversal used repeated forward steps, so continuing forward advances toward the goal.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

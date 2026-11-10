@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T21:27:38+08:00",
+    "latency_ms": 10163,
+    "payload_bytes": 286556,
+    "finish_reason": "stop",
+    "reasoning_tokens": 48,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "\n{\"id\":\"1896cfd9-31f9-455e-ba34-ec02d54d6ad6_11c5922de7464529ace6286ea3509b1c\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The view shows the red carpet stretching ahead toward a dark narrow opening between two decorated wall panels. The blue triangle is visible on the far wall through the opening, appearing close now. The floor to the left has geometric patterns, and my body is not visible in this forward view.\\\", \\\"reasoning\\\": \\\"I've been walking forward with my torso at 90 degrees to present my thinnest profile through the narrow opening. I'm now at x=5.0 and the opening with the blue triangle is very close ahead. The path is clear and I'm not yet inside the opening, so I should continue moving forward toward the triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.92}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"We are at x=5.0, which is fairly close to the opening (the far wall). The blue triangle is visible through the opening. We should keep going forward. We have 17 steps left. Continue forward.\"}}],\"created\":1794144457,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":201,\"prompt_tokens\":2778,\"total_tokens\":2979,\"completion_tokens_details\":{\"reasoning_tokens\":48},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The view shows the red carpet stretching ahead toward a dark narrow opening between two decorated wall panels. The blue triangle is visible on the far wall through the opening, appearing close now. The floor to the left has geometric patterns, and my body is not visible in this forward view.\", \"reasoning\": \"I've been walking forward with my torso at 90 degrees to present my thinnest profile through the narrow opening. I'm now at x=5.0 and the opening with the blue triangle is very close ahead. The path is clear and I'm not yet inside the opening, so I should continue moving forward toward the triangle.\", \"action\": \"forward\", \"confidence\": 0.92}",
+    "reasoning_content": "We are at x=5.0, which is fairly close to the opening (the far wall). The blue triangle is visible through the opening. We should keep going forward. We have 17 steps left. Continue forward.",
+    "parsed": {
+      "scene_description": "The view shows the red carpet stretching ahead toward a dark narrow opening between two decorated wall panels. The blue triangle is visible on the far wall through the opening, appearing close now. The floor to the left has geometric patterns, and my body is not visible in this forward view.",
+      "reasoning": "I've been walking forward with my torso at 90 degrees to present my thinnest profile through the narrow opening. I'm now at x=5.0 and the opening with the blue triangle is very close ahead. The path is clear and I'm not yet inside the opening, so I should continue moving forward toward the triangle.",
+      "action": "forward",
+      "confidence": 0.92
+    },
+    "action": "forward"
+  }
+]

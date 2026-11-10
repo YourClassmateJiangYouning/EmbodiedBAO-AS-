@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:33:14+08:00",
+    "latency_ms": 9655,
+    "payload_bytes": 305686,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A red carpet runs straight ahead toward a doorway in a patterned wall. Beyond the doorway, a blue triangular marker is visible at floor level, centered ahead. The path on the carpet appears clear and unobstructed.\\\", \\\"reasoning\\\": \\\"The goal blue triangle is directly ahead through the doorway, and the red carpet path is clear. Continuing straight maximizes progress toward the goal without needing torso rotation.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.83}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794205990,\"id\":\"chatcmpl-EiDEEqdYkxXU8MmJTXfEHpTAueb3I\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r1-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":108,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":421,\"engine_ttlt_ms\":1257,\"pre_inference_ms\":554,\"service_tbt_ms\":8,\"service_ttft_ms\":1160,\"service_ttlt_ms\":1972,\"user_visible_ttft_ms\":606},\"prompt_tokens\":1731,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1839}}\n",
+    "content": "{\"scene_description\": \"A red carpet runs straight ahead toward a doorway in a patterned wall. Beyond the doorway, a blue triangular marker is visible at floor level, centered ahead. The path on the carpet appears clear and unobstructed.\", \"reasoning\": \"The goal blue triangle is directly ahead through the doorway, and the red carpet path is clear. Continuing straight maximizes progress toward the goal without needing torso rotation.\", \"action\": \"forward\", \"confidence\": 0.83}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpet runs straight ahead toward a doorway in a patterned wall. Beyond the doorway, a blue triangular marker is visible at floor level, centered ahead. The path on the carpet appears clear and unobstructed.",
+      "reasoning": "The goal blue triangle is directly ahead through the doorway, and the red carpet path is clear. Continuing straight maximizes progress toward the goal without needing torso rotation.",
+      "action": "forward",
+      "confidence": 0.83
+    },
+    "action": "forward"
+  }
+]

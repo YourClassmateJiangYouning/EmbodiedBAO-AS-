@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:56:48+08:00",
+    "latency_ms": 8984,
+    "payload_bytes": 328680,
+    "finish_reason": "stop",
+    "reasoning_tokens": 56,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"1ce72b15-a4f8-42dc-bcd5-efce97042fce_d4170507ddf74a93bab04c3e74969fde\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"Red carpet walkway ahead leading toward a dark opening in the far wall, through which a bright blue triangle is clearly visible. Patterned walls flank the carpet on both sides near the opening. The carpet is clear ahead.\\\", \\\"reasoning\\\": \\\"The blue triangle is clearly visible through the opening ahead and the carpet path remains clear. My torso is at 90 degrees presenting the thinnest profile, matching the successful previous traversal. I should continue forward toward the triangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The blue triangle is still ahead through the opening. The carpet is clear. I should continue forward. The triangle appears relatively close now. The opening is ahead - I should continue forward.\\n\\nMy torso is at 90 degrees (thinnest profile). Keep going forward.\"}}],\"created\":1794214608,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":175,\"prompt_tokens\":3339,\"total_tokens\":3514,\"completion_tokens_details\":{\"reasoning_tokens\":56},\"prompt_tokens_details\":{\"cached_tokens\":1024,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"Red carpet walkway ahead leading toward a dark opening in the far wall, through which a bright blue triangle is clearly visible. Patterned walls flank the carpet on both sides near the opening. The carpet is clear ahead.\", \"reasoning\": \"The blue triangle is clearly visible through the opening ahead and the carpet path remains clear. My torso is at 90 degrees presenting the thinnest profile, matching the successful previous traversal. I should continue forward toward the triangle.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The blue triangle is still ahead through the opening. The carpet is clear. I should continue forward. The triangle appears relatively close now. The opening is ahead - I should continue forward.\n\nMy torso is at 90 degrees (thinnest profile). Keep going forward.",
+    "parsed": {
+      "scene_description": "Red carpet walkway ahead leading toward a dark opening in the far wall, through which a bright blue triangle is clearly visible. Patterned walls flank the carpet on both sides near the opening. The carpet is clear ahead.",
+      "reasoning": "The blue triangle is clearly visible through the opening ahead and the carpet path remains clear. My torso is at 90 degrees presenting the thinnest profile, matching the successful previous traversal. I should continue forward toward the triangle.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

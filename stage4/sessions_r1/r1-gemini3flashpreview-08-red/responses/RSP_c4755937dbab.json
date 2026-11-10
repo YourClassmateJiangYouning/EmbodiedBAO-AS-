@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T18:40:46+08:00",
+    "latency_ms": 7152,
+    "payload_bytes": 333940,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081040400455478428268d9d6QGmLAmcA\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794134446,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The camera shows a red carpeted path leading toward a narrow opening in a wall decorated with geometric patterns. Through the opening, a red circle is visible on the far wall. I am getting closer to the gap.\\\",\\n  \\\"reasoning\\\": \\\"I am at x=2.75. The opening appears to be around x=5.0. Since I know my body is wide at 0 degrees rotation from my previous 'look_down' action, I need to start rotating my torso to a profile view (90 degrees) before I reach the gap. I will alternate moving forward and turning to prepare for the passage.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 0.9\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2286,\"completion_tokens\":160,\"total_tokens\":2446,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2286,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":160,\"totalTokenCount\":2446,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1197},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":160}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1197,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":160,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The camera shows a red carpeted path leading toward a narrow opening in a wall decorated with geometric patterns. Through the opening, a red circle is visible on the far wall. I am getting closer to the gap.\",\n  \"reasoning\": \"I am at x=2.75. The opening appears to be around x=5.0. Since I know my body is wide at 0 degrees rotation from my previous 'look_down' action, I need to start rotating my torso to a profile view (90 degrees) before I reach the gap. I will alternate moving forward and turning to prepare for the passage.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 0.9\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted path leading toward a narrow opening in a wall decorated with geometric patterns. Through the opening, a red circle is visible on the far wall. I am getting closer to the gap.",
+      "reasoning": "I am at x=2.75. The opening appears to be around x=5.0. Since I know my body is wide at 0 degrees rotation from my previous 'look_down' action, I need to start rotating my torso to a profile view (90 degrees) before I reach the gap. I will alternate moving forward and turning to prepare for the passage.",
+      "action": "turn_right",
+      "confidence": 0.9
+    },
+    "action": "turn_right"
+  }
+]

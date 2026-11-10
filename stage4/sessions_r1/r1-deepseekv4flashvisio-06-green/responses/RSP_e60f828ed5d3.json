@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:13:32+08:00",
+    "latency_ms": 2553,
+    "payload_bytes": 361646,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"9a2f9b9d-7ae1-4bed-90b4-02770e92f96c\",\"object\":\"chat.completion\",\"created\":1794208411,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a narrow dark opening in the far wall, with a small green rectangle visible inside the opening. Patterned walls flank the corridor on both sides.\\\", \\\"reasoning\\\": \\\"The green target is straight ahead through the narrow opening. My torso is now rotated 15 degrees right, which may present a slimmer profile to the opening. I should glance down to verify my current body width relative to the opening before advancing further.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1755,\"completion_tokens\":114,\"total_tokens\":1869,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1243},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a narrow dark opening in the far wall, with a small green rectangle visible inside the opening. Patterned walls flank the corridor on both sides.\", \"reasoning\": \"The green target is straight ahead through the narrow opening. My torso is now rotated 15 degrees right, which may present a slimmer profile to the opening. I should glance down to verify my current body width relative to the opening before advancing further.\", \"action\": \"look_down\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a narrow dark opening in the far wall, with a small green rectangle visible inside the opening. Patterned walls flank the corridor on both sides.",
+      "reasoning": "The green target is straight ahead through the narrow opening. My torso is now rotated 15 degrees right, which may present a slimmer profile to the opening. I should glance down to verify my current body width relative to the opening before advancing further.",
+      "action": "look_down",
+      "confidence": 0.7
+    },
+    "action": "look_down"
+  }
+]

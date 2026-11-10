@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T16:28:27+08:00",
+    "latency_ms": 8477,
+    "payload_bytes": 372094,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611090828225019591038268d9d6huauS6JA\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794212908,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The view shows a red carpeted walkway leading towards a red circle on a black background at the far end. There are patterned walls on both sides forming a narrow gap ahead. White rectangular markers are placed along the edges of the carpet.\\\",\\n  \\\"reasoning\\\": \\\"I am currently at x=2.75 with a torso rotation of 60 degrees. To pass through the narrow gap between the patterned walls, I need to reach a 90-degree rotation to present the thinnest possible profile. I will continue rotating to the left.\\\",\\n  \\\"action\\\": \\\"turn_left\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2650,\"completion_tokens\":142,\"total_tokens\":2792,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2650,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":142,\"totalTokenCount\":2792,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1561},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":142}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1561,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":142,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The view shows a red carpeted walkway leading towards a red circle on a black background at the far end. There are patterned walls on both sides forming a narrow gap ahead. White rectangular markers are placed along the edges of the carpet.\",\n  \"reasoning\": \"I am currently at x=2.75 with a torso rotation of 60 degrees. To pass through the narrow gap between the patterned walls, I need to reach a 90-degree rotation to present the thinnest possible profile. I will continue rotating to the left.\",\n  \"action\": \"turn_left\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The view shows a red carpeted walkway leading towards a red circle on a black background at the far end. There are patterned walls on both sides forming a narrow gap ahead. White rectangular markers are placed along the edges of the carpet.",
+      "reasoning": "I am currently at x=2.75 with a torso rotation of 60 degrees. To pass through the narrow gap between the patterned walls, I need to reach a 90-degree rotation to present the thinnest possible profile. I will continue rotating to the left.",
+      "action": "turn_left",
+      "confidence": 1.0
+    },
+    "action": "turn_left"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T12:33:48+08:00",
+    "latency_ms": 7509,
+    "payload_bytes": 248979,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A red carpeted walkway leads straight ahead toward a low opening between two decorated panels. Beyond the opening, a purple four-pointed star sign is visible on a small board on the floor. The path appears unobstructed and aligned with the star.\\\", \\\"reasoning\\\": \\\"The star is directly ahead through the low opening and the path looks clear. My walking direction is fixed toward the star. Advancing should bring me closer to and through the opening toward the goal.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.7}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794198826,\"id\":\"chatcmpl-EiBMg72v4uRTCFV75ORoTOVAeCOyx\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":122,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":8,\"engine_ttft_ms\":364,\"engine_ttlt_ms\":1357,\"pre_inference_ms\":372,\"service_tbt_ms\":8,\"service_ttft_ms\":867,\"service_ttlt_ms\":1855,\"user_visible_ttft_ms\":494},\"prompt_tokens\":1872,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":1994}}\n",
+    "content": "{\"scene_description\": \"A red carpeted walkway leads straight ahead toward a low opening between two decorated panels. Beyond the opening, a purple four-pointed star sign is visible on a small board on the floor. The path appears unobstructed and aligned with the star.\", \"reasoning\": \"The star is directly ahead through the low opening and the path looks clear. My walking direction is fixed toward the star. Advancing should bring me closer to and through the opening toward the goal.\", \"action\": \"forward\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A red carpeted walkway leads straight ahead toward a low opening between two decorated panels. Beyond the opening, a purple four-pointed star sign is visible on a small board on the floor. The path appears unobstructed and aligned with the star.",
+      "reasoning": "The star is directly ahead through the low opening and the path looks clear. My walking direction is fixed toward the star. Advancing should bring me closer to and through the opening toward the goal.",
+      "action": "forward",
+      "confidence": 0.7
+    },
+    "action": "forward"
+  }
+]

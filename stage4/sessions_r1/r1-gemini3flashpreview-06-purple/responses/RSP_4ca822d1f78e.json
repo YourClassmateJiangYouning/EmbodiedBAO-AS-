@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-08T19:02:32+08:00",
+    "latency_ms": 8718,
+    "payload_bytes": 364679,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"chatcmpl-202611081102246942940358268d9d6fb3gaRpw\",\"model\":\"gemini-3-flash-preview\",\"object\":\"chat.completion\",\"created\":1794135752,\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\n  \\\"scene_description\\\": \\\"The image shows a red carpeted walkway leading toward a narrow vertical opening in a wall decorated with geometric patterns. Through the opening, a purple four-pointed star is visible on the far wall.\\\",\\n  \\\"reasoning\\\": \\\"My current torso rotation is 60.0 degrees. To fit through the narrow vertical gap ahead, I need to reach a 90-degree rotation to present my narrowest profile. I will continue rotating to the right while I am still in the open area before reaching the gap.\\\",\\n  \\\"action\\\": \\\"turn_right\\\",\\n  \\\"confidence\\\": 1.0\\n}\"},\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2464,\"completion_tokens\":135,\"total_tokens\":2599,\"billing_usage\":{\"source\":\"gemini_chat\",\"semantic\":\"gemini\",\"gemini_usage_metadata\":{\"promptTokenCount\":2464,\"toolUsePromptTokenCount\":0,\"candidatesTokenCount\":135,\"totalTokenCount\":2599,\"thoughtsTokenCount\":0,\"cachedContentTokenCount\":0,\"promptTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":1375},{\"modality\":\"IMAGE\",\"tokenCount\":1089}],\"toolUsePromptTokensDetails\":[],\"candidatesTokensDetails\":[{\"modality\":\"TEXT\",\"tokenCount\":135}]}},\"prompt_tokens_details\":{\"cached_tokens\":0,\"text_tokens\":1375,\"audio_tokens\":0,\"image_tokens\":1089},\"completion_tokens_details\":{\"text_tokens\":135,\"audio_tokens\":0,\"image_tokens\":0,\"reasoning_tokens\":0},\"input_tokens\":0,\"output_tokens\":0,\"input_tokens_details\":null,\"claude_cache_creation_5_m_tokens\":0,\"claude_cache_creation_1_h_tokens\":0}}",
+    "content": "{\n  \"scene_description\": \"The image shows a red carpeted walkway leading toward a narrow vertical opening in a wall decorated with geometric patterns. Through the opening, a purple four-pointed star is visible on the far wall.\",\n  \"reasoning\": \"My current torso rotation is 60.0 degrees. To fit through the narrow vertical gap ahead, I need to reach a 90-degree rotation to present my narrowest profile. I will continue rotating to the right while I am still in the open area before reaching the gap.\",\n  \"action\": \"turn_right\",\n  \"confidence\": 1.0\n}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The image shows a red carpeted walkway leading toward a narrow vertical opening in a wall decorated with geometric patterns. Through the opening, a purple four-pointed star is visible on the far wall.",
+      "reasoning": "My current torso rotation is 60.0 degrees. To fit through the narrow vertical gap ahead, I need to reach a 90-degree rotation to present my narrowest profile. I will continue rotating to the right while I am still in the open area before reaching the gap.",
+      "action": "turn_right",
+      "confidence": 1.0
+    },
+    "action": "turn_right"
+  }
+]

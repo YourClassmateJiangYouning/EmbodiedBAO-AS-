@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T14:39:31+08:00",
+    "latency_ms": 6154,
+    "payload_bytes": 191441,
+    "finish_reason": "stop",
+    "reasoning_tokens": 0,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"choices\":[{\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}},\"finish_reason\":\"stop\",\"index\":0,\"logprobs\":null,\"message\":{\"annotations\":[],\"content\":\"{\\\"scene_description\\\": \\\"A doorway ahead with a low gray threshold lip transitioning from red carpet to a gray floor panel. On the far wall beyond the threshold is a bright purple four-pointed star centered on a rectangular plaque.\\\", \\\"reasoning\\\": \\\"I am aligned toward the star with a slight threshold lip previously blocking some steps. A prior back-and-forward attempt got me partially over it. Continuing straight should carry me over the lip toward the star within the remaining steps.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.68}\",\"refusal\":null,\"role\":\"assistant\"}}],\"created\":1794206369,\"id\":\"chatcmpl-EiDKLG6D0jISMF37dVbFguyiVRQXj\",\"model\":\"gpt-5-2025-08-07\",\"object\":\"chat.completion\",\"prompt_filter_results\":[{\"prompt_index\":0,\"content_filter_results\":{\"hate\":{\"filtered\":false,\"severity\":\"safe\"},\"self_harm\":{\"filtered\":false,\"severity\":\"safe\"},\"sexual\":{\"filtered\":false,\"severity\":\"safe\"},\"violence\":{\"filtered\":false,\"severity\":\"safe\"}}}],\"routing\":{\"serving_pipereplica\":\"d20261008082639-221788df-default-r0-dp0-default\"},\"service_tier\":\"default\",\"system_fingerprint\":null,\"usage\":{\"completion_tokens\":117,\"completion_tokens_details\":{\"accepted_prediction_tokens\":0,\"audio_tokens\":0,\"reasoning_tokens\":0,\"rejected_prediction_tokens\":0},\"latency_checkpoint\":{\"engine_tbt_ms\":9,\"engine_ttft_ms\":520,\"engine_ttlt_ms\":1534,\"pre_inference_ms\":490,\"service_tbt_ms\":8,\"service_ttft_ms\":1191,\"service_ttlt_ms\":2162,\"user_visible_ttft_ms\":701},\"prompt_tokens\":2750,\"prompt_tokens_details\":{\"audio_tokens\":0,\"cached_tokens\":0},\"total_tokens\":2867}}\n",
+    "content": "{\"scene_description\": \"A doorway ahead with a low gray threshold lip transitioning from red carpet to a gray floor panel. On the far wall beyond the threshold is a bright purple four-pointed star centered on a rectangular plaque.\", \"reasoning\": \"I am aligned toward the star with a slight threshold lip previously blocking some steps. A prior back-and-forward attempt got me partially over it. Continuing straight should carry me over the lip toward the star within the remaining steps.\", \"action\": \"forward\", \"confidence\": 0.68}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "A doorway ahead with a low gray threshold lip transitioning from red carpet to a gray floor panel. On the far wall beyond the threshold is a bright purple four-pointed star centered on a rectangular plaque.",
+      "reasoning": "I am aligned toward the star with a slight threshold lip previously blocking some steps. A prior back-and-forward attempt got me partially over it. Continuing straight should carry me over the lip toward the star within the remaining steps.",
+      "action": "forward",
+      "confidence": 0.68
+    },
+    "action": "forward"
+  }
+]

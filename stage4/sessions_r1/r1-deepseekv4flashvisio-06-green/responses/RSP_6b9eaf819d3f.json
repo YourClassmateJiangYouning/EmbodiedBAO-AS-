@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T15:14:36+08:00",
+    "latency_ms": 2654,
+    "payload_bytes": 186112,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"23622761-9eb1-4aaa-93d2-719dfa10eddf\",\"object\":\"chat.completion\",\"created\":1794208474,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The green target rectangle is directly ahead, filling much of the view, with a narrow dark opening framed by wall panels on the left and right. The floor is visible below the target.\\\", \\\"reasoning\\\": \\\"The last forward step succeeded after backing up and returning torso to 0 degrees, so I am now closer to the opening. The target is large and centered, suggesting I am near the doorway. Continuing forward should carry me through toward the green rectangle.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.6}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":2921,\"completion_tokens\":111,\"total_tokens\":3032,\"prompt_tokens_details\":{\"cached_tokens\":640},\"prompt_cache_hit_tokens\":640,\"prompt_cache_miss_tokens\":2281},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The green target rectangle is directly ahead, filling much of the view, with a narrow dark opening framed by wall panels on the left and right. The floor is visible below the target.\", \"reasoning\": \"The last forward step succeeded after backing up and returning torso to 0 degrees, so I am now closer to the opening. The target is large and centered, suggesting I am near the doorway. Continuing forward should carry me through toward the green rectangle.\", \"action\": \"forward\", \"confidence\": 0.6}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The green target rectangle is directly ahead, filling much of the view, with a narrow dark opening framed by wall panels on the left and right. The floor is visible below the target.",
+      "reasoning": "The last forward step succeeded after backing up and returning torso to 0 degrees, so I am now closer to the opening. The target is large and centered, suggesting I am near the doorway. Continuing forward should carry me through toward the green rectangle.",
+      "action": "forward",
+      "confidence": 0.6
+    },
+    "action": "forward"
+  }
+]

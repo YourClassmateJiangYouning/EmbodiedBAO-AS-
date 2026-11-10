@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:04:16+08:00",
+    "latency_ms": 8947,
+    "payload_bytes": 161763,
+    "finish_reason": "stop",
+    "reasoning_tokens": 59,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"e94520dd-620d-4ce6-a261-bf52568a1074_7a94d33b28d0422cba6c606238ee45cd\",\"choices\":[{\"finish_reason\":\"stop\",\"index\":0,\"message\":{\"content\":\"{\\\"scene_description\\\": \\\"The purple four-pointed star is now very large and centered directly ahead on a lit rectangular panel set into the far wall, with the dark opening overhead and the red carpeted floor in the immediate foreground just below it.\\\", \\\"reasoning\\\": \\\"The star is right in front of me, filling the center of the view. My torso is at 0 degrees (narrowest orientation), which is optimal. One more forward step of 75cm should bring me right up to the star on the wall to reach it.\\\", \\\"action\\\": \\\"forward\\\", \\\"confidence\\\": 0.95}\",\"role\":\"assistant\",\"tool_calls\":null,\"reasoning_content\":\"The star is very close, on a panel directly ahead. Position x=7.25. The star appears large and centered. One more forward step (75cm) should reach it. The floor line and carpet suggest the star panel is just ahead. Let's do forward.\"}}],\"created\":1794215056,\"model\":\"mimo-v2.6-pro\",\"object\":\"chat.completion\",\"usage\":{\"completion_tokens\":190,\"prompt_tokens\":2621,\"total_tokens\":2811,\"completion_tokens_details\":{\"reasoning_tokens\":59},\"prompt_tokens_details\":{\"cached_tokens\":640,\"image_tokens\":1024}}}",
+    "content": "{\"scene_description\": \"The purple four-pointed star is now very large and centered directly ahead on a lit rectangular panel set into the far wall, with the dark opening overhead and the red carpeted floor in the immediate foreground just below it.\", \"reasoning\": \"The star is right in front of me, filling the center of the view. My torso is at 0 degrees (narrowest orientation), which is optimal. One more forward step of 75cm should bring me right up to the star on the wall to reach it.\", \"action\": \"forward\", \"confidence\": 0.95}",
+    "reasoning_content": "The star is very close, on a panel directly ahead. Position x=7.25. The star appears large and centered. One more forward step (75cm) should reach it. The floor line and carpet suggest the star panel is just ahead. Let's do forward.",
+    "parsed": {
+      "scene_description": "The purple four-pointed star is now very large and centered directly ahead on a lit rectangular panel set into the far wall, with the dark opening overhead and the red carpeted floor in the immediate foreground just below it.",
+      "reasoning": "The star is right in front of me, filling the center of the view. My torso is at 0 degrees (narrowest orientation), which is optimal. One more forward step of 75cm should bring me right up to the star on the wall to reach it.",
+      "action": "forward",
+      "confidence": 0.95
+    },
+    "action": "forward"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "attempt": 1,
+    "started_at": "2026-11-09T17:36:21+08:00",
+    "latency_ms": 3549,
+    "payload_bytes": 238101,
+    "finish_reason": "stop",
+    "reasoning_tokens": null,
+    "error": null,
+    "json_mode": true,
+    "raw_response": "{\"id\":\"0e302df9-8b64-45d8-87a2-7e69f8754854\",\"object\":\"chat.completion\",\"created\":1794216979,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"content\":\"{\\\"scene_description\\\": \\\"The camera shows a red carpeted floor leading toward a dark opening in the far wall, with the blue triangle visible ahead through the gap between two patterned wall panels. The opening appears narrow relative to my body width.\\\", \\\"reasoning\\\": \\\"The blue triangle is directly ahead along my fixed walking direction. The opening looks narrow, so I should check my body width with a downward glance before proceeding through, to avoid getting stuck.\\\", \\\"action\\\": \\\"look_down\\\", \\\"confidence\\\": 0.7}\"},\"logprobs\":null,\"finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":1877,\"completion_tokens\":105,\"total_tokens\":1982,\"prompt_tokens_details\":{\"cached_tokens\":512},\"prompt_cache_hit_tokens\":512,\"prompt_cache_miss_tokens\":1365},\"system_fingerprint\":\"bc19ba97cbe016479903222bb1578db6\"}",
+    "content": "{\"scene_description\": \"The camera shows a red carpeted floor leading toward a dark opening in the far wall, with the blue triangle visible ahead through the gap between two patterned wall panels. The opening appears narrow relative to my body width.\", \"reasoning\": \"The blue triangle is directly ahead along my fixed walking direction. The opening looks narrow, so I should check my body width with a downward glance before proceeding through, to avoid getting stuck.\", \"action\": \"look_down\", \"confidence\": 0.7}",
+    "reasoning_content": "",
+    "parsed": {
+      "scene_description": "The camera shows a red carpeted floor leading toward a dark opening in the far wall, with the blue triangle visible ahead through the gap between two patterned wall panels. The opening appears narrow relative to my body width.",
+      "reasoning": "The blue triangle is directly ahead along my fixed walking direction. The opening looks narrow, so I should check my body width with a downward glance before proceeding through, to avoid getting stuck.",
+      "action": "look_down",
+      "confidence": 0.7
+    },
+    "action": "look_down"
+  }
+]
