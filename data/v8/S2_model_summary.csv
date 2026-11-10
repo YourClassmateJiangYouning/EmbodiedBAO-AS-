@@ -1,0 +1,8 @@
+﻿model,n_pairs,passed,pass_rate_pct,mean_steps,mean_turns,mean_max_rotation_deg,mean_copy_lcs,mean_look_down,total_wall_collisions,mean_turn_delta_vs_baseline
+Qwen/Qwen3-VL-30B-A3B-Instruct,15,14,93.33,12.6,0.6,9.0,0.496,0.0,15,0.60
+claude-haiku-4-5-20251001,15,15,100.0,11.27,0.27,4.0,0.548,0.0,0,0.27
+deepseek-v4-flash-vision-exp,15,15,100.0,16.73,5.6,83.0,0.909,0.0,0,4.40
+gemini-2.5-flash,15,15,100.0,13.8,1.6,24.0,0.597,0.4,2,1.60
+gemini-3-flash-preview,15,15,100.0,17.47,5.27,79.0,0.857,1.2,0,2.20
+gpt-5,15,15,100.0,11.0,0.0,0.0,0.555,0.0,0,0.00
+mimo-v2.6-pro,15,15,100.0,16.8,5.27,79.0,0.767,0.27,0,5.27

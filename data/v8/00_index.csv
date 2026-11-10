@@ -1,0 +1,28 @@
+﻿file,rows,columns,source,purpose
+00_model_master.csv,15,11,computed from S1/S2/S3 episode tables,one row per model across all three stages
+00_model_names.csv,15,3,generated,maps the API name used in the tables to the directory name on disk
+00_source_checksums.csv,7,4,stage3_final100_20261101/manifest.json,bytes and sha256 of every Stage 3 export file
+00_source_manifest.csv,12,4,stage1 + stage2 + stage3 manifests,"row counts each export declares, and the Stage 2 counts computed here"
+S1_episodes.csv,6375,35,stage1_final_20261027_154706/results,"one row per episode (6,375)"
+S1_model_scene_metrics.csv,90,27,stage1_final_20261027_154706/tables/stage1_model_scene_metrics.csv,per-model x scene metrics
+S1_model_summary.csv,15,26,stage1_final_20261027_154706/tables/stage1_model_summary.csv,per-model aggregates
+S1_per_level_pass_pct_wide.csv,15,19,computed from S1_episodes.csv,"same data pivoted, for the cliff figure"
+S1_per_level_pass_rates.csv,255,7,computed from S1_episodes.csv,pass rate per model per A/S level
+S1_rotation_profile.csv,15,7,computed from S1_episodes.csv,rotation on wide vs narrow levels: separates judging the gap from always turning
+S1_run_arguments.csv,75,12,stage1_final_20261027_154706/agent_logs/**/args.json,the exact arguments each run was started with
+S1_sfinal_nps_ranked.csv,15,8,stage1_final_20261027_154706/tables/stage1_sfinal_nps_ranked.csv,final ranking
+S1_steps.csv,113922,17,stage1_final_20261027_154706/results/*_steps + steps[],"one row per step, with the model's verbatim thinking"
+S2_episodes.csv,105,21,stage2_final_20261027_154234/results,one row per memory-test episode (105)
+S2_failed_pairs.csv,1,32,stage2_final_20261027_154234/tables/stage2_failed_pairs.csv,"the failed pairs, a subset of S2_pairs.csv"
+S2_memory_cards_blind.csv,105,9,stage2_final_20261027_154234/memory/stage2_memory_cards_top7_15_blind.jsonl,"the blind memory card shown to the model, one row per memory (105)"
+S2_memory_cards_full.csv,105,9,stage2_final_20261027_154234/memory/stage2_memory_cards_top7_15.jsonl,"the full memory card shown to the model, one row per memory (105)"
+S2_model_summary.csv,7,11,stage2_final_20261027_154234/tables/stage2_model_summary.csv,per-model aggregate
+S2_pairs.csv,105,32,stage2_final_20261027_154234/tables/stage2_pair_summary.csv,one row per memory-test pair (105)
+S2_scene_model_summary.csv,34,10,stage2_final_20261027_154234/tables/stage2_scene_model_summary.csv,scene x model
+S2_steps.csv,1495,16,stage2_final_20261027_154234/results,one row per step of the 105 tests
+S2_test_plan.csv,105,12,stage2_final_20261027_154234/memory/stage2_top7_15_test_plan.csv,"the frozen 105-cell design: which narrow episode supplies each memory, which wide cell it is tested on"
+S3_episodes.csv,100,28,stage3_final100_20261101/stage3_episodes.csv,one row per Stage 3 episode (100)
+S3_failures.csv,8,28,stage3_final100_20261101/stage3_failures.csv,the 8 failed Stage 3 episodes
+S3_input_plan.csv,100,17,stage3_final100_20261101/stage3_input_plan.csv,the planned 100 cells
+S3_steps.csv,1654,17,stage3_final100_20261101/stage3_steps.csv,one row per Stage 3 step with reasoning
+S3_timeout_audit.csv,100,12,stage3_final100_20261101/stage3_timeout_audit_original.csv,timeout audit over the same 100 episodes

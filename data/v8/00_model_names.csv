@@ -1,0 +1,16 @@
+﻿model_api_name,directory_prefix,note
+Qwen/Qwen3-VL-30B-A3B-Instruct,Qwen-Qwen3-VL-30B-A3B-Instruct,result directories use the sanitised prefix; model columns in every table use the API name
+Qwen/Qwen3-VL-32B-Instruct,Qwen-Qwen3-VL-32B-Instruct,result directories use the sanitised prefix; model columns in every table use the API name
+Qwen/Qwen3-VL-8B-Instruct,Qwen-Qwen3-VL-8B-Instruct,result directories use the sanitised prefix; model columns in every table use the API name
+claude-haiku-4-5-20251001,claude-haiku-4-5-20251001,result directories use the sanitised prefix; model columns in every table use the API name
+deepseek-v4-flash-vision-exp,deepseek-v4-flash-vision-exp,result directories use the sanitised prefix; model columns in every table use the API name
+gemini-2.5-flash,gemini-2.5-flash,result directories use the sanitised prefix; model columns in every table use the API name
+gemini-3-flash-preview,gemini-3-flash-preview,result directories use the sanitised prefix; model columns in every table use the API name
+glm-4.5v,glm-4.5v,result directories use the sanitised prefix; model columns in every table use the API name
+glm-4.6v,glm-4.6v,result directories use the sanitised prefix; model columns in every table use the API name
+gpt-4.1,gpt-4.1,result directories use the sanitised prefix; model columns in every table use the API name
+gpt-4o-mini,gpt-4o-mini,result directories use the sanitised prefix; model columns in every table use the API name
+gpt-5,gpt-5,result directories use the sanitised prefix; model columns in every table use the API name
+kimi/kimi-k2.5,kimi-kimi-k2.5,result directories use the sanitised prefix; model columns in every table use the API name
+kimi/kimi-k2.6,kimi-kimi-k2.6,result directories use the sanitised prefix; model columns in every table use the API name
+mimo-v2.6-pro,mimo-v2.6-pro,result directories use the sanitised prefix; model columns in every table use the API name

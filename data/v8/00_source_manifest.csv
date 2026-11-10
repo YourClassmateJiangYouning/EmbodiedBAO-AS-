@@ -1,0 +1,13 @@
+﻿stage,key,value,note
+stage1,episode_records,6375,
+stage1,log_directories,75,
+stage1,models,15,Qwen-Qwen3-VL-30B-A3B-Instruct; Qwen-Qwen3-VL-32B-Instruct; Qwen-Qwen3-VL-8B-Instruct; claude-haiku-4-5-20251001; deepseek-v4-flash-vision-exp; gemini-2.5-flash; gemini-3-flash-preview; glm-4.5v; glm-4.6v; gpt-4.1; gpt-4o-mini; gpt-5; kimi-kimi-k2.5; kimi-kimi-k2.6; mimo-v2.6-pro
+stage1,result_directories,1275,
+stage1,step_sidecars,6375,
+stage3,episodes,100,
+stage3,passed,92,
+stage3,failed,8,
+stage3,step_rows,1654,
+stage2,episodes,105,no manifest in the Stage 2 export; counted from results/
+stage2,passed,104,counted from S2_pairs.csv
+generated,tables_built_at,2026-11-05T17:30:31,
