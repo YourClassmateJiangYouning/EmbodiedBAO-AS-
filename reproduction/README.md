@@ -22,6 +22,9 @@ statistic.
 | `make_paper_figures.py` | tutorial-style paper figures |
 | `render_fig2_compare.py` | renders the Figure 2 comparison |
 | `plot_style.py` | shared plotting style, imported by `make_paper_figures.py` |
+| `make_scene_dumbbell.py` | per-scene wide and narrow pass rates with Wilson 95% intervals (the Sec. 3 validity check); `python make_scene_dumbbell.py data/v8/S1_episodes.csv out.pdf` |
+
+**Font requirement.** Seven of these scripts load Liberation Serif from `/usr/share/fonts/truetype/liberation/`, the path the figures were drawn on. Off that machine the `addfont` call raises before anything is drawn: install Liberation Serif at that path, or delete the loop and let matplotlib fall back to its default serif. The numbers do not depend on the font.
 
 **These must stay in one directory**: `make_v3.py` imports `make_main_v2` and `make_v4`, and
 `make_paper_figures.py` imports `plot_style`.
